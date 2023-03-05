@@ -1,4 +1,4 @@
-# Haru-Android
+# Haru-Server
 
 ## Commit Convention
 1. `Feature`: **새로운 기능 추가**
@@ -9,3 +9,16 @@
 6. `Test`: **테스트 코드**
 7. `Chore`: **빌드 업무 수정, 패키지 매니저 수정**
 8. `Comment`: **주석 추가 및 수정**
+
+
+## Installation
+
+```bash
+$ npm install
+```
+
+## Running the app
+
+```bash
+$ npm run start:dev
+```
