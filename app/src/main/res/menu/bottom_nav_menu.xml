@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_sns"
+        android:title="sns"
+        android:icon="@drawable/bottom_nav_sns_icon"
+        />
+    <item
+        android:id="@+id/menu_checklist"
+        android:title="Todo"
+        android:icon="@drawable/bottom_nav_checklist_icon"
+        />
+    <item
+        android:id="@+id/menu_calendar"
+        android:title="calendar"
+        android:icon="@drawable/bottom_nav_calendar_icon"
+        />
+    <item
+        android:id="@+id/menu_timetable"
+        android:title="statistic"
+        android:icon="@drawable/bottom_nav_timetable_icon"
+        />
+    <item
+        android:id="@+id/menu_etc"
+        android:title="프로필"
+        android:icon="@drawable/bottom_nav_etc_icon"
+        />
+</menu>
