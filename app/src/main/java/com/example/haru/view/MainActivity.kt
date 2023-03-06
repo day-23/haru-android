@@ -1,15 +1,15 @@
-package com.example.haru.ui
+package com.example.haru.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.haru.R
-import com.example.haru.ui.calendar.CalendarFragment
-import com.example.haru.ui.checklist.ChecklistFragment
+import com.example.haru.view.calendar.CalendarFragment
+import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.databinding.ActivityMainBinding
-import com.example.haru.ui.etc.EtcFragment
-import com.example.haru.ui.sns.SnsFragment
-import com.example.haru.ui.timetable.TimetableFragment
+import com.example.haru.view.etc.EtcFragment
+import com.example.haru.view.sns.SnsFragment
+import com.example.haru.view.timetable.TimetableFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

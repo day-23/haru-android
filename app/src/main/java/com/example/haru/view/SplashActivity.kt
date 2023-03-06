@@ -1,4 +1,4 @@
-package com.example.haru.ui
+package com.example.haru.view
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,8 +8,8 @@ import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.haru.R
-import com.example.haru.ui.auth.LoginActivity
-import com.example.haru.ui.calendar.CalendarFragment.Companion.TAG
+import com.example.haru.view.auth.LoginActivity
+import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {

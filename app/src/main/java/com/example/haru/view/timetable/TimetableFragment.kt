@@ -1,4 +1,4 @@
-package com.example.haru.ui.calendar
+package com.example.haru.view.timetable
 
 import android.os.Bundle
 import android.util.Log
@@ -8,18 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 
-class CalendarFragment : Fragment() {
+class TimetableFragment : Fragment() {
     companion object{
         const val TAG : String = "로그"
 
-        fun newInstance() : CalendarFragment {
-            return CalendarFragment()
+        fun newInstance() : TimetableFragment {
+            return TimetableFragment()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "CalendarFragment - onCreate() called")
+        Log.d(TAG, "TimetableFragment - onCreate() called")
 
     }
 
@@ -28,9 +28,9 @@ class CalendarFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "CalendarFragment - onCreateView() called")
+        Log.d(TAG, "TimetableFragment - onCreateView() called")
 
-        return inflater.inflate(R.layout.fragment_calendar, container, false)
+        return inflater.inflate(R.layout.fragment_timetable, container, false)
     }
 
 }

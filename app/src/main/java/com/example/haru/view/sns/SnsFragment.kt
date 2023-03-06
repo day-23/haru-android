@@ -1,4 +1,4 @@
-package com.example.haru.ui.sns
+package com.example.haru.view.sns
 
 import UserViewModelFactory
 import android.os.Bundle
@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.haru.R
 import com.example.haru.data.api.UserService
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.databinding.FragmentSnsBinding

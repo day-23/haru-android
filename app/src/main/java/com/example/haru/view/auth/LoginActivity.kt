@@ -1,9 +1,9 @@
-package com.example.haru.ui.auth
+package com.example.haru.view.auth
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.haru.ui.MainActivity
+import com.example.haru.view.MainActivity
 import com.example.haru.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {

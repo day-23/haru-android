@@ -1,4 +1,4 @@
-package com.example.haru.ui.checklist
+package com.example.haru.view.checklist
 
 import android.os.Bundle
 import android.util.Log
