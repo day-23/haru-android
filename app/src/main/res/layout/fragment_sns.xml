@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="SNS Fragment"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:id="@+id/user_name_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Name" />
+
+    <TextView
+        android:id="@+id/user_email_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Email" />
+
+    <Button
+        android:id="@+id/fetch_user_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fetch User" />
+
+</LinearLayout>
