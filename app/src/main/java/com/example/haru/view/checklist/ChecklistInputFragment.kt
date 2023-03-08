@@ -1,29 +1,19 @@
 package com.example.haru.view.checklist
 
+import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChecklistInputFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChecklistInputFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     companion object {
         const val TAG: String = "로그"
@@ -35,16 +25,32 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        Log.d(TAG, "ChecklistInputFragment - onCreate() called")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        return inflater.inflate(R.layout.fragment_checklist_input, container, false)
+//        return inflater.inflate(R.layout.fragment_checklist_input,container,false)
+        binding = FragmentChecklistInputBinding.inflate(inflater)
+        return binding.root
+    }
+
+//    override fun setupDialog(dialog: Dialog, style: Int) {
+//        super.setupDialog(dialog, style)
+//        val
+//    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+//        val btnclose = view.findViewById<Button>(R.id.btn_close)
+//
+//        btnclose.setOnClickListener{
+//            dismiss()
+//        }
+        binding.btnClose.setOnClickListener{
+            dismiss()
+        }
     }
 
 }

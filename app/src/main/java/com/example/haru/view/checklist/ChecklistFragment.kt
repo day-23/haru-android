@@ -1,5 +1,7 @@
 package com.example.haru.view.checklist
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Tag
 import com.example.haru.databinding.FragmentChecklistBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.viewmodel.RecyclerViewModel
 import java.util.*
@@ -34,10 +37,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         Log.d(TAG, "ChecklistFragment - onCreate() called")
 
         recyclerViewModel = RecyclerViewModel(RecyclerViewModel.requestTagList)
-
-        binding.btnAddTodo.setOnClickListener{
-
-        }
     }
 
     override fun onCreateView(
@@ -54,11 +53,17 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initTagList()
-//        tagAdapter = TagAdapter(datas)
-//        binding.recyclerTags.layoutManager =
-//            LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-//        binding.recyclerTags.adapter = tagAdapter
+
+        binding.btnAddTodo.setOnClickListener{
+            val todoInput = ChecklistInputFragment()
+            todoInput.show(parentFragmentManager, todoInput.tag)
+        }
     }
+
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        mActivity = context as Activity
+//    }
 
     private fun initTagList() {
         val tagListView: RecyclerView = binding.recyclerTags
