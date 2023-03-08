@@ -50,7 +50,6 @@ class SnsFragment : Fragment() {
             .client(OkHttpClient())
             .build()
 
-
         val userService = retrofit.create(UserService::class.java)
         val userRepository = UserRepository(userService)
 
