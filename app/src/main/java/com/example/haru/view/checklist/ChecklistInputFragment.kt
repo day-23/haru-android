@@ -3,6 +3,7 @@ package com.example.haru.view.checklist
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -19,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.min
 
 class ChecklistInputFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
@@ -36,8 +38,10 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
         Log.d(TAG, "ChecklistInputFragment - onCreate() called")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         binding = FragmentChecklistInputBinding.inflate(inflater)
         return binding.root
@@ -46,15 +50,16 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog: Dialog = super.onCreateDialog(savedInstanceState)
 
-        dialog.setOnShowListener{
+        dialog.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
             setupRatio(bottomSheetDialog)
         }
         return dialog
     }
 
-    private fun setupRatio(bottomSheetDialog: BottomSheetDialog){
-        val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
         val behavior = BottomSheetBehavior.from<View>(bottomSheet)
         val layoutParams = bottomSheet!!.layoutParams
         layoutParams.height = getBottomSheetDialogDefaultHeight()
@@ -67,7 +72,7 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
     }
 
     private fun getWindowHeight(): Int {
-        val displayMetrics : DisplayMetrics = this.resources.displayMetrics
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
 //        (context as Activity?)!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
         return displayMetrics.heightPixels
     }
@@ -75,17 +80,17 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnClose.setOnClickListener{
+        binding.btnClose.setOnClickListener {
             dismiss()
         }
 
-        binding.btnDatePick.setOnClickListener{
-            val datePickerCalendar = Calendar.getInstance()
-            val year = datePickerCalendar.get(Calendar.YEAR)
-            val month = datePickerCalendar.get(Calendar.MONTH)
-            val day = datePickerCalendar.get(Calendar.DAY_OF_MONTH)
+        binding.btnDatePick.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-            val datePickerDialog =DatePickerDialog(
+            val datePickerDialog = DatePickerDialog(
                 requireContext(),
                 R.style.MySpinnerDatePickerStyle,
                 { _, year, monthOfYear, dayOfMonth ->
@@ -95,8 +100,8 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
 
                     calendar.set(year, monthOfYear, dayOfMonth)
                     val date = calendar.time
-                    val simpleDateFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-                    val dayName: String = simpleDateFormat.format(date)
+                    val dateFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+                    val dayName: String = dateFormat.format(date)
 
                     binding.btnDatePick.text = "$year.$month.$dayOfMonth ($dayName)"
                 },
@@ -106,8 +111,35 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
             )
             datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
             datePickerDialog.show()
-            datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.black))
-            datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.black))
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE)
+                .setTextColor(resources.getColor(R.color.black))
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE)
+                .setTextColor(resources.getColor(R.color.black))
+        }
+
+        binding.btnTimePick.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            val timePickerDialog = TimePickerDialog(
+                requireContext(), TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                    val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                    val time = calendar.apply {
+                        set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        set(Calendar.MINUTE, minute)
+                    }.time
+                    Log.d("TAG",time.toString())
+                    binding.btnTimePick.text = timeFormat.format(time)
+                },
+                hour,
+                minute,
+                false
+            )
+
+            timePickerDialog.show()
+            timePickerDialog.getButton(TimePickerDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.black))
+            timePickerDialog.getButton(TimePickerDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.black))
         }
     }
 

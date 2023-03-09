@@ -7,7 +7,7 @@
         <!-- 선택한 날짜를 표시할 색상 -->
         <item name="colorControlActivated">@color/light_gray</item>
         <item name="colorControlHighlight">@color/light_gray</item>
-        
+
     </style>
 
 </resources>
