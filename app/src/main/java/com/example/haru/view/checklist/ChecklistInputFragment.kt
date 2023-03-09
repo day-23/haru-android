@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -16,6 +17,8 @@ import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ChecklistInputFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
@@ -74,6 +77,37 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
 
         binding.btnClose.setOnClickListener{
             dismiss()
+        }
+
+        binding.btnDatePick.setOnClickListener{
+            val datePickerCalendar = Calendar.getInstance()
+            val year = datePickerCalendar.get(Calendar.YEAR)
+            val month = datePickerCalendar.get(Calendar.MONTH)
+            val day = datePickerCalendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog =DatePickerDialog(
+                requireContext(),
+                R.style.MySpinnerDatePickerStyle,
+                { _, year, monthOfYear, dayOfMonth ->
+                    val month = monthOfYear + 1
+
+                    val calendar = Calendar.getInstance()
+
+                    calendar.set(year, monthOfYear, dayOfMonth)
+                    val date = calendar.time
+                    val simpleDateFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+                    val dayName: String = simpleDateFormat.format(date)
+
+                    binding.btnDatePick.text = "$year.$month.$dayOfMonth ($dayName)"
+                },
+                year,
+                month,
+                day
+            )
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
+            datePickerDialog.show()
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.black))
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.black))
         }
     }
 
