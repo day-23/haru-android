@@ -16,19 +16,22 @@ import kotlin.collections.ArrayList
 class RecyclerViewModel(private val mode: Int) :
     ViewModel() {
     private lateinit var list: List<Any?>
-
     private val _dataList = MutableLiveData<List<Any?>>()
     val dataList: LiveData<List<Any?>> = _dataList
 
 
     companion object {
         const val requestTagList = 0
+        const val requestTodoList = 1
     }
 
     init {
         when (mode) {
             requestTagList -> {
                 getTag()
+            }
+            requestTodoList -> {
+                getTodo()
             }
         }
     }
@@ -94,7 +97,9 @@ class RecyclerViewModel(private val mode: Int) :
         )
         _dataList.value = this@RecyclerViewModel.list
 //            tagRepository.getTag(user = user)
+    }
 
+    private fun getTodo(){
 
     }
 }

@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.findFragment
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
@@ -80,66 +81,112 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnClose.setOnClickListener {
-            dismiss()
-        }
+        binding.btnClose.setOnClickListener(btnListener())
 
-        binding.btnDatePick.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
+        binding.checkFlagTodo.setOnClickListener(btnListener())
 
-            val datePickerDialog = DatePickerDialog(
-                requireContext(),
-                R.style.MySpinnerDatePickerStyle,
-                { _, year, monthOfYear, dayOfMonth ->
-                    val month = monthOfYear + 1
+        binding.checkTodayTodo.setOnClickListener(btnListener())
 
+        binding.btnDatePick.setOnClickListener(btnListener())
+
+        binding.btnAlarmDate.setOnClickListener(btnListener())
+
+        binding.btnTimePick.setOnClickListener(btnListener())
+
+        binding.btnAlarmTime.setOnClickListener(btnListener())
+
+        binding.btnRepeatOption.setOnClickListener(btnListener())
+
+        binding.btnRepeatEndDate.setOnClickListener(btnListener())
+
+
+    }
+
+    inner class btnListener : View.OnClickListener {
+        override fun onClick(v: View?) {
+            when (v?.id) {
+                R.id.btn_alarm_time, R.id.btn_time_pick -> {
                     val calendar = Calendar.getInstance()
+                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+                    val minute = calendar.get(Calendar.MINUTE)
 
-                    calendar.set(year, monthOfYear, dayOfMonth)
-                    val date = calendar.time
-                    val dateFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-                    val dayName: String = dateFormat.format(date)
+                    val timePickerDialog = TimePickerDialog(
+                        requireContext(),
+                        TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                            val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                            val time = calendar.apply {
+                                set(Calendar.HOUR_OF_DAY, hourOfDay)
+                                set(Calendar.MINUTE, minute)
+                            }.time
+                            Log.d("TAG", time.toString())
+                            when (v.id) {
+                                R.id.btn_alarm_time -> binding.btnAlarmTime.text =
+                                    timeFormat.format(time)
+                                R.id.btn_time_pick -> binding.btnTimePick.text =
+                                    timeFormat.format(time)
+                            }
+                        },
+                        hour,
+                        minute,
+                        false
+                    )
 
-                    binding.btnDatePick.text = "$year.$month.$dayOfMonth ($dayName)"
-                },
-                year,
-                month,
-                day
-            )
-            datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
-            datePickerDialog.show()
-            datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE)
-                .setTextColor(resources.getColor(R.color.black))
-            datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE)
-                .setTextColor(resources.getColor(R.color.black))
-        }
+                    timePickerDialog.show()
+                    timePickerDialog.getButton(TimePickerDialog.BUTTON_NEGATIVE)
+                        .setTextColor(resources.getColor(R.color.black))
+                    timePickerDialog.getButton(TimePickerDialog.BUTTON_POSITIVE)
+                        .setTextColor(resources.getColor(R.color.black))
+                }
 
-        binding.btnTimePick.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
+                R.id.btn_alarm_date, R.id.btn_date_pick, R.id.btn_repeat_end_date -> {
+                    val calendar = Calendar.getInstance()
+                    val year = calendar.get(Calendar.YEAR)
+                    val month = calendar.get(Calendar.MONTH)
+                    val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-            val timePickerDialog = TimePickerDialog(
-                requireContext(), TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                    val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
-                    val time = calendar.apply {
-                        set(Calendar.HOUR_OF_DAY, hourOfDay)
-                        set(Calendar.MINUTE, minute)
-                    }.time
-                    Log.d("TAG",time.toString())
-                    binding.btnTimePick.text = timeFormat.format(time)
-                },
-                hour,
-                minute,
-                false
-            )
+                    val datePickerDialog = DatePickerDialog(
+                        requireContext(),
+                        R.style.MySpinnerDatePickerStyle,
+                        { _, year, monthOfYear, dayOfMonth ->
+                            val month = monthOfYear + 1
 
-            timePickerDialog.show()
-            timePickerDialog.getButton(TimePickerDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.black))
-            timePickerDialog.getButton(TimePickerDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.black))
+                            val calendar = Calendar.getInstance()
+
+                            calendar.set(year, monthOfYear, dayOfMonth)
+                            val date = calendar.time
+                            val dateFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+                            val dayName: String = dateFormat.format(date)
+
+                            when (v.id) {
+                                R.id.btn_alarm_date -> binding.btnAlarmDate.text =
+                                    "$year.$month.$dayOfMonth ($dayName)"
+                                R.id.btn_date_pick -> binding.btnDatePick.text =
+                                    "$year.$month.$dayOfMonth ($dayName)"
+                            }
+                        },
+                        year,
+                        month,
+                        day
+                    )
+                    datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
+                    datePickerDialog.show()
+                    datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE)
+                        .setTextColor(resources.getColor(R.color.black))
+                    datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE)
+                        .setTextColor(resources.getColor(R.color.black))
+                }
+
+                R.id.check_flag_todo -> binding.checkFlagTodo.toggle()
+                R.id.check_today_todo -> binding.checkTodayTodo.toggle()
+
+                R.id.btn_repeat_option -> {
+                    val repeatOptionInput = ChecklistRepeatFragment()
+                    repeatOptionInput.show(parentFragmentManager, repeatOptionInput.tag)
+                    binding.layoutRepeatEndDate.visibility = View.VISIBLE
+                }
+                R.id.btn_close -> dismiss()
+
+            }
         }
     }
 

@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="해야 할 일을 입력해주세요."
+        android:layout_marginBottom="8dp"
         android:inputType="text" />
 
     <com.google.android.material.textfield.TextInputEditText
@@ -20,59 +21,101 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="ex) #공부, #수학"
+        android:layout_marginBottom="8dp"
         android:inputType="text"
         android:singleLine="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
 
         <CheckedTextView
             android:id="@+id/check_today_todo"
-            android:layout_marginStart="5dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:textSize="20sp"
-            android:text="오늘 할일" />
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:text="오늘 할일"
+            android:textSize="20sp" />
 
         <CheckedTextView
             android:id="@+id/check_flag_todo"
-            android:layout_marginEnd="5dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:text="중요 표시" />
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+            android:text="중요 표시"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_endTime"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="마감일 설정" />
+            android:layout_weight="0.5"
+            android:text="마감일"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btn_date_pick"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:textColor="@color/black"
-            android:text="날짜 선택" />
+            android:text="날짜 선택"/>
 
         <Button
             android:id="@+id/btn_time_pick"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:backgroundTint="@color/white"
+            android:text="시간 선택"
+            android:textColor="@color/black" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_alarm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:textSize="20sp"
+            android:text="알람" />
+
+        <Button
+            android:id="@+id/btn_alarm_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textColor="@color/black"
+            android:backgroundTint="@color/white"
+            android:text="날짜 선택" />
+
+        <Button
+            android:id="@+id/btn_alarm_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white"
             android:text="시간 선택" />
 
     </LinearLayout>
@@ -80,7 +123,69 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_repeat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:text="반복 옵션" />
+
+        <Button
+            android:id="@+id/btn_repeat_option"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:text="선택" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_repeat_endDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_repeatEnd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:text="반복 마감일" />
+
+        <Button
+            android:id="@+id/btn_repeat_end_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="날짜 선택" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_memo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/borderline"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="8dp"
+        android:scrollbars="vertical"
+        android:padding="5dp"
+        android:lines="3"
+        android:ems="10"
+        android:hint="메모장"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
 
         <Button
             android:id="@+id/btn_submit_todo"
@@ -88,6 +193,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="5dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
             android:text="추가하기" />
 
         <Button
@@ -96,6 +203,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="5dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
             android:text="닫기" />
 
     </LinearLayout>
