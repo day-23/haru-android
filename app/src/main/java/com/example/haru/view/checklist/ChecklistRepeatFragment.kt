@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class ChecklistRepeatFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistRepeatBinding
+//    private lateinit var repeatDialogListener : ChecklistInputFragment.RepeatDialogListener
     private var repeatOption: Int = 0
 
     companion object {
@@ -28,6 +30,15 @@ class ChecklistRepeatFragment : BottomSheetDialogFragment() {
 
         }
     }
+
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        try{
+//            repeatDialogListener = context as ChecklistInputFragment.RepeatDialogListener
+//        } catch (err: ClassCastException){
+//            throw ClassCastException(context.toString() + " must implement BottomSheetListener")
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,26 +58,26 @@ class ChecklistRepeatFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvMonday.setOnClickListener(clickListener())
-        binding.tvTuesday.setOnClickListener(clickListener())
-        binding.tvWednesday.setOnClickListener(clickListener())
-        binding.tvThursday.setOnClickListener(clickListener())
-        binding.tvFriday.setOnClickListener(clickListener())
-        binding.tvSaturday.setOnClickListener(clickListener())
-        binding.tvSunday.setOnClickListener(clickListener())
+        binding.tvMonday.setOnClickListener(ClickListener())
+        binding.tvTuesday.setOnClickListener(ClickListener())
+        binding.tvWednesday.setOnClickListener(ClickListener())
+        binding.tvThursday.setOnClickListener(ClickListener())
+        binding.tvFriday.setOnClickListener(ClickListener())
+        binding.tvSaturday.setOnClickListener(ClickListener())
+        binding.tvSunday.setOnClickListener(ClickListener())
 
-        binding.layoutEveryDay.setOnClickListener(clickListener())
-        binding.layoutEveryWeek.setOnClickListener(clickListener())
-        binding.layoutEvery2week.setOnClickListener(clickListener())
-        binding.layoutEveryMonth.setOnClickListener(clickListener())
-        binding.layoutEveryYear.setOnClickListener(clickListener())
-        binding.layoutRepeatCustom.setOnClickListener(clickListener())
+        binding.layoutEveryDay.setOnClickListener(ClickListener())
+        binding.layoutEveryWeek.setOnClickListener(ClickListener())
+        binding.layoutEvery2week.setOnClickListener(ClickListener())
+        binding.layoutEveryMonth.setOnClickListener(ClickListener())
+        binding.layoutEveryYear.setOnClickListener(ClickListener())
+        binding.layoutRepeatCustom.setOnClickListener(ClickListener())
 
-        binding.btnCloseRepeat.setOnClickListener(clickListener())
+        binding.btnCloseRepeat.setOnClickListener(ClickListener())
 
     }
 
-    inner class clickListener : View.OnClickListener {
+    inner class ClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
                 R.id.tv_monday,
@@ -106,6 +117,9 @@ class ChecklistRepeatFragment : BottomSheetDialogFragment() {
                     }
                 }
 
+                R.id.btn_add_repeat->{
+
+                }
                 R.id.btn_close_repeat -> dismiss()
             }
         }

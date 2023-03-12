@@ -10,6 +10,7 @@ import com.example.haru.databinding.FragmentChecklistTagBinding
 
 //private var data: MutableList<Tag>,
 class TagAdapter(val context: Context) :
+
     RecyclerView.Adapter<TagAdapter.TagViewHolder>() {
     private var data = emptyList<Tag>()
 
