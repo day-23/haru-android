@@ -20,12 +20,12 @@ class TodoRepository() {
         var data: TodoResponse
         var todoData : List<Todo>
 
-        if (response.isSuccessful()){
-            Log.d("20191627", "Success to get todos")
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get todos")
             data = response.body()!!
             todoData = data.data
         } else{
-            Log.d("20191627", "Fail to get todos")
+            Log.d("TAG", "Fail to get todos")
             todoData = emptyList()
         }
         todoData

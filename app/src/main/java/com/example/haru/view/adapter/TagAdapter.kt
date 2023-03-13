@@ -31,7 +31,6 @@ class TagAdapter(val context: Context) :
 
         fun bind(item: Tag) {
             binding.tag = item
-            Log.d("TAG", binding.tag.toString())
         }
     }
 

@@ -31,9 +31,10 @@ class TodoAdapter(val context: Context) :
 //        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
         fun bind(item: Todo) {
-            binding.tvTitle.text = item.content
-            binding.tvDescription.text = item.memo
-            binding.checkFlag.isChecked = item.flag
+            binding.todo = item
+//            binding.tvTitle.text = item.content
+//            binding.tvDescription.text = item.memo
+//            binding.checkFlag.isChecked = item.flag
         }
     }
 
