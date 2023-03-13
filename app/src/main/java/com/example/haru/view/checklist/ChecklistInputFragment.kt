@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.haru.R
 import com.example.haru.data.model.Repeat
+import com.example.haru.data.model.Todo
+import com.example.haru.data.model.TodoRequest
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -22,6 +24,17 @@ class ChecklistInputFragment : BottomSheetDialogFragment(),
     ChecklistRepeatFragment.RepeatDismissListener {
     private lateinit var binding: FragmentChecklistInputBinding
     private lateinit var repeatData: Repeat
+
+    private var todo: TodoRequest = TodoRequest(
+        "",
+        "",
+        false,
+        false,
+        tags = emptyList(),
+        subTodos = emptyList(),
+        alarms = emptyList()
+    )
+
 
     companion object {
         const val TAG: String = "로그"
@@ -95,10 +108,12 @@ class ChecklistInputFragment : BottomSheetDialogFragment(),
 
         binding.btnRepeatEndDate.setOnClickListener(btnListener())
 
+        binding.btnSubmitTodo.setOnClickListener(btnListener())
+
 
     }
 
-    override fun repeatDismissListener(repeatData: Repeat, callback : (Repeat) -> Unit) {
+    override fun repeatDismissListener(repeatData: Repeat, callback: (Repeat) -> Unit) {
         this@ChecklistInputFragment.repeatData = repeatData
         callback(repeatData)
     }
@@ -183,19 +198,26 @@ class ChecklistInputFragment : BottomSheetDialogFragment(),
                 R.id.btn_repeat_option -> {
                     val repeatOptionInput =
                         ChecklistRepeatFragment(this@ChecklistInputFragment) { repeatData ->
-                            if (this@ChecklistInputFragment.repeatData.repeatOption != "")
+                            if (this@ChecklistInputFragment.repeatData.repeatOption != "") {
                                 binding.layoutRepeatEndDate.visibility = View.VISIBLE
-                            else binding.layoutRepeatEndDate.visibility = View.GONE
+                                binding.btnRepeatOption.text = repeatData.repeatOption
+                            } else {
+                                binding.layoutRepeatEndDate.visibility = View.GONE
+                                if (binding.btnRepeatOption.text != "선택")
+                                    binding.btnRepeatOption.text = "선택"
+                            }
                         }
                     repeatOptionInput.show(parentFragmentManager, repeatOptionInput.tag)
                 }
                 R.id.btn_close -> dismiss()
 
+                R.id.btn_submit_todo -> {
+
+                }
+
             }
         }
     }
-
-
 
 
 }
