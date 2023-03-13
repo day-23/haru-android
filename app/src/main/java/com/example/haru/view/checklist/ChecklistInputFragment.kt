@@ -1,30 +1,27 @@
 package com.example.haru.view.checklist
 
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.fragment.app.findFragment
 import com.example.haru.R
+import com.example.haru.data.model.Repeat
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.min
 
-class ChecklistInputFragment : BottomSheetDialogFragment() {
+class ChecklistInputFragment : BottomSheetDialogFragment(),
+    ChecklistRepeatFragment.RepeatDismissListener {
     private lateinit var binding: FragmentChecklistInputBinding
+    private lateinit var repeatData: Repeat
 
     companion object {
         const val TAG: String = "로그"
@@ -74,7 +71,6 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
 
     private fun getWindowHeight(): Int {
         val displayMetrics: DisplayMetrics = this.resources.displayMetrics
-//        (context as Activity?)!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
         return displayMetrics.heightPixels
     }
 
@@ -100,6 +96,11 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
         binding.btnRepeatEndDate.setOnClickListener(btnListener())
 
 
+    }
+
+    override fun repeatDismissListener(repeatData: Repeat, callback : (Repeat) -> Unit) {
+        this@ChecklistInputFragment.repeatData = repeatData
+        callback(repeatData)
     }
 
     inner class btnListener : View.OnClickListener {
@@ -180,14 +181,21 @@ class ChecklistInputFragment : BottomSheetDialogFragment() {
                 R.id.check_today_todo -> binding.checkTodayTodo.toggle()
 
                 R.id.btn_repeat_option -> {
-                    val repeatOptionInput = ChecklistRepeatFragment()
+                    val repeatOptionInput =
+                        ChecklistRepeatFragment(this@ChecklistInputFragment) { repeatData ->
+                            if (this@ChecklistInputFragment.repeatData.repeatOption != "")
+                                binding.layoutRepeatEndDate.visibility = View.VISIBLE
+                            else binding.layoutRepeatEndDate.visibility = View.GONE
+                        }
                     repeatOptionInput.show(parentFragmentManager, repeatOptionInput.tag)
-                    binding.layoutRepeatEndDate.visibility = View.VISIBLE
                 }
                 R.id.btn_close -> dismiss()
 
             }
         }
     }
+
+
+
 
 }
