@@ -3,16 +3,16 @@ package com.example.haru.data.model
 import java.util.Date
 
 data class TodoRequest(
-    val content: String,
-    val memo: String,
-    val todayTodo: Boolean,
-    val flag: Boolean,
-    val endDate: Date? = null,
-    val endDateTime: Date? = null,
-    val repeatOption: String? = null,
-    val repeat: String? = null,
-    val repeatEnd: Date? = null,
-    val tags: List<String>,
-    val subTodos: List<String>,
-    val alarms: List<String>,
+    var content: String,
+    var memo: String,
+    var todayTodo: Boolean,
+    var flag: Boolean,
+    var endDate: String? = null,
+    var endDateTime: String? = null,
+    var repeatOption: String? = null,
+    var repeat: String? = null,
+    var repeatEnd: String? = null,
+    var tags: List<String>,
+    var subTodos: List<String>,
+    var alarms: List<String>,
     )

@@ -1,290 +1,293 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context=".view.checklist.ChecklistRepeatFragment">
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.example.haru.viewmodel.TodoAddViewModel" />
+    </data>
 
     <LinearLayout
-        android:id="@+id/layout_repeat_select_day"
-        android:layout_marginTop="8dp"
-        android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        tools:context=".view.checklist.ChecklistRepeatFragment">
 
-        <TextView
-            android:id="@+id/tv_monday"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/layout_repeat_select_day"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="월" />
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:padding="8dp">
 
-        <TextView
-            android:id="@+id/tv_tuesday"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv_monday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="월"
+                android:textColor="@color/black"
+                android:onClick="@{() -> viewModel.setRepeatDay(0)}"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_tuesday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="화"
+                android:textColor="@color/black"
+                android:onClick="@{() -> viewModel.setRepeatDay(1)}"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_wednesday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="수"
+                android:textColor="@color/black"
+                android:onClick="@{() -> viewModel.setRepeatDay(2)}"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_thursday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="목"
+                android:textColor="@color/black"
+                android:onClick="@{() -> viewModel.setRepeatDay(3)}"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_friday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="금"
+                android:textColor="@color/black"
+                android:onClick="@{() -> viewModel.setRepeatDay(4)}"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_saturday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="토"
+                android:textColor="@color/black"
+                android:onClick="@{() -> viewModel.setRepeatDay(5)}"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_sunday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="일"
+                android:textColor="@color/black"
+                android:onClick="@{() -> viewModel.setRepeatDay(6)}"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/black" />
+
+        <LinearLayout
+            android:id="@+id/layout_every_day"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="화" />
+            android:layout_marginTop="8dp"
+            android:onClick="@{() -> viewModel.setRepeatOption(0)}"
+            android:background="?attr/selectableItemBackground"
+            >
 
-        <TextView
-            android:id="@+id/tv_wednesday"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv_every_day"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingVertical="8dp"
+                android:paddingStart="24dp"
+                android:text="매일"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/iv_day_check"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/repeat_option_check"
+                android:visibility= "invisible"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_every_week"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="수" />
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:onClick="@{() -> viewModel.setRepeatOption(1)}"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_thursday"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv_every_week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingVertical="8dp"
+                android:paddingStart="24dp"
+                android:text="매주"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/iv_week_check"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/repeat_option_check"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_every_2week"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="목" />
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:onClick="@{() -> viewModel.setRepeatOption(2)}"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_friday"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv_every_2week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingVertical="8dp"
+                android:paddingStart="24dp"
+                android:text="2주마다"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/iv_2week_check"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/repeat_option_check"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_every_month"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="금" />
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:onClick="@{() -> viewModel.setRepeatOption(3)}"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_saturday"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv_every_month"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingVertical="8dp"
+                android:paddingStart="24dp"
+                android:text="매월"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/iv_month_check"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/repeat_option_check"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_every_year"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="토" />
+            android:layout_marginTop="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:onClick="@{() -> viewModel.setRepeatOption(4)}"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_sunday"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:text="일" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_every_year"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:paddingVertical="8dp"
+                android:paddingStart="24dp"
+                android:text="매년"
+                android:textSize="20sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/black" />
+            <ImageView
+                android:id="@+id/iv_year_check"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/repeat_option_check"
+                android:visibility="invisible"
+                />
+        </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_every_day"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:layout_marginTop="8dp">
-
-        <TextView
-            android:id="@+id/tv_every_day"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingVertical="8dp"
-            android:paddingStart="24dp"
-            android:text="매일"
-            android:textSize="20sp" />
-
-        <ImageView
-            android:id="@+id/iv_day_check"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:src="@drawable/repeat_option_check"
-            android:visibility="invisible" />
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_add_repeat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:text="추가하기"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/btn_close_repeat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:text="닫기"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_every_week"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_every_week"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingVertical="8dp"
-            android:paddingStart="24dp"
-            android:text="매주"
-            android:textSize="20sp" />
-
-        <ImageView
-            android:id="@+id/iv_week_check"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:visibility="invisible"
-            android:src="@drawable/repeat_option_check" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_every_2week"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_every_2week"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingVertical="8dp"
-            android:paddingStart="24dp"
-            android:text="2주마다"
-            android:textSize="20sp" />
-
-        <ImageView
-            android:id="@+id/iv_2week_check"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:visibility="invisible"
-            android:src="@drawable/repeat_option_check" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_every_month"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_every_month"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingVertical="8dp"
-            android:paddingStart="24dp"
-            android:text="매월"
-            android:textSize="20sp" />
-
-        <ImageView
-            android:id="@+id/iv_month_check"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:visibility="invisible"
-            android:src="@drawable/repeat_option_check" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_every_year"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_every_year"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:paddingVertical="8dp"
-            android:paddingStart="24dp"
-            android:text="매년"
-            android:textSize="20sp" />
-
-        <ImageView
-            android:id="@+id/iv_year_check"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:visibility="invisible"
-            android:src="@drawable/repeat_option_check" />
-    </LinearLayout>
-
-<!--    <LinearLayout-->
-<!--        android:id="@+id/layout_repeat_custom"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="?attr/selectableItemBackground"-->
-<!--        android:orientation="horizontal">-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_repeat_custom"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="2"-->
-<!--            android:paddingVertical="8dp"-->
-<!--            android:paddingStart="24dp"-->
-<!--            android:text="사용자화"-->
-<!--            android:textSize="20sp" />-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/iv_custom_check"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="1"-->
-<!--            android:padding="8dp"-->
-<!--            android:visibility="invisible"-->
-<!--            android:src="@drawable/repeat_option_check" />-->
-<!--    </LinearLayout>-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp">
-
-        <Button
-            android:id="@+id/btn_add_repeat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="5dp"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/black"
-            android:text="추가하기" />
-
-        <Button
-            android:id="@+id/btn_close_repeat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="5dp"
-            android:backgroundTint="@color/white"
-            android:textColor="@color/black"
-            android:text="닫기" />
-    </LinearLayout>
-
-
-</LinearLayout>
+</layout>

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
+import com.example.haru.data.model.TodoRequest
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter

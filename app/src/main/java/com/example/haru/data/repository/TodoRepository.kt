@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.haru.data.model.Todo
+import com.example.haru.data.model.TodoRequest
 import com.example.haru.data.model.TodoResponse
 import com.example.haru.data.model.User
 import com.example.haru.data.retrofit.RetrofitClient
@@ -26,6 +27,22 @@ class TodoRepository() {
             todoData = data.data
         } else{
             Log.d("TAG", "Fail to get todos")
+            todoData = emptyList()
+        }
+        todoData
+    }
+
+    suspend fun createTodo(todoRequest: TodoRequest): List<Todo> = withContext(Dispatchers.IO){
+        val response = todoService.createTodo("005224c0-eec1-4638-9143-58cbfc9688c5", todoRequest).execute()
+        var data: TodoResponse
+        var todoData : List<Todo>
+
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to create todo")
+            data = response.body()!!
+            todoData = data.data
+        } else {
+            Log.d("TAG", "Fail to create todo")
             todoData = emptyList()
         }
         todoData

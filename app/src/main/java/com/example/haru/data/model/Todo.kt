@@ -10,9 +10,9 @@ data class Todo(
     val flag: Boolean,
     val repeatOption: String?,
     val repeat: String?,
-    val endDate: Date,
-    val endDateTime: Date?,
-    val createdAt: Date,
+    val endDate: String?,
+    val endDateTime: String?,
+    val createdAt: String,
     val subTodos: List<SubTodo>,
     val tags: List<Tag>
 )
