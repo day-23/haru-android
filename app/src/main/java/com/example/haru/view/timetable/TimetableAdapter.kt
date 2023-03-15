@@ -12,6 +12,8 @@ import android.widget.TextView
 import androidx.core.view.DragStartHelper.OnDragStartListener
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide.init
+import com.example.haru.R
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -27,9 +29,12 @@ class TimetableAdapter(val context: Context,
         }
 
         override fun onBindViewHolder(holder: TimetableViewHolder, position: Int) {
-            Log.d("rv has been called", "did")
             holder.timetable_time.text = itemList[position].time
-
+            if(selectedItems.get(position, false)) {
+                holder.itemView.isSelected = true
+            } else {
+                holder.itemView.isSelected = false
+            }
         }
         override fun getItemCount(): Int {
             return itemList.count()
@@ -37,11 +42,16 @@ class TimetableAdapter(val context: Context,
 
         inner class TimetableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
             var timetable_time = itemView.findViewById<TextView>(com.example.haru.R.id.tv_timetable_time)
-
+            var mon = itemView.findViewById<View>(R.id.tv_timetable_mon)
+            var tue = itemView.findViewById<View>(R.id.tv_timetable_tue)
+            var wed = itemView.findViewById<View>(R.id.tv_timetable_wed)
+            var thu = itemView.findViewById<View>(R.id.tv_timetable_thu)
+            var fri = itemView.findViewById<View>(R.id.tv_timetable_fri)
+            var sat = itemView.findViewById<View>(R.id.tv_timetable_sat)
+            var sun = itemView.findViewById<View>(R.id.tv_timetable_sun)
             init {
                 itemView.setOnClickListener(this)
             }
-
             override fun onClick(v: View?) {
                 val position = adapterPosition
                 if (selectedItems.get(position, false)) {

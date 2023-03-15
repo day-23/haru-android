@@ -1,13 +1,14 @@
 package com.example.haru.view.timetable
 
+import android.view.View
 import android.widget.Toast
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
 class ItemTouchHelperCallback(val adapter: TimetableAdapter) : ItemTouchHelper.Callback() {
 
-    private var isDragging = false
+    //private var isDragging = false
+    private var selectedViews = ArrayList<View>()
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -38,9 +39,13 @@ class ItemTouchHelperCallback(val adapter: TimetableAdapter) : ItemTouchHelper.C
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
         if(actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            isDragging = true
+            //isDragging = true
             viewHolder?.itemView?.alpha = 0.7f
-            viewHolder?.itemView?.setBackgroundResource(android.R.color.darker_gray)
+            selectedViews.add(viewHolder?.itemView!!)
+            for (view in selectedViews) {
+                view.setBackgroundResource(android.R.color.darker_gray)
+            }
+            //viewHolder?.itemView?.setBackgroundResource(android.R.color.darker_gray)
             Toast.makeText(viewHolder?.itemView?.context, "드래그중...", Toast.LENGTH_SHORT).show()
         }
     }
@@ -48,7 +53,8 @@ class ItemTouchHelperCallback(val adapter: TimetableAdapter) : ItemTouchHelper.C
         super.clearView(recyclerView, viewHolder)
         viewHolder?.itemView?.setBackgroundResource(android.R.color.white)
         Toast.makeText(viewHolder?.itemView?.context, "드래그끝...", Toast.LENGTH_SHORT).show()
-        isDragging = false
+        //isDragging = false
         viewHolder.itemView.alpha = 1.0f
+        selectedViews.clear()
     }
 }
