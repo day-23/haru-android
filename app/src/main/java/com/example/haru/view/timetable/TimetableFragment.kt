@@ -1,11 +1,12 @@
 package com.example.haru.view.timetable
 
-import android.app.DatePickerDialog
+import android.app.ProgressDialog.show
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.Toast
@@ -14,8 +15,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import org.w3c.dom.Text
-import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -24,6 +23,8 @@ import kotlin.collections.ArrayList
 class TimetableFragment : Fragment() {
 
     val timetableData: ArrayList<timetable_data> = ArrayList()
+    val days = arrayListOf<Int>()
+    val calendar = Calendar.getInstance()
     lateinit var recyclerView1: RecyclerView
     lateinit var timetableMonthTextView: TextView
     lateinit var timetableYearTextView: TextView
@@ -51,6 +52,26 @@ class TimetableFragment : Fragment() {
 
         timetableMonthTextView = rootView.findViewById<TextView>(R.id.timetable_month)
         timetableYearTextView = rootView.findViewById<TextView>(R.id.timetable_year)
+        timetableMonthTextView.text = "${calendar.get(Calendar.MONTH) + 1}월"
+        timetableYearTextView.text = "${calendar.get(Calendar.YEAR)}년"
+
+        val mon_btn = rootView.findViewById<Button>(R.id.mon_btn)
+        val tue_btn = rootView.findViewById<Button>(R.id.tue_btn)
+        val wed_btn = rootView.findViewById<Button>(R.id.wed_btn)
+        val thu_btn = rootView.findViewById<Button>(R.id.thu_btn)
+        val fri_btn = rootView.findViewById<Button>(R.id.fri_btn)
+        val sat_btn = rootView.findViewById<Button>(R.id.sat_btn)
+        val sun_btn = rootView.findViewById<Button>(R.id.sun_btn)
+
+        daylist(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH))
+
+        mon_btn.text = "월\n${days.get(0)}"
+        tue_btn.text = "화\n${days.get(1)}"
+        wed_btn.text = "수\n${days.get(2)}"
+        thu_btn.text = "목\n${days.get(3)}"
+        fri_btn.text = "금\n${days.get(4)}"
+        sat_btn.text = "토\n${days.get(5)}"
+        sun_btn.text = "일\n${days.get(6)}"
 
         timetableMonthTextView.setOnClickListener {
             showDatePickerDialog()
@@ -83,8 +104,45 @@ class TimetableFragment : Fragment() {
         return rootView
         //return inflater.inflate(R.layout.fragment_timetable, container, false)
     }
+
+    fun daylist(year: Int, month: Int, day: Int){
+        days.clear()
+
+        var day = day
+        var lastofmonth = 0
+
+        calendar.add(Calendar.MONTH, -1);
+        if(month == 1){
+            lastofmonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        }
+        else{
+            lastofmonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        }
+        calendar.add(Calendar.MONTH, +1)
+        val day_of_week = SimpleDateFormat("E").format(Date(year - 1900, month - 1, day))
+
+        when(day_of_week){
+            "Mon"-> day
+            "Tue"-> day -= 1
+            "Wed"-> day -= 2
+            "Thu"-> day -= 3
+            "Fri"-> day -= 4
+            "Sat"-> day -= 5
+            "Sun"-> day -= 6
+        }
+
+        for (i: Int in 1 .. 7){
+            if(day < 1){
+                days.add(lastofmonth - day)
+            }
+            else{
+                days.add(day)
+            }
+            day += 1
+        }
+
+    }
     private fun showDatePickerDialog() {
-       val calendar = Calendar.getInstance()
         val datePicker = DatePicker(requireContext())
         datePicker.init(
             calendar.get(Calendar.YEAR),
@@ -92,19 +150,18 @@ class TimetableFragment : Fragment() {
             calendar.get(Calendar.DAY_OF_MONTH),
             null
         )
-
         val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             .setView(datePicker)
             .setPositiveButton("apply") {dialog, _ ->
                 val year = datePicker.year
                 val month = datePicker.month + 1
-                val day = datePicker.dayOfMonth
-                val day_of_week = calendar.get(Calendar.DAY_OF_WEEK)
+                var day = datePicker.dayOfMonth
+                val day_of_week = SimpleDateFormat().format(Date(year - 1900, month - 1, day))
                 val selectedYear = SimpleDateFormat("yyyy년").format(Date(year - 1900, month - 1, day))
                 val selectedMonth = SimpleDateFormat("M월").format(Date(year - 1900, month - 1, day))
                 timetableMonthTextView.text = selectedMonth
                 timetableYearTextView.text = selectedYear
-                Toast.makeText(requireContext(), "${day_of_week}", Toast.LENGTH_SHORT).show()
+                daylist(year, month, day)
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") {dialog, _ ->

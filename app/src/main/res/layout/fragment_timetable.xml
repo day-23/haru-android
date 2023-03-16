@@ -40,42 +40,49 @@
                 android:layout_weight="1" />
 
             <Button
+                android:id="@+id/mon_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="월\n1" />
 
             <Button
+                android:id="@+id/tue_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="화\n2" />
 
             <Button
+                android:id="@+id/wed_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="수\n3" />
 
             <Button
+                android:id="@+id/thu_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="목\n4" />
 
             <Button
+                android:id="@+id/fri_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="금\n5" />
 
             <Button
+                android:id="@+id/sat_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="토\n6" />
 
             <Button
+                android:id="@+id/sun_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
