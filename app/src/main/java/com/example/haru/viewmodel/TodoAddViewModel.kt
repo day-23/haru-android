@@ -14,12 +14,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.data.model.TodoRequest
+import com.example.haru.data.repository.TodoRepository
 import com.example.haru.databinding.FragmentChecklistRepeatBinding
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TodoAddViewModel : ViewModel() {
+    private val todoRepository = TodoRepository()
+
     private val repeatOptionList = listOf<String>("매일", "매주", "2주마다", "매월", "매년")
 
     private val _repeatOption = MutableLiveData<Int?>()
@@ -40,16 +43,36 @@ class TodoAddViewModel : ViewModel() {
     private val _repeatDayStr = MutableLiveData<String?>()
     val repeatDayStr: LiveData<String?> = _repeatDayStr
 
-    private val _endDateTime = MutableLiveData<Date?>()
-    val endDateTime: LiveData<Date?> = _endDateTime
+    private val _endTime = MutableLiveData<Date?>()
+    val endTime: LiveData<Date?> = _endTime
 
-    private val _alarmDateTime = MutableLiveData<Date?>()
-    val alarmDateTime : LiveData<Date?> = _alarmDateTime
+    private val _alarmTime = MutableLiveData<Date?>()
+    val alarmTime: LiveData<Date?> = _alarmTime
+
+    private val _alarmDate = MutableLiveData<Date?>()
+    val alarmDate: LiveData<Date?> = _alarmDate
+
+    private val _endDate = MutableLiveData<Date?>()
+    val endDate: LiveData<Date?> = _endDate
+
+    private val _repeatEndDate = MutableLiveData<Date?>()
+    val repeatEndDate: LiveData<Date?> = _repeatEndDate
+
+    var tags: List<String> = mutableListOf()
+    var subTodos: List<String> = mutableListOf()
+
+    var content: String = ""
+    var memo: String = ""
+    var tagsStr: String = ""
+    var endDateStr: String = ""
+    var alarmDateStr: String = ""
+    var endTimeStr: String = ""
+    var alarmTimeStr: List<String> = mutableListOf()
+    var repeatEndDateStr: String = ""
 
 
     fun setRepeatOption(option: Int) {
         _repeatOption.value = option
-        Log.d("20191627", repeatOption.value.toString())
         if (_repeatOption.value != 1)
             _repeatDay.value = List(7) { false }
     }
@@ -64,7 +87,6 @@ class TodoAddViewModel : ViewModel() {
                     )
             else _repeatDay.value =
                 _repeatDay.value!!.subList(0, day) + false + _repeatDay.value!!.subList(day + 1, 7)
-        Log.d("20191627", repeatDay.value.toString())
     }
 
     fun setRepeatOptionWithDay() {
@@ -95,24 +117,84 @@ class TodoAddViewModel : ViewModel() {
     }
 
     fun setTime(id: Int, date: Date) {
-        if (id == 0) _endDateTime.value = date else _alarmDateTime.value = date
+        if (id == 0) _endTime.value = date else _alarmTime.value = date
     }
 
-    fun formatDate(date: Date) : String {
+    fun setDate(id: Int, date: Date) {
+        if (id == 0) _endDate.value = date
+        else if (id == 1) _alarmDate.value = date
+        else _repeatEndDate.value = date
+    }
+
+    fun formatDate(date: Date): String {
         val submitDateFormat =
             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
         return submitDateFormat.format(date)
     }
-//
-//    fun getRepeatOption(): Int? {
-//        return repeatOption.value
-//    }
-//
-//    fun clickRepeatDay() {
-//
-//    }
-//
-//    fun clickRepeatOption() {
-//
-//    }
+
+
+    fun submitTodo() {
+        createTodo()
+    }
+
+    fun clearSubmitTodo() {
+        _repeatOption.value = null
+        _repeatDay.value = List(7) { false }
+        _flagTodo.value = false
+        _todayTodo.value = false
+        _repeatOptionStr.value = null
+        _repeatDayStr.value = null
+        _alarmTime.value = null
+        _endTime.value = null
+        _endDate.value = null
+        _alarmDate.value = null
+        _repeatEndDate.value = null
+        tags = mutableListOf()
+        subTodos = mutableListOf()
+
+        content = ""
+        memo = ""
+        tagsStr = ""
+        endDateStr = ""
+        alarmDateStr = ""
+        endTimeStr = ""
+        alarmTimeStr = mutableListOf()
+        repeatEndDateStr = ""
+
+    }
+
+    fun readyToSubmit() {
+        if (tagsStr == "" || tagsStr.replace(" ", "") == "")
+            tags = mutableListOf()
+        else tags = tagsStr.split(" ")
+        if (endDate.value != null) endDateStr = formatDate(endDate.value!!)
+        if (endTime.value != null) endTimeStr = formatDate(endTime.value!!)
+        if (alarmTime.value != null) alarmTimeStr = mutableListOf(formatDate(alarmTime.value!!))
+        if (repeatEndDate.value != null) repeatEndDateStr = formatDate(repeatEndDate.value!!)
+    }
+
+    private fun createTodo() {
+        viewModelScope.launch {
+            todoRepository.createTodo(
+                TodoRequest(
+                    content,
+                    memo,
+                    todayTodo.value!!,
+                    flagTodo.value!!,
+                    endDateStr,
+                    endTimeStr,
+                    repeatOptionStr.value,
+                    repeatDayStr.value,
+                    repeatDayStr.value,
+                    repeatEndDateStr,
+                    tags,
+                    subTodos,
+                    alarmTimeStr
+                )
+            )
+
+        }
+    }
+
+
 }

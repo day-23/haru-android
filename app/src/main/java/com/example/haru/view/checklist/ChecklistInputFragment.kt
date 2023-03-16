@@ -1,19 +1,17 @@
 package com.example.haru.view.checklist
 
-import android.app.Application
+
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
-import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TimePicker
 import com.example.haru.R
-import com.example.haru.data.model.Repeat
-import com.example.haru.data.model.TodoRequest
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -27,18 +25,11 @@ class ChecklistInputFragment :
     private lateinit var binding: FragmentChecklistInputBinding
     private lateinit var todoAddViewModel: TodoAddViewModel
 
-    private var repeatData: Repeat = Repeat("", "")
-    private var content: String? = ""
-    private var memo: String? = ""
-    private var todayTodo: Boolean = false
-    private var flag: Boolean = false
-    private var endDate: String? = null
-    private var endDateTime: String? = null
-    private var repeatEnd: String? = null
-    private var tags: List<String>? = mutableListOf()
-    private var subTodos: List<String>? = mutableListOf()
-    private var alarms: List<String>? = mutableListOf()
+    private var onDismissListener: (() -> Unit)? = null
 
+    fun setOnDismissListener(listener: () -> Unit) {
+        onDismissListener = listener
+    }
 
     companion object {
         const val TAG: String = "로그"
@@ -105,22 +96,47 @@ class ChecklistInputFragment :
             binding.checkTodayTodo.isChecked = it
         })
 
-        todoAddViewModel.repeatOptionStr.observe(viewLifecycleOwner,androidx.lifecycle.Observer {
+        todoAddViewModel.repeatOptionStr.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null)
                 binding.layoutRepeatEndDate.visibility = View.VISIBLE
             else binding.layoutRepeatEndDate.visibility = View.GONE
 
-            binding.btnRepeatOption.text = todoAddViewModel.repeatOptionStr.value?: "선택"
+            binding.btnRepeatOption.text = todoAddViewModel.repeatOptionStr.value ?: "선택"
         })
 
-        todoAddViewModel.endDateTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
-            binding.btnTimePick.text = timeFormat.format(it)
+        todoAddViewModel.endTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it != null) {
+                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                binding.btnTimePick.text = timeFormat.format(it)
+            } else binding.btnTimePick.text = "선택"
         })
 
-        todoAddViewModel.alarmDateTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
-            binding.btnAlarmTime.text = timeFormat.format(it)
+        todoAddViewModel.alarmTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it != null) {
+                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                binding.btnAlarmTime.text = timeFormat.format(it)
+            } else binding.btnAlarmTime.text = "선택"
+        })
+
+        todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it != null) {
+                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                binding.btnDatePick.text = timeFormat.format(it)
+            } else binding.btnDatePick.text = "선택"
+        })
+
+        todoAddViewModel.alarmDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it != null) {
+                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                binding.btnAlarmDate.text = timeFormat.format(it)
+            } else binding.btnAlarmDate.text = "선택"
+        })
+
+        todoAddViewModel.repeatEndDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it != null) {
+                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                binding.btnRepeatEndDate.text = timeFormat.format(it)
+            } else binding.btnRepeatEndDate.text = "선택"
         })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
@@ -144,6 +160,11 @@ class ChecklistInputFragment :
 
     }
 
+    override fun dismiss() {
+        onDismissListener?.invoke()
+        super.dismiss()
+    }
+
     inner class btnListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
@@ -154,25 +175,27 @@ class ChecklistInputFragment :
 
                     val timePickerDialog = TimePickerDialog(
                         requireContext(),
-                        TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                        MyTimeSetListener(object : TimePickerDialog.OnTimeSetListener {
+                            override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
+                                val time = calendar.apply {
+                                    set(Calendar.HOUR_OF_DAY, hourOfDay)
+                                    set(Calendar.MINUTE, minute)
+                                }.time
 
-                            val time = calendar.apply {
-                                set(Calendar.HOUR_OF_DAY, hourOfDay)
-                                set(Calendar.MINUTE, minute)
-                            }.time
+                                if (v.id == R.id.btn_time_pick)
+                                    todoAddViewModel.setTime(0, time)
+                                else todoAddViewModel.setTime(1, time)
 
-                            if (v.id == R.id.btn_time_pick) todoAddViewModel.setTime(0, time) else todoAddViewModel.setTime(1, time)
-                        },
+                                // timepicker 리스너 만들기 버튼을 없애고 시간을 선택하면 바로 적용되게끔
+                            }
+                        }),
                         hour,
                         minute,
                         false
                     )
 
                     timePickerDialog.show()
-                    timePickerDialog.getButton(TimePickerDialog.BUTTON_NEGATIVE)
-                        .setTextColor(Color.BLACK)
-                    timePickerDialog.getButton(TimePickerDialog.BUTTON_POSITIVE)
-                        .setTextColor(Color.BLACK)
+
                 }
 
                 R.id.btn_alarm_date, R.id.btn_date_pick, R.id.btn_repeat_end_date -> {
@@ -183,40 +206,17 @@ class ChecklistInputFragment :
 
                     val datePickerDialog = DatePickerDialog(
                         requireContext(),
-                        R.style.MySpinnerDatePickerStyle,
+                        R.style.MyDatePickerStyle,
                         { _, year, monthOfYear, dayOfMonth ->
-                            val month = monthOfYear + 1
-
                             val calendar = Calendar.getInstance()
 
                             calendar.set(year, monthOfYear, dayOfMonth)
                             val date = calendar.time
 
-                            val dateFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-                            val dayName: String = dateFormat.format(date)
-
                             when (v.id) {
-                                R.id.btn_alarm_date -> {
-                                    val submitDateFormat =
-                                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-                                    binding.btnAlarmDate.text =
-                                        "$year.$month.$dayOfMonth ($dayName)"
-
-                                }
-                                R.id.btn_date_pick -> {
-                                    binding.btnDatePick.text =
-                                        "$year.$month.$dayOfMonth ($dayName)"
-                                    val submitDateFormat =
-                                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-                                    endDate = submitDateFormat.format(date)
-                                }
-                                R.id.btn_repeat_end_date -> {
-                                    val submitDateFormat =
-                                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-                                    binding.btnRepeatEndDate.text =
-                                        "$year.$month.$dayOfMonth ($dayName)"
-                                    repeatEnd = submitDateFormat.format(date)
-                                }
+                                R.id.btn_date_pick -> todoAddViewModel.setDate(0, date)
+                                R.id.btn_alarm_date -> todoAddViewModel.setDate(1, date)
+                                R.id.btn_repeat_end_date -> todoAddViewModel.setDate(2, date)
                             }
                         },
                         year,
@@ -225,10 +225,7 @@ class ChecklistInputFragment :
                     )
                     datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
                     datePickerDialog.show()
-                    datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE)
-                        .setTextColor(resources.getColor(R.color.black))
-                    datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE)
-                        .setTextColor(resources.getColor(R.color.black))
+
                 }
 
                 R.id.check_flag_todo -> todoAddViewModel.setFlagTodo()
@@ -239,42 +236,24 @@ class ChecklistInputFragment :
                     repeatOptionInput.show(parentFragmentManager, repeatOptionInput.tag)
                 }
 
-                R.id.btn_close -> dismiss()
+                R.id.btn_close -> {
+                    todoAddViewModel.clearSubmitTodo()
+                    dismiss()
+                }
 
                 R.id.btn_submit_todo -> {
-
-                    content = binding.todoEt.text.toString()
-                    memo = binding.etMemo.text.toString()
-                    Log.d("20191627", content.toString())
-
-
-                    if (content == null || content!!.replace(" ", "").equals(""))
+                    if (todoAddViewModel.content == "" || todoAddViewModel.content.replace(
+                            " ",
+                            ""
+                        ) == ""
+                    )
 //                        CustomToast.makeText(context, "할 일이 비어있습니다.", Toast.LENGTH_SHORT)
                     else {
-                        if (memo == null || memo!!.replace(" ", "").equals(""))
-                            memo = ""
-                        else
-                            memo = binding.etMemo.text.toString()
-                        todayTodo = binding.checkTodayTodo.isChecked
-                        flag = binding.checkFlagTodo.isChecked
-                        tags = binding.tagEt.text.toString().split(" ")
-                        var todoRequest = TodoRequest(
-                            content!!,
-                            memo!!,
-                            todayTodo,
-                            flag,
-                            endDate,
-                            endDateTime,
-                            repeatData.repeatOption,
-                            repeatData.repeat,
-                            repeatEnd,
-                            tags!!,
-                            subTodos!!,
-                            alarms!!
-                        )
-                        Log.d("20191627", todoRequest.toString())
+                        todoAddViewModel.readyToSubmit()
+                        todoAddViewModel.submitTodo()
+                        todoAddViewModel.clearSubmitTodo()
 
-
+                        dismiss()
                     }
 
                 }

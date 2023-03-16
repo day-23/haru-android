@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +55,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         binding.btnAddTodo.setOnClickListener{
             val todoInput = ChecklistInputFragment()
+
+//            todoInput.setOnDismissListener {
+//                recyclerViewModel.updateTag()
+//                recyclerViewModel.updateTodo()
+//            }
+
             todoInput.show(parentFragmentManager, todoInput.tag)
         }
     }

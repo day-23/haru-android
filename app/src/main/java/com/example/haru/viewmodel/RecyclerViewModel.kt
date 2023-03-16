@@ -21,27 +21,32 @@ class RecyclerViewModel() :
 
     private val _tagDataList = MutableLiveData<List<Tag>>()
     private val _todoDataList = MutableLiveData<List<Todo>>()
+
     val tagDataList: LiveData<List<Tag>> get() = _tagDataList
     val todoDataList: LiveData<List<Todo>> get() = _todoDataList
-
 
     init {
         getTodo()
         getTag()
     }
 
+//    fun updateTodo(){
+//        getTodo()
+//    }
+//
+//    fun updateTag(){
+//        getTag()
+//    }
+
     private fun getTag() {
         viewModelScope.launch {
             _tagDataList.value = tagRepository.getTag()
-            Log.d("RETROFIT", _tagDataList.value.toString())
         }
-
     }
 
     private fun getTodo() {
         viewModelScope.launch {
             _todoDataList.value = todoRepository.getTodo()
-            Log.d("RETROFIT", _todoDataList.value.toString())
         }
     }
 
