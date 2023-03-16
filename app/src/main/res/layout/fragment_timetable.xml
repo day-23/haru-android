@@ -15,10 +15,18 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/timetable_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3월"
                 android:textSize="30dp" />
+
+            <TextView
+                android:id="@+id/timetable_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2023년" />
+
 
         </LinearLayout>
 
