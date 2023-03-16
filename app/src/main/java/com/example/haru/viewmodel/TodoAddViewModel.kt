@@ -20,8 +20,8 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TodoAddViewModel : ViewModel() {
-    private val todoRepository = TodoRepository()
+class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
+    private val checklistViewModel : CheckListViewModel
 
     private val repeatOptionList = listOf<String>("매일", "매주", "2주마다", "매월", "매년")
 
@@ -69,6 +69,10 @@ class TodoAddViewModel : ViewModel() {
     var endTimeStr: String = ""
     var alarmTimeStr: List<String> = mutableListOf()
     var repeatEndDateStr: String = ""
+
+    init {
+        this.checklistViewModel = checkListViewModel
+    }
 
 
     fun setRepeatOption(option: Int) {
@@ -133,10 +137,6 @@ class TodoAddViewModel : ViewModel() {
     }
 
 
-    fun submitTodo() {
-        createTodo()
-    }
-
     fun clearSubmitTodo() {
         _repeatOption.value = null
         _repeatDay.value = List(7) { false }
@@ -173,27 +173,30 @@ class TodoAddViewModel : ViewModel() {
         if (repeatEndDate.value != null) repeatEndDateStr = formatDate(repeatEndDate.value!!)
     }
 
-    private fun createTodo() {
-        viewModelScope.launch {
-            todoRepository.createTodo(
-                TodoRequest(
-                    content,
-                    memo,
-                    todayTodo.value!!,
-                    flagTodo.value!!,
-                    endDateStr,
-                    endTimeStr,
-                    repeatOptionStr.value,
-                    repeatDayStr.value,
-                    repeatDayStr.value,
-                    repeatEndDateStr,
-                    tags,
-                    subTodos,
-                    alarmTimeStr
-                )
-            )
+    private fun createTodoData(): TodoRequest {
+        return TodoRequest(
+            content,
+            memo,
+            todayTodo.value!!,
+            flagTodo.value!!,
+            endDateStr,
+            endTimeStr,
+            repeatOptionStr.value,
+            repeatDayStr.value,
+            repeatDayStr.value,
+            repeatEndDateStr,
+            tags,
+            subTodos,
+            alarmTimeStr
+        )
+    }
 
+    fun addTodo(callback: () -> Unit){
+        checklistViewModel.addTodo(createTodoData()){
+            Log.d("20191627", "여기는 왜 안돼")
+            callback()
         }
+
     }
 
 

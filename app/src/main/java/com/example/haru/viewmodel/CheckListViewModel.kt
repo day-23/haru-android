@@ -1,20 +1,19 @@
 package com.example.haru.viewmodel
 
 import android.util.Log
+import androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior.getTag
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoRequest
 import com.example.haru.data.repository.TagRepository
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
-class RecyclerViewModel() :
+class CheckListViewModel() :
     ViewModel() {
     private val todoRepository = TodoRepository()
     private val tagRepository = TagRepository()
@@ -26,7 +25,7 @@ class RecyclerViewModel() :
     val todoDataList: LiveData<List<Todo>> get() = _todoDataList
 
     init {
-        getTodo()
+        getTodo{}
         getTag()
     }
 
@@ -38,15 +37,30 @@ class RecyclerViewModel() :
 //        getTag()
 //    }
 
-    private fun getTag() {
+    fun getTag() {
         viewModelScope.launch {
             _tagDataList.value = tagRepository.getTag()
         }
     }
 
-    private fun getTodo() {
+    fun getTodo(callback: () -> Unit) {
         viewModelScope.launch {
-            _todoDataList.value = todoRepository.getTodo()
+            todoRepository.getTodo{
+                _todoDataList.postValue(it)
+                callback()
+            }
+        }
+    }
+
+    fun addTodo(todoRequest: TodoRequest, callback: () -> Unit) {
+        viewModelScope.launch {
+            todoRepository.createTodo(todoRequest){
+                Log.d("20191627", it.toString())
+                getTag()
+                getTodo{
+                    callback()
+                }
+            }
         }
     }
 

@@ -7,15 +7,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Repeat
 import com.example.haru.databinding.FragmentChecklistRepeatBinding
-import com.example.haru.viewmodel.RecyclerViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.example.harudemo.utils.CustomToast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

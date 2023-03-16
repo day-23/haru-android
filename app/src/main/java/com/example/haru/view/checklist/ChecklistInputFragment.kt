@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TimePicker
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
+import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -20,7 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ChecklistInputFragment :
+class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
     private lateinit var todoAddViewModel: TodoAddViewModel
@@ -31,19 +32,21 @@ class ChecklistInputFragment :
         onDismissListener = listener
     }
 
+    init {
+        todoAddViewModel = TodoAddViewModel(checkListViewModel)
+    }
+
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): ChecklistInputFragment {
-            return ChecklistInputFragment()
+        fun newInstance(checkListViewModel: CheckListViewModel): ChecklistInputFragment {
+            return ChecklistInputFragment(checkListViewModel)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "ChecklistInputFragment - onCreate() called")
-
-        todoAddViewModel = TodoAddViewModel()
     }
 
     override fun onCreateView(
@@ -250,10 +253,12 @@ class ChecklistInputFragment :
 //                        CustomToast.makeText(context, "할 일이 비어있습니다.", Toast.LENGTH_SHORT)
                     else {
                         todoAddViewModel.readyToSubmit()
-                        todoAddViewModel.submitTodo()
-                        todoAddViewModel.clearSubmitTodo()
+                        todoAddViewModel.addTodo{
+                            Log.d("20191627", "dismiss")
+                            dismiss()
+                        }
 
-                        dismiss()
+                        todoAddViewModel.clearSubmitTodo()
                     }
 
                 }

@@ -14,6 +14,7 @@ class TagRepository() {
         val response = tagService.getTag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
         var data: TagResponse
         var tagData: List<Tag>
+        Log.d("20191627", "여기는 getTag")
 
         if (response.isSuccessful){
             Log.d("TAG", "Success to get tags")

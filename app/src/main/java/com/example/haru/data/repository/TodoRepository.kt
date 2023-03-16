@@ -6,16 +6,17 @@ import com.example.haru.data.model.TodoRequest
 import com.example.haru.data.model.GetTodoResponse
 import com.example.haru.data.model.PostTodoResponse
 import com.example.haru.data.retrofit.RetrofitClient
-import com.example.haru.viewmodel.RecyclerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.security.auth.callback.Callback
 
 class TodoRepository() {
     private val todoService = RetrofitClient.todoService
-    suspend fun getTodo(): List<Todo> = withContext(Dispatchers.IO){
+    suspend fun getTodo(callback:(todoData : List<Todo>) -> Unit) = withContext(Dispatchers.IO){
         val response = todoService.getTodo("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
         val data: GetTodoResponse
         val todoData : List<Todo>
+        Log.d("20191627", "여기는 getTodo")
 
         if (response.isSuccessful){
             Log.d("TAG", "Success to get todos")
@@ -25,10 +26,10 @@ class TodoRepository() {
             Log.d("TAG", "Fail to get todos")
             todoData = emptyList()
         }
-        todoData
+        callback(todoData)
     }
 //    = withContext(Dispatchers.IO)
-    suspend fun createTodo(todoRequest: TodoRequest): Any = withContext(Dispatchers.IO){
+    suspend fun createTodo(todoRequest: TodoRequest, callback: (todoData: Any) -> Unit) = withContext(Dispatchers.IO){
         val response = todoService.createTodo("005224c0-eec1-4638-9143-58cbfc9688c5", todoRequest).execute()
         val data: PostTodoResponse
         val todoData : Any
@@ -37,12 +38,10 @@ class TodoRepository() {
             Log.d("TAG", "Success to create todo")
             data = response.body()!!
             todoData = data.data
-            
-
+            callback(todoData)
         } else {
             Log.d("TAG", "Fail to create todo")
             todoData = "망함"
         }
-        todoData
     }
 }

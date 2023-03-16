@@ -5,22 +5,20 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
-import com.example.haru.data.model.TodoRequest
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
-import com.example.haru.viewmodel.RecyclerViewModel
+import com.example.haru.viewmodel.CheckListViewModel
 
 class ChecklistFragment : Fragment(), LifecycleObserver {
     private lateinit var binding: FragmentChecklistBinding
-    private lateinit var recyclerViewModel: RecyclerViewModel
+    private lateinit var checkListViewModel: CheckListViewModel
 
     companion object {
         const val TAG: String = "로그"
@@ -34,7 +32,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "ChecklistFragment - onCreate() called")
 
-        recyclerViewModel = RecyclerViewModel()
+        checkListViewModel = CheckListViewModel()
     }
 
     override fun onCreateView(
@@ -54,7 +52,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         initTodoList()
 
         binding.btnAddTodo.setOnClickListener{
-            val todoInput = ChecklistInputFragment()
+            val todoInput = ChecklistInputFragment(checkListViewModel)
 
 //            todoInput.setOnDismissListener {
 //                recyclerViewModel.updateTag()
@@ -73,7 +71,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         tagListView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        recyclerViewModel.tagDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        checkListViewModel.tagDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
         })
@@ -87,7 +85,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoListView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        recyclerViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val dataList = it.filterIsInstance<Todo>()
             todoAdapter.setDataList(dataList)
         })
