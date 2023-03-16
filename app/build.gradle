@@ -67,4 +67,7 @@ dependencies {
 
     /* 최신 preference 사용*/
     implementation 'androidx.preference:preference:1.2.0'
+
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 }
