@@ -10,14 +10,21 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.databinding.FragmentCalendarBinding
+import com.example.haru.viewmodel.CalendarViewModel
 import java.util.*
 
 class CalendarFragment : Fragment() {
     private var calendar = Calendar.getInstance()
     private var month_cal = 0
+
+    private lateinit var binding: FragmentCalendarBinding
+    lateinit var viewModel: CalendarViewModel
+    val adapter = AdapterDay()
 
     companion object{
         const val TAG : String = "로그"
@@ -45,6 +52,21 @@ class CalendarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding = FragmentCalendarBinding.inflate(layoutInflater)
+        viewModel = ViewModelProvider(this).get(
+            CalendarViewModel::class.java)
+
+        binding.calendarRecyclerview.adapter = adapter
+
+        viewModel.dataList.observe(viewLifecycleOwner, {
+            Log.d(TAG, "onCreate: $it")
+            adapter.updateData(it)
+        })
+        //viewModel.errorMessage.observe(this, { })
+        viewModel.requestDate(2023,3)
+
+        /*super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "하루"
 
         val left_month_btn = view.findViewById<Button>(R.id.left_month_btn)
@@ -126,6 +148,6 @@ class CalendarFragment : Fragment() {
 
             calendar.time = Date()
             calendar.set(Calendar.DAY_OF_MONTH, 1)
-        }
+        }*/
     }
 }
