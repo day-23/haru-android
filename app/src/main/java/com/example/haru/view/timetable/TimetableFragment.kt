@@ -21,6 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
+import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -30,7 +31,7 @@ class TimetableFragment : Fragment() {
 
     val timetableData: ArrayList<timetable_data> = ArrayList()
     val days = arrayListOf<Int>()
-    val calendar = Calendar.getInstance()
+    var calendar = Calendar.getInstance()
     lateinit var recyclerView1: RecyclerView
     lateinit var timetableMonthTextView: TextView
     lateinit var timetableYearTextView: TextView
@@ -124,14 +125,14 @@ class TimetableFragment : Fragment() {
         var day = day
         var lastofmonth = 0
 
-        calendar.add(Calendar.MONTH, -1);
-        if(month == 1){
-            lastofmonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        }
-        else{
-            lastofmonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        }
-        calendar.add(Calendar.MONTH, +1)
+        calendar.set(year, month-1, day)
+
+        lastofmonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+
+        Toast.makeText(context,"말일:${lastofmonth}  ${year}년 ${month}월 ${day}", Toast.LENGTH_SHORT).show()
+
+        calendar = Calendar.getInstance()
+
         val day_of_week = SimpleDateFormat("E").format(Date(year - 1900, month - 1, day))
 
         when(day_of_week){
@@ -146,7 +147,10 @@ class TimetableFragment : Fragment() {
 
         for (i: Int in 1 .. 7){
             if(day < 1){
-                days.add(lastofmonth - day)
+                days.add(lastofmonth - abs(day))
+            }
+            else if(day > lastofmonth){
+                days.add(day - lastofmonth)
             }
             else{
                 days.add(day)
