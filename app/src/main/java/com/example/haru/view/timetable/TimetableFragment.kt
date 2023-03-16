@@ -10,11 +10,17 @@ import android.widget.Button
 import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import okhttp3.Dispatcher
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,6 +34,13 @@ class TimetableFragment : Fragment() {
     lateinit var recyclerView1: RecyclerView
     lateinit var timetableMonthTextView: TextView
     lateinit var timetableYearTextView: TextView
+    lateinit var mon_btn : Button
+    lateinit var tue_btn : Button
+    lateinit var wed_btn : Button
+    lateinit var thu_btn : Button
+    lateinit var fri_btn : Button
+    lateinit var sat_btn : Button
+    lateinit var sun_btn : Button
 
     companion object {
         const val TAG: String = "로그"
@@ -55,13 +68,13 @@ class TimetableFragment : Fragment() {
         timetableMonthTextView.text = "${calendar.get(Calendar.MONTH) + 1}월"
         timetableYearTextView.text = "${calendar.get(Calendar.YEAR)}년"
 
-        val mon_btn = rootView.findViewById<Button>(R.id.mon_btn)
-        val tue_btn = rootView.findViewById<Button>(R.id.tue_btn)
-        val wed_btn = rootView.findViewById<Button>(R.id.wed_btn)
-        val thu_btn = rootView.findViewById<Button>(R.id.thu_btn)
-        val fri_btn = rootView.findViewById<Button>(R.id.fri_btn)
-        val sat_btn = rootView.findViewById<Button>(R.id.sat_btn)
-        val sun_btn = rootView.findViewById<Button>(R.id.sun_btn)
+        mon_btn = rootView.findViewById<Button>(R.id.mon_btn)
+        tue_btn = rootView.findViewById<Button>(R.id.tue_btn)
+        wed_btn = rootView.findViewById<Button>(R.id.wed_btn)
+        thu_btn = rootView.findViewById<Button>(R.id.thu_btn)
+        fri_btn = rootView.findViewById<Button>(R.id.fri_btn)
+        sat_btn = rootView.findViewById<Button>(R.id.sat_btn)
+        sun_btn = rootView.findViewById<Button>(R.id.sun_btn)
 
         daylist(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH))
 
@@ -162,12 +175,20 @@ class TimetableFragment : Fragment() {
                 timetableMonthTextView.text = selectedMonth
                 timetableYearTextView.text = selectedYear
                 daylist(year, month, day)
+                mon_btn.text = "월\n${days.get(0)}"
+                tue_btn.text = "화\n${days.get(1)}"
+                wed_btn.text = "수\n${days.get(2)}"
+                thu_btn.text = "목\n${days.get(3)}"
+                fri_btn.text = "금\n${days.get(4)}"
+                sat_btn.text = "토\n${days.get(5)}"
+                sun_btn.text = "일\n${days.get(6)}"
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") {dialog, _ ->
                 dialog.dismiss()
             }
             .create()
+
         dialog.show()
     }
 
