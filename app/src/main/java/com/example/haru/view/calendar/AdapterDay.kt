@@ -6,29 +6,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.CalendarItem
+import com.example.haru.databinding.ListItemDayBinding
+import com.example.haru.viewmodel.CalendarViewModel
 import java.util.*
 
-class AdapterDay(var tempMonth: Int,
-                 var dayList: MutableList<Date>) : RecyclerView.Adapter<AdapterDay.DayView>() {
+class AdapterDay : RecyclerView.Adapter<MainViewHolder>() {
     val ROW = 6
+    var dateList = emptyList<CalendarItem>()
 
-    inner class DayView(val layout: View): RecyclerView.ViewHolder(layout)
-
-    fun updateData(newtemp: Int, newdayList:MutableList<Date>) {
-        tempMonth = newtemp
-        dayList = newdayList
+    fun updateData(newdayList:List<CalendarItem>) {
+        dateList = newdayList
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayView {
-        var view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_day, parent, false)
-        return DayView(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder =
+        MainViewHolder(ListItemDayBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-    override fun onBindViewHolder(holder: DayView, position: Int) {
-        //각 날짜의 요일과 데이터 텍스트뷰에 표시
+    override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
+        holder.apply {
+            bind(dateList[position])
+        }
+
+
+        /*//각 날짜의 요일과 데이터 텍스트뷰에 표시
         val item_day_text = holder.layout.findViewById<TextView>(R.id.item_day_text)
         item_day_text.text = dayList!![position].date.toString()
 
@@ -47,9 +51,25 @@ class AdapterDay(var tempMonth: Int,
         else{
             item_day_text.alpha = 1f
         }
+
+        holder?.onBind()*/
     }
 
     override fun getItemCount(): Int {
         return ROW * 7
+    }
+
+    /*companion object {
+        @JvmStatic
+        @BindingAdapter("text")
+        fun loadDate(thumbs: TextView, date: Int) {
+            thumbs.text = date.toString()
+        }
+    }*/
+}
+
+class MainViewHolder(val binding: ListItemDayBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(movie: CalendarItem) {
+        binding.calendarItem= movie
     }
 }
