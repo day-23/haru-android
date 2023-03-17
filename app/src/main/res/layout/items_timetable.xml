@@ -15,7 +15,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="right"
-            android:textSize="10dp"
+            android:textSize="8dp"
+            android:textColor="#191919"
             android:text="오전 22시"
             android:layout_weight="1"/>
 

@@ -21,6 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
+import org.w3c.dom.Text
 import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,13 +36,13 @@ class TimetableFragment : Fragment() {
     lateinit var recyclerView1: RecyclerView
     lateinit var timetableMonthTextView: TextView
     lateinit var timetableYearTextView: TextView
-    lateinit var mon_btn : Button
-    lateinit var tue_btn : Button
-    lateinit var wed_btn : Button
-    lateinit var thu_btn : Button
-    lateinit var fri_btn : Button
-    lateinit var sat_btn : Button
-    lateinit var sun_btn : Button
+    lateinit var mon_btn : TextView
+    lateinit var tue_btn : TextView
+    lateinit var wed_btn : TextView
+    lateinit var thu_btn : TextView
+    lateinit var fri_btn : TextView
+    lateinit var sat_btn : TextView
+    lateinit var sun_btn : TextView
 
     companion object {
         const val TAG: String = "로그"
@@ -69,23 +70,23 @@ class TimetableFragment : Fragment() {
         timetableMonthTextView.text = "${calendar.get(Calendar.MONTH) + 1}월"
         timetableYearTextView.text = "${calendar.get(Calendar.YEAR)}년"
 
-        mon_btn = rootView.findViewById<Button>(R.id.mon_btn)
-        tue_btn = rootView.findViewById<Button>(R.id.tue_btn)
-        wed_btn = rootView.findViewById<Button>(R.id.wed_btn)
-        thu_btn = rootView.findViewById<Button>(R.id.thu_btn)
-        fri_btn = rootView.findViewById<Button>(R.id.fri_btn)
-        sat_btn = rootView.findViewById<Button>(R.id.sat_btn)
-        sun_btn = rootView.findViewById<Button>(R.id.sun_btn)
+        mon_btn = rootView.findViewById<TextView>(R.id.mon_btn)
+        tue_btn = rootView.findViewById<TextView>(R.id.tue_btn)
+        wed_btn = rootView.findViewById<TextView>(R.id.wed_btn)
+        thu_btn = rootView.findViewById<TextView>(R.id.thu_btn)
+        fri_btn = rootView.findViewById<TextView>(R.id.fri_btn)
+        sat_btn = rootView.findViewById<TextView>(R.id.sat_btn)
+        sun_btn = rootView.findViewById<TextView>(R.id.sun_btn)
 
         daylist(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH))
 
-        mon_btn.text = "월\n${days.get(0)}"
-        tue_btn.text = "화\n${days.get(1)}"
-        wed_btn.text = "수\n${days.get(2)}"
-        thu_btn.text = "목\n${days.get(3)}"
-        fri_btn.text = "금\n${days.get(4)}"
-        sat_btn.text = "토\n${days.get(5)}"
-        sun_btn.text = "일\n${days.get(6)}"
+        mon_btn.text = "${days.get(0)}"
+        tue_btn.text = "${days.get(1)}"
+        wed_btn.text = "${days.get(2)}"
+        thu_btn.text = "${days.get(3)}"
+        fri_btn.text = "${days.get(4)}"
+        sat_btn.text = "${days.get(5)}"
+        sun_btn.text = "${days.get(6)}"
 
         timetableMonthTextView.setOnClickListener {
             showDatePickerDialog()
@@ -94,12 +95,12 @@ class TimetableFragment : Fragment() {
         timetableData.clear()
         for (i: Int in 1..23) {
             if (i < 12) {
-                timetableData.add(timetable_data("오전 \n${i}시"))
+                timetableData.add(timetable_data("${i}시\n오전"))
             } else {
                 if (i == 12) {
-                    timetableData.add(timetable_data("오후 \n12시"))
+                    timetableData.add(timetable_data("12시\n오후"))
                 } else {
-                    timetableData.add(timetable_data("오후 \n${i - 12}시"))
+                    timetableData.add(timetable_data("${i - 12}시\n오후"))
                 }
             }
         }
@@ -174,13 +175,13 @@ class TimetableFragment : Fragment() {
                 timetableYearTextView.text = selectedYear
                 Toast.makeText(context,"${selectedYear}년 ${selectedMonth}월 ${day}", Toast.LENGTH_SHORT).show()
                 daylist(year, month, day)
-                mon_btn.text = "월\n${days.get(0)}"
-                tue_btn.text = "화\n${days.get(1)}"
-                wed_btn.text = "수\n${days.get(2)}"
-                thu_btn.text = "목\n${days.get(3)}"
-                fri_btn.text = "금\n${days.get(4)}"
-                sat_btn.text = "토\n${days.get(5)}"
-                sun_btn.text = "일\n${days.get(6)}"
+                mon_btn.text = "${days.get(0)}"
+                tue_btn.text = "${days.get(1)}"
+                wed_btn.text = "${days.get(2)}"
+                thu_btn.text = "${days.get(3)}"
+                fri_btn.text = "${days.get(4)}"
+                sat_btn.text = "${days.get(5)}"
+                sun_btn.text = "${days.get(6)}"
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") {dialog, _ ->
