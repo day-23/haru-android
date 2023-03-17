@@ -29,14 +29,6 @@ class CheckListViewModel() :
         getTag()
     }
 
-//    fun updateTodo(){
-//        getTodo()
-//    }
-//
-//    fun updateTag(){
-//        getTag()
-//    }
-
     fun getTag() {
         viewModelScope.launch {
             _tagDataList.value = tagRepository.getTag()

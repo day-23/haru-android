@@ -1,5 +1,6 @@
 <!-- todo_item.xml -->
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -10,66 +11,72 @@
     </data>
 
 
-    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:clickable="true"
-        android:elevation="4dp"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
-        android:radius="8dp"
-        card_view:cardCornerRadius="16dp">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="100">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/check_done"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:layout_marginEnd="20dp"
                 android:background="@drawable/checklist_done_circle"
-                android:button="@android:color/transparent" />
+                android:button="@android:color/transparent"
+                />
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:layout_weight="80"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_title"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{todo.content}"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp"/>
 
                 <TextView
                     android:id="@+id/tv_description"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingBottom="1dp"
                     android:text="@{todo.memo}"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="16sp" />
+                    android:textSize="10sp" />
 
 
             </LinearLayout>
 
             <CheckBox
                 android:id="@+id/check_flag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/checklist_flag_star"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="26dp"
+                android:layout_marginBottom="14dp"
                 android:button="@android:color/transparent"
-                android:checked="@{todo.flag}" />
+                android:checked="@{todo.flag}"
+                android:background="@drawable/checklist_flag_star" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

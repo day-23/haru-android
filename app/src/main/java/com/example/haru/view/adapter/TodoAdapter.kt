@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentChecklistItemBinding
@@ -25,16 +26,11 @@ class TodoAdapter(val context: Context) :
     override fun onBindViewHolder(holder: TodoAdapter.TodoViewHolder, position: Int) {
         holder.bind(data[position])
     }
-
     inner class TodoViewHolder(val binding: FragmentChecklistItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-//        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
         fun bind(item: Todo) {
             binding.todo = item
-//            binding.tvTitle.text = item.content
-//            binding.tvDescription.text = item.memo
-//            binding.checkFlag.isChecked = item.flag
         }
     }
 

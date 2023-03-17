@@ -6,7 +6,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface TagService {
-
     @GET("tag/{userId}/tags")
     fun getTag(@Path("userId") userId : String): Call<TagResponse>
 }

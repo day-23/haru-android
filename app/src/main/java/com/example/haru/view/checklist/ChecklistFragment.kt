@@ -5,8 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Tag
@@ -64,11 +66,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     }
 
     private fun initTagList() {
-        val tagListView: RecyclerView = binding.recyclerTags
+        val tagRecyclerView: RecyclerView = binding.recyclerTags
         val tagAdapter = TagAdapter(requireContext())
 
-        tagListView.adapter = tagAdapter
-        tagListView.layoutManager =
+        tagRecyclerView.adapter = tagAdapter
+        tagRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         checkListViewModel.tagDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -84,6 +86,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoListView.adapter = todoAdapter
         todoListView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+
+        todoListView.addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
 
         checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val dataList = it.filterIsInstance<Todo>()

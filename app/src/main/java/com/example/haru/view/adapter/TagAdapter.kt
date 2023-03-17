@@ -13,6 +13,7 @@ class TagAdapter(val context: Context) :
 
     RecyclerView.Adapter<TagAdapter.TagViewHolder>() {
     private var data = emptyList<Tag>()
+    private val basicTag = listOf<Tag>(Tag("완료", "완료"), Tag("미분류", "미분류"))
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagViewHolder {
         val binding =
@@ -32,10 +33,15 @@ class TagAdapter(val context: Context) :
         fun bind(item: Tag) {
             binding.tag = item
         }
+
+//        init {
+//            binding.
+//        }
+
     }
 
     fun setDataList(dataList: List<Tag>) {
-        this.data = dataList
+        this.data = basicTag + dataList
         notifyDataSetChanged()
     }
 

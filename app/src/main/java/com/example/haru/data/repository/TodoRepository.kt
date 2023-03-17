@@ -44,4 +44,8 @@ class TodoRepository() {
             todoData = "망함"
         }
     }
+
+    suspend fun getTodoByTag() = withContext(Dispatchers.IO){
+//        val response = todoService.getTodoByTag("005224c0-eec1-4638-9143-58cbfc9688c5", )
+    }
 }
