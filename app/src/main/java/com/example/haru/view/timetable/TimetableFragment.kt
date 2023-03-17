@@ -126,14 +126,9 @@ class TimetableFragment : Fragment() {
         var lastofmonth = 0
 
         calendar.set(year, month-1, day)
-
         lastofmonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-
-        Toast.makeText(context,"말일:${lastofmonth}  ${year}년 ${month}월 ${day}", Toast.LENGTH_SHORT).show()
-
-        calendar = Calendar.getInstance()
-
-        val day_of_week = SimpleDateFormat("E").format(Date(year - 1900, month - 1, day))
+        calendar.set(year, month, day)
+        val day_of_week = SimpleDateFormat("E").format(Date(year - 1900, month, day))
 
         when(day_of_week){
             "Mon"-> day
@@ -171,13 +166,13 @@ class TimetableFragment : Fragment() {
             .setView(datePicker)
             .setPositiveButton("apply") {dialog, _ ->
                 val year = datePicker.year
-                val month = datePicker.month + 1
+                val month = datePicker.month
                 var day = datePicker.dayOfMonth
-                val day_of_week = SimpleDateFormat().format(Date(year - 1900, month - 1, day))
-                val selectedYear = SimpleDateFormat("yyyy년").format(Date(year - 1900, month - 1, day))
-                val selectedMonth = SimpleDateFormat("M월").format(Date(year - 1900, month - 1, day))
+                val selectedYear = SimpleDateFormat("yyyy년").format(Date(year - 1900, month, day))
+                val selectedMonth = SimpleDateFormat("M월").format(Date(year - 1900, month, day))
                 timetableMonthTextView.text = selectedMonth
                 timetableYearTextView.text = selectedYear
+                Toast.makeText(context,"${selectedYear}년 ${selectedMonth}월 ${day}", Toast.LENGTH_SHORT).show()
                 daylist(year, month, day)
                 mon_btn.text = "월\n${days.get(0)}"
                 tue_btn.text = "화\n${days.get(1)}"

@@ -3,11 +3,18 @@
 //import android.widget.DatePicker
 //import android.widget.Toast
 //import androidx.core.content.ContentProviderCompat.requireContext
+//import androidx.lifecycle.LiveData
+//import androidx.lifecycle.MutableLiveData
 //import androidx.lifecycle.ViewModel
 //import java.text.SimpleDateFormat
 //import java.util.*
 //
 //class CalendarViewModel: ViewModel() {
+//
+//    private var _week = MutableLiveData<String>()
+//
+//    val week: LiveData<String>
+//        get() = _week
 //
 //    fun showDatePickerDialog(): {
 //        val calendar = Calendar.getInstance()

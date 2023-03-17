@@ -14,8 +14,9 @@
             android:id="@+id/tv_timetable_time"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="오전 \n22시"
+            android:gravity="right"
+            android:textSize="10dp"
+            android:text="오전 22시"
             android:layout_weight="1"/>
 
         <View
