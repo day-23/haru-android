@@ -28,7 +28,6 @@ class TodoRepository() {
         }
         callback(todoData)
     }
-//    = withContext(Dispatchers.IO)
     suspend fun createTodo(todoRequest: TodoRequest, callback: (todoData: Any) -> Unit) = withContext(Dispatchers.IO){
         val response = todoService.createTodo("005224c0-eec1-4638-9143-58cbfc9688c5", todoRequest).execute()
         val data: PostTodoResponse
@@ -45,7 +44,20 @@ class TodoRepository() {
         }
     }
 
-    suspend fun getTodoByTag() = withContext(Dispatchers.IO){
-//        val response = todoService.getTodoByTag("005224c0-eec1-4638-9143-58cbfc9688c5", )
+    suspend fun getTodoByTag(tagId: String) = withContext(Dispatchers.IO){
+        val response = todoService.getTodoByTag("005224c0-eec1-4638-9143-58cbfc9688c5", tagId).execute()
+        val data: GetTodoResponse
+        val todoData: List<Todo>
+        Log.d("20191627", "여기는 getTodoByTag")
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get Todo By Tag")
+            data = response.body()!!
+            todoData = data.data
+        } else{
+            Log.d("TAG", "Fail to get Todo By Tag")
+            todoData = emptyList()
+        }
+        todoData
     }
 }

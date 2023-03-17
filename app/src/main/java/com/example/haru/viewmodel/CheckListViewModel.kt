@@ -1,7 +1,6 @@
 package com.example.haru.viewmodel
 
 import android.util.Log
-import androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior.getTag
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +17,8 @@ class CheckListViewModel() :
     private val todoRepository = TodoRepository()
     private val tagRepository = TagRepository()
 
+    private val basicTag = listOf<Tag>(Tag("완료", "완료"), Tag("미분류", "미분류"))
+
     private val _tagDataList = MutableLiveData<List<Tag>>()
     private val _todoDataList = MutableLiveData<List<Todo>>()
 
@@ -31,7 +32,7 @@ class CheckListViewModel() :
 
     fun getTag() {
         viewModelScope.launch {
-            _tagDataList.value = tagRepository.getTag()
+            _tagDataList.value = basicTag + tagRepository.getTag()
         }
     }
 
@@ -53,6 +54,12 @@ class CheckListViewModel() :
                     callback()
                 }
             }
+        }
+    }
+
+    fun getTodoByTag(position: Int){
+        viewModelScope.launch {
+            _todoDataList.value= todoRepository.getTodoByTag(tagDataList.value!![position].id)
         }
     }
 

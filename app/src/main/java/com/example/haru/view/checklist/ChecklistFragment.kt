@@ -55,12 +55,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         binding.btnAddTodo.setOnClickListener{
             val todoInput = ChecklistInputFragment(checkListViewModel)
-
-//            todoInput.setOnDismissListener {
-//                recyclerViewModel.updateTag()
-//                recyclerViewModel.updateTodo()
-//            }
-
             todoInput.show(parentFragmentManager, todoInput.tag)
         }
     }
@@ -68,6 +62,13 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     private fun initTagList() {
         val tagRecyclerView: RecyclerView = binding.recyclerTags
         val tagAdapter = TagAdapter(requireContext())
+        tagAdapter.tagClick = object :TagAdapter.TagClick{
+            override fun onClick(view: View, position: Int) {
+                if (position > 1)
+                    checkListViewModel.getTodoByTag(position)
+                Log.d("20191627", position.toString() + ": 눌렸다")
+            }
+        }
 
         tagRecyclerView.adapter = tagAdapter
         tagRecyclerView.layoutManager =
