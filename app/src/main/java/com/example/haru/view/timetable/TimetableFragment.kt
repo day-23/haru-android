@@ -100,7 +100,7 @@ class TimetableFragment : Fragment() {
                 if (i == 12) {
                     timetableData.add(timetable_data("12시\n오후"))
                 } else {
-                    timetableData.add(timetable_data("${i - 12}시\n오후"))
+                    timetableData.add(timetable_data("${i - 12}시\n오전"))
                 }
             }
         }
@@ -132,13 +132,13 @@ class TimetableFragment : Fragment() {
         val day_of_week = SimpleDateFormat("E").format(Date(year - 1900, month, day))
 
         when(day_of_week){
-            "Mon"-> day
-            "Tue"-> day -= 1
-            "Wed"-> day -= 2
-            "Thu"-> day -= 3
-            "Fri"-> day -= 4
-            "Sat"-> day -= 5
-            "Sun"-> day -= 6
+            "Mon"-> day -= 1
+            "Tue"-> day -= 2
+            "Wed"-> day -= 3
+            "Thu"-> day -= 4
+            "Fri"-> day -= 5
+            "Sat"-> day -= 6
+            "Sun"-> day
         }
 
         for (i: Int in 1 .. 7){
