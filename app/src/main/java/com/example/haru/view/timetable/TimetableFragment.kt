@@ -95,12 +95,15 @@ class TimetableFragment : Fragment() {
         timetableData.clear()
         for (i: Int in 1..23) {
             if (i < 12) {
-                timetableData.add(timetable_data("${i}시\n오전"))
+                if(i == 1)
+                    timetableData.add(timetable_data("${i}\n오전"))
+                else
+                    timetableData.add(timetable_data("${i}"))
             } else {
                 if (i == 12) {
-                    timetableData.add(timetable_data("12시\n오후"))
+                    timetableData.add(timetable_data("12\n오후"))
                 } else {
-                    timetableData.add(timetable_data("${i - 12}시\n오후"))
+                    timetableData.add(timetable_data("${i - 12}\n"))
                 }
             }
         }
@@ -110,11 +113,9 @@ class TimetableFragment : Fragment() {
         recyclerView1.layoutManager = LinearLayoutManager(requireContext())
         recyclerView1.adapter = timetableAdapter
 
-        val itemTouchHelperCallback = ItemTouchHelperCallback(timetableAdapter)
-        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        //val itemTouchHelperCallback = ItemTouchHelperCallback(timetableAdapter)
+        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(timetableAdapter))
         itemTouchHelper.attachToRecyclerView(recyclerView1)
-
-
 
         return rootView
         //return inflater.inflate(R.layout.fragment_timetable, container, false)
@@ -173,7 +174,7 @@ class TimetableFragment : Fragment() {
                 val selectedMonth = SimpleDateFormat("M월").format(Date(year - 1900, month, day))
                 timetableMonthTextView.text = selectedMonth
                 timetableYearTextView.text = selectedYear
-                Toast.makeText(context,"${selectedYear}년 ${selectedMonth}월 ${day}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,"${selectedYear} ${selectedMonth} ${day}", Toast.LENGTH_SHORT).show()
                 daylist(year, month, day)
                 mon_btn.text = "${days.get(0)}"
                 tue_btn.text = "${days.get(1)}"
