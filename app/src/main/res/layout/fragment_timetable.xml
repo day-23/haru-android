@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="일"
                 android:textSize="12dp"
-                android:textColor="#646464"
+                android:textColor="#F71E58"
                 android:layout_marginRight="39dp"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:text="토"
                 android:textSize="12dp"
-                android:textColor="#646464"/>
+                android:textColor="#1DAFFF"/>
         </LinearLayout>
 
         <View
@@ -108,6 +108,7 @@
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
+                android:textColor="#F71E58"
                 android:text="1" />
 
             <TextView
@@ -151,6 +152,7 @@
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
+                android:textColor="#1DAFFF"
                 android:text="7" />
         </LinearLayout>
 

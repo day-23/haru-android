@@ -1,5 +1,6 @@
 package com.example.haru.view.timetable
 
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -17,6 +18,7 @@ class ItemTouchHelperCallback(val adapter: TimetableAdapter) : ItemTouchHelper.C
         val dragFlags = ItemTouchHelper.DOWN
         val swipeFlags = 0
         return makeMovementFlags(dragFlags, swipeFlags)
+
     }
 
     override fun onMove(
@@ -26,7 +28,12 @@ class ItemTouchHelperCallback(val adapter: TimetableAdapter) : ItemTouchHelper.C
     ): Boolean {
         val fromPosition = viewHolder.adapterPosition
         val toPosition = target.adapterPosition
-        adapter.notifyItemMoved(fromPosition, toPosition)
+        if(!selectedViews.contains(target.itemView) ){
+            selectedViews.add(target.itemView)
+            target.itemView.setBackgroundResource(android.R.color.darker_gray)
+        }
+        Log.d("drag", "${selectedViews.size}")
+
         return true
     }
 
@@ -42,16 +49,20 @@ class ItemTouchHelperCallback(val adapter: TimetableAdapter) : ItemTouchHelper.C
             //isDragging = true
             viewHolder?.itemView?.alpha = 0.7f
             selectedViews.add(viewHolder?.itemView!!)
-            for (view in selectedViews) {
-                view.setBackgroundResource(android.R.color.darker_gray)
-            }
+
+            viewHolder.itemView.setBackgroundResource(android.R.color.darker_gray)
+
             //viewHolder?.itemView?.setBackgroundResource(android.R.color.darker_gray)
             Toast.makeText(viewHolder?.itemView?.context, "드래그중...", Toast.LENGTH_SHORT).show()
+
         }
     }
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
-        viewHolder?.itemView?.setBackgroundResource(android.R.color.white)
+        for (view in selectedViews) {
+            view.setBackgroundResource(android.R.color.white)
+        }
+        //viewHolder?.itemView?.setBackgroundResource(android.R.color.white)
         Toast.makeText(viewHolder?.itemView?.context, "드래그끝...", Toast.LENGTH_SHORT).show()
         //isDragging = false
         viewHolder.itemView.alpha = 1.0f

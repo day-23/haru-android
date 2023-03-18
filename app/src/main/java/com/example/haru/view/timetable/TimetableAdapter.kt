@@ -54,6 +54,7 @@ class TimetableAdapter(val context: Context,
             }
             override fun onClick(v: View?) {
                 val position = adapterPosition
+                Log.d("pos", "${position}")
                 if (selectedItems.get(position, false)) {
                     selectedItems.delete(position)
                     v?.isSelected = false

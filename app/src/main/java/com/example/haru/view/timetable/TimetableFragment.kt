@@ -100,7 +100,7 @@ class TimetableFragment : Fragment() {
                 if (i == 12) {
                     timetableData.add(timetable_data("12시\n오후"))
                 } else {
-                    timetableData.add(timetable_data("${i - 12}시\n오전"))
+                    timetableData.add(timetable_data("${i - 12}시\n오후"))
                 }
             }
         }
