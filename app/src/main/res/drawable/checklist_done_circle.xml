@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:drawable="@drawable/checklist_done_check" />
-    <item android:state_checked="false" android:drawable="@drawable/checklist_done_uncheck" />
+    <item android:state_checked="true" android:drawable="@drawable/circle_check" />
+    <item android:state_checked="false" android:drawable="@drawable/circle_uncheck" />
 </selector>

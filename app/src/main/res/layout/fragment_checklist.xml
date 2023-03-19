@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/checklist_flag_check" />
+                app:srcCompat="@drawable/star_check" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_tags"
@@ -93,22 +93,19 @@
     </LinearLayout>
 
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="10dp">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_add_todo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_gravity="end|bottom"
             android:clickable="true"
-            android:elevation="15dp"
-            android:outlineProvider="none"
-            android:tint="@color/white"
-            app:srcCompat="@drawable/ic_baseline_add" />
-    </FrameLayout>
+            android:layout_margin="8dp"
+            app:maxImageSize="56dp"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:srcCompat="@drawable/fab"
+            app:tint="@null"
+            />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

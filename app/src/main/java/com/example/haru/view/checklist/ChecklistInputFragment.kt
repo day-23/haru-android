@@ -4,7 +4,11 @@ package com.example.haru.view.checklist
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.graphics.Color
 import android.os.Bundle
+import android.text.*
+import android.text.style.BackgroundColorSpan
+import android.text.style.ImageSpan
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +22,7 @@ import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.chip.ChipDrawable
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -111,36 +116,44 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             if (it != null) {
                 val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
                 binding.btnTimePick.text = timeFormat.format(it)
-            } else binding.btnTimePick.text = "선택"
+            } else binding.btnTimePick.text = "시간 선택"
         })
 
         todoAddViewModel.alarmTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
                 val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
                 binding.btnAlarmTime.text = timeFormat.format(it)
-            } else binding.btnAlarmTime.text = "선택"
+            } else binding.btnAlarmTime.text = "시간 선택"
         })
 
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                val timeFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.US)
                 binding.btnDatePick.text = timeFormat.format(it)
-            } else binding.btnDatePick.text = "선택"
+            } else binding.btnDatePick.text = "날짜 선택"
         })
 
         todoAddViewModel.alarmDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                val timeFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.US)
                 binding.btnAlarmDate.text = timeFormat.format(it)
-            } else binding.btnAlarmDate.text = "선택"
+            } else binding.btnAlarmDate.text = "날짜 선택"
         })
 
         todoAddViewModel.repeatEndDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                val timeFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.US)
                 binding.btnRepeatEndDate.text = timeFormat.format(it)
-            } else binding.btnRepeatEndDate.text = "선택"
+            } else binding.btnRepeatEndDate.text = "날짜 선택"
         })
+
+//        todoAddViewModel.tag.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            Log.d("20191627", it)
+//            if (it.isNotEmpty() && it.replace(" ", "") != "" && it.last() == ' '){
+//                todoAddViewModel.addTagList()
+////                binding.tagEt.text
+//            }
+//        })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
         binding.checkTodayTodo.setOnClickListener(btnListener())
@@ -160,6 +173,24 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         binding.btnSubmitTodo.setOnClickListener(btnListener())
 
         binding.btnClose.setOnClickListener(btnListener())
+
+
+        binding.tagEt.addTextChangedListener(object : TextWatcher{
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                Log.d("20191627", "before : " + s.toString() +"start - ${start}, count - ${count}, after - ${after}")
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (start == 0 && s?.last() == ' ')
+                    binding.tagEt.text?.clear()
+                Log.d("20191627", "change : " + s.toString() +"start - ${start}, before - ${before}, count - ${count}")
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                Log.d("20191627", "after : " + s.toString())
+            }
+        })
 
     }
 

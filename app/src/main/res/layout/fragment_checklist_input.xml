@@ -23,7 +23,8 @@
             android:hint="해야 할 일을 입력해주세요."
             android:layout_marginBottom="8dp"
             android:text="@={viewModel.content}"
-            android:inputType="text" />
+            android:inputType="text"
+            />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tag_et"
@@ -32,7 +33,7 @@
             android:hint="ex) #공부, #수학"
             android:layout_marginBottom="8dp"
             android:inputType="text"
-            android:text="@={viewModel.tagsStr}"
+            android:text="@={viewModel.tag}"
             android:singleLine="true" />
 
         <LinearLayout

@@ -58,12 +58,13 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _repeatEndDate = MutableLiveData<Date?>()
     val repeatEndDate: LiveData<Date?> = _repeatEndDate
 
-    var tags: List<String> = mutableListOf()
-    var subTodos: List<String> = mutableListOf()
+    val tag = MutableLiveData<String>("")
+
+    var tagList: MutableList<String> = mutableListOf()
+    var subTodos: MutableList<String> = mutableListOf()
 
     var content: String = ""
     var memo: String = ""
-    var tagsStr: String = ""
     var endDateStr: String = ""
     var alarmDateStr: String = ""
     var endTimeStr: String = ""
@@ -136,6 +137,20 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         return submitDateFormat.format(date)
     }
 
+//    fun addTag(){
+////        tag.value!!.plus()
+//    }
+
+//    fun addTagList(){
+//        Log.d("20191627", "viewmodel : Tag -> ${tag.value}")
+//        tagList.add(tag.value!!.replace(" ", ""))
+//        tag.value = ""
+//    }
+//
+//    fun subTagList(){
+//        tagList?.removeAt(-1)
+//    }
+
 
     fun clearSubmitTodo() {
         _repeatOption.value = null
@@ -149,12 +164,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _endDate.value = null
         _alarmDate.value = null
         _repeatEndDate.value = null
-        tags = mutableListOf()
+        tagList = mutableListOf()
         subTodos = mutableListOf()
 
         content = ""
         memo = ""
-        tagsStr = ""
+//        tag = ""
         endDateStr = ""
         alarmDateStr = ""
         endTimeStr = ""
@@ -162,11 +177,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         repeatEndDateStr = ""
 
     }
-
     fun readyToSubmit() {
-        if (tagsStr == "" || tagsStr.replace(" ", "") == "")
-            tags = mutableListOf()
-        else tags = tagsStr.split(" ")
+//        if (tag == "" || tag.replace(" ", "") == "")
+//            tagList = mutableListOf()
+//        else tagList = tag.split(" ")
         if (endDate.value != null) endDateStr = formatDate(endDate.value!!)
         if (endTime.value != null) endTimeStr = formatDate(endTime.value!!)
         if (alarmTime.value != null) alarmTimeStr = mutableListOf(formatDate(alarmTime.value!!))
@@ -185,7 +199,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             repeatDayStr.value,
             repeatDayStr.value,
             repeatEndDateStr,
-            tags,
+            tagList,
             subTodos,
             alarmTimeStr
         )
