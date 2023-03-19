@@ -64,7 +64,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         val tagAdapter = TagAdapter(requireContext())
         tagAdapter.tagClick = object :TagAdapter.TagClick{
             override fun onClick(view: View, position: Int) {
-                if (position > 1)
+                if (position > 2)
                     checkListViewModel.getTodoByTag(position)
                 Log.d("20191627", position.toString() + ": 눌렸다")
             }
