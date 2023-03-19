@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.example.haru.viewmodel.TodoAddViewModel" />
@@ -13,28 +15,92 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="10dp"
         tools:context=".view.checklist.ChecklistInputFragment">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/todo_et"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="해야 할 일을 입력해주세요."
-            android:layout_marginBottom="8dp"
-            android:text="@={viewModel.content}"
-            android:inputType="text"
-            />
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/tag_et"
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/todo_et"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="투두 입력"
+                android:inputType="text"
+                android:text="@={viewModel.content}"
+                android:textSize="20sp" />
+
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/checklist_flag_star"
+                android:button="@android:color/transparent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subTodo_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="ex) #공부, #수학"
-            android:layout_marginBottom="8dp"
-            android:inputType="text"
-            android:text="@={viewModel.tag}"
-            android:singleLine="true" />
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="24dp">
+
+            <ImageView
+                android:id="@+id/plus_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:srcCompat="@drawable/baseline_add_24" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:hint="하위 항목 추가" />
+        </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:background="@color/black"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/linear_border_up_bottom"
+            android:paddingStart="20dp"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/baseline_tag_24" />
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tag_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:background="@android:color/transparent"
+                android:hint="태그"
+                android:inputType="text"
+                android:singleLine="true"
+                android:text="@={viewModel.tag}" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -67,8 +133,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:weightSum="50"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="50">
 
             <TextView
                 android:id="@+id/tv_endTime"
@@ -84,8 +150,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="25"
                 android:backgroundTint="@color/white"
-                android:textColor="@color/black"
-                android:text="날짜 선택" />
+                android:text="날짜 선택"
+                android:textColor="@color/black" />
 
             <Button
                 android:id="@+id/btn_time_pick"
@@ -102,34 +168,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:weightSum="50"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="50">
 
             <TextView
                 android:id="@+id/tv_alarm"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:textSize="20sp"
-                android:text="알람" />
+                android:text="알람"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/btn_alarm_date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="25"
-                android:textColor="@color/black"
                 android:backgroundTint="@color/white"
-                android:text="날짜 선택" />
+                android:text="날짜 선택"
+                android:textColor="@color/black" />
 
             <Button
                 android:id="@+id/btn_alarm_time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="15"
-                android:textColor="@color/black"
                 android:backgroundTint="@color/white"
-                android:text="시간 선택" />
+                android:text="시간 선택"
+                android:textColor="@color/black" />
 
         </LinearLayout>
 
@@ -144,8 +210,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="20sp"
-                android:text="반복 옵션" />
+                android:text="반복 옵션"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/btn_repeat_option"
@@ -153,8 +219,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
-                android:textColor="@color/black"
-                android:text="선택" />
+                android:text="선택"
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -162,16 +228,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:visibility="gone"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_repeatEnd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="20sp"
-                android:text="반복 마감일" />
+                android:text="반복 마감일"
+                android:textSize="20sp" />
 
             <Button
                 android:id="@+id/btn_repeat_end_date"
@@ -179,49 +245,49 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
-                android:textColor="@color/black"
-                android:text="날짜 선택" />
+                android:text="날짜 선택"
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <EditText
             android:id="@+id/et_memo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/borderline"
-            android:inputType="textMultiLine"
             android:layout_marginBottom="8dp"
-            android:scrollbars="vertical"
-            android:padding="5dp"
-            android:lines="3"
+            android:background="@drawable/borderline"
             android:ems="10"
-            android:text="@={viewModel.memo}"
-            android:hint="메모장" />
+            android:hint="메모장"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:padding="5dp"
+            android:scrollbars="vertical"
+            android:text="@={viewModel.memo}" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_submit_todo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginEnd="5dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/white"
-                android:textColor="@color/black"
-                android:text="추가하기" />
+                android:text="추가하기"
+                android:textColor="@color/black" />
 
             <Button
                 android:id="@+id/btn_close"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="5dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/white"
-                android:textColor="@color/black"
-                android:text="닫기" />
+                android:text="닫기"
+                android:textColor="@color/black" />
 
         </LinearLayout>
 
