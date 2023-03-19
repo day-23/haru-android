@@ -19,7 +19,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{calendar_item.date}"
+            android:text="@{Integer.toString(calendar_item.date.date)}"
             android:alpha="@{calendar_item.alpha}"
             android:textColor="@{calendar_item.color}"
             android:textSize="16sp" />

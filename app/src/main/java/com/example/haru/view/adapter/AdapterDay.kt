@@ -1,21 +1,12 @@
-package com.example.haru.view.calendar
+package com.example.haru.view.adapter
 
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.haru.R
 import com.example.haru.data.model.CalendarItem
 import com.example.haru.databinding.ListItemDayBinding
-import com.example.haru.viewmodel.CalendarViewModel
-import java.util.*
 
 class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
-    val ROW = 6
     private var data = emptyList<CalendarItem>()
     private var tempYear: Int = 0
     private var tempMonth: Int = 0
@@ -39,11 +30,11 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
         return DayView(binding)
     }
 
-    override fun onBindViewHolder(holder: AdapterDay.DayView, position: Int) {
+    override fun onBindViewHolder(holder: DayView, position: Int) {
         holder.bind(data[position])
     }
 
     override fun getItemCount(): Int {
-        return ROW * 7
+        return data.size
     }
 }
