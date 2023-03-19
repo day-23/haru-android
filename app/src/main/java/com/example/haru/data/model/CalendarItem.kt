@@ -8,5 +8,5 @@ data class CalendarItem(
     var date: Date,
     var selected: Boolean = false,
     var todos: ArrayList<Todo?>? = null,
-    //var schedule: Schedule = null
+    //var schedule: Schedule = null,
 )

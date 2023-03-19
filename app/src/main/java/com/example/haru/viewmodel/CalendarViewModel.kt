@@ -144,10 +144,6 @@ class CalendarViewModel : ViewModel() {
                     }
                 }
 
-                for(data in userData){
-                    Log.d("data", data.toString())
-                }
-
                 _liveDataList.postValue(userData)
             }
         }

@@ -14,6 +14,7 @@ import com.example.haru.view.adapter.AdapterMonth
 
 class CalendarFragment : Fragment() {
     private lateinit var binding: FragmentCalendarBinding
+    private lateinit var adapterMonth: AdapterMonth
 
     companion object{
         const val TAG : String = "로그"
@@ -44,12 +45,14 @@ class CalendarFragment : Fragment() {
 
         val month_viewpager = view.findViewById<ViewPager2>(R.id.month_viewpager)
 
-        month_viewpager.layoutParams = (
-                LinearLayout.LayoutParams(
+        month_viewpager.layoutParams = LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
-                ))
+                )
 
-        month_viewpager.adapter = AdapterMonth(viewLifecycleOwner)
+        adapterMonth = AdapterMonth(viewLifecycleOwner)
+        month_viewpager.adapter = adapterMonth
+
+        month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
     }
 }

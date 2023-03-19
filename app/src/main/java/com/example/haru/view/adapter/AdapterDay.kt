@@ -8,20 +8,17 @@ import com.example.haru.databinding.ListItemDayBinding
 
 class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
     private var data = emptyList<CalendarItem>()
-    private var tempYear: Int = 0
-    private var tempMonth: Int = 0
 
     inner class DayView(val binding: ListItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
             fun bind(item: CalendarItem){
                 binding.calendarItem = item
+                binding.dayContentListview.adapter = AdapterContent(item, true)
             }
         }
 
-    fun updateData(newdayList:List<CalendarItem>, year:Int, month:Int) {
+    fun updateData(newdayList:List<CalendarItem>) {
         data = newdayList
-        tempYear = year
-        tempMonth = month
         notifyDataSetChanged()
     }
 

@@ -22,7 +22,7 @@
             android:text="@{Integer.toString(calendar_item.date.date)}"
             android:alpha="@{calendar_item.alpha}"
             android:textColor="@{calendar_item.color}"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <ListView
             android:layout_gravity="center"
