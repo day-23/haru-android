@@ -1,7 +1,8 @@
-package com.example.haru.view.timetable
+package com.example.haru.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.haru.data.model.timetable_data
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
