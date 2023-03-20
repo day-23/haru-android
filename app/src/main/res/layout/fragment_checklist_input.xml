@@ -20,29 +20,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp">
+            android:orientation="horizontal">
 
 
-            <com.google.android.material.textfield.TextInputEditText
+            <EditText
                 android:id="@+id/todo_et"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginStart="34dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:hint="투두 입력"
+                android:hint="@string/todo_input"
                 android:inputType="text"
                 android:text="@={viewModel.content}"
-                android:textSize="20sp" />
+                android:textColorHint="@color/light_gray"
+                android:textSize="24sp" />
 
 
             <CheckBox
+                android:id="@+id/check_flag_todo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginEnd="20dp"
                 android:background="@drawable/checklist_flag_star"
-                android:button="@android:color/transparent" />
+                android:button="@android:color/transparent"
+                style="@style/minSize" />
 
         </LinearLayout>
 
@@ -51,37 +55,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:orientation="horizontal"
-            android:paddingHorizontal="24dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/plus_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                app:srcCompat="@drawable/baseline_add_24" />
+                android:layout_marginStart="34dp"
+                app:srcCompat="@drawable/add_icon" />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:background="@android:color/transparent"
-                android:hint="하위 항목 추가" />
+                android:hint="@string/subTodo_input"
+                android:textColorHint="@color/light_gray"
+                android:textSize="14sp" />
         </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="12dp"
-                    android:background="@color/black"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="12dp"
+            android:background="@color/light_gray" />
 
         <LinearLayout
+            style="@style/linearBorderLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/linear_border_up_bottom"
-            android:paddingStart="20dp"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp"
-            android:orientation="horizontal">
+            android:background="@drawable/linear_border_up_bottom">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -94,39 +98,88 @@
                 android:id="@+id/tag_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="10dp"
                 android:background="@android:color/transparent"
-                android:hint="태그"
+                android:hint="@string/tag"
                 android:inputType="text"
                 android:singleLine="true"
                 android:text="@={viewModel.tag}" />
         </LinearLayout>
 
         <LinearLayout
+            style="@style/linearBorderLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+            android:background="@drawable/linear_border_up_bottom">
 
-            <CheckedTextView
-                android:id="@+id/check_today_todo"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/big_today_icon" />
+
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
                 android:layout_weight="1"
-                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-                android:text="오늘 할일"
-                android:textSize="20sp" />
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:text="@string/today_todo_before_add"
+                android:textColor="@color/light_gray"
+                android:textSize="14sp" />
 
-            <CheckedTextView
-                android:id="@+id/check_flag_todo"
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/today_switch"
+                style="@style/minSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="28dp"
+                android:thumb="@drawable/custom_switch_thumb"
+                app:track="@drawable/custom_switch" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/linearBorderLine">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/big_calendar_icon"/>
+
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-                android:text="중요 표시"
-                android:textSize="20sp" />
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:text="@string/endDate_set"
+                android:textColor="@color/light_gray"
+                android:textSize="14sp" />
+
+            <Button
+                style="@style/minSize"
+                android:id="@+id/btn_date_pick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_btn_date"
+                android:backgroundTint="@color/dateBtn_bg"
+                android:layout_marginEnd="10dp"
+                android:textSize="14sp"
+                android:textColor="@color/date_text" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/endDate_switch"
+                style="@style/minSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="28dp"
+                android:thumb="@drawable/custom_switch_thumb"
+                app:track="@drawable/custom_switch" />
         </LinearLayout>
 
         <LinearLayout
@@ -144,14 +197,6 @@
                 android:text="마감일"
                 android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/btn_date_pick"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:backgroundTint="@color/white"
-                android:text="날짜 선택"
-                android:textColor="@color/black" />
 
             <Button
                 android:id="@+id/btn_time_pick"

@@ -8,6 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background">#19BCC4C6</color>
-    <color name="light_gray">#CCCCCC</color>
+    <color name="light_gray">#ACACAC</color>
     <color name="baby_blue">#89CFF0</color>
+    <color name="highlight_text">#1DAFFF</color>
+    <color name="dateBtn_bg">#F1F1F5</color>
+    <color name="date_text">#646464</color>
 </resources>
