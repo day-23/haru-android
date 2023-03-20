@@ -25,26 +25,40 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     private val repeatOptionList = listOf<String>("매일", "매주", "2주마다", "매월", "매년")
 
-    private val _repeatOption = MutableLiveData<Int?>()
-    val repeatOption: LiveData<Int?> = _repeatOption
-
-    private val _repeatDay = MutableLiveData<List<Boolean>>(List(7) { false })
-    val repeatDay: LiveData<List<Boolean>> = _repeatDay
-
     private val _flagTodo = MutableLiveData<Boolean>(false)
     val flagTodo: LiveData<Boolean> = _flagTodo
 
     private val _todayTodo = MutableLiveData<Boolean>(false)
     val todayTodo: LiveData<Boolean> = _todayTodo
 
-    private val _repeatOptionStr = MutableLiveData<String?>()
-    val repeatOptionStr: LiveData<String?> = _repeatOptionStr
+    private val _isSelectedEndDateTime = MutableLiveData<Boolean>(false)
+    val isSelectedEndDateTime : LiveData<Boolean> = _isSelectedEndDateTime
 
-    private val _repeatDayStr = MutableLiveData<String?>()
-    val repeatDayStr: LiveData<String?> = _repeatDayStr
+    private val _endTimeSwitch = MutableLiveData<Boolean>(false)
+    val endTimeSwitch : LiveData<Boolean> = _endTimeSwitch
+
+    private val _endDate = MutableLiveData<Date?>()
+    val endDate: LiveData<Date?> = _endDate
 
     private val _endTime = MutableLiveData<Date?>()
     val endTime: LiveData<Date?> = _endTime
+
+    private val _repeatOption = MutableLiveData<Int?>()
+    val repeatOption: LiveData<Int?> = _repeatOption
+
+    private val _repeatValue = MutableLiveData<String?>()
+    val repeatValue : LiveData<String?> = _repeatValue
+
+//    private val _repeatDay = MutableLiveData<List<Boolean>>(List(7) { false })
+//    val repeatDay: LiveData<List<Boolean>> = _repeatDay
+
+
+//    private val _repeatOptionStr = MutableLiveData<String?>()
+//    val repeatOptionStr: LiveData<String?> = _repeatOptionStr
+//
+//    private val _repeatDayStr = MutableLiveData<String?>()
+//    val repeatDayStr: LiveData<String?> = _repeatDayStr
+
 
     private val _alarmTime = MutableLiveData<Date?>()
     val alarmTime: LiveData<Date?> = _alarmTime
@@ -52,18 +66,17 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _alarmDate = MutableLiveData<Date?>()
     val alarmDate: LiveData<Date?> = _alarmDate
 
-    private val _endDate = MutableLiveData<Date?>()
-    val endDate: LiveData<Date?> = _endDate
-
     private val _repeatEndDate = MutableLiveData<Date?>()
     val repeatEndDate: LiveData<Date?> = _repeatEndDate
 
-    val tag = MutableLiveData<String>("")
+//    val tag = MutableLiveData<String>("")
 
     var tagList: MutableList<String> = mutableListOf()
     var subTodos: MutableList<String> = mutableListOf()
 
+    var tag :String = ""
     var content: String = ""
+
     var memo: String = ""
     var endDateStr: String = ""
     var alarmDateStr: String = ""
@@ -75,6 +88,22 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         this.checklistViewModel = checkListViewModel
     }
 
+
+    fun setFlagTodo() {
+        _flagTodo.value = (_flagTodo.value == false)
+    }
+
+    fun setTodayTodo() {
+        _todayTodo.value = (_todayTodo.value == false)
+    }
+
+    fun setIsSelectedEndDateTime(){
+        _isSelectedEndDateTime.value = (_isSelectedEndDateTime.value == false)
+    }
+
+    fun setEndTimeSwitch(){
+        _endTimeSwitch.value = (_endTimeSwitch.value == false)
+    }
 
     fun setRepeatOption(option: Int) {
         _repeatOption.value = option
@@ -113,13 +142,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _repeatDayStr.value = null
     }
 
-    fun setFlagTodo() {
-        _flagTodo.value = (_flagTodo.value == false)
-    }
-
-    fun setTodayTodo() {
-        _todayTodo.value = (_todayTodo.value == false)
-    }
 
     fun setTime(id: Int, date: Date) {
         if (id == 0) _endTime.value = date else _alarmTime.value = date
@@ -136,21 +158,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
         return submitDateFormat.format(date)
     }
-
-//    fun addTag(){
-////        tag.value!!.plus()
-//    }
-
-//    fun addTagList(){
-//        Log.d("20191627", "viewmodel : Tag -> ${tag.value}")
-//        tagList.add(tag.value!!.replace(" ", ""))
-//        tag.value = ""
-//    }
-//
-//    fun subTagList(){
-//        tagList?.removeAt(-1)
-//    }
-
 
     fun clearSubmitTodo() {
         _repeatOption.value = null
@@ -169,7 +176,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         content = ""
         memo = ""
-//        tag = ""
+        tag = ""
         endDateStr = ""
         alarmDateStr = ""
         endTimeStr = ""
@@ -178,9 +185,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     }
     fun readyToSubmit() {
-//        if (tag == "" || tag.replace(" ", "") == "")
-//            tagList = mutableListOf()
-//        else tagList = tag.split(" ")
+        if (tag == "" || tag.replace(" ", "") == "")
+            tagList = mutableListOf()
+        else tagList = tag.split(" ")
         if (endDate.value != null) endDateStr = formatDate(endDate.value!!)
         if (endTime.value != null) endTimeStr = formatDate(endTime.value!!)
         if (alarmTime.value != null) alarmTimeStr = mutableListOf(formatDate(alarmTime.value!!))

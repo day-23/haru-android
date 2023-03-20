@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.TranslateAnimation
 import android.widget.TimePicker
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
@@ -25,6 +26,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.ChipDrawable
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.*
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
@@ -118,7 +121,42 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             }
         })
 
-        todoAddViewModel
+        todoAddViewModel.isSelectedEndDateTime.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                when (it) {
+                    true -> {
+                        binding.btnEndDatePick.visibility = View.VISIBLE
+                        binding.btnEndDatePick.text = dateFormat(LocalDateTime.now())
+                        val anim = TranslateAnimation(
+                            0f,
+                            0f,
+                            0f,
+                            binding.endDateTimeLayout.height.toFloat()
+                        )
+                        anim.duration = 400
+                        anim.fillAfter = true
+                        binding.endDateTimeLayout.animation = anim
+                        binding.endDateTimeLayout.visibility = View.VISIBLE
+                    }
+                    else -> {
+                        binding.btnEndDatePick.visibility = View.INVISIBLE
+                        binding.endDateTimeLayout.visibility = View.GONE
+                    }
+                }
+            })
+
+        todoAddViewModel.endTimeSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when(it) {
+                true -> {
+                    binding.btnEndTimePick.visibility = View.VISIBLE
+                    binding.btnEndTimePick.text = timeFormat(LocalDateTime.now())
+                }
+                else -> {
+                    binding.btnEndTimePick.visibility = View.INVISIBLE
+                }
+            }
+        })
 
         todoAddViewModel.repeatOptionStr.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null)
@@ -151,7 +189,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         todoAddViewModel.alarmDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.US)
+                val timeFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
                 binding.btnAlarmDate.text = timeFormat.format(it)
             } else binding.btnAlarmDate.text = "날짜 선택"
         })
@@ -172,7 +210,10 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 //        })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
-        binding.checkTodayTodo.setOnClickListener(btnListener())
+        binding.todaySwitch.setOnClickListener(btnListener())
+
+        binding.endDateSwitch.setOnClickListener(btnListener())
+        binding.endDateTimeSwitch.setOnClickListener(btnListener())
 
         binding.btnDatePick.setOnClickListener(btnListener())
 
@@ -224,6 +265,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     inner class btnListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
+                R.id.check_flag_todo -> todoAddViewModel.setFlagTodo()
+                R.id.today_switch -> todoAddViewModel.setTodayTodo()
+                R.id.endDate_switch -> todoAddViewModel.setIsSelectedEndDateTime()
+                R.id.endDateTime_switch -> todoAddViewModel.setEndTimeSwitch()
+
                 R.id.btn_alarm_time, R.id.btn_time_pick -> {
                     val calendar = Calendar.getInstance()
                     val hour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -284,9 +330,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
                 }
 
-                R.id.check_flag_todo -> todoAddViewModel.setFlagTodo()
-                R.id.check_today_todo -> todoAddViewModel.setTodayTodo()
-
                 R.id.btn_repeat_option -> {
                     val repeatOptionInput = ChecklistRepeatFragment(todoAddViewModel)
                     repeatOptionInput.show(parentFragmentManager, repeatOptionInput.tag)
@@ -318,6 +361,15 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
             }
         }
+    }
+
+    fun timeFormat(date: LocalDateTime): String{
+        val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
+        return timeFormat.format(date)
+    }
+    fun dateFormat(date: LocalDateTime): String {
+        val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
+        return dateFormat.format(date)
     }
 
 
