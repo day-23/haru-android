@@ -33,6 +33,10 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    dataBinding{
+        enabled = true
+    }
 }
 
 dependencies {
@@ -65,4 +69,7 @@ dependencies {
 
     /* 최신 preference 사용*/
     implementation 'androidx.preference:preference:1.2.0'
+
+    /*ViewModel*/
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
 }
