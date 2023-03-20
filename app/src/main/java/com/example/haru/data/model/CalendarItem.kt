@@ -7,6 +7,6 @@ data class CalendarItem(
     var color: Int,
     var date: Date,
     var selected: Boolean = false,
-    var todos: ArrayList<Todo?>? = null,
+    var todos: ArrayList<ContentMark>? = null,
     //var schedule: Schedule = null,
 )

@@ -50,11 +50,7 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner):
 
         calendar_recyclerview.adapter = todoAdapter
 
-        calendar_recyclerview.layoutManager = object : GridLayoutManager(holder.itemView.context, 7){
-            override fun canScrollHorizontally(): Boolean {
-                return false
-            }
-        }
+        calendar_recyclerview.layoutManager = GridLayoutManager(holder.itemView.context, 7)
 
         calendarviewModel.init_viewModel(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH))
 

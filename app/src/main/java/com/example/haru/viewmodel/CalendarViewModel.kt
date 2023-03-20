@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.CalendarItem
+import com.example.haru.data.model.ContentMark
 import com.example.haru.data.model.Todo
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
@@ -94,32 +95,32 @@ class CalendarViewModel : ViewModel() {
                     var repeatEnd:Date? = null
 
                     val endDate = format.parse(todo.endDate)
-                    val repeatWeek = todo.repeatWeek
-                    val repeatMonth = todo.repeatMonth
+                    val repeatOption = todo.repeatOption
+                    val repeatValue = todo.repeatValue
 
                     if(todo.repeatEnd != null){
                         repeatEnd = format.parse(todo.repeatEnd)
                     }
 
-                    if(repeatEnd != null) {
+                    if(repeatOption != null) {
                         for (i in 0..maxi) {
                             for (k in 0..6) {
                                 if (userData[i * 7 + k].alpha > 0.9f) {
                                     cnt += 1
 
-                                    if (cnt <= repeatEnd.date) {
-                                        if (repeatWeek != null && repeatWeek[userData[i * 7 + k].date.day] == '1') {
+                                    if (cnt <= repeatEnd!!.date) {
+                                        if (repeatOption == "매주" && repeatValue!![userData[i * 7 + k].date.day] == '1') {
                                             if (userData[i * 7 + k].todos == null) {
-                                                userData[i * 7 + k].todos = ArrayList<Todo?>()
+                                                userData[i * 7 + k].todos = ArrayList()
                                             }
 
-                                            userData[i * 7 + k].todos!!.add(todo)
-                                        } else if (repeatMonth != null && repeatMonth[cnt - 1] == '1') {
+                                            userData[i * 7 + k].todos!!.add(ContentMark(todo,true))
+                                        } else if (repeatOption == "매달" && repeatValue!![cnt - 1] == '1') {
                                             if (userData[i * 7 + k].todos == null) {
-                                                userData[i * 7 + k].todos = ArrayList<Todo?>()
+                                                userData[i * 7 + k].todos = ArrayList()
                                             }
 
-                                            userData[i * 7 + k].todos!!.add(todo)
+                                            userData[i * 7 + k].todos!!.add(ContentMark(todo,true))
                                         }
                                     }
                                 }
@@ -133,15 +134,48 @@ class CalendarViewModel : ViewModel() {
 
                                     if (cnt == endDate.date) {
                                         if (userData[i * 7 + k].todos == null) {
-                                            userData[i * 7 + k].todos = ArrayList<Todo?>()
+                                            userData[i * 7 + k].todos = ArrayList()
                                         }
 
-                                        userData[i * 7 + k].todos!!.add(todo)
+                                        userData[i * 7 + k].todos!!.add(ContentMark(todo,true))
                                     }
                                 }
                             }
                         }
                     }
+                }
+
+                for(i in 0 until userData.size){
+                    Log.d("변경 전 데이타",userData[i].todos.toString())
+                }
+
+                for (i in 0 until userData.size-1){
+                    for(j in i+1 until userData.size){
+                        if (userData[i].todos != null && userData[j].todos != null){
+                            for(k in 0 until userData[i].todos!!.size){
+                                if(userData[i].todos!![k].todo != null &&
+                                    userData[i].todos!![k].mark &&
+                                        userData[j].todos!!.contains(userData[i].todos!![k])){
+                                    if(userData[j].todos!!.size > k){
+                                        val containIndex: Int = userData[j].todos!!.indexOf(userData[i].todos!![k])
+
+                                        var tmp = userData[j].todos!![k]
+                                        userData[j].todos!![k] = userData[j].todos!![containIndex]
+                                        userData[j].todos!![containIndex] = tmp
+
+                                        userData[j].todos!![k].mark = false
+                                        Log.d("apply 적용", userData[j].todos!![k].mark.toString())
+                                    }
+                                }
+                            }
+                        } else {
+                            break
+                        }
+                    }
+                }
+
+                for(i in 0 until userData.size){
+                    Log.d("변경 후 데이타",userData[i].todos.toString())
                 }
 
                 _liveDataList.postValue(userData)

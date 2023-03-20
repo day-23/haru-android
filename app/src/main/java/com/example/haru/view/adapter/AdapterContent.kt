@@ -17,8 +17,12 @@ class AdapterContent (val calendarItem:CalendarItem, val todo_schdule: Boolean, 
         val frame = view.findViewById<FrameLayout>(R.id.backframe_layout)
         val content_text = view.findViewById<TextView>(R.id.content_text)
 
-        content_text.text = calendarItem.todos!![position]!!.content
-        frame.setBackgroundColor(Color.rgb(0x00, 0xbf, 0xff))
+        if(calendarItem.todos!![position].mark) {
+            content_text.text = calendarItem.todos!![position].todo!!.content
+            frame.setBackgroundColor(Color.rgb(0x00, 0xbf, 0xff))
+        } else {
+            frame.setBackgroundColor(Color.rgb(0x00, 0xbf, 0xff))
+        }
 
         return view
     }

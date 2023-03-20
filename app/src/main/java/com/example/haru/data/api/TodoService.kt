@@ -1,5 +1,6 @@
 package com.example.haru.data.api
 
+import com.example.haru.data.model.GetScheduleResponse
 import com.example.haru.data.model.TodoRequest
 import com.example.haru.data.model.GetTodoResponse
 import com.example.haru.data.model.PostTodoResponse
@@ -11,8 +12,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface TodoService {
-    @GET("todo/{userId}/todos")
-    fun getTodo(@Path("userId") userId: String) : Call<GetTodoResponse>
+    @GET("schedule/{userId}/schedules")
+    fun getSchedule(@Path("userId") userId: String) : Call<GetScheduleResponse>
 
     @GET("todo/{userId}/todos/date")
     fun getTodoDates(@Path("userId") userId: String, @Query("startDate") startDate:String, @Query("endDate") endDate:String) : Call<GetTodoResponse>

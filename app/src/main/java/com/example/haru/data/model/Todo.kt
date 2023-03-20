@@ -6,15 +6,13 @@ data class Todo (
     val memo: String?,
     val todayTodo: Boolean,
     val flag: Boolean,
-    val repeatOption: String?,
-    val repeatWeek: String?,
-    val repeatMonth: String?,
-    val repeatYear: String?,
     val endDate: String?,
     val endDateTime: String?,
     val repeatEnd: String?,
     val createdAt: String,
     val updatedAt: String?,
     val subTodos: List<SubTodo>,
+    val repeatOption: String?,
+    val repeatValue: String?,
     val tags: List<Tag>
 )

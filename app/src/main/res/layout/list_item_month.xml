@@ -24,20 +24,6 @@
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/left_month_btn"
-                android:text="왼쪽"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
-
-            <Button
-                android:id="@+id/right_month_btn"
-                android:text="오른쪽"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
         </LinearLayout>
 
         <LinearLayout
