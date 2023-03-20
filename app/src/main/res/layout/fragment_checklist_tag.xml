@@ -11,12 +11,11 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/tagBtn"
+        style="@style/minSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="6dp"
         android:background="@drawable/tag_btn_custom"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
         android:paddingHorizontal="22dp"
         android:paddingVertical="8dp"
         android:text="@{tag.content}"
@@ -26,3 +25,4 @@
 
 
 </layout>
+

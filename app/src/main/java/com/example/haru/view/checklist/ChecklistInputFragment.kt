@@ -4,6 +4,7 @@ package com.example.haru.view.checklist
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.text.*
@@ -101,8 +102,23 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         })
 
         todoAddViewModel.todayTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            binding.checkTodayTodo.isChecked = it
+            when (it) {
+                true -> {
+                    binding.todaySwitch.isChecked = true
+                    binding.tvTodayTodo.setTextColor(resources.getColor(R.color.highlight))
+                    binding.ivTodayIcon.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.highlight))
+                }
+                else -> {
+                    binding.todaySwitch.isChecked = false
+                    binding.tvTodayTodo.setTextColor(resources.getColor(R.color.light_gray))
+                    binding.ivTodayIcon.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.light_gray))
+                }
+            }
         })
+
+        todoAddViewModel
 
         todoAddViewModel.repeatOptionStr.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null)
@@ -175,16 +191,22 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         binding.btnClose.setOnClickListener(btnListener())
 
 
-        binding.tagEt.addTextChangedListener(object : TextWatcher{
+        binding.tagEt.addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                Log.d("20191627", "before : " + s.toString() +"start - ${start}, count - ${count}, after - ${after}")
+                Log.d(
+                    "20191627",
+                    "before : " + s.toString() + "start - ${start}, count - ${count}, after - ${after}"
+                )
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (start == 0 && s?.last() == ' ')
                     binding.tagEt.text?.clear()
-                Log.d("20191627", "change : " + s.toString() +"start - ${start}, before - ${before}, count - ${count}")
+                Log.d(
+                    "20191627",
+                    "change : " + s.toString() + "start - ${start}, before - ${before}, count - ${count}"
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -284,7 +306,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 //                        CustomToast.makeText(context, "할 일이 비어있습니다.", Toast.LENGTH_SHORT)
                     else {
                         todoAddViewModel.readyToSubmit()
-                        todoAddViewModel.addTodo{
+                        todoAddViewModel.addTodo {
                             Log.d("20191627", "dismiss")
                             dismiss()
                         }
