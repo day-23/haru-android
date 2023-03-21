@@ -23,8 +23,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Dates : LiveData<ArrayList<Timetable_date>>
         get() = _Dates
 
-    private val _Days = MutableLiveData<ArrayList<Int>>()
-    val Days : LiveData<ArrayList<Int>>
+    private val _Days = MutableLiveData<ArrayList<String>>()
+    val Days : LiveData<ArrayList<String>>
         get() = _Days
 
     private val _Selected = MutableLiveData<Timetable_date>()
@@ -32,17 +32,18 @@ class TimetableViewModel(val context : Context): ViewModel() {
         get() = _Selected
 
     val calendar = Calendar.getInstance()
-    var days: ArrayList<Int> = ArrayList()
+
+    var dayslist: ArrayList<String> = ArrayList()
 
     init {
-        _Selected.value = Timetable_date(calendar.get(Calendar.YEAR) , calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH))
+        _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString() , (calendar.get(Calendar.MONTH)+1).toString(), calendar.get(Calendar.DAY_OF_MONTH).toString())
 
-        getDays(
+        Daylist(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
-        _Days.value = days
+        _Days.value = dayslist
     }
 
     fun buttonClick(){
@@ -63,11 +64,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 val year = datePicker.year
                 val month = datePicker.month
                 var day = datePicker.dayOfMonth
-//                val selectedYear =
-//                    SimpleDateFormat("yyyy년 mm월 dd일").format(Date(year - 1900, month, day))
-//                val selectedMonth = SimpleDateFormat("M월").format(Date(year - 1900, month, day))
-
-                getDays(year, month, day)
+                _Selected.value = Timetable_date(year.toString(), (month+1).toString(), day.toString())
+                Daylist(year, month, day)
+                _Days.value = dayslist
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") { dialog, _ ->
@@ -78,11 +77,11 @@ class TimetableViewModel(val context : Context): ViewModel() {
         dialog.show()
     }
 
-    fun getDays(year: Int, month: Int, day: Int) {
-        val dayList = ArrayList<Int>()
+    fun Daylist(year: Int, month: Int, day: Int) {
+        val dayList = ArrayList<String>()
         var d = day
         var lastOfMonth = 0
-
+        dayslist.clear()
         calendar.set(year, month - 1, day)
         lastOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         calendar.set(year, month, day)
@@ -97,20 +96,21 @@ class TimetableViewModel(val context : Context): ViewModel() {
             "Sat"-> d -= 6
             "Sun"-> d
         }
-
+        var addday = 0
         for (i: Int in 1 .. 7){
             if(d < 1){
-                dayList.add(lastOfMonth - abs(d))
+                addday = (lastOfMonth - abs(d))
+
             }
             else if(d > lastOfMonth){
-                dayList.add(d - lastOfMonth)
+                addday = (d - lastOfMonth)
             }
             else{
-                dayList.add(d)
+                addday = d
             }
+            dayslist.add(addday.toString())
             d += 1
         }
-        days = dayList
     }
 
 }

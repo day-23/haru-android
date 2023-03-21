@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -28,16 +29,17 @@
                     android:id="@+id/timetable_month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3월"
+                    android:text="0"
                     android:textSize="28dp"
                     android:textColor="#191919"
+
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/timetable_year"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2023년" />
+                    android:text="1000" />
             </LinearLayout>
 
             <LinearLayout
