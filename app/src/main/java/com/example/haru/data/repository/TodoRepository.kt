@@ -1,21 +1,17 @@
 package com.example.haru.data.repository
 
 import android.util.Log
-import com.example.haru.data.model.Todo
-import com.example.haru.data.model.TodoRequest
-import com.example.haru.data.model.GetTodoResponse
-import com.example.haru.data.model.PostTodoResponse
+import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.security.auth.callback.Callback
 
 class TodoRepository() {
     private val todoService = RetrofitClient.todoService
-    suspend fun getTodo(callback:(todoData : List<Todo>) -> Unit) = withContext(Dispatchers.IO){
-        val response = todoService.getTodo("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
-        val data: GetTodoResponse
-        val todoData : List<Todo>
+    suspend fun getTodoMain(callback:(todoData : TodoList) -> Unit) = withContext(Dispatchers.IO) {
+        val response = todoService.getTodoMain("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
+        val data: GetMainTodoResponse
+        val todoData : TodoList
         Log.d("20191627", "여기는 getTodo")
 
         if (response.isSuccessful){
@@ -24,7 +20,7 @@ class TodoRepository() {
             todoData = data.data
         } else{
             Log.d("TAG", "Fail to get todos")
-            todoData = emptyList()
+            todoData = TodoList(emptyList(),emptyList(),emptyList(),emptyList())
         }
         callback(todoData)
     }
@@ -46,18 +42,20 @@ class TodoRepository() {
 
     suspend fun getTodoByTag(tagId: String) = withContext(Dispatchers.IO){
         val response = todoService.getTodoByTag("005224c0-eec1-4638-9143-58cbfc9688c5", tagId).execute()
-        val data: GetTodoResponse
-        val todoData: List<Todo>
+        val data: GetTodoByTag
+        val todoData: GetTodoByTagData
+        val todos : List<Todo>
         Log.d("20191627", "여기는 getTodoByTag")
 
         if (response.isSuccessful){
             Log.d("TAG", "Success to get Todo By Tag")
             data = response.body()!!
             todoData = data.data
+            todos = todoData.todos
         } else{
             Log.d("TAG", "Fail to get Todo By Tag")
-            todoData = emptyList()
+            todos = emptyList()
         }
-        todoData
+        todos
     }
 }

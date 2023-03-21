@@ -90,9 +90,14 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoListView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        todoListView.addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
+//        todoListView.addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
 
         checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            todoAdapter.setFlagCount(checkListViewModel.flaggedTodos.value?.size)
+            todoAdapter.setTagCount(checkListViewModel.taggedTodos.value?.size)
+            todoAdapter.setUnTagCount(checkListViewModel.untaggedTodos.value?.size)
+            todoAdapter.setCompleteCount(checkListViewModel.completedTodos.value?.size)
+
             val dataList = it.filterIsInstance<Todo>()
             todoAdapter.setDataList(dataList)
         })

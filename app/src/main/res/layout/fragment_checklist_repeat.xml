@@ -35,7 +35,7 @@
                 android:gravity="center"
                 android:text="월"
                 android:textColor="@color/black"
-                android:onClick="@{() -> viewModel.setRepeatDay(0)}"
+
                 android:textSize="20sp" />
 
             <TextView
@@ -46,7 +46,7 @@
                 android:gravity="center"
                 android:text="화"
                 android:textColor="@color/black"
-                android:onClick="@{() -> viewModel.setRepeatDay(1)}"
+
                 android:textSize="20sp" />
 
             <TextView
@@ -57,7 +57,7 @@
                 android:gravity="center"
                 android:text="수"
                 android:textColor="@color/black"
-                android:onClick="@{() -> viewModel.setRepeatDay(2)}"
+
                 android:textSize="20sp" />
 
             <TextView
@@ -68,7 +68,7 @@
                 android:gravity="center"
                 android:text="목"
                 android:textColor="@color/black"
-                android:onClick="@{() -> viewModel.setRepeatDay(3)}"
+
                 android:textSize="20sp" />
 
             <TextView
@@ -79,7 +79,7 @@
                 android:gravity="center"
                 android:text="금"
                 android:textColor="@color/black"
-                android:onClick="@{() -> viewModel.setRepeatDay(4)}"
+
                 android:textSize="20sp" />
 
             <TextView
@@ -90,7 +90,7 @@
                 android:gravity="center"
                 android:text="토"
                 android:textColor="@color/black"
-                android:onClick="@{() -> viewModel.setRepeatDay(5)}"
+
                 android:textSize="20sp" />
 
             <TextView
@@ -101,7 +101,7 @@
                 android:gravity="center"
                 android:text="일"
                 android:textColor="@color/black"
-                android:onClick="@{() -> viewModel.setRepeatDay(6)}"
+
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -116,7 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:onClick="@{() -> viewModel.setRepeatOption(0)}"
+
             android:background="?attr/selectableItemBackground"
             >
 
@@ -147,7 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="?attr/selectableItemBackground"
-            android:onClick="@{() -> viewModel.setRepeatOption(1)}"
+
             android:orientation="horizontal">
 
             <TextView
@@ -177,7 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="?attr/selectableItemBackground"
-            android:onClick="@{() -> viewModel.setRepeatOption(2)}"
+
             android:orientation="horizontal">
 
             <TextView
@@ -207,7 +207,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="?attr/selectableItemBackground"
-            android:onClick="@{() -> viewModel.setRepeatOption(3)}"
+
             android:orientation="horizontal">
 
             <TextView
@@ -237,7 +237,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="?attr/selectableItemBackground"
-            android:onClick="@{() -> viewModel.setRepeatOption(4)}"
+
             android:orientation="horizontal">
 
             <TextView

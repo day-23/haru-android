@@ -10,6 +10,7 @@ import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoRequest
 import com.example.haru.data.repository.TagRepository
 import com.example.haru.data.repository.TodoRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class CheckListViewModel() :
@@ -19,14 +20,29 @@ class CheckListViewModel() :
 
     private val basicTag = listOf<Tag>(Tag("완료", "완료"), Tag("미분류", "미분류"))
 
-    private val _tagDataList = MutableLiveData<List<Tag>>()
+    private val todoList = mutableListOf<Todo>()
     private val _todoDataList = MutableLiveData<List<Todo>>()
+    private val _tagDataList = MutableLiveData<List<Tag>>()
+    private val _flaggedTodos = MutableLiveData<List<Todo>>()
+    private val _taggedTodos = MutableLiveData<List<Todo>>()
+    private val _untaggedTodos = MutableLiveData<List<Todo>>()
+    private val _completedTodos = MutableLiveData<List<Todo>>()
 
+    val todoDataList : LiveData<List<Todo>> get() = _todoDataList
     val tagDataList: LiveData<List<Tag>> get() = _tagDataList
-    val todoDataList: LiveData<List<Todo>> get() = _todoDataList
+    val flaggedTodos: LiveData<List<Todo>> get() = _flaggedTodos
+    val taggedTodos: LiveData<List<Todo>> get() = _taggedTodos
+    val untaggedTodos: LiveData<List<Todo>> get() = _untaggedTodos
+    val completedTodos: LiveData<List<Todo>> get() = _completedTodos
 
     init {
-        getTodo{}
+        getTodoMain{
+            flaggedTodos.value?.let { todoList.addAll(it) }
+            taggedTodos.value?.let { todoList.addAll(it) }
+            untaggedTodos.value?.let { todoList.addAll(it) }
+            completedTodos.value?.let { todoList.addAll(it) }
+            _todoDataList.postValue(todoList)
+        }
         getTag()
     }
 
@@ -36,21 +52,25 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodo(callback: () -> Unit) {
+    fun getTodoMain(callback: () -> Unit) {
         viewModelScope.launch {
-            todoRepository.getTodo{
-                _todoDataList.postValue(it)
-                callback()
+            todoRepository.getTodoMain{
+                _flaggedTodos.postValue(it.flaggedTodos)
+                _taggedTodos.postValue(it.taggedTodos)
+                _untaggedTodos.postValue(it.untaggedTodos)
+                _completedTodos.postValue(it.completedTodos)
             }
+            callback()
         }
     }
+
 
     fun addTodo(todoRequest: TodoRequest, callback: () -> Unit) {
         viewModelScope.launch {
             todoRepository.createTodo(todoRequest){
                 Log.d("20191627", it.toString())
                 getTag()
-                getTodo{
+                getTodoMain{
                     callback()
                 }
             }
@@ -62,5 +82,4 @@ class CheckListViewModel() :
             _todoDataList.value= todoRepository.getTodoByTag(tagDataList.value!![position].id)
         }
     }
-
 }

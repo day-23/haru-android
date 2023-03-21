@@ -35,28 +35,34 @@ class TagAdapter(val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        return when(viewType){
+        return when (viewType) {
             HEADER -> HeaderViewHolder(
-                FragmentChecklistTagHeaderBinding.inflate(LayoutInflater.from(context), parent, false)
+                FragmentChecklistTagHeaderBinding.inflate(
+                    LayoutInflater.from(context),
+                    parent,
+                    false
+                )
             )
 
-            ITEM -> TagItemViewHolder(FragmentChecklistTagBinding.inflate(LayoutInflater.from(context), parent, false))
+            ITEM -> TagItemViewHolder(
+                FragmentChecklistTagBinding.inflate(
+                    LayoutInflater.from(
+                        context
+                    ), parent, false
+                )
+            )
 
             else -> {
                 throw ClassCastException("Unknown viewType $viewType")
             }
         }
-//        val binding =
-//            FragmentChecklistTagBinding.inflate(LayoutInflater.from(context), parent, false)
-//
-//        return TagItemViewHolder(binding)
     }
 
     override fun getItemCount(): Int = data.count() + 1
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-        when(holder){
+        when (holder) {
             is HeaderViewHolder -> {
                 if (tagClick != null) {
                     holder.binding.tagHeader.setOnClickListener {
@@ -73,9 +79,6 @@ class TagAdapter(val context: Context) :
                 }
             }
         }
-//        if (position == 0) {
-//            //Header
-//        } else holder.bind(data[position])
 
     }
 
@@ -85,37 +88,13 @@ class TagAdapter(val context: Context) :
         fun bind(item: Tag) {
             binding.tag = item
         }
-
-        init {
-            // 클릭 리스너
-//            binding.tagBtn.setOnClickListener {
-//                val pos = adapterPosition
-//                Log.d("20191627", pos.toString() + ": setonClicke")
-//            }
-
-            // 롱클릭 리스너
-//            binding.tagBtn.setOnLongClickListener {
-//                return@setOnLongClickListener true
-//            }
-        }
-
     }
 
     inner class HeaderViewHolder(val binding: FragmentChecklistTagHeaderBinding) :
-        RecyclerView.ViewHolder(binding.root){
-
-            init {
-//                binding.tagHeader.setOnClickListener {
-//                    val pos = adapterPosition
-//                    Log.d("20191627", pos.toString() + ": 눌렸다")
-//                }
-            }
-        }
+        RecyclerView.ViewHolder(binding.root) {}
 
     fun setDataList(dataList: List<Tag>) {
         this.data = dataList
         notifyDataSetChanged()
     }
-
-
 }

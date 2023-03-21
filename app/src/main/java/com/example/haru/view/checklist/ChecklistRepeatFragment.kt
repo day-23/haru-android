@@ -52,42 +52,42 @@ class ChecklistRepeatFragment(val todoAddViewModel: TodoAddViewModel) : BottomSh
             binding.ivYearCheck.visibility = if (it == 4) View.VISIBLE else View.INVISIBLE
         })
 
-        todoAddViewModel.repeatDay.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            for(i in 0 until binding.layoutRepeatSelectDay.childCount)
-                if (it.get(i))
-                    (binding.layoutRepeatSelectDay.getChildAt(i) as TextView).setTextColor(Color.BLUE)
-                else (binding.layoutRepeatSelectDay.getChildAt(i) as TextView).setTextColor(Color.BLACK)
-        })
-
-        binding.btnCloseRepeat.setOnClickListener(ClickListener())
-        binding.btnAddRepeat.setOnClickListener(ClickListener())
+//        todoAddViewModel.repeatDay.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            for(i in 0 until binding.layoutRepeatSelectDay.childCount)
+//                if (it.get(i))
+//                    (binding.layoutRepeatSelectDay.getChildAt(i) as TextView).setTextColor(Color.BLUE)
+//                else (binding.layoutRepeatSelectDay.getChildAt(i) as TextView).setTextColor(Color.BLACK)
+//        })
+//
+//        binding.btnCloseRepeat.setOnClickListener(ClickListener())
+//        binding.btnAddRepeat.setOnClickListener(ClickListener())
 
     }
 
 
-    inner class ClickListener : View.OnClickListener {
-        override fun onClick(v: View?) {
-            when (v?.id) {
-                R.id.btn_add_repeat -> {
-                    if (todoAddViewModel.repeatOption.value == null)
-                        CustomToast.makeText(
-                            context,
-                            "반복 옵션을 선택하지 않았습니다.",
-                            Toast.LENGTH_SHORT
-                        )
-                    else if (todoAddViewModel.repeatOption.value == 1) {
-                        todoAddViewModel.setRepeatOptionWithDay()
-                        dismiss()
-                    } else {
-                        todoAddViewModel.setRepeatOptionWithoutDay()
-                        dismiss()
-                    }
-                }
-                R.id.btn_close_repeat -> {
-                    todoAddViewModel.setRepeatClear()
-                    dismiss()
-                }
-            }
-        }
-    }
+//    inner class ClickListener : View.OnClickListener {
+//        override fun onClick(v: View?) {
+//            when (v?.id) {
+//                R.id.btn_add_repeat -> {
+//                    if (todoAddViewModel.repeatOption.value == null)
+//                        CustomToast.makeText(
+//                            context,
+//                            "반복 옵션을 선택하지 않았습니다.",
+//                            Toast.LENGTH_SHORT
+//                        )
+//                    else if (todoAddViewModel.repeatOption.value == 1) {
+//                        todoAddViewModel.setRepeatOptionWithDay()
+//                        dismiss()
+//                    } else {
+//                        todoAddViewModel.setRepeatOptionWithoutDay()
+//                        dismiss()
+//                    }
+//                }
+//                R.id.btn_close_repeat -> {
+//                    todoAddViewModel.setRepeatClear()
+//                    dismiss()
+//                }
+//            }
+//        }
+//    }
 }

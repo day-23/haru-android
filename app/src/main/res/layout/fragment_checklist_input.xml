@@ -119,8 +119,7 @@
                 android:id="@+id/iv_today_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/big_today_icon"
-                />
+                android:background="@drawable/big_today_icon" />
 
             <TextView
                 android:id="@+id/tv_today_todo"
@@ -148,9 +147,9 @@
             style="@style/linearBorderLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:background="@drawable/linear_border_up_bottom"
-            android:orientation="vertical"
-            android:animateLayoutChanges="true">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -172,11 +171,11 @@
                     android:textColor="@color/light_gray"
                     android:textSize="14sp" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_endDate_pick"
                     style="@style/minSize"
-                    android:layout_width="97dp"
-                    android:layout_height="24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:background="@drawable/custom_btn_date"
                     android:textColor="@color/date_text"
@@ -211,11 +210,11 @@
                     android:textColor="@color/light_gray"
                     android:textSize="14sp" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_endTime_pick"
                     style="@style/minSize"
-                    android:layout_width="88dp"
-                    android:layout_height="24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:background="@drawable/custom_btn_date"
                     app:backgroundTint="@null" />
@@ -255,11 +254,11 @@
                 android:textColor="@color/light_gray"
                 android:textSize="14sp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_alarmDate_pick"
                 style="@style/minSize"
-                android:layout_width="97dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/custom_btn_date"
                 android:textColor="@color/date_text"
@@ -267,11 +266,11 @@
                 android:visibility="invisible"
                 app:backgroundTint="@null" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_alarmTime_pick"
                 style="@style/minSize"
-                android:layout_width="88dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/custom_btn_date"
                 android:visibility="invisible"
@@ -342,11 +341,11 @@
                     android:textColor="@color/light_gray"
                     android:textSize="14sp" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_repeat_end_date"
                     style="@style/minSize"
-                    android:layout_width="97dp"
-                    android:layout_height="24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:background="@drawable/custom_btn_date"
                     app:backgroundTint="@null" />
@@ -387,43 +386,23 @@
                 android:background="@android:color/transparent"
                 android:ems="10"
                 android:hint="@string/memo_set"
-                android:textColorHint="@color/light_gray"
-                android:textSize="14sp"
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical"
-                android:text="@={viewModel.memo}" />
+                android:text="@={viewModel.memo}"
+                android:textColorHint="@color/light_gray"
+                android:textSize="14sp" />
 
 
         </LinearLayout>
 
-
-        <LinearLayout
+        <Button
+            android:id="@+id/btn_submit_todo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_submit_todo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/white"
-                android:text="추가하기"
-                android:textColor="@color/black" />
-
-            <Button
-                android:id="@+id/btn_close"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/white"
-                android:text="닫기"
-                android:textColor="@color/black" />
-
-        </LinearLayout>
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@color/white"
+            android:text="추가하기"
+            android:textColor="@color/black" />
 
 
     </LinearLayout>
