@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoRequest
@@ -28,12 +29,17 @@ class CheckListViewModel() :
     private val _untaggedTodos = MutableLiveData<List<Todo>>()
     private val _completedTodos = MutableLiveData<List<Todo>>()
 
+    private val _todoByTag = MutableLiveData<Boolean>()
+    val todoByTag : LiveData<Boolean> = _todoByTag
+
     val todoDataList : LiveData<List<Todo>> get() = _todoDataList
     val tagDataList: LiveData<List<Tag>> get() = _tagDataList
     val flaggedTodos: LiveData<List<Todo>> get() = _flaggedTodos
     val taggedTodos: LiveData<List<Todo>> get() = _taggedTodos
     val untaggedTodos: LiveData<List<Todo>> get() = _untaggedTodos
     val completedTodos: LiveData<List<Todo>> get() = _completedTodos
+
+    var todoByTagItem : String? = null
 
     init {
         getTodoMain{
@@ -59,6 +65,8 @@ class CheckListViewModel() :
                 _taggedTodos.postValue(it.taggedTodos)
                 _untaggedTodos.postValue(it.untaggedTodos)
                 _completedTodos.postValue(it.completedTodos)
+                _todoByTag.postValue(false)
+                todoByTagItem = null
             }
             callback()
         }
@@ -79,7 +87,16 @@ class CheckListViewModel() :
 
     fun getTodoByTag(position: Int){
         viewModelScope.launch {
-            _todoDataList.value= todoRepository.getTodoByTag(tagDataList.value!![position].id)
+            todoByTagItem = tagDataList.value!![position - 1].content
+            _todoDataList.value= todoRepository.getTodoByTag(tagDataList.value!![position - 1].id)
+            _todoByTag.value = true
         }
+    }
+
+    fun clear(){
+        _flaggedTodos.value = emptyList()
+        _taggedTodos.value = emptyList()
+        _untaggedTodos.value = emptyList()
+        _completedTodos.value = emptyList()
     }
 }

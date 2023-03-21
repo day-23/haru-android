@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+
         android:orientation="vertical"
         tools:context=".view.checklist.ChecklistInputFragment">
 
@@ -147,7 +147,6 @@
             style="@style/linearBorderLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
             android:background="@drawable/linear_border_up_bottom"
             android:orientation="vertical">
 
@@ -180,6 +179,7 @@
                     android:background="@drawable/custom_btn_date"
                     android:textColor="@color/date_text"
                     android:textSize="14sp"
+                    android:text="요로시쿠 오네가이시마스"
                     android:visibility="invisible"
                     app:backgroundTint="@null" />
 

@@ -25,10 +25,11 @@ class TodoAdapter(val context: Context) :
     val Divider = 3
     val Empty = 4
 
+    var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("",""))
+
     private var data = emptyList<Todo>()
 
     private var todoByTag = false
-    private var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"))
     private var flagCount = 0
     private var tagCount = 0
     private var untagCount = 0
@@ -39,11 +40,9 @@ class TodoAdapter(val context: Context) :
 
     override fun getItemViewType(position: Int): Int {
         return if (data.isEmpty()) {
-            Log.d("20191627 viewType", "Empty")
             Empty
         } else if (!todoByTag) {
             if (position == 0) {
-                Log.d("20191627 viewType", "HeaderType1")
                 HeaderType1
             }
             else if (position in listOf<Int>(
@@ -52,7 +51,6 @@ class TodoAdapter(val context: Context) :
                     flagCount + tagCount + untagCount + 6
                 )
             ) {
-                Log.d("20191627 viewType", "HeaderType2")
                 HeaderType2
             }
             else if (position in listOf<Int>(
@@ -61,32 +59,22 @@ class TodoAdapter(val context: Context) :
                     flagCount + tagCount + untagCount + 5
                 )
             ) {
-                Log.d("20191627 viewType", "Divdier")
                 Divider
             } else {
-                Log.d("20191627 viewType", "Item")
                 Item
             }
         } else {
             if (position == 0) {
-                Log.d("20191627 viewType", "HeaderType2")
                 HeaderType2
             }
             else if (position in 1..data.count()) {
-                Log.d("20191627 viewType", "Item")
                 Item
             }
             else {
-                Log.d("20191627 viewType", "Divider")
                 Divider
             }
         }
     }
-    //            else if (position in 1..flagCount ||
-//                position in flagCount + 3..flagCount + tagCount + 2 ||
-//                position in flagCount + tagCount + 5..flagCount + tagCount + untagCount + 4 ||
-//                position in flagCount + tagCount + untagCount + 6..flagCount + tagCount + untagCount + completeCount + 5
-//            )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -135,9 +123,6 @@ class TodoAdapter(val context: Context) :
     }
 
     override fun getItemCount(): Int {
-        Log.d("20191627", "data.count : " + data.count().toString())
-        Log.d("20191627", "headercount : " + headerCount.toString())
-        Log.d("20191627", "dividercount : " + dividerCount.toString())
         return data.count() + headerCount + dividerCount
 
     }
@@ -194,21 +179,26 @@ class TodoAdapter(val context: Context) :
 
     fun setFlagCount(count: Int?) {
         flagCount = count?: 0
-        Log.d("20191627", flagCount.toString())
     }
 
     fun setTagCount(count: Int?) {
         tagCount = count?:0
-        Log.d("20191627", tagCount.toString())
     }
 
     fun setUnTagCount(count: Int?) {
         untagCount = count?:0
-        Log.d("20191627", untagCount.toString())
     }
 
     fun setCompleteCount(count: Int?) {
         completeCount = count?:0
-        Log.d("20191627", completeCount.toString())
+    }
+
+    fun setTodoByTag(content: String?){
+        if (content != null) {
+            todoByTag = true
+            tags[3].content = content
+            headerCount = 0
+            dividerCount = 0
+        }else todoByTag = false
     }
 }

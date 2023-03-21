@@ -1,7 +1,6 @@
 package com.example.haru.data.model
 
 import java.util.Date
-w
 data class Todo(
     val id: String,
     val content: String,

@@ -129,16 +129,17 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     true -> {
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.VISIBLE
-                        binding.btnEndDatePick.text = dateFormat(LocalDateTime.now())
-                        val anim = TranslateAnimation(
-                            0f,
-                            0f,
-                            0f,
-                            binding.endDateTimeLayout.height.toFloat()
-                        )
-                        anim.duration = 400
-                        anim.fillAfter = true
-                        binding.endDateTimeLayout.animation = anim
+                        Log.d("20191627", LocalDateTime.now().toString())
+//                        binding.btnEndDatePick.text = dateFormat(LocalDateTime.now())
+//                        val anim = TranslateAnimation(
+//                            0f,
+//                            0f,
+//                            0f,
+//                            0f,
+//                        )
+//                        anim.duration = 400
+//                        anim.fillAfter = true
+//                        binding.endDateTimeLayout.animation = anim
                         binding.endDateTimeLayout.visibility = View.VISIBLE
                     }
                     else -> {

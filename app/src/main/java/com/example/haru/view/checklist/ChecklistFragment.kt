@@ -66,8 +66,10 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             override fun onClick(view: View, position: Int) {
                 if (position == 0)
 //                    checkListViewModel.getTodoByFlag(position)  // API추가시 구현
-                else if (position > 2)
+                else if (position > 2){
+                    checkListViewModel.clear()
                     checkListViewModel.getTodoByTag(position)
+                }
                 Log.d("20191627", position.toString() + ": 눌렸다")
             }
         }
@@ -100,6 +102,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
             val dataList = it.filterIsInstance<Todo>()
             todoAdapter.setDataList(dataList)
+        })
+
+        checkListViewModel.todoByTag.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.d("20191627", "옵저버 호출")
+            todoAdapter.setTodoByTag(checkListViewModel.todoByTagItem)
         })
 
     }
