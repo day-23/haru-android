@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 
+import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
@@ -18,6 +19,11 @@ import android.view.ViewGroup
 import android.view.animation.TranslateAnimation
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.core.view.get
+import androidx.transition.Fade
+import androidx.transition.Slide
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.viewmodel.CheckListViewModel
@@ -66,12 +72,16 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         binding = FragmentChecklistInputBinding.inflate(inflater)
         binding.viewModel = todoAddViewModel
+
+        binding.repeatSetLayout.layoutTransition.apply {
+            setAnimateParentHierarchy(false)
+        }
+
         return binding.root
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog: Dialog = super.onCreateDialog(savedInstanceState)
-
         dialog.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
             setupRatio(bottomSheetDialog)
@@ -131,16 +141,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         binding.btnEndDatePick.visibility = View.VISIBLE
                         Log.d("20191627", LocalDateTime.now().toString())
 //                        binding.btnEndDatePick.text = dateFormat(LocalDateTime.now())
-//                        val anim = TranslateAnimation(
-//                            0f,
-//                            0f,
-//                            0f,
-//                            0f,
-//                        )
-//                        anim.duration = 400
-//                        anim.fillAfter = true
-//                        binding.endDateTimeLayout.animation = anim
+
                         binding.endDateTimeLayout.visibility = View.VISIBLE
+
+                        binding.endDateTimeLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                        val animator = ValueAnimator.ofInt()
                     }
                     else -> {
                         binding.endDateSwitch.isChecked = it

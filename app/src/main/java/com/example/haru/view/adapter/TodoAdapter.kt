@@ -25,7 +25,7 @@ class TodoAdapter(val context: Context) :
     val Divider = 3
     val Empty = 4
 
-    var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("",""))
+    var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
     private var data = emptyList<Todo>()
 
@@ -44,16 +44,14 @@ class TodoAdapter(val context: Context) :
         } else if (!todoByTag) {
             if (position == 0) {
                 HeaderType1
-            }
-            else if (position in listOf<Int>(
+            } else if (position in listOf<Int>(
                     flagCount + 2,
                     flagCount + tagCount + 4,
                     flagCount + tagCount + untagCount + 6
                 )
             ) {
                 HeaderType2
-            }
-            else if (position in listOf<Int>(
+            } else if (position in listOf<Int>(
                     flagCount + 1,
                     flagCount + tagCount + 3,
                     flagCount + tagCount + untagCount + 5
@@ -66,11 +64,9 @@ class TodoAdapter(val context: Context) :
         } else {
             if (position == 0) {
                 HeaderType2
-            }
-            else if (position in 1..data.count()) {
+            } else if (position in 1..data.count()) {
                 Item
-            }
-            else {
+            } else {
                 Divider
             }
         }
@@ -139,8 +135,14 @@ class TodoAdapter(val context: Context) :
                     holder.bind(tags[headerCount - 1].content)
                 headerCount++
             }
-            is DividerViewHolder -> {dividerCount++}
+            is DividerViewHolder -> {
+                dividerCount++
+            }
             is TodoViewHolder -> {
+                Log.d(
+                    "20191627",
+                    "position : ${position.toString()} | headerCount : ${headerCount.toString()} | dividerCount : ${dividerCount.toString()}"
+                )
                 holder.bind(data[position - headerCount - dividerCount])
             }
         }
@@ -178,27 +180,27 @@ class TodoAdapter(val context: Context) :
     }
 
     fun setFlagCount(count: Int?) {
-        flagCount = count?: 0
+        flagCount = count ?: 0
     }
 
     fun setTagCount(count: Int?) {
-        tagCount = count?:0
+        tagCount = count ?: 0
     }
 
     fun setUnTagCount(count: Int?) {
-        untagCount = count?:0
+        untagCount = count ?: 0
     }
 
     fun setCompleteCount(count: Int?) {
-        completeCount = count?:0
+        completeCount = count ?: 0
     }
 
-    fun setTodoByTag(content: String?){
+    fun setTodoByTag(content: String?) {
         if (content != null) {
             todoByTag = true
             tags[3].content = content
             headerCount = 0
             dividerCount = 0
-        }else todoByTag = false
+        } else todoByTag = false
     }
 }
