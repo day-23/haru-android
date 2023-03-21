@@ -1,6 +1,7 @@
 package com.example.haru.viewmodel
 
 import android.content.Context
+import android.provider.ContactsContract.RawContacts.Data
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -26,15 +27,22 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Days : LiveData<ArrayList<Int>>
         get() = _Days
 
-    private val _Selected = MutableLiveData<ArrayList<Timetable_date>>()
-    val Selected : LiveData<ArrayList<Timetable_date>>
+    private val _Selected = MutableLiveData<Timetable_date>()
+    val Selected : LiveData<Timetable_date>
         get() = _Selected
 
     val calendar = Calendar.getInstance()
     var days: ArrayList<Int> = ArrayList()
 
     init {
+        _Selected.value = Timetable_date(calendar.get(Calendar.YEAR) , calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH))
 
+        getDays(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        _Days.value = days
     }
 
     fun buttonClick(){
@@ -59,7 +67,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
 //                    SimpleDateFormat("yyyy년 mm월 dd일").format(Date(year - 1900, month, day))
 //                val selectedMonth = SimpleDateFormat("M월").format(Date(year - 1900, month, day))
 
-                Selected =
                 getDays(year, month, day)
                 dialog.dismiss()
             }
