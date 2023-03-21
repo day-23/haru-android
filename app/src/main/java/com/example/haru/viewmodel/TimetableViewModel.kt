@@ -1,40 +1,74 @@
 package com.example.haru.viewmodel
 
+import android.content.Context
+import android.widget.DatePicker
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.bumptech.glide.Glide.init
+import com.example.haru.data.model.Timetable_date
+import com.example.haru.data.model.User
 import com.example.haru.data.model.timetable_data
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
-class TimetableViewModel: ViewModel() {
+class TimetableViewModel(val context : Context): ViewModel() {
 
-    val timetableData = MutableLiveData<ArrayList<timetable_data>>()
-    val days = MutableLiveData<ArrayList<Int>>()
+    private val _Dates = MutableLiveData<ArrayList<Timetable_date>>()
+    val Dates : LiveData<ArrayList<Timetable_date>>
+        get() = _Dates
+
+    private val _Days = MutableLiveData<ArrayList<Int>>()
+    val Days : LiveData<ArrayList<Int>>
+        get() = _Days
+
+    private val _Selected = MutableLiveData<ArrayList<Timetable_date>>()
+    val Selected : LiveData<ArrayList<Timetable_date>>
+        get() = _Selected
+
     val calendar = Calendar.getInstance()
+    var days: ArrayList<Int> = ArrayList()
 
     init {
-        timetableData.value = ArrayList()
-        days.value = ArrayList()
+
     }
 
-    fun getTimetableData() {
-        val data = ArrayList<timetable_data>()
-        for (i: Int in 1..23) {
-            if (i < 12) {
-                if(i == 1)
-                    data.add(timetable_data("${i}\n오전"))
-                else
-                    data.add(timetable_data("${i}"))
-            } else {
-                if (i == 12) {
-                    data.add(timetable_data("12\n오후"))
-                } else {
-                    data.add(timetable_data("${i - 12}\n"))
-                }
+    fun buttonClick(){
+        showDatePickerDialog()
+    }
+
+    fun showDatePickerDialog() {
+        val datePicker = DatePicker(context)
+        datePicker.init(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH),
+            null
+        )
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(context)
+            .setView(datePicker)
+            .setPositiveButton("apply") { dialog, _ ->
+                val year = datePicker.year
+                val month = datePicker.month
+                var day = datePicker.dayOfMonth
+//                val selectedYear =
+//                    SimpleDateFormat("yyyy년 mm월 dd일").format(Date(year - 1900, month, day))
+//                val selectedMonth = SimpleDateFormat("M월").format(Date(year - 1900, month, day))
+
+                Selected =
+                getDays(year, month, day)
+                dialog.dismiss()
             }
-        }
-        timetableData.value = data
+            .setNegativeButton("cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.show()
     }
 
     fun getDays(year: Int, month: Int, day: Int) {
@@ -69,12 +103,7 @@ class TimetableViewModel: ViewModel() {
             }
             d += 1
         }
-        days.value = dayList
+        days = dayList
     }
 
-    fun updateMonth(year: Int, month: Int) {
-        calendar.set(year, month - 1, 1)
-        getDays(year, month, 1)
-        getTimetableData()
-    }
 }
