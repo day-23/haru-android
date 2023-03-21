@@ -9,6 +9,7 @@ import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -56,12 +57,13 @@ class TimetableFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "TimetableFragment - onCreateView() called")
-        binding = FragmentTimetableBinding.inflate(inflater, container,false)
-
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_timetable, container, false)
+//        binding = FragmentTimetableBinding.inflate(inflater, container,false)
         val rootView = binding.root
         timetableviewModel = TimetableViewModel(requireContext())
+        binding.viewModel = timetableviewModel
 
-        timeList.add(timetable_data("1"))
+
         timetableAdapter = TimetableAdapter(requireContext(), reviewModel.times.value ?: timeList)
 
         recyclerView1 = binding.timetableRecyclerview
@@ -73,20 +75,14 @@ class TimetableFragment : Fragment() {
             timetableAdapter.notifyDataSetChanged()
         }
 
-        timetableviewModel.Selected.observe(viewLifecycleOwner) { _times ->
-            binding.timetableMonth.text = _times.month + "월"
-            binding.timetableYear.text = _times.year + "년"
+        timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
+            binding.invalidateAll()
         }
 
-        timetableviewModel.Days.observe(viewLifecycleOwner) { _days ->
-            binding.sunBtn.text = _days.get(6)
-            binding.monBtn.text = _days.get(0)
-            binding.tueBtn.text = _days.get(1)
-            binding.wedBtn.text = _days.get(2)
-            binding.thuBtn.text = _days.get(3)
-            binding.friBtn.text = _days.get(4)
-            binding.satBtn.text = _days.get(5)
+        timetableviewModel.Days.observe(viewLifecycleOwner) { days ->
+            binding.invalidateAll()
         }
+
         binding.timetableMonth.setOnClickListener {
             timetableviewModel.buttonClick()
         }

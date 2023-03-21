@@ -36,7 +36,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var dayslist: ArrayList<String> = ArrayList()
 
     init {
-        _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString() , (calendar.get(Calendar.MONTH)+1).toString(), calendar.get(Calendar.DAY_OF_MONTH).toString())
+        _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString()+"일")
 
         Daylist(
             calendar.get(Calendar.YEAR),
@@ -64,7 +64,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 val year = datePicker.year
                 val month = datePicker.month
                 var day = datePicker.dayOfMonth
-                _Selected.value = Timetable_date(year.toString(), (month+1).toString(), day.toString())
+                _Selected.value = Timetable_date(year.toString()+"년", (month+1).toString()+"월", day.toString()+"일")
                 Daylist(year, month, day)
                 _Days.value = dayslist
                 dialog.dismiss()
