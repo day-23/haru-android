@@ -6,7 +6,7 @@ data class Todo (
     val memo: String?,
     val todayTodo: Boolean,
     val flag: Boolean,
-    val endDate: String?,
+    val endDate: String,
     val endDateTime: String?,
     val repeatEnd: String?,
     val createdAt: String,

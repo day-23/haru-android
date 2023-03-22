@@ -3,22 +3,27 @@ package com.example.haru.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.haru.data.model.CalendarItem
+import com.example.haru.data.model.CalendarContent
+import com.example.haru.data.model.CalendarDate
+import com.example.haru.data.model.ContentMark
 import com.example.haru.databinding.ListItemDayBinding
 
 class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
-    private var data = emptyList<CalendarItem>()
+    private var date = emptyList<CalendarDate>()
+    private var content = emptyList<ContentMark>()
 
-    inner class DayView(val binding: ListItemDayBinding) :
+    inner class DayView(private val binding: ListItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
-            fun bind(item: CalendarItem){
-                binding.calendarItem = item
-                binding.dayContentListview.adapter = AdapterContent(item, true)
+            fun bind(date: CalendarDate, content: ContentMark){
+                binding.calendarDate = date
+                binding.calendarContent = content
+                //binding.dayContentListview.adapter = AdapterContent(item, true)
             }
         }
 
-    fun updateData(newdayList:List<CalendarItem>) {
-        data = newdayList
+    fun updateData(newdayList:List<CalendarDate>, newcontentList:List<ContentMark>) {
+        date = newdayList
+        content = newcontentList
         notifyDataSetChanged()
     }
 
@@ -28,10 +33,10 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
     }
 
     override fun onBindViewHolder(holder: DayView, position: Int) {
-        holder.bind(data[position])
+        holder.bind(date[position], content[position])
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return date.size * 5
     }
 }

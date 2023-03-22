@@ -22,7 +22,7 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner):
 
     lateinit var calendarviewModel: CalendarViewModel
 
-    inner class MonthView(itemView: View) : RecyclerView.ViewHolder(itemView){}
+    inner class MonthView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthView {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -54,8 +54,35 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner):
 
         calendarviewModel.init_viewModel(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH))
 
-        calendarviewModel.liveDataList.observe(lifecycle) {
-            todoAdapter.updateData(it)
+        calendarviewModel.liveDateList.observe(lifecycle) { lit ->
+            calendarviewModel.liveContentList.observe(lifecycle) {
+                val gridlayout = GridLayoutManager(holder.itemView.context, 7)
+                var datePosition = 0
+                var contentPosition = 0
+
+                gridlayout.spanSizeLookup = object : SpanSizeLookup(){
+                    override fun getSpanSize(position: Int): Int {
+                        if(datePosition == 0){
+                            datePosition++
+                            return 1
+                        } else if(datePosition % 7 > 0){
+                            datePosition++
+                            return 1
+                        } else {
+                            for(content in it){
+                                if(content.position == datePosition){
+                                    
+                                }
+                            }
+
+                            return 1
+                        }
+                    }
+                }
+
+
+                todoAdapter.updateData(lit, it)
+            }
         }
     }
 
