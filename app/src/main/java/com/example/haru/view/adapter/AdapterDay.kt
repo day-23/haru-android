@@ -1,7 +1,11 @@
 package com.example.haru.view.adapter
 
+import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.CalendarContent
 import com.example.haru.data.model.CalendarDate
@@ -14,10 +18,22 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
 
     inner class DayView(private val binding: ListItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
-            fun bind(date: CalendarDate, content: ContentMark){
+            fun bind(date: CalendarDate?, content: ContentMark?, dateOrContent:Boolean, nullable: Boolean){
+//                if(!dateOrContent){
+//                    var layoutparam: LayoutParams = binding.itemDayText.layoutParams
+//                    layoutparam
+//                    binding.itemDayText.gravity
+//                }
+
+                if(!dateOrContent && !nullable){
+                    binding.textFrameLayout.setBackgroundColor(Color.LTGRAY)
+                }
+
                 binding.calendarDate = date
                 binding.calendarContent = content
-                //binding.dayContentListview.adapter = AdapterContent(item, true)
+                binding.dateOrContent = dateOrContent
+                binding.nullable = nullable
+                binding.nullData = ""
             }
         }
 
@@ -32,11 +48,61 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
         return DayView(binding)
     }
 
+    var duplist = ArrayList<ContentMark>()
+
+    var dateOrContent = true
+    var contentcnt = 0
+    var datePosition = 0
+    var contentPosition = 0
+
     override fun onBindViewHolder(holder: DayView, position: Int) {
-        holder.bind(date[position], content[position])
+        if(dateOrContent){
+            holder.bind(date[datePosition], null,true,false)
+
+            datePosition++
+
+            if (datePosition % 7 == 0){
+                dateOrContent = false
+            }
+        } else {
+            Log.d("contentPosition", contentPosition.toString())
+
+            for(con in content){
+                if(!duplist.contains(con) && con.position == contentPosition){
+                    Log.d("내용","성공")
+                    duplist.add(con)
+                    contentPosition += con.cnt
+                    holder.bind(null, con,false,false)
+                    return
+                }
+            }
+
+            contentPosition++
+
+            if(contentPosition % 7 == 0){
+                contentPosition -= 7
+                contentcnt++
+            }
+
+            if(contentcnt == 4){
+                contentPosition += 7
+                contentcnt = 0
+                dateOrContent = true
+            }
+
+            holder.bind(null, null,false,true)
+        }
     }
 
     override fun getItemCount(): Int {
-        return date.size * 5
+        var size = date.size * 5
+
+        for(con in content){
+            if(con.cnt > 1){
+                size -= con.cnt-1
+            }
+        }
+
+        return size
     }
 }

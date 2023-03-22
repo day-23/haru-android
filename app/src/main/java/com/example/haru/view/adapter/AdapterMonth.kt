@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.ContentMark
 import com.example.haru.viewmodel.CalendarViewModel
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 //월간 달력 어뎁터
@@ -57,29 +59,50 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner):
         calendarviewModel.liveDateList.observe(lifecycle) { lit ->
             calendarviewModel.liveContentList.observe(lifecycle) {
                 val gridlayout = GridLayoutManager(holder.itemView.context, 7)
+                var duplist = ArrayList<ContentMark>()
+
+                var dateOrContent = true
+                var contentcnt = 0
                 var datePosition = 0
                 var contentPosition = 0
 
                 gridlayout.spanSizeLookup = object : SpanSizeLookup(){
                     override fun getSpanSize(position: Int): Int {
-                        if(datePosition == 0){
+                        if(dateOrContent){
                             datePosition++
-                            return 1
-                        } else if(datePosition % 7 > 0){
-                            datePosition++
+
+                            if (datePosition % 7 == 0){
+                                dateOrContent = false
+                            }
+
                             return 1
                         } else {
                             for(content in it){
-                                if(content.position == datePosition){
-                                    
+                                if(!duplist.contains(content) && content.position == contentPosition){
+                                    duplist.add(content)
+                                    contentPosition += content.cnt
+                                    Log.d("contentcnt", content.cnt.toString())
+                                    return content.cnt
                                 }
+                            }
+
+                            contentPosition++
+
+                            if(contentPosition % 7 == 0){
+                                contentPosition -= 7
+                                contentcnt++
+                            }
+
+                            if(contentcnt == 4){
+                                contentPosition += 7
+                                contentcnt = 0
+                                dateOrContent = true
                             }
 
                             return 1
                         }
                     }
                 }
-
 
                 todoAdapter.updateData(lit, it)
             }
