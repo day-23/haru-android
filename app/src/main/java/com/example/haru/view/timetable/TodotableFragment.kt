@@ -8,16 +8,23 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Todotable_date
+import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.databinding.FragmentTodotableBinding
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
+import com.example.haru.viewmodel.TodoTableRecyclerViewmodel
 
 class TodotableFragment : Fragment()  {
     private lateinit var binding : FragmentTodotableBinding
     private lateinit var timetableviewModel: TimetableViewModel
-
+    private lateinit var todoreviewModel: TodoTableRecyclerViewmodel
+    private lateinit var todotableAdapter: TodotableAdapter
+    lateinit var todorecyclerView: RecyclerView
+    var timeList: ArrayList<Todotable_date> = ArrayList()
     companion object {
         const val TAG: String = "로그"
 
@@ -28,7 +35,7 @@ class TodotableFragment : Fragment()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        todoreviewModel = TodoTableRecyclerViewmodel()
         Log.d(TodotableFragment.TAG, "TodotableFragment - onCreate() called")
     }
 
@@ -43,11 +50,25 @@ class TodotableFragment : Fragment()  {
 
         timetableviewModel = TimetableViewModel(requireContext())
         binding.viewModel = timetableviewModel
+
+        todotableAdapter = TodotableAdapter(requireContext(), todoreviewModel.MonthList.value?: timeList)
+
+        todorecyclerView = binding.todoDaysRecycler
+        todorecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        todorecyclerView.adapter = todotableAdapter
+
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
+            val year = times.year.slice(0..times.year.length - 2)
+            val month = times.month.slice(0..times.month.length - 2)
+            val day = times.day.slice(0..times.day.length - 2)
+            todoreviewModel.updateMonth(year.toInt(), month.toInt()-1, day.toInt())
+            Log.d("MonthList1", "${year}, $month, $day")
             binding.invalidateAll()
         }
-        timetableviewModel.Days.observe(viewLifecycleOwner) { days ->
-            binding.invalidateAll()
+
+        todoreviewModel.MonthList.observe(viewLifecycleOwner) {days ->
+            Log.d("MonthList2", "${days.size}")
+            todotableAdapter.setData(days)
         }
 
         binding.todolistChange.setOnClickListener{

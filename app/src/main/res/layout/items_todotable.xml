@@ -16,6 +16,7 @@
             >
 
             <TextView
+                android:id="@+id/day_of_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="월"
@@ -25,6 +26,7 @@
                 android:layout_marginBottom="7dp"/>
 
             <TextView
+                android:id="@+id/day_of_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1"
@@ -34,6 +36,7 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/todos_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="horizontal"/>

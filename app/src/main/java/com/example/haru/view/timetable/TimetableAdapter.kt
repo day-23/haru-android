@@ -18,8 +18,6 @@ import kotlin.collections.ArrayList
 class TimetableAdapter(val context: Context,
                        private var itemList: ArrayList<timetable_data>) : RecyclerView.Adapter<TimetableAdapter.TimetableViewHolder>() {
 
-    val selectedItems = SparseBooleanArray()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimetableViewHolder {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.items_timetable, parent, false)
@@ -35,7 +33,7 @@ class TimetableAdapter(val context: Context,
         return itemList.count()
     }
 
-    fun setData(newData:ArrayList<timetable_data>){
+    fun setData(newData : ArrayList<timetable_data>){
         itemList = newData
         notifyDataSetChanged()
     }

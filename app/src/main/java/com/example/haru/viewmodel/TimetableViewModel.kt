@@ -97,6 +97,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
             "Sat"-> d -= 6
             "Sun"-> d
         }
+
         var addday = 0
         for (i: Int in 1 .. 7){
             if(d < 1){

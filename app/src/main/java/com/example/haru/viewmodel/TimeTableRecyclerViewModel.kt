@@ -13,10 +13,10 @@ class TimeTableRecyclerViewModel : ViewModel() {
 
     private var items = ArrayList<timetable_data>()
 
-    init{
+    init {
         for (i: Int in 0..23) {
             if (i < 12) {
-                if(i == 0)
+                if (i == 0)
                     items.add(timetable_data("${i}\n오전"))
                 else
                     items.add(timetable_data("${i}"))
@@ -30,7 +30,4 @@ class TimeTableRecyclerViewModel : ViewModel() {
         }
         _TimeList.value = items
     }
-
-
-
 }
