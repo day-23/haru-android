@@ -22,24 +22,29 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="38dp"
+                android:layout_marginLeft="30dp"
                 android:layout_marginBottom="20dp">
-
-                <TextView
-                    android:id="@+id/timetable_month"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.Selected.month}"
-                    android:textSize="28dp"
-                    android:textColor="#191919"
-
-                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/timetable_year"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="28dp"
+                    android:textStyle="bold"
+                    android:textColor="#191919"
                     android:text="@{viewModel.Selected.year}" />
+
+                <TextView
+                    android:id="@+id/timetable_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="@{viewModel.Selected.month}"
+                    android:textSize="28dp"
+                    android:textColor="#191919"
+                    android:textStyle="bold" />
+
+
             </LinearLayout>
 
             <LinearLayout
@@ -177,13 +182,89 @@
                 android:visibility="gone">
 
             </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/timetable_recyclerview"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                tools:listitem="@layout/items_timetable" />
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/timetable_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        tools:listitem="@layout/items_timetable" />
+
+                    <!--요일별 그리드-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="32dp">
+
+                        <GridLayout
+                            android:id="@+id/sun_grid"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:columnCount="1"
+                            android:alignmentMode="alignMargins">
+                        </GridLayout>
+
+                        <GridLayout
+                            android:id="@+id/mon_grid"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:columnCount="1"
+                            android:alignmentMode="alignMargins">
+                        </GridLayout>
+
+                        <GridLayout
+                            android:id="@+id/tue_grid"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:columnCount="1"
+                            android:alignmentMode="alignMargins">
+                        </GridLayout>
+
+                        <GridLayout
+                            android:id="@+id/wed_grid"
+                            android:layout_width="48dp"
+                            android:layout_height="match_parent"
+                            android:columnCount="1"
+                            android:alignmentMode="alignMargins">
+                        </GridLayout>
+
+                        <GridLayout
+                            android:id="@+id/thu_grid"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:columnCount="1"
+                            android:alignmentMode="alignMargins">
+                        </GridLayout>
+
+                        <GridLayout
+                            android:id="@+id/fri_grid"
+                            android:layout_width="48dp"
+                            android:layout_height="match_parent"
+                            android:columnCount="1"
+                            android:alignmentMode="alignMargins">
+                        </GridLayout>
+
+                        <GridLayout
+                            android:id="@+id/sat_grid"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:columnCount="1"
+                            android:alignmentMode="alignMargins">
+                        </GridLayout>
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
