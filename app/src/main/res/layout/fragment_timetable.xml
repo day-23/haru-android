@@ -52,6 +52,7 @@
                     android:onClick="@{() -> viewModel.buttonClick()}"/>
 
                 <ImageButton
+                    android:id="@+id/todolist_change"
                     android:layout_marginLeft="99dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -276,68 +277,6 @@
                                 android:textStyle="bold"
                                 android:textSize="12dp"
                                 android:background="@color/teal_200"/>
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
-
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
-
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
-
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
-
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
-
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -360,6 +299,14 @@
                             android:layout_width="48dp"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
+                            <TextView
+                                android:layout_marginTop="132dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="132dp"
+                                android:text="진도나가기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -374,6 +321,16 @@
                             android:layout_width="48dp"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
+
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="공부하기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+
                         </LinearLayout>
 
                         <LinearLayout

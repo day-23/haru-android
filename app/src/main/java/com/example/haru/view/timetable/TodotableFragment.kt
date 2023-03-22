@@ -16,6 +16,7 @@ import com.example.haru.viewmodel.TimetableViewModel
 
 class TodotableFragment : Fragment()  {
     private lateinit var binding : FragmentTodotableBinding
+    private lateinit var timetableviewModel: TimetableViewModel
 
     companion object {
         const val TAG: String = "로그"
@@ -39,6 +40,25 @@ class TodotableFragment : Fragment()  {
         Log.d(TimetableFragment.TAG, "TimetableFragment - onCreateView() called")
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_todotable, container, false)
         val rootView = binding.root
+
+        timetableviewModel = TimetableViewModel(requireContext())
+        binding.viewModel = timetableviewModel
+        timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
+            binding.invalidateAll()
+        }
+        timetableviewModel.Days.observe(viewLifecycleOwner) { days ->
+            binding.invalidateAll()
+        }
+
+        binding.todolistChange.setOnClickListener{
+            Log.d("Frag", "changed")
+            val newFrag = TimetableFragment.newInstance()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.addToBackStack(null)
+            transaction.commit()
+            true
+        }
 
         return rootView
     }

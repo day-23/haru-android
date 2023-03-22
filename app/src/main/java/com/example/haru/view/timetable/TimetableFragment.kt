@@ -31,8 +31,8 @@ import kotlin.text.Typography.times
 
 class TimetableFragment : Fragment() {
     private lateinit var binding : FragmentTimetableBinding
-    private lateinit var reviewModel: TimeTableRecyclerViewModel
     private lateinit var timetableviewModel: TimetableViewModel
+    private lateinit var reviewModel: TimeTableRecyclerViewModel
     private lateinit var timetableAdapter: TimetableAdapter
     var timeList: ArrayList<timetable_data> = ArrayList()
     lateinit var recyclerView1: RecyclerView
@@ -58,7 +58,6 @@ class TimetableFragment : Fragment() {
     ): View? {
         Log.d(TAG, "TimetableFragment - onCreateView() called")
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_timetable, container, false)
-//        binding = FragmentTimetableBinding.inflate(inflater, container,false)
         val rootView = binding.root
         timetableviewModel = TimetableViewModel(requireContext())
         binding.viewModel = timetableviewModel
@@ -81,6 +80,16 @@ class TimetableFragment : Fragment() {
 
         timetableviewModel.Days.observe(viewLifecycleOwner) { days ->
             binding.invalidateAll()
+        }
+
+        binding.todolistChange.setOnClickListener{
+            Log.d("Frag", "changed")
+            val newFrag = TodotableFragment.newInstance()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.addToBackStack(null)
+            transaction.commit()
+            true
         }
 
         return rootView
