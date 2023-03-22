@@ -95,6 +95,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 //        todoListView.addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
 
         checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.d("20191627", "todoDataList observe")
             todoAdapter.setFlagCount(checkListViewModel.flaggedTodos.value?.size)
             todoAdapter.setTagCount(checkListViewModel.taggedTodos.value?.size)
             todoAdapter.setUnTagCount(checkListViewModel.untaggedTodos.value?.size)

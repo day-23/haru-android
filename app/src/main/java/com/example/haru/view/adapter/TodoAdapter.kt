@@ -27,7 +27,7 @@ class TodoAdapter(val context: Context) :
 
     var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
-    private var data = emptyList<Todo>()
+    private var data = mutableListOf<Todo>()
 
     private var todoByTag = false
     private var flagCount = 0
@@ -39,37 +39,38 @@ class TodoAdapter(val context: Context) :
     private var dividerCount = 0
 
     override fun getItemViewType(position: Int): Int {
-        return if (data.isEmpty()) {
-            Empty
-        } else if (!todoByTag) {
-            if (position == 0) {
-                HeaderType1
-            } else if (position in listOf<Int>(
-                    flagCount + 2,
-                    flagCount + tagCount + 4,
-                    flagCount + tagCount + untagCount + 6
-                )
-            ) {
-                HeaderType2
-            } else if (position in listOf<Int>(
-                    flagCount + 1,
-                    flagCount + tagCount + 3,
-                    flagCount + tagCount + untagCount + 5
-                )
-            ) {
-                Divider
-            } else {
-                Item
-            }
-        } else {
-            if (position == 0) {
-                HeaderType2
-            } else if (position in 1..data.count()) {
-                Item
-            } else {
-                Divider
-            }
-        }
+        return data[position].type
+//        return if (data.isEmpty()) {
+//            Empty
+//        } else if (!todoByTag) {
+//            if (position == 0) {
+//                HeaderType1
+//            } else if (position in listOf<Int>(
+//                    flagCount + 2,
+//                    flagCount + tagCount + 4,
+//                    flagCount + tagCount + untagCount + 6
+//                )
+//            ) {
+//                HeaderType2
+//            } else if (position in listOf<Int>(
+//                    flagCount + 1,
+//                    flagCount + tagCount + 3,
+//                    flagCount + tagCount + untagCount + 5
+//                )
+//            ) {
+//                Divider
+//            } else {
+//                Item
+//            }
+//        } else {
+//            if (position == 0) {
+//                HeaderType2
+//            } else if (position in 1..data.count()) {
+//                Item
+//            } else {
+//                Divider
+//            }
+//        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -119,32 +120,16 @@ class TodoAdapter(val context: Context) :
     }
 
     override fun getItemCount(): Int {
-        return data.count() + headerCount + dividerCount
+        return data.count()
 
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is HeaderTypeOneViewHolder -> {
-                headerCount++
-            }
-            is HeaderTypeTwoViewHolder -> {
-                if (todoByTag)
-                    holder.bind(tags[3].content)
-                else
-                    holder.bind(tags[headerCount - 1].content)
-                headerCount++
-            }
-            is DividerViewHolder -> {
-                dividerCount++
-            }
-            is TodoViewHolder -> {
-                Log.d(
-                    "20191627",
-                    "position : ${position.toString()} | headerCount : ${headerCount.toString()} | dividerCount : ${dividerCount.toString()}"
-                )
-                holder.bind(data[position - headerCount - dividerCount])
-            }
+            is HeaderTypeOneViewHolder -> {}
+            is HeaderTypeTwoViewHolder ->  holder.bind(data[position].content)
+            is DividerViewHolder -> {}
+            is TodoViewHolder -> holder.bind(data[position])
         }
     }
 
@@ -175,7 +160,27 @@ class TodoAdapter(val context: Context) :
     }
 
     fun setDataList(dataList: List<Todo>) {
-        this.data = dataList
+        this.data = dataList as MutableList<Todo>
+        if (todoByTag){
+            this.data.add(0, Todo(type = 1, content = tags[3].content))
+        } else {
+            this.data.apply {
+                // flag
+                add(0, Todo(type = 0))
+                add(flagCount + 1, Todo(type = 3))
+
+                // tag
+                add(flagCount + 2, Todo(type = 1, content = tags[0].content))
+                add(flagCount + tagCount + 3, Todo(type = 3))
+
+                //untag
+                add(flagCount + tagCount + 4, Todo(type = 1, content = tags[1].content))
+                add(flagCount + tagCount + untagCount + 5, Todo(type = 3))
+
+                //complete
+                add(flagCount + tagCount + untagCount + 6, Todo(type = 1, content = tags[2].content))
+            }
+        }
         notifyDataSetChanged()
     }
 

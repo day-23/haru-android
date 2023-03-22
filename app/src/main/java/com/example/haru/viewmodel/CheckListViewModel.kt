@@ -88,8 +88,8 @@ class CheckListViewModel() :
     fun getTodoByTag(position: Int){
         viewModelScope.launch {
             todoByTagItem = tagDataList.value!![position - 1].content
-            _todoDataList.value= todoRepository.getTodoByTag(tagDataList.value!![position - 1].id)
             _todoByTag.value = true
+            _todoDataList.value= todoRepository.getTodoByTag(tagDataList.value!![position - 1].id)
         }
     }
 

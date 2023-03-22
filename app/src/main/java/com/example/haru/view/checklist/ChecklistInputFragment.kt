@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.animation.TranslateAnimation
 import android.widget.TimePicker
 import android.widget.Toast
@@ -38,7 +39,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
-    BottomSheetDialogFragment() {
+    BottomSheetDialogFragment(){
     private lateinit var binding: FragmentChecklistInputBinding
     private lateinit var todoAddViewModel: TodoAddViewModel
 
@@ -73,7 +74,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         binding = FragmentChecklistInputBinding.inflate(inflater)
         binding.viewModel = todoAddViewModel
 
-        binding.repeatSetLayout.layoutTransition.apply {
+        binding.endDateSetLayout.layoutTransition.apply {
             setAnimateParentHierarchy(false)
         }
 
@@ -142,10 +143,23 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         Log.d("20191627", LocalDateTime.now().toString())
 //                        binding.btnEndDatePick.text = dateFormat(LocalDateTime.now())
 
+                        binding.endDateTimeLayout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+                            override fun onGlobalLayout() {
+                                binding.endDateTimeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                                val valueAnimator = ValueAnimator.ofInt(binding.endDateSetLayout.height, binding.endDateSetLayout.height + binding.endDateTimeLayout.measuredHeight)
+                                valueAnimator.addUpdateListener { animator ->
+                                    val layoutParams = binding.endDateSetLayout.layoutParams
+                                    layoutParams.height = animator.animatedValue as Int
+                                    binding.endDateSetLayout.layoutParams = layoutParams
+                                }
+                                valueAnimator.duration = 400
+                                valueAnimator.start()
+                            }
+                        })
+
                         binding.endDateTimeLayout.visibility = View.VISIBLE
 
-                        binding.endDateTimeLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                        val animator = ValueAnimator.ofInt()
                     }
                     else -> {
                         binding.endDateSwitch.isChecked = it
@@ -156,11 +170,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             })
 
         todoAddViewModel.endTimeSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(it) {
+            when (it) {
                 true -> {
                     binding.endDateTimeSwitch.isChecked = it
                     binding.btnEndTimePick.visibility = View.VISIBLE
-                    binding.btnEndTimePick.text = timeFormat(LocalDateTime.now())
+//                    binding.btnEndTimePick.text = timeFormat(LocalDateTime.now())
                 }
                 else -> {
                     binding.endDateTimeSwitch.isChecked = it
@@ -170,7 +184,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         })
 
         todoAddViewModel.alarmSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(it){
+            when (it) {
                 true -> {
                     binding.alarmSwitch.isChecked = it
                     binding.btnAlarmDatePick.text = dateFormat(LocalDateTime.now())
@@ -187,7 +201,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         })
 
         todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(it){
+            when (it) {
                 true -> {
                     binding.repeatSwitch.isChecked = it
                 }
@@ -406,10 +420,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         }
     }
 
-    fun timeFormat(date: LocalDateTime): String{
+    fun timeFormat(date: LocalDateTime): String {
         val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
         return timeFormat.format(date)
     }
+
     fun dateFormat(date: LocalDateTime): String {
         val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
         return dateFormat.format(date)
