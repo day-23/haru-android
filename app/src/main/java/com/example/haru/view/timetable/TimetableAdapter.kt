@@ -42,28 +42,5 @@ class TimetableAdapter(val context: Context,
 
     inner class TimetableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var timetable_time = itemView.findViewById<TextView>(R.id.tv_timetable_time)
-
-//            var mon = itemView.findViewById<View>(R.id.tv_timetable_mon)
-//            var tue = itemView.findViewById<View>(R.id.tv_timetable_tue)
-//            var wed = itemView.findViewById<View>(R.id.tv_timetable_wed)
-//            var thu = itemView.findViewById<View>(R.id.tv_timetable_thu)
-//            var fri = itemView.findViewById<View>(R.id.tv_timetable_fri)
-//            var sat = itemView.findViewById<View>(R.id.tv_timetable_sat)
-//            var sun = itemView.findViewById<View>(R.id.tv_timetable_sun)
-//            init {
-//                itemView.setOnClickListener(this)
-//            }
-//            override fun onClick(v: View?) {
-//                val position = adapterPosition
-//                Log.d("pos", "${position}")
-//                if (selectedItems.get(position, false)) {
-//                    selectedItems.delete(position)
-//                    v?.isSelected = false
-//                } else {
-//                    selectedItems.put(position, true)
-//                    v?.isSelected = true
-//                }
-//            }
-//        }
     }
 }

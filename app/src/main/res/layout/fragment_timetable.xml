@@ -44,6 +44,30 @@
                     android:textColor="#191919"
                     android:textStyle="bold" />
 
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/___20513"
+                    android:background="#00000000"
+                    android:onClick="@{() -> viewModel.buttonClick()}"/>
+
+                <ImageButton
+                    android:layout_marginLeft="99dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/______21___1"
+                    android:layout_gravity="right"
+                    android:background="#00000000"/>
+
+                <ImageButton
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="23dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/______22___1"
+                    android:layout_gravity="right"
+                    android:background="#00000000"/>
+
 
             </LinearLayout>
 
@@ -203,61 +227,161 @@
                         android:layout_height="match_parent"
                         android:layout_marginLeft="32dp">
 
-                        <GridLayout
+                        <LinearLayout
                             android:id="@+id/sun_grid"
                             android:layout_width="50dp"
                             android:layout_height="match_parent"
-                            android:columnCount="1"
-                            android:alignmentMode="alignMargins">
-                        </GridLayout>
+                            android:orientation="vertical"
+                            >
 
-                        <GridLayout
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤추기"
+                                android:textStyle="bold"
+                                android:gravity="top"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="밥먹기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="132dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:text="춤 두번추기"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="@color/teal_200"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/mon_grid"
                             android:layout_width="50dp"
                             android:layout_height="match_parent"
-                            android:columnCount="1"
-                            android:alignmentMode="alignMargins">
-                        </GridLayout>
+                            android:orientation="vertical">
 
-                        <GridLayout
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/tue_grid"
                             android:layout_width="50dp"
                             android:layout_height="match_parent"
-                            android:columnCount="1"
-                            android:alignmentMode="alignMargins">
-                        </GridLayout>
+                            android:orientation="vertical">
+                        </LinearLayout>
 
-                        <GridLayout
+                        <LinearLayout
                             android:id="@+id/wed_grid"
                             android:layout_width="48dp"
                             android:layout_height="match_parent"
-                            android:columnCount="1"
-                            android:alignmentMode="alignMargins">
-                        </GridLayout>
+                            android:orientation="vertical">
+                        </LinearLayout>
 
-                        <GridLayout
+                        <LinearLayout
                             android:id="@+id/thu_grid"
                             android:layout_width="50dp"
                             android:layout_height="match_parent"
-                            android:columnCount="1"
-                            android:alignmentMode="alignMargins">
-                        </GridLayout>
+                            android:orientation="vertical">
+                        </LinearLayout>
 
-                        <GridLayout
+                        <LinearLayout
                             android:id="@+id/fri_grid"
                             android:layout_width="48dp"
                             android:layout_height="match_parent"
-                            android:columnCount="1"
-                            android:alignmentMode="alignMargins">
-                        </GridLayout>
+                            android:orientation="vertical">
+                        </LinearLayout>
 
-                        <GridLayout
+                        <LinearLayout
                             android:id="@+id/sat_grid"
                             android:layout_width="50dp"
                             android:layout_height="match_parent"
-                            android:columnCount="1"
-                            android:alignmentMode="alignMargins">
-                        </GridLayout>
+                            android:orientation="vertical">
+                        </LinearLayout>
 
                     </LinearLayout>
 

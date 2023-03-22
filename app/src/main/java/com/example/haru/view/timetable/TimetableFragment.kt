@@ -83,11 +83,6 @@ class TimetableFragment : Fragment() {
             binding.invalidateAll()
         }
 
-        binding.timetableMonth.setOnClickListener {
-            timetableviewModel.buttonClick()
-        }
-
-
         return rootView
     }
 }

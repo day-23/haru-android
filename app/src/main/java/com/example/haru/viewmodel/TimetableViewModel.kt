@@ -46,6 +46,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
         _Days.value = dayslist
     }
 
+    //날짜정보//
     fun buttonClick(){
         showDatePickerDialog()
     }
@@ -112,5 +113,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
             d += 1
         }
     }
+    //날짜정보//
 
 }
