@@ -166,11 +166,13 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/iv_calendar_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/big_calendar_icon" />
 
                     <TextView
+                        android:id="@+id/tv_endDate_set"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -186,7 +188,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/custom_btn_date"
-                        android:text="요로시쿠 오네가이시마스"
                         android:textColor="@color/date_text"
                         android:textSize="14sp"
                         android:visibility="invisible"
@@ -210,6 +211,7 @@
                     android:animateLayoutChanges="true">
 
                     <TextView
+                        android:id="@+id/tv_endTime_set"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="38dp"
@@ -251,14 +253,17 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/linear_border_up_bottom"
                 android:gravity="center"
+                android:animateLayoutChanges="true"
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/iv_alarm_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/big_alarm_icon" />
 
                 <TextView
+                    android:id="@+id/tv_alarm_set"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -285,6 +290,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
+                    android:textColor="@color/date_text"
+                    android:textSize="14sp"
                     android:background="@drawable/custom_btn_date"
                     android:visibility="invisible"
                     app:backgroundTint="@null" />
@@ -315,11 +322,13 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/iv_repeat_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/big_repeat_icon" />
 
                     <TextView
+                        android:id="@+id/tv_repeat_set"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -386,6 +395,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/iv_memo_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/big_memo_icon" />

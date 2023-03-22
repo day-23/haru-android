@@ -6,25 +6,14 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
-import android.text.*
-import android.text.style.BackgroundColorSpan
-import android.text.style.ImageSpan
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.view.animation.TranslateAnimation
 import android.widget.TimePicker
-import android.widget.Toast
-import androidx.core.view.get
-import androidx.transition.Fade
-import androidx.transition.Slide
-import androidx.transition.Transition
-import androidx.transition.TransitionManager
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.viewmodel.CheckListViewModel
@@ -32,10 +21,10 @@ import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.chip.ChipDrawable
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
@@ -152,7 +141,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.VISIBLE
                         Log.d("20191627", LocalDateTime.now().toString())
-//                        binding.btnEndDatePick.text = dateFormat(LocalDateTime.now())
+                        binding.btnEndDatePick.text = dateFormat(LocalDateTime.now())
 
                         val valueAnimator = ValueAnimator.ofInt(
                             binding.endDateSetLayout.height,
@@ -167,7 +156,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         valueAnimator.start()
 
                         binding.endDateTimeLayout.visibility = View.VISIBLE
-
+                        binding.ivCalendarIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.todo_description))
+                        binding.tvEndDateSet.setTextColor(resources.getColor(R.color.todo_description))
                     }
                     else -> {
                         binding.endDateSwitch.isChecked = it
@@ -185,6 +175,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         valueAnimator.duration = 400
                         valueAnimator.start()
                         binding.endDateTimeLayout.visibility = View.GONE
+                        binding.ivCalendarIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light_gray))
+                        binding.tvEndDateSet.setTextColor(resources.getColor(R.color.light_gray))
                     }
                 }
             })
@@ -194,11 +186,13 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 true -> {
                     binding.endDateTimeSwitch.isChecked = it
                     binding.btnEndTimePick.visibility = View.VISIBLE
-//                    binding.btnEndTimePick.text = timeFormat(LocalDateTime.now())
+                    binding.btnEndTimePick.text = timeFormat(LocalDateTime.now())
+                    binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.todo_description))
                 }
                 else -> {
                     binding.endDateTimeSwitch.isChecked = it
                     binding.btnEndTimePick.visibility = View.INVISIBLE
+                    binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.light_gray))
                 }
             }
         })
@@ -211,11 +205,15 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     binding.btnAlarmTimePick.text = timeFormat(LocalDateTime.now())
                     binding.btnAlarmDatePick.visibility = View.VISIBLE
                     binding.btnAlarmTimePick.visibility = View.VISIBLE
+                    binding.ivAlarmIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.todo_description))
+                    binding.tvAlarmSet.setTextColor(resources.getColor(R.color.todo_description))
                 }
                 else -> {
                     binding.alarmSwitch.isChecked = it
                     binding.btnAlarmDatePick.visibility = View.INVISIBLE
                     binding.btnAlarmTimePick.visibility = View.INVISIBLE
+                    binding.ivAlarmIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light_gray))
+                    binding.tvAlarmSet.setTextColor(resources.getColor(R.color.light_gray))
                 }
             }
         })
@@ -224,9 +222,13 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             when (it) {
                 true -> {
                     binding.repeatSwitch.isChecked = it
+                    binding.ivRepeatIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.todo_description))
+                    binding.tvRepeatSet.setTextColor(resources.getColor(R.color.todo_description))
                 }
                 else -> {
                     binding.repeatSwitch.isChecked = it
+                    binding.ivRepeatIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light_gray))
+                    binding.tvRepeatSet.setTextColor(resources.getColor(R.color.light_gray))
                 }
             }
         })
@@ -241,37 +243,37 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 //
         todoAddViewModel.endTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
                 binding.btnEndTimePick.text = timeFormat.format(it)
-            } else binding.btnEndTimePick.text = "시간 선택"
+            }
         })
 //
         todoAddViewModel.alarmTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+                val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
                 binding.btnAlarmTimePick.text = timeFormat.format(it)
-            } else binding.btnAlarmTimePick.text = "시간 선택"
+            }
         })
 //
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.US)
+                val timeFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
                 binding.btnEndDatePick.text = timeFormat.format(it)
-            } else binding.btnEndDatePick.text = "날짜 선택"
+            }
         })
 //
         todoAddViewModel.alarmDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
                 val timeFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
                 binding.btnAlarmDatePick.text = timeFormat.format(it)
-            } else binding.btnAlarmDatePick.text = "날짜 선택"
+            }
         })
 //
         todoAddViewModel.repeatEndDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.US)
+                val timeFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
                 binding.btnRepeatEndDate.text = timeFormat.format(it)
-            } else binding.btnRepeatEndDate.text = "날짜 선택"
+            }
         })
 //
 ////        todoAddViewModel.tag.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -442,12 +444,14 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
     fun timeFormat(date: LocalDateTime): String {
         val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
-        return timeFormat.format(date)
+        val instant = date.atZone(ZoneId.systemDefault()).toInstant()
+        return timeFormat.format(Date.from(instant))
     }
 
     fun dateFormat(date: LocalDateTime): String {
         val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
-        return dateFormat.format(date)
+        val instant = date.atZone(ZoneId.systemDefault()).toInstant()
+        return dateFormat.format(Date.from(instant))
     }
 
 
