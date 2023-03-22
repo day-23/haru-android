@@ -39,7 +39,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
-    BottomSheetDialogFragment(){
+    BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
     private lateinit var todoAddViewModel: TodoAddViewModel
 
@@ -64,6 +64,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "ChecklistInputFragment - onCreate() called")
+
+
     }
 
     override fun onCreateView(
@@ -77,6 +79,15 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         binding.endDateSetLayout.layoutTransition.apply {
             setAnimateParentHierarchy(false)
         }
+
+        binding.endDateTimeLayout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                todoAddViewModel.setEndTimeHeight(binding.endDateTimeLayout.height)
+                binding.endDateTimeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                Log.d("20191627", todoAddViewModel.endTimeLayoutHeight.toString())
+                binding.endDateTimeLayout.visibility = View.GONE
+            }
+        })
 
         return binding.root
     }
@@ -143,20 +154,17 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         Log.d("20191627", LocalDateTime.now().toString())
 //                        binding.btnEndDatePick.text = dateFormat(LocalDateTime.now())
 
-                        binding.endDateTimeLayout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
-                            override fun onGlobalLayout() {
-                                binding.endDateTimeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                                val valueAnimator = ValueAnimator.ofInt(binding.endDateSetLayout.height, binding.endDateSetLayout.height + binding.endDateTimeLayout.measuredHeight)
-                                valueAnimator.addUpdateListener { animator ->
-                                    val layoutParams = binding.endDateSetLayout.layoutParams
-                                    layoutParams.height = animator.animatedValue as Int
-                                    binding.endDateSetLayout.layoutParams = layoutParams
-                                }
-                                valueAnimator.duration = 400
-                                valueAnimator.start()
-                            }
-                        })
+                        val valueAnimator = ValueAnimator.ofInt(
+                            binding.endDateSetLayout.height,
+                            binding.endDateSetLayout.height + todoAddViewModel.endTimeLayoutHeight
+                        )
+                        valueAnimator.addUpdateListener { animator ->
+                            val layoutParams = binding.endDateSetLayout.layoutParams
+                            layoutParams.height = animator.animatedValue as Int
+                            binding.endDateSetLayout.layoutParams = layoutParams
+                        }
+                        valueAnimator.duration = 400
+                        valueAnimator.start()
 
                         binding.endDateTimeLayout.visibility = View.VISIBLE
 
@@ -164,6 +172,18 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     else -> {
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.INVISIBLE
+                        Log.d("20191627", "test")
+                        val valueAnimator = ValueAnimator.ofInt(
+                            binding.endDateSetLayout.height,
+                            binding.endDateSetLayout.height - todoAddViewModel.endTimeLayoutHeight
+                        )
+                        valueAnimator.addUpdateListener { animator ->
+                            val layoutParams = binding.endDateSetLayout.layoutParams
+                            layoutParams.height = animator.animatedValue as Int
+                            binding.endDateSetLayout.layoutParams = layoutParams
+                        }
+                        valueAnimator.duration = 400
+                        valueAnimator.start()
                         binding.endDateTimeLayout.visibility = View.GONE
                     }
                 }

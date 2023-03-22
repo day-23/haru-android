@@ -31,7 +31,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _todayTodo = MutableLiveData<Boolean>(false)
     val todayTodo: LiveData<Boolean> = _todayTodo
 
-    private val _isSelectedEndDateTime = MutableLiveData<Boolean>(false)
+    private val _isSelectedEndDateTime = MutableLiveData<Boolean>()
     val isSelectedEndDateTime : LiveData<Boolean> = _isSelectedEndDateTime
 
     private val _endTimeSwitch = MutableLiveData<Boolean>(false)
@@ -90,6 +90,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var alarmTimeStr: List<String> = mutableListOf()
     var repeatEndDateStr: String = ""
 
+    var endTimeLayoutHeight: Int = 0
+
     init {
         this.checklistViewModel = checkListViewModel
     }
@@ -104,6 +106,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun setIsSelectedEndDateTime(){
+        if (_isSelectedEndDateTime.value == null) _isSelectedEndDateTime.value = false
         _isSelectedEndDateTime.value = (_isSelectedEndDateTime.value == false)
     }
 
@@ -165,6 +168,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         if (id == 0) _endDate.value = date
         else if (id == 1) _alarmDate.value = date
         else _repeatEndDate.value = date
+    }
+
+    fun setEndTimeHeight(h : Int){
+        endTimeLayoutHeight = h
     }
 //
 //    fun formatDate(date: Date): String {

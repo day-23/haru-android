@@ -35,42 +35,8 @@ class TodoAdapter(val context: Context) :
     private var untagCount = 0
     private var completeCount = 0
 
-    private var headerCount = 0
-    private var dividerCount = 0
-
     override fun getItemViewType(position: Int): Int {
         return data[position].type
-//        return if (data.isEmpty()) {
-//            Empty
-//        } else if (!todoByTag) {
-//            if (position == 0) {
-//                HeaderType1
-//            } else if (position in listOf<Int>(
-//                    flagCount + 2,
-//                    flagCount + tagCount + 4,
-//                    flagCount + tagCount + untagCount + 6
-//                )
-//            ) {
-//                HeaderType2
-//            } else if (position in listOf<Int>(
-//                    flagCount + 1,
-//                    flagCount + tagCount + 3,
-//                    flagCount + tagCount + untagCount + 5
-//                )
-//            ) {
-//                Divider
-//            } else {
-//                Item
-//            }
-//        } else {
-//            if (position == 0) {
-//                HeaderType2
-//            } else if (position in 1..data.count()) {
-//                Item
-//            } else {
-//                Divider
-//            }
-//        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -119,10 +85,7 @@ class TodoAdapter(val context: Context) :
 
     }
 
-    override fun getItemCount(): Int {
-        return data.count()
-
-    }
+    override fun getItemCount(): Int = data.count()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
@@ -204,8 +167,6 @@ class TodoAdapter(val context: Context) :
         if (content != null) {
             todoByTag = true
             tags[3].content = content
-            headerCount = 0
-            dividerCount = 0
         } else todoByTag = false
     }
 }
