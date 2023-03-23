@@ -104,7 +104,7 @@ class CalendarViewModel : ViewModel() {
                     val repeatDate = Array((maxi+1)*7){false}
                     val createdAt = serverformat.parse(todo.createdAt)
                     val serverendDate = serverformat.parse(todo.endDate)
-                    var repeateEnd:Date
+                    var repeateEnd:Date? = null
 
                     val repeatOption = todo.repeatOption
                     var repeatValue = ""
@@ -126,7 +126,7 @@ class CalendarViewModel : ViewModel() {
                                 calendar.time = dateformat.parse(startDate)
 
 
-                                while (calendar.time.compareTo(repeateEnd) <= 0 && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
                                     if(calendar.time.compareTo(createdAt) >= 0) {
                                         if (dailycnt == 0) {
                                             repeatDate[cnt] = true
@@ -151,7 +151,7 @@ class CalendarViewModel : ViewModel() {
                                 calendar.time = dateformat.parse(startDate)
 
 
-                                while (calendar.time.compareTo(repeateEnd) <= 0 && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
                                     if(calendar.time.compareTo(createdAt) >= 0) {
                                         if (repeatValue[weeklycnt] == '1') {
                                             repeatDate[cnt] = true
@@ -175,7 +175,7 @@ class CalendarViewModel : ViewModel() {
                                 calendar.time = dateformat.parse(startDate)
 
 
-                                while (calendar.time.compareTo(repeateEnd) <= 0 && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
                                     if(calendar.time.compareTo(createdAt) >= 0) {
                                         if (repeatValue[weeklycnt] == '1' && twoweek) {
                                             repeatDate[cnt] = true
@@ -203,7 +203,7 @@ class CalendarViewModel : ViewModel() {
                                 Log.d("createdAt",createdAt.toString())
                                 Log.d("endDate", endDate)
 
-                                while (calendar.time.compareTo(repeateEnd) <= 0 && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
                                     if(calendar.time.compareTo(createdAt) >= 0) {
                                         Log.d("repeatValue",repeatValue)
                                         if (repeatValue[monthlycnt] == '1') {
@@ -229,7 +229,7 @@ class CalendarViewModel : ViewModel() {
 
                                 calendar.time = tempStartDate
 
-                                while (calendar.time.compareTo(repeateEnd) <= 0 && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
                                     Log.d("calendar", calendar.time.toString())
 
                                     if(calendar.time.compareTo(createdAt) >= 0) {
