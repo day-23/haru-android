@@ -18,14 +18,14 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
 
     inner class DayView(private val binding: ListItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
-            fun bind(date: CalendarDate?, content: ContentMark?, dateOrContent:Boolean, nullable: Boolean){
+            fun bind(date: CalendarDate?, content: ContentMark?, dateOrContent:Boolean, nullable: Boolean, background:Boolean){
 //                if(!dateOrContent){
 //                    var layoutparam: LayoutParams = binding.itemDayText.layoutParams
 //                    layoutparam
 //                    binding.itemDayText.gravity
 //                }
 
-                if(!dateOrContent && !nullable){
+                if(background){
                     binding.textFrameLayout.setBackgroundColor(Color.LTGRAY)
                 }
 
@@ -55,9 +55,12 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
     var datePosition = 0
     var contentPosition = 0
 
+    var saveLineList = ArrayList<Int>()
+    var saveCntList = ArrayList<Int>()
+
     override fun onBindViewHolder(holder: DayView, position: Int) {
         if(dateOrContent){
-            holder.bind(date[datePosition], null,true,false)
+            holder.bind(date[datePosition], null,true,false, false)
 
             datePosition++
 
@@ -67,12 +70,37 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
         } else {
             Log.d("contentPosition", contentPosition.toString())
 
+            if(saveLineList.contains(contentcnt)){
+                val index = saveLineList.indexOf(contentcnt)
+
+                if(saveCntList[index] > 7){
+                    saveCntList[index] -= 7
+
+                    holder.bind(null, null,false,true,true)
+                } else {
+                    saveCntList.removeAt(index)
+                    saveLineList.removeAt(index)
+
+                    holder.bind(null, null,false,true,true)
+                }
+            }
+
             for(con in content){
                 if(!duplist.contains(con) && con.position == contentPosition){
                     Log.d("내용","성공")
                     duplist.add(con)
+                    val lastcontentPosition = contentPosition
                     contentPosition += con.cnt
-                    holder.bind(null, con,false,false)
+
+                    if(lastcontentPosition/7 != contentPosition/7){
+                        saveLineList.add(contentcnt)
+
+                        contentPosition -= contentPosition%7
+                        val returncnt = contentPosition-lastcontentPosition
+                        saveCntList.add(con.cnt-returncnt)
+                    }
+
+                    holder.bind(null, con,false,false, true)
                     return
                 }
             }
@@ -90,7 +118,7 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
                 dateOrContent = true
             }
 
-            holder.bind(null, null,false,true)
+            holder.bind(null, null,false,true, false)
         }
     }
 

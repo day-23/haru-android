@@ -11,7 +11,7 @@ class TodoRepository() {
     private val scheduleService = RetrofitClient.scheduleService
 
     suspend fun getTodoDates(startDate: String, endDate: String, callback:(todoData: List<Todo>) -> Unit) = withContext(Dispatchers.IO){
-        val response = todoService.getTodoDates("005224c0-eec1-4638-9143-58cbfc9688c5", startDate, endDate).execute()
+        val response = todoService.getTodoDates("881c51d1-06f1-47ce-99b6-b5582594db12", startDate, endDate).execute()
         val data: GetTodoResponse
         val todoData : List<Todo>
         Log.d("20191627", "여기는 getTodo")

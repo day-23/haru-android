@@ -62,9 +62,13 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner):
                 var duplist = ArrayList<ContentMark>()
 
                 var dateOrContent = true
+
                 var contentcnt = 0
                 var datePosition = 0
                 var contentPosition = 0
+
+                var saveLineList = ArrayList<Int>()
+                var saveCntList = ArrayList<Int>()
 
                 gridlayout.spanSizeLookup = object : SpanSizeLookup(){
                     override fun getSpanSize(position: Int): Int {
@@ -77,11 +81,38 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner):
 
                             return 1
                         } else {
+                            if(saveLineList.contains(contentcnt)){
+                                val index = saveLineList.indexOf(contentcnt)
+
+                                if(saveCntList[index] > 7){
+                                    saveCntList[index] -= 7
+                                    return 7
+                                } else {
+                                    val returncnt = saveCntList[index]
+
+                                    saveCntList.removeAt(index)
+                                    saveLineList.removeAt(index)
+
+                                    return returncnt
+                                }
+                            }
+
                             for(content in it){
                                 if(!duplist.contains(content) && content.position == contentPosition){
                                     duplist.add(content)
+                                    val lastcontentPosition = contentPosition
                                     contentPosition += content.cnt
-                                    Log.d("contentcnt", content.cnt.toString())
+
+                                    if(lastcontentPosition/7 != contentPosition/7){
+                                        saveLineList.add(contentcnt)
+
+                                        contentPosition -= contentPosition%7
+                                        val returncnt = contentPosition-lastcontentPosition
+                                        saveCntList.add(content.cnt-returncnt)
+
+                                        return returncnt
+                                    }
+
                                     return content.cnt
                                 }
                             }
