@@ -57,11 +57,22 @@ class TodotableFragment : Fragment()  {
 //        todorecyclerView.layoutManager = LinearLayoutManager(requireContext())
 //        todorecyclerView.adapter = todotableAdapter
 
+
+
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             val year = times.year.slice(0..times.year.length - 2)
             val month = times.month.slice(0..times.month.length - 2)
             val day = times.day.slice(0..times.day.length - 2)
             todoreviewModel.updateMonth(year.toInt(), month.toInt()-1, day.toInt())
+
+            binding.sunLayout.setBackgroundResource(R.color.white)
+            binding.monLayout.setBackgroundResource(R.color.white)
+            binding.tueLayout.setBackgroundResource(R.color.white)
+            binding.wedLayout.setBackgroundResource(R.color.white)
+            binding.thuLayout.setBackgroundResource(R.color.white)
+            binding.friLayout.setBackgroundResource(R.color.white)
+            binding.satLayout.setBackgroundResource(R.color.white)
+
             when(day){
                 timetableviewModel.Days.value?.get(0)-> binding.sunLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 timetableviewModel.Days.value?.get(1)-> binding.monLayout.setBackgroundResource(R.drawable.todo_table_selected)

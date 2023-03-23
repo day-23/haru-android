@@ -65,9 +65,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 val year = datePicker.year
                 val month = datePicker.month
                 var day = datePicker.dayOfMonth
-                _Selected.value = Timetable_date(year.toString()+"년", (month+1).toString()+"월", day.toString()+"일")
                 Daylist(year, month, day)
                 _Days.value = dayslist
+                _Selected.value = Timetable_date(year.toString()+"년", (month+1).toString()+"월", day.toString()+"일")
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") { dialog, _ ->
@@ -81,11 +81,11 @@ class TimetableViewModel(val context : Context): ViewModel() {
     fun Daylist(year: Int, month: Int, day: Int) {
         val dayList = ArrayList<String>()
         var d = day
-        var lastOfMonth = 0
         dayslist.clear()
         calendar.set(year, month - 1, day)
-        lastOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val lastOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         calendar.set(year, month, day)
+        val currentOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         val dayOfWeek = SimpleDateFormat("E").format(Date(year - 1900, month, day))
 
         when(dayOfWeek){
@@ -104,8 +104,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 addday = (lastOfMonth - abs(d))
 
             }
-            else if(d > lastOfMonth){
-                addday = (d - lastOfMonth)
+            else if(d > currentOfMonth){
+                addday = (d - currentOfMonth)
             }
             else{
                 addday = d
