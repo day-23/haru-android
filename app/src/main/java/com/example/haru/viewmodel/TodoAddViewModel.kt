@@ -46,8 +46,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _alarmSwitch = MutableLiveData<Boolean>(false)
     val alarmSwitch : LiveData<Boolean> = _alarmSwitch
 
-    private val _repeatSwitch = MutableLiveData<Boolean>(false)
-    val repeatSwitch = _repeatSwitch
+    private val _repeatSwitch = MutableLiveData<Boolean>()
+    val repeatSwitch : LiveData<Boolean> = _repeatSwitch
+
+    private val _repeatEndDateSwitch = MutableLiveData<Boolean>(false)
+    val repeatEndDateSwitch : LiveData<Boolean> = _repeatEndDateSwitch
 
     private val _repeatOption = MutableLiveData<Int?>()
     val repeatOption: LiveData<Int?> = _repeatOption
@@ -91,6 +94,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var repeatEndDateStr: String = ""
 
     var endTimeLayoutHeight: Int = 0
+    var repeatOptionHeight: Int = 0
+    var repeatWeekHeight: Int = 0
+    var repeatEndDateHeight: Int = 0
+    var gridMonthHeight : Int = 0
 
     init {
         this.checklistViewModel = checkListViewModel
@@ -119,7 +126,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun setRepeatSwitch(){
+        if (_repeatSwitch.value == null) _repeatSwitch.value = false
         _repeatSwitch.value = (_repeatSwitch.value == false)
+    }
+
+    fun setRepeatEndSwitch(){
+        _repeatEndDateSwitch.value = (_repeatEndDateSwitch.value == false)
     }
 
 //    fun setRepeatOption(option: Int) {
@@ -172,6 +184,22 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setEndTimeHeight(h : Int){
         endTimeLayoutHeight = h
+    }
+
+    fun setRepeatOptionH(h: Int){
+        repeatOptionHeight = h
+    }
+
+    fun setWeekHeight(h: Int){
+        repeatWeekHeight = h
+    }
+
+    fun setMonthHeight(h: Int){
+        gridMonthHeight = h
+    }
+
+    fun setRepeatEndDateH(h: Int){
+        repeatEndDateHeight = h
     }
 //
 //    fun formatDate(date: Date): String {

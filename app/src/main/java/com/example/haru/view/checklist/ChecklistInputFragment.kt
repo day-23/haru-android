@@ -9,10 +9,12 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.TextView
 import android.widget.TimePicker
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
@@ -65,11 +67,20 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         binding = FragmentChecklistInputBinding.inflate(inflater)
         binding.viewModel = todoAddViewModel
 
+        for (i in 1..31) {
+            val textView = TextView(requireContext())
+            textView.text = i.toString()
+            textView.gravity = Gravity.CENTER
+            binding.gridMonth.addView(textView)
+        }
+
         binding.endDateSetLayout.layoutTransition.apply {
             setAnimateParentHierarchy(false)
         }
 
-        binding.endDateTimeLayout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+        // 마감일 레이아웃 크기 계산
+        binding.endDateTimeLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 todoAddViewModel.setEndTimeHeight(binding.endDateTimeLayout.height)
                 binding.endDateTimeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -77,6 +88,50 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 binding.endDateTimeLayout.visibility = View.GONE
             }
         })
+
+        // repeatOption 선택 레이아웃 높이 계산
+        binding.repeatOptionSelect.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setRepeatOptionH(binding.repeatOptionSelect.height)
+                binding.repeatOptionSelect.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                Log.d("20191627", "repeatOptionSelect : " + todoAddViewModel.repeatOptionHeight.toString())
+                binding.repeatOptionSelect.visibility = View.GONE
+            }
+        })
+
+        // repeatWeek 높이 계산
+        binding.everyWeekSelectLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setWeekHeight(binding.everyWeekSelectLayout.height)
+                binding.everyWeekSelectLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding.everyWeekSelectLayout.visibility = View.GONE
+            }
+        })
+
+        // repeatMonth 높이 계산
+        binding.gridMonth.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setMonthHeight(binding.gridMonth.height)
+                binding.gridMonth.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                Log.d("20191627", todoAddViewModel.gridMonthHeight.toString())
+                binding.gridMonth.visibility = View.GONE
+            }
+        })
+
+        // 반복 마감 날짜 높이 계산
+        binding.repeatEndDateLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setRepeatEndDateH(binding.repeatEndDateLayout.height)
+                binding.gridMonth.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                Log.d("20191627", "repeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString())
+                binding.repeatEndDateLayout.visibility = View.GONE
+            }
+        })
+
 
         return binding.root
     }
@@ -156,13 +211,13 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         valueAnimator.start()
 
                         binding.endDateTimeLayout.visibility = View.VISIBLE
-                        binding.ivCalendarIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.todo_description))
+                        binding.ivCalendarIcon.backgroundTintList =
+                            ColorStateList.valueOf(resources.getColor(R.color.todo_description))
                         binding.tvEndDateSet.setTextColor(resources.getColor(R.color.todo_description))
                     }
                     else -> {
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.INVISIBLE
-                        Log.d("20191627", "test")
                         val valueAnimator = ValueAnimator.ofInt(
                             binding.endDateSetLayout.height,
                             binding.endDateSetLayout.height - todoAddViewModel.endTimeLayoutHeight
@@ -174,8 +229,9 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         }
                         valueAnimator.duration = 400
                         valueAnimator.start()
-                        binding.endDateTimeLayout.visibility = View.GONE
-                        binding.ivCalendarIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light_gray))
+                        binding.endDateTimeLayout.visibility = View.INVISIBLE
+                        binding.ivCalendarIcon.backgroundTintList =
+                            ColorStateList.valueOf(resources.getColor(R.color.light_gray))
                         binding.tvEndDateSet.setTextColor(resources.getColor(R.color.light_gray))
                     }
                 }
@@ -205,14 +261,16 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     binding.btnAlarmTimePick.text = timeFormat(LocalDateTime.now())
                     binding.btnAlarmDatePick.visibility = View.VISIBLE
                     binding.btnAlarmTimePick.visibility = View.VISIBLE
-                    binding.ivAlarmIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.todo_description))
+                    binding.ivAlarmIcon.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.todo_description))
                     binding.tvAlarmSet.setTextColor(resources.getColor(R.color.todo_description))
                 }
                 else -> {
                     binding.alarmSwitch.isChecked = it
                     binding.btnAlarmDatePick.visibility = View.INVISIBLE
                     binding.btnAlarmTimePick.visibility = View.INVISIBLE
-                    binding.ivAlarmIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light_gray))
+                    binding.ivAlarmIcon.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.light_gray))
                     binding.tvAlarmSet.setTextColor(resources.getColor(R.color.light_gray))
                 }
             }
@@ -222,25 +280,64 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             when (it) {
                 true -> {
                     binding.repeatSwitch.isChecked = it
-                    binding.ivRepeatIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.todo_description))
+                    binding.ivRepeatIcon.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.todo_description))
                     binding.tvRepeatSet.setTextColor(resources.getColor(R.color.todo_description))
+
+                    val valueAnimator = ValueAnimator.ofInt(
+                        binding.repeatSetLayout.height,
+                        binding.repeatSetLayout.height + todoAddViewModel.repeatOptionHeight + todoAddViewModel.repeatEndDateHeight
+                    )
+                    valueAnimator.addUpdateListener { animator ->
+                        val layoutParams = binding.repeatSetLayout.layoutParams
+                        layoutParams.height = animator.animatedValue as Int
+                        binding.repeatSetLayout.layoutParams = layoutParams
+                    }
+                    valueAnimator.duration = 400
+                    valueAnimator.start()
+
+                    Log.d("20191627", "visible")
+                    binding.repeatOptionSelect.visibility = View.VISIBLE
+                    binding.repeatEndDateLayout.visibility = View.VISIBLE
                 }
                 else -> {
                     binding.repeatSwitch.isChecked = it
-                    binding.ivRepeatIcon.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.light_gray))
+                    binding.ivRepeatIcon.backgroundTintList =
+                        ColorStateList.valueOf(resources.getColor(R.color.light_gray))
                     binding.tvRepeatSet.setTextColor(resources.getColor(R.color.light_gray))
+
+                    val valueAnimator = ValueAnimator.ofInt(
+                        binding.repeatSetLayout.height,
+                        binding.repeatSetLayout.height - todoAddViewModel.repeatOptionHeight - todoAddViewModel.repeatEndDateHeight
+                    )
+                    valueAnimator.addUpdateListener { animator ->
+                        val layoutParams = binding.repeatSetLayout.layoutParams
+                        layoutParams.height = animator.animatedValue as Int
+                        binding.repeatSetLayout.layoutParams = layoutParams
+                    }
+                    valueAnimator.duration = 400
+                    valueAnimator.start()
+
+                    binding.repeatOptionSelect.visibility = View.INVISIBLE
+                    binding.repeatEndDateLayout.visibility = View.INVISIBLE
                 }
             }
         })
 
-//        todoAddViewModel.repeatOptionStr.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-//            if (it != null)
-//                binding.layoutRepeatEndDate.visibility = View.VISIBLE
-//            else binding.layoutRepeatEndDate.visibility = View.GONE
-//
-//            binding.btnRepeatOption.text = todoAddViewModel.repeatOptionStr.value ?: "선택"
-//        })
-//
+        todoAddViewModel.repeatEndDateSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            when(it){
+                true -> {
+                    binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.todo_description))
+                    binding.btnRepeatEndDate.visibility = View.VISIBLE
+                    binding.btnRepeatEndDate.text = dateFormat(LocalDateTime.now())
+                }
+                else -> {
+                    binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.light_gray))
+                    binding.btnRepeatEndDate.visibility = View.INVISIBLE
+                }
+            }
+        })
+
         todoAddViewModel.endTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
                 val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
@@ -300,9 +397,10 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         binding.btnAlarmTimePick.setOnClickListener(btnListener())
 
+        binding.repeatEndDateSwitch.setOnClickListener(btnListener())
+
 //        binding.btnRepeatOption.setOnClickListener(btnListener())
 //
-        binding.btnRepeatEndDate.setOnClickListener(btnListener())
 //
 //        binding.btnSubmitTodo.setOnClickListener(btnListener())
 //
@@ -348,6 +446,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 R.id.endDateTime_switch -> todoAddViewModel.setEndTimeSwitch()
                 R.id.alarm_switch -> todoAddViewModel.setAlarmSwitch()
                 R.id.repeat_switch -> todoAddViewModel.setRepeatSwitch()
+                R.id.repeatEndDate_switch -> todoAddViewModel.setRepeatEndSwitch()
 
                 R.id.btn_alarmTime_pick, R.id.btn_endTime_pick -> {
                     val calendar = Calendar.getInstance()
