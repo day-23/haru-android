@@ -10,10 +10,11 @@ import com.example.haru.databinding.ActivityMainBinding
 import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.view.timetable.TimetableFragment
+import com.example.haru.view.timetable.TodotableFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val fragments = arrayOfNulls<Fragment>(5)
+    private val fragments = arrayOfNulls<Fragment>(6)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             handleNavigation(menuItem.itemId)
         }
+
     }
 
     private fun initFragments() {

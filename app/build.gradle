@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt' //리사이클러뷰 바인딩 어댑터
 }
 
 android {
@@ -15,6 +16,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -48,6 +50,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
+    /* ChipView */
+    implementation 'com.google.android.material:material:1.1.0'
+
     /* retrofit2 */
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     /* Gson 변환기 */
@@ -68,6 +73,10 @@ dependencies {
     /* 최신 preference 사용*/
     implementation 'androidx.preference:preference:1.2.0'
 
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    /*ViewModel*/
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+    /*LiveData*/
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+    /*KTX*/
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
 }

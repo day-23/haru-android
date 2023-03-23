@@ -5,16 +5,14 @@ import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.security.auth.callback.Callback
 
 class TodoRepository() {
     private val todoService = RetrofitClient.todoService
-    private val scheduleService = RetrofitClient.scheduleService
-
-    suspend fun getTodo(startDate:String, endDate:String, callback:(todoData : List<Todo>) -> Unit) = withContext(Dispatchers.IO){
-        val response = todoService.getTodoDates("881c51d1-06f1-47ce-99b6-b5582594db12",startDate,endDate).execute()
-        val data: GetTodoResponse
-        val todoData : List<Todo>
+    suspend fun getTodoMain(callback:(todoData : TodoList) -> Unit) = withContext(Dispatchers.IO) {
+        val response = todoService.getTodoMain("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
+        val data: GetMainTodoResponse
+        val todoData : TodoList
+        Log.d("20191627", "여기는 getTodo")
 
         if (response.isSuccessful){
             Log.d("TAG", "Success to get todos")
@@ -22,7 +20,7 @@ class TodoRepository() {
             todoData = data.data
         } else{
             Log.d("TAG", "Fail to get todos")
-            todoData = emptyList()
+            todoData = TodoList(emptyList(),emptyList(),emptyList(),emptyList())
         }
         callback(todoData)
     }
@@ -41,5 +39,39 @@ class TodoRepository() {
             todoData = emptyList()
         }
         callback(todoData)
+    }
+    suspend fun createTodo(todoRequest: TodoRequest, callback: (todoData: Any) -> Unit) = withContext(Dispatchers.IO){
+        val response = todoService.createTodo("005224c0-eec1-4638-9143-58cbfc9688c5", todoRequest).execute()
+        val data: PostTodoResponse
+        val todoData : Any
+
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to create todo")
+            data = response.body()!!
+            todoData = data.data
+            callback(todoData)
+        } else {
+            Log.d("TAG", "Fail to create todo")
+            todoData = "망함"
+        }
+    }
+
+    suspend fun getTodoByTag(tagId: String) = withContext(Dispatchers.IO){
+        val response = todoService.getTodoByTag("005224c0-eec1-4638-9143-58cbfc9688c5", tagId).execute()
+        val data: GetTodoByTag
+        val todoData: GetTodoByTagData
+        val todos : List<Todo>
+        Log.d("20191627", "여기는 getTodoByTag")
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get Todo By Tag")
+            data = response.body()!!
+            todoData = data.data
+            todos = todoData.todos
+        } else{
+            Log.d("TAG", "Fail to get Todo By Tag")
+            todos = emptyList()
+        }
+        todos
     }
 }

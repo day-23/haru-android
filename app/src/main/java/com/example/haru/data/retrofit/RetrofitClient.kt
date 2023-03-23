@@ -2,6 +2,7 @@ package com.example.haru.data.retrofit
 
 import android.util.Log
 import com.example.haru.data.api.ScheduleService
+import com.example.haru.data.api.TagService
 import com.example.haru.data.api.TodoService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
     private const val BASE_URL = "http://27.96.131.169:8000"
+//    192.168.0.42
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {
@@ -32,5 +34,9 @@ object RetrofitClient {
 
     val scheduleService: ScheduleService by lazy {
         retrofit.create(ScheduleService::class.java)
+    }
+    
+    val tagService: TagService by lazy {
+        retrofit.create(TagService::class.java)
     }
 }

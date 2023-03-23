@@ -1,18 +1,23 @@
 package com.example.haru.data.model
 
-data class Todo (
-    val id: String,
-    val content: String,
-    val memo: String?,
-    val todayTodo: Boolean,
-    val flag: Boolean,
-    val endDate: String,
-    val endDateTime: String?,
-    val repeatEnd: String?,
-    val createdAt: String,
-    val updatedAt: String?,
-    val subTodos: List<SubTodo>,
-    val repeatOption: String?,
-    val repeatValue: String?,
-    val tags: List<Tag>
+import java.util.Date
+data class Todo(
+    val type: Int = 2,
+    val id: String = "",
+    val content: String = "",
+    val memo: String? = "",
+    val todayTodo: Boolean = false,
+    val flag: Boolean = false,
+    val isSelectedEndDateTime: Boolean = false,
+    val endDate: String? = null,
+    val repeatEnd: String? = null,
+    val todoOrder: Int = 0,
+    val completed: Boolean = false,
+    val createdAt: String = "",
+    val updatedAt: String? = null,
+    val subTodos: List<SubTodo> = emptyList(),
+    val alarms: List<Alarm> = emptyList(),
+    val repeatOption: String? = null,
+    val repeatValue: String? = null,
+    val tags: List<Tag> = emptyList()
 )
