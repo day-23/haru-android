@@ -110,7 +110,10 @@ class CalendarViewModel : ViewModel() {
                     var repeatValue = ""
 
                     if(repeatOption != null){
-                        repeateEnd = serverformat.parse(todo.repeatEnd)
+                        if(todo.repeatEnd != null) {
+                            repeateEnd = serverformat.parse(todo.repeatEnd)
+                        }
+                        
                         repeatValue = todo.repeatValue!!
 
                         val calendar = Calendar.getInstance()
