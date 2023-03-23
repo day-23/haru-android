@@ -12,4 +12,18 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="today_todo">오늘 나의 하루</string>
+    <string name="today_todo_before_add">나의 하루에 추가</string>
+    <string name="today_todo_after_add">나의 하루에 추가됨</string>
+    <string name="todo_input">투두 입력</string>
+    <string name="subTodo_input">하위 항목 추가</string>
+    <string name="tag">태그</string>
+    <string name="endDate_set">마감일 설정</string>
+    <string name="endDateTime_set">마감 시간 설정</string>
+    <string name="alarm_set">알림 설정</string>
+    <string name="repeat_set">반복 설정</string>
+    <string name="repeat_endDate_set">반복 종료일</string>
+    <string name="memo_set">메모 추가</string>
+    <string name="important">중요</string>
+    <string name="append">추가</string>
 </resources>

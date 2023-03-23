@@ -50,7 +50,6 @@ class SnsFragment : Fragment() {
             .client(OkHttpClient())
             .build()
 
-
         val userService = retrofit.create(UserService::class.java)
         val userRepository = UserRepository(userService)
 
@@ -63,7 +62,7 @@ class SnsFragment : Fragment() {
             binding.userEmailTextview.text = user.email
         })
 
-        val userId = 1 // Replace with actual user ID
+        val userId = 1// Replace with actual user ID
         userViewModel.fetchUser(userId)
 
         return binding.root
