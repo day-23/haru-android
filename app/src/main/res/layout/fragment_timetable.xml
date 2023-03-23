@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingHorizontal="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,13 +23,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:gravity="center">
 
                 <TextView
                     android:id="@+id/timetable_year"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="0"
                     android:textSize="28dp"
                     android:textStyle="bold"
                     android:textColor="#191919"
@@ -40,6 +42,7 @@
                     android:id="@+id/timetable_month"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="0"
                     android:layout_marginLeft="10dp"
                     android:text="@{viewModel.Selected.month}"
                     android:textSize="28dp"
@@ -51,26 +54,34 @@
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="0"
                     android:src="@drawable/___20513"
                     android:background="#00000000"
                     android:onClick="@{() -> viewModel.buttonClick()}"/>
 
-                <ImageButton
-                    android:id="@+id/todolist_change"
-                    android:layout_marginLeft="99dp"
-                    android:layout_width="wrap_content"
+                <View
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:src="@drawable/______21___1"
-                    android:layout_gravity="right"
-                    android:background="#00000000"/>
+                    android:layout_weight="10"/>
 
                 <ImageButton
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="23dp"
+                    android:id="@+id/todolist_change"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:src="@drawable/______22___1"
+                    android:layout_weight="0"
+                    android:gravity ="right"
+                    android:src="@drawable/______21___1"
+                    android:background="#00000000"/>
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
                     android:layout_gravity="right"
+                    android:src="@drawable/______22___1"
                     android:background="#00000000"/>
 
 
@@ -79,63 +90,76 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="51dp"
+                android:gravity="center"
                 android:layout_marginBottom="9dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text=""
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="일"
                     android:textSize="12dp"
-                    android:textColor="#F71E58"
-                    android:layout_marginRight="39dp" />
+                    android:layout_weight="2"
+                    android:gravity="center"
+                    android:textColor="#F71E58"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:text="월"
                     android:textSize="12dp"
-                    android:textColor="#646464"
-                    android:layout_marginRight="39dp" />
+                    android:gravity="center"
+                    android:textColor="#191919"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:text="화"
                     android:textSize="12dp"
-                    android:textColor="#646464"
-                    android:layout_marginRight="39dp" />
+                    android:gravity="center"
+                    android:textColor="#191919"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:text="수"
                     android:textSize="12dp"
-                    android:textColor="#646464"
-                    android:layout_marginRight="39dp" />
+                    android:gravity="center"
+                    android:textColor="#191919"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:text="목"
                     android:textSize="12dp"
-                    android:textColor="#646464"
-                    android:layout_marginRight="39dp" />
+                    android:gravity="center"
+                    android:textColor="#191919"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:text="금"
                     android:textSize="12dp"
-                    android:textColor="#646464"
-                    android:layout_marginRight="39dp" />
+                    android:gravity="center"
+                    android:textColor="#191919"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="2"
                     android:text="토"
                     android:textSize="12dp"
+                    android:gravity="center"
                     android:textColor="#1DAFFF" />
             </LinearLayout>
 
@@ -148,61 +172,85 @@
                 android:layout_marginBottom="7dp" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
-                android:layout_marginLeft="31dp">
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
 
                 <TextView
                     android:id="@+id/sun_btn"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="2"
                     android:gravity="center_horizontal"
                     android:textColor="#F71E58"
-                    android:text="@{viewModel.days.get(0)}" />
-
-                <TextView
-                    android:id="@+id/tue_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(1)}" />
-
-                <TextView
-                    android:id="@+id/wed_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(2)}" />
-
-                <TextView
-                    android:id="@+id/thu_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(3)}" />
-
-                <TextView
-                    android:id="@+id/fri_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(4)}" />
-
-                <TextView
-                    android:id="@+id/sat_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(5)}" />
+                    android:text="@{viewModel.days.get(0)}"
+                    android:hint="1"/>
 
                 <TextView
                     android:id="@+id/mon_btn"
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center_horizontal"
+                    android:text="@{viewModel.days.get(1)}"
+                    android:textColor="#191919"
+                    android:hint="2"/>
+
+                <TextView
+                    android:id="@+id/tue_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center_horizontal"
+                    android:text="@{viewModel.days.get(2)}"
+                    android:textColor="#191919"
+                    android:hint="3"/>
+
+                <TextView
+                    android:id="@+id/wed_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center_horizontal"
+                    android:text="@{viewModel.days.get(3)}"
+                    android:textColor="#191919"
+                    android:hint="4"/>
+
+                <TextView
+                    android:id="@+id/thu_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center_horizontal"
+                    android:text="@{viewModel.days.get(4)}"
+                    android:textColor="#191919"
+                    android:hint="5"/>
+
+                <TextView
+                    android:id="@+id/fri_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="center_horizontal"
+                    android:text="@{viewModel.days.get(5)}"
+                    android:textColor="#191919"
+                    android:hint="6"/>
+
+                <TextView
+                    android:id="@+id/sat_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
                     android:gravity="center_horizontal"
                     android:textColor="#1DAFFF"
-                    android:text="@{viewModel.days.get(6)}" />
+                    android:text="@{viewModel.days.get(6)}"
+                    android:hint="10"/>
             </LinearLayout>
 
             <LinearLayout
@@ -211,6 +259,7 @@
                 android:visibility="gone">
 
             </LinearLayout>
+
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -229,118 +278,76 @@
                     <!--요일별 그리드-->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="32dp">
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"/>
 
                         <LinearLayout
                             android:id="@+id/sun_grid"
-                            android:layout_width="50dp"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            >
+                            android:layout_weight="2"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="66dp"
-                                android:text="춤추기"
-                                android:textStyle="bold"
-                                android:gravity="top"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
+                                android:background="@color/teal_200"
+                                android:text="신나게 춤추기"/>
 
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="밥먹기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
 
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="132dp"
-                                android:text="춤 두번추기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/mon_grid"
-                            android:layout_width="50dp"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_weight="2"
                             android:orientation="vertical">
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/tue_grid"
-                            android:layout_width="50dp"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_weight="2"
                             android:orientation="vertical">
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/wed_grid"
-                            android:layout_width="48dp"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_weight="2"
                             android:orientation="vertical">
-                            <TextView
-                                android:layout_marginTop="132dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="132dp"
-                                android:text="진도나가기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/thu_grid"
-                            android:layout_width="50dp"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_weight="2"
                             android:orientation="vertical">
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/fri_grid"
-                            android:layout_width="48dp"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_weight="2"
                             android:orientation="vertical">
-
-                            <TextView
-                                android:layout_marginTop="66dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:text="공부하기"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="@color/teal_200"/>
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/sat_grid"
-                            android:layout_width="50dp"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_weight="2"
                             android:orientation="vertical">
                         </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.example.haru.view.timetable
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -76,6 +77,16 @@ class TimetableFragment : Fragment() {
 
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             binding.invalidateAll()
+        }
+
+        timetableviewModel.Colors.observe(viewLifecycleOwner) { colors->
+            binding.sunBtn.setTextColor(Color.parseColor(colors.get(0)))
+            binding.monBtn.setTextColor(Color.parseColor(colors.get(1)))
+            binding.tueBtn.setTextColor(Color.parseColor(colors.get(2)))
+            binding.wedBtn.setTextColor(Color.parseColor(colors.get(3)))
+            binding.thuBtn.setTextColor(Color.parseColor(colors.get(4)))
+            binding.friBtn.setTextColor(Color.parseColor(colors.get(5)))
+            binding.satBtn.setTextColor(Color.parseColor(colors.get(6)))
         }
 
         timetableviewModel.Days.observe(viewLifecycleOwner) { days ->

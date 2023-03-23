@@ -20,9 +20,10 @@
 
             <TextView
                 android:id="@+id/tv_timetable_time"
-                android:layout_width="32dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="right"
+                android:layout_weight="1"
                 android:textSize="8dp"
                 android:paddingRight="4dp"
                 android:textColor="#191919"
@@ -35,7 +36,8 @@
 
             <ImageView
                 android:id="@+id/tv_timetable_mon"
-                android:layout_width="49dp"
+                android:layout_width="0dp"
+                android:layout_weight="2"
                 android:layout_height="match_parent"
                 android:src="@drawable/timetable_line" />
 
@@ -46,8 +48,9 @@
 
             <ImageView
                 android:id="@+id/tv_timetable_tue"
-                android:layout_width="48dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="2"
                 android:src="@drawable/timetable_line" />
 
             <View
@@ -57,8 +60,9 @@
 
             <ImageView
                 android:id="@+id/tv_timetable_wed"
-                android:layout_width="48dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="2"
                 android:src="@drawable/timetable_line" />
 
             <View
@@ -68,8 +72,9 @@
 
             <ImageView
                 android:id="@+id/tv_timetable_thu"
-                android:layout_width="48dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="2"
                 android:src="@drawable/timetable_line" />
 
             <View
@@ -79,8 +84,9 @@
 
             <ImageView
                 android:id="@+id/tv_timetable_fri"
-                android:layout_width="48dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="2"
                 android:src="@drawable/timetable_line" />
 
             <View
@@ -90,8 +96,9 @@
 
             <ImageView
                 android:id="@+id/tv_timetable_sat"
-                android:layout_width="48dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="2"
                 android:src="@drawable/timetable_line" />
 
             <View
@@ -101,8 +108,9 @@
 
             <ImageView
                 android:id="@+id/tv_timetable_sun"
-                android:layout_width="49dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="2"
                 android:src="@drawable/timetable_line" />
 
             <View
