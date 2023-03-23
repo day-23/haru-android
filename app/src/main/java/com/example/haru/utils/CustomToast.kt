@@ -8,15 +8,15 @@ import android.widget.Toast
 import com.example.haru.databinding.CustomToastBinding
 
 object CustomToast {
-    fun makeText(context: Context, message: String, duration: Int): Toast {
+    fun makeText(context: Context?, message: String, duration: Int): Toast {
         val binding: CustomToastBinding = CustomToastBinding.inflate(LayoutInflater.from(context))
 
         binding.tvToastMessage.text = message
 
         return Toast(context).apply {
             setGravity(Gravity.BOTTOM or Gravity.CENTER, 0, 40.toDP())
-            duration
-            view = binding.root
+//            duration
+//            view = binding.root
         }
     }
 
