@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="44dp"
             android:layout_height="38dp"
-            android:text="가나다\n마바사"
+            android:text="빨래\n하기"
             android:textSize="14dp"
             android:textColor="#191919"
             android:gravity="center"

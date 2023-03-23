@@ -53,16 +53,24 @@ class TodotableFragment : Fragment()  {
 
         todotableAdapter = TodotableAdapter(requireContext(), todoreviewModel.MonthList.value?: timeList)
 
-        todorecyclerView = binding.todoDaysRecycler
-        todorecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        todorecyclerView.adapter = todotableAdapter
+//        todorecyclerView = binding.todoDaysRecycler
+//        todorecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//        todorecyclerView.adapter = todotableAdapter
 
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             val year = times.year.slice(0..times.year.length - 2)
             val month = times.month.slice(0..times.month.length - 2)
             val day = times.day.slice(0..times.day.length - 2)
             todoreviewModel.updateMonth(year.toInt(), month.toInt()-1, day.toInt())
-            Log.d("MonthList1", "${year}, $month, $day")
+            when(day){
+                timetableviewModel.Days.value?.get(0)-> binding.sunLayout.setBackgroundResource(R.drawable.todo_table_selected)
+                timetableviewModel.Days.value?.get(1)-> binding.monLayout.setBackgroundResource(R.drawable.todo_table_selected)
+                timetableviewModel.Days.value?.get(2)-> binding.tueLayout.setBackgroundResource(R.drawable.todo_table_selected)
+                timetableviewModel.Days.value?.get(3)-> binding.wedLayout.setBackgroundResource(R.drawable.todo_table_selected)
+                timetableviewModel.Days.value?.get(4)-> binding.thuLayout.setBackgroundResource(R.drawable.todo_table_selected)
+                timetableviewModel.Days.value?.get(5)-> binding.friLayout.setBackgroundResource(R.drawable.todo_table_selected)
+                timetableviewModel.Days.value?.get(6)-> binding.satLayout.setBackgroundResource(R.drawable.todo_table_selected)
+            }
             binding.invalidateAll()
         }
 
