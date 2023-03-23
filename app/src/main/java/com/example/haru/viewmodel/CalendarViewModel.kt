@@ -89,7 +89,7 @@ class CalendarViewModel : ViewModel() {
 
     fun getTodo(startDate:String, endDate:String, maxi:Int){
         viewModelScope.launch {
-            todoRepository.getTodo(startDate,endDate){
+            todoRepository.getTodoDates(startDate,endDate){
 
                 var contentList = ArrayList<CalendarContent>()
 
