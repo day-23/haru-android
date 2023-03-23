@@ -1,5 +1,6 @@
 package com.example.haru.view.timetable
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -83,6 +84,16 @@ class TodotableFragment : Fragment()  {
                 timetableviewModel.Days.value?.get(6)-> binding.satLayout.setBackgroundResource(R.drawable.todo_table_selected)
             }
             binding.invalidateAll()
+        }
+
+        timetableviewModel.Colors.observe(viewLifecycleOwner) { colors ->
+            binding.todoSunDate.setTextColor(Color.parseColor(colors.get(0)))
+            binding.todoMonDate.setTextColor(Color.parseColor(colors.get(1)))
+            binding.todoTueDate.setTextColor(Color.parseColor(colors.get(2)))
+            binding.todoWedDate.setTextColor(Color.parseColor(colors.get(3)))
+            binding.todoThuDate.setTextColor(Color.parseColor(colors.get(4)))
+            binding.todoFriDate.setTextColor(Color.parseColor(colors.get(5)))
+            binding.todoSatDate.setTextColor(Color.parseColor(colors.get(6)))
         }
 
         todoreviewModel.MonthList.observe(viewLifecycleOwner) {days ->

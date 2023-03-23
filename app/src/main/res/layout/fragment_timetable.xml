@@ -88,169 +88,177 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layout_date_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginBottom="9dp">
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:text=""
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="일"
-                    android:textSize="12dp"
-                    android:layout_weight="2"
                     android:gravity="center"
-                    android:textColor="#F71E58"/>
+                    android:layout_marginBottom="9dp">
 
-                <TextView
-                    android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text=""
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="일"
+                        android:textSize="12dp"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:textColor="#F71E58"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="월"
+                        android:textSize="12dp"
+                        android:gravity="center"
+                        android:textColor="#191919"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="화"
+                        android:textSize="12dp"
+                        android:gravity="center"
+                        android:textColor="#191919"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="수"
+                        android:textSize="12dp"
+                        android:gravity="center"
+                        android:textColor="#191919"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="목"
+                        android:textSize="12dp"
+                        android:gravity="center"
+                        android:textColor="#191919"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="금"
+                        android:textSize="12dp"
+                        android:gravity="center"
+                        android:textColor="#191919"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="토"
+                        android:textSize="12dp"
+                        android:gravity="center"
+                        android:textColor="#1DAFFF" />
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#DBDBDB"
+                    android:layout_marginLeft="28dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="7dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="월"
-                    android:textSize="12dp"
-                    android:gravity="center"
-                    android:textColor="#191919"/>
+                    android:layout_marginBottom="6dp"
+                    android:gravity="center">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="화"
-                    android:textSize="12dp"
-                    android:gravity="center"
-                    android:textColor="#191919"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="수"
-                    android:textSize="12dp"
-                    android:gravity="center"
-                    android:textColor="#191919"/>
+                    <TextView
+                        android:id="@+id/sun_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:textColor="#F71E58"
+                        android:text="@{viewModel.days.get(0)}"
+                        android:hint="1"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="목"
-                    android:textSize="12dp"
-                    android:gravity="center"
-                    android:textColor="#191919"/>
+                    <TextView
+                        android:id="@+id/mon_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:text="@{viewModel.days.get(1)}"
+                        android:textColor="#191919"
+                        android:hint="2"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="금"
-                    android:textSize="12dp"
-                    android:gravity="center"
-                    android:textColor="#191919"/>
+                    <TextView
+                        android:id="@+id/tue_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:text="@{viewModel.days.get(2)}"
+                        android:textColor="#191919"
+                        android:hint="3"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:text="토"
-                    android:textSize="12dp"
-                    android:gravity="center"
-                    android:textColor="#1DAFFF" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/wed_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:text="@{viewModel.days.get(3)}"
+                        android:textColor="#191919"
+                        android:hint="4"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#DBDBDB"
-                android:layout_marginLeft="28dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginBottom="7dp" />
+                    <TextView
+                        android:id="@+id/thu_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:text="@{viewModel.days.get(4)}"
+                        android:textColor="#191919"
+                        android:hint="5"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                android:gravity="center">
+                    <TextView
+                        android:id="@+id/fri_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:text="@{viewModel.days.get(5)}"
+                        android:textColor="#191919"
+                        android:hint="6"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:id="@+id/sun_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:textColor="#F71E58"
-                    android:text="@{viewModel.days.get(0)}"
-                    android:hint="1"/>
-
-                <TextView
-                    android:id="@+id/mon_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(1)}"
-                    android:textColor="#191919"
-                    android:hint="2"/>
-
-                <TextView
-                    android:id="@+id/tue_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(2)}"
-                    android:textColor="#191919"
-                    android:hint="3"/>
-
-                <TextView
-                    android:id="@+id/wed_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(3)}"
-                    android:textColor="#191919"
-                    android:hint="4"/>
-
-                <TextView
-                    android:id="@+id/thu_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(4)}"
-                    android:textColor="#191919"
-                    android:hint="5"/>
-
-                <TextView
-                    android:id="@+id/fri_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:text="@{viewModel.days.get(5)}"
-                    android:textColor="#191919"
-                    android:hint="6"/>
-
-                <TextView
-                    android:id="@+id/sat_btn"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_horizontal"
-                    android:textColor="#1DAFFF"
-                    android:text="@{viewModel.days.get(6)}"
-                    android:hint="10"/>
+                    <TextView
+                        android:id="@+id/sat_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:textColor="#1DAFFF"
+                        android:text="@{viewModel.days.get(6)}"
+                        android:hint="10"/>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -324,6 +332,20 @@
                             android:layout_height="match_parent"
                             android:layout_weight="2"
                             android:orientation="vertical">
+
+                            <TextView
+                                android:layout_marginTop="66dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="33dp"
+                                android:background="@color/teal_200"
+                                android:text="밥먹기"/>
+
+                            <TextView
+                                android:layout_marginTop="33dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="66dp"
+                                android:background="@color/teal_200"
+                                android:text="운동하기"/>
                         </LinearLayout>
 
                         <LinearLayout
