@@ -96,6 +96,10 @@ class TodotableFragment : Fragment()  {
             binding.todoSatDate.setTextColor(Color.parseColor(colors.get(6)))
         }
 
+        timetableviewModel.Dates.observe(viewLifecycleOwner) { Dates ->
+            
+        }
+
         todoreviewModel.MonthList.observe(viewLifecycleOwner) {days ->
             Log.d("MonthList2", "${days.size}")
             todotableAdapter.setData(days)

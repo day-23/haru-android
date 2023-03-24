@@ -50,4 +50,10 @@ class TodoTableRecyclerViewmodel {
         }
         _MonthList.value = dayslist
     }
+
+    fun getTodo(date : ArrayList<String>){
+        Log.d("Days", "${date.get(0)}")
+    }
+
+
 }

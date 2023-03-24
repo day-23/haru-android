@@ -20,8 +20,8 @@ import kotlin.math.abs
 
 class TimetableViewModel(val context : Context): ViewModel() {
 
-    private val _Dates = MutableLiveData<ArrayList<Timetable_date>>()
-    val Dates : LiveData<ArrayList<Timetable_date>>
+    private val _Dates = MutableLiveData<ArrayList<String>>()
+    val Dates : LiveData<ArrayList<String>>
         get() = _Dates
 
     private val _Days = MutableLiveData<ArrayList<String>>()
@@ -44,6 +44,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val calendar = Calendar.getInstance()
     var colorlist: ArrayList<String> = ArrayList()
     var dayslist: ArrayList<String> = ArrayList()
+    var Datelist: ArrayList<String> = ArrayList()
 
     init {
         _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString()+"일")
@@ -55,6 +56,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
         )
         _Days.value = dayslist
         _Colors.value = colorlist
+        _Dates.value = Datelist
+
     }
 
     //날짜정보//
@@ -102,7 +105,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
         calendar.set(year, month, day)
         val currentOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         val dayOfWeek = SimpleDateFormat("E").format(Date(year - 1900, month, day))
+        var QueryDate = SimpleDateFormat("yyyyMMdd").format(Date(year - 1900, month, day-1))
+
         Log.d("20191627", dayOfWeek)
+
         when(dayOfWeek){
             "월","Mon"-> d -= 1
             "화","Tue"-> d -= 2
@@ -117,21 +123,22 @@ class TimetableViewModel(val context : Context): ViewModel() {
         for (i: Int in 1 .. 7){
             if(d < 1){
                 addday = (lastOfMonth - abs(d))
+                QueryDate = SimpleDateFormat("yyyyMMdd").format(Date(year - 1900, month-1, addday))
             }
             else if(d > currentOfMonth){
                 addday = (d - currentOfMonth)
+                QueryDate = SimpleDateFormat("yyyyMMdd").format(Date(year - 1900, month+1, addday))
             }
             else{
                 addday = d
-
+                QueryDate = SimpleDateFormat("yyyyMMdd").format(Date(year - 1900, month, addday))
             }
-
+            Datelist.add(QueryDate)
             if(colorlist.size == 0) colorlist.add("#F71E58")
             else if(colorlist.size == 6) colorlist.add("#1DAFFF")
             else if(d == addday) colorlist.add("#191919")
             else colorlist.add("#DBDBDB")
             dayslist.add(addday.toString())
-
             d += 1
         }
     }
