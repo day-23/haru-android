@@ -34,6 +34,7 @@ class CalendarViewModel : ViewModel() {
         calendar.set(Calendar.DAY_OF_MONTH, 1)
 
         var dateList = ArrayList<CalendarDate>()
+        Log.d("calendar", calendar.time.toString())
 
         for(i in 0..5) {
             for(k in 0..6) {
@@ -195,24 +196,15 @@ class CalendarViewModel : ViewModel() {
                             }
 
                             "매달" -> {
-                                var monthlycnt = createdAt.date-1
                                 var cnt = 0
 
                                 calendar.time = dateformat.parse(startDate)
-                                Log.d("startDate",startDate)
-                                Log.d("createdAt",createdAt.toString())
-                                Log.d("endDate", endDate)
 
                                 while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
                                     if(calendar.time.compareTo(createdAt) >= 0) {
-                                        Log.d("repeatValue",repeatValue)
-                                        if (repeatValue[monthlycnt] == '1') {
+                                        if (repeatValue[calendar.time.date-1] == '1') {
                                             repeatDate[cnt] = true
                                         }
-
-                                        monthlycnt++
-
-                                        if(monthlycnt == 31) monthlycnt = 0
                                     }
 
                                     cnt++
@@ -225,13 +217,10 @@ class CalendarViewModel : ViewModel() {
                                 var cnt = 0
 
                                 val tempStartDate = dateformat.parse(startDate)
-                                Log.d("tempStart", tempStartDate.toString())
 
                                 calendar.time = tempStartDate
 
                                 while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
-                                    Log.d("calendar", calendar.time.toString())
-
                                     if(calendar.time.compareTo(createdAt) >= 0) {
                                         if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
                                             if(calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day) repeatDate[cnt] = true
@@ -243,10 +232,6 @@ class CalendarViewModel : ViewModel() {
                                     calendar.add(Calendar.DAY_OF_MONTH, 1)
                                 }
                             }
-                        }
-
-                        for(i in 0..repeatDate.size-1){
-                            Log.d("repeateDate", repeatDate[i].toString())
                         }
                     } else {
                         val calendar = Calendar.getInstance()
@@ -273,9 +258,6 @@ class CalendarViewModel : ViewModel() {
                     }
                 }
 
-                for (i in 0 until contentList.size)
-                    Log.d("변경 전 contentLst", contentList[i].toString())
-
                 var newcontentList = ArrayList<ContentMark>()
 
                 for (i in 0 until contentList.size - 1) {
@@ -299,113 +281,8 @@ class CalendarViewModel : ViewModel() {
                     }
                 }
 
-                for (i in 0 until contentList.size)
-                    Log.d("변경 후 contentLst", contentList[i].toString())
-
-                for (i in 0 until newcontentList.size)
-                    Log.d("newcontentList", newcontentList[i].toString())
-
+                Log.d("newcontentList", newcontentList.toString())
                 _liveContentList.postValue(newcontentList)
-
-                /*for (todo in it){
-                    var cnt = 0
-                    var repeatEnd:Date? = null
-
-                    val endDate = format.parse(todo.endDate)
-                    val repeatOption = todo.repeatOption
-                    val repeatValue = todo.repeatValue
-
-                    if(todo.repeatEnd != null){
-                        repeatEnd = format.parse(todo.repeatEnd)
-                    }
-
-                    if(repeatOption != null) {
-                        for (i in 0..maxi) {
-                            for (k in 0..6) {
-                                if (userData[i * 7 + k].alpha > 0.9f) {
-                                    cnt += 1
-
-                                    if (cnt <= repeatEnd!!.date) {
-                                        if (repeatOption == "매주" && repeatValue!![userData[i * 7 + k].date.day] == '1') {
-                                            if (userData[i * 7 + k].todos == null) {
-                                                userData[i * 7 + k].todos = ArrayList()
-                                            }
-
-                                            userData[i * 7 + k].todos!!.add(ContentMark(todo,true))
-                                        } else if (repeatOption == "매달" && repeatValue!![cnt - 1] == '1') {
-                                            if (userData[i * 7 + k].todos == null) {
-                                                userData[i * 7 + k].todos = ArrayList()
-                                            }
-
-                                            userData[i * 7 + k].todos!!.add(ContentMark(todo,true))
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        for (i in 0..maxi) {
-                            for (k in 0..6) {
-                                if (userData[i * 7 + k].alpha > 0.9f) {
-                                    cnt += 1
-
-                                    if (cnt == endDate.date) {
-                                        if (userData[i * 7 + k].todos == null) {
-                                            userData[i * 7 + k].todos = ArrayList()
-                                        }
-
-                                        userData[i * 7 + k].todos!!.add(ContentMark(todo,true))
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for(i in 0 until userData.size){
-                    Log.d("변경 전 데이타",userData[i].todos.toString())
-                }
-
-                for (i in 0 until userData.size-1){
-                    if(userData[i].todos != null) {
-                        for (k in 0 until userData[i].todos!!.size) {
-                            var cnt = 0
-                            for (j in i + 1 until userData.size) {
-                                if (userData[j].todos != null) {
-                                    if (userData[i].todos!![k].todo != null &&
-                                        userData[i].todos!![k].mark &&
-                                        userData[j].todos!!.contains(userData[i].todos!![k])
-                                    ) {
-                                        cnt++
-
-                                        if (userData[j].todos!!.size > k) {
-                                            val containIndex: Int =
-                                                userData[j].todos!!.indexOf(userData[i].todos!![k])
-
-                                            var tmp = userData[j].todos!![k]
-
-                                            userData[j].todos!![k] =
-                                                userData[j].todos!![containIndex]
-                                            userData[j].todos!![containIndex] = tmp
-
-                                            userData[j].todos!![k].mark = false
-
-                                            userData[i]
-                                        }
-                                    }
-                                } else {
-                                    break
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for(i in 0 until userData.size){
-                    Log.d("변경 후 데이타",userData[i].todos.toString())
-                }
-
-                _liveDataList.postValue(userData)*/
             }
         }
     }

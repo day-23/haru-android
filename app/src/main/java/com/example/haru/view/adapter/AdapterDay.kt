@@ -2,12 +2,13 @@ package com.example.haru.view.adapter
 
 import android.graphics.Color
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
-import android.widget.TextView
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.example.haru.data.model.CalendarContent
+import com.example.haru.R
 import com.example.haru.data.model.CalendarDate
 import com.example.haru.data.model.ContentMark
 import com.example.haru.databinding.ListItemDayBinding
@@ -19,21 +20,22 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
     inner class DayView(private val binding: ListItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
             fun bind(date: CalendarDate?, content: ContentMark?, dateOrContent:Boolean, nullable: Boolean, background:Boolean){
-//                if(!dateOrContent){
-//                    var layoutparam: LayoutParams = binding.itemDayText.layoutParams
-//                    layoutparam
-//                    binding.itemDayText.gravity
-//                }
+                val textlayout =
+                    if (nullable) "" else if (dateOrContent) Integer.toString(date!!.date.date) else content!!.todo.content
 
                 if(background){
-                    binding.textFrameLayout.setBackgroundColor(Color.LTGRAY)
+                    val layoutParams = binding.itemDayText.layoutParams as FrameLayout.LayoutParams
+
+                    layoutParams.gravity = Gravity.LEFT
+
+                    binding.textFrameLayout.setBackgroundResource(R.drawable.calendar_border)
+                    binding.itemDayText.layoutParams = layoutParams
                 }
 
                 binding.calendarDate = date
-                binding.calendarContent = content
+                binding.calendarContent = textlayout
                 binding.dateOrContent = dateOrContent
-                binding.nullable = nullable
-                binding.nullData = ""
+                binding.black = Color.BLACK
             }
         }
 
@@ -43,82 +45,78 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
         notifyDataSetChanged()
     }
 
+    var duplist = ArrayList<ContentMark>()
+
+    var positionplus = 0
+
+    var saveLineList = ArrayList<Int>()
+    var saveCntList = ArrayList<Int>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayView {
         val binding = ListItemDayBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return DayView(binding)
     }
 
-    var duplist = ArrayList<ContentMark>()
-
-    var dateOrContent = true
-    var contentcnt = 0
-    var datePosition = 0
-    var contentPosition = 0
-
-    var saveLineList = ArrayList<Int>()
-    var saveCntList = ArrayList<Int>()
-
     override fun onBindViewHolder(holder: DayView, position: Int) {
-        if(dateOrContent){
-            holder.bind(date[datePosition], null,true,false, false)
+        if(position == 0){
+            duplist = ArrayList()
+            positionplus = 0
+            saveLineList = ArrayList()
+            saveCntList = ArrayList()
+        }
 
-            datePosition++
+        val newpostion = positionplus + position
 
-            if (datePosition % 7 == 0){
-                dateOrContent = false
-            }
+        if (newpostion / 7 in arrayOf(0, 5, 10, 15, 20, 25, 30)) {
+            val dateposition = arrayOf(0,5,10,15,20,25,30).indexOf(newpostion/7)*7
+            holder.bind(date[dateposition + newpostion % 35], null, true, false, false)
         } else {
-            Log.d("contentPosition", contentPosition.toString())
+            val contentPosition = newpostion % 7 + newpostion / (date.size) * 7
+            val contentLine = (newpostion / 7) % 5
 
-            if(saveLineList.contains(contentcnt)){
-                val index = saveLineList.indexOf(contentcnt)
+            if (saveLineList.contains(contentLine)) {
+                val index = saveLineList.indexOf(contentLine)
 
-                if(saveCntList[index] > 7){
+                if (saveCntList[index] > 7) {
                     saveCntList[index] -= 7
-
-                    holder.bind(null, null,false,true,true)
+                    positionplus += 6
+                    holder.bind(null,null,false,true,true)
+                    return
                 } else {
+                    val returncnt = saveCntList[index]
+
                     saveCntList.removeAt(index)
                     saveLineList.removeAt(index)
 
-                    holder.bind(null, null,false,true,true)
-                }
-            }
-
-            for(con in content){
-                if(!duplist.contains(con) && con.position == contentPosition){
-                    Log.d("내용","성공")
-                    duplist.add(con)
-                    val lastcontentPosition = contentPosition
-                    contentPosition += con.cnt
-
-                    if(lastcontentPosition/7 != contentPosition/7){
-                        saveLineList.add(contentcnt)
-
-                        contentPosition -= contentPosition%7
-                        val returncnt = contentPosition-lastcontentPosition
-                        saveCntList.add(con.cnt-returncnt)
-                    }
-
-                    holder.bind(null, con,false,false, true)
+                    positionplus += returncnt - 1
+                    holder.bind(null,null,false,true,true)
                     return
                 }
             }
 
-            contentPosition++
+            for (con in content) {
+                if (!duplist.contains(con) && con.position == contentPosition) {
+                    duplist.add(con)
+                    val lastcontentPosition = contentPosition
 
-            if(contentPosition % 7 == 0){
-                contentPosition -= 7
-                contentcnt++
+//                    if (lastcontentPosition / 7 != contentPosition / 7) {
+//                        saveLineList.add(contentLine)
+//
+//                        val returncnt = contentPosition - lastcontentPosition
+//                        saveCntList.add(con.cnt - returncnt)
+//
+//                        positionplus += returncnt - 1
+//                        holder.bind(null,con,false,false,true)
+//                        return
+//                    }
+
+                    positionplus += con.cnt - 1
+                    holder.bind(null,con,false,false,true)
+                    return
+                }
             }
 
-            if(contentcnt == 4){
-                contentPosition += 7
-                contentcnt = 0
-                dateOrContent = true
-            }
-
-            holder.bind(null, null,false,true, false)
+            holder.bind(null,null,false,true,false)
         }
     }
 
