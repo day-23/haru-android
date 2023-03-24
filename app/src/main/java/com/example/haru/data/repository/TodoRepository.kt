@@ -91,19 +91,19 @@ class TodoRepository() {
         todoData
     }
 
-//    suspend fun getTodoByUntag() = withContext(Dispatchers.IO){
-//        val response = todoService.getTodoByUntag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
-//        val data : GetTodoBy
-//        val todoData : List<Todo>
-//
-//        if (response.isSuccessful){
-//            Log.d("TAG", "Success to get Todo By Untag")
-//            data = response.body()!!
-//            todoData = data.data
-//        } else {
-//            Log.d("TAG", "Fail to get Todo By Untag")
-//            todoData = emptyList()
-//        }
-//        todoData
-//    }
+    suspend fun getTodoByUntag() = withContext(Dispatchers.IO){
+        val response = todoService.getTodoByUntag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
+        val data : GetTodoBy
+        val todoData : List<Todo>
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get Todo By Untag")
+            data = response.body()!!
+            todoData = data.data
+        } else {
+            Log.d("TAG", "Fail to get Todo By Untag")
+            todoData = emptyList()
+        }
+        todoData
+    }
 }
