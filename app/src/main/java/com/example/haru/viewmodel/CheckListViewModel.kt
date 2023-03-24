@@ -90,7 +90,7 @@ class CheckListViewModel() :
             todoByTagItem = tagDataList.value!![position - 1].content
             _todoByTag.value = true
             _todoDataList.value= when(position){
-//                1 -> todoRepository.getTodoByComplete()
+                1 -> todoRepository.getTodoByComplete()
 //                2 -> todoRepository.getTodoByUntag()
                 else -> todoRepository.getTodoByTag(tagDataList.value!![position - 1].id)
             }

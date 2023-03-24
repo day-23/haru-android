@@ -21,9 +21,9 @@ interface TodoService {
     @GET("todo/{userId}/todos/main/flag")
     fun getTodoByFlag(@Path("userId") userId: String) : Call<GetTodoBy>
 
-//    @GET("todo/{userId}/todos/main/completed")
-//    fun getTodoByCompleted(@Path("userId") userId: String) : Call<GetTodoBy>
-//
+    @GET("todo/{userId}/todos/main/completed")
+    fun getTodoByCompleted(@Path("userId") userId: String) : Call<GetTodoBy>
+
 //    @GET("todo/{userId}/todos/main/untag")
 //    fun getTodoByUntag(@Path("userId") userId: String) : Call<GetTodoBy>
 }
