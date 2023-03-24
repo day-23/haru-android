@@ -21,9 +21,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
-    private val checklistViewModel : CheckListViewModel
+    private val checklistViewModel: CheckListViewModel
 
-    private val repeatOptionList = listOf<String?>("매일", "매주", "2주마다", "매월", "매년", null)
+    private val repeatOptionList = listOf<String>("매일", "매주", "2주마다", "매월", "매년")
 
     private val _flagTodo = MutableLiveData<Boolean>(false)
     val flagTodo: LiveData<Boolean> = _flagTodo
@@ -31,11 +31,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _todayTodo = MutableLiveData<Boolean>(false)
     val todayTodo: LiveData<Boolean> = _todayTodo
 
-    private val _isSelectedEndDateTime = MutableLiveData<Boolean>()
-    val isSelectedEndDateTime : LiveData<Boolean> = _isSelectedEndDateTime
+    private val _isSelectedEndDateTime = MutableLiveData<Boolean>(false)
+    val isSelectedEndDateTime: LiveData<Boolean> = _isSelectedEndDateTime
 
-    private val _endTimeSwitch = MutableLiveData<Boolean>(false)
-    val endTimeSwitch : LiveData<Boolean> = _endTimeSwitch
+    private val _endDateSwitch = MutableLiveData<Boolean>()
+    val endDateSwitch: LiveData<Boolean> = _endDateSwitch
 
     private val _endDate = MutableLiveData<Date?>()
     val endDate: LiveData<Date?> = _endDate
@@ -44,63 +44,46 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     val endTime: LiveData<Date?> = _endTime
 
     private val _alarmSwitch = MutableLiveData<Boolean>(false)
-    val alarmSwitch : LiveData<Boolean> = _alarmSwitch
+    val alarmSwitch: LiveData<Boolean> = _alarmSwitch
 
     private val _repeatSwitch = MutableLiveData<Boolean>()
-    val repeatSwitch : LiveData<Boolean> = _repeatSwitch
+    val repeatSwitch: LiveData<Boolean> = _repeatSwitch
 
     private val _repeatEndDateSwitch = MutableLiveData<Boolean>(false)
-    val repeatEndDateSwitch : LiveData<Boolean> = _repeatEndDateSwitch
+    val repeatEndDateSwitch: LiveData<Boolean> = _repeatEndDateSwitch
 
     private val _repeatOption = MutableLiveData<Int?>()
     val repeatOption: LiveData<Int?> = _repeatOption
 
-    private val _repeatValue = MutableLiveData<String?>()
-    val repeatValue : LiveData<String?> = _repeatValue
-
-//    private val _repeatDay = MutableLiveData<List<Boolean>>(List(7) { false })
-//    val repeatDay: LiveData<List<Boolean>> = _repeatDay
-
-
-//    private val _repeatOptionStr = MutableLiveData<String?>()
-//    val repeatOptionStr: LiveData<String?> = _repeatOptionStr
-//
-//    private val _repeatDayStr = MutableLiveData<String?>()
-//    val repeatDayStr: LiveData<String?> = _repeatDayStr
-
+    private val _alarmDate = MutableLiveData<Date?>()
+    val alarmDate: LiveData<Date?> = _alarmDate
 
     private val _alarmTime = MutableLiveData<Date?>()
     val alarmTime: LiveData<Date?> = _alarmTime
 
-    private val _alarmDate = MutableLiveData<Date?>()
-    val alarmDate: LiveData<Date?> = _alarmDate
-
     private val _repeatEndDate = MutableLiveData<Date?>()
     val repeatEndDate: LiveData<Date?> = _repeatEndDate
-
-//    val tag = MutableLiveData<String>("")
 
     var tagList: MutableList<String> = mutableListOf()
     var subTodos: MutableList<String> = mutableListOf()
 
-    var tag :String = ""
+    var tag: String = ""
     var content: String = ""
 
     var memo: String = ""
-    var endDateStr: String = ""
-    var alarmDateStr: String = ""
-    var endTimeStr: String = ""
-    var alarmTimeStr: List<String> = mutableListOf()
-    var repeatEndDateStr: String = ""
+    var repeatValue: String? = null
+    var endDateStr: String? = null
+    var alarmDateTimeStr: String? = null
+    var repeatEndDateStr: String? = null
 
     var endTimeLayoutHeight: Int = 0
 
-    var repeatSetLayoutHeight : Int = 0
+    var repeatSetLayoutHeight: Int = 0
     var repeatOptionHeight: Int = 0
     var repeatWeekHeight: Int = 0
     var repeatEndDateHeight: Int = 0
-    var gridMonthHeight : Int = 0
-    var gridYearHeight : Int = 0
+    var gridMonthHeight: Int = 0
+    var gridYearHeight: Int = 0
 
     init {
         this.checklistViewModel = checkListViewModel
@@ -115,167 +98,147 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _todayTodo.value = (_todayTodo.value == false)
     }
 
-    fun setIsSelectedEndDateTime(){
-        if (_isSelectedEndDateTime.value == null) _isSelectedEndDateTime.value = true
-        else _isSelectedEndDateTime.value = (_isSelectedEndDateTime.value == false)
+    fun setIsSelectedEndDateTime() {
+        _isSelectedEndDateTime.value = (_isSelectedEndDateTime.value == false)
     }
 
-    fun setEndTimeSwitch(){
-        _endTimeSwitch.value = (_endTimeSwitch.value == false)
+    fun setEndDateSwitch() {
+        if (_endDateSwitch.value == null) _endDateSwitch.value = true
+        else _endDateSwitch.value = (_endDateSwitch.value == false)
+
+        if (endDateSwitch.value == false) _isSelectedEndDateTime.value = false
     }
 
-    fun setAlarmSwitch(){
+    fun setAlarmSwitch() {
         _alarmSwitch.value = (_alarmSwitch.value == false)
     }
 
-    fun setRepeatSwitch(){
+    fun setRepeatSwitch() {
         if (_repeatSwitch.value == null) _repeatSwitch.value = true
         else _repeatSwitch.value = (_repeatSwitch.value == false)
+
     }
 
-    fun setRepeatEndSwitch(){
+    fun setRepeatEndSwitch() {
         _repeatEndDateSwitch.value = (_repeatEndDateSwitch.value == false)
     }
 
-    fun setRepeatOpt(num: Int){
+    fun setRepeatOpt(num: Int) {
         _repeatOption.value = num
     }
 
-//    fun setRepeatOption(option: Int) {
-//        _repeatOption.value = option
-//        if (_repeatOption.value != 1)
-//            _repeatDay.value = List(7) { false }
-//    }
-//
-//    fun setRepeatDay(day: Int) {
-//        if (_repeatOption.value == 1)
-//            if (_repeatDay.value!!.get(day) == false)
-//                _repeatDay.value =
-//                    _repeatDay.value!!.subList(0, day) + true + _repeatDay.value!!.subList(
-//                        day + 1,
-//                        7
-//                    )
-//            else _repeatDay.value =
-//                _repeatDay.value!!.subList(0, day) + false + _repeatDay.value!!.subList(day + 1, 7)
-//    }
-//
-//    fun setRepeatOptionWithDay() {
-//        var str = ""
-//        for (i in 0 until 7)
-//            str += if (repeatDay.value!!.get(i) == true) "1" else "0"
-//        _repeatDayStr.value = str
-//        _repeatOptionStr.value = repeatOptionList.get(_repeatOption.value!!)
-//    }
-//
-//    fun setRepeatOptionWithoutDay() {
-//        _repeatOptionStr.value = repeatOptionList.get(_repeatOption.value!!)
-//    }
-//
-//    fun setRepeatClear() {
-//        _repeatOption.value = null
-//        _repeatDay.value = List(7) { false }
-//        _repeatOptionStr.value = null
-//        _repeatDayStr.value = null
-//    }
-//
-//
     fun setTime(id: Int, date: Date) {
+        Log.d("20191627", date.toString())
         if (id == 0) _endTime.value = date else _alarmTime.value = date
     }
-//
+
     fun setDate(id: Int, date: Date) {
+        Log.d("20191627", date.toString())
         if (id == 0) _endDate.value = date
         else if (id == 1) _alarmDate.value = date
         else _repeatEndDate.value = date
     }
 
-    fun setEndTimeHeight(h : Int){
+    fun setEndTimeHeight(h: Int) {
         endTimeLayoutHeight = h
     }
 
-    fun setRepeatSetLayouH(h: Int){
+    fun setRepeatSetLayouH(h: Int) {
         repeatSetLayoutHeight = h
     }
 
-    fun setRepeatOptionH(h: Int){
+    fun setRepeatOptionH(h: Int) {
         repeatOptionHeight = h
     }
 
-    fun setWeekHeight(h: Int){
+    fun setWeekHeight(h: Int) {
         repeatWeekHeight = h
     }
 
-    fun setMonthHeight(h: Int){
+    fun setMonthHeight(h: Int) {
         gridMonthHeight = h
     }
 
-    fun setYearHeight(h: Int){
+    fun setYearHeight(h: Int) {
         gridYearHeight = h
     }
 
-    fun setRepeatEndDateH(h: Int){
+    fun setRepeatEndDateH(h: Int) {
         repeatEndDateHeight = h
     }
-//
-//    fun formatDate(date: Date): String {
-//        val submitDateFormat =
-//            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
-//        return submitDateFormat.format(date)
-//    }
-//
-//    fun clearSubmitTodo() {
-//        _repeatOption.value = null
-//        _repeatDay.value = List(7) { false }
-//        _flagTodo.value = false
-//        _todayTodo.value = false
-//        _repeatOptionStr.value = null
-//        _repeatDayStr.value = null
-//        _alarmTime.value = null
-//        _endTime.value = null
-//        _endDate.value = null
-//        _alarmDate.value = null
-//        _repeatEndDate.value = null
-//        tagList = mutableListOf()
-//        subTodos = mutableListOf()
-//
-//        content = ""
-//        memo = ""
-//        tag = ""
-//        endDateStr = ""
-//        alarmDateStr = ""
-//        endTimeStr = ""
-//        alarmTimeStr = mutableListOf()
-//        repeatEndDateStr = ""
-//
-//    }
-//    fun readyToSubmit() {
-//        if (tag == "" || tag.replace(" ", "") == "")
-//            tagList = mutableListOf()
-//        else tagList = tag.split(" ")
-//        if (endDate.value != null) endDateStr = formatDate(endDate.value!!)
-//        if (endTime.value != null) endTimeStr = formatDate(endTime.value!!)
-//        if (alarmTime.value != null) alarmTimeStr = mutableListOf(formatDate(alarmTime.value!!))
-//        if (repeatEndDate.value != null) repeatEndDateStr = formatDate(repeatEndDate.value!!)
-//    }
-//
+
+    //
+    fun formatDate(date: Date): String {
+        val submitDateFormat =
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
+        return submitDateFormat.format(date)
+    }
+
+    fun readyToSubmit() {
+        if (tag == "" || tag.replace(" ", "") == "")
+            tagList = mutableListOf()
+        else tagList = tag.split(" ") as MutableList<String>
+
+        endDateStr = if (endDateSwitch.value == true) {
+            if (!isSelectedEndDateTime.value!!) formatDate(endDate.value!!)
+            else {
+                formatDate(endDate.value!!).substring(
+                    0,
+                    10
+                ) + formatDate(endTime.value!!).substring(10)
+            }
+        } else {
+            null
+        }
+
+
+        alarmDateTimeStr =
+            if (alarmSwitch.value == true && alarmDate.value != null && alarmTime.value != null)
+                formatDate(alarmDate.value!!).substring(
+                    0,
+                    10
+                ) + formatDate(alarmTime.value!!).substring(10)
+            else null
+
+        repeatEndDateStr =
+            if (repeatSwitch.value == true && repeatEndDateSwitch.value == true && repeatEndDate.value != null)
+                formatDate(repeatEndDate.value!!)
+            else null
+    }
+
+    fun setRepeatVal(value: String?) {
+        repeatValue = value
+    }
+
+    //
     private fun createTodoData(): TodoRequest {
+        Log.d(
+            "20191627",
+            (if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else null).toString()
+        )
         return TodoRequest(
             content = content,
             memo = memo,
             todayTodo = todayTodo.value!!,
             flag = flagTodo.value!!,
-            isSelectedEndDateTime = isSelectedEndDateTime.value?: false,
-            repeatOption = repeatOptionList[repeatOption as Int]
+            isSelectedEndDateTime = isSelectedEndDateTime.value ?: false,
+            endDate = endDateStr,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else "null",
+            repeatValue = repeatValue?: "",
+            repeatEnd = repeatEndDateStr,
+            tags = tagList,
+            subTodos = subTodos,
+            alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!)
         )
     }
 
-//    fun addTodo(callback: () -> Unit){
-//        checklistViewModel.addTodo(createTodoData()){
-//            Log.d("20191627", "여기는 왜 안돼")
-//            callback()
-//        }
-//
-//    }
+    fun addTodo(callback: () -> Unit) {
+        checklistViewModel.addTodo(createTodoData()) {
+            Log.d("20191627", "여기는 왜 안돼")
+            callback()
+        }
+
+    }
 
 
 }
