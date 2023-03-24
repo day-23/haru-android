@@ -172,8 +172,4 @@ class TodoAdapter(val context: Context) :
             tags[3].content = content
         } else todoByTag = false
     }
-
-    fun setTodoByFlag() {
-
-    }
 }

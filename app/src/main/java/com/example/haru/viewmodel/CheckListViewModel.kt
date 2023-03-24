@@ -61,6 +61,7 @@ class CheckListViewModel() :
     fun getTodoMain(callback: () -> Unit) {
         viewModelScope.launch {
             todoRepository.getTodoMain{
+                todoList.clear()
                 _flaggedTodos.postValue(it.flaggedTodos)
                 _taggedTodos.postValue(it.taggedTodos)
                 _untaggedTodos.postValue(it.untaggedTodos)
@@ -79,6 +80,11 @@ class CheckListViewModel() :
                 Log.d("20191627", it.toString())
                 getTag()
                 getTodoMain{
+                    flaggedTodos.value?.let { todoList.addAll(it) }
+                    taggedTodos.value?.let { todoList.addAll(it) }
+                    untaggedTodos.value?.let { todoList.addAll(it) }
+                    completedTodos.value?.let { todoList.addAll(it) }
+                    _todoDataList.postValue(todoList)
                     callback()
                 }
             }
