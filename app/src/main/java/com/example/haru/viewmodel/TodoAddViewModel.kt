@@ -15,7 +15,6 @@ import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.data.model.TodoRequest
 import com.example.haru.data.repository.TodoRepository
-import com.example.haru.databinding.FragmentChecklistRepeatBinding
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -94,6 +93,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var repeatEndDateStr: String = ""
 
     var endTimeLayoutHeight: Int = 0
+
+    var repeatSetLayoutHeight : Int = 0
     var repeatOptionHeight: Int = 0
     var repeatWeekHeight: Int = 0
     var repeatEndDateHeight: Int = 0
@@ -113,8 +114,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun setIsSelectedEndDateTime(){
-        if (_isSelectedEndDateTime.value == null) _isSelectedEndDateTime.value = false
-        _isSelectedEndDateTime.value = (_isSelectedEndDateTime.value == false)
+        if (_isSelectedEndDateTime.value == null) _isSelectedEndDateTime.value = true
+        else _isSelectedEndDateTime.value = (_isSelectedEndDateTime.value == false)
     }
 
     fun setEndTimeSwitch(){
@@ -126,12 +127,16 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun setRepeatSwitch(){
-        if (_repeatSwitch.value == null) _repeatSwitch.value = false
-        _repeatSwitch.value = (_repeatSwitch.value == false)
+        if (_repeatSwitch.value == null) _repeatSwitch.value = true
+        else _repeatSwitch.value = (_repeatSwitch.value == false)
     }
 
     fun setRepeatEndSwitch(){
         _repeatEndDateSwitch.value = (_repeatEndDateSwitch.value == false)
+    }
+
+    fun setRepeatOpt(num: Int){
+        _repeatOption.value = num
     }
 
 //    fun setRepeatOption(option: Int) {
@@ -184,6 +189,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setEndTimeHeight(h : Int){
         endTimeLayoutHeight = h
+    }
+
+    fun setRepeatSetLayouH(h: Int){
+        repeatSetLayoutHeight = h
     }
 
     fun setRepeatOptionH(h: Int){

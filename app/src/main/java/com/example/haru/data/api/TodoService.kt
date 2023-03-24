@@ -1,9 +1,6 @@
 package com.example.haru.data.api
 
-import com.example.haru.data.model.TodoRequest
-import com.example.haru.data.model.GetMainTodoResponse
-import com.example.haru.data.model.GetTodoByTag
-import com.example.haru.data.model.PostTodoResponse
+import com.example.haru.data.model.*
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,4 +17,13 @@ interface TodoService {
 
     @GET("todo/{userId}/todos/tag")
     fun getTodoByTag(@Path("userId") userId: String, @Query("tagId") tagId: String) : Call<GetTodoByTag>
+
+    @GET("todo/{userId}/todos/main/flag")
+    fun getTodoByFlag(@Path("userId") userId: String) : Call<GetTodoBy>
+
+//    @GET("todo/{userId}/todos/main/completed")
+//    fun getTodoByCompleted(@Path("userId") userId: String) : Call<GetTodoBy>
+//
+//    @GET("todo/{userId}/todos/main/untag")
+//    fun getTodoByUntag(@Path("userId") userId: String) : Call<GetTodoBy>
 }

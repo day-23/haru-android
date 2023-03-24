@@ -14,8 +14,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.GridLayout
 import android.widget.TextView
 import android.widget.TimePicker
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.viewmodel.CheckListViewModel
@@ -71,7 +74,12 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             val textView = TextView(requireContext())
             textView.text = i.toString()
             textView.gravity = Gravity.CENTER
-            binding.gridMonth.addView(textView)
+            val params = GridLayout.LayoutParams().apply {
+                width = 0
+                height = GridLayout.LayoutParams.WRAP_CONTENT
+                rowSpec = GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL)
+            }
+            binding.gridMonth.addView(textView, params)
         }
 
         binding.endDateSetLayout.layoutTransition.apply {
@@ -90,13 +98,16 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         })
 
         // repeatOption 선택 레이아웃 높이 계산
-        binding.repeatOptionSelect.viewTreeObserver.addOnGlobalLayoutListener(object :
+        binding.repeatOptionLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                todoAddViewModel.setRepeatOptionH(binding.repeatOptionSelect.height)
-                binding.repeatOptionSelect.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                Log.d("20191627", "repeatOptionSelect : " + todoAddViewModel.repeatOptionHeight.toString())
-                binding.repeatOptionSelect.visibility = View.GONE
+                todoAddViewModel.setRepeatOptionH(binding.repeatOptionLayout.height)
+                binding.repeatOptionLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                Log.d(
+                    "20191627",
+                    "repeatOptionLayout : " + todoAddViewModel.repeatOptionHeight.toString()
+                )
+                binding.repeatOptionLayout.visibility = View.GONE
             }
         })
 
@@ -105,6 +116,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 todoAddViewModel.setWeekHeight(binding.everyWeekSelectLayout.height)
+                Log.d("20191627", "WeekSelect Height : ${todoAddViewModel.repeatWeekHeight}")
                 binding.everyWeekSelectLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 binding.everyWeekSelectLayout.visibility = View.GONE
             }
@@ -116,7 +128,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             override fun onGlobalLayout() {
                 todoAddViewModel.setMonthHeight(binding.gridMonth.height)
                 binding.gridMonth.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                Log.d("20191627", todoAddViewModel.gridMonthHeight.toString())
+                Log.d("20191627", "grid Height : " + todoAddViewModel.gridMonthHeight.toString())
                 binding.gridMonth.visibility = View.GONE
             }
         })
@@ -127,11 +139,13 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             override fun onGlobalLayout() {
                 todoAddViewModel.setRepeatEndDateH(binding.repeatEndDateLayout.height)
                 binding.gridMonth.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                Log.d("20191627", "repeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString())
+                Log.d(
+                    "20191627",
+                    "repeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString()
+                )
                 binding.repeatEndDateLayout.visibility = View.GONE
             }
         })
-
 
         return binding.root
     }
@@ -283,6 +297,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     binding.ivRepeatIcon.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.todo_description))
                     binding.tvRepeatSet.setTextColor(resources.getColor(R.color.todo_description))
+                    todoAddViewModel.setRepeatSetLayouH(binding.repeatSetLayout.height)
+                    Log.d("20191627", todoAddViewModel.repeatSetLayoutHeight.toString())
 
                     val valueAnimator = ValueAnimator.ofInt(
                         binding.repeatSetLayout.height,
@@ -297,10 +313,10 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     valueAnimator.start()
 
                     Log.d("20191627", "visible")
-                    binding.repeatOptionSelect.visibility = View.VISIBLE
+                    binding.repeatOptionLayout.visibility = View.VISIBLE
                     binding.repeatEndDateLayout.visibility = View.VISIBLE
                 }
-                else -> {
+                false -> {
                     binding.repeatSwitch.isChecked = it
                     binding.ivRepeatIcon.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.light_gray))
@@ -318,22 +334,89 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     valueAnimator.duration = 400
                     valueAnimator.start()
 
-                    binding.repeatOptionSelect.visibility = View.INVISIBLE
+                    binding.repeatOptionLayout.visibility = View.INVISIBLE
                     binding.repeatEndDateLayout.visibility = View.INVISIBLE
                 }
             }
         })
 
-        todoAddViewModel.repeatEndDateSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(it){
-                true -> {
-                    binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.todo_description))
-                    binding.btnRepeatEndDate.visibility = View.VISIBLE
-                    binding.btnRepeatEndDate.text = dateFormat(LocalDateTime.now())
+        todoAddViewModel.repeatEndDateSwitch.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                when (it) {
+                    true -> {
+                        binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.todo_description))
+                        binding.btnRepeatEndDate.visibility = View.VISIBLE
+                        binding.btnRepeatEndDate.text = dateFormat(LocalDateTime.now())
+                    }
+                    else -> {
+                        binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.light_gray))
+                        binding.btnRepeatEndDate.visibility = View.INVISIBLE
+                    }
                 }
-                else -> {
-                    binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.light_gray))
-                    binding.btnRepeatEndDate.visibility = View.INVISIBLE
+            })
+
+        todoAddViewModel.repeatOption.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            for (i in 0 until binding.repeatOptionSelect.childCount) {
+                if (i == it)
+                    binding.repeatOptionSelect.getChildAt(i).backgroundTintList = null
+                else
+                    binding.repeatOptionSelect.getChildAt(i).backgroundTintList =
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                android.R.color.transparent
+                            )
+                        )
+            }
+            when (it) {
+                0 -> {
+                    val valueAnimator = ValueAnimator.ofInt(
+                        binding.repeatSetLayout.height,
+                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight + todoAddViewModel.repeatEndDateHeight
+                    )
+                    valueAnimator.addUpdateListener { animator ->
+                        val layoutParams = binding.repeatSetLayout.layoutParams
+                        layoutParams.height = animator.animatedValue as Int
+                        binding.repeatSetLayout.layoutParams = layoutParams
+                    }
+                    valueAnimator.duration = 400
+                    valueAnimator.start()
+
+                    binding.everyWeekSelectLayout.visibility = View.GONE
+                    binding.gridMonth.visibility = View.GONE
+                }
+                1, 2 -> {
+                    val valueAnimator = ValueAnimator.ofInt(
+                        binding.repeatSetLayout.height,
+                        binding.repeatSetLayout.height + todoAddViewModel.repeatWeekHeight
+                    )
+                    valueAnimator.addUpdateListener { animator ->
+                        val layoutParams = binding.repeatSetLayout.layoutParams
+                        layoutParams.height = animator.animatedValue as Int
+                        binding.repeatSetLayout.layoutParams = layoutParams
+                    }
+                    valueAnimator.duration = 400
+                    valueAnimator.start()
+
+                    binding.everyWeekSelectLayout.visibility = View.VISIBLE
+                }
+
+                3 -> {
+                    val valueAnimator = ValueAnimator.ofInt(
+                        binding.repeatSetLayout.height,
+                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
+                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridMonthHeight
+                    )
+                    valueAnimator.addUpdateListener { animator ->
+                        val layoutParams = binding.repeatSetLayout.layoutParams
+                        layoutParams.height = animator.animatedValue as Int
+                        binding.repeatSetLayout.layoutParams = layoutParams
+                    }
+                    valueAnimator.duration = 400
+                    valueAnimator.start()
+
+                    binding.gridMonth.visibility = View.VISIBLE
                 }
             }
         })
@@ -386,18 +469,21 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         binding.endDateSwitch.setOnClickListener(btnListener())
         binding.endDateTimeSwitch.setOnClickListener(btnListener())
-        binding.alarmSwitch.setOnClickListener(btnListener())
-        binding.repeatSwitch.setOnClickListener(btnListener())
-//
         binding.btnEndDatePick.setOnClickListener(btnListener())
-
-        binding.btnAlarmDatePick.setOnClickListener(btnListener())
-
         binding.btnEndTimePick.setOnClickListener(btnListener())
 
+        binding.alarmSwitch.setOnClickListener(btnListener())
+        binding.btnAlarmDatePick.setOnClickListener(btnListener())
         binding.btnAlarmTimePick.setOnClickListener(btnListener())
-
+//
+        binding.repeatSwitch.setOnClickListener(btnListener())
         binding.repeatEndDateSwitch.setOnClickListener(btnListener())
+        binding.btnEveryDay.setOnClickListener(btnListener())
+        binding.btnEveryWeek.setOnClickListener(btnListener())
+        binding.btnEvery2Week.setOnClickListener(btnListener())
+        binding.btnEveryMonth.setOnClickListener(btnListener())
+        binding.btnEveryYear.setOnClickListener(btnListener())
+
 
 //        binding.btnRepeatOption.setOnClickListener(btnListener())
 //
@@ -442,11 +528,21 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             when (v?.id) {
                 R.id.check_flag_todo -> todoAddViewModel.setFlagTodo()
                 R.id.today_switch -> todoAddViewModel.setTodayTodo()
+
                 R.id.endDate_switch -> todoAddViewModel.setIsSelectedEndDateTime()
                 R.id.endDateTime_switch -> todoAddViewModel.setEndTimeSwitch()
+
                 R.id.alarm_switch -> todoAddViewModel.setAlarmSwitch()
+
                 R.id.repeat_switch -> todoAddViewModel.setRepeatSwitch()
                 R.id.repeatEndDate_switch -> todoAddViewModel.setRepeatEndSwitch()
+
+                R.id.btn_everyDay -> todoAddViewModel.setRepeatOpt(0)
+                R.id.btn_everyWeek -> todoAddViewModel.setRepeatOpt(1)
+                R.id.btn_every2Week -> todoAddViewModel.setRepeatOpt(2)
+                R.id.btn_everyMonth -> todoAddViewModel.setRepeatOpt(3)
+                R.id.btn_everyYear -> todoAddViewModel.setRepeatOpt(4)
+
 
                 R.id.btn_alarmTime_pick, R.id.btn_endTime_pick -> {
                     val calendar = Calendar.getInstance()

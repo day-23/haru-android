@@ -30,6 +30,7 @@ class TodoAdapter(val context: Context) :
     private var data = mutableListOf<Todo>()
 
     private var todoByTag = false
+    private var todoByFlag = false
     private var flagCount = 0
     private var tagCount = 0
     private var untagCount = 0
@@ -125,7 +126,9 @@ class TodoAdapter(val context: Context) :
     fun setDataList(dataList: List<Todo>) {
         this.data = dataList as MutableList<Todo>
         if (todoByTag){
-            this.data.add(0, Todo(type = 1, content = tags[3].content))
+            if (tags[3].content == "중요")
+                this.data.add(0, Todo(type=0))
+            else this.data.add(0, Todo(type = 1, content = tags[3].content))
         } else {
             this.data.apply {
                 // flag
@@ -168,5 +171,9 @@ class TodoAdapter(val context: Context) :
             todoByTag = true
             tags[3].content = content
         } else todoByTag = false
+    }
+
+    fun setTodoByFlag() {
+
     }
 }

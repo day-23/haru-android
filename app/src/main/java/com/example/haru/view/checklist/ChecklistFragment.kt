@@ -65,8 +65,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         tagAdapter.tagClick = object :TagAdapter.TagClick{
             override fun onClick(view: View, position: Int) {
                 if (position == 0)
-//                    checkListViewModel.getTodoByFlag(position)  // API추가시 구현
-                else if (position > 2){
+                    checkListViewModel.getTodoByFlag(position)  // API추가시 구현
+                else if (position > 0){
                     checkListViewModel.clear()
                     checkListViewModel.getTodoByTag(position)
                 }
