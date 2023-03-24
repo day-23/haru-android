@@ -665,7 +665,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     )
                     datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
                     datePickerDialog.show()
-
                 }
 
                 R.id.btn_submit_todo -> {

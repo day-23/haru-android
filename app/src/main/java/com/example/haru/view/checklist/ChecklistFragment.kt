@@ -65,7 +65,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         tagAdapter.tagClick = object :TagAdapter.TagClick{
             override fun onClick(view: View, position: Int) {
                 if (position == 0)
-                    checkListViewModel.getTodoByFlag(position)  // API추가시 구현
+                    checkListViewModel.getTodoByFlag(position)
                 else if (position > 0){
                     checkListViewModel.clear()
                     checkListViewModel.getTodoByTag(position)
@@ -87,12 +87,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     private fun initTodoList(){
         val todoListView: RecyclerView = binding.recyclerTodos
         val todoAdapter = TodoAdapter(requireContext())
+        todoAdapter.todoClick = object : TodoAdapter.TodoClick{
+            override fun onClick(view: View, position: Int) {
+
+            }
+        }
 
         todoListView.adapter = todoAdapter
         todoListView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
-//        todoListView.addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
 
         checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.d("20191627", "todoDataList observe")

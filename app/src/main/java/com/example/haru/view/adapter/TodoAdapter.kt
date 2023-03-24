@@ -20,6 +20,12 @@ import com.example.haru.databinding.FragmentChecklistItemBinding
 class TodoAdapter(val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    interface TodoClick {
+        fun onClick(view: View, position: Int)
+    }
+
+    var todoClick: TodoClick? = null
+
     val HeaderType1 = 0
     val HeaderType2 = 1
     val Item = 2
@@ -92,9 +98,16 @@ class TodoAdapter(val context: Context) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is HeaderTypeOneViewHolder -> {}
-            is HeaderTypeTwoViewHolder ->  holder.bind(data[position].content)
+            is HeaderTypeTwoViewHolder -> holder.bind(data[position].content)
             is DividerViewHolder -> {}
-            is TodoViewHolder -> holder.bind(data[position])
+            is TodoViewHolder -> {
+                holder.bind(data[position])
+                if (todoClick != null) {
+                    holder.binding.ClickLayout.setOnClickListener {
+                        todoClick?.onClick(it, position)
+                    }
+                }
+            }
         }
     }
 
@@ -117,21 +130,19 @@ class TodoAdapter(val context: Context) :
         fun bind(item: Todo) {
             binding.todo = item
             var tag = ""
-            for(i in 0 until item.tags.size){
+            for (i in 0 until item.tags.size) {
                 tag += "${item.tags[i].content} "
             }
             if (tag != "") {
                 binding.tvTagDescription.text = tag.dropLast(1)
                 binding.tvTagDescription.visibility = View.VISIBLE
-            }
-            else binding.tvTagDescription.visibility = View.GONE
+            } else binding.tvTagDescription.visibility = View.GONE
 
             if (item.endDate != null) {
                 binding.tvEndDateDescription.text =
                     item.endDate.substring(5, 7) + "." + item.endDate.substring(8, 10) + "까지"
                 binding.tvEndDateDescription.visibility = View.VISIBLE
-            }
-            else binding.tvEndDateDescription.visibility = View.GONE
+            } else binding.tvEndDateDescription.visibility = View.GONE
         }
     }
 
@@ -140,9 +151,9 @@ class TodoAdapter(val context: Context) :
 
     fun setDataList(dataList: List<Todo>) {
         this.data = dataList as MutableList<Todo>
-        if (todoByTag){
+        if (todoByTag) {
             if (tags[3].content == "중요")
-                this.data.add(0, Todo(type=0))
+                this.data.add(0, Todo(type = 0))
             else this.data.add(0, Todo(type = 1, content = tags[3].content))
         } else {
             this.data.apply {
@@ -159,7 +170,10 @@ class TodoAdapter(val context: Context) :
                 add(flagCount + tagCount + untagCount + 5, Todo(type = 3))
 
                 //complete
-                add(flagCount + tagCount + untagCount + 6, Todo(type = 1, content = tags[2].content))
+                add(
+                    flagCount + tagCount + untagCount + 6,
+                    Todo(type = 1, content = tags[2].content)
+                )
             }
         }
         notifyDataSetChanged()
