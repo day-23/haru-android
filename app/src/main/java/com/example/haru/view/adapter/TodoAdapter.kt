@@ -4,6 +4,7 @@ import android.content.Context
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -115,13 +116,27 @@ class TodoAdapter(val context: Context) :
 
         fun bind(item: Todo) {
             binding.todo = item
+            var tag = ""
+            for(i in 0 until item.tags.size){
+                tag += "${item.tags[i].content} "
+            }
+            if (tag != "") {
+                binding.tvTagDescription.text = tag.dropLast(1)
+                binding.tvTagDescription.visibility = View.VISIBLE
+            }
+            else binding.tvTagDescription.visibility = View.GONE
+
+            if (item.endDate != null) {
+                binding.tvEndDateDescription.text =
+                    item.endDate.substring(5, 7) + "." + item.endDate.substring(8, 10) + "까지"
+                binding.tvEndDateDescription.visibility = View.VISIBLE
+            }
+            else binding.tvEndDateDescription.visibility = View.GONE
         }
     }
 
     inner class EmptyViewHolder(val binding: ChecklistEmptyBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-    }
+        RecyclerView.ViewHolder(binding.root) {}
 
     fun setDataList(dataList: List<Todo>) {
         this.data = dataList as MutableList<Todo>
