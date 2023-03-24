@@ -17,8 +17,10 @@ import android.view.ViewTreeObserver
 import android.widget.GridLayout
 import android.widget.TextView
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.viewmodel.CheckListViewModel
@@ -73,13 +75,41 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         for (i in 1..31) {
             val textView = TextView(requireContext())
             textView.text = i.toString()
+            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             textView.gravity = Gravity.CENTER
+            textView.setOnClickListener {
+                if (textView.textColors == ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.highlight)))
+                else
+                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            }
+
             val params = GridLayout.LayoutParams().apply {
                 width = 0
                 height = GridLayout.LayoutParams.WRAP_CONTENT
-                rowSpec = GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL)
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f)
             }
             binding.gridMonth.addView(textView, params)
+        }
+
+        for (i in 1..12) {
+            val textView = TextView(requireContext())
+            textView.text = i.toString() + "월"
+            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            textView.gravity = Gravity.CENTER
+            textView.setOnClickListener {
+                if (textView.textColors == ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.highlight)))
+                else
+                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            }
+
+            val params = GridLayout.LayoutParams().apply {
+                width = 0
+                height = GridLayout.LayoutParams.WRAP_CONTENT
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f)
+            }
+            binding.gridYear.addView(textView, params)
         }
 
         binding.endDateSetLayout.layoutTransition.apply {
@@ -130,6 +160,14 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 binding.gridMonth.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 Log.d("20191627", "grid Height : " + todoAddViewModel.gridMonthHeight.toString())
                 binding.gridMonth.visibility = View.GONE
+            }
+        })
+
+        binding.gridYear.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                todoAddViewModel.setYearHeight(binding.gridYear.height)
+                binding.gridYear.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding.gridYear.visibility = View.GONE
             }
         })
 
@@ -324,7 +362,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
                     val valueAnimator = ValueAnimator.ofInt(
                         binding.repeatSetLayout.height,
-                        binding.repeatSetLayout.height - todoAddViewModel.repeatOptionHeight - todoAddViewModel.repeatEndDateHeight
+                        todoAddViewModel.repeatSetLayoutHeight
                     )
                     valueAnimator.addUpdateListener { animator ->
                         val layoutParams = binding.repeatSetLayout.layoutParams
@@ -389,7 +427,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 1, 2 -> {
                     val valueAnimator = ValueAnimator.ofInt(
                         binding.repeatSetLayout.height,
-                        binding.repeatSetLayout.height + todoAddViewModel.repeatWeekHeight
+                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
+                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.repeatWeekHeight
                     )
                     valueAnimator.addUpdateListener { animator ->
                         val layoutParams = binding.repeatSetLayout.layoutParams
@@ -400,6 +439,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     valueAnimator.start()
 
                     binding.everyWeekSelectLayout.visibility = View.VISIBLE
+                    binding.gridMonth.visibility = View.GONE
+                    binding.gridYear.visibility = View.GONE
                 }
 
                 3 -> {
@@ -417,6 +458,27 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     valueAnimator.start()
 
                     binding.gridMonth.visibility = View.VISIBLE
+                    binding.everyWeekSelectLayout.visibility = View.GONE
+                    binding.gridYear.visibility = View.GONE
+                }
+
+                4 -> {
+                    val valueAnimator = ValueAnimator.ofInt(
+                        binding.repeatSetLayout.height,
+                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
+                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridYearHeight
+                    )
+                    valueAnimator.addUpdateListener { animator ->
+                        val layoutParams = binding.repeatSetLayout.layoutParams
+                        layoutParams.height = animator.animatedValue as Int
+                        binding.repeatSetLayout.layoutParams = layoutParams
+                    }
+                    valueAnimator.duration = 400
+                    valueAnimator.start()
+
+                    binding.gridMonth.visibility = View.GONE
+                    binding.everyWeekSelectLayout.visibility = View.GONE
+                    binding.gridYear.visibility = View.VISIBLE
                 }
             }
         })
@@ -604,34 +666,24 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
                 }
 
-//                R.id.btn_repeat_option -> {
-//                    val repeatOptionInput = ChecklistRepeatFragment(todoAddViewModel)
-//                    repeatOptionInput.show(parentFragmentManager, repeatOptionInput.tag)
-//                }
-//
-//                R.id.btn_close -> {
-//                    todoAddViewModel.clearSubmitTodo()
-//                    dismiss()
-//                }
+                R.id.btn_submit_todo -> {
+                    if (todoAddViewModel.content == "" || todoAddViewModel.content.replace(
+                            " ",
+                            ""
+                        ) == ""
+                    )
+                        Toast.makeText(context, "할 일이 비어있습니다.", Toast.LENGTH_SHORT).show()
+                    else {
+                        todoAddViewModel.readyToSubmit()
+                        todoAddViewModel.addTodo {
+                            Log.d("20191627", "dismiss")
+                            dismiss()
+                        }
 
-//                R.id.btn_submit_todo -> {
-//                    if (todoAddViewModel.content == "" || todoAddViewModel.content.replace(
-//                            " ",
-//                            ""
-//                        ) == ""
-//                    )
-//                        Toast.makeText(context, "할 일이 비어있습니다.", Toast.LENGTH_SHORT).show()
-//                    else {
-//                        todoAddViewModel.readyToSubmit()
-//                        todoAddViewModel.addTodo {
-//                            Log.d("20191627", "dismiss")
-//                            dismiss()
-//                        }
-//
-//                        todoAddViewModel.clearSubmitTodo()
-//                    }
-//
-//                }
+                        todoAddViewModel.clearSubmitTodo()
+                    }
+
+                }
 
             }
         }

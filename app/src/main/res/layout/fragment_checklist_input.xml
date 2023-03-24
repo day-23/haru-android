@@ -530,9 +530,24 @@
                         android:paddingTop="8dp"
                         android:layout_marginStart="35dp"
                         android:layout_marginEnd="55dp"
+                        android:useDefaultMargins="true"
                         android:orientation="horizontal">
 
 
+                    </GridLayout>
+
+                    <GridLayout
+                        android:id="@+id/gridYear"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:alignmentMode="alignBounds"
+                        android:rowCount="2"
+                        android:columnCount="6"
+                        android:paddingTop="8dp"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginEnd="55dp"
+                        android:useDefaultMargins="true"
+                        android:orientation="horizontal">
                     </GridLayout>
 
                     <LinearLayout

@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide.init
 import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.data.model.TodoRequest
@@ -22,7 +23,7 @@ import java.util.*
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val checklistViewModel : CheckListViewModel
 
-    private val repeatOptionList = listOf<String>("매일", "매주", "2주마다", "매월", "매년")
+    private val repeatOptionList = listOf<String?>("매일", "매주", "2주마다", "매월", "매년", null)
 
     private val _flagTodo = MutableLiveData<Boolean>(false)
     val flagTodo: LiveData<Boolean> = _flagTodo
@@ -99,6 +100,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var repeatWeekHeight: Int = 0
     var repeatEndDateHeight: Int = 0
     var gridMonthHeight : Int = 0
+    var gridYearHeight : Int = 0
 
     init {
         this.checklistViewModel = checkListViewModel
@@ -207,6 +209,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         gridMonthHeight = h
     }
 
+    fun setYearHeight(h: Int){
+        gridYearHeight = h
+    }
+
     fun setRepeatEndDateH(h: Int){
         repeatEndDateHeight = h
     }
@@ -252,23 +258,16 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 //        if (repeatEndDate.value != null) repeatEndDateStr = formatDate(repeatEndDate.value!!)
 //    }
 //
-//    private fun createTodoData(): TodoRequest {
-//        return TodoRequest(
-//            content,
-//            memo,
-//            todayTodo.value!!,
-//            flagTodo.value!!,
-//            endDateStr,
-//            endTimeStr,
-//            repeatOptionStr.value,
-//            repeatDayStr.value,
-//            repeatDayStr.value,
-//            repeatEndDateStr,
-//            tagList,
-//            subTodos,s
-//            alarmTimeStr
-//        )
-//    }
+    private fun createTodoData(): TodoRequest {
+        return TodoRequest(
+            content = content,
+            memo = memo,
+            todayTodo = todayTodo.value!!,
+            flag = flagTodo.value!!,
+            isSelectedEndDateTime = isSelectedEndDateTime.value?: false,
+            repeatOption = repeatOptionList[repeatOption as Int]
+        )
+    }
 
 //    fun addTodo(callback: () -> Unit){
 //        checklistViewModel.addTodo(createTodoData()){
