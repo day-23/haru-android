@@ -94,7 +94,6 @@ class TimetableFragment : Fragment() {
         }
 
         binding.todolistChange.setOnClickListener{
-            Log.d("Frag", "changed")
             val newFrag = TodotableFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)

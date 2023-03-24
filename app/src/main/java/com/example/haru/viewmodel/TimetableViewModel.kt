@@ -83,6 +83,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 _Days.value = dayslist
                 _Colors.value = colorlist
                 _Selected.value = Timetable_date(year.toString()+"년", (month+1).toString()+"월", day.toString()+"일")
+                _Dates.value = Datelist
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") { dialog, _ ->
@@ -110,34 +111,38 @@ class TimetableViewModel(val context : Context): ViewModel() {
         Log.d("20191627", dayOfWeek)
 
         when(dayOfWeek){
+            "일","Sun"-> d
             "월","Mon"-> d -= 1
             "화","Tue"-> d -= 2
             "수","Wed"-> d -= 3
             "목","Thu"-> d -= 4
             "금","Fri"-> d -= 5
             "토","Sat"-> d -= 6
-            "일","Sun"-> d
         }
 
         var addday = 0
         for (i: Int in 1 .. 7){
-            if(d < 1){
+            if(d < 1){ //날짜가 지난달일때
                 addday = (lastOfMonth - abs(d))
                 QueryDate = SimpleDateFormat("yyyyMMdd").format(Date(year - 1900, month-1, addday))
             }
-            else if(d > currentOfMonth){
+            else if(d > currentOfMonth){ //날짜가 다음달일때
                 addday = (d - currentOfMonth)
                 QueryDate = SimpleDateFormat("yyyyMMdd").format(Date(year - 1900, month+1, addday))
             }
-            else{
+            else{ // 날짜가 이번달일때
                 addday = d
                 QueryDate = SimpleDateFormat("yyyyMMdd").format(Date(year - 1900, month, addday))
             }
+
+            //글자색 바인딩
+            if(colorlist.size == 0) colorlist.add("#F71E58") //일요일 붉은색
+            else if(colorlist.size == 6) colorlist.add("#1DAFFF") //토요일 푸른색
+            else if(d == addday) colorlist.add("#191919") // 일반 검정색
+            else colorlist.add("#DBDBDB") //지난달 다음달 회색
+
+            //선택한 날짜 '년월일', '7일' 형식 리스트 작성
             Datelist.add(QueryDate)
-            if(colorlist.size == 0) colorlist.add("#F71E58")
-            else if(colorlist.size == 6) colorlist.add("#1DAFFF")
-            else if(d == addday) colorlist.add("#191919")
-            else colorlist.add("#DBDBDB")
             dayslist.add(addday.toString())
             d += 1
         }
