@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Todotable_date
+import com.example.haru.data.model.TodoTable_data
 
 class TodotableAdapter(val context: Context,
-                       private var itemList: ArrayList<String>) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
+                       private var itemList: ArrayList<TodoTable_data>) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodotableViewHolder {
@@ -21,18 +21,14 @@ class TodotableAdapter(val context: Context,
         }
 
         override fun onBindViewHolder(holder: TodotableViewHolder, position: Int) {
-            Log.d("TAG", "itemList:${itemList[0]}")
-            if(itemList != null)
-                holder.todotable_item_content.text = itemList[position]
+
+            if(itemList[position].id != ""){
+                holder.todotable_item_content.text = itemList[position].content
+            }
         }
 
         override fun getItemCount(): Int {
             return itemList.count()
-        }
-
-        fun setData(newData : ArrayList<String>){
-            itemList = newData
-            notifyDataSetChanged()
         }
 
         inner class TodotableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

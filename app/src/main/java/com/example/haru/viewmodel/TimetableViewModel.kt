@@ -100,6 +100,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
         dayslist.clear()
         colorlist.clear()
+        Datelist.clear()
 
         calendar.set(year, month - 1, day)
         val lastOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
