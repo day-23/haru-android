@@ -6,6 +6,9 @@
         <variable
             name="viewModel"
             type="com.example.haru.viewmodel.TimetableViewModel" />
+        <variable
+            name="reviewModel"
+            type="com.example.haru.viewmodel.TodoTableRecyclerViewmodel" />
     </data>
 
     <LinearLayout
@@ -55,7 +58,8 @@
                         android:layout_weight="0"
                         android:src="@drawable/___20513"
                         android:background="#00000000"
-                        android:onClick="@{() -> viewModel.buttonClick()}" />
+                        android:onClick="@{() -> viewModel.buttonClick()}"
+                        />
 
                     <View
                         android:layout_width="0dp"
@@ -118,9 +122,11 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/sun_todos_recycler"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:scrollbars="none"
-                        tools:listitem="@layout/items_todotable_todo"/>
+                        tools:listitem="@layout/items_todotable_todo"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -159,7 +165,7 @@
                         android:id="@+id/mon_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"
+                        android:scrollbars="none"
                         tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
@@ -199,7 +205,7 @@
                         android:id="@+id/tue_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"
+                        android:scrollbars="none"
                         tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
@@ -239,7 +245,7 @@
                         android:id="@+id/wed_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"
+                        android:scrollbars="none"
                         tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
@@ -279,7 +285,7 @@
                         android:id="@+id/thu_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"
+                        android:scrollbars="none"
                         tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
@@ -319,7 +325,7 @@
                         android:id="@+id/fri_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"
+                        android:scrollbars="none"
                         tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
@@ -358,7 +364,7 @@
                         android:id="@+id/sat_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"
+                        android:layout_gravity="center"
                         tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
