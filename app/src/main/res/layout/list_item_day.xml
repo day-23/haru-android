@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="calendar_date"
+            type="com.example.haru.data.model.CalendarDate" />
+        <variable
+            name="calendar_content"
+            type="String" />
+        <variable
+            name="date_or_content"
+            type="Boolean" />
+        <variable
+            name="black"
+            type="Integer" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="18sp"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:background="@drawable/borderline"
+            android:id="@+id/text_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/item_day_text"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{calendar_content}"
+                android:alpha="@{date_or_content?calendar_date.alpha:255}"
+                android:textColor="@{date_or_content?calendar_date.color:black}"
+                android:textSize="12sp" />
+        </FrameLayout>
+
+    </LinearLayout>
+</layout>

@@ -12,11 +12,9 @@ import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.view.timetable.TimetableFragment
-import com.example.haru.viewmodel.CheckListViewModel
 
 class MainActivity : AppCompatActivity() {
     private val fragments = arrayOfNulls<Fragment>(5)
-
 
     companion object{
         private lateinit var binding: ActivityMainBinding
@@ -39,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             handleNavigation(menuItem.itemId)
         }
+
     }
 
     private fun initFragments() {
