@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="todoItem"
+            type="com.example.haru.data.model.Todo" />
     </data>
 
     <LinearLayout
@@ -29,19 +32,283 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="24dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <CheckBox
-                android:id="@+id/check_done"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginTop="18dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="18dp"
+                android:layout_marginEnd="14dp"
                 android:background="@drawable/checklist_done_circle"
                 android:button="@android:color/transparent" />
 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="24dp"
+                android:textColor="@color/todo_description"
+                android:textSize="24sp"/>
 
+            <CheckBox
+                style="@style/minSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/checklist_flag_star"
+                android:button="@android:color/transparent" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subTodo_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/plus_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="34dp"
+                app:srcCompat="@drawable/add_icon" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:hint="@string/subTodo_input"
+                android:textColorHint="@color/light_gray"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="12dp"
+            android:background="@color/light_gray" />
+
+        <LinearLayout
+            style="@style/linearBorderLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/linear_border_up_bottom"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/baseline_tag_24" />
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tag_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:background="@android:color/transparent"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            style="@style/linearBorderLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/linear_border_up_bottom"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_today_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/big_today_icon" />
+
+            <TextView
+                android:id="@+id/tv_today_todo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="@string/today_todo_before_add"
+                android:textColor="@color/light_gray"
+                android:textSize="14sp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/today_switch"
+                style="@style/minSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="28dp"
+                android:thumb="@drawable/custom_switch_thumb"
+                app:track="@drawable/custom_switch" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/endDateSetLayout"
+            style="@style/linearBorderLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/linear_border_up_bottom"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_calendar_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/big_calendar_icon" />
+
+                <TextView
+                    android:id="@+id/tv_endDate_set"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/endDate_set"
+                    android:textColor="@color/light_gray"
+                    android:textSize="14sp" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_endDate_pick"
+                    style="@style/minSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/custom_btn_date"
+                    android:textColor="@color/date_text"
+                    android:textSize="14sp"
+                    android:visibility="invisible"
+                    app:backgroundTint="@null" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/endDate_switch"
+                    style="@style/minSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="28dp"
+                    android:thumb="@drawable/custom_switch_thumb"
+                    app:track="@drawable/custom_switch" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/endDateTime_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:paddingTop="12dp">
+
+                <TextView
+                    android:id="@+id/tv_endTime_set"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="38dp"
+                    android:layout_weight="1"
+                    android:text="@string/endDateTime_set"
+                    android:textColor="@color/light_gray"
+                    android:textSize="14sp" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_endTime_pick"
+                    style="@style/minSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/custom_btn_date"
+                    android:textColor="@color/date_text"
+                    android:textSize="14sp"
+                    android:visibility="invisible"
+                    app:backgroundTint="@null" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/endDateTime_switch"
+                    style="@style/minSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="28dp"
+                    android:thumb="@drawable/custom_switch_thumb"
+                    app:track="@drawable/custom_switch" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/linearBorderLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/linear_border_up_bottom"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_alarm_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/big_alarm_icon" />
+
+            <TextView
+                android:id="@+id/tv_alarm_set"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="@string/alarm_set"
+                android:textColor="@color/light_gray"
+                android:textSize="14sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_alarmDate_pick"
+                style="@style/minSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/custom_btn_date"
+                android:textColor="@color/date_text"
+                android:textSize="14sp"
+                android:visibility="invisible"
+                app:backgroundTint="@null" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_alarmTime_pick"
+                style="@style/minSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/custom_btn_date"
+                android:textColor="@color/date_text"
+                android:textSize="14sp"
+                android:visibility="invisible"
+                app:backgroundTint="@null" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/alarm_switch"
+                style="@style/minSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="28dp"
+                android:thumb="@drawable/custom_switch_thumb"
+                app:track="@drawable/custom_switch" />
 
 
         </LinearLayout>

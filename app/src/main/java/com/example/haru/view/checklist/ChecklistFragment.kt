@@ -5,12 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.R
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentChecklistBinding
@@ -45,6 +44,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         Log.d(TAG, "ChecklistFragment - onCreateView() called")
 
         binding = FragmentChecklistBinding.inflate(inflater)
+
+
         return binding.root
     }
 
@@ -89,7 +90,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         val todoAdapter = TodoAdapter(requireContext())
         todoAdapter.todoClick = object : TodoAdapter.TodoClick{
             override fun onClick(view: View, position: Int) {
-
+                if (checkListViewModel.todoDataList.value!![position].type == 2){
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragments_frame, ChecklistItemFragment(checkListViewModel, position))
+                        .addToBackStack(null)
+                        .commit()
+                }
             }
         }
 

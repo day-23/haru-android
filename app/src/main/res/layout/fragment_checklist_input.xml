@@ -119,7 +119,8 @@
                         android:hint="@string/tag"
                         android:inputType="text"
                         android:singleLine="true"
-                        android:text="@={viewModel.tag}" />
+                        android:text="@={viewModel.tag}"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -365,83 +366,83 @@
                         android:animateLayoutChanges="true"
                         android:paddingTop="8dp">
 
-                    <LinearLayout
-                        android:id="@+id/repeatOptionSelect"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="35dp"
-                        android:layout_marginEnd="55dp"
-                        android:background="@drawable/btn_group_custom"
-                        android:animateLayoutChanges="true"
-                        android:orientation="horizontal">
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btn_everyDay"
-                            style="@style/minSize"
-                            android:layout_width="0dp"
+                        <LinearLayout
+                            android:id="@+id/repeatOptionSelect"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/repeat_btn_custom"
-                            android:backgroundTint="@android:color/transparent"
-                            android:outlineProvider="none"
-                            android:textColor="@color/date_text"
-                            android:text="@string/everyDay"
-                            android:textSize="14sp" />
+                            android:layout_marginStart="35dp"
+                            android:layout_marginEnd="55dp"
+                            android:animateLayoutChanges="true"
+                            android:background="@drawable/btn_group_custom"
+                            android:orientation="horizontal">
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btn_everyWeek"
-                            style="@style/minSize"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/repeat_btn_custom"
-                            android:backgroundTint="@android:color/transparent"
-                            android:outlineProvider="none"
-                            android:textColor="@color/date_text"
-                            android:text="@string/everyWeek"
-                            android:textSize="14sp" />
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_everyDay"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/everyDay"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btn_every2Week"
-                            style="@style/minSize"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/repeat_btn_custom"
-                            android:backgroundTint="@android:color/transparent"
-                            android:outlineProvider="none"
-                            android:textColor="@color/date_text"
-                            android:text="@string/every2Week"
-                            android:textSize="14sp" />
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_everyWeek"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/everyWeek"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btn_everyMonth"
-                            style="@style/minSize"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/repeat_btn_custom"
-                            android:backgroundTint="@android:color/transparent"
-                            android:outlineProvider="none"
-                            android:textColor="@color/date_text"
-                            android:text="@string/everyMonth"
-                            android:textSize="14sp" />
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_every2Week"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/every2Week"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btn_everyYear"
-                            style="@style/minSize"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/repeat_btn_custom"
-                            android:backgroundTint="@android:color/transparent"
-                            android:outlineProvider="none"
-                            android:textColor="@color/date_text"
-                            android:text="@string/everyYear"
-                            android:textSize="14sp" />
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_everyMonth"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/everyMonth"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_everyYear"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/everyYear"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
 
 
-                    </LinearLayout>
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -451,9 +452,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="35dp"
                         android:layout_marginEnd="55dp"
-                        android:paddingTop="8dp"
                         android:animateLayoutChanges="true"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp">
 
                         <TextView
                             android:id="@+id/tv_monday"
@@ -461,8 +462,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:textColor="@color/date_text"
-                            android:text="@string/Monday" />
+                            android:text="@string/Monday"
+                            android:textColor="@color/date_text" />
 
                         <TextView
                             android:id="@+id/tv_tuesday"
@@ -470,8 +471,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:textColor="@color/date_text"
-                            android:text="@string/Tuesday"/>
+                            android:text="@string/Tuesday"
+                            android:textColor="@color/date_text" />
 
                         <TextView
                             android:id="@+id/tv_wednesday"
@@ -479,8 +480,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:textColor="@color/date_text"
-                            android:text="@string/Wednesday"/>
+                            android:text="@string/Wednesday"
+                            android:textColor="@color/date_text" />
 
                         <TextView
                             android:id="@+id/tv_thursday"
@@ -488,8 +489,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:textColor="@color/date_text"
-                            android:text="@string/Thursday"/>
+                            android:text="@string/Thursday"
+                            android:textColor="@color/date_text" />
 
                         <TextView
                             android:id="@+id/tv_friday"
@@ -497,8 +498,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:textColor="@color/date_text"
-                            android:text="@string/Friday"/>
+                            android:text="@string/Friday"
+                            android:textColor="@color/date_text" />
 
                         <TextView
                             android:id="@+id/tv_saturday"
@@ -506,8 +507,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:textColor="@color/date_text"
-                            android:text="@string/Saturday"/>
+                            android:text="@string/Saturday"
+                            android:textColor="@color/date_text" />
 
                         <TextView
                             android:id="@+id/tv_sunday"
@@ -515,8 +516,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:textColor="@color/date_text"
-                            android:text="@string/Sunday"/>
+                            android:text="@string/Sunday"
+                            android:textColor="@color/date_text" />
 
                     </LinearLayout>
 
@@ -524,14 +525,14 @@
                         android:id="@+id/gridMonth"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:alignmentMode="alignBounds"
-                        android:rowCount="5"
-                        android:columnCount="7"
-                        android:paddingTop="8dp"
                         android:layout_marginStart="35dp"
                         android:layout_marginEnd="55dp"
-                        android:useDefaultMargins="true"
-                        android:orientation="horizontal">
+                        android:alignmentMode="alignBounds"
+                        android:columnCount="7"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:rowCount="5"
+                        android:useDefaultMargins="true">
 
 
                     </GridLayout>
@@ -540,15 +541,14 @@
                         android:id="@+id/gridYear"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:alignmentMode="alignBounds"
-                        android:rowCount="2"
-                        android:columnCount="6"
-                        android:paddingTop="8dp"
                         android:layout_marginStart="35dp"
                         android:layout_marginEnd="55dp"
-                        android:useDefaultMargins="true"
-                        android:orientation="horizontal">
-                    </GridLayout>
+                        android:alignmentMode="alignBounds"
+                        android:columnCount="6"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:rowCount="2"
+                        android:useDefaultMargins="true"></GridLayout>
 
                     <LinearLayout
                         android:id="@+id/repeatEndDateLayout"
@@ -574,9 +574,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_marginBottom="4dp"
+                            android:background="@drawable/custom_btn_date"
                             android:textColor="@color/date_text"
                             android:textSize="14sp"
-                            android:background="@drawable/custom_btn_date"
                             android:visibility="invisible"
                             app:backgroundTint="@null" />
 
