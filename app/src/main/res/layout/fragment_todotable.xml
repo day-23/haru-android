@@ -11,8 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingHorizontal="10dp">
+        android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -22,7 +21,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:paddingHorizontal="10dp">
 
                     <TextView
                         android:id="@+id/timetable_year"
@@ -87,9 +87,8 @@
                 <LinearLayout
                     android:id="@+id/sun_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="74dp"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="38dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="48dp"
@@ -120,15 +119,15 @@
                         android:id="@+id/sun_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"/>
+                        android:scrollbars="none"
+                        tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/mon_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="74dp"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="38dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="48dp"
@@ -160,15 +159,15 @@
                         android:id="@+id/mon_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"/>
+                        android:scrollbars="horizontal"
+                        tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tue_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="74dp"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="38dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="48dp"
@@ -200,15 +199,15 @@
                         android:id="@+id/tue_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"/>
+                        android:scrollbars="horizontal"
+                        tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/wed_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="74dp"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="38dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="48dp"
@@ -240,15 +239,15 @@
                         android:id="@+id/wed_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"/>
+                        android:scrollbars="horizontal"
+                        tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/thu_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="74dp"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="38dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="48dp"
@@ -280,15 +279,15 @@
                         android:id="@+id/thu_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"/>
+                        android:scrollbars="horizontal"
+                        tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/fri_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="74dp"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="38dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="48dp"
@@ -320,15 +319,15 @@
                         android:id="@+id/fri_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"/>
+                        android:scrollbars="horizontal"
+                        tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/sat_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="74dp"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="38dp">
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="48dp"
@@ -359,8 +358,14 @@
                         android:id="@+id/sat_todos_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="horizontal"/>
+                        android:scrollbars="horizontal"
+                        tools:listitem="@layout/items_todotable_todo"/>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
 
 
 

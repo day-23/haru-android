@@ -70,12 +70,14 @@ class TimetableFragment : Fragment() {
         recyclerView1.layoutManager = LinearLayoutManager(requireContext())
         recyclerView1.adapter = timetableAdapter
 
+
         reviewModel.times.observe(viewLifecycleOwner) { times ->
             timetableAdapter.setData(times)
             timetableAdapter.notifyDataSetChanged()
         }
 
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
+            binding.timetableScroll.scrollTo(0,66*31+30)
             binding.invalidateAll()
         }
 
@@ -94,7 +96,6 @@ class TimetableFragment : Fragment() {
         }
 
         binding.todolistChange.setOnClickListener{
-            Log.d("Frag", "changed")
             val newFrag = TodotableFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)

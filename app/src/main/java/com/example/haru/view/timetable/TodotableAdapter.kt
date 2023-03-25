@@ -11,32 +11,31 @@ import com.example.haru.R
 import com.example.haru.data.model.Todotable_date
 
 class TodotableAdapter(val context: Context,
-                       private var itemList: ArrayList<Todotable_date>) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
+                       private var itemList: ArrayList<String>) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodotableViewHolder {
             val view = LayoutInflater.from(context)
-                .inflate(R.layout.items_todotable, parent, false)
+                .inflate(R.layout.items_todotable_todo, parent, false)
             return TodotableViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: TodotableViewHolder, position: Int) {
-            Log.d("TAG", "itemList:${itemList.size}")
-            holder.todotable_dayofweek.text = itemList[position].dayofweek
-            holder.todotable_dayofmonth.text = itemList[position].dayofmonth
+            Log.d("TAG", "itemList:${itemList[0]}")
+            if(itemList != null)
+                holder.todotable_item_content.text = itemList[position]
         }
 
         override fun getItemCount(): Int {
             return itemList.count()
         }
 
-        fun setData(newData : ArrayList<Todotable_date>){
+        fun setData(newData : ArrayList<String>){
             itemList = newData
             notifyDataSetChanged()
         }
 
         inner class TodotableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            var todotable_dayofweek = itemView.findViewById<TextView>(R.id.day_of_week)
-            var todotable_dayofmonth = itemView.findViewById<TextView>(R.id.day_of_month)
+            var todotable_item_content = itemView.findViewById<TextView>(R.id.todo_content)
         }
 }

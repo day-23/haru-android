@@ -32,7 +32,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/light_gray" />
+                android:background="#EDEDED" />
 
             <ImageView
                 android:id="@+id/tv_timetable_mon"
@@ -44,7 +44,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/light_gray" />
+                android:background="#EDEDED" />
 
             <ImageView
                 android:id="@+id/tv_timetable_tue"
@@ -56,7 +56,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/light_gray" />
+                android:background="#EDEDED" />
 
             <ImageView
                 android:id="@+id/tv_timetable_wed"
@@ -68,7 +68,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/light_gray" />
+                android:background="#EDEDED" />
 
             <ImageView
                 android:id="@+id/tv_timetable_thu"
@@ -80,7 +80,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/light_gray" />
+                android:background="#EDEDED" />
 
             <ImageView
                 android:id="@+id/tv_timetable_fri"
@@ -92,7 +92,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/light_gray" />
+                android:background="#EDEDED" />
 
             <ImageView
                 android:id="@+id/tv_timetable_sat"
@@ -104,7 +104,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/light_gray" />
+                android:background="#EDEDED" />
 
             <ImageView
                 android:id="@+id/tv_timetable_sun"
@@ -116,7 +116,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="@color/light_gray" />
+                android:background="#EDEDED" />
         </LinearLayout>
 
 
