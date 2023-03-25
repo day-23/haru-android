@@ -5,10 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
+import com.example.haru.databinding.FragmentCalendarBinding
+import com.example.haru.view.adapter.AdapterMonth
 
 class CalendarFragment : Fragment() {
+    private lateinit var binding: FragmentCalendarBinding
+    private lateinit var adapterMonth: AdapterMonth
+
     companion object{
         const val TAG : String = "로그"
 
@@ -20,7 +27,6 @@ class CalendarFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "CalendarFragment - onCreate() called")
-
     }
 
     override fun onCreateView(
@@ -30,7 +36,23 @@ class CalendarFragment : Fragment() {
     ): View? {
         Log.d(TAG, "CalendarFragment - onCreateView() called")
 
-        return inflater.inflate(R.layout.fragment_calendar, container, false)
+        binding = FragmentCalendarBinding.inflate(inflater)
+        return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val month_viewpager = view.findViewById<ViewPager2>(R.id.month_viewpager)
+
+        month_viewpager.layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+
+        adapterMonth = AdapterMonth(viewLifecycleOwner)
+        month_viewpager.adapter = adapterMonth
+
+        month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
+    }
 }

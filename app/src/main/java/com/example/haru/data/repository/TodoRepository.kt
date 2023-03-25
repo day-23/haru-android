@@ -8,6 +8,25 @@ import kotlinx.coroutines.withContext
 
 class TodoRepository() {
     private val todoService = RetrofitClient.todoService
+    private val scheduleService = RetrofitClient.scheduleService
+
+    suspend fun getTodoDates(startDate: String, endDate: String, callback:(todoData: List<Todo>) -> Unit) = withContext(Dispatchers.IO){
+        val response = todoService.getTodoDates("005224c0-eec1-4638-9143-58cbfc9688c5", startDate, endDate).execute()
+        val data: GetTodoResponse
+        val todoData : List<Todo>
+        Log.d("20191627", "여기는 getTodo")
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get todos")
+            data = response.body()!!
+            todoData = data.data
+        } else{
+            Log.d("TAG", "Fail to get todos")
+            todoData = emptyList()
+        }
+        callback(todoData)
+    }
+
     suspend fun getTodoMain(callback:(todoData : TodoList) -> Unit) = withContext(Dispatchers.IO) {
         val response = todoService.getTodoMain("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
         val data: GetMainTodoResponse
@@ -21,6 +40,22 @@ class TodoRepository() {
         } else{
             Log.d("TAG", "Fail to get todos")
             todoData = TodoList(emptyList(),emptyList(),emptyList(),emptyList())
+        }
+        callback(todoData)
+    }
+
+    suspend fun getSchedule(startDate:String, endDate:String, callback:(todoData : List<Todo>) -> Unit) = withContext(Dispatchers.IO){
+        val response = scheduleService.getScheduleDates("881c51d1-06f1-47ce-99b6-b5582594db12",startDate,endDate).execute()
+        val data: GetScheduleResponse
+        val todoData : List<Todo>
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get todos")
+            data = response.body()!!
+            todoData = data.data
+        } else{
+            Log.d("TAG", "Fail to get todos")
+            todoData = emptyList()
         }
         callback(todoData)
     }

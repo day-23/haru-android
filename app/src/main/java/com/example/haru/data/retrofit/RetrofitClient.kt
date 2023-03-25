@@ -1,5 +1,7 @@
 package com.example.haru.data.retrofit
 
+import android.util.Log
+import com.example.haru.data.api.ScheduleService
 import com.example.haru.data.api.TagService
 import com.example.haru.data.api.TodoService
 import okhttp3.OkHttpClient
@@ -30,6 +32,10 @@ object RetrofitClient {
         retrofit.create(TodoService::class.java)
     }
 
+    val scheduleService: ScheduleService by lazy {
+        retrofit.create(ScheduleService::class.java)
+    }
+    
     val tagService: TagService by lazy {
         retrofit.create(TagService::class.java)
     }

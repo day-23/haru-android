@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt' //리사이클러뷰 바인딩 어댑터
 }
 
 android {
@@ -71,4 +72,11 @@ dependencies {
 
     /* 최신 preference 사용*/
     implementation 'androidx.preference:preference:1.2.0'
+
+    /*ViewModel*/
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+    /*LiveData*/
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+    /*KTX*/
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
 }

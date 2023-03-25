@@ -1,6 +1,6 @@
 package com.example.haru.data.model
 
-data class PostTodoResponse(
+data class GetScheduleResponse(
     val success: String,
-    val data: Any
+    val data: List<Todo>
 )

@@ -9,6 +9,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface TodoService {
+    @GET("schedule/{userId}/schedules")
+    fun getSchedule(@Path("userId") userId: String) : Call<GetScheduleResponse>
+
+    @GET("todo/{userId}/todos/date")
+    fun getTodoDates(@Path("userId") userId: String, @Query("startDate") startDate:String, @Query("endDate") endDate:String) : Call<GetTodoResponse>
+  
     @GET("todo/{userId}/todos/main")
     fun getTodoMain(@Path("userId") userId: String) : Call<GetMainTodoResponse>
 

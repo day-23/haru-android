@@ -4,15 +4,16 @@ import java.util.Date
 
 data class TodoRequest(
     var content: String,
-    var flag: Boolean,
-    var subTodos: List<String>,
-    var tags: List<String>,
-    var todayTodo: Boolean,
-    var isSelectedEndDateTime: Boolean,
-    var endDate: String? = null,
-    var alarms: List<String>,
-    var repeatOption: String? = null,
-    var repeatValue: String? = null,
-    var repeatEnd: String? = null,
     var memo: String,
-    )
+    var todayTodo: Boolean,
+    var flag: Boolean,
+    var endDate: String? = null,
+    var endDateTime: String? = null,
+    var repeatOption: String? = null,
+    var repeatWeek: String? = null,
+    var repeatMonth: String? = null,
+    var repeatEnd: String? = null,
+    var tags: List<String>,
+    var subTodos: List<String>,
+    var alarms: List<String>,
+)
