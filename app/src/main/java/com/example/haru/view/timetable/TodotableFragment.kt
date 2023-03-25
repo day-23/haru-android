@@ -24,8 +24,22 @@ class TodotableFragment : Fragment()  {
     private lateinit var binding : FragmentTodotableBinding
     private lateinit var timetableviewModel: TimetableViewModel
     private lateinit var todoreviewModel: TodoTableRecyclerViewmodel
+    //투두 리사이클러 뷰
     private lateinit var sun_todotableAdapter: TodotableAdapter
-    lateinit var todorecyclerView: RecyclerView
+    lateinit var sun_todorecyclerView: RecyclerView
+    private lateinit var mon_todotableAdapter: TodotableAdapter
+    lateinit var mon_todorecyclerView: RecyclerView
+    private lateinit var tue_todotableAdapter: TodotableAdapter
+    lateinit var tue_todorecyclerView: RecyclerView
+    private lateinit var wed_todotableAdapter: TodotableAdapter
+    lateinit var wed_todorecyclerView: RecyclerView
+    private lateinit var thu_todotableAdapter: TodotableAdapter
+    lateinit var thu_todorecyclerView: RecyclerView
+    private lateinit var fri_todotableAdapter: TodotableAdapter
+    lateinit var fri_todorecyclerView: RecyclerView
+    private lateinit var sat_todotableAdapter: TodotableAdapter
+    lateinit var sat_todorecyclerView: RecyclerView
+
     var todoList: ArrayList<String> = ArrayList()
     companion object {
         const val TAG: String = "로그"
@@ -56,14 +70,43 @@ class TodotableFragment : Fragment()  {
         todoreviewModel.init_value()
 
         todoreviewModel.TodoContentsList.observe(viewLifecycleOwner) { contents ->
-        val sunday = contents.get(0)
-        Log.d("daylist", "sunday: $sunday")
-        sun_todotableAdapter = TodotableAdapter(requireContext(), sunday ?: todoList)
-        todorecyclerView = binding.sunTodosRecycler
-        todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        todorecyclerView.adapter = sun_todotableAdapter
+            val sunday = contents.get(0)
+            val monday = contents.get(1)
+            val tueday = contents.get(2)
+            val wedday = contents.get(3)
+            val thuday = contents.get(4)
+            val friday = contents.get(5)
+            val satday = contents.get(6)
+            sun_todotableAdapter = TodotableAdapter(requireContext(), sunday ?: todoList)
+            sun_todorecyclerView.adapter = sun_todotableAdapter
+            mon_todotableAdapter = TodotableAdapter(requireContext(), monday ?: todoList)
+            mon_todorecyclerView.adapter = mon_todotableAdapter
+            tue_todotableAdapter = TodotableAdapter(requireContext(), tueday ?: todoList)
+            tue_todorecyclerView.adapter = tue_todotableAdapter
+            wed_todotableAdapter = TodotableAdapter(requireContext(), wedday ?: todoList)
+            wed_todorecyclerView.adapter = wed_todotableAdapter
+            thu_todotableAdapter = TodotableAdapter(requireContext(), thuday ?: todoList)
+            thu_todorecyclerView.adapter = thu_todotableAdapter
+            fri_todotableAdapter = TodotableAdapter(requireContext(), friday ?: todoList)
+            fri_todorecyclerView.adapter = fri_todotableAdapter
+            sat_todotableAdapter = TodotableAdapter(requireContext(), satday ?: todoList)
+            sat_todorecyclerView.adapter = sat_todotableAdapter
         }
-
+        //리사이클러뷰 요일별 바인딩
+        sun_todorecyclerView = binding.sunTodosRecycler
+        sun_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mon_todorecyclerView = binding.monTodosRecycler
+        mon_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        tue_todorecyclerView = binding.tueTodosRecycler
+        tue_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        wed_todorecyclerView = binding.wedTodosRecycler
+        wed_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        thu_todorecyclerView = binding.thuTodosRecycler
+        thu_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        fri_todorecyclerView = binding.friTodosRecycler
+        fri_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        sat_todorecyclerView = binding.satTodosRecycler
+        sat_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             val year = times.year.slice(0..times.year.length - 2)
@@ -100,6 +143,7 @@ class TodotableFragment : Fragment()  {
             binding.todoSatDate.setTextColor(Color.parseColor(colors.get(6)))
         }
 
+        //투두 쿼리문 전송
         timetableviewModel.Dates.observe(viewLifecycleOwner) { Dates ->
             todoreviewModel.getTodo(Dates)
         }
