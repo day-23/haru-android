@@ -39,70 +39,104 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner):
     }
 
     override fun onBindViewHolder(holder: MonthView, position: Int) {
-        Log.d("position", position.toString())
-
         val item_month_text = holder.itemView.findViewById<TextView>(R.id.item_month_text)
         val calendar_recyclerview = holder.itemView.findViewById<RecyclerView>(R.id.calendar_recyclerview)
-
-        val todoAdapter = AdapterDay()
 
         calendar.time = Date()
         calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
         item_month_text.text = "${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월"
 
-        calendar_recyclerview.adapter = todoAdapter
-
-        calendar_recyclerview.layoutManager = GridLayoutManager(holder.itemView.context, 7)
-
         calendarviewModel.init_viewModel(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH))
 
         calendarviewModel.liveDateList.observe(lifecycle) { lit ->
             calendarviewModel.liveContentList.observe(lifecycle) {
-                val gridlayout = GridLayoutManager(holder.itemView.context, 7)
-                var duplist = ArrayList<ContentMark>()
+                var size = lit.size * 5
 
-                var dateOrContent = true
-                var contentcnt = 0
-                var datePosition = 0
-                var contentPosition = 0
+                for(con in it){
+                    if(con.cnt > 1){
+                        size -= con.cnt-1
+                    }
+                }
+
+                var spanList = ArrayList<Int>()
+
+                var duplist = ArrayList<ContentMark>()
+                var cntlist = ArrayList<Int>()
+
+                var positionplus = 0
+
+                var saveLineList = ArrayList<Int>()
+                var saveCntList = ArrayList<Int>()
+
+                for(position2 in 0 until size) {
+                    val newpostion = positionplus + position2
+                    if (newpostion / 7 in arrayOf(0, 5, 10, 15, 20, 25)) spanList.add(1)
+                    else {
+                        val contentPosition = newpostion % 7 + newpostion / (lit.size) * 7
+                        val contentLine = (newpostion / 7) % 5
+
+                        if (saveLineList.contains(contentLine)) {
+                            val index = saveLineList.indexOf(contentLine)
+
+                            if (saveCntList[index] > 7) {
+                                saveCntList[index] -= 7
+                                positionplus += 6
+                                spanList.add(7)
+                                continue
+                            } else {
+                                val returncnt = saveCntList[index]
+
+                                saveCntList.removeAt(index)
+                                saveLineList.removeAt(index)
+
+                                positionplus += returncnt - 1
+                                spanList.add(returncnt)
+                                continue
+                            }
+                        }
+
+                        var returnvalue = 1
+                        Log.d("newposition", newpostion.toString())
+                        Log.d("contentposition", contentPosition.toString())
+                        for (content in it) {
+                            if (!duplist.contains(content) && content.position == contentPosition) {
+                                duplist.add(content)
+
+//                                if ((contentPosition+content.cnt) / 7 != contentPosition / 7) {
+//                                    saveLineList.add(contentLine)
+//
+//                                    val returncnt = contentPosition+content.cnt - (contentPosition+content.cnt)/7*7
+//                                    saveCntList.add(content.cnt - returncnt)
+//
+//                                    positionplus += returncnt - 1
+//                                    returnvalue = returncnt
+//                                    cntlist.add(returnvalue)
+//                                    break
+//                                }
+
+                                positionplus += content.cnt - 1
+                                returnvalue = content.cnt
+                                cntlist.add(returnvalue)
+                                break
+                            }
+                        }
+
+                        spanList.add(returnvalue)
+                    }
+                }
+
+                val gridlayout = GridLayoutManager(holder.itemView.context, 7)
 
                 gridlayout.spanSizeLookup = object : SpanSizeLookup(){
                     override fun getSpanSize(position: Int): Int {
-                        if(dateOrContent){
-                            datePosition++
-
-                            if (datePosition % 7 == 0){
-                                dateOrContent = false
-                            }
-
-                            return 1
-                        } else {
-                            for(content in it){
-                                if(!duplist.contains(content) && content.position == contentPosition){
-                                    duplist.add(content)
-                                    contentPosition += content.cnt
-                                    Log.d("contentcnt", content.cnt.toString())
-                                    return content.cnt
-                                }
-                            }
-
-                            contentPosition++
-
-                            if(contentPosition % 7 == 0){
-                                contentPosition -= 7
-                                contentcnt++
-                            }
-
-                            if(contentcnt == 4){
-                                contentPosition += 7
-                                contentcnt = 0
-                                dateOrContent = true
-                            }
-
-                            return 1
-                        }
+                        return spanList[position]
                     }
                 }
+
+                val todoAdapter = AdapterDay()
+
+                calendar_recyclerview.adapter = todoAdapter
+                calendar_recyclerview.layoutManager = gridlayout
 
                 todoAdapter.updateData(lit, it)
             }
