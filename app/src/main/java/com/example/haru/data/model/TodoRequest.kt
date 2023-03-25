@@ -1,7 +1,5 @@
 package com.example.haru.data.model
 
-import java.util.Date
-
 data class TodoRequest(
     var content: String,
     var flag: Boolean,
