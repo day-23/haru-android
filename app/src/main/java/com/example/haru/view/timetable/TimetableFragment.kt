@@ -70,12 +70,14 @@ class TimetableFragment : Fragment() {
         recyclerView1.layoutManager = LinearLayoutManager(requireContext())
         recyclerView1.adapter = timetableAdapter
 
+
         reviewModel.times.observe(viewLifecycleOwner) { times ->
             timetableAdapter.setData(times)
             timetableAdapter.notifyDataSetChanged()
         }
 
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
+            binding.timetableScroll.scrollTo(0,66*31+30)
             binding.invalidateAll()
         }
 
