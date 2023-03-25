@@ -93,4 +93,52 @@ class TodoRepository() {
         }
         todos
     }
+
+    suspend fun getTodoByFlag() = withContext(Dispatchers.IO){
+        val response = todoService.getTodoByFlag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
+        val data : GetTodoBy
+        val todoData : List<Todo>
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get Todo By Flag")
+            data = response.body()!!
+            todoData = data.data
+        } else {
+            Log.d("TAG", "Fail to get Todo By Flag")
+            todoData = emptyList()
+        }
+        todoData
+    }
+
+    suspend fun getTodoByComplete() = withContext(Dispatchers.IO){
+        val response = todoService.getTodoByCompleted("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
+        val data : GetTodoBy
+        val todoData : List<Todo>
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get Todo By Completed")
+            data = response.body()!!
+            todoData = data.data
+        } else {
+            Log.d("TAG", "Fail to get Todo By Completed")
+            todoData = emptyList()
+        }
+        todoData
+    }
+
+    suspend fun getTodoByUntag() = withContext(Dispatchers.IO){
+        val response = todoService.getTodoByUntag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
+        val data : GetTodoBy
+        val todoData : List<Todo>
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get Todo By Untag")
+            data = response.body()!!
+            todoData = data.data
+        } else {
+            Log.d("TAG", "Fail to get Todo By Untag")
+            todoData = emptyList()
+        }
+        todoData
+    }
 }

@@ -26,4 +26,17 @@
     <string name="memo_set">메모 추가</string>
     <string name="important">중요</string>
     <string name="append">추가</string>
+    <string name="everyDay">매일</string>
+    <string name="everyWeek">매주</string>
+    <string name="every2Week">이주</string>
+    <string name="everyMonth">매월</string>
+    <string name="everyYear">매년</string>
+
+    <string name="Monday">월</string>
+    <string name="Tuesday">화</string>
+    <string name="Wednesday">수</string>
+    <string name="Thursday">목</string>
+    <string name="Friday">금</string>
+    <string name="Saturday">토</string>
+    <string name="Sunday">일</string>
 </resources>
