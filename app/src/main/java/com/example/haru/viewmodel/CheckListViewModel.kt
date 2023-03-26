@@ -62,10 +62,10 @@ class CheckListViewModel() :
         viewModelScope.launch {
             todoRepository.getTodoMain{
                 todoList.clear()
-                _flaggedTodos.postValue(it.flaggedTodos)
-                _taggedTodos.postValue(it.taggedTodos)
-                _untaggedTodos.postValue(it.untaggedTodos)
-                _completedTodos.postValue(it.completedTodos)
+                _flaggedTodos.postValue(listOf(Todo(type = 0)) + it.flaggedTodos + listOf(Todo(type = 3)) )
+                _taggedTodos.postValue(listOf(Todo(type = 1, content = "분류")) + it.taggedTodos + listOf(Todo(type = 3)))
+                _untaggedTodos.postValue(listOf(Todo(type = 1, content = "미분류")) + it.untaggedTodos + listOf(Todo(type = 3)))
+                _completedTodos.postValue(listOf(Todo(type = 1, content = "완료")) + it.completedTodos)
                 _todoByTag.postValue(false)
                 todoByTagItem = null
             }
@@ -77,7 +77,6 @@ class CheckListViewModel() :
     fun addTodo(todoRequest: TodoRequest, callback: () -> Unit) {
         viewModelScope.launch {
             todoRepository.createTodo(todoRequest){
-                Log.d("20191627", it.toString())
                 getTag()
                 getTodoMain{
                     flaggedTodos.value?.let { todoList.addAll(it) }
@@ -96,18 +95,18 @@ class CheckListViewModel() :
             todoByTagItem = tagDataList.value!![position - 1].content
             _todoByTag.value = true
             _todoDataList.value= when(position){
-                1 -> todoRepository.getTodoByComplete()
-                2 -> todoRepository.getTodoByUntag()
-                else -> todoRepository.getTodoByTag(tagDataList.value!![position - 1].id)
+                1 -> listOf(Todo(type = 1, content = todoByTagItem!!)) + todoRepository.getTodoByComplete()
+                2 -> listOf(Todo(type = 1, content = todoByTagItem!!)) + todoRepository.getTodoByUntag()
+                else -> listOf(Todo(type = 1, content = todoByTagItem!!)) + todoRepository.getTodoByTag(tagDataList.value!![position - 1].id)
             }
         }
     }
 
-    fun getTodoByFlag(position: Int){
+    fun getTodoByFlag(){
         viewModelScope.launch {
             todoByTagItem = "중요"
             _todoByTag.value = true
-            _todoDataList.value = todoRepository.getTodoByFlag()
+            _todoDataList.value = listOf(Todo(type = 0)) + todoRepository.getTodoByFlag()
         }
     }
 

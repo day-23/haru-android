@@ -224,19 +224,20 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             binding.checkFlagTodo.isChecked = it
         })
 
+
         todoAddViewModel.todayTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
                     binding.todaySwitch.isChecked = true
                     binding.tvTodayTodo.setTextColor(resources.getColor(R.color.highlight))
-                    binding.ivTodayIcon.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.highlight))
+//                    binding.ivTodayIcon.backgroundTintList =
+//                        ColorStateList.valueOf(resources.getColor(R.color.highlight))
                 }
                 else -> {
                     binding.todaySwitch.isChecked = false
                     binding.tvTodayTodo.setTextColor(resources.getColor(R.color.light_gray))
-                    binding.ivTodayIcon.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.light_gray))
+//                    binding.ivTodayIcon.backgroundTintList =
+//                        ColorStateList.valueOf(resources.getColor(R.color.light_gray))
                 }
             }
         })

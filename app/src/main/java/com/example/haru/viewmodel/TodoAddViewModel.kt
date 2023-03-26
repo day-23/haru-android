@@ -1,22 +1,10 @@
 package com.example.haru.viewmodel
 
-import android.app.Application
-import android.app.TimePickerDialog
-import android.content.Context
-import android.graphics.Color
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide.init
-import com.example.haru.App
-import com.example.haru.R
 import com.example.haru.data.model.TodoRequest
-import com.example.haru.data.repository.TodoRepository
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -92,10 +80,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setFlagTodo() {
         _flagTodo.value = (_flagTodo.value == false)
+        Log.d("20191627", "test")
     }
 
     fun setTodayTodo() {
         _todayTodo.value = (_todayTodo.value == false)
+        Log.d("20191627", todayTodo.value.toString())
     }
 
     fun setIsSelectedEndDateTime() {

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="todoItem"
             type="com.example.haru.data.model.Todo" />
@@ -16,46 +17,52 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:paddingVertical="14dp"
-            android:paddingStart="20dp"
-            android:orientation="horizontal">
+            android:paddingStart="20dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/arrow"
-                android:rotation="180"
-                android:backgroundTint="@color/black"/>
+                android:backgroundTint="@color/black"
+                android:rotation="180" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="24dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="24dp">
 
             <CheckBox
+                android:id="@+id/cb_info_completed"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="14dp"
+                android:checked="@{todoItem.completed}"
                 android:background="@drawable/checklist_done_circle"
                 android:button="@android:color/transparent" />
 
             <TextView
+                android:id="@+id/tv_info_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginEnd="24dp"
+                android:layout_weight="1"
                 android:textColor="@color/todo_description"
-                android:textSize="24sp"/>
+                android:text="@{todoItem.content}"
+                android:textSize="24sp" />
 
             <CheckBox
                 style="@style/minSize"
+                android:id="@+id/cb_info_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="20dp"
+                android:checked="@{todoItem.flag}"
                 android:background="@drawable/checklist_flag_star"
                 android:button="@android:color/transparent" />
 
@@ -128,27 +135,29 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/iv_today_icon"
+                android:id="@+id/iv_info_today_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@{todoItem.todayTodo ? @color/highlight : @color/light_gray}"
                 android:background="@drawable/big_today_icon" />
 
             <TextView
-                android:id="@+id/tv_today_todo"
+                android:id="@+id/tv_info_today_todo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/today_todo_before_add"
-                android:textColor="@color/light_gray"
+                android:textColor="@{todoItem.todayTodo ? @color/highlight : @color/light_gray}"
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/today_switch"
+                android:id="@+id/info_today_switch"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="28dp"
+                android:checked="@{todoItem.todayTodo}"
                 android:thumb="@drawable/custom_switch_thumb"
                 app:track="@drawable/custom_switch" />
 
@@ -156,7 +165,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/endDateSetLayout"
+            android:id="@+id/info_endDateSetLayout"
             style="@style/linearBorderLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -172,13 +181,13 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/iv_calendar_icon"
+                    android:id="@+id/iv_info_calendar_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/big_calendar_icon" />
 
                 <TextView
-                    android:id="@+id/tv_endDate_set"
+                    android:id="@+id/tv_info_endDate_set"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -188,7 +197,7 @@
                     android:textSize="14sp" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_endDate_pick"
+                    android:id="@+id/btn_info_endDate_pick"
                     style="@style/minSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -200,7 +209,7 @@
                     app:backgroundTint="@null" />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/endDate_switch"
+                    android:id="@+id/info_endDate_switch"
                     style="@style/minSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -210,14 +219,14 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/endDateTime_layout"
+                android:id="@+id/info_endDateTime_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
                 android:paddingTop="12dp">
 
                 <TextView
-                    android:id="@+id/tv_endTime_set"
+                    android:id="@+id/tv_info_endTime_set"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="38dp"
@@ -227,7 +236,7 @@
                     android:textSize="14sp" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_endTime_pick"
+                    android:id="@+id/btn_info_endTime_pick"
                     style="@style/minSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -240,7 +249,7 @@
                     app:backgroundTint="@null" />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/endDateTime_switch"
+                    android:id="@+id/info_endDateTime_switch"
                     style="@style/minSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -309,6 +318,309 @@
                 android:layout_marginEnd="28dp"
                 android:thumb="@drawable/custom_switch_thumb"
                 app:track="@drawable/custom_switch" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/repeatSetLayout"
+            style="@style/linearBorderLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/linear_border_up_bottom"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_repeat_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/big_repeat_icon" />
+
+                <TextView
+                    android:id="@+id/tv_repeat_set"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/repeat_set"
+                    android:textColor="@color/light_gray"
+                    android:textSize="14sp" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/repeat_switch"
+                    style="@style/minSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="28dp"
+                    android:thumb="@drawable/custom_switch_thumb"
+                    app:track="@drawable/custom_switch" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/repeatOptionLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:paddingTop="8dp">
+
+                <LinearLayout
+                    android:id="@+id/repeatOptionSelect"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="35dp"
+                    android:layout_marginEnd="55dp"
+                    android:animateLayoutChanges="true"
+                    android:background="@drawable/btn_group_custom"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_everyDay"
+                        style="@style/minSize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/repeat_btn_custom"
+                        android:backgroundTint="@android:color/transparent"
+                        android:outlineProvider="none"
+                        android:text="@string/everyDay"
+                        android:textColor="@color/date_text"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_everyWeek"
+                        style="@style/minSize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/repeat_btn_custom"
+                        android:backgroundTint="@android:color/transparent"
+                        android:outlineProvider="none"
+                        android:text="@string/everyWeek"
+                        android:textColor="@color/date_text"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_every2Week"
+                        style="@style/minSize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/repeat_btn_custom"
+                        android:backgroundTint="@android:color/transparent"
+                        android:outlineProvider="none"
+                        android:text="@string/every2Week"
+                        android:textColor="@color/date_text"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_everyMonth"
+                        style="@style/minSize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/repeat_btn_custom"
+                        android:backgroundTint="@android:color/transparent"
+                        android:outlineProvider="none"
+                        android:text="@string/everyMonth"
+                        android:textColor="@color/date_text"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_everyYear"
+                        style="@style/minSize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/repeat_btn_custom"
+                        android:backgroundTint="@android:color/transparent"
+                        android:outlineProvider="none"
+                        android:text="@string/everyYear"
+                        android:textColor="@color/date_text"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/everyWeekSelectLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="55dp"
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:id="@+id/tv_monday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/Monday"
+                    android:textColor="@color/date_text" />
+
+                <TextView
+                    android:id="@+id/tv_tuesday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/Tuesday"
+                    android:textColor="@color/date_text" />
+
+                <TextView
+                    android:id="@+id/tv_wednesday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/Wednesday"
+                    android:textColor="@color/date_text" />
+
+                <TextView
+                    android:id="@+id/tv_thursday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/Thursday"
+                    android:textColor="@color/date_text" />
+
+                <TextView
+                    android:id="@+id/tv_friday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/Friday"
+                    android:textColor="@color/date_text" />
+
+                <TextView
+                    android:id="@+id/tv_saturday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/Saturday"
+                    android:textColor="@color/date_text" />
+
+                <TextView
+                    android:id="@+id/tv_sunday"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/Sunday"
+                    android:textColor="@color/date_text" />
+
+            </LinearLayout>
+
+            <GridLayout
+                android:id="@+id/gridMonth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="55dp"
+                android:alignmentMode="alignBounds"
+                android:columnCount="7"
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:rowCount="5"
+                android:useDefaultMargins="true"/>
+
+            <GridLayout
+                android:id="@+id/gridYear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="55dp"
+                android:alignmentMode="alignBounds"
+                android:columnCount="6"
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:rowCount="2"
+                android:useDefaultMargins="true"/>
+
+            <LinearLayout
+                android:id="@+id/repeatEndDateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:paddingTop="14dp">
+
+                <TextView
+                    android:id="@+id/tv_repeat_end"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="38dp"
+                    android:layout_weight="1"
+                    android:text="@string/repeat_endDate_set"
+                    android:textColor="@color/light_gray"
+                    android:textSize="14sp" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_repeat_end_date"
+                    style="@style/minSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/custom_btn_date"
+                    android:textColor="@color/date_text"
+                    android:textSize="14sp"
+                    android:visibility="invisible"
+                    app:backgroundTint="@null" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/repeatEndDate_switch"
+                    style="@style/minSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="28dp"
+                    android:thumb="@drawable/custom_switch_thumb"
+                    app:track="@drawable/custom_switch" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/linearBorderLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/linear_border_up_bottom"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_memo_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/big_memo_icon" />
+
+            <EditText
+                android:id="@+id/et_memo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="72dp"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:hint="@string/memo_set"
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical"
+                android:textColorHint="@color/light_gray"
+                android:textSize="14sp" />
 
 
         </LinearLayout>

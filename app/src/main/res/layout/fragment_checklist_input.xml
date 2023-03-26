@@ -532,10 +532,8 @@
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
                         android:rowCount="5"
-                        android:useDefaultMargins="true">
+                        android:useDefaultMargins="true"/>
 
-
-                    </GridLayout>
 
                     <GridLayout
                         android:id="@+id/gridYear"
@@ -548,7 +546,7 @@
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
                         android:rowCount="2"
-                        android:useDefaultMargins="true"></GridLayout>
+                        android:useDefaultMargins="true"/>
 
                     <LinearLayout
                         android:id="@+id/repeatEndDateLayout"

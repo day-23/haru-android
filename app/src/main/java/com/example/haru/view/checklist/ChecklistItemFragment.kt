@@ -50,13 +50,16 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position : I
         Log.d(TAG, "ChecklistItemFragment - onCreateView() called")
 
         binding = FragmentChecklistItemInfoBinding.inflate(inflater)
-
+        Log.d("20191627", this.position.toString())
         binding.todoItem = checkListViewModel.todoDataList.value!![position]
+        Log.d("20191627", binding.todoItem.toString())
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
 
     }

@@ -66,7 +66,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         tagAdapter.tagClick = object :TagAdapter.TagClick{
             override fun onClick(view: View, position: Int) {
                 if (position == 0)
-                    checkListViewModel.getTodoByFlag(position)
+                    checkListViewModel.getTodoByFlag()
                 else if (position > 0){
                     checkListViewModel.clear()
                     checkListViewModel.getTodoByTag(position)
@@ -104,7 +104,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.d("20191627", "todoDataList observe")
             todoAdapter.setFlagCount(checkListViewModel.flaggedTodos.value?.size)
             todoAdapter.setTagCount(checkListViewModel.taggedTodos.value?.size)
             todoAdapter.setUnTagCount(checkListViewModel.untaggedTodos.value?.size)
@@ -115,7 +114,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         })
 
         checkListViewModel.todoByTag.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.d("20191627", "옵저버 호출")
             todoAdapter.setTodoByTag(checkListViewModel.todoByTagItem)
         })
 
