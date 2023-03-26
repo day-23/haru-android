@@ -1,0 +1,3 @@
+[submodule "haru"]
+	path = haru
+	url = https://github.com/day-23/haru.git
