@@ -17,7 +17,10 @@ object FormatDate {
     private val localDateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd", Locale.US)
 
     //// DatePicker와 TimePicker로 받는 값들은 Date이므로 SimpleDateFormat으로 서버로 보낼 형식으로 변환하는 formatter
-    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
+    private val dateFormatterToServer = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
+
+    private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd", Locale.US)
+    private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
 
 
     private fun initDiff(): Long {
@@ -28,14 +31,14 @@ object FormatDate {
     }
 
     // LocalDateTime을 넣으면 formatter에 정의된 패턴 형식, 타입은 String으로 반환
-    fun localTimeToStr(time: LocalDateTime): String {
-        return time.format(localTimeFormatter)
-    }
+//    fun localTimeToStr(time: LocalDateTime): String {
+//        return time.format(localTimeFormatter)
+//    }
 
     // LocalDateTime을 넣으면 formatter에 정의된 패턴 형식, 타입은 String으로 반환
-    fun localDateToStr(date: LocalDateTime): String {
-        return date.format(localDateFormatter)
-    }
+//    fun localDateToStr(date: LocalDateTime): String {
+//        return date.format(localDateFormatter)
+//    }
 
     // 서버에서 받은 그리니치 시간대에 Local시간과의 차이를 더해서 String으로 반환
     fun todoDateToStr(str: String): String {
@@ -51,7 +54,15 @@ object FormatDate {
 
     // Date를 서버로 보낼 형식으로 변환하여 String으로 반환
     fun dateToStr(date: Date): String {
-        Log.d("20191627", dateFormatter.format(date))
-        return dateFormatter.format(date)
+        Log.d("20191627", dateFormatterToServer.format(date))
+        return dateFormatterToServer.format(date)
+    }
+
+    fun simpleDateToStr(date: Date): String {
+        return simpleFormatterDate.format(date)
+    }
+
+    fun simpleTimeToStr(date: Date): String {
+        return simpleFormatterTime.format(date)
     }
 }

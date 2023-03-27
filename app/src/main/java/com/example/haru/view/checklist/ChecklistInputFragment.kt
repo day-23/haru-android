@@ -248,10 +248,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             androidx.lifecycle.Observer {
                 when (it) {
                     true -> {
+                        val date = Date()
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.VISIBLE
-                        Log.d("20191627", LocalDateTime.now().toString())
-                        binding.btnEndDatePick.text = FormatDate.localDateToStr(LocalDateTime.now())
+                        binding.btnEndDatePick.text = FormatDate.simpleTimeToStr(Date())
+                        todoAddViewModel.setDate(0, date)
 
                         val valueAnimator = ValueAnimator.ofInt(
                             binding.endDateSetLayout.height,
@@ -295,9 +296,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         todoAddViewModel.isSelectedEndDateTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
+                    val time = Date()
                     binding.endDateTimeSwitch.isChecked = it
                     binding.btnEndTimePick.visibility = View.VISIBLE
-                    binding.btnEndTimePick.text = FormatDate.localTimeToStr(LocalDateTime.now())
+                    binding.btnEndTimePick.text = FormatDate.simpleTimeToStr(time)
+                    todoAddViewModel.setTime(0, time)
                     binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.todo_description))
                 }
                 else -> {
@@ -311,9 +314,14 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         todoAddViewModel.alarmSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
+                    val date = Date()
                     binding.alarmSwitch.isChecked = it
-                    binding.btnAlarmDatePick.text = FormatDate.localDateToStr(LocalDateTime.now())
-                    binding.btnAlarmTimePick.text = FormatDate.localTimeToStr(LocalDateTime.now())
+                    binding.btnAlarmDatePick.text = FormatDate.simpleDateToStr(date)
+                    binding.btnAlarmTimePick.text = FormatDate.simpleTimeToStr(date)
+                    todoAddViewModel.setDate(1, date)
+                    todoAddViewModel.setTime(1, date)
+
+
                     binding.btnAlarmDatePick.visibility = View.VISIBLE
                     binding.btnAlarmTimePick.visibility = View.VISIBLE
                     binding.ivAlarmIcon.backgroundTintList =
@@ -339,7 +347,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         ColorStateList.valueOf(resources.getColor(R.color.todo_description))
                     binding.tvRepeatSet.setTextColor(resources.getColor(R.color.todo_description))
                     todoAddViewModel.setRepeatSetLayouH(binding.repeatSetLayout.height)
-                    Log.d("20191627", todoAddViewModel.repeatSetLayoutHeight.toString())
 
                     val valueAnimator = ValueAnimator.ofInt(
                         binding.repeatSetLayout.height,
@@ -353,7 +360,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     valueAnimator.duration = 400
                     valueAnimator.start()
 
-                    Log.d("20191627", "visible")
                     binding.repeatOptionLayout.visibility = View.VISIBLE
                     binding.repeatEndDateLayout.visibility = View.VISIBLE
                 }
@@ -386,9 +392,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             androidx.lifecycle.Observer {
                 when (it) {
                     true -> {
+                        val date = Date()
                         binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.todo_description))
                         binding.btnRepeatEndDate.visibility = View.VISIBLE
-                        binding.btnRepeatEndDate.text = FormatDate.localDateToStr(LocalDateTime.now())
+                        binding.btnRepeatEndDate.text = FormatDate.simpleDateToStr(date)
+                        todoAddViewModel.setDate(2, date)
                     }
                     else -> {
                         binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.light_gray))
@@ -615,7 +623,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                                     set(Calendar.HOUR_OF_DAY, hourOfDay)
                                     set(Calendar.MINUTE, minute)
                                 }.time
-
+                                Log.d("20191627", time.toString())
                                 if (v.id == R.id.btn_endTime_pick)
                                     todoAddViewModel.setTime(0, time)
                                 else todoAddViewModel.setTime(1, time)
