@@ -34,6 +34,8 @@ class MainActivity : AppCompatActivity() {
         initFragments()
         setDefaultFragment()
 
+        binding.bottomNav.itemIconTintList = null
+
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             handleNavigation(menuItem.itemId)
         }
