@@ -15,12 +15,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.data.model.Alarm
+import com.example.haru.data.model.Tag
 import com.example.haru.databinding.FragmentChecklistItemBinding
 import com.example.haru.databinding.FragmentChecklistItemInfoBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
 import com.example.haru.viewmodel.CheckListViewModel
-import kotlin.properties.Delegates
 
 class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: Int) : Fragment() {
     private lateinit var binding: FragmentChecklistItemInfoBinding
@@ -72,12 +72,26 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
 
+        binding.todoItem
+    }
+
+    private fun initView(){
         binding.cbInfoCompleted.isChecked = binding.todoItem!!.completed
         if (binding.cbInfoCompleted.isChecked)
             binding.tvInfoContent.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         binding.tvInfoContent.text = binding.todoItem!!.content
         binding.cbInfoFlag.isChecked = binding.todoItem!!.flag
+
+        if (binding.todoItem!!.tags != emptyList<Tag>()){
+            binding.infoTagEt.apply {
+                var text = ""
+                for(i in 0 until binding.todoItem!!.tags.size)
+                    text += "${binding.todoItem!!.tags[i].content} "
+                setText(text)
+            }
+        }
 
         if (binding.todoItem!!.todayTodo) {
             binding.ivInfoTodayIcon.backgroundTintList =

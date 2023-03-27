@@ -115,7 +115,7 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tag_et"
+                android:id="@+id/info_tag_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
