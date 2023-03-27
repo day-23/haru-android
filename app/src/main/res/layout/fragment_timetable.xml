@@ -55,6 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="0"
+                    android:layout_marginHorizontal="10dp"
                     android:src="@drawable/___20513"
                     android:background="#00000000"
                     android:onClick="@{() -> viewModel.buttonClick()}"/>
@@ -257,7 +258,7 @@
                         android:gravity="center_horizontal"
                         android:textColor="#1DAFFF"
                         android:text="@{viewModel.days.get(6)}"
-                        android:hint="10"/>
+                        android:hint="7"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -387,8 +388,8 @@
                                 android:layout_height="33dp"
                                 android:background="@drawable/timetable_schedule"
                                 android:textSize="12dp"
-                                android:padding="6dp"
                                 android:text="밥먹기"
+                                android:gravity="center"
                                 android:layout_marginRight="5dp"/>
 
                             <TextView
@@ -399,6 +400,7 @@
                                 android:textSize="12dp"
                                 android:padding="6dp"
                                 android:text="운동하기"
+                                android:gravity="center"
                                 android:layout_marginRight="5dp"/>
                         </LinearLayout>
 
