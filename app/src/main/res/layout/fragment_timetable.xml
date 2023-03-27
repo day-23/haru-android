@@ -264,7 +264,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:visibility="gone">
+                android:visibility="visible">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+                <GridLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="14"
+                    android:columnCount="7"
+                    android:rowCount="2">
+
+                </GridLayout>
+
+
+
 
             </LinearLayout>
 
@@ -299,14 +315,45 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            >
 
-                            <TextView
+                            <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:background="@color/teal_200"
-                                android:text="신나게 춤추기"/>
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="64dp"
+                                    android:background="@drawable/timetable_schedule"
+                                    android:layout_weight="1"
+                                    android:textSize="12dp"
+                                    android:padding="6dp"
+                                    android:text="밥먹기"
+                                    android:layout_marginRight="1dp"/>
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="98dp"
+                                    android:background="@drawable/timetable_schedule"
+                                    android:layout_weight="1"
+                                    android:textSize="12dp"
+                                    android:padding="6dp"
+                                    android:text="국수먹기"
+                                    android:layout_marginBottom="2dp"/>
+                            </LinearLayout>
 
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="66dp">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="130dp"
+                                    android:background="@drawable/timetable_schedule"
+                                    android:textSize="12dp"
+                                    android:padding="6dp"
+                                    android:layout_weight="1"
+                                    android:text="짜장먹기"/>
+                            </LinearLayout>
 
                         </LinearLayout>
 
@@ -338,15 +385,21 @@
                                 android:layout_marginTop="66dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="33dp"
-                                android:background="@color/teal_200"
-                                android:text="밥먹기"/>
+                                android:background="@drawable/timetable_schedule"
+                                android:textSize="12dp"
+                                android:padding="6dp"
+                                android:text="밥먹기"
+                                android:layout_marginRight="5dp"/>
 
                             <TextView
                                 android:layout_marginTop="33dp"
                                 android:layout_width="match_parent"
-                                android:layout_height="66dp"
-                                android:background="@color/teal_200"
-                                android:text="운동하기"/>
+                                android:layout_height="64dp"
+                                android:background="@drawable/timetable_schedule"
+                                android:textSize="12dp"
+                                android:padding="6dp"
+                                android:text="운동하기"
+                                android:layout_marginRight="5dp"/>
                         </LinearLayout>
 
                         <LinearLayout
