@@ -496,36 +496,31 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
-                binding.btnEndDatePick.text = dateFormat.format(it)
+                binding.btnEndDatePick.text = FormatDate.simpleDateToStr(it)
             }
         })
 //
         todoAddViewModel.alarmTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
-                binding.btnAlarmTimePick.text = timeFormat.format(it)
+                binding.btnAlarmTimePick.text = FormatDate.simpleTimeToStr(it)
             }
         })
 //
         todoAddViewModel.endTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
-                binding.btnEndTimePick.text = timeFormat.format(it)
+                binding.btnEndTimePick.text = FormatDate.simpleTimeToStr(it)
             }
         })
 //
         todoAddViewModel.alarmDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
-                binding.btnAlarmDatePick.text = dateFormat.format(it)
+                binding.btnAlarmDatePick.text = FormatDate.simpleDateToStr(it)
             }
         })
 //
         todoAddViewModel.repeatEndDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it != null) {
-                val timeFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
-                binding.btnRepeatEndDate.text = timeFormat.format(it)
+                binding.btnRepeatEndDate.text = FormatDate.simpleDateToStr(it)
             }
         })
 //

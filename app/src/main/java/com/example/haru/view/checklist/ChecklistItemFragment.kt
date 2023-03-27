@@ -227,6 +227,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
         }
 
         if (binding.todoItem!!.repeatEnd != null){
+            binding.infoRepeatEndDateLayout.visibility = View.VISIBLE
             binding.infoRepeatEndDateSwitch.isChecked = true
             binding.tvInfoRepeatEnd.setTextColor(ContextCompat.getColor(requireContext(), R.color.todo_description))
             binding.btnInfoRepeatEndDate.apply {

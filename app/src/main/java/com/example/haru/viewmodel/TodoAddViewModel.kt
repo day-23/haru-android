@@ -1,5 +1,6 @@
 package com.example.haru.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -119,9 +120,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun setDate(id: Int, date: Date) {
-        if (id == 0) _endDate.value = date
-        else if (id == 1) _alarmDate.value = date
-        else _repeatEndDate.value = date
+        when (id) {
+            0 -> _endDate.value = date
+            1 -> _alarmDate.value = date
+            else -> _repeatEndDate.value = date
+        }
     }
 
     fun setEndTimeHeight(h: Int) {
