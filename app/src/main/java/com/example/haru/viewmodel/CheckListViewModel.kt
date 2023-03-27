@@ -116,4 +116,4 @@ class CheckListViewModel() :
         _untaggedTodos.value = emptyList()
         _completedTodos.value = emptyList()
     }
-}
+    }

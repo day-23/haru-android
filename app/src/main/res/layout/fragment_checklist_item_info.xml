@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="android.view.View"/>
+        <variable
+            name="vm"
+            type="com.example.haru.viewmodel.TodoAddViewModel" />
         <variable
             name="todoItem"
             type="com.example.haru.data.model.Todo" />
@@ -41,7 +44,6 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="14dp"
-                android:checked="@{todoItem.completed}"
                 android:background="@drawable/checklist_done_circle"
                 android:button="@android:color/transparent" />
 
@@ -52,7 +54,6 @@
                 android:layout_marginEnd="24dp"
                 android:layout_weight="1"
                 android:textColor="@color/todo_description"
-                android:text="@{todoItem.content}"
                 android:textSize="24sp" />
 
             <CheckBox
@@ -62,7 +63,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="20dp"
-                android:checked="@{todoItem.flag}"
                 android:background="@drawable/checklist_flag_star"
                 android:button="@android:color/transparent" />
 
@@ -122,6 +122,7 @@
                 android:background="@android:color/transparent"
                 android:inputType="text"
                 android:singleLine="true"
+                android:hint="@string/tag"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -138,7 +139,7 @@
                 android:id="@+id/iv_info_today_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@{todoItem.todayTodo ? @color/highlight : @color/light_gray}"
+                android:backgroundTint="@color/light_gray"
                 android:background="@drawable/big_today_icon" />
 
             <TextView
@@ -148,7 +149,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="@string/today_todo_before_add"
-                android:textColor="@{todoItem.todayTodo ? @color/highlight : @color/light_gray}"
+                android:textColor="@color/light_gray"
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.SwitchCompat
@@ -157,7 +158,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="28dp"
-                android:checked="@{todoItem.todayTodo}"
                 android:thumb="@drawable/custom_switch_thumb"
                 app:track="@drawable/custom_switch" />
 
@@ -184,6 +184,7 @@
                     android:id="@+id/iv_info_calendar_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/light_gray"
                     android:background="@drawable/big_calendar_icon" />
 
                 <TextView
@@ -223,6 +224,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
+                android:visibility="gone"
                 android:paddingTop="12dp">
 
                 <TextView
@@ -271,13 +273,14 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/iv_alarm_icon"
+                android:id="@+id/iv_info_alarm_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_gray"
                 android:background="@drawable/big_alarm_icon" />
 
             <TextView
-                android:id="@+id/tv_alarm_set"
+                android:id="@+id/tv_info_alarm_set"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -287,7 +290,7 @@
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_alarmDate_pick"
+                android:id="@+id/btn_info_alarmDate_pick"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -299,7 +302,7 @@
                 app:backgroundTint="@null" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_alarmTime_pick"
+                android:id="@+id/btn_info_alarmTime_pick"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -311,7 +314,7 @@
                 app:backgroundTint="@null" />
 
             <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/alarm_switch"
+                android:id="@+id/info_alarm_switch"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -323,7 +326,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/repeatSetLayout"
+            android:id="@+id/info_repeatSetLayout"
             style="@style/linearBorderLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -338,13 +341,14 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/iv_repeat_icon"
+                    android:id="@+id/iv_info_repeat_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/light_gray"
                     android:background="@drawable/big_repeat_icon" />
 
                 <TextView
-                    android:id="@+id/tv_repeat_set"
+                    android:id="@+id/tv_info_repeat_set"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -354,7 +358,7 @@
                     android:textSize="14sp" />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/repeat_switch"
+                    android:id="@+id/info_repeat_switch"
                     style="@style/minSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -364,14 +368,15 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/repeatOptionLayout"
+                android:id="@+id/info_repeatOptionLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
+                android:visibility="gone"
                 android:paddingTop="8dp">
 
                 <LinearLayout
-                    android:id="@+id/repeatOptionSelect"
+                    android:id="@+id/info_repeatOptionSelect"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="35dp"
@@ -381,7 +386,7 @@
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_everyDay"
+                        android:id="@+id/btn_info_everyDay"
                         style="@style/minSize"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -394,7 +399,7 @@
                         android:textSize="14sp" />
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_everyWeek"
+                        android:id="@+id/btn_info_everyWeek"
                         style="@style/minSize"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -407,7 +412,7 @@
                         android:textSize="14sp" />
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_every2Week"
+                        android:id="@+id/btn_info_every2Week"
                         style="@style/minSize"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -420,7 +425,7 @@
                         android:textSize="14sp" />
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_everyMonth"
+                        android:id="@+id/btn_info_everyMonth"
                         style="@style/minSize"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -433,7 +438,7 @@
                         android:textSize="14sp" />
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_everyYear"
+                        android:id="@+id/btn_info_everyYear"
                         style="@style/minSize"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -451,17 +456,18 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/everyWeekSelectLayout"
+                android:id="@+id/info_everyWeekSelectLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="35dp"
                 android:layout_marginEnd="55dp"
                 android:animateLayoutChanges="true"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:paddingTop="8dp">
 
                 <TextView
-                    android:id="@+id/tv_monday"
+                    android:id="@+id/tv_info_monday"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -470,7 +476,7 @@
                     android:textColor="@color/date_text" />
 
                 <TextView
-                    android:id="@+id/tv_tuesday"
+                    android:id="@+id/tv_info_tuesday"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -479,7 +485,7 @@
                     android:textColor="@color/date_text" />
 
                 <TextView
-                    android:id="@+id/tv_wednesday"
+                    android:id="@+id/tv_info_wednesday"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -488,7 +494,7 @@
                     android:textColor="@color/date_text" />
 
                 <TextView
-                    android:id="@+id/tv_thursday"
+                    android:id="@+id/tv_info_thursday"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -497,7 +503,7 @@
                     android:textColor="@color/date_text" />
 
                 <TextView
-                    android:id="@+id/tv_friday"
+                    android:id="@+id/tv_info_friday"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -506,7 +512,7 @@
                     android:textColor="@color/date_text" />
 
                 <TextView
-                    android:id="@+id/tv_saturday"
+                    android:id="@+id/tv_info_saturday"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -515,7 +521,7 @@
                     android:textColor="@color/date_text" />
 
                 <TextView
-                    android:id="@+id/tv_sunday"
+                    android:id="@+id/tv_info_sunday"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -526,7 +532,7 @@
             </LinearLayout>
 
             <GridLayout
-                android:id="@+id/gridMonth"
+                android:id="@+id/info_gridMonth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="35dp"
@@ -536,10 +542,11 @@
                 android:orientation="horizontal"
                 android:paddingTop="8dp"
                 android:rowCount="5"
-                android:useDefaultMargins="true"/>
+                android:useDefaultMargins="true"
+                android:visibility="gone"/>
 
             <GridLayout
-                android:id="@+id/gridYear"
+                android:id="@+id/info_gridYear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="35dp"
@@ -549,17 +556,19 @@
                 android:orientation="horizontal"
                 android:paddingTop="8dp"
                 android:rowCount="2"
-                android:useDefaultMargins="true"/>
+                android:useDefaultMargins="true"
+                android:visibility="gone"/>
 
             <LinearLayout
-                android:id="@+id/repeatEndDateLayout"
+                android:id="@+id/info_repeatEndDateLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
+                android:visibility="gone"
                 android:paddingTop="14dp">
 
                 <TextView
-                    android:id="@+id/tv_repeat_end"
+                    android:id="@+id/tv_info_repeat_end"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="38dp"
@@ -569,7 +578,7 @@
                     android:textSize="14sp" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_repeat_end_date"
+                    android:id="@+id/btn_info_repeat_end_date"
                     style="@style/minSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -582,7 +591,7 @@
                     app:backgroundTint="@null" />
 
                 <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/repeatEndDate_switch"
+                    android:id="@+id/info_repeatEndDate_switch"
                     style="@style/minSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -603,13 +612,14 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/iv_memo_icon"
+                android:id="@+id/iv_info_memo_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/light_gray"
                 android:background="@drawable/big_memo_icon" />
 
             <EditText
-                android:id="@+id/et_memo"
+                android:id="@+id/et_info_memo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -620,6 +630,7 @@
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical"
                 android:textColorHint="@color/light_gray"
+                android:textColor="@color/todo_description"
                 android:textSize="14sp" />
 
 

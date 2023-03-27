@@ -15,6 +15,7 @@ import com.example.haru.databinding.ChecklistHeaderType1Binding
 import com.example.haru.databinding.ChecklistHeaderType2Binding
 import com.example.haru.databinding.FragmentChecklistDividerBinding
 import com.example.haru.databinding.FragmentChecklistItemBinding
+import com.example.haru.utils.FormatDate
 
 
 class TodoAdapter(val context: Context) :
@@ -140,7 +141,7 @@ class TodoAdapter(val context: Context) :
 
             if (item.endDate != null) {
                 binding.tvEndDateDescription.text =
-                    item.endDate.substring(5, 7) + "." + item.endDate.substring(8, 10) + "까지"
+                    FormatDate.todoDateToStr(item.endDate).substring(5, 10) + "까지"
                 binding.tvEndDateDescription.visibility = View.VISIBLE
             } else binding.tvEndDateDescription.visibility = View.GONE
         }
