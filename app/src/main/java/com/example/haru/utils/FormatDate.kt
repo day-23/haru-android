@@ -1,12 +1,14 @@
 package com.example.haru.utils
 
 import android.util.Log
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.reflect.typeOf
 
 object FormatDate {
     // 그리니치 시간과 Local시간의 차이
@@ -52,9 +54,13 @@ object FormatDate {
         return time.format(localTimeFormatter)
     }
 
+    fun dateToGMT(str: String) : String{
+        val time = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(-diff)
+        return time.toString()
+    }
+
     // Date를 서버로 보낼 형식으로 변환하여 String으로 반환
     fun dateToStr(date: Date): String {
-        Log.d("20191627", dateFormatterToServer.format(date))
         return dateFormatterToServer.format(date)
     }
 
@@ -64,5 +70,11 @@ object FormatDate {
 
     fun simpleTimeToStr(date: Date): String {
         return simpleFormatterTime.format(date)
+    }
+
+    fun strToDate(str: String) : Date{
+        val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
+        val instant = date.atZone(ZoneId.systemDefault()).toInstant()
+        return Date.from(instant)
     }
 }

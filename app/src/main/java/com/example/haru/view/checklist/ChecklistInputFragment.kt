@@ -251,8 +251,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         val date = Date()
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.VISIBLE
-                        binding.btnEndDatePick.text = FormatDate.simpleTimeToStr(Date())
-                        todoAddViewModel.setDate(0, date)
 
                         val valueAnimator = ValueAnimator.ofInt(
                             binding.endDateSetLayout.height,
@@ -293,23 +291,23 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 }
             })
 
-        todoAddViewModel.isSelectedEndDateTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                true -> {
-                    val time = Date()
-                    binding.endDateTimeSwitch.isChecked = it
-                    binding.btnEndTimePick.visibility = View.VISIBLE
-                    binding.btnEndTimePick.text = FormatDate.simpleTimeToStr(time)
-                    todoAddViewModel.setTime(0, time)
-                    binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.todo_description))
+        todoAddViewModel.isSelectedEndDateTime.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                when (it) {
+                    true -> {
+                        val time = Date()
+                        binding.endDateTimeSwitch.isChecked = it
+                        binding.btnEndTimePick.visibility = View.VISIBLE
+                        binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.todo_description))
+                    }
+                    else -> {
+                        binding.endDateTimeSwitch.isChecked = it
+                        binding.btnEndTimePick.visibility = View.INVISIBLE
+                        binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.light_gray))
+                    }
                 }
-                else -> {
-                    binding.endDateTimeSwitch.isChecked = it
-                    binding.btnEndTimePick.visibility = View.INVISIBLE
-                    binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.light_gray))
-                }
-            }
-        })
+            })
 
         todoAddViewModel.alarmSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
@@ -346,7 +344,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     binding.ivRepeatIcon.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.todo_description))
                     binding.tvRepeatSet.setTextColor(resources.getColor(R.color.todo_description))
-                    todoAddViewModel.setRepeatSetLayouH(binding.repeatSetLayout.height)
+                    todoAddViewModel.setRepeatSetLayoutH(binding.repeatSetLayout.height)
 
                     val valueAnimator = ValueAnimator.ofInt(
                         binding.repeatSetLayout.height,
@@ -495,27 +493,19 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         })
 
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it != null) {
-                binding.btnEndDatePick.text = FormatDate.simpleDateToStr(it)
-            }
+            binding.btnEndDatePick.text = FormatDate.simpleDateToStr(it)
         })
 //
         todoAddViewModel.alarmTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it != null) {
                 binding.btnAlarmTimePick.text = FormatDate.simpleTimeToStr(it)
-            }
         })
 //
         todoAddViewModel.endTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it != null) {
-                binding.btnEndTimePick.text = FormatDate.simpleTimeToStr(it)
-            }
+            binding.btnEndTimePick.text = FormatDate.simpleTimeToStr(it)
         })
 //
         todoAddViewModel.alarmDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it != null) {
                 binding.btnAlarmDatePick.text = FormatDate.simpleDateToStr(it)
-            }
         })
 //
         todoAddViewModel.repeatEndDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -612,20 +602,18 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
                     val timePickerDialog = TimePickerDialog(
                         requireContext(),
-                        MyTimeSetListener(object : TimePickerDialog.OnTimeSetListener {
-                            override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-                                val time = calendar.apply {
-                                    set(Calendar.HOUR_OF_DAY, hourOfDay)
-                                    set(Calendar.MINUTE, minute)
-                                }.time
-                                Log.d("20191627", time.toString())
-                                if (v.id == R.id.btn_endTime_pick)
-                                    todoAddViewModel.setTime(0, time)
-                                else todoAddViewModel.setTime(1, time)
+                        MyTimeSetListener { view, hourOfDay, minute ->
+                            val time = calendar.apply {
+                                set(Calendar.HOUR_OF_DAY, hourOfDay)
+                                set(Calendar.MINUTE, minute)
+                            }.time
+                            Log.d("20191627", time.toString())
+                            if (v.id == R.id.btn_endTime_pick)
+                                todoAddViewModel.setTime(0, time)
+                            else todoAddViewModel.setTime(1, time)
 
-                                // timepicker 리스너 만들기 버튼을 없애고 시간을 선택하면 바로 적용되게끔
-                            }
-                        }),
+                            // timepicker 리스너 만들기 버튼을 없애고 시간을 선택하면 바로 적용되게끔
+                        },
                         hour,
                         minute,
                         false
@@ -718,10 +706,17 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         }
     }
 
-    fun changeDayTextColor(position : Int) {
-        if ((binding.everyWeekSelectLayout.getChildAt(position) as TextView).textColors == ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.date_text)))
-            (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
-        else (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.date_text))
+    fun changeDayTextColor(position: Int) {
+        if ((binding.everyWeekSelectLayout.getChildAt(position) as TextView).textColors == ColorStateList.valueOf(
+                ContextCompat.getColor(requireContext(), R.color.date_text)
+            )
+        )
+            (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.highlight)
+            )
+        else (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.date_text)
+        )
     }
 
 

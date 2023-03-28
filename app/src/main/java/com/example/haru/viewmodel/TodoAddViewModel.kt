@@ -4,8 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.bumptech.glide.Glide.init
+import com.example.haru.data.model.Alarm
+import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoRequest
 import com.example.haru.utils.FormatDate
+import java.text.FieldPosition
 import java.util.*
 
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
@@ -16,6 +20,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _flagTodo = MutableLiveData<Boolean>(false)
     val flagTodo: LiveData<Boolean> = _flagTodo
 
+    private val _completedTodo = MutableLiveData<Boolean>(false)
+    val completedTodo : LiveData<Boolean> = _completedTodo
+
     private val _todayTodo = MutableLiveData<Boolean>(false)
     val todayTodo: LiveData<Boolean> = _todayTodo
 
@@ -25,11 +32,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _endDateSwitch = MutableLiveData<Boolean>()
     val endDateSwitch: LiveData<Boolean> = _endDateSwitch
 
-    private val _endDate = MutableLiveData<Date?>()
-    val endDate: LiveData<Date?> = _endDate
+    private val _endDate = MutableLiveData<Date>(Date())
+    val endDate: LiveData<Date> = _endDate
 
-    private val _endTime = MutableLiveData<Date?>()
-    val endTime: LiveData<Date?> = _endTime
+    private val _endTime = MutableLiveData<Date>(Date())
+    val endTime: LiveData<Date> = _endTime
 
     private val _alarmSwitch = MutableLiveData<Boolean>(false)
     val alarmSwitch: LiveData<Boolean> = _alarmSwitch
@@ -43,11 +50,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _repeatOption = MutableLiveData<Int?>()
     val repeatOption: LiveData<Int?> = _repeatOption
 
-    private val _alarmDate = MutableLiveData<Date?>()
-    val alarmDate: LiveData<Date?> = _alarmDate
+    private val _alarmDate = MutableLiveData<Date>(Date())
+    val alarmDate: LiveData<Date> = _alarmDate
 
-    private val _alarmTime = MutableLiveData<Date?>()
-    val alarmTime: LiveData<Date?> = _alarmTime
+    private val _alarmTime = MutableLiveData<Date>(Date())
+    val alarmTime: LiveData<Date> = _alarmTime
 
     private val _repeatEndDate = MutableLiveData<Date?>()
     val repeatEndDate: LiveData<Date?> = _repeatEndDate
@@ -73,10 +80,48 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var gridMonthHeight: Int = 0
     var gridYearHeight: Int = 0
 
+    lateinit var clickedTodo: Todo
+
     init {
         this.checklistViewModel = checkListViewModel
     }
 
+    fun setClickTodo(position: Int) {
+        clickedTodo = checklistViewModel.todoDataList.value!![position]
+        _completedTodo.value = clickedTodo.completed
+        _flagTodo.value = clickedTodo.flag
+        _todayTodo.value = clickedTodo.todayTodo
+        _isSelectedEndDateTime.value = clickedTodo.isSelectedEndDateTime
+        if (clickedTodo.endDate != null){
+            _endDate.value = FormatDate.strToDate(clickedTodo.endDate!!)
+            _endDateSwitch.value = true
+        }
+        if (isSelectedEndDateTime.value!!)
+            _endTime.value = FormatDate.strToDate(clickedTodo.endDate!!)
+
+        //alarm
+        if (clickedTodo.alarms != emptyList<Alarm>()) {
+            _alarmSwitch.value = true
+            _alarmDate.value = FormatDate.strToDate(clickedTodo.alarms[0].time)
+            _alarmTime.value = FormatDate.strToDate(clickedTodo.alarms[0].time)
+        }
+
+        //repeat
+        if (clickedTodo.repeatOption in repeatOptionList) {
+            _repeatSwitch.value = true
+            _repeatOption.value = repeatOptionList.indexOf(clickedTodo.repeatOption)
+            repeatValue = clickedTodo.repeatValue
+        }
+
+        if (clickedTodo.repeatEnd != null) {
+            _repeatEndDateSwitch.value = true
+            _repeatEndDate.value = FormatDate.strToDate(clickedTodo.repeatEnd!!)
+        }
+    }
+
+    fun setCompleteTodo(){
+        _completedTodo.value = (_completedTodo.value == false)
+    }
 
     fun setFlagTodo() {
         _flagTodo.value = (_flagTodo.value == false)
@@ -131,7 +176,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         endTimeLayoutHeight = h
     }
 
-    fun setRepeatSetLayouH(h: Int) {
+    fun setRepeatSetLayoutH(h: Int) {
         repeatSetLayoutHeight = h
     }
 
@@ -172,6 +217,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             null
         }
 
+        Log.d("20191627", endDateStr!!)
+
 
         alarmDateTimeStr =
             if (alarmSwitch.value == true && alarmDate.value != null && alarmTime.value != null)
@@ -191,7 +238,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         repeatValue = value
     }
 
-    //
     private fun createTodoData(): TodoRequest {
         return TodoRequest(
             content = content,
@@ -213,8 +259,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         checklistViewModel.addTodo(createTodoData()) {
             callback()
         }
-
     }
-
 
 }

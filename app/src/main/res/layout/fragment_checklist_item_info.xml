@@ -25,6 +25,7 @@
             android:paddingStart="20dp">
 
             <ImageView
+                android:id="@+id/iv_back_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/arrow"
@@ -53,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
                 android:layout_weight="1"
+                android:text="@{todoItem.content}"
                 android:textColor="@color/todo_description"
                 android:textSize="24sp" />
 
