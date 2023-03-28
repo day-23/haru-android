@@ -84,21 +84,35 @@ class TodotableFragment : Fragment() {
             sat_todorecyclerView.adapter = sat_todotableAdapter
         }
 
+        val dragListener = Todo_draglistener()
         //리사이클러뷰 요일별 바인딩
         sun_todorecyclerView = binding.sunTodosRecycler
         sun_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        sun_todorecyclerView.setOnDragListener(dragListener)
+
         mon_todorecyclerView = binding.monTodosRecycler
         mon_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mon_todorecyclerView.setOnDragListener(dragListener)
+
         tue_todorecyclerView = binding.tueTodosRecycler
         tue_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        tue_todorecyclerView.setOnDragListener(dragListener)
+
         wed_todorecyclerView = binding.wedTodosRecycler
         wed_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        wed_todorecyclerView.setOnDragListener(dragListener)
+
         thu_todorecyclerView = binding.thuTodosRecycler
         thu_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        thu_todorecyclerView.setOnDragListener(dragListener)
+
         fri_todorecyclerView = binding.friTodosRecycler
         fri_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        fri_todorecyclerView.setOnDragListener(dragListener)
+
         sat_todorecyclerView = binding.satTodosRecycler
         sat_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        sat_todorecyclerView.setOnDragListener(dragListener)
 
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             val year = times.year.slice(0..times.year.length - 2)
