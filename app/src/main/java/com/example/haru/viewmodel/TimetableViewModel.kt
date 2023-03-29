@@ -9,16 +9,18 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide.init
-import com.example.haru.data.model.Timetable_date
-import com.example.haru.data.model.User
-import com.example.haru.data.model.timetable_data
+import com.example.haru.data.model.*
+import com.example.haru.data.repository.TodoRepository
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class TimetableViewModel(val context : Context): ViewModel() {
+    private val scheduleRepository = TodoRepository()
 
     private val _Dates = MutableLiveData<ArrayList<String>>()
     val Dates : LiveData<ArrayList<String>>
@@ -148,6 +150,39 @@ class TimetableViewModel(val context : Context): ViewModel() {
             d += 1
         }
     }
-    //날짜정보//
+
+    fun getSchedule(date : ArrayList<String>){
+        viewModelScope.launch {
+            var IndexList: ArrayList<ArrayList<Todo>> = arrayListOf( arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()),)
+            var IndexList_allday: ArrayList<ArrayList<Todo>> = arrayListOf( arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()),)
+
+            scheduleRepository.getSchedule(date[0], date[6]) {
+                val TodoList = it
+
+                //내용 추출
+                for(data in TodoList){
+                    val year = data.endDate?.slice(IntRange(0,3))
+                    val month = data.endDate?.slice(IntRange(5,6))
+                    val day = data.endDate?.slice(IntRange(8,9))
+                    val result = year+month+day
+
+                    if(data.endDate != null){ //날짜 정보가 있는 경우만 담음
+                        when(result){
+                            date[0] -> IndexList[0].add(data)
+                            date[1] -> IndexList[1].add(data)
+                            date[2] -> IndexList[2].add(data)
+                            date[3] -> IndexList[3].add(data)
+                            date[4] -> IndexList[4].add(data)
+                            date[5] -> IndexList[5].add(data)
+                            date[6] -> IndexList[6].add(data)
+                        }
+                    }
+                }
+                for(i : Int in 0 .. 6) {
+                    IndexList[i].removeAt(0)
+                }
+            }
+        }
+    }
 
 }
