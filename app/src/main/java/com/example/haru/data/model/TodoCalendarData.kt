@@ -1,8 +1,6 @@
 package com.example.haru.data.model
 
-import java.util.Date
-
-data class ContentMark(
+data class TodoCalendarData(
     val todo: Todo,
     val position: Int,
     var cnt: Int

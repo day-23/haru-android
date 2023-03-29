@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.databinding.FragmentCalendarBinding
 import com.example.haru.view.adapter.AdapterMonth
+import java.util.*
 
 class CalendarFragment : Fragment() {
     private lateinit var binding: FragmentCalendarBinding
@@ -50,9 +52,25 @@ class CalendarFragment : Fragment() {
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
 
-        adapterMonth = AdapterMonth(viewLifecycleOwner)
+        adapterMonth = AdapterMonth(viewLifecycleOwner, view)
         month_viewpager.adapter = adapterMonth
 
         month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
+
+        val callback: ViewPager2.OnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(pos: Int) {
+                super.onPageSelected(pos)
+
+                val item_month_btn = view.findViewById<Button>(R.id.item_month_btn)
+
+                val calendar = Calendar.getInstance()
+                calendar.time = Date()
+                calendar.add(Calendar.MONTH, pos - Int.MAX_VALUE / 2)
+
+                item_month_btn.text = "${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월"
+            }
+        }
+
+        month_viewpager.registerOnPageChangeCallback(callback)
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.*
+import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -14,12 +15,16 @@ import kotlin.collections.ArrayList
 
 class CalendarViewModel : ViewModel() {
     private val todoRepository = TodoRepository()
+    private val scheduleRepository = ScheduleRepository()
 
     val _liveDateList = MutableLiveData<List<CalendarDate>>()
     val liveDateList: MutableLiveData<List<CalendarDate>> get() = _liveDateList
 
-    val _liveContentList = MutableLiveData<List<ContentMark>>()
-    val liveContentList: MutableLiveData<List<ContentMark>> get() = _liveContentList
+    val _liveTodoCalendarList = MutableLiveData<List<TodoCalendarData>>()
+    val liveTodoCalendarList: MutableLiveData<List<TodoCalendarData>> get() = _liveTodoCalendarList
+
+    val _liveScheduleCalendarList = MutableLiveData<List<ScheduleCalendarData>>()
+    val liveScheduleCalendarList: MutableLiveData<List<ScheduleCalendarData>> get() = _liveScheduleCalendarList
 
     fun init_viewModel(year:Int, month:Int){
         var startDate = ""
@@ -86,19 +91,20 @@ class CalendarViewModel : ViewModel() {
         _liveDateList.postValue(dateList)
 
         getTodo(startDate, endDate, maxi)
+        getSchedule(startDate, endDate, maxi)
     }
 
     fun getTodo(startDate:String, endDate:String, maxi:Int){
         viewModelScope.launch {
             todoRepository.getTodoDates(startDate,endDate){
 
-                var contentList = ArrayList<CalendarContent>()
+                var contentList = ArrayList<CalendarTodo>()
 
                 val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
                 val dateformat = SimpleDateFormat("yyyyMMdd", Locale.KOREAN)
 
                 for (i in 0 until (maxi+1)*7){
-                    contentList.add(CalendarContent(ArrayList()))
+                    contentList.add(CalendarTodo(ArrayList()))
                 }
 
                 for(todo in it){
@@ -258,12 +264,12 @@ class CalendarViewModel : ViewModel() {
                     }
                 }
 
-                var newcontentList = ArrayList<ContentMark>()
+                var newcontentList = ArrayList<TodoCalendarData>()
 
                 for (i in 0 until contentList.size - 1) {
                     for (j in 0 until contentList[i].todos.size) {
                         newcontentList.add(
-                            ContentMark(
+                            TodoCalendarData(
                                 contentList[i].todos[j],
                                 i,
                                 1
@@ -281,8 +287,209 @@ class CalendarViewModel : ViewModel() {
                     }
                 }
 
-                Log.d("newcontentList", newcontentList.toString())
-                _liveContentList.postValue(newcontentList)
+                _liveTodoCalendarList.postValue(newcontentList)
+            }
+        }
+    }
+
+    fun getSchedule(startDate:String, endDate:String, maxi:Int){
+        viewModelScope.launch {
+            scheduleRepository.getScheduleByDates(startDate,endDate){
+
+                var contentList = ArrayList<CalendarSchedule>()
+
+                val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+                val dateformat = SimpleDateFormat("yyyyMMdd", Locale.KOREAN)
+
+                for (i in 0 until (maxi+1)*7){
+                    contentList.add(CalendarSchedule(ArrayList()))
+                }
+
+                for(schedule in it){
+                    val repeatDate = Array((maxi+1)*7){false}
+
+                    var repeatStart:Date? = null
+                    var repeateEnd:Date? = null
+
+                    val repeatOption = schedule.repeatOption
+                    var repeatValue = ""
+
+                    if(schedule.repeatEnd != null) {
+                        repeateEnd = serverformat.parse(schedule.repeatEnd)
+                    }
+
+                    if(schedule.repeatStart != null){
+                        repeatStart = serverformat.parse(schedule.repeatStart)
+                    }
+
+                    if(repeatOption != null){
+                        repeatValue = schedule.repeatValue!!
+
+                        val calendar = Calendar.getInstance()
+
+                        when(repeatOption){
+                            "매일" -> {
+                                var dailycnt = 0
+                                var cnt = 0
+
+                                calendar.time = dateformat.parse(startDate)
+
+
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                    if(calendar.time.compareTo(repeatStart) >= 0) {
+                                        if (dailycnt == 0) {
+                                            repeatDate[cnt] = true
+                                        }
+
+                                        dailycnt++
+
+                                        if (dailycnt.toString() == repeatValue) {
+                                            dailycnt = 0
+                                        }
+                                    }
+
+                                    cnt++
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+
+                            "매주" -> {
+                                var weeklycnt = 0
+                                var cnt = 0
+
+                                calendar.time = dateformat.parse(startDate)
+
+
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                    if(calendar.time.compareTo(repeatStart) >= 0) {
+                                        if (repeatValue[weeklycnt] == '1') {
+                                            repeatDate[cnt] = true
+                                        }
+                                    }
+
+                                    weeklycnt++
+                                    cnt++
+
+                                    if(weeklycnt == 7) weeklycnt = 0
+
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+
+                            "2주마다" -> {
+                                var weeklycnt = 0
+                                var cnt = 0
+                                var twoweek = true
+
+                                calendar.time = dateformat.parse(startDate)
+
+
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                    if(calendar.time.compareTo(repeatStart) >= 0) {
+                                        if (repeatValue[weeklycnt] == '1' && twoweek) {
+                                            repeatDate[cnt] = true
+                                        }
+                                    }
+
+                                    cnt++
+                                    weeklycnt++
+
+                                    if(weeklycnt == 7) {
+                                        weeklycnt = 0
+                                        twoweek = !twoweek
+                                    }
+
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+
+                            "매달" -> {
+                                var cnt = 0
+
+                                calendar.time = dateformat.parse(startDate)
+
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                    if(calendar.time.compareTo(repeatStart) >= 0) {
+                                        if (repeatValue[calendar.time.date-1] == '1') {
+                                            repeatDate[cnt] = true
+                                        }
+                                    }
+
+                                    cnt++
+
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+
+                            "매년" -> {
+                                var cnt = 0
+
+                                val tempStartDate = dateformat.parse(startDate)
+
+                                calendar.time = tempStartDate
+
+                                while ((repeateEnd == null ||calendar.time.compareTo(repeateEnd) <= 0) && calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                                    if(calendar.time.compareTo(repeatStart) >= 0) {
+                                        if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
+                                            if(calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day) repeatDate[cnt] = true
+                                        }
+                                    }
+
+                                    cnt++
+
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+                        }
+                    } else {
+                        val calendar = Calendar.getInstance()
+
+                        var cnt = 0
+                        val tempStartDate = dateformat.parse(startDate)
+                        calendar.time = tempStartDate
+
+                        while (calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
+                            if(calendar.time.compareTo(repeatStart) >= 0 && calendar.time.compareTo(repeateEnd) <= 0){
+                                repeatDate[cnt] = true
+                            }
+
+                            cnt++
+
+                            calendar.add(Calendar.DAY_OF_MONTH, 1)
+                        }
+                    }
+
+                    for(i in 0 until repeatDate.size){
+                        if(repeatDate[i]){
+                            contentList[i].todos.add(schedule)
+                        }
+                    }
+                }
+
+                var newcontentList = ArrayList<ScheduleCalendarData>()
+
+                for (i in 0 until contentList.size - 1) {
+                    for (j in 0 until contentList[i].todos.size) {
+                        newcontentList.add(
+                            ScheduleCalendarData(
+                                contentList[i].todos[j],
+                                i,
+                                1
+                            )
+                        )
+
+                        for (k in i + 1 until contentList.size) {
+                            if (contentList[k].todos.contains(contentList[i].todos[j])) {
+                                newcontentList[newcontentList.lastIndex].cnt++
+
+                                val position = contentList[k].todos.indexOf(contentList[i].todos[j])
+                                contentList[k].todos.removeAt(position)
+                            } else break
+                        }
+                    }
+                }
+
+                _liveScheduleCalendarList.postValue(newcontentList)
             }
         }
     }

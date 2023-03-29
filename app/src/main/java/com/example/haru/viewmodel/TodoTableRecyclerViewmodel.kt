@@ -5,10 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.haru.data.model.CalendarContent
 import com.example.haru.data.model.Todo
-import com.example.haru.data.model.Todotable_date
-import com.example.haru.data.model.timetable_data
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
