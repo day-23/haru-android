@@ -151,6 +151,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
         }
     }
 
+    //스케줄 쿼리문 전송
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
             val emptyschedule = Schedule("", "", "", false, false, "", "", "", emptyList(), emptyList(), null, null,)

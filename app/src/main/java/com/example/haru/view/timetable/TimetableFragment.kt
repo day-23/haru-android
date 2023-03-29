@@ -6,28 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
-import java.lang.Math.abs
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.text.Typography.times
 
 
 class TimetableFragment : Fragment() {
@@ -77,7 +64,12 @@ class TimetableFragment : Fragment() {
         }
 
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
-            binding.timetableScroll.scrollTo(0,66*31+30)
+            val child = recyclerView1.getChildAt(8)
+            val originalPos = IntArray(2)
+            if (child != null) {
+                child.getLocationInWindow(originalPos)
+            }
+            binding.timetableScroll.smoothScrollBy(0, originalPos[1], 1000)
             binding.invalidateAll()
         }
 
