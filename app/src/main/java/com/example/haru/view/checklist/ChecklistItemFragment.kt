@@ -122,7 +122,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
         super.onViewCreated(view, savedInstanceState)
 
         todoAddViewModel.setClickTodo(this.position)
-        binding.todoItem = todoAddViewModel.clickedTodo
+        binding.vm = todoAddViewModel
         // flag 관련 UI Update
         todoAddViewModel.flagTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.cbInfoFlag.isChecked = it
@@ -328,6 +328,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
         binding.tvInfoSunday.setOnClickListener(BtnClickListener())
 
         binding.ivBackIcon.setOnClickListener(BtnClickListener())
+        binding.btnInfoSave.setOnClickListener(BtnClickListener())
     }
 
     inner class BtnClickListener : View.OnClickListener {
@@ -425,6 +426,12 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
+                binding.btnInfoSave.id -> {
+                    todoAddViewModel.readyToSubmit()
+                    todoAddViewModel.updateTodo{
+                        requireActivity().supportFragmentManager.popBackStack()
+                    }
+                }
                 binding.ivBackIcon.id -> requireActivity().supportFragmentManager.popBackStack()
             }
         }

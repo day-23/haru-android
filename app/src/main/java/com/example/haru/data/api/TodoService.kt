@@ -2,11 +2,7 @@ package com.example.haru.data.api
 
 import com.example.haru.data.model.*
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface TodoService {
     @GET("schedule/{userId}/schedules")
@@ -32,4 +28,7 @@ interface TodoService {
 
     @GET("todo/{userId}/todos/main/untag")
     fun getTodoByUntag(@Path("userId") userId: String) : Call<GetTodoBy>
+
+    @PUT("todo/{userId}/{todoId}")
+    fun putTodo(@Path("userId") userId: String, @Path("todoId") todoId : String, @Body todo : UpdateTodo) : Call<UpdateTodoResponse>
 }

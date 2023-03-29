@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.Alarm
 import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoRequest
+import com.example.haru.data.model.UpdateTodo
 import com.example.haru.utils.FormatDate
 import java.text.FieldPosition
 import java.util.*
@@ -95,7 +96,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _completedTodo.value = clickedTodo.completed
         _flagTodo.value = clickedTodo.flag
         _todayTodo.value = clickedTodo.todayTodo
-        _isSelectedEndDateTime.value = clickedTodo.isSelectedEndDateTime
+        _isSelectedEndDateTime.value = clickedTodo.isAllDay
         if (clickedTodo.endDate != null) {
             _endDate.value = FormatDate.strToDate(clickedTodo.endDate!!)
             _endDateSwitch.value = true
@@ -120,6 +121,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         if (clickedTodo.repeatEnd != null) {
             _repeatEndDateSwitch.value = true
             _repeatEndDate.value = FormatDate.strToDate(clickedTodo.repeatEnd!!)
+        }
+
+        content = clickedTodo.content
+        memo = clickedTodo.memo
+        for (i in 0 until clickedTodo.tags.size) {
+            tag += "${clickedTodo.tags[i].content} "
         }
     }
 
@@ -162,9 +169,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setRepeatOpt(num: Int) {
         _repeatOption.value = num
-        when(num){
-            0 ->  _repeatValue.value = null
-            1, 2 -> _repeatValue.value =  String.format("%-7s", "").replace(' ', '0')
+        when (num) {
+            0 -> _repeatValue.value = null
+            1, 2 -> _repeatValue.value = String.format("%-7s", "").replace(' ', '0')
             3 -> _repeatValue.value = String.format("%-31s", "").replace(' ', '0')
             4 -> _repeatValue.value = String.format("%-12s", "").replace(' ', '0')
         }
@@ -254,7 +261,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             memo = memo,
             todayTodo = todayTodo.value!!,
             flag = flagTodo.value!!,
-            isSelectedEndDateTime = isSelectedEndDateTime.value ?: false,
+            isAllDay = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
             repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else "null",
             repeatValue = repeatValue.value,
@@ -267,6 +274,31 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun addTodo(callback: () -> Unit) {
         checklistViewModel.addTodo(createTodoData()) {
+            callback()
+        }
+    }
+
+    private fun createUpdateTodoData(): UpdateTodo {
+        return UpdateTodo(
+            content = content,
+            memo = memo,
+            completed = completedTodo.value!!,
+            todayTodo = todayTodo.value!!,
+            flag = flagTodo.value!!,
+            isAllDay = isSelectedEndDateTime.value ?: false,
+            endDate = endDateStr,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else "null",
+            repeatValue = repeatValue.value,
+            repeatEnd = repeatEndDateStr,
+            tags = tagList,
+            subTodos = subTodos,
+            subTodosCompleted = emptyList(),
+            alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!)
+            )
+    }
+
+    fun updateTodo(callback: () -> Unit) {
+        checklistViewModel.putTodo(clickedTodo.id, createUpdateTodoData()){
             callback()
         }
     }

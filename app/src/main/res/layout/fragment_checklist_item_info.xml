@@ -9,10 +9,6 @@
         <variable
             name="vm"
             type="com.example.haru.viewmodel.TodoAddViewModel" />
-
-        <variable
-            name="todoItem"
-            type="com.example.haru.data.model.Todo" />
     </data>
 
     <LinearLayout
@@ -68,7 +64,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
                         android:layout_weight="1"
-                        android:text="@{todoItem.content}"
+                        android:text="@={vm.content}"
                         android:textColor="@color/todo_description"
                         android:textSize="24sp" />
 
@@ -137,6 +133,7 @@
                         android:layout_marginStart="10dp"
                         android:background="@android:color/transparent"
                         android:hint="@string/tag"
+                        android:text="@={vm.tag}"
                         android:inputType="text"
                         android:singleLine="true"
                         android:textSize="14sp" />
@@ -632,7 +629,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/big_memo_icon"
-                        android:backgroundTint="@color/light_gray" />
+                        android:backgroundTint='@{vm.memo == "" ? @color/light_gray : @color/todo_description}' />
 
                     <EditText
                         android:id="@+id/et_info_memo"
@@ -643,6 +640,7 @@
                         android:background="@android:color/transparent"
                         android:ems="10"
                         android:hint="@string/memo_set"
+                        android:text='@{vm.memo == "" ? "" : vm.memo}'
                         android:inputType="textMultiLine"
                         android:scrollbars="vertical"
                         android:textColor="@color/todo_description"

@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide.init
-import com.example.haru.data.model.Alarm
-import com.example.haru.data.model.Tag
-import com.example.haru.data.model.Todo
-import com.example.haru.data.model.TodoRequest
+import com.example.haru.data.model.*
 import com.example.haru.data.repository.TagRepository
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
@@ -158,8 +155,20 @@ class CheckListViewModel() :
         _completedTodos.value = emptyList()
     }
 
-    fun resetAlarmTime(date: Date){
-
+    fun putTodo(todoId: String, todo : UpdateTodo, callback: () -> Unit){
+        viewModelScope.launch {
+            val updateTodo = todoRepository.putTodo(todoId = todoId, todo = todo){
+                getTag()
+                getTodoMain{
+                    flaggedTodos.value?.let { todoList.addAll(it) }
+                    taggedTodos.value?.let { todoList.addAll(it) }
+                    untaggedTodos.value?.let { todoList.addAll(it) }
+                    completedTodos.value?.let { todoList.addAll(it) }
+                    _todoDataList.postValue(todoList)
+                    callback()
+                }
+            }
+        }
     }
 
 

@@ -5,7 +5,7 @@ data class TodoRequest(
     var memo: String,
     var todayTodo: Boolean,
     var flag: Boolean,
-    var isSelectedEndDateTime: Boolean,
+    var isAllDay: Boolean,
     var endDate: String? = null,
     var repeatOption: String? = null,
     var repeatValue: String? = null,
