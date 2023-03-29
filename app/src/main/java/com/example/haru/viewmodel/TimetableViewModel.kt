@@ -54,6 +54,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var IndexList: ArrayList<ArrayList<Schedule>> = ArrayList()
     var IndexList_allday: ArrayList<ArrayList<Schedule>> = ArrayList()
     fun init_value() {
+
         _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString()+"일")
 
         Daylist(
@@ -161,7 +162,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     //스케줄 쿼리문 전송
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
-            val emptyschedule = Schedule("", "", "", false, false, "", "", "", emptyList(), emptyList(), null, null,)
+            val emptyschedule = Schedule("", "", "", false, false, "", "", "", Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
             IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
 

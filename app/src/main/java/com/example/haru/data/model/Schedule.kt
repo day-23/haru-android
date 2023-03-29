@@ -9,7 +9,7 @@ data class Schedule(
     val repeatStart: String,
     val repeatEnd: String,
     val createdAt: String,
-    val category: List<Category> = emptyList(),
+    val category: Category,
     val alarms : List<Alarm> = emptyList(),
      val repeatOption : String? = null,
      val repeatValue : String? = null,

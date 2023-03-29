@@ -312,7 +312,7 @@
                             android:layout_weight="1"/>
 
                         <FrameLayout
-                            android:id="@+id/sun_grid"
+                            android:id="@+id/sun_table"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -359,7 +359,7 @@
                         </FrameLayout>
 
                         <LinearLayout
-                            android:id="@+id/mon_grid"
+                            android:id="@+id/mon_table"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -368,7 +368,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/tue_grid"
+                            android:id="@+id/tue_table"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -376,7 +376,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/wed_grid"
+                            android:id="@+id/wed_table"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -405,7 +405,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/thu_grid"
+                            android:id="@+id/thu_table"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -413,7 +413,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/fri_grid"
+                            android:id="@+id/fri_table"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -422,7 +422,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/sat_grid"
+                            android:id="@+id/sat_table"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Schedule
 import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
@@ -49,13 +50,20 @@ class TimetableFragment : Fragment() {
         val rootView = binding.root
         timetableviewModel = TimetableViewModel(requireContext())
         binding.viewModel = timetableviewModel
-        timetableviewModel.init_value()
 
         timetableAdapter = TimetableAdapter(requireContext(), reviewModel.times.value ?: timeList)
 
         recyclerView1 = binding.timetableRecyclerview
         recyclerView1.layoutManager = LinearLayoutManager(requireContext())
         recyclerView1.adapter = timetableAdapter
+
+        timetableviewModel.init_value()
+        val child = recyclerView1.getChildAt(8)
+        val originalPos = IntArray(2)
+        if (child != null) {
+            child.getLocationInWindow(originalPos)
+        }
+        binding.timetableScroll.smoothScrollBy(0, originalPos[1], 1000)
 
         //타임테이블 리사이클러뷰 실행
         reviewModel.times.observe(viewLifecycleOwner) { times ->
@@ -87,7 +95,12 @@ class TimetableFragment : Fragment() {
         timetableviewModel.Days.observe(viewLifecycleOwner) { days ->
             binding.invalidateAll()
         }
-        
+        //스케줄을 타임테이블에 바인딩
+        timetableviewModel.Schedules.observe(viewLifecycleOwner){ schedule ->
+            //Drawtimes(binding.sunTable, schedule[0])
+
+        }
+
         binding.todolistChange.setOnClickListener{
             val newFrag = TodotableFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
@@ -100,5 +113,10 @@ class TimetableFragment : Fragment() {
 
 
         return rootView
+    }
+
+    fun Drawtimes(table: ViewGroup,times: ArrayList<Schedule>){
+
+
     }
 }
