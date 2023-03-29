@@ -80,10 +80,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             textView.gravity = Gravity.CENTER
             textView.setOnClickListener {
                 todoAddViewModel.setRepeatVal(i - 1)
-//                if (textView.textColors == ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-//                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.highlight)))
-//                else
-//                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             }
 
             val params = GridLayout.LayoutParams().apply {
@@ -101,10 +97,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             textView.gravity = Gravity.CENTER
             textView.setOnClickListener {
                 todoAddViewModel.setRepeatVal(i - 1)
-//                if (textView.textColors == ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-//                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.highlight)))
-//                else
-//                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             }
 
             val params = GridLayout.LayoutParams().apply {
@@ -298,7 +290,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             androidx.lifecycle.Observer {
                 when (it) {
                     true -> {
-                        val time = Date()
                         binding.endDateTimeSwitch.isChecked = it
                         binding.btnEndTimePick.visibility = View.VISIBLE
                         binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.todo_description))
@@ -384,6 +375,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     binding.repeatOptionLayout.visibility = View.INVISIBLE
                     binding.repeatEndDateLayout.visibility = View.INVISIBLE
                 }
+                else -> {}
             }
         })
 
@@ -434,6 +426,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
                     binding.everyWeekSelectLayout.visibility = View.GONE
                     binding.gridMonth.visibility = View.GONE
+                    binding.gridYear.visibility = View.GONE
                 }
                 1, 2 -> {
                     val valueAnimator = ValueAnimator.ofInt(
@@ -574,7 +567,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 //
         binding.btnSubmitTodo.setOnClickListener(btnListener())
 //
-//        binding.btnClose.setOnClickListener(btnListener())
+        binding.btnClose.setOnClickListener(btnListener())
 
     }
 
@@ -677,44 +670,15 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     )
                         Toast.makeText(context, "할 일이 비어있습니다.", Toast.LENGTH_SHORT).show()
                     else {
-//                        when (todoAddViewModel.repeatOption.value) {
-//                            0 -> {}
-//                            1, 2 -> {
-//                                var value: String = ""
-//                                for (i in 0 until binding.everyWeekSelectLayout.childCount)
-//                                    value += if ((binding.everyWeekSelectLayout.getChildAt(i) as TextView).textColors
-//                                        == ColorStateList.valueOf(resources.getColor(R.color.highlight))
-//                                    ) "1"
-//                                    else "0"
-//                                todoAddViewModel.setRepeatVal(value)
-//                            }
-//                            3 -> {
-//                                var value: String = ""
-//                                for (i in 0 until binding.gridMonth.childCount)
-//                                    value += if ((binding.gridMonth.getChildAt(i) as TextView).textColors
-//                                        == ColorStateList.valueOf(resources.getColor(R.color.highlight))
-//                                    ) "1"
-//                                    else "0"
-//                                todoAddViewModel.setRepeatVal(value)
-//                            }
-//
-//                            4 -> {
-//                                var value: String = ""
-//                                for (i in 0 until binding.gridYear.childCount)
-//                                    value += if ((binding.gridYear.getChildAt(i) as TextView).textColors
-//                                        == ColorStateList.valueOf(resources.getColor(R.color.highlight))
-//                                    ) "1" else "0"
-//                                todoAddViewModel.setRepeatVal(value)
-//                            }
-//                            else -> {
-//                                todoAddViewModel.setRepeatVal(null)
-//                            }
+                        todoAddViewModel.readyToSubmit()
+                        todoAddViewModel.addTodo {
+                            Log.d("20191627", "dismiss")
+                            dismiss()
+                        }
                     }
-                    todoAddViewModel.readyToSubmit()
-                    todoAddViewModel.addTodo {
-                        Log.d("20191627", "dismiss")
-                        dismiss()
-                    }
+                }
+                R.id.btn_close -> {
+                    dismiss()
                 }
 
             }
@@ -723,17 +687,5 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     }
 }
 
-//fun changeDayTextColor(position: Int) {
-//    if ((binding.everyWeekSelectLayout.getChildAt(position) as TextView).textColors == ColorStateList.valueOf(
-//            getColor(requireContext(), R.color.date_text)
-//        )
-//    )
-//        (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(
-//            getColor(requireContext(), R.color.highlight)
-//        )
-//    else (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(
-//        getColor(requireContext(), R.color.date_text)
-//    )
-//}
 
 

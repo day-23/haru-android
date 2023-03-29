@@ -81,30 +81,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
             textView.gravity = Gravity.CENTER
             textView.setOnClickListener {
                 todoAddViewModel.setRepeatVal(i - 1)
-//                if (textView.textColors == ColorStateList.valueOf(
-//                        ContextCompat.getColor(
-//                            requireContext(),
-//                            R.color.light_gray
-//                        )
-//                    )
-//                )
-//                    textView.setTextColor(
-//                        ColorStateList.valueOf(
-//                            ContextCompat.getColor(
-//                                requireContext(),
-//                                R.color.highlight
-//                            )
-//                        )
-//                    )
-//                else
-//                    textView.setTextColor(
-//                        ColorStateList.valueOf(
-//                            ContextCompat.getColor(
-//                                requireContext(),
-//                                R.color.light_gray
-//                            )
-//                        )
-//                    )
             }
 
             val params = GridLayout.LayoutParams().apply {
@@ -129,30 +105,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
             textView.gravity = Gravity.CENTER
             textView.setOnClickListener {
                 todoAddViewModel.setRepeatVal(i - 1)
-//                if (textView.textColors == ColorStateList.valueOf(
-//                        ContextCompat.getColor(
-//                            requireContext(),
-//                            R.color.light_gray
-//                        )
-//                    )
-//                )
-//                    textView.setTextColor(
-//                        ColorStateList.valueOf(
-//                            ContextCompat.getColor(
-//                                requireContext(),
-//                                R.color.highlight
-//                            )
-//                        )
-//                    )
-//                else
-//                    textView.setTextColor(
-//                        ColorStateList.valueOf(
-//                            ContextCompat.getColor(
-//                                requireContext(),
-//                                R.color.light_gray
-//                            )
-//                        )
-//                    )
             }
 
             val params = GridLayout.LayoutParams().apply {
@@ -178,11 +130,14 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
 
         // complete 관련 UI Update
         todoAddViewModel.completedTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            val color = if (it) R.color.light_gray else R.color.todo_description
             binding.cbInfoCompleted.isChecked = it
             binding.tvInfoContent.paintFlags =
                 if (it)
                     Paint.STRIKE_THRU_TEXT_FLAG
                 else binding.tvInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            binding.tvInfoContent.setTextColor(ContextCompat.getColor(requireContext(), color))
+
         })
 
         // todayTodo 관련 UI Update
@@ -261,6 +216,11 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
             binding.tvInfoRepeatSet.setTextColor(ContextCompat.getColor(requireContext(), color))
             binding.infoRepeatOptionLayout.visibility = if (it) View.VISIBLE else View.GONE
             binding.infoRepeatEndDateLayout.visibility = if (it) View.VISIBLE else View.GONE
+
+            binding.infoEveryWeekSelectLayout.visibility = if (it && todoAddViewModel.repeatOption.value in listOf(1,2)) View.VISIBLE else View.GONE
+            binding.infoGridMonth.visibility = if (it && todoAddViewModel.repeatOption.value == 3) View.VISIBLE else View.GONE
+            binding.infoGridYear.visibility = if (it && todoAddViewModel.repeatOption.value == 4) View.VISIBLE else View.GONE
+
         })
 
         // repeat Option 관련 UI Update
@@ -284,6 +244,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
         })
 
         todoAddViewModel.repeatValue.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.d("20191627", it.toString())
             val layout = when (it?.length) {
                 7 -> binding.infoEveryWeekSelectLayout
                 31 -> binding.infoGridMonth
@@ -293,8 +254,11 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
 
             if (layout != null) {
                 for(i in 0 until it!!.length) {
-                    if (it[i] == '1')
+                    if (it[i] == '1'){
+                        Log.d("20191627", it[i].toString())
                         (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                    }
+
                     else (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
                 }
             }
@@ -363,7 +327,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
         binding.tvInfoSaturday.setOnClickListener(BtnClickListener())
         binding.tvInfoSunday.setOnClickListener(BtnClickListener())
 
-
+        binding.ivBackIcon.setOnClickListener(BtnClickListener())
     }
 
     inner class BtnClickListener : View.OnClickListener {
@@ -460,6 +424,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
                 binding.tvInfoSunday.id -> todoAddViewModel.setRepeatVal(6)
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
+
+                binding.ivBackIcon.id -> requireActivity().supportFragmentManager.popBackStack()
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.haru.view.adapter
 
 import android.content.Context
+import android.graphics.Paint
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.Log
 import android.view.LayoutInflater
@@ -144,6 +145,9 @@ class TodoAdapter(val context: Context) :
                     FormatDate.todoDateToStr(item.endDate).substring(5, 10) + "까지"
                 binding.tvEndDateDescription.visibility = View.VISIBLE
             } else binding.tvEndDateDescription.visibility = View.GONE
+
+            if (item.completed) binding.tvTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            else binding.tvTitle.paintFlags = 0
         }
     }
 
