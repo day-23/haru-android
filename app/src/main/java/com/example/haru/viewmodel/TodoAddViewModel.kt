@@ -21,7 +21,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     val flagTodo: LiveData<Boolean> = _flagTodo
 
     private val _completedTodo = MutableLiveData<Boolean>(false)
-    val completedTodo : LiveData<Boolean> = _completedTodo
+    val completedTodo: LiveData<Boolean> = _completedTodo
 
     private val _todayTodo = MutableLiveData<Boolean>(false)
     val todayTodo: LiveData<Boolean> = _todayTodo
@@ -41,7 +41,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _alarmSwitch = MutableLiveData<Boolean>(false)
     val alarmSwitch: LiveData<Boolean> = _alarmSwitch
 
-    private val _repeatSwitch = MutableLiveData<Boolean>()
+    private val _repeatSwitch = MutableLiveData<Boolean>(false)
     val repeatSwitch: LiveData<Boolean> = _repeatSwitch
 
     private val _repeatEndDateSwitch = MutableLiveData<Boolean>(false)
@@ -50,14 +50,17 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _repeatOption = MutableLiveData<Int?>()
     val repeatOption: LiveData<Int?> = _repeatOption
 
+    private val _repeatValue = MutableLiveData<String?>()
+    val repeatValue: LiveData<String?> = _repeatValue
+
     private val _alarmDate = MutableLiveData<Date>(Date())
     val alarmDate: LiveData<Date> = _alarmDate
 
     private val _alarmTime = MutableLiveData<Date>(Date())
     val alarmTime: LiveData<Date> = _alarmTime
 
-    private val _repeatEndDate = MutableLiveData<Date?>()
-    val repeatEndDate: LiveData<Date?> = _repeatEndDate
+    private val _repeatEndDate = MutableLiveData<Date>(Date())
+    val repeatEndDate: LiveData<Date> = _repeatEndDate
 
     var tagList: MutableList<String> = mutableListOf()
     var subTodos: MutableList<String> = mutableListOf()
@@ -66,7 +69,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var content: String = ""
 
     var memo: String = ""
-    var repeatValue: String? = null
+
+    //    var repeatValue: String? = null
     var endDateStr: String? = null
     var alarmDateTimeStr: String? = null
     var repeatEndDateStr: String? = null
@@ -92,7 +96,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _flagTodo.value = clickedTodo.flag
         _todayTodo.value = clickedTodo.todayTodo
         _isSelectedEndDateTime.value = clickedTodo.isSelectedEndDateTime
-        if (clickedTodo.endDate != null){
+        if (clickedTodo.endDate != null) {
             _endDate.value = FormatDate.strToDate(clickedTodo.endDate!!)
             _endDateSwitch.value = true
         }
@@ -110,7 +114,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         if (clickedTodo.repeatOption in repeatOptionList) {
             _repeatSwitch.value = true
             _repeatOption.value = repeatOptionList.indexOf(clickedTodo.repeatOption)
-            repeatValue = clickedTodo.repeatValue
+            _repeatValue.value = clickedTodo.repeatValue
         }
 
         if (clickedTodo.repeatEnd != null) {
@@ -119,7 +123,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-    fun setCompleteTodo(){
+    fun setCompleteTodo() {
         _completedTodo.value = (_completedTodo.value == false)
     }
 
@@ -158,6 +162,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setRepeatOpt(num: Int) {
         _repeatOption.value = num
+        when(num){
+            0 ->  _repeatValue.value = null
+            1, 2 -> _repeatValue.value =  String.format("%-7s", "").replace(' ', '0')
+            3 -> _repeatValue.value = String.format("%-31s", "").replace(' ', '0')
+            4 -> _repeatValue.value = String.format("%-12s", "").replace(' ', '0')
+        }
     }
 
     fun setTime(id: Int, date: Date) {
@@ -234,8 +244,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             else null
     }
 
-    fun setRepeatVal(value: String?) {
-        repeatValue = value
+    fun setRepeatVal(position: Int) {
+        val repeatValue = _repeatValue.value
+        _repeatValue.value = if (repeatValue!![position] == '1')
+            repeatValue.substring(0, position) + '0' + repeatValue.substring(position + 1)
+        else repeatValue.substring(0, position) + '1' + repeatValue.substring(position + 1)
     }
 
     private fun createTodoData(): TodoRequest {
@@ -247,7 +260,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             isSelectedEndDateTime = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
             repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else "null",
-            repeatValue = repeatValue,
+            repeatValue = repeatValue.value,
             repeatEnd = repeatEndDateStr,
             tags = tagList,
             subTodos = subTodos,

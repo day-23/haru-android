@@ -75,14 +75,15 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         for (i in 1..31) {
             val textView = TextView(requireContext())
-            textView.text = i.toString()
+            textView.text = getString(R.string.MonthDay, i)
             textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             textView.gravity = Gravity.CENTER
             textView.setOnClickListener {
-                if (textView.textColors == ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.highlight)))
-                else
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                todoAddViewModel.setRepeatVal(i - 1)
+//                if (textView.textColors == ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+//                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.highlight)))
+//                else
+//                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             }
 
             val params = GridLayout.LayoutParams().apply {
@@ -95,14 +96,15 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         for (i in 1..12) {
             val textView = TextView(requireContext())
-            textView.text = i.toString() + "월"
+            textView.text = getString(R.string.YearMonth, i)
             textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             textView.gravity = Gravity.CENTER
             textView.setOnClickListener {
-                if (textView.textColors == ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.highlight)))
-                else
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                todoAddViewModel.setRepeatVal(i - 1)
+//                if (textView.textColors == ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+//                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.highlight)))
+//                else
+//                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             }
 
             val params = GridLayout.LayoutParams().apply {
@@ -497,7 +499,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         })
 //
         todoAddViewModel.alarmTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                binding.btnAlarmTimePick.text = FormatDate.simpleTimeToStr(it)
+            binding.btnAlarmTimePick.text = FormatDate.simpleTimeToStr(it)
         })
 //
         todoAddViewModel.endTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -505,12 +507,27 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         })
 //
         todoAddViewModel.alarmDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                binding.btnAlarmDatePick.text = FormatDate.simpleDateToStr(it)
+            binding.btnAlarmDatePick.text = FormatDate.simpleDateToStr(it)
         })
 //
         todoAddViewModel.repeatEndDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it != null) {
-                binding.btnRepeatEndDate.text = FormatDate.simpleDateToStr(it)
+            binding.btnRepeatEndDate.text = FormatDate.simpleDateToStr(it)
+        })
+
+        todoAddViewModel.repeatValue.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            val layout = when (it?.length) {
+                7 -> binding.everyWeekSelectLayout
+                31 -> binding.gridMonth
+                12 -> binding.gridYear
+                else -> null
+            }
+
+            if (layout != null) {
+                for(i in 0 until it!!.length) {
+                    if (it[i] == '1')
+                        (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                    else (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                }
             }
         })
 //
@@ -586,13 +603,13 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 R.id.btn_everyMonth -> todoAddViewModel.setRepeatOpt(3)
                 R.id.btn_everyYear -> todoAddViewModel.setRepeatOpt(4)
 
-                R.id.tv_monday -> changeDayTextColor(0)
-                R.id.tv_tuesday -> changeDayTextColor(1)
-                R.id.tv_wednesday -> changeDayTextColor(2)
-                R.id.tv_thursday -> changeDayTextColor(3)
-                R.id.tv_friday -> changeDayTextColor(4)
-                R.id.tv_saturday -> changeDayTextColor(5)
-                R.id.tv_sunday -> changeDayTextColor(6)
+                R.id.tv_monday -> todoAddViewModel.setRepeatVal(0)
+                R.id.tv_tuesday -> todoAddViewModel.setRepeatVal(1)
+                R.id.tv_wednesday -> todoAddViewModel.setRepeatVal(2)
+                R.id.tv_thursday -> todoAddViewModel.setRepeatVal(3)
+                R.id.tv_friday -> todoAddViewModel.setRepeatVal(4)
+                R.id.tv_saturday -> todoAddViewModel.setRepeatVal(5)
+                R.id.tv_sunday -> todoAddViewModel.setRepeatVal(6)
 
 
                 R.id.btn_alarmTime_pick, R.id.btn_endTime_pick -> {
@@ -660,64 +677,63 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     )
                         Toast.makeText(context, "할 일이 비어있습니다.", Toast.LENGTH_SHORT).show()
                     else {
-                        when (todoAddViewModel.repeatOption.value) {
-                            0 -> {}
-                            1, 2 -> {
-                                var value: String = ""
-                                for (i in 0 until binding.everyWeekSelectLayout.childCount)
-                                    value += if ((binding.everyWeekSelectLayout.getChildAt(i) as TextView).textColors
-                                        == ColorStateList.valueOf(resources.getColor(R.color.highlight))
-                                    ) "1"
-                                    else "0"
-                                todoAddViewModel.setRepeatVal(value)
-                            }
-                            3 -> {
-                                var value: String = ""
-                                for (i in 0 until binding.gridMonth.childCount)
-                                    value += if ((binding.gridMonth.getChildAt(i) as TextView).textColors
-                                        == ColorStateList.valueOf(resources.getColor(R.color.highlight))
-                                    ) "1"
-                                    else "0"
-                                todoAddViewModel.setRepeatVal(value)
-                            }
-
-                            4 -> {
-                                var value: String = ""
-                                for (i in 0 until binding.gridYear.childCount)
-                                    value += if ((binding.gridYear.getChildAt(i) as TextView).textColors
-                                        == ColorStateList.valueOf(resources.getColor(R.color.highlight))
-                                    ) "1" else "0"
-                                todoAddViewModel.setRepeatVal(value)
-                            }
-                            else -> {
-                                todoAddViewModel.setRepeatVal(null)
-                            }
-                        }
-                        todoAddViewModel.readyToSubmit()
-                        todoAddViewModel.addTodo {
-                            Log.d("20191627", "dismiss")
-                            dismiss()
-                        }
+//                        when (todoAddViewModel.repeatOption.value) {
+//                            0 -> {}
+//                            1, 2 -> {
+//                                var value: String = ""
+//                                for (i in 0 until binding.everyWeekSelectLayout.childCount)
+//                                    value += if ((binding.everyWeekSelectLayout.getChildAt(i) as TextView).textColors
+//                                        == ColorStateList.valueOf(resources.getColor(R.color.highlight))
+//                                    ) "1"
+//                                    else "0"
+//                                todoAddViewModel.setRepeatVal(value)
+//                            }
+//                            3 -> {
+//                                var value: String = ""
+//                                for (i in 0 until binding.gridMonth.childCount)
+//                                    value += if ((binding.gridMonth.getChildAt(i) as TextView).textColors
+//                                        == ColorStateList.valueOf(resources.getColor(R.color.highlight))
+//                                    ) "1"
+//                                    else "0"
+//                                todoAddViewModel.setRepeatVal(value)
+//                            }
+//
+//                            4 -> {
+//                                var value: String = ""
+//                                for (i in 0 until binding.gridYear.childCount)
+//                                    value += if ((binding.gridYear.getChildAt(i) as TextView).textColors
+//                                        == ColorStateList.valueOf(resources.getColor(R.color.highlight))
+//                                    ) "1" else "0"
+//                                todoAddViewModel.setRepeatVal(value)
+//                            }
+//                            else -> {
+//                                todoAddViewModel.setRepeatVal(null)
+//                            }
                     }
-
+                    todoAddViewModel.readyToSubmit()
+                    todoAddViewModel.addTodo {
+                        Log.d("20191627", "dismiss")
+                        dismiss()
+                    }
                 }
 
             }
+
         }
     }
-
-    fun changeDayTextColor(position: Int) {
-        if ((binding.everyWeekSelectLayout.getChildAt(position) as TextView).textColors == ColorStateList.valueOf(
-                ContextCompat.getColor(requireContext(), R.color.date_text)
-            )
-        )
-            (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(
-                ContextCompat.getColor(requireContext(), R.color.highlight)
-            )
-        else (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(
-            ContextCompat.getColor(requireContext(), R.color.date_text)
-        )
-    }
-
-
 }
+
+//fun changeDayTextColor(position: Int) {
+//    if ((binding.everyWeekSelectLayout.getChildAt(position) as TextView).textColors == ColorStateList.valueOf(
+//            getColor(requireContext(), R.color.date_text)
+//        )
+//    )
+//        (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(
+//            getColor(requireContext(), R.color.highlight)
+//        )
+//    else (binding.everyWeekSelectLayout.getChildAt(position) as TextView).setTextColor(
+//        getColor(requireContext(), R.color.date_text)
+//    )
+//}
+
+
