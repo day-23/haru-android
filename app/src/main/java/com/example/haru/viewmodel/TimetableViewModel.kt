@@ -38,6 +38,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Colors : LiveData<ArrayList<String>>
         get() = _Colors
 
+    private val _Schedules = MutableLiveData<ArrayList<Schedule>>()
+    val Schedules : LiveData<ArrayList<Schedule>>
+        get() = _Schedules
+
     // #F71E58 빨
     // #DBDBDB 회
     // #1DAFFF 파
@@ -48,7 +52,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var dayslist: ArrayList<String> = ArrayList()
     var Datelist: ArrayList<String> = ArrayList()
 
-    init {
+    fun init_value() {
         _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString()+"일")
 
         Daylist(
@@ -59,7 +63,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
         _Days.value = dayslist
         _Colors.value = colorlist
         _Dates.value = Datelist
-
     }
 
     //날짜정보//

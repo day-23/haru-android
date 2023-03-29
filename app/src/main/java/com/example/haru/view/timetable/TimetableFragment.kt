@@ -49,7 +49,7 @@ class TimetableFragment : Fragment() {
         val rootView = binding.root
         timetableviewModel = TimetableViewModel(requireContext())
         binding.viewModel = timetableviewModel
-
+        timetableviewModel.init_value()
 
         timetableAdapter = TimetableAdapter(requireContext(), reviewModel.times.value ?: timeList)
 
