@@ -153,21 +153,27 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
-            var IndexList: ArrayList<ArrayList<Todo>> = arrayListOf( arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()),)
-            var IndexList_allday: ArrayList<ArrayList<Todo>> = arrayListOf( arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()), arrayListOf(Todo()),)
+            val emptyschedule = Schedule("", "", "", false, false, "", "", "", emptyList(), emptyList(), null, null,)
+            var IndexList: ArrayList<ArrayList<Schedule>> = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
+            var IndexList_allday: ArrayList<ArrayList<Schedule>> = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
 
             scheduleRepository.getSchedule(date[0], date[6]) {
                 val TodoList = it
 
                 //내용 추출
                 for(data in TodoList){
-                    val year = data.endDate?.slice(IntRange(0,3))
-                    val month = data.endDate?.slice(IntRange(5,6))
-                    val day = data.endDate?.slice(IntRange(8,9))
-                    val result = year+month+day
+                    val year_start = data.repeatStart?.slice(IntRange(0,3))
+                    val month_start = data.repeatStart?.slice(IntRange(5,6))
+                    val day_start = data.repeatStart?.slice(IntRange(8,9))
+                    val result_start = year_start+month_start+day_start
 
-                    if(data.endDate != null){ //날짜 정보가 있는 경우만 담음
-                        when(result){
+                    val year_end = data.repeatStart?.slice(IntRange(0,3))
+                    val month_end = data.repeatStart?.slice(IntRange(5,6))
+                    val day_end = data.repeatStart?.slice(IntRange(8,9))
+                    val result_end = year_end+month_end+day_end
+
+                    if(data.repeatStart != data.repeatEnd && result_start == result_end){ //하루치 일정
+                        when(result_start){
                             date[0] -> IndexList[0].add(data)
                             date[1] -> IndexList[1].add(data)
                             date[2] -> IndexList[2].add(data)
