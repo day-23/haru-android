@@ -57,12 +57,13 @@ class TimetableFragment : Fragment() {
         recyclerView1.layoutManager = LinearLayoutManager(requireContext())
         recyclerView1.adapter = timetableAdapter
 
-
+        //타임테이블 리사이클러뷰 실행
         reviewModel.times.observe(viewLifecycleOwner) { times ->
             timetableAdapter.setData(times)
             timetableAdapter.notifyDataSetChanged()
         }
 
+        //날짜가 바뀌면 12시를 화면 중앙에 두도록
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             val child = recyclerView1.getChildAt(8)
             val originalPos = IntArray(2)
@@ -72,7 +73,7 @@ class TimetableFragment : Fragment() {
             binding.timetableScroll.smoothScrollBy(0, originalPos[1], 1000)
             binding.invalidateAll()
         }
-
+        //지난달 다음달을 구분해주는 색 바인딩
         timetableviewModel.Colors.observe(viewLifecycleOwner) { colors->
             binding.sunBtn.setTextColor(Color.parseColor(colors.get(0)))
             binding.monBtn.setTextColor(Color.parseColor(colors.get(1)))
@@ -82,11 +83,11 @@ class TimetableFragment : Fragment() {
             binding.friBtn.setTextColor(Color.parseColor(colors.get(5)))
             binding.satBtn.setTextColor(Color.parseColor(colors.get(6)))
         }
-
+        //한주의 숫자 변경시 최신화
         timetableviewModel.Days.observe(viewLifecycleOwner) { days ->
             binding.invalidateAll()
         }
-
+        
         binding.todolistChange.setOnClickListener{
             val newFrag = TodotableFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
@@ -95,6 +96,8 @@ class TimetableFragment : Fragment() {
             transaction.commit()
             true
         }
+
+
 
         return rootView
     }

@@ -38,8 +38,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Colors : LiveData<ArrayList<String>>
         get() = _Colors
 
-    private val _Schedules = MutableLiveData<ArrayList<Schedule>>()
-    val Schedules : LiveData<ArrayList<Schedule>>
+    private val _Schedules = MutableLiveData<ArrayList<ArrayList<Schedule>>>()
+    val Schedules : LiveData<ArrayList<ArrayList<Schedule>>>
         get() = _Schedules
 
     // #F71E58 빨
@@ -51,7 +51,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var colorlist: ArrayList<String> = ArrayList()
     var dayslist: ArrayList<String> = ArrayList()
     var Datelist: ArrayList<String> = ArrayList()
-
+    var IndexList: ArrayList<ArrayList<Schedule>> = ArrayList()
+    var IndexList_allday: ArrayList<ArrayList<Schedule>> = ArrayList()
     fun init_value() {
         _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString()+"일")
 
@@ -63,6 +64,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
         _Days.value = dayslist
         _Colors.value = colorlist
         _Dates.value = Datelist
+        _Schedules.value = IndexList
     }
 
     //날짜정보//
@@ -89,6 +91,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 _Colors.value = colorlist
                 _Selected.value = Timetable_date(year.toString()+"년", (month+1).toString()+"월", day.toString()+"일")
                 _Dates.value = Datelist
+                getSchedule(Datelist)
+                _Schedules.value = IndexList
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") { dialog, _ ->
@@ -158,8 +162,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
             val emptyschedule = Schedule("", "", "", false, false, "", "", "", emptyList(), emptyList(), null, null,)
-            var IndexList: ArrayList<ArrayList<Schedule>> = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
-            var IndexList_allday: ArrayList<ArrayList<Schedule>> = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
+            IndexList = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
+            IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
 
             scheduleRepository.getSchedule(date[0], date[6]) {
                 val TodoList = it
