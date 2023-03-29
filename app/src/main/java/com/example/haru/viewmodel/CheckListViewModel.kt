@@ -158,48 +158,6 @@ class CheckListViewModel() :
         _completedTodos.value = emptyList()
     }
 
-
-//    fun resetTodayTodo(){
-//        val todo = _clickedTodo.value ?: return
-//        val updateTodo = todo.copy(todayTodo = !todo.todayTodo)
-//        _clickedTodo.value = updateTodo
-//    }
-//
-//    fun resetFlag(){
-//        val todo = _clickedTodo.value ?: return
-//        val updateTodo = todo.copy(flag = !todo.flag)
-//        _clickedTodo.value = updateTodo
-//    }
-//
-//    fun resetIsSelectedEndDateTime(){
-//        val todo = _clickedTodo.value ?: return
-//        val updateTodo = todo.copy(isSelectedEndDateTime = !todo.isSelectedEndDateTime)
-//        _clickedTodo.value = updateTodo
-//    }
-
-//    fun resetEndDate(date: Date) {
-//        val todo = _clickedTodo.value ?: return
-//        val updateTodo: Todo
-//        if (todo.endDate == null)
-//            updateTodo = todo.copy(endDate = FormatDate.dateToGMT(FormatDate.dateToStr(date)))
-//        else updateTodo = todo.copy(endDate = FormatDate.dateToGMT(FormatDate.dateToStr(date)))
-//        _clickedTodo.value = updateTodo
-//    }
-//
-//    fun resetEndTime(date: Date) {
-//        val todo = _clickedTodo.value ?: return
-//        val updateTodo = todo.copy(endDate = FormatDate.dateToGMT(todo.endDate!!.substring(0,10) + FormatDate.dateToStr(date).substring(10)))
-//        _clickedTodo.value = updateTodo
-//    }
-//
-//    fun resetAlarmDate(date: Date) {
-//        val todo = _clickedTodo.value ?: return
-//        val updateTodo : Todo
-//        if (todo.alarms == emptyList<Alarm>())
-//            updateTodo = todo.copy(alarms = )
-//        _clickedTodo.value = updateTodo
-//    }
-
     fun resetAlarmTime(date: Date){
 
     }

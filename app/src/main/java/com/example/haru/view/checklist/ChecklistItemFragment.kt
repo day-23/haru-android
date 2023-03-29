@@ -151,6 +151,14 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
             binding.btnInfoAlarmTimePick.text = FormatDate.simpleTimeToStr(it)
         })
 
+        // repeat Switch 관련 UI Update
+        todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            val color = if (it) R.color.todo_description else R.color.light_gray
+            binding.ivInfoRepeatIcon.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
+            binding.tvInfoRepeatSet.setTextColor(ContextCompat.getColor(requireContext(), color))
+        })
+
         // 반복설정, 태그 연동, 하위 항목, 메모 만들어서 마무리하기
 
         binding.cbInfoFlag.setOnClickListener(BtnClickListener())
@@ -201,8 +209,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
                                     todoAddViewModel.setDate(0, date)
                                 binding.btnInfoAlarmDatePick.id ->
                                     todoAddViewModel.setDate(1, date)
-//                                R.id.btn_endDate_pick -> todoAddViewModel.setDate(0, date)
-//                                R.id.btn_alarmDate_pick -> todoAddViewModel.setDate(1, date)
 //                                R.id.btn_repeat_end_date -> todoAddViewModel.setDate(2, date)
                             }
                         },
