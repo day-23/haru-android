@@ -90,8 +90,6 @@ class CalendarFragment : Fragment() {
             override fun onPageSelected(pos: Int) {
                 super.onPageSelected(pos)
 
-                adapterMonth.setPosition(pos - Int.MAX_VALUE / 2)
-
                 calendar.time = Date()
                 calendar.add(Calendar.MONTH, pos - Int.MAX_VALUE / 2)
 

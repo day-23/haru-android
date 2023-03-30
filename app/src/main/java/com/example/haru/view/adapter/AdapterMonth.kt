@@ -29,8 +29,6 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
 
     private var todo_schedule = false
 
-    private var calendar_position = 0
-
     lateinit var calendarviewModel: CalendarViewModel
 
     inner class MonthView(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -272,19 +270,18 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
         }
     }
 
+    override fun getItemId(position: Int): Long {
+        calendar.time = Date()
+        calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
+        return calendar.timeInMillis
+    }
+
     override fun onBindViewHolder(holder: MonthView, position: Int) {
         Log.d("bind position", (position-Int.MAX_VALUE/2).toString())
-        if(abs(calendar_position-(position - Int.MAX_VALUE/2)) <= 1){
-            setView(holder, position)
-        }
+        setView(holder, position)
     }
 
     override fun getItemCount(): Int {
         return Int.MAX_VALUE
-    }
-
-    fun setPosition(position: Int){
-        Log.d("position", position.toString())
-        calendar_position = position
     }
 }
