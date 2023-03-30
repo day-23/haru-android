@@ -6,6 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -97,8 +101,7 @@ class TimetableFragment : Fragment() {
         }
         //스케줄을 타임테이블에 바인딩
         timetableviewModel.Schedules.observe(viewLifecycleOwner){ schedule ->
-            //Drawtimes(binding.sunTable, schedule[0])
-
+            Drawtimes(binding.sunTable, schedule[0])
         }
 
         binding.todolistChange.setOnClickListener{
@@ -110,13 +113,50 @@ class TimetableFragment : Fragment() {
             true
         }
 
-
-
         return rootView
     }
 
-    fun Drawtimes(table: ViewGroup,times: ArrayList<Schedule>){
+    fun Drawtimes(table: ViewGroup, times: ArrayList<Schedule>){
+        var past_start = 0
+        var past_end = 2355
+        val UnionList = ArrayList<ArrayList<Schedule>>()
+        val overlapList = ArrayList<Schedule>()
 
+        for(time in times){
+            val start = time.repeatStart.slice(IntRange(11,12)) + time.repeatStart.slice(IntRange(14,15))
+            val end = time.repeatEnd.slice(IntRange(11,12)) + time.repeatEnd.slice(IntRange(14,15))
 
+            if(past_start <= start.toInt() || start.toInt() <= past_end){
+                overlapList.add(time)
+            }
+            else{
+                UnionList.add(overlapList)
+                overlapList.clear()
+                overlapList.add(time)
+            }
+            past_start = start.toInt()
+            past_end = end.toInt()
+        }
+
+        for(union in UnionList){
+            val layout = LinearLayout(requireContext())
+            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
+            layout.layoutParams = layoutParams
+            for(time in union){
+                val union_start_hour = union[0].repeatStart.slice(IntRange(11,12))
+                val union_start_min = union[0].repeatStart.slice(IntRange(14,15))
+                val margin = union_start_hour.toInt()*120 + union_start_min.toInt()
+                layoutParams.setMargins(0, margin, 0,0)
+
+                val Schedule_View = TextView(requireContext())
+                Schedule_View.setText(time.content)
+                Schedule_View.setOnClickListener {
+                    Toast.makeText(requireContext(), "${time.content}", Toast.LENGTH_SHORT).show()
+                }
+                Schedule_View.setBackgroundColor(Color.parseColor("#ffffff"))
+                layout.addView(Schedule_View)
+            }
+            table.addView(layout)
+        }
     }
 }
