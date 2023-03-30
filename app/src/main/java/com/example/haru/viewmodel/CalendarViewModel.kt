@@ -63,23 +63,23 @@ class CalendarViewModel : ViewModel() {
                 when(k % 7) {
                     0 -> {
                         if(calendar.get(Calendar.MONTH) != month) {
-                            dateList.add(CalendarDate(0.4f, Color.RED,calendar.time))
+                            dateList.add(CalendarDate(Color.rgb(0xFD,0xBB,0xCD),calendar.time))
                         } else {
-                            dateList.add(CalendarDate(1f,Color.RED,calendar.time))
+                            dateList.add(CalendarDate(Color.rgb(0xF7,0x1E,0x58),calendar.time))
                         }
                     }
                     6 -> {
                         if(calendar.get(Calendar.MONTH) != month) {
-                            dateList.add(CalendarDate(0.4f,Color.BLUE,calendar.time))
+                            dateList.add(CalendarDate(Color.rgb(0xBB,0xE7,0xFF),calendar.time))
                         } else {
-                            dateList.add(CalendarDate(1f,Color.BLUE,calendar.time))
+                            dateList.add(CalendarDate(Color.rgb(0x1D,0xAF,0xFF),calendar.time))
                         }
                     }
                     else -> {
                         if(calendar.get(Calendar.MONTH) != month) {
-                            dateList.add(CalendarDate(0.4f,Color.BLACK,calendar.time))
+                            dateList.add(CalendarDate(Color.rgb(0xBA,0xBA,0xBA),calendar.time))
                         } else {
-                            dateList.add(CalendarDate(1f,Color.BLACK,calendar.time))
+                            dateList.add(CalendarDate(Color.rgb(0x70,0x70,0x70),calendar.time))
                         }
                     }
                 }

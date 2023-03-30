@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/category_drawerlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <androidx.cardview.widget.CardView
@@ -39,11 +40,33 @@
                         android:drawableRight="@drawable/down_arrow"/>
                 </FrameLayout>
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="28sp"
+                    android:layout_height="28sp"
+                    android:background="@drawable/calendar_today_background_image"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/calendar_today_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="6"
+                        android:textColor="#2CA4FF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <ImageView
+                    android:id="@+id/category_button_imv"
                     android:background="@drawable/calendar_category"
                     android:backgroundTint="@color/black"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:layout_gravity="center"
                     android:layout_height="40sp"/>
             </LinearLayout>
 
@@ -57,21 +80,155 @@
     </androidx.cardview.widget.CardView>
         <LinearLayout
             android:layout_width="373sp"
-            android:layout_height="673sp"
-            android:layout_gravity="right">
+            android:layout_height="600sp"
+            android:background="@color/white"
+            android:layout_gravity="right"
+            android:orientation="vertical">
 
-            <FrameLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="70sp"
                 android:background="@drawable/calendar_gardient_background">
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginEnd="232dp"
+                    android:layout_marginBottom="35dp"
+                    android:text="캘린더 보기 설정"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="20sp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/calendar_schedule_image"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text="일정"
+                            android:textColor="#1DAFFF"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="right">
+
+                            <ImageView
+                                android:foregroundGravity="right"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/calendar_schedule_plus_image"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#DBDBDB"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="20sp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="left"
-                    android:textSize="20sp"
-                    android:text="캘린더 보기 설정"/>
-            </FrameLayout>
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/calendar_todo_image"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="할일"
+                            android:textColor="#1DAFFF"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="bottom">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:text="모두 가리기"
+                                android:textColor="#646464"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_gravity="center"
+                                android:text="완료"
+                                android:textColor="#1DAFFF"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="26sp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/calendar_gardient_background"/>
+            </LinearLayout>
+
         </LinearLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
