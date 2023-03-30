@@ -6,10 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.marginTop
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,36 +56,63 @@ class TimetableFragment : Fragment() {
         val rootView = binding.root
         timetableviewModel = TimetableViewModel(requireContext())
         binding.viewModel = timetableviewModel
-
-        timetableAdapter = TimetableAdapter(requireContext(), reviewModel.times.value ?: timeList)
-
+        reviewModel.init_value()
+        timetableAdapter = TimetableAdapter(requireContext(), reviewModel.TimeList.value ?: timeList)
         recyclerView1 = binding.timetableRecyclerview
         recyclerView1.layoutManager = LinearLayoutManager(requireContext())
         recyclerView1.adapter = timetableAdapter
-
         timetableviewModel.init_value()
-        val child = recyclerView1.getChildAt(8)
-        val originalPos = IntArray(2)
-        if (child != null) {
-            child.getLocationInWindow(originalPos)
-        }
-        binding.timetableScroll.smoothScrollBy(0, originalPos[1], 1000)
+
+        val linlayout = LinearLayout(requireContext())
+        var layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
+        linlayout.layoutParams = layoutParams
+
+        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
+        layoutParams.setMargins(0, 120, 0,0)
+        val button1 = Button(requireContext())
+        button1.setText("test1")
+        button1.layoutParams = layoutParams
+        linlayout.addView(button1)
+
+        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
+        layoutParams.setMargins(0, 140, 0,0)
+        val button2 = Button(requireContext())
+        button2.setText("test2")
+        button2.layoutParams = layoutParams
+        linlayout.addView(button2)
+
+        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
+        layoutParams.setMargins(0, 160, 0,0)
+        val button3 = Button(requireContext())
+        button3.setText("test3")
+        button3.layoutParams = layoutParams
+        linlayout.addView(button3)
+
+
+        var linlayout2 = LinearLayout(requireContext())
+        var layoutParams2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
+        linlayout2.layoutParams = layoutParams2
+        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
+        layoutParams.setMargins(0, 500, 0,0)
+        val button4 = Button(requireContext())
+        button4.setText("test4")
+        button4.layoutParams = layoutParams
+        linlayout2.addView(button4)
+
+        binding.sunTable.addView(linlayout)
+        binding.sunTable.addView(linlayout2)
+
 
         //타임테이블 리사이클러뷰 실행
-        reviewModel.times.observe(viewLifecycleOwner) { times ->
+        reviewModel.TimeList.observe(viewLifecycleOwner) { times ->
             timetableAdapter.setData(times)
+            scroll() // 화면에 오후 12시가 중앙에 오도록
             timetableAdapter.notifyDataSetChanged()
         }
 
         //날짜가 바뀌면 12시를 화면 중앙에 두도록
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
-            val child = recyclerView1.getChildAt(8)
-            val originalPos = IntArray(2)
-            if (child != null) {
-                child.getLocationInWindow(originalPos)
-            }
-            binding.timetableScroll.smoothScrollBy(0, originalPos[1], 1000)
-            binding.invalidateAll()
+            scroll()
         }
         //지난달 다음달을 구분해주는 색 바인딩
         timetableviewModel.Colors.observe(viewLifecycleOwner) { colors->
@@ -102,7 +131,7 @@ class TimetableFragment : Fragment() {
         //스케줄을 타임테이블에 바인딩
         timetableviewModel.Schedules.observe(viewLifecycleOwner){ schedule ->
             if(schedule.size != 0) {
-                Drawtimes(binding.sunTable, schedule[0])
+                //Drawtimes(binding.sunTable, schedule[0])
             }
         }
 
@@ -116,6 +145,16 @@ class TimetableFragment : Fragment() {
         }
 
         return rootView
+    }
+
+    fun scroll(){
+        val child = recyclerView1.getChildAt(8)
+        val originalPos = IntArray(2)
+        if (child != null) {
+            child.getLocationInWindow(originalPos)
+        }
+        binding.timetableScroll.smoothScrollBy(0, originalPos[1], 1000)
+        binding.invalidateAll()
     }
 
     fun Drawtimes(table: ViewGroup, times: ArrayList<Schedule>){

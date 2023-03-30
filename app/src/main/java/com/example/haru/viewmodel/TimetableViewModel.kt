@@ -1,11 +1,14 @@
 package com.example.haru.viewmodel
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.provider.ContactsContract.RawContacts.Data
 import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -165,9 +168,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
             val emptyschedule = Schedule(0,"", "", "", false, "", "", "", false,"" , Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
             IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
-
             scheduleRepository.getSchedule(date[0], date[6]) {
                 val TodoList = it
+                Log.d("Schedule", "$it")
 
                 //내용 추출
                 for(data in TodoList){
@@ -199,5 +202,4 @@ class TimetableViewModel(val context : Context): ViewModel() {
             }
         }
     }
-
 }

@@ -8,12 +8,12 @@ import com.example.haru.data.model.timetable_data
 
 class TimeTableRecyclerViewModel : ViewModel() {
     private val _TimeList = MutableLiveData<ArrayList<timetable_data>>()
-    val times : LiveData<ArrayList<timetable_data>>
+    val TimeList : LiveData<ArrayList<timetable_data>>
         get() = _TimeList
 
     private var items = ArrayList<timetable_data>()
 
-    init {
+    fun init_value(){
         for (i: Int in 0..23) {
             if (i < 12) {
                 if (i == 0)
