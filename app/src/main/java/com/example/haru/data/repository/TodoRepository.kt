@@ -3,11 +3,13 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.data.retrofit.RetrofitClient.scheduleService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class TodoRepository() {
     private val todoService = RetrofitClient.todoService
+    private val scheduleService = RetrofitClient.scheduleService
 
     suspend fun getTodoDates(startDate: String, endDate: String, callback:(todoData: List<Todo>) -> Unit) = withContext(Dispatchers.IO){
         val response = todoService.getTodoDates("881c51d1-06f1-47ce-99b6-b5582594db12", startDate, endDate).execute()

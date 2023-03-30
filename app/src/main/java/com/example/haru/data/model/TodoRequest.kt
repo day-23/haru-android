@@ -16,6 +16,4 @@ data class TodoRequest(
     var tags: List<String>,
     var subTodos: List<String>,
     var alarms: List<String>,
-    val isSelectedEndDateTime: Boolean,
-    val repeatValue: String? = null
 )
