@@ -14,6 +14,7 @@ import com.example.haru.data.model.CalendarDate
 import com.example.haru.data.model.ScheduleCalendarData
 import com.example.haru.data.model.TodoCalendarData
 import com.example.haru.databinding.ListItemDayBinding
+import java.util.Date
 
 
 class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
@@ -62,6 +63,19 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
 
             fun bind(date: CalendarDate){
                 binding.borderView.setBackgroundColor(Color.GRAY)
+
+                if(date.date.month == Date().month && date.date.date == Date().date){
+                    date.color = Color.rgb(0x1D,0xAF,0xFF)
+
+                    val params = binding.todayInCalendar.layoutParams as FrameLayout.LayoutParams
+
+                    params.width = 80
+                    params.height = 80
+
+                    binding.todayInCalendar.layoutParams = params
+                    binding.todayInCalendar.setBackgroundResource(R.drawable.calendar_in_today_image)
+                }
+
                 binding.calendarContent = date.date.date.toString()
                 binding.calendarDate = date
                 binding.dateOrContent = true

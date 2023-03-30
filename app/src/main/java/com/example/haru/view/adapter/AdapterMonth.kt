@@ -18,6 +18,7 @@ import com.example.haru.data.model.TodoCalendarData
 import com.example.haru.viewmodel.CalendarViewModel
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.abs
 
 
 //월간 달력 어뎁터
@@ -27,6 +28,8 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
     private var calendar = Calendar.getInstance()
 
     private var todo_schedule = false
+
+    private var calendar_position = 0
 
     lateinit var calendarviewModel: CalendarViewModel
 
@@ -44,18 +47,22 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
         return MonthView(view)
     }
 
-    override fun onBindViewHolder(holder: MonthView, position: Int) {
-        val calendar_recyclerview = holder.itemView.findViewById<RecyclerView>(R.id.calendar_recyclerview)
+    fun setView(holder:MonthView, position: Int){
+        val calendar_recyclerview =
+            holder.itemView.findViewById<RecyclerView>(R.id.calendar_recyclerview)
 
         calendar.time = Date()
         calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
 
-        calendarviewModel.init_viewModel(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH))
+        calendarviewModel.init_viewModel(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH)
+        )
 
         calendarviewModel.liveDateList.observe(lifecycle) { livedate ->
-            calendarviewModel.liveTodoCalendarList.observe(lifecycle) {livetodo->
-                calendarviewModel.liveScheduleCalendarList.observe(lifecycle){liveschedule->
-                    if(todo_schedule) {
+            calendarviewModel.liveTodoCalendarList.observe(lifecycle) { livetodo ->
+                calendarviewModel.liveScheduleCalendarList.observe(lifecycle) { liveschedule ->
+                    if (todo_schedule) {
                         var size = livedate.size * 5
 
                         for (con in livetodo) {
@@ -79,7 +86,15 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
                             val newpostion = positionplus + position2
                             if (newpostion / 7 in arrayOf(0, 5, 10, 15, 20, 25)) {
                                 val dateposition =
-                                    arrayOf(0, 5, 10, 15, 20, 25, 30).indexOf(newpostion / 7) * 7
+                                    arrayOf(
+                                        0,
+                                        5,
+                                        10,
+                                        15,
+                                        20,
+                                        25,
+                                        30
+                                    ).indexOf(newpostion / 7) * 7
                                 cyclevalue = dateposition
                                 spanList.add(1)
                             } else {
@@ -173,7 +188,15 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
                             val newpostion = positionplus + position2
                             if (newpostion / 7 in arrayOf(0, 5, 10, 15, 20, 25)) {
                                 val dateposition =
-                                    arrayOf(0, 5, 10, 15, 20, 25, 30).indexOf(newpostion / 7) * 7
+                                    arrayOf(
+                                        0,
+                                        5,
+                                        10,
+                                        15,
+                                        20,
+                                        25,
+                                        30
+                                    ).indexOf(newpostion / 7) * 7
                                 cyclevalue = dateposition
                                 spanList.add(1)
                             } else {
@@ -249,7 +272,19 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
         }
     }
 
+    override fun onBindViewHolder(holder: MonthView, position: Int) {
+        Log.d("bind position", (position-Int.MAX_VALUE/2).toString())
+        if(abs(calendar_position-(position - Int.MAX_VALUE/2)) <= 1){
+            setView(holder, position)
+        }
+    }
+
     override fun getItemCount(): Int {
         return Int.MAX_VALUE
+    }
+
+    fun setPosition(position: Int){
+        Log.d("position", position.toString())
+        calendar_position = position
     }
 }

@@ -34,15 +34,20 @@
             android:layout_height="match_parent"
             android:padding="2sp">
 
-            <TextView
-                android:id="@+id/item_day_text"
-                android:layout_gravity="center"
+            <FrameLayout
+                android:id="@+id/today_in_calendar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{calendar_content}"
-                android:alpha="@{date_or_content?calendar_date.alpha:255}"
-                android:textColor="@{date_or_content?calendar_date.color:black}"
-                android:textSize="12sp" />
+                android:layout_gravity="center">
+                <TextView
+                    android:id="@+id/item_day_text"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{calendar_content}"
+                    android:textColor="@{date_or_content?calendar_date.color:black}"
+                    android:textSize="12sp" />
+            </FrameLayout>
         </FrameLayout>
 
     </LinearLayout>
