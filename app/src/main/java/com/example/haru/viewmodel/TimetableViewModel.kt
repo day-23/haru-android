@@ -162,7 +162,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     //스케줄 쿼리문 전송
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
-            val emptyschedule = Schedule("", "", "", false, false, "", "", "", Category("","","",false), emptyList(), null, null,)
+            val emptyschedule = Schedule(0,"", "", "", false, "", "", "", false,"" , Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
             IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
 

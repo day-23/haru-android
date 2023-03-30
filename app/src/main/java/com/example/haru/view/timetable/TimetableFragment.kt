@@ -101,7 +101,9 @@ class TimetableFragment : Fragment() {
         }
         //스케줄을 타임테이블에 바인딩
         timetableviewModel.Schedules.observe(viewLifecycleOwner){ schedule ->
-            Drawtimes(binding.sunTable, schedule[0])
+            if(schedule.size != 0) {
+                Drawtimes(binding.sunTable, schedule[0])
+            }
         }
 
         binding.todolistChange.setOnClickListener{
@@ -123,8 +125,8 @@ class TimetableFragment : Fragment() {
         val overlapList = ArrayList<Schedule>()
 
         for(time in times){
-            val start = time.repeatStart.slice(IntRange(11,12)) + time.repeatStart.slice(IntRange(14,15))
-            val end = time.repeatEnd.slice(IntRange(11,12)) + time.repeatEnd.slice(IntRange(14,15))
+            val start = time.repeatStart?.slice(IntRange(11,12)) + time.repeatStart?.slice(IntRange(14,15))
+            val end = time.repeatEnd?.slice(IntRange(11,12)) + time.repeatEnd?.slice(IntRange(14,15))
 
             if(past_start <= start.toInt() || start.toInt() <= past_end){
                 overlapList.add(time)
@@ -143,9 +145,9 @@ class TimetableFragment : Fragment() {
             val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
             layout.layoutParams = layoutParams
             for(time in union){
-                val union_start_hour = union[0].repeatStart.slice(IntRange(11,12))
-                val union_start_min = union[0].repeatStart.slice(IntRange(14,15))
-                val margin = union_start_hour.toInt()*120 + union_start_min.toInt()
+                val union_start_hour = union[0].repeatStart?.slice(IntRange(11,12))
+                val union_start_min = union[0].repeatStart?.slice(IntRange(14,15))
+                val margin = union_start_hour!!.toInt() * 120 + union_start_min!!.toInt()
                 layoutParams.setMargins(0, margin, 0,0)
 
                 val Schedule_View = TextView(requireContext())
