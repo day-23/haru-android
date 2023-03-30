@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.Todo
+import com.example.haru.data.model.TodoTable_data
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -20,9 +21,9 @@ class TodoTableRecyclerViewmodel : ViewModel() {
     val TodoItemList : LiveData<ArrayList<List<Todo>>>
         get() = _TodoItemList
 
-    private val _TodoContentsList = MutableLiveData<ArrayList<ArrayList<String>>>()
-    val TodoContentsList : LiveData<ArrayList<ArrayList<String>>>
-        get() = _TodoContentsList
+    private val _TodoDataList = MutableLiveData<ArrayList<ArrayList<TodoTable_data>>>()
+    val TodoDataList : LiveData<ArrayList<ArrayList<TodoTable_data>>>
+        get() = _TodoDataList
 
     val dayslist = ArrayList<String>()
     val calendar = Calendar.getInstance()
@@ -33,41 +34,50 @@ class TodoTableRecyclerViewmodel : ViewModel() {
                 calendar.get(Calendar.DAY_OF_MONTH))
 
         getTodo(dayslist)
-
-        Log.d("daylist", "${TodoContentsList.value}")
     }
 
     fun getTodo(date : ArrayList<String>){
         viewModelScope.launch {
-            var TodoList = ArrayList<List<Todo>>()
-            var ContentList = ArrayList<ArrayList<String>>()
-
+            var IndexList: ArrayList<ArrayList<TodoTable_data>> = arrayListOf(
+                arrayListOf(TodoTable_data("","","",false)),
+                arrayListOf(TodoTable_data("","","",false)),
+                arrayListOf(TodoTable_data("","","",false)),
+                arrayListOf(TodoTable_data("","","",false)),
+                arrayListOf(TodoTable_data("","","",false)),
+                arrayListOf(TodoTable_data("","","",false)),
+                arrayListOf(TodoTable_data("","","",false)),
+            )
 
             //GET 쿼리 전송
-            for(Date in date) {
-                todoRepository.getTodoDates(Date, Date) {
-                    Log.d("GET1", "${it.size}")
-                    TodoList.add(it)
-                }
-            }
-            _TodoItemList.postValue(TodoList)
+            todoRepository.getTodoDates(date[0], date[6]) {
+                val TodoList = it
+                Log.d("GET1", "${TodoList}, ${date[0]}, ${date[6]} ")
 
-            //내용 추출
-            for(content in TodoList){
-                var Textlist = ArrayList<String>()
+                //내용 추출
+                for(data in TodoList){
+                    val year = data.endDate?.slice(IntRange(0,3))
+                    val month = data.endDate?.slice(IntRange(5,6))
+                    val day = data.endDate?.slice(IntRange(8,9))
+                    val result = year+month+day
 
-                if(content.size > 0){
-                    for(i : Int in 0 .. content.size-1){
-                        Textlist.add(content.get(i).content)
+                    if(data.endDate != null){ //날짜 정보가 있는 경우만 담음
+
+                        when(result){
+                            date[0] -> IndexList[0].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
+                            date[1] -> IndexList[1].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
+                            date[2] -> IndexList[2].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
+                            date[3] -> IndexList[3].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
+                            date[4] -> IndexList[4].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
+                            date[5] -> IndexList[5].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
+                            date[6] -> IndexList[6].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
+                        }
                     }
-                    ContentList.add(Textlist)
                 }
-                else{
-                    ContentList.add(Textlist)
+                for(i : Int in 0 .. 6) {
+                    IndexList[i].removeAt(0)
                 }
             }
-            _TodoContentsList.postValue(ContentList)
-            Log.d("GET1", "$ContentList")
+            _TodoDataList.postValue(IndexList)
         }
     }
 

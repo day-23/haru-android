@@ -43,6 +43,21 @@ class TodoRepository() {
         callback(todoData)
     }
 
+    suspend fun getSchedule(startDate:String, endDate:String, callback:(todoData : List<Schedule>) -> Unit) = withContext(Dispatchers.IO){
+        val response = scheduleService.getScheduleDates("881c51d1-06f1-47ce-99b6-b5582594db12",startDate,endDate).execute()
+        val data: GetScheduleResponse
+        val todoData : List<Schedule>
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to get todos")
+            data = response.body()!!
+            todoData = data.data
+        } else{
+            Log.d("TAG", "Fail to get todos")
+            todoData = emptyList()
+        }
+        callback(todoData)
+    }
     suspend fun createTodo(todoRequest: TodoRequest, callback: (todoData: Any) -> Unit) = withContext(Dispatchers.IO){
         val response = todoService.createTodo("005224c0-eec1-4638-9143-58cbfc9688c5", todoRequest).execute()
         val data: PostTodoResponse
