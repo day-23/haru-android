@@ -138,13 +138,19 @@ class TodoAdapter(val context: Context) :
             if (tag != "") {
                 binding.tvTagDescription.text = tag.dropLast(1)
                 binding.tvTagDescription.visibility = View.VISIBLE
-            } else binding.tvTagDescription.visibility = View.GONE
+            } else {
+                binding.tvTagDescription.visibility = View.GONE
+                binding.tvTagDescription.text = tag
+            }
 
             if (item.endDate != null) {
                 binding.tvEndDateDescription.text =
                     FormatDate.todoDateToStr(item.endDate).substring(5, 10) + "까지"
                 binding.tvEndDateDescription.visibility = View.VISIBLE
-            } else binding.tvEndDateDescription.visibility = View.GONE
+            } else {
+                binding.tvEndDateDescription.text = ""
+                binding.tvEndDateDescription.visibility = View.GONE
+            }
 
             if (item.completed) binding.tvTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             else binding.tvTitle.paintFlags = 0

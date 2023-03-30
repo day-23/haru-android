@@ -523,15 +523,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 }
             }
         })
-//
-////        todoAddViewModel.tag.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-////            Log.d("20191627", it)
-////            if (it.isNotEmpty() && it.replace(" ", "") != "" && it.last() == ' '){
-////                todoAddViewModel.addTagList()
-//////                binding.tagEt.text
-////            }
-////        })
-//
+
         binding.checkFlagTodo.setOnClickListener(btnListener())
         binding.todaySwitch.setOnClickListener(btnListener())
 

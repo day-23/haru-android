@@ -167,9 +167,23 @@ class CheckListViewModel() :
                     _todoDataList.postValue(todoList)
                     callback()
                 }
+                Log.d("201916271", it.toString())
             }
         }
     }
+
+//    fun deleteTodo(todoId: String, position: Int, callback: () -> Unit){
+//        viewModelScope.launch {
+//            val successData = todoRepository.deleteTodo(todoId = todoId){
+//                if (it.success){
+//                    todoList.removeAt(position)
+//                    _todoDataList.postValue(todoList)
+//                }
+//                callback()
+//            }
+//        }
+//
+//    }
 
 
 }

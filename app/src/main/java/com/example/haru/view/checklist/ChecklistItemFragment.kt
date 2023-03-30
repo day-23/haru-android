@@ -122,6 +122,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
         super.onViewCreated(view, savedInstanceState)
 
         todoAddViewModel.setClickTodo(this.position)
+        Log.d("20191627", todoAddViewModel.clickedTodo.toString())
         binding.vm = todoAddViewModel
         // flag 관련 UI Update
         todoAddViewModel.flagTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -132,11 +133,11 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
         todoAddViewModel.completedTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val color = if (it) R.color.light_gray else R.color.todo_description
             binding.cbInfoCompleted.isChecked = it
-            binding.tvInfoContent.paintFlags =
+            binding.etInfoContent.paintFlags =
                 if (it)
                     Paint.STRIKE_THRU_TEXT_FLAG
-                else binding.tvInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-            binding.tvInfoContent.setTextColor(ContextCompat.getColor(requireContext(), color))
+                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            binding.etInfoContent.setTextColor(ContextCompat.getColor(requireContext(), color))
 
         })
 
@@ -426,6 +427,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
+//                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo(position){
+//                    requireActivity().supportFragmentManager.popBackStack()
+//                }
                 binding.btnInfoSave.id -> {
                     todoAddViewModel.readyToSubmit()
                     todoAddViewModel.updateTodo{

@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@{todo.completed ? @color/light_gray : @color/todo_description}"
-                    android:visibility='@{todo.memo == "" ? View.GONE : View.VISIBLE}'
+                    android:visibility='@{todo.memo.equals("") ? View.GONE : View.VISIBLE}'
                     android:background="@drawable/small_memo_icon" />
             </LinearLayout>
 

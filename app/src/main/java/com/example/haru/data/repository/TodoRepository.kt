@@ -165,14 +165,17 @@ class TodoRepository() {
     suspend fun putTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
-        todo : UpdateTodo,
+        todo: UpdateTodo,
         callback: (todoData: Todo) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.putTodo(userId, todoId, todo).execute()
-        val data : UpdateTodoResponse
-        val todoData : Todo
+        val data: UpdateTodoResponse
+        val todoData: Todo
 
-        if (response.isSuccessful){
+        // null 값이 json으로 parsing 할때 null 값으로 안들어감
+        // retrofit에서 null 값을 null값으로 보낼 수 있는 방법을 찾아 시발려낭!
+
+        if (response.isSuccessful) {
             Log.d("TAG", "Success to put Todo")
             data = response.body()!!
             todoData = data.data
@@ -182,4 +185,23 @@ class TodoRepository() {
         }
         callback(todoData)
     }
+
+//    suspend fun deleteTodo(
+//        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+//        todoId: String,
+//        callback: (successData: SuccessFail) -> Unit
+//    ) = withContext(Dispatchers.IO) {
+//        val response = todoService.deleteTodo(userId, todoId).execute()
+//        val data = response.body()!!
+//        val successData : SuccessFail
+//
+//        if (response.isSuccessful){
+//            Log.d("TAG", "Success to Delete Todo")
+//            successData = data
+//        } else {
+//            Log.d("TAG", "Fail to Delete Todo")
+//            successData = data
+//        }
+//        callback(successData)
+//    }
 }

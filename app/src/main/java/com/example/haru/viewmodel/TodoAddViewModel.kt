@@ -71,13 +71,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     var memo: String = ""
 
-    //    var repeatValue: String? = null
     var endDateStr: String? = null
     var alarmDateTimeStr: String? = null
     var repeatEndDateStr: String? = null
 
     var endTimeLayoutHeight: Int = 0
-
     var repeatSetLayoutHeight: Int = 0
     var repeatOptionHeight: Int = 0
     var repeatWeekHeight: Int = 0
@@ -100,7 +98,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         if (clickedTodo.endDate != null) {
             _endDate.value = FormatDate.strToDate(clickedTodo.endDate!!)
             _endDateSwitch.value = true
-        }
+        } else _endDateSwitch.value = false
+
         if (isSelectedEndDateTime.value!!)
             _endTime.value = FormatDate.strToDate(clickedTodo.endDate!!)
 
@@ -234,6 +233,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             null
         }
 
+        Log.d("20191627", endDateStr.toString())
+
         alarmDateTimeStr =
             if (alarmSwitch.value == true && alarmDate.value != null && alarmTime.value != null)
                 FormatDate.dateToStr(alarmDate.value!!).substring(
@@ -264,7 +265,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             isAllDay = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
             repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else "null",
-            repeatValue = repeatValue.value,
+            repeatValue = if (repeatSwitch.value == true) repeatValue.value else null,
             repeatEnd = repeatEndDateStr,
             tags = tagList,
             subTodos = subTodos,
@@ -302,5 +303,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             callback()
         }
     }
+
+//    fun deleteTodo(position: Int, callback: () -> Unit){
+//        checklistViewModel.deleteTodo(todoId = clickedTodo.id, position = position){
+//            callback()
+//        }
+//    }
 
 }

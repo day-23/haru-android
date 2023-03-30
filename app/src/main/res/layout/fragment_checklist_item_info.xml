@@ -58,14 +58,15 @@
                         android:background="@drawable/checklist_done_circle"
                         android:button="@android:color/transparent" />
 
-                    <TextView
-                        android:id="@+id/tv_info_content"
+                    <EditText
+                        android:id="@+id/et_info_content"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
                         android:layout_weight="1"
                         android:text="@={vm.content}"
                         android:textColor="@color/todo_description"
+                        android:background="@android:color/transparent"
                         android:textSize="24sp" />
 
                     <CheckBox
@@ -629,7 +630,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/big_memo_icon"
-                        android:backgroundTint='@{vm.memo == "" ? @color/light_gray : @color/todo_description}' />
+                        android:backgroundTint='@{vm.memo.equals("") ? @color/light_gray : @color/todo_description}' />
 
                     <EditText
                         android:id="@+id/et_info_memo"
@@ -640,7 +641,7 @@
                         android:background="@android:color/transparent"
                         android:ems="10"
                         android:hint="@string/memo_set"
-                        android:text='@{vm.memo == "" ? "" : vm.memo}'
+                        android:text='@={vm.memo}'
                         android:inputType="textMultiLine"
                         android:scrollbars="vertical"
                         android:textColor="@color/todo_description"
@@ -666,7 +667,7 @@
                 android:textSize="20sp"
                 android:background="@android:color/transparent"
                 android:textColor="@color/date_text"
-                android:text="삭제"
+                android:text="@string/delete"
                 />
 
             <View
@@ -681,7 +682,7 @@
                 android:textSize="20sp"
                 android:background="@android:color/transparent"
                 android:textColor="@color/highlight"
-                android:text="저장"/>
+                android:text="@string/save"/>
 
 
         </LinearLayout>
