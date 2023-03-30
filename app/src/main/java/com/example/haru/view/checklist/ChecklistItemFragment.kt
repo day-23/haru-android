@@ -330,6 +330,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
 
         binding.ivBackIcon.setOnClickListener(BtnClickListener())
         binding.btnInfoSave.setOnClickListener(BtnClickListener())
+        binding.btnInfoDelete.setOnClickListener(BtnClickListener())
     }
 
     inner class BtnClickListener : View.OnClickListener {
@@ -427,9 +428,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
-//                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo(position){
-//                    requireActivity().supportFragmentManager.popBackStack()
-//                }
+                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo(position){
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
                 binding.btnInfoSave.id -> {
                     todoAddViewModel.readyToSubmit()
                     todoAddViewModel.updateTodo{

@@ -304,10 +304,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-//    fun deleteTodo(position: Int, callback: () -> Unit){
-//        checklistViewModel.deleteTodo(todoId = clickedTodo.id, position = position){
-//            callback()
-//        }
-//    }
+    fun deleteTodo(position: Int, callback: () -> Unit){
+        checklistViewModel.deleteTodo(todoId = clickedTodo.id, position = position){
+            callback()
+        }
+    }
 
 }

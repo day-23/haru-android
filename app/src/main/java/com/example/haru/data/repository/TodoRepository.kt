@@ -186,22 +186,22 @@ class TodoRepository() {
         callback(todoData)
     }
 
-//    suspend fun deleteTodo(
-//        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
-//        todoId: String,
-//        callback: (successData: SuccessFail) -> Unit
-//    ) = withContext(Dispatchers.IO) {
-//        val response = todoService.deleteTodo(userId, todoId).execute()
-//        val data = response.body()!!
-//        val successData : SuccessFail
-//
-//        if (response.isSuccessful){
-//            Log.d("TAG", "Success to Delete Todo")
-//            successData = data
-//        } else {
-//            Log.d("TAG", "Fail to Delete Todo")
-//            successData = data
-//        }
-//        callback(successData)
-//    }
+    suspend fun deleteTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.deleteTodo(userId, todoId).execute()
+        val data = response.body()!!
+        val successData : SuccessFail
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to Delete Todo")
+            successData = data
+        } else {
+            Log.d("TAG", "Fail to Delete Todo")
+            successData = data
+        }
+        callback(successData)
+    }
 }

@@ -172,18 +172,18 @@ class CheckListViewModel() :
         }
     }
 
-//    fun deleteTodo(todoId: String, position: Int, callback: () -> Unit){
-//        viewModelScope.launch {
-//            val successData = todoRepository.deleteTodo(todoId = todoId){
-//                if (it.success){
-//                    todoList.removeAt(position)
-//                    _todoDataList.postValue(todoList)
-//                }
-//                callback()
-//            }
-//        }
-//
-//    }
+    fun deleteTodo(todoId: String, position: Int, callback: () -> Unit){
+        viewModelScope.launch {
+            val successData = todoRepository.deleteTodo(todoId = todoId){
+                if (it.success){
+                    todoList.removeAt(position)
+                    _todoDataList.postValue(todoList)
+                }
+                callback()
+            }
+        }
+
+    }
 
 
 }

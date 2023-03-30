@@ -32,6 +32,6 @@ interface TodoService {
     @PUT("todo/{userId}/{todoId}")
     fun putTodo(@Path("userId") userId: String, @Path("todoId") todoId : String, @Body todo : UpdateTodo) : Call<UpdateTodoResponse>
 
-//    @DELETE("todo/{userId}/{todoId}")
-//    fun deleteTodo(@Path("userId") userId: String, @Path("todoId") todoId : String) : Call<SuccessFail>
+    @DELETE("todo/{userId}/{todoId}")
+    fun deleteTodo(@Path("userId") userId: String, @Path("todoId") todoId : String) : Call<SuccessFail>
 }
