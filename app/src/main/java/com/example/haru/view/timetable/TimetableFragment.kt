@@ -22,6 +22,7 @@ import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
+import org.w3c.dom.Text
 
 
 class TimetableFragment : Fragment() {
@@ -68,21 +69,24 @@ class TimetableFragment : Fragment() {
         linlayout.layoutParams = layoutParams
 
         layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
-        layoutParams.setMargins(0, 120, 0,0)
+        var displayMetrics = resources.displayMetrics
+        layoutParams.topMargin = Math.round(120 * displayMetrics.density)
         val button1 = Button(requireContext())
         button1.setText("test1")
         button1.layoutParams = layoutParams
         linlayout.addView(button1)
 
         layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
-        layoutParams.setMargins(0, 140, 0,0)
+        displayMetrics = resources.displayMetrics
+        layoutParams.topMargin = Math.round(140 * displayMetrics.density)
         val button2 = Button(requireContext())
         button2.setText("test2")
         button2.layoutParams = layoutParams
         linlayout.addView(button2)
 
         layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
-        layoutParams.setMargins(0, 160, 0,0)
+        displayMetrics = resources.displayMetrics
+        layoutParams.topMargin = Math.round(160 * displayMetrics.density)
         val button3 = Button(requireContext())
         button3.setText("test3")
         button3.layoutParams = layoutParams
@@ -93,7 +97,8 @@ class TimetableFragment : Fragment() {
         var layoutParams2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
         linlayout2.layoutParams = layoutParams2
         layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
-        layoutParams.setMargins(0, 500, 0,0)
+        displayMetrics = resources.displayMetrics
+        layoutParams.topMargin = Math.round(260 * displayMetrics.density)
         val button4 = Button(requireContext())
         button4.setText("test4")
         button4.layoutParams = layoutParams
