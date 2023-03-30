@@ -52,6 +52,8 @@ class CalendarFragment : Fragment() {
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
 
+        month_viewpager.offscreenPageLimit = 1
+
         adapterMonth = AdapterMonth(viewLifecycleOwner, view)
         month_viewpager.adapter = adapterMonth
 
