@@ -155,11 +155,11 @@ class CheckListViewModel() :
         _completedTodos.value = emptyList()
     }
 
-    fun putTodo(todoId: String, todo : UpdateTodo, callback: () -> Unit){
+    fun putTodo(todoId: String, todo: UpdateTodo, callback: () -> Unit) {
         viewModelScope.launch {
-            val updateTodo = todoRepository.putTodo(todoId = todoId, todo = todo){
+            val updateTodo = todoRepository.putTodo(todoId = todoId, todo = todo) {
                 getTag()
-                getTodoMain{
+                getTodoMain {
                     todoList.clear()
                     flaggedTodos.value?.let { todoList.addAll(it) }
                     taggedTodos.value?.let { todoList.addAll(it) }
@@ -173,17 +173,48 @@ class CheckListViewModel() :
         }
     }
 
-    fun deleteTodo(todoId: String, position: Int, callback: () -> Unit){
+    fun deleteTodo(todoId: String, position: Int, callback: () -> Unit) {
         viewModelScope.launch {
-            val successData = todoRepository.deleteTodo(todoId = todoId){
-                if (it.success){
+            val successData = todoRepository.deleteTodo(todoId = todoId) {
+                if (it.success) {
                     todoList.removeAt(position)
                     _todoDataList.postValue(todoList)
                 }
                 callback()
             }
         }
+    }
 
+    fun updateFlag(todoId: String, flag: Flag, position: Int) {
+        viewModelScope.launch {
+            val successData = todoRepository.updateFlag(todoId = todoId, flag = flag) {
+                if (it.success) {
+                    val todo = todoList[position].copy(flag = flag.flag)
+                    todoList.removeAt(position)
+
+                    if (todo.flag && !todo.completed) {
+                        todoList.add(1, todo)
+                    } else {
+                        if (todo.completed) {
+                            val i = todoList.indexOf(Todo(type = 1, content = "완료"))
+                            todoList.add(i + 1, todo)
+                        } else {
+                            when (todo.tags.isEmpty()) {
+                                true -> {
+                                    val i = todoList.indexOf(Todo(type = 1, content = "미분류"))
+                                    todoList.add(i + 1, todo)
+                                }
+                                false -> {
+                                    val i = todoList.indexOf(Todo(type = 1, content = "분류"))
+                                    todoList.add(i + 1, todo)
+                                }
+                            }
+                        }
+                    }
+                    _todoDataList.postValue(todoList)
+                }
+            }
+        }
     }
 
 
