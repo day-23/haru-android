@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.haru.data.api.ScheduleService
 import com.example.haru.data.api.TagService
 import com.example.haru.data.api.TodoService
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -11,8 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "http://27.96.131.169:8000"
-//    192.168.0.42
+    private const val BASE_URL = "http://api.23haru.com/"
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {
@@ -23,8 +23,8 @@ object RetrofitClient {
         .build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(BASE_URL)   // retrofit encoding 될 때 null값이 들어가지 않는 현상 때문에 아래 코드 필요
+        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
         .client(okHttpClient)
         .build()
 

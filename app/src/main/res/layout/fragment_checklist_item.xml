@@ -29,6 +29,7 @@
             android:layout_marginTop="18dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="18dp"
+            android:checked="@{todo.completed}"
             android:background="@drawable/checklist_done_circle"
             android:button="@android:color/transparent" />
 
@@ -45,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@{todo.content}"
-                android:textColor="@color/todo_description"
+                android:textColor="@{todo.completed ? @color/light_gray : @color/todo_description}"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -62,14 +63,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:maxLength="13"
-                    android:textColor="@color/todo_description"
+                    android:textColor="@{todo.completed ? @color/light_gray : @color/todo_description}"
                     android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/tv_endDate_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/todo_description"
+                    android:textColor="@{todo.completed ? @color/light_gray : @color/todo_description}"
                     android:textSize="10sp" />
 
                 <ImageView
@@ -77,12 +78,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="@{todo.endDate == null &amp;&amp; todo.tags.empty ? View.GONE : View.VISIBLE}"
+                    android:backgroundTint="@{todo.completed ? @color/light_gray : @color/todo_description}"
                     android:background="@drawable/small_dot_icon" />
 
                 <ImageView
                     android:id="@+id/iv_small_today"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@{todo.completed ? @color/light_gray : @color/todo_description}"
                     android:visibility="@{todo.todayTodo ? View.VISIBLE : View.GONE}"
                     android:background="@drawable/small_today_icon" />
 
@@ -90,6 +93,7 @@
                     android:id="@+id/iv_small_alarm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@{todo.completed ? @color/light_gray : @color/todo_description}"
                     android:visibility="@{todo.alarms.empty ? View.GONE : View.VISIBLE}"
                     android:background="@drawable/small_alarm_icon" />
 
@@ -97,6 +101,7 @@
                     android:id="@+id/iv_small_repeat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@{todo.completed ? @color/light_gray : @color/todo_description}"
                     android:visibility="@{todo.repeatOption == null ? View.GONE : View.VISIBLE}"
                     android:background="@drawable/small_repeat_icon" />
 
@@ -104,6 +109,7 @@
                     android:id="@+id/iv_small_memo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@{todo.completed ? @color/light_gray : @color/todo_description}"
                     android:visibility='@{todo.memo.equals("") ? View.GONE : View.VISIBLE}'
                     android:background="@drawable/small_memo_icon" />
             </LinearLayout>

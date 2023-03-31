@@ -9,14 +9,9 @@
             type="com.example.haru.viewmodel.TimeTableRecyclerViewModel"/>
     </data>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="66dp">
+            android:layout_height="120dp">
 
             <TextView
                 android:id="@+id/tv_timetable_time"
@@ -29,96 +24,94 @@
                 android:textColor="#191919"
                 android:text="1\n오전" />
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EDEDED" />
-
-            <ImageView
-                android:id="@+id/tv_timetable_mon"
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="match_parent"
-                android:src="@drawable/timetable_line" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EDEDED" />
-
-            <ImageView
-                android:id="@+id/tv_timetable_tue"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:src="@drawable/timetable_line" />
+                android:layout_weight="14"
+                android:background="@drawable/timetable_line">
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EDEDED" />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#EDEDED" />
 
-            <ImageView
-                android:id="@+id/tv_timetable_wed"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:src="@drawable/timetable_line" />
+                <ImageView
+                    android:id="@+id/tv_timetable_mon"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="match_parent"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EDEDED" />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#EDEDED" />
 
-            <ImageView
-                android:id="@+id/tv_timetable_thu"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:src="@drawable/timetable_line" />
+                <ImageView
+                    android:id="@+id/tv_timetable_tue"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EDEDED" />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#EDEDED" />
 
-            <ImageView
-                android:id="@+id/tv_timetable_fri"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:src="@drawable/timetable_line" />
+                <ImageView
+                    android:id="@+id/tv_timetable_wed"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EDEDED" />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#EDEDED" />
 
-            <ImageView
-                android:id="@+id/tv_timetable_sat"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:src="@drawable/timetable_line" />
+                <ImageView
+                    android:id="@+id/tv_timetable_thu"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EDEDED" />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#EDEDED" />
 
-            <ImageView
-                android:id="@+id/tv_timetable_sun"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:src="@drawable/timetable_line" />
+                <ImageView
+                    android:id="@+id/tv_timetable_fri"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EDEDED" />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#EDEDED" />
+
+                <ImageView
+                    android:id="@+id/tv_timetable_sat"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#EDEDED" />
+
+                <ImageView
+                    android:id="@+id/tv_timetable_sun"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#EDEDED" />
+            </LinearLayout>
         </LinearLayout>
 
-
-    </LinearLayout>
 </layout>

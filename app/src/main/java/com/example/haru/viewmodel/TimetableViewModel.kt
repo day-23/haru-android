@@ -9,16 +9,18 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide.init
-import com.example.haru.data.model.Timetable_date
-import com.example.haru.data.model.User
-import com.example.haru.data.model.timetable_data
+import com.example.haru.data.model.*
+import com.example.haru.data.repository.TodoRepository
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class TimetableViewModel(val context : Context): ViewModel() {
+    private val scheduleRepository = TodoRepository()
 
     private val _Dates = MutableLiveData<ArrayList<String>>()
     val Dates : LiveData<ArrayList<String>>
@@ -36,6 +38,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Colors : LiveData<ArrayList<String>>
         get() = _Colors
 
+    private val _Schedules = MutableLiveData<ArrayList<ArrayList<Schedule>>>()
+    val Schedules : LiveData<ArrayList<ArrayList<Schedule>>>
+        get() = _Schedules
+
     // #F71E58 빨
     // #DBDBDB 회
     // #1DAFFF 파
@@ -45,8 +51,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var colorlist: ArrayList<String> = ArrayList()
     var dayslist: ArrayList<String> = ArrayList()
     var Datelist: ArrayList<String> = ArrayList()
+    var IndexList: ArrayList<ArrayList<Schedule>> = ArrayList()
+    var IndexList_allday: ArrayList<ArrayList<Schedule>> = ArrayList()
+    fun init_value() {
 
-    init {
         _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString()+"일")
 
         Daylist(
@@ -57,7 +65,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
         _Days.value = dayslist
         _Colors.value = colorlist
         _Dates.value = Datelist
-
+        _Schedules.value = IndexList
     }
 
     //날짜정보//
@@ -84,6 +92,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 _Colors.value = colorlist
                 _Selected.value = Timetable_date(year.toString()+"년", (month+1).toString()+"월", day.toString()+"일")
                 _Dates.value = Datelist
+                getSchedule(Datelist)
+                _Schedules.value = IndexList
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") { dialog, _ ->
@@ -100,6 +110,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
         dayslist.clear()
         colorlist.clear()
+        Datelist.clear()
 
         calendar.set(year, month - 1, day)
         val lastOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -147,6 +158,46 @@ class TimetableViewModel(val context : Context): ViewModel() {
             d += 1
         }
     }
-    //날짜정보//
+
+    //스케줄 쿼리문 전송
+    fun getSchedule(date : ArrayList<String>){
+        viewModelScope.launch {
+            val emptyschedule = Schedule(0,"", "", "", false, "", "", "", false,"" , Category("","","",false), emptyList(), null, null,)
+            IndexList = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
+            IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
+
+            scheduleRepository.getSchedule(date[0], date[6]) {
+                val TodoList = it
+
+                //내용 추출
+                for(data in TodoList){
+                    val year_start = data.repeatStart?.slice(IntRange(0,3))
+                    val month_start = data.repeatStart?.slice(IntRange(5,6))
+                    val day_start = data.repeatStart?.slice(IntRange(8,9))
+                    val result_start = year_start+month_start+day_start
+
+                    val year_end = data.repeatStart?.slice(IntRange(0,3))
+                    val month_end = data.repeatStart?.slice(IntRange(5,6))
+                    val day_end = data.repeatStart?.slice(IntRange(8,9))
+                    val result_end = year_end+month_end+day_end
+
+                    if(data.repeatStart != data.repeatEnd && result_start == result_end){ //하루치 일정
+                        when(result_start){
+                            date[0] -> IndexList[0].add(data)
+                            date[1] -> IndexList[1].add(data)
+                            date[2] -> IndexList[2].add(data)
+                            date[3] -> IndexList[3].add(data)
+                            date[4] -> IndexList[4].add(data)
+                            date[5] -> IndexList[5].add(data)
+                            date[6] -> IndexList[6].add(data)
+                        }
+                    }
+                }
+                for(i : Int in 0 .. 6) {
+                    IndexList[i].removeAt(0)
+                }
+            }
+        }
+    }
 
 }

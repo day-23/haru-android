@@ -6,24 +6,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Todotable_date
-import com.example.haru.data.model.timetable_data
-import com.example.haru.databinding.FragmentTimetableBinding
+import com.example.haru.data.model.TodoTable_data
 import com.example.haru.databinding.FragmentTodotableBinding
-import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import com.example.haru.viewmodel.TodoTableRecyclerViewmodel
-import kotlin.text.Typography.times
 
-class TodotableFragment : Fragment()  {
+class TodotableFragment : Fragment() {
     private lateinit var binding : FragmentTodotableBinding
     private lateinit var timetableviewModel: TimetableViewModel
     private lateinit var todoreviewModel: TodoTableRecyclerViewmodel
+
     //투두 리사이클러 뷰
     private lateinit var sun_todotableAdapter: TodotableAdapter
     lateinit var sun_todorecyclerView: RecyclerView
@@ -40,7 +38,7 @@ class TodotableFragment : Fragment()  {
     private lateinit var sat_todotableAdapter: TodotableAdapter
     lateinit var sat_todorecyclerView: RecyclerView
 
-    var todoList: ArrayList<String> = ArrayList()
+    var todoList: ArrayList<TodoTable_data> = ArrayList()
     companion object {
         const val TAG: String = "로그"
 
@@ -69,44 +67,52 @@ class TodotableFragment : Fragment()  {
 
         todoreviewModel.init_value()
 
-        todoreviewModel.TodoContentsList.observe(viewLifecycleOwner) { contents ->
-            val sunday = contents.get(0)
-            val monday = contents.get(1)
-            val tueday = contents.get(2)
-            val wedday = contents.get(3)
-            val thuday = contents.get(4)
-            val friday = contents.get(5)
-            val satday = contents.get(6)
-            sun_todotableAdapter = TodotableAdapter(requireContext(), sunday ?: todoList)
+        todoreviewModel.TodoDataList.observe(viewLifecycleOwner) { contents ->
+            sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ?: todoList,Todo_draglistener())
             sun_todorecyclerView.adapter = sun_todotableAdapter
-            mon_todotableAdapter = TodotableAdapter(requireContext(), monday ?: todoList)
+            mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ?: todoList,Todo_draglistener())
             mon_todorecyclerView.adapter = mon_todotableAdapter
-            tue_todotableAdapter = TodotableAdapter(requireContext(), tueday ?: todoList)
+            tue_todotableAdapter = TodotableAdapter(requireContext(), contents[2] ?: todoList,Todo_draglistener())
             tue_todorecyclerView.adapter = tue_todotableAdapter
-            wed_todotableAdapter = TodotableAdapter(requireContext(), wedday ?: todoList)
+            wed_todotableAdapter = TodotableAdapter(requireContext(), contents[3] ?: todoList,Todo_draglistener())
             wed_todorecyclerView.adapter = wed_todotableAdapter
-            thu_todotableAdapter = TodotableAdapter(requireContext(), thuday ?: todoList)
+            thu_todotableAdapter = TodotableAdapter(requireContext(), contents[4] ?: todoList,Todo_draglistener())
             thu_todorecyclerView.adapter = thu_todotableAdapter
-            fri_todotableAdapter = TodotableAdapter(requireContext(), friday ?: todoList)
+            fri_todotableAdapter = TodotableAdapter(requireContext(), contents[5] ?: todoList,Todo_draglistener())
             fri_todorecyclerView.adapter = fri_todotableAdapter
-            sat_todotableAdapter = TodotableAdapter(requireContext(), satday ?: todoList)
+            sat_todotableAdapter = TodotableAdapter(requireContext(), contents[6] ?: todoList,Todo_draglistener())
             sat_todorecyclerView.adapter = sat_todotableAdapter
         }
+
+        val dragListener = Todo_draglistener()
         //리사이클러뷰 요일별 바인딩
         sun_todorecyclerView = binding.sunTodosRecycler
         sun_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        sun_todorecyclerView.setOnDragListener(dragListener)
+
         mon_todorecyclerView = binding.monTodosRecycler
         mon_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        mon_todorecyclerView.setOnDragListener(dragListener)
+
         tue_todorecyclerView = binding.tueTodosRecycler
         tue_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        tue_todorecyclerView.setOnDragListener(dragListener)
+
         wed_todorecyclerView = binding.wedTodosRecycler
         wed_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        wed_todorecyclerView.setOnDragListener(dragListener)
+
         thu_todorecyclerView = binding.thuTodosRecycler
         thu_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        thu_todorecyclerView.setOnDragListener(dragListener)
+
         fri_todorecyclerView = binding.friTodosRecycler
         fri_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        fri_todorecyclerView.setOnDragListener(dragListener)
+
         sat_todorecyclerView = binding.satTodosRecycler
         sat_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        sat_todorecyclerView.setOnDragListener(dragListener)
 
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             val year = times.year.slice(0..times.year.length - 2)

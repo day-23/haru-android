@@ -14,6 +14,9 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <!-- 글꼴 설정 -->
+        <item name="android:fontFamily">@font/pretendardvariable</item>
+
     </style>
 
     <style name="Theme.Splash" parent="Theme.AppCompat.Light.NoActionBar">
@@ -28,4 +31,6 @@
     <style name="Theme.Haru.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Haru.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
 </resources>
