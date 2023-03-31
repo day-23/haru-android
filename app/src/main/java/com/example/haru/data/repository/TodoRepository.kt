@@ -194,14 +194,13 @@ class TodoRepository() {
     ) = withContext(Dispatchers.IO) {
         val response = todoService.deleteTodo(userId, todoId).execute()
         val data = response.body()!!
-        val successData: SuccessFail
 
-        if (response.isSuccessful) {
+        val successData: SuccessFail = if (response.isSuccessful) {
             Log.d("TAG", "Success to Delete Todo")
-            successData = data
+            data
         } else {
             Log.d("TAG", "Fail to Delete Todo")
-            successData = data
+            data
         }
         callback(successData)
     }
@@ -213,14 +212,32 @@ class TodoRepository() {
     ) = withContext(Dispatchers.IO) {
         val response = todoService.updateFlag(userId, todoId, flag).execute()
         val data = response.body()!!
-        val successData : SuccessFail
 
-        if (response.isSuccessful){
+        val successData: SuccessFail = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update Flag")
-            successData = data
-        }else {
+            data
+        } else {
             Log.d("TAG", "Fail to Update Flag")
-            successData = data
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun updateNotRepeatTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        completed: Completed,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.updateNotRepeatTodo(userId, todoId, completed).execute()
+        val data = response.body()!!
+
+        val successData : SuccessFail = if (response.isSuccessful){
+            Log.d("TAG", "Success to Update NotRepeatTodo Complete")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update NotRepeatTodo Complete")
+            data
         }
         callback(successData)
     }

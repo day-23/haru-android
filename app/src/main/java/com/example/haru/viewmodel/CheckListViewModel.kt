@@ -185,9 +185,9 @@ class CheckListViewModel() :
         }
     }
 
-    fun updateFlag(todoId: String, flag: Flag, position: Int) {
+    fun updateFlag(flag: Flag, position: Int) {
         viewModelScope.launch {
-            val successData = todoRepository.updateFlag(todoId = todoId, flag = flag) {
+            val successData = todoRepository.updateFlag(todoId = todoDataList.value!![position].id, flag = flag) {
                 if (it.success) {
                     val todo = todoList[position].copy(flag = flag.flag)
                     todoList.removeAt(position)
@@ -210,6 +210,26 @@ class CheckListViewModel() :
                                 }
                             }
                         }
+                    }
+                    _todoDataList.postValue(todoList)
+                }
+            }
+        }
+    }
+
+    fun updateNotRepeatTodo(completed: Completed, position: Int){
+        viewModelScope.launch {
+            val successData = todoRepository.updateNotRepeatTodo(todoId = todoDataList.value!![position].id, completed = completed){
+                if (it.success){
+                    val todo = todoList[position].copy(completed = completed.completed)
+                    todoList.removeAt(position)
+
+                    if (todo.completed)
+                        todoList.add(todoList.indexOf(Todo(type = 1, content = "완료")) + 1, todo)
+                    else {
+                        val i = if (todo.flag) 0 else if (todo.tags.isEmpty()) todoList.indexOf(Todo(type = 1, content = "미분류"))
+                        else todoList.indexOf(Todo(type = 1, content = "분류"))
+                        todoList.add(i + 1, todo)
                     }
                     _todoDataList.postValue(todoList)
                 }

@@ -126,9 +126,11 @@ class TodoAdapter(val context: Context) :
                     }
                 }
 
-//                if (completeClick != null) {
-//                    holder.binding.
-//                }
+                if (completeClick != null) {
+                    holder.binding.checkDone.setOnClickListener {
+                        completeClick?.onClick(it, position)
+                    }
+                }
             }
         }
     }

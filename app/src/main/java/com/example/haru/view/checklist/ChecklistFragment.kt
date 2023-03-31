@@ -10,6 +10,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Completed
 import com.example.haru.data.model.Flag
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
@@ -108,10 +109,18 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 val flag = if (checkListViewModel.todoDataList.value!![position].flag) Flag(false)
                 else Flag(true)
                 checkListViewModel.updateFlag(
-                    checkListViewModel.todoDataList.value!![position].id,
                     flag,
                     position
                 )
+            }
+        }
+
+        todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
+            override fun onClick(view: View, position: Int) {
+                val completed = if (checkListViewModel.todoDataList.value!![position].completed) Completed(false)
+                else Completed(true)
+
+                checkListViewModel.updateNotRepeatTodo(completed, position)
             }
         }
 
