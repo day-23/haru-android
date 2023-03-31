@@ -157,7 +157,7 @@ class TimetableFragment : Fragment() {
                     Drawtimes(binding.tueTable, schedule[2])
 
                 if(schedule[3].size > 0)
-                    Log.d("Schedules", "${schedule.get(3)}")
+                    Log.d("Schedules", "wed ${schedule.get(3)}")
                     binding.wedTable.removeAllViews()
                     Drawtimes(binding.wedTable, schedule[3])
 
@@ -201,32 +201,39 @@ class TimetableFragment : Fragment() {
 
     fun Drawtimes(table: ViewGroup, times: ArrayList<Schedule>){
         var past_start = 0
-        var past_end = 2355
+        var past_end = 2359
         val UnionList = ArrayList<ArrayList<Schedule>>()
-        val overlapList = ArrayList<Schedule>()
+        var overlapList = ArrayList<Schedule>()
 
-        for(time in times){
-            val start = time.repeatStart?.slice(IntRange(11,12)) + time.repeatStart?.slice(IntRange(14,15))
-            val end = time.repeatEnd?.slice(IntRange(11,12)) + time.repeatEnd?.slice(IntRange(14,15))
-            if(past_start <= start.toInt() || start.toInt() <= past_end){
-                overlapList.add(time)
+        for(times in times){
+            val start = times.repeatStart?.slice(IntRange(11,12)) + times.repeatStart?.slice(IntRange(14,15))
+            val end = times.repeatEnd?.slice(IntRange(11,12)) + times.repeatEnd?.slice(IntRange(14,15))
+
+            if(start.toInt() in past_start .. past_end){
+                overlapList.add(times)
             }
             else{
-                UnionList.add(overlapList)
+                val arraylist = ArrayList<Schedule>()
+                for(i in overlapList){
+                    arraylist.add(i)
+                }
                 overlapList.clear()
-                overlapList.add(time)
+                overlapList.add(times)
+                UnionList.add(arraylist)
             }
+
             past_start = start.toInt()
             past_end = end.toInt()
         }
         UnionList.add(overlapList)
-
+        Log.d("listset", "최종 : $UnionList")
         for(union in UnionList){
             val layout = LinearLayout(requireContext())
             val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             layout.layoutParams = layoutParams
-            Log.d("Schedules", "$union")
+
             for(time in union){
+                Log.d("Schedules", "content: ${time.content}")
                 val union_start_hour = time.repeatStart?.slice(IntRange(11,12))
                 val union_start_min = time.repeatStart?.slice(IntRange(14,15))
                 val union_end_hour = time.repeatEnd?.slice(IntRange(11,12))
@@ -242,10 +249,10 @@ class TimetableFragment : Fragment() {
                     hour -= 1
                     min += 60
                 }
-                Log.d("Schedules" , "times : $hour and $min")
                 val displayMetrics = resources.displayMetrics
-                val itemparams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Math.round( (hour * 120 + min) * displayMetrics.density),1f)
+                val itemparams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Math.round( (hour * 120 + min * 2) * displayMetrics.density),1f)
                 val margin = start_hour * 120 + start_min * 2
+                Log.d("Schedules" , "times : $hour and $min $margin ${time.content}")
                 itemparams.topMargin = Math.round( margin * displayMetrics.density)
                 itemparams.rightMargin = 1
                 val Schedule_View = TextView(requireContext())
