@@ -61,7 +61,6 @@ class TagAdapter(val context: Context) :
     override fun getItemCount(): Int = data.count() + 1
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Log.d("20191627", data.toString())
         when (holder) {
             is HeaderViewHolder -> {
                 if (tagClick != null) {
