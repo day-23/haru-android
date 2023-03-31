@@ -45,8 +45,9 @@ class TodoRepository() {
         callback(todoData)
     }
 
+    //dd62593d-161b-45cb-9534-346cd5b5e556 -> api.23haru용 id
     suspend fun getSchedule(startDate:String, endDate:String, callback:(todoData : List<Schedule>) -> Unit) = withContext(Dispatchers.IO){
-        val response = scheduleService.getScheduleDates("881c51d1-06f1-47ce-99b6-b5582594db12",startDate,endDate).execute()
+        val response = scheduleService.getScheduleDates("dd62593d-161b-45cb-9534-346cd5b5e556",startDate,endDate).execute()
         val data: GetScheduleResponse
         val todoData : List<Schedule>
 
