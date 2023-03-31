@@ -160,6 +160,7 @@ class CheckListViewModel() :
             val updateTodo = todoRepository.putTodo(todoId = todoId, todo = todo){
                 getTag()
                 getTodoMain{
+                    todoList.clear()
                     flaggedTodos.value?.let { todoList.addAll(it) }
                     taggedTodos.value?.let { todoList.addAll(it) }
                     untaggedTodos.value?.let { todoList.addAll(it) }
