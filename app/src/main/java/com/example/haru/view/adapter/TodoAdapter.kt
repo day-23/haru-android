@@ -26,7 +26,17 @@ class TodoAdapter(val context: Context) :
         fun onClick(view: View, position: Int)
     }
 
+    interface CompleteClick {
+        fun onClick(view: View, position: Int)
+    }
+
+    interface FlagClick {
+        fun onClick(view: View, position: Int)
+    }
+
     var todoClick: TodoClick? = null
+    var completeClick: CompleteClick? = null
+    var flagClick : FlagClick? = null
 
     val HeaderType1 = 0
     val HeaderType2 = 1
@@ -109,6 +119,18 @@ class TodoAdapter(val context: Context) :
                         todoClick?.onClick(it, position)
                     }
                 }
+
+                if (flagClick != null) {
+                    holder.binding.checkFlag.setOnClickListener {
+                        flagClick?.onClick(it, position)
+                    }
+                }
+
+                if (completeClick != null) {
+                    holder.binding.checkDone.setOnClickListener {
+                        completeClick?.onClick(it, position)
+                    }
+                }
             }
         }
     }
@@ -145,7 +167,7 @@ class TodoAdapter(val context: Context) :
 
             if (item.endDate != null) {
                 binding.tvEndDateDescription.text =
-                    FormatDate.todoDateToStr(item.endDate).substring(5, 10) + "까지"
+                    FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
                 binding.tvEndDateDescription.visibility = View.VISIBLE
             } else {
                 binding.tvEndDateDescription.text = ""

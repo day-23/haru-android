@@ -34,4 +34,10 @@ interface TodoService {
 
     @DELETE("todo/{userId}/{todoId}")
     fun deleteTodo(@Path("userId") userId: String, @Path("todoId") todoId : String) : Call<SuccessFail>
+
+    @PATCH("todo/{userId}/flag/{todoId}")
+    fun updateFlag(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body flag: Flag) : Call<SuccessFail>
+
+    @PATCH("todo/{userId}/complete/todo/{todoId}")
+    fun updateNotRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body completed: Completed) : Call<SuccessFail>
 }

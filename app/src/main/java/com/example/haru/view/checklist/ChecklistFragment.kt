@@ -10,6 +10,8 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Completed
+import com.example.haru.data.model.Flag
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentChecklistBinding
@@ -54,7 +56,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         initTagList()
         initTodoList()
 
-        binding.btnAddTodo.setOnClickListener{
+        binding.btnAddTodo.setOnClickListener {
             val todoInput = ChecklistInputFragment(checkListViewModel)
             todoInput.show(parentFragmentManager, todoInput.tag)
         }
@@ -63,11 +65,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     private fun initTagList() {
         val tagRecyclerView: RecyclerView = binding.recyclerTags
         val tagAdapter = TagAdapter(requireContext())
-        tagAdapter.tagClick = object :TagAdapter.TagClick{
+        tagAdapter.tagClick = object : TagAdapter.TagClick {
             override fun onClick(view: View, position: Int) {
                 if (position == 0)
                     checkListViewModel.getTodoByFlag()
-                else if (position > 0){
+                else if (position > 0) {
                     checkListViewModel.clear()
                     checkListViewModel.getTodoByTag(position)
                 }
@@ -85,17 +87,40 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         })
     }
 
-    private fun initTodoList(){
+    private fun initTodoList() {
         val todoListView: RecyclerView = binding.recyclerTodos
         val todoAdapter = TodoAdapter(requireContext())
-        todoAdapter.todoClick = object : TodoAdapter.TodoClick{
+        todoAdapter.todoClick = object : TodoAdapter.TodoClick {
             override fun onClick(view: View, position: Int) {
-                if (checkListViewModel.todoDataList.value!![position].type == 2){
+                if (checkListViewModel.todoDataList.value!![position].type == 2) {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, ChecklistItemFragment(checkListViewModel, position))
+                        .replace(
+                            R.id.fragments_frame,
+                            ChecklistItemFragment(checkListViewModel, position)
+                        )
                         .addToBackStack(null)
                         .commit()
                 }
+            }
+        }
+
+        todoAdapter.flagClick = object : TodoAdapter.FlagClick {
+            override fun onClick(view: View, position: Int) {
+                val flag = if (checkListViewModel.todoDataList.value!![position].flag) Flag(false)
+                else Flag(true)
+                checkListViewModel.updateFlag(
+                    flag,
+                    position
+                )
+            }
+        }
+
+        todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
+            override fun onClick(view: View, position: Int) {
+                val completed = if (checkListViewModel.todoDataList.value!![position].completed) Completed(false)
+                else Completed(true)
+
+                checkListViewModel.updateNotRepeatTodo(completed, position)
             }
         }
 

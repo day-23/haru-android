@@ -51,10 +51,18 @@ class TodoRepository() {
         callback(todoData)
     }
 
-    suspend fun getSchedule(startDate:String, endDate:String, callback:(todoData : List<Schedule>) -> Unit) = withContext(Dispatchers.IO){
-        val response = scheduleService.getScheduleDates("881c51d1-06f1-47ce-99b6-b5582594db12",startDate,endDate).execute()
+    suspend fun getSchedule(
+        startDate: String,
+        endDate: String,
+        callback: (todoData: List<Schedule>) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = scheduleService.getScheduleDates(
+            "881c51d1-06f1-47ce-99b6-b5582594db12",
+            startDate,
+            endDate
+        ).execute()
         val data: GetScheduleResponse
-        val todoData : List<Schedule>
+        val todoData: List<Schedule>
 
         if (response.isSuccessful) {
             Log.d("TAG", "Success to get todos")
@@ -186,14 +194,50 @@ class TodoRepository() {
     ) = withContext(Dispatchers.IO) {
         val response = todoService.deleteTodo(userId, todoId).execute()
         val data = response.body()!!
-        val successData : SuccessFail
 
-        if (response.isSuccessful){
+        val successData: SuccessFail = if (response.isSuccessful) {
             Log.d("TAG", "Success to Delete Todo")
-            successData = data
+            data
         } else {
             Log.d("TAG", "Fail to Delete Todo")
-            successData = data
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun updateFlag(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String, flag: Flag,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.updateFlag(userId, todoId, flag).execute()
+        val data = response.body()!!
+
+        val successData: SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Update Flag")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update Flag")
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun updateNotRepeatTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        completed: Completed,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.updateNotRepeatTodo(userId, todoId, completed).execute()
+        val data = response.body()!!
+
+        val successData : SuccessFail = if (response.isSuccessful){
+            Log.d("TAG", "Success to Update NotRepeatTodo Complete")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update NotRepeatTodo Complete")
+            data
         }
         callback(successData)
     }

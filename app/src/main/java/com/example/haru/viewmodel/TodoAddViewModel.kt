@@ -126,6 +126,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         memo = clickedTodo.memo
         for (i in 0 until clickedTodo.tags.size) {
             tag += "${clickedTodo.tags[i].content} "
+            if (i + 1 == clickedTodo.tags.size)
+                tag = tag.dropLast(1)
         }
     }
 
@@ -217,9 +219,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun readyToSubmit() {
-        if (tag == "" || tag.replace(" ", "") == "")
-            tagList = mutableListOf()
-        else tagList = tag.split(" ") as MutableList<String>
+        tagList = if (tag == "" || tag.replace(" ", "") == "")
+            mutableListOf()
+        else tag.split(" ") as MutableList<String>
 
         endDateStr = if (endDateSwitch.value == true) {
             if (!isSelectedEndDateTime.value!!) FormatDate.dateToStr(endDate.value!!)
@@ -264,7 +266,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             flag = flagTodo.value!!,
             isAllDay = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
-            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else "null",
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else null,
             repeatValue = if (repeatSwitch.value == true) repeatValue.value else null,
             repeatEnd = repeatEndDateStr,
             tags = tagList,
@@ -288,7 +290,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             flag = flagTodo.value!!,
             isAllDay = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
-            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else "null",
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else null,
             repeatValue = repeatValue.value,
             repeatEnd = repeatEndDateStr,
             tags = tagList,
