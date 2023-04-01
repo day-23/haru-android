@@ -149,6 +149,14 @@ class TodotableFragment : Fragment() {
             binding.todoThuDate.setTextColor(Color.parseColor(colors.get(4)))
             binding.todoFriDate.setTextColor(Color.parseColor(colors.get(5)))
             binding.todoSatDate.setTextColor(Color.parseColor(colors.get(6)))
+
+            binding.sunday.setTextColor(Color.parseColor(colors.get(0)))
+            binding.monday.setTextColor(Color.parseColor(colors.get(1)))
+            binding.tueday.setTextColor(Color.parseColor(colors.get(2)))
+            binding.wedday.setTextColor(Color.parseColor(colors.get(3)))
+            binding.thuday.setTextColor(Color.parseColor(colors.get(4)))
+            binding.friday.setTextColor(Color.parseColor(colors.get(5)))
+            binding.satday.setTextColor(Color.parseColor(colors.get(6)))
         }
 
         //투두 쿼리문 전송

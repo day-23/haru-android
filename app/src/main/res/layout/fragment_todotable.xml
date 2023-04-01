@@ -102,12 +102,13 @@
                         android:gravity="center">
 
                         <TextView
+                            android:id="@+id/sunday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="일"
                             android:textSize="12dp"
                             android:textStyle="bold"
-                            android:textColor="#F71E58"
+                            android:textColor= "#F71E58"
                             android:layout_marginBottom="7dp"/>
 
                         <TextView
@@ -144,6 +145,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/monday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="월"
@@ -184,6 +186,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/tueday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="화"
@@ -224,6 +227,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/wedday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="수"
@@ -264,6 +268,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/thuday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="목"
@@ -304,6 +309,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/friday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="금"
@@ -343,6 +349,7 @@
                         android:gravity="center"
                         >
                         <TextView
+                            android:id="@+id/satday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="토"

@@ -1,5 +1,6 @@
 package com.example.haru.view.timetable
 
+import android.graphics.Color
 import android.util.Log
 import android.view.DragEvent
 import android.view.View
@@ -26,6 +27,7 @@ class Todo_draglistener () : View.OnDragListener {
                 targetRecyclerView = view as RecyclerView
             }
             if (targetRecyclerView.id != sourceRecyclerView.id) {
+                targetRecyclerView.setBackgroundColor(Color.parseColor("#FFFFFF"))
                 val sourceAdapter = sourceRecyclerView.adapter as TodotableAdapter?
                 val sourcePosition = sourceRecyclerView.getChildAdapterPosition(viewSource.parent as View)
                 val targetAdapter = targetRecyclerView.adapter as TodotableAdapter?
@@ -39,6 +41,28 @@ class Todo_draglistener () : View.OnDragListener {
                 targetAdapter?.setItem(item)
             }
             return true
+        }
+
+        if (event.action == DragEvent.ACTION_DRAG_ENTERED){
+            try {
+                targetRecyclerView = view.parent.parent as RecyclerView
+            }
+            catch (e: java.lang.ClassCastException){
+                targetRecyclerView = view as RecyclerView
+            }
+            targetRecyclerView.setBackgroundColor(Color.parseColor("#807C7C7C"))
+
+            return true
+        }
+
+        if (event.action == DragEvent.ACTION_DRAG_EXITED){
+            try {
+                targetRecyclerView = view.parent.parent as RecyclerView
+            }
+            catch (e: java.lang.ClassCastException){
+                targetRecyclerView = view as RecyclerView
+            }
+            targetRecyclerView.setBackgroundColor(Color.parseColor("#FFFFFF"))
         }
         return true
     }
