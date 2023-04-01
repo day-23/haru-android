@@ -14,13 +14,14 @@ import com.example.haru.R
 import com.example.haru.data.model.Timetable_date
 import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoTable_data
+import com.google.android.material.animation.AnimationUtils
 
 class TodotableAdapter(val context: Context,
                        private var itemList: ArrayList<Todo>,
                        private val Date: String,
                        private val dragListener: Todo_draglistener) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
 
-
+        var animation = -1
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodotableViewHolder {
             val view = LayoutInflater.from(context)
                 .inflate(R.layout.items_todotable_todo, parent, false)
@@ -30,6 +31,10 @@ class TodotableAdapter(val context: Context,
         override fun onBindViewHolder(holder: TodotableViewHolder, position: Int) {
             if(itemList[position].id != ""){
                 holder.todotable_item_content.text = itemList[position].content
+            }
+
+            if(position == animation){
+                holder.todotable_item_content.animation = android.view.animation.AnimationUtils.loadAnimation(holder.todotable_item_content.context, R.anim.todotable_animation)
             }
             holder.todotable_item_content.setOnLongClickListener { view ->
                 val data = ClipData.newPlainText("", "")
@@ -58,6 +63,11 @@ class TodotableAdapter(val context: Context,
             val sortedList = ArrayList(itemList.sortedBy { it.endDate })
             Toast.makeText(context, "${Date}로 이동", Toast.LENGTH_SHORT).show()
             itemList = sortedList
+            for(i : Int in 0 .. itemList.size-1){
+                if(itemList[i].id == item.id){
+                    animation = i
+                }
+            }
             notifyDataSetChanged()
         }
 
