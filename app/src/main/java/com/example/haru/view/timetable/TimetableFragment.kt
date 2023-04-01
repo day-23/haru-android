@@ -65,54 +65,6 @@ class TimetableFragment : Fragment() {
         recyclerView1.adapter = timetableAdapter
         timetableviewModel.init_value()
 
-//        val linlayout = LinearLayout(requireContext())
-//        var layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT,1f)
-//        linlayout.layoutParams = layoutParams
-//
-//        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
-//        var displayMetrics = resources.displayMetrics
-//        layoutParams.topMargin = Math.round(120 * displayMetrics.density)
-//        val button1 = TextView(requireContext())
-//        button1.setText("test1")
-//        button1.setBackgroundResource(R.drawable.timetable_schedule)
-//        button1.layoutParams = layoutParams
-//        button1.height = Math.round(80 * displayMetrics.density)
-//        linlayout.addView(button1)
-//
-//        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
-//        layoutParams.topMargin = Math.round(120 * displayMetrics.density)
-//        val button2 = TextView(requireContext())
-//        button2.setText("test2")
-//        button2.setBackgroundResource(R.drawable.timetable_schedule)
-//        button2.layoutParams = layoutParams
-//        button2.height = Math.round(100 * displayMetrics.density)
-//        linlayout.addView(button2)
-//
-//        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
-//        layoutParams.topMargin = Math.round(120 * displayMetrics.density)
-//        val button3 = TextView(requireContext())
-//        button3.setBackgroundResource(R.drawable.timetable_schedule)
-//        button3.setText("test3")
-//        button3.layoutParams = layoutParams
-//        linlayout.addView(button3)
-//
-//
-//        var linlayout2 = LinearLayout(requireContext())
-//        var layoutParams2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
-//        linlayout2.layoutParams = layoutParams2
-//        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT,1f)
-//        displayMetrics = resources.displayMetrics
-//        layoutParams.topMargin = Math.round(260 * displayMetrics.density)
-//        val button4 = Button(requireContext())
-//        button4.setText("test4")
-//        button4.setBackgroundResource(R.drawable.timetable_schedule)
-//        button4.layoutParams = layoutParams
-//        linlayout2.addView(button4)
-//
-//        binding.sunTable.addView(linlayout)
-//        binding.sunTable.addView(linlayout2)
-
-
         //타임테이블 리사이클러뷰 실행
         reviewModel.TimeList.observe(viewLifecycleOwner) { times ->
             timetableAdapter.setData(times)
@@ -142,37 +94,30 @@ class TimetableFragment : Fragment() {
         timetableviewModel.Schedules.observe(viewLifecycleOwner){ schedule ->
 
                 if(schedule[0].size > 0)
-                    Log.d("Schedules", "${schedule[0]}")
                     binding.sunTable.removeAllViews()
                     Drawtimes(binding.sunTable, schedule[0])
 
                 if(schedule[1].size > 0)
-                    Log.d("Schedules", "${schedule.get(1)}")
                     binding.monTable.removeAllViews()
                     Drawtimes(binding.monTable, schedule[1])
 
                 if(schedule[2].size > 0)
-                    Log.d("Schedules", "${schedule.get(2)}")
                     binding.tueTable.removeAllViews()
                     Drawtimes(binding.tueTable, schedule[2])
 
                 if(schedule[3].size > 0)
-                    Log.d("Schedules", "wed ${schedule.get(3)}")
                     binding.wedTable.removeAllViews()
                     Drawtimes(binding.wedTable, schedule[3])
 
                 if(schedule[4].size > 0)
-                    Log.d("Schedules", "${schedule.get(4)}")
                     binding.thuTable.removeAllViews()
                     Drawtimes(binding.thuTable, schedule[4])
 
                 if(schedule[5].size > 0)
-                    Log.d("Schedules", "${schedule.get(5)}")
                     binding.friTable.removeAllViews()
                     Drawtimes(binding.friTable, schedule[5])
 
                 if(schedule[6].size > 0)
-                    Log.d("Schedules", "${schedule.get(6)}")
                     binding.satTable.removeAllViews()
                     Drawtimes(binding.satTable, schedule[6])
         }
@@ -226,14 +171,12 @@ class TimetableFragment : Fragment() {
             past_end = end.toInt()
         }
         UnionList.add(overlapList)
-        Log.d("listset", "최종 : $UnionList")
         for(union in UnionList){
             val layout = LinearLayout(requireContext())
             val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             layout.layoutParams = layoutParams
 
             for(time in union){
-                Log.d("Schedules", "content: ${time.content}")
                 val union_start_hour = time.repeatStart?.slice(IntRange(11,12))
                 val union_start_min = time.repeatStart?.slice(IntRange(14,15))
                 val union_end_hour = time.repeatEnd?.slice(IntRange(11,12))
