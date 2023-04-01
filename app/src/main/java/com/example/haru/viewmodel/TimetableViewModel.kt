@@ -58,7 +58,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var IndexList: ArrayList<ArrayList<Schedule>> = ArrayList()
     var IndexList_allday: ArrayList<ArrayList<Schedule>> = ArrayList()
     fun init_value() {
-        _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString()+"일")
+        _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString())
 
         Daylist(
             calendar.get(Calendar.YEAR),
@@ -155,6 +155,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
             } //일요일 붉은색
             else if (colorlist.size == 6) {
                 if (d == addday) colorlist.add("#1DAFFF")
+                else colorlist.add("#BBE7FF")
             }
             //토요일 푸른색
             else if(d == addday) colorlist.add("#191919") // 일반 검정색
@@ -205,5 +206,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
             }
             _Schedules.value = IndexList
         }
+    }
+
+    fun getDates() : ArrayList<String>{
+        return Datelist
     }
 }

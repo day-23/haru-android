@@ -17,6 +17,7 @@ import com.example.haru.data.model.TodoTable_data
 
 class TodotableAdapter(val context: Context,
                        private var itemList: ArrayList<Todo>,
+                       private val Date: String,
                        private val dragListener: Todo_draglistener) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
 
 
@@ -55,6 +56,7 @@ class TodotableAdapter(val context: Context,
             Log.d("item", "${item.content}")
             itemList.add(item)
             val sortedList = ArrayList(itemList.sortedBy { it.endDate })
+            Toast.makeText(context, "${Date}로 이동", Toast.LENGTH_SHORT).show()
             itemList = sortedList
             notifyDataSetChanged()
         }
