@@ -2,27 +2,39 @@ package com.example.haru.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.databinding.ActivityMainBinding
+import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.view.timetable.TimetableFragment
-import com.example.haru.view.timetable.TodotableFragment
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private val fragments = arrayOfNulls<Fragment>(6)
+    private val fragments = arrayOfNulls<Fragment>(5)
+
+    companion object{
+        private lateinit var binding: ActivityMainBinding
+        fun hideNavi(state: Boolean){
+            if (state)
+                binding.bottomNav.visibility = View.GONE
+            else binding.bottomNav.visibility = View.VISIBLE
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         initFragments()
         setDefaultFragment()
+
+        binding.bottomNav.itemIconTintList = null
 
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             handleNavigation(menuItem.itemId)

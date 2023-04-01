@@ -40,14 +40,16 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
             false
         )
 
-        calendarviewModel = CalendarViewModel()
-
         return MonthView(view)
     }
 
     fun setView(holder:MonthView, position: Int){
+        var calendarviewModel = CalendarViewModel()
+
         val calendar_recyclerview =
             holder.itemView.findViewById<RecyclerView>(R.id.calendar_recyclerview)
+
+        calendar_recyclerview.setItemViewCacheSize(210)
 
         calendar.time = Date()
         calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
@@ -271,9 +273,7 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
     }
 
     override fun getItemId(position: Int): Long {
-        calendar.time = Date()
-        calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
-        return calendar.timeInMillis
+        return position.toLong()
     }
 
     override fun onBindViewHolder(holder: MonthView, position: Int) {
