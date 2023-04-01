@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.provider.ContactsContract.RawContacts.Data
 import android.util.Log
+import android.util.Log.d
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -148,8 +149,14 @@ class TimetableViewModel(val context : Context): ViewModel() {
             }
 
             //글자색 바인딩
-            if(colorlist.size == 0) colorlist.add("#F71E58") //일요일 붉은색
-            else if(colorlist.size == 6) colorlist.add("#1DAFFF") //토요일 푸른색
+            if(colorlist.size == 0) {
+                if(d == addday) colorlist.add("#F71E58")
+                else colorlist.add("#FDBBCD")
+            } //일요일 붉은색
+            else if (colorlist.size == 6) {
+                if (d == addday) colorlist.add("#1DAFFF")
+            }
+            //토요일 푸른색
             else if(d == addday) colorlist.add("#191919") // 일반 검정색
             else colorlist.add("#DBDBDB") //지난달 다음달 회색
 

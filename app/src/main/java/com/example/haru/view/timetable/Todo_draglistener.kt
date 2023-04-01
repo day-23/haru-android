@@ -30,12 +30,12 @@ class Todo_draglistener () : View.OnDragListener {
                 val sourcePosition = sourceRecyclerView.getChildAdapterPosition(viewSource.parent as View)
                 val targetAdapter = targetRecyclerView.adapter as TodotableAdapter?
 
-                var sourceList: ArrayList<TodoTable_data> = ArrayList()
+                var sourceList: ArrayList<Todo> = ArrayList()
                 sourceAdapter?.getItems()?.let { sourceList = it }
                 val item = sourceList[sourcePosition]
                 sourceAdapter?.removeItem(sourcePosition)
 
-                var targetList: ArrayList<TodoTable_data> = ArrayList()
+                var targetList: ArrayList<Todo> = ArrayList()
                 targetAdapter?.setItem(item)
             }
             return true

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.adapters.ViewBindingAdapter.setOnLongClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
@@ -15,7 +16,7 @@ import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoTable_data
 
 class TodotableAdapter(val context: Context,
-                       private var itemList: ArrayList<TodoTable_data>,
+                       private var itemList: ArrayList<Todo>,
                        private val dragListener: Todo_draglistener) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
 
 
@@ -35,6 +36,10 @@ class TodotableAdapter(val context: Context,
                 view?.startDragAndDrop(data, shadowBuilder, view, 0)
                 false
             }
+
+            holder.todotable_item_content.setOnClickListener {
+                Toast.makeText(context, "${itemList[position].content}", Toast.LENGTH_SHORT).show()
+            }
             holder.todotable_item_content.setOnDragListener(dragListener)
         }
 
@@ -42,11 +47,11 @@ class TodotableAdapter(val context: Context,
             return itemList.count()
         }
 
-        fun getItems(): ArrayList<TodoTable_data>{
+        fun getItems(): ArrayList<Todo>{
             return itemList
         }
 
-        fun setItem(item : TodoTable_data){
+        fun setItem(item : Todo){
             Log.d("item", "${item.content}")
             itemList.add(item)
             val sortedList = ArrayList(itemList.sortedBy { it.endDate })

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoTable_data
 import com.example.haru.databinding.FragmentTodotableBinding
 import com.example.haru.viewmodel.TimetableViewModel
@@ -38,7 +39,7 @@ class TodotableFragment : Fragment() {
     private lateinit var sat_todotableAdapter: TodotableAdapter
     lateinit var sat_todorecyclerView: RecyclerView
 
-    var todoList: ArrayList<TodoTable_data> = ArrayList()
+    var todoList: ArrayList<Todo> = ArrayList()
     companion object {
         const val TAG: String = "로그"
 
@@ -68,6 +69,7 @@ class TodotableFragment : Fragment() {
         todoreviewModel.init_value()
 
         todoreviewModel.TodoDataList.observe(viewLifecycleOwner) { contents ->
+            val date = timetableviewModel.Dates.value
             sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ?: todoList,Todo_draglistener())
             sun_todorecyclerView.adapter = sun_todotableAdapter
             mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ?: todoList,Todo_draglistener())
