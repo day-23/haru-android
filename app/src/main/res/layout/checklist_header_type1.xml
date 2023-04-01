@@ -17,13 +17,11 @@
         style="@style/minSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:paddingHorizontal="14dp"
-        android:paddingVertical="4dp"
-        android:background="@drawable/tag_btn_custom"
+        android:layout_marginStart="6dp"
+        android:background="@android:color/transparent"
         android:text="@string/important"
         android:textColor="@color/todo_description"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:clickable="false"/>
 

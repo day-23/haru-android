@@ -1,6 +1,7 @@
 package com.example.haru.view.adapter
 
 import android.content.Context
+import android.graphics.Paint
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.example.haru.databinding.ChecklistHeaderType1Binding
 import com.example.haru.databinding.ChecklistHeaderType2Binding
 import com.example.haru.databinding.FragmentChecklistDividerBinding
 import com.example.haru.databinding.FragmentChecklistItemBinding
+import com.example.haru.utils.FormatDate
 
 
 class TodoAdapter(val context: Context) :
@@ -24,7 +26,17 @@ class TodoAdapter(val context: Context) :
         fun onClick(view: View, position: Int)
     }
 
+    interface CompleteClick {
+        fun onClick(view: View, position: Int)
+    }
+
+    interface FlagClick {
+        fun onClick(view: View, position: Int)
+    }
+
     var todoClick: TodoClick? = null
+    var completeClick: CompleteClick? = null
+    var flagClick : FlagClick? = null
 
     val HeaderType1 = 0
     val HeaderType2 = 1
@@ -34,7 +46,7 @@ class TodoAdapter(val context: Context) :
 
     var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
-    private var data = mutableListOf<Todo>()
+    var data = mutableListOf<Todo>()
 
     private var todoByTag = false
     private var todoByFlag = false
@@ -107,6 +119,18 @@ class TodoAdapter(val context: Context) :
                         todoClick?.onClick(it, position)
                     }
                 }
+
+                if (flagClick != null) {
+                    holder.binding.checkFlag.setOnClickListener {
+                        flagClick?.onClick(it, position)
+                    }
+                }
+
+                if (completeClick != null) {
+                    holder.binding.checkDone.setOnClickListener {
+                        completeClick?.onClick(it, position)
+                    }
+                }
             }
         }
     }
@@ -136,13 +160,22 @@ class TodoAdapter(val context: Context) :
             if (tag != "") {
                 binding.tvTagDescription.text = tag.dropLast(1)
                 binding.tvTagDescription.visibility = View.VISIBLE
-            } else binding.tvTagDescription.visibility = View.GONE
+            } else {
+                binding.tvTagDescription.visibility = View.GONE
+                binding.tvTagDescription.text = tag
+            }
 
             if (item.endDate != null) {
                 binding.tvEndDateDescription.text =
-                    item.endDate.substring(5, 7) + "." + item.endDate.substring(8, 10) + "까지"
+                    FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
                 binding.tvEndDateDescription.visibility = View.VISIBLE
-            } else binding.tvEndDateDescription.visibility = View.GONE
+            } else {
+                binding.tvEndDateDescription.text = ""
+                binding.tvEndDateDescription.visibility = View.GONE
+            }
+
+            if (item.completed) binding.tvTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+            else binding.tvTitle.paintFlags = 0
         }
     }
 
@@ -151,31 +184,6 @@ class TodoAdapter(val context: Context) :
 
     fun setDataList(dataList: List<Todo>) {
         this.data = dataList as MutableList<Todo>
-        if (todoByTag) {
-            if (tags[3].content == "중요")
-                this.data.add(0, Todo(type = 0))
-            else this.data.add(0, Todo(type = 1, content = tags[3].content))
-        } else {
-            this.data.apply {
-                // flag
-                add(0, Todo(type = 0))
-                add(flagCount + 1, Todo(type = 3))
-
-                // tag
-                add(flagCount + 2, Todo(type = 1, content = tags[0].content))
-                add(flagCount + tagCount + 3, Todo(type = 3))
-
-                //untag
-                add(flagCount + tagCount + 4, Todo(type = 1, content = tags[1].content))
-                add(flagCount + tagCount + untagCount + 5, Todo(type = 3))
-
-                //complete
-                add(
-                    flagCount + tagCount + untagCount + 6,
-                    Todo(type = 1, content = tags[2].content)
-                )
-            }
-        }
         notifyDataSetChanged()
     }
 

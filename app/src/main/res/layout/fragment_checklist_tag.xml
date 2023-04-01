@@ -16,11 +16,14 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="6dp"
         android:background="@drawable/tag_btn_custom"
-        android:paddingHorizontal="22dp"
-        android:paddingVertical="8dp"
+        android:outlineProvider="none"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:paddingStart="11dp"
+        android:paddingEnd="11dp"
         android:text="@{tag.content}"
-        android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textColor="@color/todo_description"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
 
