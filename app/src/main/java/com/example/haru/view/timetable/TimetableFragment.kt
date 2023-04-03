@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Schedule
+import com.example.haru.data.model.Todo
 import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
@@ -34,7 +35,10 @@ class TimetableFragment : Fragment() {
     private lateinit var timetableAdapter: TimetableAdapter
     var timeList: ArrayList<timetable_data> = ArrayList()
     lateinit var recyclerView1: RecyclerView
-    val scheduleDrag = ScheduleDraglistener()
+    private lateinit var scheduleDrag: ScheduleDraglistener
+    val scheduleViewList: ArrayList<View> = ArrayList<View>()
+    val scheduleMap = mutableMapOf<View, Schedule>()
+    val layoutId: ArrayList<Int> = ArrayList<Int>()
     companion object {
         const val TAG: String = "로그"
 
@@ -66,6 +70,19 @@ class TimetableFragment : Fragment() {
         recyclerView1.adapter = timetableAdapter
         timetableviewModel.init_value()
 
+
+        //타임테이블 프래그먼트 아이디 값
+        layoutId.add(binding.sunTable.id)
+        layoutId.add(binding.monTable.id)
+        layoutId.add(binding.tueTable.id)
+        layoutId.add(binding.wedTable.id)
+        layoutId.add(binding.thuTable.id)
+        layoutId.add(binding.friTable.id)
+        layoutId.add(binding.satTable.id)
+
+        scheduleDrag = ScheduleDraglistener(timetableviewModel, layoutId)
+
+        //각 레이아웃에 드래그 앤 드롭을 위한 리스너 등록
         binding.sunTable.setOnDragListener(scheduleDrag)
         binding.monTable.setOnDragListener(scheduleDrag)
         binding.tueTable.setOnDragListener(scheduleDrag)
@@ -73,6 +90,8 @@ class TimetableFragment : Fragment() {
         binding.thuTable.setOnDragListener(scheduleDrag)
         binding.friTable.setOnDragListener(scheduleDrag)
         binding.satTable.setOnDragListener(scheduleDrag)
+
+
 
         //타임테이블 리사이클러뷰 실행
         reviewModel.TimeList.observe(viewLifecycleOwner) { times ->
@@ -135,6 +154,15 @@ class TimetableFragment : Fragment() {
                     binding.satTable.removeAllViews()
                     Drawtimes(binding.satTable, schedule[6])
                 }
+        }
+        //드래그 앤 드랍시 이동한 뷰의 정보
+        timetableviewModel.MoveView.observe(viewLifecycleOwner){ view ->
+            val movedData = scheduleMap[view]
+            val start = timetableviewModel.MoveDate.value
+            val endDate = movedData!!.repeatStart!!.slice(IntRange(0, 9))
+            val endTime = movedData!!.repeatEnd!!.slice(IntRange(10, 23))
+            val end =  endDate + endTime
+            timetableviewModel.patchMoved(start!!, end, movedData)
         }
 
         binding.todolistChange.setOnClickListener{
@@ -214,6 +242,7 @@ class TimetableFragment : Fragment() {
                 itemparams.topMargin = Math.round( margin * displayMetrics.density)
                 itemparams.rightMargin = 1
                 val Schedule_View = TextView(requireContext())
+                scheduleMap.put(Schedule_View, time)
 
                 Schedule_View.setOnLongClickListener { view ->
                     val data = ClipData.newPlainText("", "")
@@ -222,9 +251,10 @@ class TimetableFragment : Fragment() {
                     false
                 }
                 Schedule_View.setOnDragListener(scheduleDrag)
-
+                scheduleViewList.add(Schedule_View)
                 Schedule_View.layoutParams = itemparams
                 Schedule_View.setText(time.content)
+
                 Schedule_View.setOnClickListener {
                     Toast.makeText(requireContext(), "${time.content}", Toast.LENGTH_SHORT).show()
                 }

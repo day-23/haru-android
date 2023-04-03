@@ -6,7 +6,9 @@ import android.net.NetworkInfo
 import android.provider.ContactsContract.RawContacts.Data
 import android.util.Log
 import android.util.Log.d
+import android.view.View
 import android.widget.DatePicker
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.getSystemService
@@ -49,6 +51,14 @@ class TimetableViewModel(val context : Context): ViewModel() {
     private val _TodayDay = MutableLiveData<String>()
     val TodayDay : LiveData<String>
         get() = _TodayDay
+
+    private val _MoveDate = MutableLiveData<String>()
+    val MoveDate: LiveData<String>
+        get() = _MoveDate
+
+    private val _MoveView = MutableLiveData<View>()
+    val MoveView: LiveData<View>
+        get() = _MoveView
 
     val calendar = Calendar.getInstance()
     var colorlist: ArrayList<String> = ArrayList()
@@ -226,11 +236,74 @@ class TimetableViewModel(val context : Context): ViewModel() {
         }
     }
 
+    fun sortSchedule(data : Schedule){
+        val year_start = data.repeatStart?.slice(IntRange(0,3))
+        val month_start = data.repeatStart?.slice(IntRange(5,6))
+        val day_start = data.repeatStart?.slice(IntRange(8,9))
+        val result_start = year_start+month_start+day_start
+
+        val year_end = data.repeatEnd?.slice(IntRange(0,3))
+        val month_end = data.repeatEnd?.slice(IntRange(5,6))
+        val day_end = data.repeatEnd?.slice(IntRange(8,9))
+        val result_end = year_end+month_end+day_end
+
+        if(data.repeatStart != data.repeatEnd && result_start == result_end){ //하루치 일정
+            when(result_start){
+                Datelist[0] -> IndexList[0].add(data)
+                Datelist[1] -> IndexList[1].add(data)
+                Datelist[2] -> IndexList[2].add(data)
+                Datelist[3] -> IndexList[3].add(data)
+                Datelist[4] -> IndexList[4].add(data)
+                Datelist[5] -> IndexList[5].add(data)
+                Datelist[6] -> IndexList[6].add(data)
+            }
+        }
+
+    }
+
     fun getDates() : ArrayList<String>{
         return Datelist
     }
 
     fun getToday() : String{
         return timetable_today
+    }
+
+    fun scheduleMoved(margin : Int, view: View, index: Int){
+        val hour = (margin / 120).toInt()
+        val min = (( margin % 120) / 2).toInt()
+        var stringHour = ""
+        var stringMin = ""
+        if(hour > 9) stringHour = hour.toString()
+        else stringHour = "0"+hour.toString()
+        if(min > 9) stringMin = min.toString()
+        else stringMin = "0" + min.toString()
+
+        val moveDate = Datelist[index]
+        //"2023-04-01T00:00:00.000Z"
+        val newDate = "${moveDate.slice(IntRange(0,3))}-${moveDate.slice(IntRange(4, 5))}-${moveDate.slice(IntRange(6, 7))}T"
+        val newTime = "$stringHour:$stringMin:00.000Z"
+        val newDateInfo = newDate + newTime // 수정 돼야할 시간정보
+
+        _MoveDate.value = newDateInfo
+        _MoveView.value = view
+    }
+
+    fun patchMoved(start: String , end: String, data: Schedule){
+        val moveview = data
+        moveview.repeatStart = start
+        moveview.repeatEnd = end
+
+        for(lists in IndexList){
+            if(lists.contains(data)){
+                lists.remove(data)
+                Log.d("DRAGGED", "deleted!")
+                break
+            }
+        }
+
+        sortSchedule(moveview)
+
+        _Schedules.value = IndexList
     }
 }
