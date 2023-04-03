@@ -46,10 +46,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Schedules : LiveData<ArrayList<ArrayList<Schedule>>>
         get() = _Schedules
 
-    // #F71E58 빨
-    // #DBDBDB 회
-    // #1DAFFF 파
-    // #191919 검
+    private val _TodayDay = MutableLiveData<String>()
+    val TodayDay : LiveData<String>
+        get() = _TodayDay
 
     val calendar = Calendar.getInstance()
     var colorlist: ArrayList<String> = ArrayList()
@@ -60,6 +59,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var timetable_today = ""
     init {
         timetable_today = SimpleDateFormat("yyyyMMdd").format(Date(calendar.get(Calendar.YEAR) - 1900, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)))
+        _TodayDay.value = calendar.get(Calendar.DAY_OF_MONTH).toString()
     }
     fun init_value() {
         _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString())

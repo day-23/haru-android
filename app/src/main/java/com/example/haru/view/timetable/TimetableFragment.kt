@@ -1,5 +1,6 @@
 package com.example.haru.view.timetable
 
+import android.content.ClipData
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -33,7 +34,7 @@ class TimetableFragment : Fragment() {
     private lateinit var timetableAdapter: TimetableAdapter
     var timeList: ArrayList<timetable_data> = ArrayList()
     lateinit var recyclerView1: RecyclerView
-
+    val scheduleDrag = ScheduleDraglistener()
     companion object {
         const val TAG: String = "로그"
 
@@ -65,6 +66,14 @@ class TimetableFragment : Fragment() {
         recyclerView1.adapter = timetableAdapter
         timetableviewModel.init_value()
 
+        binding.sunTable.setOnDragListener(scheduleDrag)
+        binding.monTable.setOnDragListener(scheduleDrag)
+        binding.tueTable.setOnDragListener(scheduleDrag)
+        binding.wedTable.setOnDragListener(scheduleDrag)
+        binding.thuTable.setOnDragListener(scheduleDrag)
+        binding.friTable.setOnDragListener(scheduleDrag)
+        binding.satTable.setOnDragListener(scheduleDrag)
+
         //타임테이블 리사이클러뷰 실행
         reviewModel.TimeList.observe(viewLifecycleOwner) { times ->
             timetableAdapter.setData(times)
@@ -93,33 +102,39 @@ class TimetableFragment : Fragment() {
         //스케줄을 타임테이블에 바인딩
         timetableviewModel.Schedules.observe(viewLifecycleOwner){ schedule ->
 
-                if(schedule[0].size > 0)
+                if(schedule[0].size > 0) {
                     binding.sunTable.removeAllViews()
                     Drawtimes(binding.sunTable, schedule[0])
+                }
 
-                if(schedule[1].size > 0)
+                if(schedule[1].size > 0) {
                     binding.monTable.removeAllViews()
                     Drawtimes(binding.monTable, schedule[1])
+                }
 
-                if(schedule[2].size > 0)
+                if(schedule[2].size > 0) {
                     binding.tueTable.removeAllViews()
                     Drawtimes(binding.tueTable, schedule[2])
+                }
 
-                if(schedule[3].size > 0)
+                if(schedule[3].size > 0) {
                     binding.wedTable.removeAllViews()
                     Drawtimes(binding.wedTable, schedule[3])
+                }
 
-                if(schedule[4].size > 0)
+                if(schedule[4].size > 0) {
                     binding.thuTable.removeAllViews()
                     Drawtimes(binding.thuTable, schedule[4])
-
-                if(schedule[5].size > 0)
+                }
+                if(schedule[5].size > 0) {
                     binding.friTable.removeAllViews()
                     Drawtimes(binding.friTable, schedule[5])
+                }
 
-                if(schedule[6].size > 0)
+                if(schedule[6].size > 0) {
                     binding.satTable.removeAllViews()
                     Drawtimes(binding.satTable, schedule[6])
+                }
         }
 
         binding.todolistChange.setOnClickListener{
@@ -199,6 +214,15 @@ class TimetableFragment : Fragment() {
                 itemparams.topMargin = Math.round( margin * displayMetrics.density)
                 itemparams.rightMargin = 1
                 val Schedule_View = TextView(requireContext())
+
+                Schedule_View.setOnLongClickListener { view ->
+                    val data = ClipData.newPlainText("", "")
+                    val shadowBuilder = View.DragShadowBuilder(view)
+                    view?.startDragAndDrop(data, shadowBuilder, view, 0)
+                    false
+                }
+                Schedule_View.setOnDragListener(scheduleDrag)
+
                 Schedule_View.layoutParams = itemparams
                 Schedule_View.setText(time.content)
                 Schedule_View.setOnClickListener {
