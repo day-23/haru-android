@@ -14,6 +14,7 @@ import com.example.haru.data.model.Todo
 import com.example.haru.databinding.ChecklistEmptyBinding
 import com.example.haru.databinding.ChecklistHeaderType1Binding
 import com.example.haru.databinding.ChecklistHeaderType2Binding
+import com.example.haru.databinding.ChecklistHeaderType3Binding
 import com.example.haru.databinding.FragmentChecklistDividerBinding
 import com.example.haru.databinding.FragmentChecklistItemBinding
 import com.example.haru.utils.FormatDate
@@ -36,13 +37,14 @@ class TodoAdapter(val context: Context) :
 
     var todoClick: TodoClick? = null
     var completeClick: CompleteClick? = null
-    var flagClick : FlagClick? = null
+    var flagClick: FlagClick? = null
 
     val HeaderType1 = 0
     val HeaderType2 = 1
     val Item = 2
     val Divider = 3
-    val Empty = 4
+    val HeaderType3 = 4
+    val Empty = 5
 
     var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
@@ -70,6 +72,12 @@ class TodoAdapter(val context: Context) :
 
             HeaderType2 -> HeaderTypeTwoViewHolder(
                 ChecklistHeaderType2Binding.inflate(
+                    LayoutInflater.from(context), parent, false
+                )
+            )
+
+            HeaderType3 -> HeaderTypeThreeViewHolder(
+                ChecklistHeaderType3Binding.inflate(
                     LayoutInflater.from(context), parent, false
                 )
             )
@@ -111,6 +119,7 @@ class TodoAdapter(val context: Context) :
         when (holder) {
             is HeaderTypeOneViewHolder -> {}
             is HeaderTypeTwoViewHolder -> holder.bind(data[position].content)
+            is HeaderTypeThreeViewHolder -> holder.bind(data[position].content)
             is DividerViewHolder -> {}
             is TodoViewHolder -> {
                 holder.bind(data[position])
@@ -139,6 +148,13 @@ class TodoAdapter(val context: Context) :
         RecyclerView.ViewHolder(binding.root) {}
 
     inner class HeaderTypeTwoViewHolder(val binding: ChecklistHeaderType2Binding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: String) {
+            binding.str = item
+        }
+    }
+
+    inner class HeaderTypeThreeViewHolder(val binding: ChecklistHeaderType3Binding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.str = item

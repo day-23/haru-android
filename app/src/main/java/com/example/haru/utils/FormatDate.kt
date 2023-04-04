@@ -32,6 +32,8 @@ object FormatDate {
         return ChronoUnit.HOURS.between(gmtDateTime, localTime)
     }
 
+    // Today 화면에서 쿼리로 보내는 endDate를 해당 날짜의 자정으로 날린다.
+
     // LocalDateTime을 넣으면 formatter에 정의된 패턴 형식, 타입은 String으로 반환
 //    fun localTimeToStr(time: LocalDateTime): String {
 //        return time.format(localTimeFormatter)

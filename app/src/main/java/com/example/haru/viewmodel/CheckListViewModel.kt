@@ -32,6 +32,10 @@ class CheckListViewModel() :
     private val _todoByTag = MutableLiveData<Boolean>()
     val todoByTag: LiveData<Boolean> = _todoByTag
 
+    private val _todayTodo = MutableLiveData<List<Todo>>()
+    val todayTodo : LiveData<List<Todo>> get() = _todayTodo
+    private val todayList = mutableListOf<Todo>()
+
     val todoDataList: LiveData<List<Todo>> get() = _todoDataList
     val tagDataList: LiveData<List<Tag>> get() = _tagDataList
     val flaggedTodos: LiveData<List<Todo>> get() = _flaggedTodos
@@ -92,6 +96,23 @@ class CheckListViewModel() :
                 todoByTagItem = null
             }
             callback()
+        }
+    }
+
+    fun getTodayTodo(endDate : String, callback: () -> Unit){
+        viewModelScope.launch {
+            todoRepository.getTodayTodo(endDate = endDate){
+                todayList.clear()
+                todayList.apply {
+                    this.add(Todo(type = 4, content = "오늘 할 일"))
+                    this.addAll(it.todayTodos)
+                    this.add(Todo(type = 4, content = "오늘 마감"))
+                    this.addAll(it.endDatedTodos)
+                    this.add(Todo(type = 3))
+                }
+                _todayTodo.postValue(todayList)
+                callback()
+            }
         }
     }
 
