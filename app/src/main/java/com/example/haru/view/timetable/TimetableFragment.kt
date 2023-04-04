@@ -6,11 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.DragEvent
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.marginTop
@@ -270,6 +266,7 @@ class TimetableFragment : Fragment() {
                 Log.d("Schedules", "times : $hour and $min $margin ${time.content}")
                 itemparams.topMargin = Math.round(margin * displayMetrics.density)
                 itemparams.rightMargin = 1
+                itemparams.gravity = (Gravity.TOP)
                 val Schedule_View = TextView(requireContext())
                 scheduleMap.put(Schedule_View, time)
 
@@ -283,11 +280,13 @@ class TimetableFragment : Fragment() {
                 scheduleViewList.add(Schedule_View)
                 Schedule_View.layoutParams = itemparams
                 Schedule_View.setText(time.content)
-
+                Schedule_View.setLineSpacing((0).toFloat(), (1).toFloat())
+                Schedule_View.setPadding(4,4,4,4)
                 Schedule_View.setOnClickListener {
                     Toast.makeText(requireContext(), "${time.content}", Toast.LENGTH_SHORT)
                         .show()
                 }
+
                 Schedule_View.setBackgroundResource(R.drawable.timetable_schedule)
                 layout.addView(Schedule_View)
             }

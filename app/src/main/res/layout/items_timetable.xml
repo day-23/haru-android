@@ -19,7 +19,7 @@
                 android:layout_height="match_parent"
                 android:gravity="right"
                 android:layout_weight="1"
-                android:textSize="8dp"
+                android:textSize="10dp"
                 android:paddingRight="4dp"
                 android:textColor="#191919"
                 android:text="1\n오전" />

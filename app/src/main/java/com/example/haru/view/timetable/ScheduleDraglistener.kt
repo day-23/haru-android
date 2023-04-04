@@ -71,6 +71,7 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
             val y = ((event.y / displayMetrics.density).toInt() / 10) * 10
             val dropY = Math.round( y * displayMetrics.density)
             shadowView.setBackgroundResource(R.drawable.timetable_schedule)
+            shadowView.alpha = 0.5f
 
             if(dropY != lastY) {
                 try {
