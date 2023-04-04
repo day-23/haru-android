@@ -17,13 +17,12 @@ import com.example.haru.databinding.ListItemDayBinding
 import java.util.Date
 
 
-class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
-    private var date = emptyList<CalendarDate>()
-    private var todocontent = emptyList<TodoCalendarData>()
-    private var schedulecontent = emptyList<ScheduleCalendarData>()
-
-    private var todo_schedule = true
-
+class AdapterDay(
+    var date:List<CalendarDate>,
+    var todocontent:List<TodoCalendarData>,
+    var schedulecontent:List<ScheduleCalendarData>,
+    var todo_schedule:Boolean
+) : RecyclerView.Adapter<AdapterDay.DayView>() {
     inner class DayView(private val binding: ListItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
             fun bind(content: ScheduleCalendarData){
@@ -92,17 +91,6 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
             }
         }
 
-    fun updateData(newdayList:List<CalendarDate>,
-                   newtodocontent:List<TodoCalendarData>,
-                   newschedulecontent:List<ScheduleCalendarData>,
-                   newtodo_schedule:Boolean) {
-        date = newdayList
-        todocontent = newtodocontent
-        schedulecontent = newschedulecontent
-        todo_schedule = newtodo_schedule
-        notifyDataSetChanged()
-    }
-
     var todoDupList = ArrayList<TodoCalendarData>()
     var scheduleDupList = ArrayList<ScheduleCalendarData>()
     var cyclevalue = 0
@@ -127,124 +115,124 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
                 saveCntList = ArrayList()
             }
 
-            val newpostion = positionplus + position
-
-            if (newpostion / 7 in arrayOf(0, 5, 10, 15, 20, 25, 30)) {
-                val dateposition = arrayOf(0, 5, 10, 15, 20, 25, 30).indexOf(newpostion / 7) * 7
-                cyclevalue = dateposition
-                holder.bind(date[dateposition + newpostion % 35])
-            } else {
-                val contentPosition = cyclevalue + newpostion % 7
-                val contentLine = (newpostion / 7) % 5
-
-                if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
-                    val index = saveLineList.indexOf(contentLine)
-
-                    if (saveCntList[index] > 7) {
-                        saveCntList[index] -= 7
-                        positionplus += 6
-                        holder.bind(true)
-                        return
-                    } else {
-                        val returncnt = saveCntList[index]
-
-                        saveCntList.removeAt(index)
-                        saveLineList.removeAt(index)
-
-                        positionplus += returncnt - 1
-                        holder.bind(true)
-                        return
-                    }
-                }
-
-                for (con in todocontent) {
-                    if (!todoDupList.contains(con) && con.position == contentPosition) {
-                        todoDupList.add(con)
-
-                        if ((contentPosition + con.cnt - 1) / 7 != contentPosition / 7) {
-                            val overflowvalue =
-                                contentPosition + con.cnt - (contentPosition + con.cnt) / 7 * 7
-                            saveCntList.add(overflowvalue)
-                            saveLineList.add(contentLine)
-
-                            positionplus += con.cnt - overflowvalue - 1
-                            holder.bind(con)
-                            break
-                        }
-
-
-                        positionplus += con.cnt - 1
-                        holder.bind(con)
-                        return
-                    }
-                }
-
-                holder.bind(false)
-            }
-        } else {
-            if (position == 0) {
-                todoDupList = ArrayList()
-                scheduleDupList = ArrayList()
-                cyclevalue = 0
-                positionplus = 0
-                saveLineList = ArrayList()
-                saveCntList = ArrayList()
-            }
-
-            val newpostion = positionplus + position
-
-            if (newpostion / 7 in arrayOf(0, 5, 10, 15, 20, 25, 30)) {
-                val dateposition = arrayOf(0, 5, 10, 15, 20, 25, 30).indexOf(newpostion / 7) * 7
-                cyclevalue = dateposition
-                holder.bind(date[dateposition + newpostion % 35])
-            } else {
-                val contentPosition = cyclevalue + newpostion % 7
-                val contentLine = (newpostion / 7) % 5
-
-                if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
-                    val index = saveLineList.indexOf(contentLine)
-
-                    if (saveCntList[index] > 7) {
-                        saveCntList[index] -= 7
-                        positionplus += 6
-                        holder.bind(true)
-                        return
-                    } else {
-                        val returncnt = saveCntList[index]
-
-                        saveCntList.removeAt(index)
-                        saveLineList.removeAt(index)
-
-                        positionplus += returncnt - 1
-                        holder.bind(true)
-                        return
-                    }
-                }
-
-                for (con in schedulecontent) {
-                    if (!scheduleDupList.contains(con) && con.position == contentPosition) {
-                        scheduleDupList.add(con)
-
-                        if ((contentPosition + con.cnt - 1) / 7 != contentPosition / 7) {
-                            val overflowvalue =
-                                contentPosition + con.cnt - (contentPosition + con.cnt) / 7 * 7
-                            saveCntList.add(overflowvalue)
-                            saveLineList.add(contentLine)
-
-                            positionplus += con.cnt - overflowvalue - 1
-                            holder.bind(con)
-                            break
-                        }
-
-
-                        positionplus += con.cnt - 1
-                        holder.bind(con)
-                        return
-                    }
-                }
-
-                holder.bind(false)
-            }
+//            val newpostion = positionplus + position
+//
+//            if (newpostion / 7 in arrayOf(0, 5, 10, 15, 20, 25, 30)) {
+//                val dateposition = arrayOf(0, 5, 10, 15, 20, 25, 30).indexOf(newpostion / 7) * 7
+//                cyclevalue = dateposition
+//                holder.bind(date[dateposition + newpostion % 35])
+//            } else {
+//                val contentPosition = cyclevalue + newpostion % 7
+//                val contentLine = (newpostion / 7) % 5
+//
+//                if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
+//                    val index = saveLineList.indexOf(contentLine)
+//
+//                    if (saveCntList[index] > 7) {
+//                        saveCntList[index] -= 7
+//                        positionplus += 6
+//                        holder.bind(true)
+//                        return
+//                    } else {
+//                        val returncnt = saveCntList[index]
+//
+//                        saveCntList.removeAt(index)
+//                        saveLineList.removeAt(index)
+//
+//                        positionplus += returncnt - 1
+//                        holder.bind(true)
+//                        return
+//                    }
+//                }
+//
+//                for (con in todocontent) {
+//                    if (!todoDupList.contains(con) && con.position == contentPosition) {
+//                        todoDupList.add(con)
+//
+//                        if ((contentPosition + con.cnt - 1) / 7 != contentPosition / 7) {
+//                            val overflowvalue =
+//                                contentPosition + con.cnt - (contentPosition + con.cnt) / 7 * 7
+//                            saveCntList.add(overflowvalue)
+//                            saveLineList.add(contentLine)
+//
+//                            positionplus += con.cnt - overflowvalue - 1
+//                            holder.bind(con)
+//                            break
+//                        }
+//
+//
+//                        positionplus += con.cnt - 1
+//                        holder.bind(con)
+//                        return
+//                    }
+//                }
+//
+//                holder.bind(false)
+//            }
+//        } else {
+//            if (position == 0) {
+//                todoDupList = ArrayList()
+//                scheduleDupList = ArrayList()
+//                cyclevalue = 0
+//                positionplus = 0
+//                saveLineList = ArrayList()
+//                saveCntList = ArrayList()
+//            }
+//
+//            val newpostion = positionplus + position
+//
+//            if (newpostion / 7 in arrayOf(0, 5, 10, 15, 20, 25, 30)) {
+//                val dateposition = arrayOf(0, 5, 10, 15, 20, 25, 30).indexOf(newpostion / 7) * 7
+//                cyclevalue = dateposition
+//                holder.bind(date[dateposition + newpostion % 35])
+//            } else {
+//                val contentPosition = cyclevalue + newpostion % 7
+//                val contentLine = (newpostion / 7) % 5
+//
+//                if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
+//                    val index = saveLineList.indexOf(contentLine)
+//
+//                    if (saveCntList[index] > 7) {
+//                        saveCntList[index] -= 7
+//                        positionplus += 6
+//                        holder.bind(true)
+//                        return
+//                    } else {
+//                        val returncnt = saveCntList[index]
+//
+//                        saveCntList.removeAt(index)
+//                        saveLineList.removeAt(index)
+//
+//                        positionplus += returncnt - 1
+//                        holder.bind(true)
+//                        return
+//                    }
+//                }
+//
+//                for (con in schedulecontent) {
+//                    if (!scheduleDupList.contains(con) && con.position == contentPosition) {
+//                        scheduleDupList.add(con)
+//
+//                        if ((contentPosition + con.cnt - 1) / 7 != contentPosition / 7) {
+//                            val overflowvalue =
+//                                contentPosition + con.cnt - (contentPosition + con.cnt) / 7 * 7
+//                            saveCntList.add(overflowvalue)
+//                            saveLineList.add(contentLine)
+//
+//                            positionplus += con.cnt - overflowvalue - 1
+//                            holder.bind(con)
+//                            break
+//                        }
+//
+//
+//                        positionplus += con.cnt - 1
+//                        holder.bind(con)
+//                        return
+//                    }
+//                }
+//
+//                holder.bind(false)
+//            }
         }
     }
 

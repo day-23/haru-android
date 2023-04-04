@@ -90,8 +90,8 @@ class CalendarViewModel : ViewModel() {
 
         _liveDateList.postValue(dateList)
 
-        getTodo(startDate, endDate, maxi)
-        getSchedule(startDate, endDate, maxi)
+//        getTodo(startDate, endDate, maxi)
+//        getSchedule(startDate, endDate, maxi)
     }
 
     fun getTodo(startDate:String, endDate:String, maxi:Int){
@@ -110,11 +110,16 @@ class CalendarViewModel : ViewModel() {
                 for(todo in it){
                     val repeatDate = Array((maxi+1)*7){false}
                     val createdAt = serverformat.parse(todo.createdAt)
-                    val serverendDate = serverformat.parse(todo.endDate)
+
+                    var serverendDate:Date? = null
                     var repeateEnd:Date? = null
 
                     val repeatOption = todo.repeatOption
                     var repeatValue = ""
+
+                    if(todo.endDate != null) {
+                        serverendDate = serverformat.parse(todo.endDate)
+                    }
 
                     if(repeatOption != null){
                         if(todo.repeatEnd != null) {
@@ -247,7 +252,9 @@ class CalendarViewModel : ViewModel() {
                         calendar.time = tempStartDate
 
                         while (calendar.time.compareTo(dateformat.parse(endDate)) <= 0){
-                            if(calendar.time.compareTo(serverendDate) == 0){
+                            if(serverendDate != null && calendar.time.compareTo(serverendDate) == 0){
+                                repeatDate[cnt] = true
+                            } else if (calendar.time.compareTo(Date()) == 0){
                                 repeatDate[cnt] = true
                             }
 
