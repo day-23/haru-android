@@ -64,7 +64,7 @@ class TodotableFragment : Fragment() {
 
         timetableviewModel = TimetableViewModel(requireContext())
         binding.viewModel = timetableviewModel
-
+        timetableviewModel.init_value()
         todoreviewModel.init_value()
 
         todoreviewModel.TodoDataList.observe(viewLifecycleOwner) { contents ->

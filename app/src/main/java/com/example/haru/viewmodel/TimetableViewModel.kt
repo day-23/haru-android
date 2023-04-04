@@ -1,11 +1,14 @@
 package com.example.haru.viewmodel
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.provider.ContactsContract.RawContacts.Data
 import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -54,7 +57,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var IndexList: ArrayList<ArrayList<Schedule>> = ArrayList()
     var IndexList_allday: ArrayList<ArrayList<Schedule>> = ArrayList()
     fun init_value() {
-
         _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString()+"일")
 
         Daylist(
@@ -92,8 +94,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 _Colors.value = colorlist
                 _Selected.value = Timetable_date(year.toString()+"년", (month+1).toString()+"월", day.toString()+"일")
                 _Dates.value = Datelist
-                getSchedule(Datelist)
-                _Schedules.value = IndexList
+//                _Schedules.value = IndexList
                 dialog.dismiss()
             }
             .setNegativeButton("cancel") { dialog, _ ->
@@ -157,15 +158,15 @@ class TimetableViewModel(val context : Context): ViewModel() {
             dayslist.add(addday.toString())
             d += 1
         }
+        getSchedule(Datelist)
     }
 
     //스케줄 쿼리문 전송
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
-            val emptyschedule = Schedule(0,"", "", "", false, "", "", "", false,"" , Category("","","",false), emptyList(), null, null,)
-            IndexList = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
+            val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", false,"" , Category("","","",false), emptyList(), null, null,)
+            IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
             IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
-
             scheduleRepository.getSchedule(date[0], date[6]) {
                 val TodoList = it
 
@@ -176,9 +177,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                     val day_start = data.repeatStart?.slice(IntRange(8,9))
                     val result_start = year_start+month_start+day_start
 
-                    val year_end = data.repeatStart?.slice(IntRange(0,3))
-                    val month_end = data.repeatStart?.slice(IntRange(5,6))
-                    val day_end = data.repeatStart?.slice(IntRange(8,9))
+                    val year_end = data.repeatEnd?.slice(IntRange(0,3))
+                    val month_end = data.repeatEnd?.slice(IntRange(5,6))
+                    val day_end = data.repeatEnd?.slice(IntRange(8,9))
                     val result_end = year_end+month_end+day_end
 
                     if(data.repeatStart != data.repeatEnd && result_start == result_end){ //하루치 일정
@@ -193,11 +194,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                         }
                     }
                 }
-                for(i : Int in 0 .. 6) {
-                    IndexList[i].removeAt(0)
-                }
+                Log.d("Schedules", "index : $IndexList")
             }
+            _Schedules.value = IndexList
         }
     }
-
 }

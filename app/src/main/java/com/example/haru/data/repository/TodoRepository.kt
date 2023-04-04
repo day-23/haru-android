@@ -50,7 +50,6 @@ class TodoRepository() {
         }
         callback(todoData)
     }
-
     suspend fun getSchedule(
         startDate: String,
         endDate: String,
