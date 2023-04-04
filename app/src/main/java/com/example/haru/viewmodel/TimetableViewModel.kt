@@ -246,16 +246,44 @@ class TimetableViewModel(val context : Context): ViewModel() {
         val month_end = data.repeatEnd?.slice(IntRange(5,6))
         val day_end = data.repeatEnd?.slice(IntRange(8,9))
         val result_end = year_end+month_end+day_end
-
+        val sortedIndex: ArrayList<Schedule>
         //하루치 일정
         when(result_start){
-            Datelist[0] -> IndexList[0].add(data)
-            Datelist[1] -> IndexList[1].add(data)
-            Datelist[2] -> IndexList[2].add(data)
-            Datelist[3] -> IndexList[3].add(data)
-            Datelist[4] -> IndexList[4].add(data)
-            Datelist[5] -> IndexList[5].add(data)
-            Datelist[6] -> IndexList[6].add(data)
+            Datelist[0] -> {
+                IndexList[0].add(data)
+                sortedIndex = ArrayList(IndexList[0].sortedBy { it.repeatStart})
+                IndexList[0] = sortedIndex
+            }
+            Datelist[1] -> {
+                IndexList[1].add(data)
+                sortedIndex = ArrayList(IndexList[1].sortedBy { it.repeatStart})
+                IndexList[1] = sortedIndex
+            }
+            Datelist[2] -> {
+                IndexList[2].add(data)
+                sortedIndex = ArrayList(IndexList[2].sortedBy { it.repeatStart})
+                IndexList[2] = sortedIndex
+            }
+            Datelist[3] -> {
+                IndexList[3].add(data)
+                sortedIndex = ArrayList(IndexList[3].sortedBy { it.repeatStart})
+                IndexList[3] = sortedIndex
+            }
+            Datelist[4] -> {
+                IndexList[4].add(data)
+                sortedIndex = ArrayList(IndexList[4].sortedBy { it.repeatStart})
+                IndexList[4] = sortedIndex
+            }
+            Datelist[5] -> {
+                IndexList[5].add(data)
+                sortedIndex = ArrayList(IndexList[5].sortedBy { it.repeatStart})
+                IndexList[5] = sortedIndex
+            }
+            Datelist[6] -> {
+                IndexList[6].add(data)
+                sortedIndex = ArrayList(IndexList[6].sortedBy { it.repeatStart})
+                IndexList[6] = sortedIndex
+            }
         }
     }
 
@@ -325,7 +353,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
         for(lists in IndexList){
             if(lists.contains(data)){
                 lists.remove(data)
-                Log.d("DRAGGED", "deleted!")
                 break
             }
         }
@@ -333,7 +360,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
         data.repeatStart = start
         data.repeatEnd = endDate+endTime
         sortSchedule(data)
-
         _Schedules.value = IndexList
     }
 }

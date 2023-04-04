@@ -2,11 +2,13 @@ package com.example.haru.view.timetable
 
 import android.content.ClipData
 import android.content.res.Resources
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.DragEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -25,6 +27,10 @@ import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import org.w3c.dom.Text
 
+//드래그 앤 드롭 그림자 없어지게 하는 클래스
+class EmptyShadowBuilder(view: View) : View.DragShadowBuilder(view) {
+    override fun onDrawShadow(canvas: Canvas?) {}
+}
 
 class TimetableFragment : Fragment() {
     private lateinit var binding: FragmentTimetableBinding
@@ -71,19 +77,6 @@ class TimetableFragment : Fragment() {
         recyclerView1.adapter = timetableAdapter
         timetableviewModel.init_value()
 
-        binding.timetableScroll.setOnDragListener { _, dragEvent ->
-            val boxesLayoutCoords = intArrayOf(0, 0)
-            binding.timetableScroll.getLocationInWindow(boxesLayoutCoords)
-            Log.d("DRAGGED", "listen...")
-            when (dragEvent.action) {
-                DragEvent.ACTION_DRAG_LOCATION -> {
-
-                    checkForScroll(dragEvent.y, boxesLayoutCoords[1])
-                }
-            }
-            true
-        }
-
 
         //타임테이블 프래그먼트 아이디 값
         layoutId.add(binding.sunTable.id)
@@ -105,7 +98,17 @@ class TimetableFragment : Fragment() {
         binding.friTable.setOnDragListener(scheduleDrag)
         binding.satTable.setOnDragListener(scheduleDrag)
 
+        binding.timetableScroll.setOnDragListener{ _, event ->
+            val boxesLayoutCoords = intArrayOf(0, 0)
+            binding.timetableScroll.getLocationInWindow(boxesLayoutCoords)
+            when(event.action){
+                else -> {
+                    checkForScroll(event.y, boxesLayoutCoords[1])
+                    true
+                }
+            }
 
+        }
         //타임테이블 리사이클러뷰 실행
         reviewModel.TimeList.observe(viewLifecycleOwner) { times ->
             timetableAdapter.setData(times)
@@ -272,7 +275,7 @@ class TimetableFragment : Fragment() {
 
                 Schedule_View.setOnLongClickListener { view ->
                     val data = ClipData.newPlainText("", "")
-                    val shadowBuilder = View.DragShadowBuilder(view)
+                    val shadowBuilder = EmptyShadowBuilder(view)
                     view?.startDragAndDrop(data, shadowBuilder, view, 0)
                     false
                 }
@@ -295,14 +298,15 @@ class TimetableFragment : Fragment() {
         fun checkForScroll(pointerY: Float, startOfScrollView: Int) {
             val lowerLimForScroll = (Resources.getSystem().displayMetrics.heightPixels * 0.8).toInt()
             /* if the upper limit is passed, meaning a pixel height, scroll up */
-            if ((pointerY + startOfScrollView) < 0) {
+            Log.d("DRAGGED", "$pointerY $startOfScrollView, $lowerLimForScroll")
+            if ( pointerY < 100) {
                 binding.timetableScroll.smoothScrollBy(0, -20)
-                Log.d("DRAGGED", "down")
+                Log.d("DRAGGED", "up")
             }
             /* if the lower limit is passed, meaning a pixel height, scroll down */
-            else if (pointerY + startOfScrollView > lowerLimForScroll) {
+            else if (pointerY > lowerLimForScroll) {
                 binding.timetableScroll.smoothScrollBy(0, 15)
-                Log.d("DRAGGED", "up")
+                Log.d("DRAGGED", "down")
             }
         }
 

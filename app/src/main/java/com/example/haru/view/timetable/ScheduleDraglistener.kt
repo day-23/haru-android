@@ -7,12 +7,16 @@ import android.graphics.ColorMatrixColorFilter
 import android.graphics.PorterDuff
 import android.util.Log
 import android.view.DragEvent
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.R
 import com.example.haru.data.model.Todo
 import com.example.haru.viewmodel.TimetableViewModel
 
@@ -21,6 +25,8 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
                             layoutIndex: ArrayList<Int>,
                             val context : Context) : View.OnDragListener{
     val layoutIndex = layoutIndex
+    var lastY = 0
+    val shadowView = Button(context)
     override fun onDrag(view: View, event: DragEvent): Boolean {
         var targetFramelayout: FrameLayout
 
@@ -51,24 +57,32 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
             timetableViewModel.scheduleMoved(y, draggedView, index)
         }
 
-        if (event.action == DragEvent.ACTION_DRAG_ENTERED) {
+        if (event.action == DragEvent.ACTION_DRAG_LOCATION) {
+            val draggedView = event.localState as TextView
             try {
                 targetFramelayout = view as FrameLayout
             } catch (e: java.lang.ClassCastException) {
                 targetFramelayout = view.parent.parent as FrameLayout
             }
-            val shadowparams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-            val shadowView = View(context)
+            val shadowparams = FrameLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, draggedView.height)
 //            shadowView.alpha = 1f
             shadowView.layoutParams = shadowparams
             val displayMetrics = targetFramelayout.resources.displayMetrics
             val y = ((event.y / displayMetrics.density).toInt() / 10) * 10
             val dropY = Math.round( y * displayMetrics.density)
+            shadowView.setBackgroundResource(R.drawable.timetable_schedule)
 
-            shadowView.y = dropY.toFloat()
-            targetFramelayout.addView(shadowView)
-            Log.d("DRAGGED", "shadow on")
-            true
+            if(dropY != lastY) {
+                try {
+                    val shadowParent = shadowView.parent as FrameLayout
+                    shadowParent.removeView(shadowView)
+                } catch (e: java.lang.NullPointerException){}
+                shadowView.y = dropY.toFloat()
+                shadowView.text = draggedView.text
+                targetFramelayout.addView(shadowView)
+                true
+            }
+
         }
 
         if (event.action == DragEvent.ACTION_DRAG_EXITED) {
