@@ -247,18 +247,16 @@ class TimetableViewModel(val context : Context): ViewModel() {
         val day_end = data.repeatEnd?.slice(IntRange(8,9))
         val result_end = year_end+month_end+day_end
 
-        if(data.repeatStart != data.repeatEnd && result_start == result_end){ //하루치 일정
-            when(result_start){
-                Datelist[0] -> IndexList[0].add(data)
-                Datelist[1] -> IndexList[1].add(data)
-                Datelist[2] -> IndexList[2].add(data)
-                Datelist[3] -> IndexList[3].add(data)
-                Datelist[4] -> IndexList[4].add(data)
-                Datelist[5] -> IndexList[5].add(data)
-                Datelist[6] -> IndexList[6].add(data)
-            }
+        //하루치 일정
+        when(result_start){
+            Datelist[0] -> IndexList[0].add(data)
+            Datelist[1] -> IndexList[1].add(data)
+            Datelist[2] -> IndexList[2].add(data)
+            Datelist[3] -> IndexList[3].add(data)
+            Datelist[4] -> IndexList[4].add(data)
+            Datelist[5] -> IndexList[5].add(data)
+            Datelist[6] -> IndexList[6].add(data)
         }
-
     }
 
     fun getDates() : ArrayList<String>{
@@ -291,9 +289,39 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
     fun patchMoved(start: String , end: String, data: Schedule){
         val moveview = data
-        moveview.repeatStart = start
-        moveview.repeatEnd = end
+        //"2023-03-07T18:30:00.000Z" 11 12 14 15
+        //repeatend 값을 바뀐 repeatstart에 맞추어 수정
+        val nowStartHour = start.slice(IntRange(11,12)).toInt()
+        val nowStartMin = start.slice(IntRange(14,15)).toInt()
+        val pastStartHour = moveview.repeatStart!!.slice(IntRange(11, 12)).toInt()
+        val pastStartMin = moveview.repeatStart!!.slice(IntRange(14, 15)).toInt()
+        val pastEndHour = moveview.repeatEnd!!.slice(IntRange(11, 12)).toInt()
+        val pastEndMin = moveview.repeatEnd!!.slice(IntRange(14, 15)).toInt()
+        var periodHour = pastEndHour - pastStartHour
+        var periodMin = pastEndMin - pastStartMin
 
+        if(periodMin < 0 ){
+            periodHour -= 1
+            periodMin += 60
+        }
+        periodHour += nowStartHour
+        periodMin += nowStartMin
+
+        if(periodMin > 59){
+            periodHour += 1
+            periodMin -= 60
+        }
+        var fixedHour = ""
+        var fixedMin = ""
+
+        if(periodHour < 10) fixedHour = "0"+periodHour.toString()
+        else fixedHour = periodHour.toString()
+        if(periodMin < 10) fixedMin = "0"+periodMin.toString()
+        else fixedMin = periodMin.toString()
+        val endDate = end.slice(IntRange(0,9))
+        val endTime = "T$fixedHour:$fixedMin:00.000Z"
+
+        Log.d("DRAGGED", "$start, ${endDate+endTime}")
         for(lists in IndexList){
             if(lists.contains(data)){
                 lists.remove(data)
@@ -302,7 +330,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
             }
         }
 
-        sortSchedule(moveview)
+        data.repeatStart = start
+        data.repeatEnd = endDate+endTime
+        sortSchedule(data)
 
         _Schedules.value = IndexList
     }

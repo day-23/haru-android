@@ -84,7 +84,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="@{viewModel.selected.day}"
+                            android:text="@{viewModel.todayDay}"
                             android:textColor="#2CA4FF"
                             android:hint="1"
                             android:textStyle="bold"

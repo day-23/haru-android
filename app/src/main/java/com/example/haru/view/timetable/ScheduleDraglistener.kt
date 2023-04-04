@@ -1,5 +1,6 @@
 package com.example.haru.view.timetable
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
@@ -16,10 +17,11 @@ import com.example.haru.data.model.Todo
 import com.example.haru.viewmodel.TimetableViewModel
 
 
-class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel, layoutIndex: ArrayList<Int>) : View.OnDragListener{
+class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
+                            layoutIndex: ArrayList<Int>,
+                            val context : Context) : View.OnDragListener{
     val layoutIndex = layoutIndex
     override fun onDrag(view: View, event: DragEvent): Boolean {
-        val viewSource = event.localState as View
         var targetFramelayout: FrameLayout
 
         if (event.action == DragEvent.ACTION_DROP) {
@@ -45,10 +47,8 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel, 
                     break
                 }
             }
-
+            SourceLayout.removeView(draggedView)
             timetableViewModel.scheduleMoved(y, draggedView, index)
-//            SourceLayout.removeView(draggedView)
-//            targetFramelayout.addView(draggedView)
         }
 
         if (event.action == DragEvent.ACTION_DRAG_ENTERED) {
@@ -57,7 +57,17 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel, 
             } catch (e: java.lang.ClassCastException) {
                 targetFramelayout = view.parent.parent as FrameLayout
             }
+            val shadowparams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            val shadowView = View(context)
+//            shadowView.alpha = 1f
+            shadowView.layoutParams = shadowparams
+            val displayMetrics = targetFramelayout.resources.displayMetrics
+            val y = ((event.y / displayMetrics.density).toInt() / 10) * 10
+            val dropY = Math.round( y * displayMetrics.density)
 
+            shadowView.y = dropY.toFloat()
+            targetFramelayout.addView(shadowView)
+            Log.d("DRAGGED", "shadow on")
             true
         }
 
