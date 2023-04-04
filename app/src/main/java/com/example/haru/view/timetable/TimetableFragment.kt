@@ -98,13 +98,14 @@ class TimetableFragment : Fragment() {
             val boxesLayoutCoords = intArrayOf(0, 0)
             binding.timetableScroll.getLocationInWindow(boxesLayoutCoords)
             when(event.action){
-                else -> {
+                DragEvent.ACTION_DRAG_LOCATION -> {
                     checkForScroll(event.y, boxesLayoutCoords[1])
                     true
                 }
+                else -> true
             }
-
         }
+
         //타임테이블 리사이클러뷰 실행
         reviewModel.TimeList.observe(viewLifecycleOwner) { times ->
             timetableAdapter.setData(times)

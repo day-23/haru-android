@@ -87,7 +87,12 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
         }
 
         if (event.action == DragEvent.ACTION_DRAG_EXITED) {
-
+            try {
+                targetFramelayout = view as FrameLayout
+            } catch (e: java.lang.ClassCastException) {
+                targetFramelayout = view.parent.parent as FrameLayout
+            }
+            targetFramelayout.removeView(shadowView)
         }
         return true
     }
