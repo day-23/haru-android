@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Tag
@@ -169,25 +170,31 @@ class TodoAdapter(val context: Context) :
 
         fun bind(item: Todo) {
             binding.todo = item
-            var tag = ""
-            for (i in 0 until item.tags.size) {
-                tag += "${item.tags[i].content} "
+            if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null){
+                binding.blankView.visibility = View.VISIBLE
             }
-            if (tag != "") {
-                binding.tvTagDescription.text = tag.dropLast(1)
-                binding.tvTagDescription.visibility = View.VISIBLE
-            } else {
-                binding.tvTagDescription.visibility = View.GONE
-                binding.tvTagDescription.text = tag
-            }
+            else {
+                binding.blankView.visibility = View.GONE
+                var tag = ""
+                for (i in 0 until item.tags.size) {
+                    tag += "${item.tags[i].content} "
+                }
+                if (tag != "") {
+                    binding.tvTagDescription.text = tag.dropLast(1)
+                    binding.tvTagDescription.visibility = View.VISIBLE
+                } else {
+                    binding.tvTagDescription.visibility = View.GONE
+                    binding.tvTagDescription.text =  tag
+                }
 
-            if (item.endDate != null) {
-                binding.tvEndDateDescription.text =
-                    FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
-                binding.tvEndDateDescription.visibility = View.VISIBLE
-            } else {
-                binding.tvEndDateDescription.text = ""
-                binding.tvEndDateDescription.visibility = View.GONE
+                if (item.endDate != null) {
+                    binding.tvEndDateDescription.text =
+                        FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
+                    binding.tvEndDateDescription.visibility = View.VISIBLE
+                } else {
+                    binding.tvEndDateDescription.text = ""
+                    binding.tvEndDateDescription.visibility = View.GONE
+                }
             }
 
             if (item.completed) binding.tvTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
@@ -225,4 +232,5 @@ class TodoAdapter(val context: Context) :
             tags[3].content = content
         } else todoByTag = false
     }
+
 }
