@@ -27,7 +27,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _todayTodo = MutableLiveData<Boolean>(false)
     val todayTodo: LiveData<Boolean> = _todayTodo
 
-    private val _subTodoList = MutableLiveData<List<String>>()
+    private val _subTodoList = MutableLiveData<List<String>>(listOf(""))
     val subTodoList : LiveData<List<String>> = _subTodoList
 
     private val _isSelectedEndDateTime = MutableLiveData<Boolean>(false)
@@ -69,6 +69,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var tagList: MutableList<String> = mutableListOf()
     var subTodos: MutableList<String> = mutableListOf("")
     var subTodoCnt : Int = 1
+    var subTodoClickPosition = -1
 
 
     var tag: String = ""
@@ -150,15 +151,19 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun plusSubTodo(){
         subTodoCnt += 1
-        subTodos.add("")
+        subTodos.add(subTodoClickPosition, "")
         _subTodoList.value = subTodos
-        Log.d("20191627", "plus" + subTodoCnt.toString())
     }
 
     fun deleteSubTodo(){
+        if (subTodoCnt == 1) return
         subTodoCnt -= 1
-        subTodos.remove("")
+        subTodos.removeAt(subTodoClickPosition)
         _subTodoList.value = subTodos
+    }
+
+    fun setSubTodoPosition(position: Int){
+        subTodoClickPosition = position
     }
 
     fun setIsSelectedEndDateTime() {

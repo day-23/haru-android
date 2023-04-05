@@ -8,6 +8,8 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
@@ -19,6 +21,7 @@ import android.widget.*
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
+import androidx.core.widget.addTextChangedListener
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.FormatDate
@@ -537,14 +540,34 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 val layoutInflater =
                     context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.subtodo_layout, null)
+
                 addView.findViewById<ImageView>(R.id.iv_subTodo_plus).setOnClickListener{
+                    Log.d("20191627", "plus click " + binding.subTodoLayout.indexOfChild(addView))
+                    todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
                     todoAddViewModel.plusSubTodo()
                 }
                 addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
+                    Log.d("20191627", "delete click " + binding.subTodoLayout.indexOfChild(addView))
+                    todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
                     todoAddViewModel.deleteSubTodo()
                 }
-                binding.subTodoLayout.addView(addView)
-            }else binding.subTodoLayout.removeViewAt(binding.subTodoLayout.childCount - 1)
+                addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object : TextWatcher{
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    }
+
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                    }
+
+                    override fun afterTextChanged(e: Editable?) {
+                        todoAddViewModel.subTodos[binding.subTodoLayout.indexOfChild(addView)] = e.toString()
+                    }
+                })
+
+                binding.subTodoLayout.addView(addView, todoAddViewModel.subTodoClickPosition + 1)
+            }else binding.subTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
+
+            Log.d("20191627", todoAddViewModel.subTodos.toString())
         })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
@@ -580,8 +603,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 //
         binding.btnClose.setOnClickListener(btnListener())
 
-        binding.ivSubTodoPlus.setOnClickListener(btnListener())
-        binding.ivSubTodoCancel.setOnClickListener(btnListener())
+//        binding.ivSubTodoPlus.setOnClickListener(btnListener())
+//        binding.ivSubTodoCancel.setOnClickListener(btnListener())
 
     }
 
@@ -593,14 +616,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     inner class btnListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
-                binding.ivSubTodoPlus.id -> {
-                    todoAddViewModel.plusSubTodo()
-                }
-
-                binding.ivSubTodoCancel.id -> {
-                    todoAddViewModel.deleteSubTodo()
-                }
-
                 R.id.check_flag_todo -> todoAddViewModel.setFlagTodo()
                 R.id.today_switch -> todoAddViewModel.setTodayTodo()
 
