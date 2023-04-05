@@ -57,6 +57,10 @@ class CheckListViewModel() :
         getTag()
     }
 
+    fun setTagBackGround(position: Int) {
+
+    }
+
     fun getTag() {
         viewModelScope.launch {
             _tagDataList.value = basicTag + tagRepository.getTag()
