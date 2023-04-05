@@ -159,26 +159,10 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/subTodo_item_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="83dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:background="@drawable/checklist_done_circle"/>
-
-            <TextView
-                android:id="@+id/tv_subTodo"
-                android:layout_marginStart="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/pretendard_variable"
-                android:textSize="14sp"
-                android:textStyle="bold"/>
-
+            android:orientation="vertical">
         </LinearLayout>
 
     </LinearLayout>

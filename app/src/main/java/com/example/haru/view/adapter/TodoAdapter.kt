@@ -7,9 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.view.marginTop
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.R
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.ChecklistEmptyBinding
@@ -202,6 +206,21 @@ class TodoAdapter(val context: Context) :
 
             if (item.completed) binding.tvTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             else binding.tvTitle.paintFlags = 0
+
+            if (item.subTodos.isEmpty()) return
+
+            for(i in 0 until item.subTodos.size){
+                val layoutInflater =
+                    context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val addView = layoutInflater.inflate(R.layout.subtodo_layout, null)
+                // subtodo completed 클릭 리스너
+                // TODO
+
+                addView.findViewById<CheckBox>(R.id.cb_subTodo_complete).isChecked = item.subTodos[i].completed
+                addView.findViewById<TextView>(R.id.tv_subTodo).text = item.subTodos[i].content
+
+                binding.subTodoItemLayout.addView(addView)
+            }
         }
     }
 

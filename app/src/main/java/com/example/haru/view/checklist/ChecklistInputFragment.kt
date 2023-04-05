@@ -18,9 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.*
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginBottom
 import androidx.core.widget.addTextChangedListener
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
@@ -30,10 +28,6 @@ import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.sql.Timestamp
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
@@ -539,7 +533,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             if (todoAddViewModel.subTodoCnt == (binding.subTodoLayout.childCount + 1)) {
                 val layoutInflater =
                     context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val addView = layoutInflater.inflate(R.layout.subtodo_layout, null)
+                val addView = layoutInflater.inflate(R.layout.subtodo_input_layout, null)
 
                 addView.findViewById<ImageView>(R.id.iv_subTodo_plus).setOnClickListener{
                     Log.d("20191627", "plus click " + binding.subTodoLayout.indexOfChild(addView))
