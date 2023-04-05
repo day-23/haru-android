@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/small_dot_icon"
                     android:backgroundTint="@{todo.completed ? @color/light_gray : @color/todo_description}"
-                    android:visibility="@{todo.endDate == null &amp;&amp; todo.tags.empty ? View.GONE : View.VISIBLE}" />
+                    android:visibility='@{((todo.endDate == null &amp;&amp; todo.tags.empty) || (!todo.todayTodo &amp;&amp; todo.alarms.empty &amp;&amp; todo.repeatOption == null &amp;&amp; todo.memo.equals(""))) ? View.GONE : View.VISIBLE}' />
 
                 <ImageView
                     android:id="@+id/iv_small_today"
