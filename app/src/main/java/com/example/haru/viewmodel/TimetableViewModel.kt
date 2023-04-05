@@ -48,6 +48,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Schedules : LiveData<ArrayList<ArrayList<Schedule>>>
         get() = _Schedules
 
+    private val _SchedulesAllday = MutableLiveData<ArrayList<Schedule>>()
+    val SchedulesAllday: LiveData<ArrayList<Schedule>>
+        get() = _SchedulesAllday
+
     private val _TodayDay = MutableLiveData<String>()
     val TodayDay : LiveData<String>
         get() = _TodayDay
@@ -65,7 +69,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var dayslist: ArrayList<String> = ArrayList()
     var Datelist: ArrayList<String> = ArrayList()
     var IndexList: ArrayList<ArrayList<Schedule>> = ArrayList()
-    var IndexList_allday: ArrayList<ArrayList<Schedule>> = ArrayList()
+    var IndexList_allday: ArrayList<Schedule> = ArrayList()
     var timetable_today = ""
     init {
         timetable_today = SimpleDateFormat("yyyyMMdd").format(Date(calendar.get(Calendar.YEAR) - 1900, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)))
@@ -202,7 +206,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
         viewModelScope.launch {
             val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", false,"" , Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
-            IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
             scheduleRepository.getSchedule(date[0], date[6]) {
                 val TodoList = it
 
@@ -229,10 +232,14 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             date[6] -> IndexList[6].add(data)
                         }
                     }
+                    else{
+                        IndexList_allday.add(data)// 하루종일 or 하루이상 일정
+                    }
                 }
                 Log.d("Schedules", "index : $IndexList")
             }
             _Schedules.value = IndexList
+            _SchedulesAllday.value = IndexList_allday
         }
     }
 

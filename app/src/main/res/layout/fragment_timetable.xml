@@ -292,21 +292,74 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:visibility="visible">
+                android:layout_height="wrap_content">
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
-                <GridLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="14"
-                    android:columnCount="7"
-                    android:rowCount="2">
 
-                </GridLayout>
+                <LinearLayout
+                    android:id="@+id/daysTable"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="14"
+                    android:orientation="vertical">
+
+                    <!--1열-->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="21dp"
+                        android:layout_marginBottom="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="2"
+                                android:text="스키장"
+                                android:gravity="center"
+                                android:background="@drawable/timetable_schedule"/>
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="5"/>
+                        </LinearLayout>
+
+
+                    </FrameLayout>
+
+                    <!--2열-->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="21dp"
+                        android:layout_marginBottom="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="2"/>
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:text="회의"
+                                android:gravity="center"
+                                android:background="@drawable/timetable_schedule"
+                                android:layout_weight="1"/>
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="4"/>
+                        </LinearLayout>
+
+                    </FrameLayout>
+
+                </LinearLayout>
 
 
 

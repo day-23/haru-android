@@ -73,7 +73,6 @@ class TimetableFragment : Fragment() {
         recyclerView1.adapter = timetableAdapter
         timetableviewModel.init_value()
 
-
         //타임테이블 프래그먼트 아이디 값
         layoutId.add(binding.sunTable.id)
         layoutId.add(binding.monTable.id)
@@ -168,7 +167,16 @@ class TimetableFragment : Fragment() {
                 binding.satTable.removeAllViews()
                 Drawtimes(binding.satTable, schedule[6])
             }
+
+
         }
+        //하루종일 or 2일이상 일정을 바인딩
+        timetableviewModel.SchedulesAllday.observe(viewLifecycleOwner) { days ->
+            binding.daysTable.removeAllViews()
+            Log.d("ALLDAYsss", "$days")
+            DrawDays(binding.daysTable, days,timetableviewModel.getDates())
+        }
+
         //드래그 앤 드랍시 이동한 뷰의 정보
         timetableviewModel.MoveView.observe(viewLifecycleOwner) { view ->
             val movedData = scheduleMap[view]
@@ -187,7 +195,6 @@ class TimetableFragment : Fragment() {
             transaction.commit()
             true
         }
-
         return rootView
     }
 
@@ -200,7 +207,59 @@ class TimetableFragment : Fragment() {
         binding.timetableScroll.smoothScrollTo(0, originalPos[1], 1000)
         binding.invalidateAll()
     }
+    //하루이상의 할일을 동적으로 바인딩
+    fun DrawDays(table: ViewGroup, days: ArrayList<Schedule>, dates: ArrayList<String>){
+        val displayMetrics = resources.displayMetrics
+        val deleteSchedule = ArrayList<Schedule>()
+        while(days.size > 0){
+            val layout1 = FrameLayout(requireContext())
+            val rowParams1 = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, Math.round(21 * displayMetrics.density))
 
+            layout1.layoutParams = rowParams1
+
+            Log.d("ALLDAYsss", "$days")
+            var occupied = 0
+            deleteSchedule.clear()
+
+            for(day in days){
+                val startDate = day.repeatStart?.slice(IntRange(0,3)) + day.repeatStart?.slice(IntRange(5,6)) + day.repeatStart?.slice(IntRange(8,9))
+                val endDate = day.repeatEnd?.slice(IntRange(0,3)) + day.repeatEnd?.slice(IntRange(5,6)) + day.repeatEnd?.slice(IntRange(8,9))
+                if(startDate.toInt() > occupied) {
+                    val layout2 = LinearLayout(requireContext())
+                    val rowParams2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+                    layout2.layoutParams = rowParams2
+                    deleteSchedule.add(day)
+                    val period = (dates.indexOf(endDate) - dates.indexOf(startDate)) + 1
+                    val position = dates.indexOf(startDate)
+
+                    val view = TextView(requireContext())
+                    view.text = day.content
+                    view.setBackgroundResource(R.drawable.timetable_schedule)
+                    val frontPadding = View(requireContext())
+                    val backPadding = View(requireContext())
+
+                    val frontParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, position.toFloat())
+                    val backParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, (7 - (position + period).toFloat()))
+                    val itemParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, period.toFloat())
+
+                    view.layoutParams = itemParams
+                    frontPadding.layoutParams = frontParams
+                    backPadding.layoutParams = backParams
+                    layout2.addView(frontPadding)
+                    layout2.addView(view)
+                    layout2.addView(backPadding)
+                    occupied = endDate.toInt()
+                    layout1.addView(layout2)
+                }
+            }
+            for(item in deleteSchedule){
+                days.remove(item)
+            }
+            table.addView(layout1)
+        }
+
+    }
+    //하루치 일정을 동적으로 바인딩
     fun Drawtimes(table: ViewGroup, times: ArrayList<Schedule>) {
         var past_start = 0
         var past_end = 2359
@@ -217,7 +276,7 @@ class TimetableFragment : Fragment() {
             val end =
                 times.repeatEnd?.slice(IntRange(11, 12)) + times.repeatEnd?.slice(IntRange(14, 15))
 
-            if (start.toInt() in past_start..past_end) {
+            if (start.toInt() in past_start..past_end-1) {
                 overlapList.add(times)
             } else {
                 val arraylist = ArrayList<Schedule>()
