@@ -134,40 +134,26 @@ class TimetableFragment : Fragment() {
         timetableviewModel.Schedules.observe(viewLifecycleOwner) { schedule ->
             scheduleMap.clear()
 
-            if (schedule[0].size > 0) {
-                binding.sunTable.removeAllViews()
-                Drawtimes(binding.sunTable, schedule[0])
-            }
+            binding.sunTable.removeAllViews()
+            Drawtimes(binding.sunTable, schedule[0])
 
-            if (schedule[1].size > 0) {
-                binding.monTable.removeAllViews()
-                Drawtimes(binding.monTable, schedule[1])
-            }
+            binding.monTable.removeAllViews()
+            Drawtimes(binding.monTable, schedule[1])
 
-            if (schedule[2].size > 0) {
-                binding.tueTable.removeAllViews()
-                Drawtimes(binding.tueTable, schedule[2])
-            }
+            binding.tueTable.removeAllViews()
+            Drawtimes(binding.tueTable, schedule[2])
 
-            if (schedule[3].size > 0) {
-                binding.wedTable.removeAllViews()
-                Drawtimes(binding.wedTable, schedule[3])
-            }
+            binding.wedTable.removeAllViews()
+            Drawtimes(binding.wedTable, schedule[3])
 
-            if (schedule[4].size > 0) {
-                binding.thuTable.removeAllViews()
-                Drawtimes(binding.thuTable, schedule[4])
-            }
-            if (schedule[5].size > 0) {
-                binding.friTable.removeAllViews()
-                Drawtimes(binding.friTable, schedule[5])
-            }
+            binding.thuTable.removeAllViews()
+            Drawtimes(binding.thuTable, schedule[4])
 
-            if (schedule[6].size > 0) {
-                binding.satTable.removeAllViews()
-                Drawtimes(binding.satTable, schedule[6])
-            }
+            binding.friTable.removeAllViews()
+            Drawtimes(binding.friTable, schedule[5])
 
+            binding.satTable.removeAllViews()
+            Drawtimes(binding.satTable, schedule[6])
 
         }
         //하루종일 or 2일이상 일정을 바인딩
