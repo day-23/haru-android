@@ -14,10 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.GridLayout
-import android.widget.TextView
-import android.widget.TimePicker
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
@@ -38,7 +35,7 @@ import java.util.*
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
-    private lateinit var todoAddViewModel: TodoAddViewModel
+    private var todoAddViewModel: TodoAddViewModel
 
     private var onDismissListener: (() -> Unit)? = null
 
@@ -516,12 +513,26 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             }
 
             if (layout != null) {
-                for(i in 0 until it!!.length) {
+                for (i in 0 until it!!.length) {
                     if (it[i] == '1')
-                        (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
-                    else (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        (layout.getChildAt(i) as TextView).setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.highlight
+                            )
+                        )
+                    else (layout.getChildAt(i) as TextView).setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.light_gray
+                        )
+                    )
                 }
             }
+        })
+
+        todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
         })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
@@ -553,10 +564,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         binding.tvSaturday.setOnClickListener(btnListener())
         binding.tvSunday.setOnClickListener(btnListener())
 
-
-//        binding.btnRepeatOption.setOnClickListener(btnListener())
-//
-//
         binding.btnSubmitTodo.setOnClickListener(btnListener())
 //
         binding.btnClose.setOnClickListener(btnListener())
@@ -571,6 +578,14 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     inner class btnListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
+                binding.ivSubTodoPlus.id -> {
+                    todoAddViewModel.plusSubTodo()
+                }
+
+                binding.ivSubTodoCancel.id -> {
+                    todoAddViewModel.deleteSubTodo()
+                }
+
                 R.id.check_flag_todo -> todoAddViewModel.setFlagTodo()
                 R.id.today_switch -> todoAddViewModel.setTodayTodo()
 
