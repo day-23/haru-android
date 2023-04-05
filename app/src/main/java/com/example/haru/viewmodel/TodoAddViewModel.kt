@@ -151,7 +151,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun plusSubTodo(){
         subTodoCnt += 1
-        subTodos.add(subTodoClickPosition, "")
+        subTodos.add(subTodoClickPosition + 1, "")
         _subTodoList.value = subTodos
     }
 
@@ -242,6 +242,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun readyToSubmit() {
+        for(i in 0 until  subTodos.size)
+            if (subTodos[i] == "" || subTodos[i].replace(" ", "") == "")
+                subTodos[i] = ""
+
+        subTodos.removeAll(listOf(""))
+
         tagList = if (tag == "" || tag.replace(" ", "") == "")
             mutableListOf()
         else tag.split(" ") as MutableList<String>
@@ -257,8 +263,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         } else {
             null
         }
-
-        Log.d("20191627", endDateStr.toString())
 
         alarmDateTimeStr =
             if (alarmSwitch.value == true && alarmDate.value != null && alarmTime.value != null)
