@@ -134,7 +134,7 @@ class TodotableFragment : Fragment() {
             val year = times.year.slice(0..times.year.length - 2)
             val month = times.month.slice(0..times.month.length - 2)
             val day = times.day.slice(0..times.day.length - 1)
-
+            Log.d("WHAT", "$day")
             binding.sunLayout.setBackgroundResource(R.color.white)
             binding.monLayout.setBackgroundResource(R.color.white)
             binding.tueLayout.setBackgroundResource(R.color.white)

@@ -223,6 +223,9 @@ class TimetableFragment : Fragment() {
                     view.setBackgroundResource(R.drawable.timetable_schedule)
                     val frontPadding = View(requireContext())
                     val backPadding = View(requireContext())
+                    view.setOnClickListener {
+                        Toast.makeText(requireContext(), "${day.content}", Toast.LENGTH_SHORT).show()
+                    }
 
                     val frontParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, position.toFloat())
                     val backParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, (7 - (position + period).toFloat()))

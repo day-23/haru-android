@@ -96,13 +96,13 @@ class TimetableViewModel(val context : Context): ViewModel() {
     //오늘 날짜로
     fun todayClick(){
         val calendar = Calendar.getInstance()
-        _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString())
         Daylist(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
         _Days.value = dayslist
+        _Selected.value = Timetable_date(calendar.get(Calendar.YEAR).toString()+"년" , (calendar.get(Calendar.MONTH)+1).toString()+"월", calendar.get(Calendar.DAY_OF_MONTH).toString())
         _Colors.value = colorlist
         _Dates.value = Datelist
         _Schedules.value = IndexList
