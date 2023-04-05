@@ -68,6 +68,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     var tagList: MutableList<String> = mutableListOf()
     var subTodos: MutableList<String> = mutableListOf("")
+    var subTodoCnt : Int = 1
 
 
     var tag: String = ""
@@ -148,11 +149,14 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun plusSubTodo(){
+        subTodoCnt += 1
         subTodos.add("")
         _subTodoList.value = subTodos
+        Log.d("20191627", "plus" + subTodoCnt.toString())
     }
 
     fun deleteSubTodo(){
+        subTodoCnt -= 1
         subTodos.remove("")
         _subTodoList.value = subTodos
     }

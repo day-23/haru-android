@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/subTodo_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:paddingBottom="10dp"
     android:gravity="center"
     android:orientation="horizontal">
 
@@ -21,9 +20,8 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:hint="@string/subTodo_input"
-        android:text="@={viewModel.subTodos[0]}"
         android:textColorHint="@color/light_gray"
-        android:textSize="14sp" />
+        android:textSize="20sp" />
 
     <ImageView
         android:id="@+id/iv_subTodo_cancel"

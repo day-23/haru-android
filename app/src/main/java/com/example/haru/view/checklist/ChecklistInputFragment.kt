@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -532,7 +533,12 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         })
 
         todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-
+            if (todoAddViewModel.subTodoCnt == (binding.subTodoLayout.childCount + 1)) {
+                val layoutInflater =
+                    context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val addView = layoutInflater.inflate(R.layout.subtodo_layout, null)
+                binding.subTodoLayout.addView(addView)
+            }else binding.subTodoLayout.removeViewAt(binding.subTodoLayout.childCount - 1)
         })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
@@ -567,6 +573,9 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         binding.btnSubmitTodo.setOnClickListener(btnListener())
 //
         binding.btnClose.setOnClickListener(btnListener())
+
+        binding.ivSubTodoPlus.setOnClickListener(btnListener())
+        binding.ivSubTodoCancel.setOnClickListener(btnListener())
 
     }
 
