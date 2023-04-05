@@ -537,6 +537,12 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 val layoutInflater =
                     context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.subtodo_layout, null)
+                addView.findViewById<ImageView>(R.id.iv_subTodo_plus).setOnClickListener{
+                    todoAddViewModel.plusSubTodo()
+                }
+                addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
+                    todoAddViewModel.deleteSubTodo()
+                }
                 binding.subTodoLayout.addView(addView)
             }else binding.subTodoLayout.removeViewAt(binding.subTodoLayout.childCount - 1)
         })
