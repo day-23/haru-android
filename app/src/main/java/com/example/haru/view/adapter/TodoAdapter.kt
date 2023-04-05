@@ -170,8 +170,6 @@ class TodoAdapter(val context: Context) :
 
         fun bind(item: Todo) {
             binding.todo = item
-            Log.d("20191627", item.content)
-            if (item.content == "짜이태싸이") Log.d("20191627", item.toString())
 
             if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null){
                 binding.blankView.visibility = View.VISIBLE

@@ -153,19 +153,19 @@ class CheckListViewModel() :
             _todoDataList.value = when (position) {
                 1 -> listOf(
                     Todo(
-                        type = 1,
+                        type = 4,
                         content = todoByTagItem!!
                     )
                 ) + todoRepository.getTodoByComplete()
                 2 -> listOf(
                     Todo(
-                        type = 1,
+                        type = 4,
                         content = todoByTagItem!!
                     )
                 ) + todoRepository.getTodoByUntag()
                 else -> listOf(
                     Todo(
-                        type = 1,
+                        type = 4,
                         content = todoByTagItem!!
                     )
                 ) + todoRepository.getTodoByTag(tagDataList.value!![position - 1].id)
