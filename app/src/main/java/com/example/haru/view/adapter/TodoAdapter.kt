@@ -7,13 +7,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.R
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.ChecklistEmptyBinding
 import com.example.haru.databinding.ChecklistHeaderType1Binding
 import com.example.haru.databinding.ChecklistHeaderType2Binding
+import com.example.haru.databinding.ChecklistHeaderType3Binding
 import com.example.haru.databinding.FragmentChecklistDividerBinding
 import com.example.haru.databinding.FragmentChecklistItemBinding
 import com.example.haru.utils.FormatDate
@@ -36,13 +42,14 @@ class TodoAdapter(val context: Context) :
 
     var todoClick: TodoClick? = null
     var completeClick: CompleteClick? = null
-    var flagClick : FlagClick? = null
+    var flagClick: FlagClick? = null
 
     val HeaderType1 = 0
     val HeaderType2 = 1
     val Item = 2
     val Divider = 3
-    val Empty = 4
+    val HeaderType3 = 4
+    val Empty = 5
 
     var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
@@ -70,6 +77,12 @@ class TodoAdapter(val context: Context) :
 
             HeaderType2 -> HeaderTypeTwoViewHolder(
                 ChecklistHeaderType2Binding.inflate(
+                    LayoutInflater.from(context), parent, false
+                )
+            )
+
+            HeaderType3 -> HeaderTypeThreeViewHolder(
+                ChecklistHeaderType3Binding.inflate(
                     LayoutInflater.from(context), parent, false
                 )
             )
@@ -111,6 +124,7 @@ class TodoAdapter(val context: Context) :
         when (holder) {
             is HeaderTypeOneViewHolder -> {}
             is HeaderTypeTwoViewHolder -> holder.bind(data[position].content)
+            is HeaderTypeThreeViewHolder -> holder.bind(data[position].content)
             is DividerViewHolder -> {}
             is TodoViewHolder -> {
                 holder.bind(data[position])
@@ -145,6 +159,13 @@ class TodoAdapter(val context: Context) :
         }
     }
 
+    inner class HeaderTypeThreeViewHolder(val binding: ChecklistHeaderType3Binding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: String) {
+            binding.str = item
+        }
+    }
+
     inner class DividerViewHolder(val binding: FragmentChecklistDividerBinding) :
         RecyclerView.ViewHolder(binding.root) {}
 
@@ -153,29 +174,54 @@ class TodoAdapter(val context: Context) :
 
         fun bind(item: Todo) {
             binding.todo = item
-            var tag = ""
-            for (i in 0 until item.tags.size) {
-                tag += "${item.tags[i].content} "
-            }
-            if (tag != "") {
-                binding.tvTagDescription.text = tag.dropLast(1)
-                binding.tvTagDescription.visibility = View.VISIBLE
-            } else {
-                binding.tvTagDescription.visibility = View.GONE
-                binding.tvTagDescription.text = tag
-            }
 
-            if (item.endDate != null) {
-                binding.tvEndDateDescription.text =
-                    FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
-                binding.tvEndDateDescription.visibility = View.VISIBLE
-            } else {
+            if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null){
+                binding.blankView.visibility = View.VISIBLE
+                binding.tvTagDescription.text = ""
                 binding.tvEndDateDescription.text = ""
-                binding.tvEndDateDescription.visibility = View.GONE
+            }
+            else {
+                binding.blankView.visibility = View.GONE
+                var tag = ""
+                for (i in 0 until item.tags.size) {
+                    tag += "${item.tags[i].content} "
+                }
+                if (tag != "") {
+                    binding.tvTagDescription.text = tag.dropLast(1)
+                    binding.tvTagDescription.visibility = View.VISIBLE
+                } else {
+                    binding.tvTagDescription.visibility = View.GONE
+                    binding.tvTagDescription.text =  tag
+                }
+
+                if (item.endDate != null) {
+                    binding.tvEndDateDescription.text =
+                        FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
+                    binding.tvEndDateDescription.visibility = View.VISIBLE
+                } else {
+                    binding.tvEndDateDescription.text = ""
+                    binding.tvEndDateDescription.visibility = View.GONE
+                }
             }
 
             if (item.completed) binding.tvTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             else binding.tvTitle.paintFlags = 0
+
+
+            if (item.subTodos.isEmpty()) return
+            binding.subTodoItemLayout.removeAllViews()
+            for(i in 0 until item.subTodos.size){
+                val layoutInflater =
+                    context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val addView = layoutInflater.inflate(R.layout.subtodo_layout, null)
+                // subtodo completed 클릭 리스너
+                // TODO
+
+                addView.findViewById<CheckBox>(R.id.cb_subTodo_complete).isChecked = item.subTodos[i].completed
+                addView.findViewById<TextView>(R.id.tv_subTodo).text = item.subTodos[i].content
+
+                binding.subTodoItemLayout.addView(addView)
+            }
         }
     }
 
@@ -209,4 +255,5 @@ class TodoAdapter(val context: Context) :
             tags[3].content = content
         } else todoByTag = false
     }
+
 }

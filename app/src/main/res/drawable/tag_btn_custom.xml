@@ -1,16 +1,16 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item>
+    <item android:id="@+id/tag_outer">
         <shape android:shape="rectangle" >
             <gradient
-                android:angle="115"
+                android:angle="120"
                 android:endColor="#AAD7FF"
                 android:startColor="#D2D7FF" />
             <corners android:radius="10dp" />
         </shape>
     </item>
 
-    <item
+    <item android:id="@+id/tag_inner"
         android:bottom="1dp"
         android:left="1dp"
         android:right="1dp"
