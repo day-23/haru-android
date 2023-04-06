@@ -276,11 +276,6 @@ class TodoAdapter(val context: Context) :
         notifyDataSetChanged()
     }
 
-    fun setDataList(dataList: List<Todo>, position: Int){
-        this.data = dataList as MutableList<Todo>
-        notifyItemChanged(position)
-    }
-
     fun setFlagCount(count: Int?) {
         flagCount = count ?: 0
     }

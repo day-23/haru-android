@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.haru.R
 import com.example.haru.data.model.Completed
 import com.example.haru.data.model.Flag
@@ -152,14 +153,16 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoListView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
+        val animator = todoListView.itemAnimator
+        if (animator is SimpleItemAnimator)
+            animator.supportsChangeAnimations = false
+
         checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             todoAdapter.setFlagCount(checkListViewModel.flaggedTodos.value?.size)
             todoAdapter.setTagCount(checkListViewModel.taggedTodos.value?.size)
             todoAdapter.setUnTagCount(checkListViewModel.untaggedTodos.value?.size)
             todoAdapter.setCompleteCount(checkListViewModel.completedTodos.value?.size)
 
-            // position을 받아서 position이 null이면 전체 초기화
-            // position값이 있다면 positioneh 같이 넘겨주는 함수 생성
             val dataList = it.filterIsInstance<Todo>()
             todoAdapter.setDataList(dataList)
         })
