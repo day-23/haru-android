@@ -1,15 +1,13 @@
 package com.example.haru.view.calendar
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -59,10 +57,31 @@ class CalendarFragment : Fragment() {
 
         calendar.time = Date()
 
+        item_month_btn.text = "${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월"
+
+        item_month_btn.setOnClickListener {
+            val today = GregorianCalendar()
+            val year: Int = today.get(Calendar.YEAR)
+            val month: Int = today.get(Calendar.MONTH)
+            val date: Int = today.get(Calendar.DATE)
+
+            val dlg = DatePickerDialog(view.context, object : DatePickerDialog.OnDateSetListener {
+                override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+                    calendar.time = Date()
+
+                    val diffCalendar = (year-calendar.get(Calendar.YEAR)) * 12 +
+                            (month-calendar.get(Calendar.MONTH))
+
+                    month_viewpager.setCurrentItem(Int.MAX_VALUE / 2 + diffCalendar, false)
+                }
+            }, year, month, date)
+            dlg.show()
+        }
+
         calendarTodayTv.text = calendar.time.date.toString()
 
         calendarTodayTv.setOnClickListener{
-            month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, true)
+            month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
             item_month_btn.text = "${Date().year+1900}년 ${Date().month+1}월"
         }
 
@@ -84,8 +103,6 @@ class CalendarFragment : Fragment() {
         adapterMonth = AdapterMonth(viewLifecycleOwner, view)
         month_viewpager.adapter = adapterMonth
 
-        month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
-
         val callback: ViewPager2.OnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(pos: Int) {
                 super.onPageSelected(pos)
@@ -98,5 +115,7 @@ class CalendarFragment : Fragment() {
         }
 
         month_viewpager.registerOnPageChangeCallback(callback)
+
+        month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
     }
 }
