@@ -200,11 +200,10 @@ class TimetableFragment : Fragment() {
         val deleteSchedule = ArrayList<Schedule>()
         while(days.size > 0){
             val layout1 = FrameLayout(requireContext())
-            val rowParams1 = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, Math.round(21 * displayMetrics.density))
+            val rowParams1 = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, Math.round(18 * displayMetrics.density))
 
             layout1.layoutParams = rowParams1
 
-            Log.d("ALLDAYsss", "$days")
             var occupied = 0
             deleteSchedule.clear()
 
@@ -221,7 +220,11 @@ class TimetableFragment : Fragment() {
 
                     val view = TextView(requireContext())
                     view.text = day.content
-                    view.setBackgroundResource(R.drawable.timetable_schedule)
+                    view.textSize = (10).toFloat()
+                    view.gravity = Gravity.CENTER
+                    view.setPadding(2,2,2,2)
+                    view.maxLines = 1
+                    view.setBackgroundResource(R.drawable.timetable_schedule_allday)
                     val frontPadding = View(requireContext())
                     val backPadding = View(requireContext())
                     view.setOnClickListener {

@@ -205,7 +205,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
-            scheduleRepository.getSchedule(date[0], date[6]) {
+            val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
+            val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
+            val body = ScheduleRequest(startDate, endDate)
+            scheduleRepository.getSchedule(date[0], date[6], body) {
                 val TodoList = it
 
                 //내용 추출
