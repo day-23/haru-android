@@ -204,7 +204,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
     //스케줄 쿼리문 전송
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
-            val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", false,"" , Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
             scheduleRepository.getSchedule(date[0], date[6]) {
                 val TodoList = it
@@ -220,8 +219,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                     val month_end = data.repeatEnd?.slice(IntRange(5,6))
                     val day_end = data.repeatEnd?.slice(IntRange(8,9))
                     val result_end = year_end+month_end+day_end
+                    Log.d("ALLDAYsss", "$data")
 
-                    if(data.repeatStart != data.repeatEnd && result_start == result_end){ //하루치 일정
+                    if(data.repeatStart?.slice(IntRange(11,15)) != data.repeatEnd?.slice(IntRange(11,15)) && result_start == result_end){ //하루치 일정
                         when(result_start){
                             date[0] -> IndexList[0].add(data)
                             date[1] -> IndexList[1].add(data)
@@ -236,7 +236,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                         IndexList_allday.add(data)// 하루종일 or 하루이상 일정
                     }
                 }
-                Log.d("Schedules", "index : $IndexList")
+                Log.d("ALLDAYsss", "index : $IndexList")
+                Log.d("ALLDAYsss", "index : $IndexList_allday")
             }
             _Schedules.value = IndexList
             _SchedulesAllday.value = IndexList_allday
@@ -249,10 +250,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
         val day_start = data.repeatStart?.slice(IntRange(8,9))
         val result_start = year_start+month_start+day_start
 
-        val year_end = data.repeatEnd?.slice(IntRange(0,3))
-        val month_end = data.repeatEnd?.slice(IntRange(5,6))
-        val day_end = data.repeatEnd?.slice(IntRange(8,9))
-        val result_end = year_end+month_end+day_end
         val sortedIndex: ArrayList<Schedule>
         //하루치 일정
         when(result_start){

@@ -193,6 +193,7 @@ class TimetableFragment : Fragment() {
         binding.timetableScroll.smoothScrollTo(0, originalPos[1], 1000)
         binding.invalidateAll()
     }
+
     //하루이상의 할일을 동적으로 바인딩
     fun DrawDays(table: ViewGroup, days: ArrayList<Schedule>, dates: ArrayList<String>){
         val displayMetrics = resources.displayMetrics
