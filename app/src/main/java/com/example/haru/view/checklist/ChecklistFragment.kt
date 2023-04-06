@@ -158,6 +158,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             todoAdapter.setUnTagCount(checkListViewModel.untaggedTodos.value?.size)
             todoAdapter.setCompleteCount(checkListViewModel.completedTodos.value?.size)
 
+            // position을 받아서 position이 null이면 전체 초기화
+            // position값이 있다면 positioneh 같이 넘겨주는 함수 생성
             val dataList = it.filterIsInstance<Todo>()
             todoAdapter.setDataList(dataList)
         })

@@ -160,6 +160,11 @@ class TodoAdapter(val context: Context) :
                         subTodoClickPosition = position
                     }
                 }
+
+                holder.binding.subTodoToggle.setOnClickListener {
+                    holder.binding.subTodoToggle.isSelected = !it.isSelected
+                    holder.binding.subTodoItemLayout.visibility = if (it.isSelected) View.VISIBLE else View.GONE
+                }
             }
         }
     }
@@ -227,6 +232,7 @@ class TodoAdapter(val context: Context) :
                 binding.subTodoToggle.visibility = View.INVISIBLE
                 return
             }
+
             binding.subTodoToggle.visibility = View.VISIBLE
             for (i in 0 until item.subTodos.size) {
                 val layoutInflater =
@@ -252,6 +258,13 @@ class TodoAdapter(val context: Context) :
 
                 binding.subTodoItemLayout.addView(addView)
             }
+            if (item.folded) {
+                binding.subTodoToggle.isSelected = false
+                binding.subTodoItemLayout.visibility = View.GONE
+            } else {
+                binding.subTodoToggle.isSelected = true
+                binding.subTodoItemLayout.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -261,6 +274,11 @@ class TodoAdapter(val context: Context) :
     fun setDataList(dataList: List<Todo>) {
         this.data = dataList as MutableList<Todo>
         notifyDataSetChanged()
+    }
+
+    fun setDataList(dataList: List<Todo>, position: Int){
+        this.data = dataList as MutableList<Todo>
+        notifyItemChanged(position)
     }
 
     fun setFlagCount(count: Int?) {
