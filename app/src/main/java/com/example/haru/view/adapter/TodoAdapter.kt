@@ -207,8 +207,9 @@ class TodoAdapter(val context: Context) :
             if (item.completed) binding.tvTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             else binding.tvTitle.paintFlags = 0
 
-            if (item.subTodos.isEmpty()) return
 
+            if (item.subTodos.isEmpty()) return
+            binding.subTodoItemLayout.removeAllViews()
             for(i in 0 until item.subTodos.size){
                 val layoutInflater =
                     context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
