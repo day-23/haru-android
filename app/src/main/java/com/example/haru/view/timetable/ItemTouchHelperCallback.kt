@@ -51,7 +51,6 @@ class ItemTouchHelperCallback(val adapter: TimetableAdapter) : ItemTouchHelper.C
         if(actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             selectedViews.add(viewHolder?.itemView!!)
             viewHolder.itemView.setBackgroundResource(android.R.color.darker_gray)
-            Toast.makeText(viewHolder?.itemView?.context, "드래그중...", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -61,7 +60,6 @@ class ItemTouchHelperCallback(val adapter: TimetableAdapter) : ItemTouchHelper.C
             view.setBackgroundResource(android.R.color.white)
         }
         //viewHolder?.itemView?.setBackgroundResource(android.R.color.white)
-        Toast.makeText(viewHolder?.itemView?.context, "드래그끝...", Toast.LENGTH_SHORT).show()
         //isDragging = false
         viewHolder.itemView.alpha = 1.0f
         selectedViews.clear()
