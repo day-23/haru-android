@@ -57,10 +57,6 @@ class CheckListViewModel() :
         getTag()
     }
 
-    fun setTagBackGround(position: Int) {
-
-    }
-
     fun getTag() {
         viewModelScope.launch {
             _tagDataList.value = basicTag + tagRepository.getTag()
@@ -259,6 +255,8 @@ class CheckListViewModel() :
             ) {
                 if (it.success) {
                     val todo = todoList[position].copy(completed = completed.completed)
+                    for (i in 0 until todo.subTodos.size)
+                        todo.subTodos[i].completed = completed.completed
                     todoList.removeAt(position)
 
                     if (todo.completed)
@@ -276,6 +274,22 @@ class CheckListViewModel() :
                     _todoDataList.postValue(todoList)
                 }
             }
+        }
+    }
+
+    fun updateSubTodo(completed: Completed, position: Int, subTodoPosition: Int) {
+        viewModelScope.launch {
+            val successData = todoRepository.updateSubTodo(
+                subTodoId = todoDataList.value!![position].subTodos[subTodoPosition].id,
+                completed = completed
+            ) {
+                if (it.success) {
+                    todoList[position].subTodos[subTodoPosition].completed = completed.completed
+
+                    _todoDataList.postValue(todoList)
+                }
+            }
+
         }
     }
 

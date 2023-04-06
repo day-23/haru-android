@@ -66,7 +66,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         binding.todayTodoLayout.setOnClickListener {
-            checkListViewModel.getTodayTodo(FormatDate.dateToStr(Date()).substring(0, 10).replace("-","")){
+            checkListViewModel.getTodayTodo(FormatDate.dateToStr(Date())){
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
                     .addToBackStack(null)
@@ -135,6 +135,16 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     else Completed(true)
 
                 checkListViewModel.updateNotRepeatTodo(completed, position)
+            }
+        }
+
+        todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
+            override fun onClick(view: View, subTodoPosition: Int) {
+                val completed =
+                    if (checkListViewModel.todoDataList.value!![todoAdapter.subTodoClickPosition!!].subTodos[subTodoPosition].completed) Completed(false)
+                    else Completed(true)
+
+                checkListViewModel.updateSubTodo(completed, todoAdapter.subTodoClickPosition!!, subTodoPosition)
             }
         }
 

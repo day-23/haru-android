@@ -1,6 +1,7 @@
 package com.example.haru.view.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.Log
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.marginTop
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -40,9 +42,14 @@ class TodoAdapter(val context: Context) :
         fun onClick(view: View, position: Int)
     }
 
+    interface SubTodoCompleteClick{
+        fun onClick(view: View, subTodoPosition : Int)
+    }
+
     var todoClick: TodoClick? = null
     var completeClick: CompleteClick? = null
     var flagClick: FlagClick? = null
+    var subTodoCompleteClick : SubTodoCompleteClick? = null
 
     val HeaderType1 = 0
     val HeaderType2 = 1
@@ -54,6 +61,8 @@ class TodoAdapter(val context: Context) :
     var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
     var data = mutableListOf<Todo>()
+
+    var subTodoClickPosition : Int? = null
 
     private var todoByTag = false
     private var todoByFlag = false
@@ -145,6 +154,12 @@ class TodoAdapter(val context: Context) :
                         completeClick?.onClick(it, position)
                     }
                 }
+
+                if (subTodoCompleteClick != null){
+                    holder.binding.subTodoItemLayout.setOnClickListener {
+                        subTodoClickPosition = position
+                    }
+                }
             }
         }
     }
@@ -175,12 +190,11 @@ class TodoAdapter(val context: Context) :
         fun bind(item: Todo) {
             binding.todo = item
 
-            if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null){
+            if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null) {
                 binding.blankView.visibility = View.VISIBLE
                 binding.tvTagDescription.text = ""
                 binding.tvEndDateDescription.text = ""
-            }
-            else {
+            } else {
                 binding.blankView.visibility = View.GONE
                 var tag = ""
                 for (i in 0 until item.tags.size) {
@@ -191,7 +205,7 @@ class TodoAdapter(val context: Context) :
                     binding.tvTagDescription.visibility = View.VISIBLE
                 } else {
                     binding.tvTagDescription.visibility = View.GONE
-                    binding.tvTagDescription.text =  tag
+                    binding.tvTagDescription.text = tag
                 }
 
                 if (item.endDate != null) {
@@ -208,17 +222,33 @@ class TodoAdapter(val context: Context) :
             else binding.tvTitle.paintFlags = 0
 
 
-            if (item.subTodos.isEmpty()) return
             binding.subTodoItemLayout.removeAllViews()
-            for(i in 0 until item.subTodos.size){
+            if (item.subTodos.isEmpty()) {
+                binding.subTodoToggle.visibility = View.INVISIBLE
+                return
+            }
+            binding.subTodoToggle.visibility = View.VISIBLE
+            for (i in 0 until item.subTodos.size) {
                 val layoutInflater =
                     context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.subtodo_layout, null)
-                // subtodo completed 클릭 리스너
-                // TODO
 
-                addView.findViewById<CheckBox>(R.id.cb_subTodo_complete).isChecked = item.subTodos[i].completed
-                addView.findViewById<TextView>(R.id.tv_subTodo).text = item.subTodos[i].content
+                // subtodo completed 클릭 리스너
+                addView.findViewById<CheckBox>(R.id.cb_subTodo_complete).apply {
+                    isChecked = item.subTodos[i].completed
+                    if (subTodoCompleteClick != null) {
+                        this.setOnClickListener {
+                            binding.subTodoItemLayout.performClick()
+                            subTodoCompleteClick?.onClick(it, binding.subTodoItemLayout.indexOfChild(addView))
+                        }
+                    }
+                }
+                addView.findViewById<TextView>(R.id.tv_subTodo).apply {
+                    text = item.subTodos[i].content
+                    paintFlags = if (item.subTodos[i].completed) Paint.STRIKE_THRU_TEXT_FLAG else 0
+                    if (item.subTodos[i].completed)
+                        setTextColor(ContextCompat.getColor(context, R.color.light_gray))
+                }
 
                 binding.subTodoItemLayout.addView(addView)
             }
