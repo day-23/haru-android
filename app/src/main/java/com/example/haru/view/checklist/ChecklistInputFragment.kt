@@ -5,8 +5,11 @@ import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
@@ -14,13 +17,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.GridLayout
-import android.widget.TextView
-import android.widget.TimePicker
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
+import android.widget.*
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginBottom
+import androidx.core.widget.addTextChangedListener
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.FormatDate
@@ -29,16 +28,12 @@ import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.sql.Timestamp
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
-    private lateinit var todoAddViewModel: TodoAddViewModel
+    private var todoAddViewModel: TodoAddViewModel
 
     private var onDismissListener: (() -> Unit)? = null
 
@@ -516,12 +511,57 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             }
 
             if (layout != null) {
-                for(i in 0 until it!!.length) {
+                for (i in 0 until it!!.length) {
                     if (it[i] == '1')
-                        (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
-                    else (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        (layout.getChildAt(i) as TextView).setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.highlight
+                            )
+                        )
+                    else (layout.getChildAt(i) as TextView).setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.light_gray
+                        )
+                    )
                 }
             }
+        })
+
+        todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (todoAddViewModel.subTodoCnt == (binding.subTodoLayout.childCount + 1)) {
+                val layoutInflater =
+                    context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val addView = layoutInflater.inflate(R.layout.subtodo_input_layout, null)
+
+                addView.findViewById<ImageView>(R.id.iv_subTodo_plus).setOnClickListener{
+                    Log.d("20191627", "plus click " + binding.subTodoLayout.indexOfChild(addView))
+                    todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
+                    todoAddViewModel.plusSubTodo()
+                }
+                addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
+                    Log.d("20191627", "delete click " + binding.subTodoLayout.indexOfChild(addView))
+                    todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
+                    todoAddViewModel.deleteSubTodo()
+                }
+                addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object : TextWatcher{
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    }
+
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                    }
+
+                    override fun afterTextChanged(e: Editable?) {
+                        todoAddViewModel.subTodos[binding.subTodoLayout.indexOfChild(addView)] = e.toString()
+                    }
+                })
+
+                binding.subTodoLayout.addView(addView, todoAddViewModel.subTodoClickPosition + 1)
+            }else binding.subTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
+
+            Log.d("20191627", todoAddViewModel.subTodos.toString())
         })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
@@ -553,13 +593,12 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         binding.tvSaturday.setOnClickListener(btnListener())
         binding.tvSunday.setOnClickListener(btnListener())
 
-
-//        binding.btnRepeatOption.setOnClickListener(btnListener())
-//
-//
         binding.btnSubmitTodo.setOnClickListener(btnListener())
 //
         binding.btnClose.setOnClickListener(btnListener())
+
+//        binding.ivSubTodoPlus.setOnClickListener(btnListener())
+//        binding.ivSubTodoCancel.setOnClickListener(btnListener())
 
     }
 

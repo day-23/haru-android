@@ -13,15 +13,15 @@
         android:layout_marginStart="21dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="7dp"
-        android:background="@drawable/tag_btn_custom"
-        android:outlineProvider="none"
+        android:background="@drawable/gradation_btn_custom"
         android:clickable="false"
         android:paddingStart="11dp"
         android:paddingEnd="11dp"
         android:paddingTop="5dp"
+        android:outlineProvider="none"
         android:paddingBottom="5dp"
         android:text="@{str}"
-        android:textColor="@color/todo_description"
+        android:textColor="@color/white"
         android:textSize="14sp"
         android:textStyle="bold">
 

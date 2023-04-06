@@ -231,7 +231,7 @@ class TodoRepository() {
         val response = todoService.updateNotRepeatTodo(userId, todoId, completed).execute()
         val data = response.body()!!
 
-        val successData : SuccessFail = if (response.isSuccessful){
+        val successData: SuccessFail = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update NotRepeatTodo Complete")
             data
         } else {
@@ -239,5 +239,25 @@ class TodoRepository() {
             data
         }
         callback(successData)
+    }
+
+    suspend fun getTodayTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        endDate: String,
+        callback: (todoList : TodoList) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.getTodayTodo(userId, endDate).execute()
+        val data : GetTodayTodo
+        val todoList : TodoList
+
+        if (response.isSuccessful){
+            Log.d("TAG", "Success to Get Today Todo")
+            data = response.body()!!
+            todoList = data.data
+        } else {
+            Log.d("TAG", "Fail to Get Today Todo")
+            todoList = TodoList()
+        }
+        callback(todoList)
     }
 }

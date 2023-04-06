@@ -27,6 +27,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _todayTodo = MutableLiveData<Boolean>(false)
     val todayTodo: LiveData<Boolean> = _todayTodo
 
+    private val _subTodoList = MutableLiveData<List<String>>(listOf(""))
+    val subTodoList : LiveData<List<String>> = _subTodoList
+
     private val _isSelectedEndDateTime = MutableLiveData<Boolean>(false)
     val isSelectedEndDateTime: LiveData<Boolean> = _isSelectedEndDateTime
 
@@ -64,7 +67,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     val repeatEndDate: LiveData<Date> = _repeatEndDate
 
     var tagList: MutableList<String> = mutableListOf()
-    var subTodos: MutableList<String> = mutableListOf()
+    var subTodos: MutableList<String> = mutableListOf("")
+    var subTodoCnt : Int = 1
+    var subTodoClickPosition = -1
+
 
     var tag: String = ""
     var content: String = ""
@@ -143,6 +149,23 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _todayTodo.value = (_todayTodo.value == false)
     }
 
+    fun plusSubTodo(){
+        subTodoCnt += 1
+        subTodos.add(subTodoClickPosition + 1, "")
+        _subTodoList.value = subTodos
+    }
+
+    fun deleteSubTodo(){
+        if (subTodoCnt == 1) return
+        subTodoCnt -= 1
+        subTodos.removeAt(subTodoClickPosition)
+        _subTodoList.value = subTodos
+    }
+
+    fun setSubTodoPosition(position: Int){
+        subTodoClickPosition = position
+    }
+
     fun setIsSelectedEndDateTime() {
         _isSelectedEndDateTime.value = (_isSelectedEndDateTime.value == false)
     }
@@ -219,6 +242,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun readyToSubmit() {
+        for(i in 0 until  subTodos.size)
+            if (subTodos[i] == "" || subTodos[i].replace(" ", "") == "")
+                subTodos[i] = ""
+
+        subTodos.removeAll(listOf(""))
+
         tagList = if (tag == "" || tag.replace(" ", "") == "")
             mutableListOf()
         else tag.split(" ") as MutableList<String>
@@ -234,8 +263,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         } else {
             null
         }
-
-        Log.d("20191627", endDateStr.toString())
 
         alarmDateTimeStr =
             if (alarmSwitch.value == true && alarmDate.value != null && alarmTime.value != null)

@@ -1,10 +1,12 @@
 package com.example.haru.view.checklist
 
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,9 +17,11 @@ import com.example.haru.data.model.Flag
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentChecklistBinding
+import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.viewmodel.CheckListViewModel
+import java.util.*
 
 class ChecklistFragment : Fragment(), LifecycleObserver {
     private lateinit var binding: FragmentChecklistBinding
@@ -59,6 +63,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         binding.btnAddTodo.setOnClickListener {
             val todoInput = ChecklistInputFragment(checkListViewModel)
             todoInput.show(parentFragmentManager, todoInput.tag)
+        }
+
+        binding.todayTodoLayout.setOnClickListener {
+            checkListViewModel.getTodayTodo(FormatDate.dateToStr(Date()).substring(0, 10).replace("-","")){
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
+                    .addToBackStack(null)
+                    .commit()
+            }
         }
     }
 
@@ -117,8 +130,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
             override fun onClick(view: View, position: Int) {
-                val completed = if (checkListViewModel.todoDataList.value!![position].completed) Completed(false)
-                else Completed(true)
+                val completed =
+                    if (checkListViewModel.todoDataList.value!![position].completed) Completed(false)
+                    else Completed(true)
 
                 checkListViewModel.updateNotRepeatTodo(completed, position)
             }
