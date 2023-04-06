@@ -21,8 +21,8 @@ class TodoTableRecyclerViewmodel : ViewModel() {
     val TodoItemList : LiveData<ArrayList<List<Todo>>>
         get() = _TodoItemList
 
-    private val _TodoDataList = MutableLiveData<ArrayList<ArrayList<TodoTable_data>>>()
-    val TodoDataList : LiveData<ArrayList<ArrayList<TodoTable_data>>>
+    private val _TodoDataList = MutableLiveData<ArrayList<ArrayList<Todo>>>()
+    val TodoDataList : LiveData<ArrayList<ArrayList<Todo>>>
         get() = _TodoDataList
 
     val dayslist = ArrayList<String>()
@@ -38,14 +38,14 @@ class TodoTableRecyclerViewmodel : ViewModel() {
 
     fun getTodo(date : ArrayList<String>){
         viewModelScope.launch {
-            var IndexList: ArrayList<ArrayList<TodoTable_data>> = arrayListOf(
-                arrayListOf(TodoTable_data("","","",false)),
-                arrayListOf(TodoTable_data("","","",false)),
-                arrayListOf(TodoTable_data("","","",false)),
-                arrayListOf(TodoTable_data("","","",false)),
-                arrayListOf(TodoTable_data("","","",false)),
-                arrayListOf(TodoTable_data("","","",false)),
-                arrayListOf(TodoTable_data("","","",false)),
+            var IndexList: ArrayList<ArrayList<Todo>> = arrayListOf(
+                arrayListOf(),
+                arrayListOf(),
+                arrayListOf(),
+                arrayListOf(),
+                arrayListOf(),
+                arrayListOf(),
+                arrayListOf(),
             )
 
             //GET 쿼리 전송
@@ -63,18 +63,15 @@ class TodoTableRecyclerViewmodel : ViewModel() {
                     if(data.endDate != null){ //날짜 정보가 있는 경우만 담음
 
                         when(result){
-                            date[0] -> IndexList[0].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
-                            date[1] -> IndexList[1].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
-                            date[2] -> IndexList[2].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
-                            date[3] -> IndexList[3].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
-                            date[4] -> IndexList[4].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
-                            date[5] -> IndexList[5].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
-                            date[6] -> IndexList[6].add(TodoTable_data(data.id, data.content, data.endDate, data.completed))
+                            date[0] -> IndexList[0].add(data)
+                            date[1] -> IndexList[1].add(data)
+                            date[2] -> IndexList[2].add(data)
+                            date[3] -> IndexList[3].add(data)
+                            date[4] -> IndexList[4].add(data)
+                            date[5] -> IndexList[5].add(data)
+                            date[6] -> IndexList[6].add(data)
                         }
                     }
-                }
-                for(i : Int in 0 .. 6) {
-                    IndexList[i].removeAt(0)
                 }
             }
             _TodoDataList.postValue(IndexList)

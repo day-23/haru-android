@@ -2,5 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/haru" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/haru/android" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/haru/ios" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/haru/server" vcs="Git" />
   </component>
 </project>

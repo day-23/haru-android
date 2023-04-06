@@ -1,26 +1,35 @@
 package com.example.haru.view.timetable
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoTable_data
 import com.example.haru.databinding.FragmentTodotableBinding
+import com.example.haru.view.checklist.ChecklistInputFragment
+import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import com.example.haru.viewmodel.TodoTableRecyclerViewmodel
+import java.lang.reflect.Type
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TodotableFragment : Fragment() {
     private lateinit var binding : FragmentTodotableBinding
     private lateinit var timetableviewModel: TimetableViewModel
     private lateinit var todoreviewModel: TodoTableRecyclerViewmodel
+    private lateinit var checkListViewModel: CheckListViewModel
 
     //투두 리사이클러 뷰
     private lateinit var sun_todotableAdapter: TodotableAdapter
@@ -38,7 +47,7 @@ class TodotableFragment : Fragment() {
     private lateinit var sat_todotableAdapter: TodotableAdapter
     lateinit var sat_todorecyclerView: RecyclerView
 
-    var todoList: ArrayList<TodoTable_data> = ArrayList()
+    var todoList: ArrayList<Todo> = ArrayList()
     companion object {
         const val TAG: String = "로그"
 
@@ -50,6 +59,7 @@ class TodotableFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         todoreviewModel = TodoTableRecyclerViewmodel()
+        checkListViewModel = CheckListViewModel()
         Log.d(TodotableFragment.TAG, "TodotableFragment - onCreate() called")
     }
 
@@ -62,25 +72,31 @@ class TodotableFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_todotable, container, false)
         val rootView = binding.root
 
+        binding.btnAddTodo.setOnClickListener {
+            val todoInput = ChecklistInputFragment(checkListViewModel)
+            todoInput.show(parentFragmentManager, todoInput.tag)
+        }
+
         timetableviewModel = TimetableViewModel(requireContext())
         binding.viewModel = timetableviewModel
-
+        timetableviewModel.init_value()
         todoreviewModel.init_value()
 
         todoreviewModel.TodoDataList.observe(viewLifecycleOwner) { contents ->
-            sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ?: todoList,Todo_draglistener())
+            val date = timetableviewModel.getDates()
+            sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ?: todoList,date[0] ,Todo_draglistener())
             sun_todorecyclerView.adapter = sun_todotableAdapter
-            mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ?: todoList,Todo_draglistener())
+            mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ?: todoList,date[1],Todo_draglistener())
             mon_todorecyclerView.adapter = mon_todotableAdapter
-            tue_todotableAdapter = TodotableAdapter(requireContext(), contents[2] ?: todoList,Todo_draglistener())
+            tue_todotableAdapter = TodotableAdapter(requireContext(), contents[2] ?: todoList,date[2],Todo_draglistener())
             tue_todorecyclerView.adapter = tue_todotableAdapter
-            wed_todotableAdapter = TodotableAdapter(requireContext(), contents[3] ?: todoList,Todo_draglistener())
+            wed_todotableAdapter = TodotableAdapter(requireContext(), contents[3] ?: todoList,date[3],Todo_draglistener())
             wed_todorecyclerView.adapter = wed_todotableAdapter
-            thu_todotableAdapter = TodotableAdapter(requireContext(), contents[4] ?: todoList,Todo_draglistener())
+            thu_todotableAdapter = TodotableAdapter(requireContext(), contents[4] ?: todoList,date[4],Todo_draglistener())
             thu_todorecyclerView.adapter = thu_todotableAdapter
-            fri_todotableAdapter = TodotableAdapter(requireContext(), contents[5] ?: todoList,Todo_draglistener())
+            fri_todotableAdapter = TodotableAdapter(requireContext(), contents[5] ?: todoList,date[5],Todo_draglistener())
             fri_todorecyclerView.adapter = fri_todotableAdapter
-            sat_todotableAdapter = TodotableAdapter(requireContext(), contents[6] ?: todoList,Todo_draglistener())
+            sat_todotableAdapter = TodotableAdapter(requireContext(), contents[6] ?: todoList,date[6],Todo_draglistener())
             sat_todorecyclerView.adapter = sat_todotableAdapter
         }
 
@@ -117,8 +133,8 @@ class TodotableFragment : Fragment() {
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             val year = times.year.slice(0..times.year.length - 2)
             val month = times.month.slice(0..times.month.length - 2)
-            val day = times.day.slice(0..times.day.length - 2)
-
+            val day = times.day.slice(0..times.day.length - 1)
+            Log.d("WHAT", "$day")
             binding.sunLayout.setBackgroundResource(R.color.white)
             binding.monLayout.setBackgroundResource(R.color.white)
             binding.tueLayout.setBackgroundResource(R.color.white)
@@ -140,6 +156,8 @@ class TodotableFragment : Fragment() {
         }
 
         timetableviewModel.Colors.observe(viewLifecycleOwner) { colors ->
+            val date = timetableviewModel.getDates()
+            val today = timetableviewModel.getToday()
             binding.todoSunDate.setTextColor(Color.parseColor(colors.get(0)))
             binding.todoMonDate.setTextColor(Color.parseColor(colors.get(1)))
             binding.todoTueDate.setTextColor(Color.parseColor(colors.get(2)))
@@ -147,6 +165,69 @@ class TodotableFragment : Fragment() {
             binding.todoThuDate.setTextColor(Color.parseColor(colors.get(4)))
             binding.todoFriDate.setTextColor(Color.parseColor(colors.get(5)))
             binding.todoSatDate.setTextColor(Color.parseColor(colors.get(6)))
+
+            binding.sunday.setTextColor(Color.parseColor(colors.get(0)))
+            binding.monday.setTextColor(Color.parseColor(colors.get(1)))
+            binding.tueday.setTextColor(Color.parseColor(colors.get(2)))
+            binding.wedday.setTextColor(Color.parseColor(colors.get(3)))
+            binding.thuday.setTextColor(Color.parseColor(colors.get(4)))
+            binding.friday.setTextColor(Color.parseColor(colors.get(5)))
+            binding.satday.setTextColor(Color.parseColor(colors.get(6)))
+
+            binding.todoSunDate.setTypeface(Typeface.DEFAULT)
+            binding.todoMonDate.setTypeface(Typeface.DEFAULT)
+            binding.todoTueDate.setTypeface(Typeface.DEFAULT)
+            binding.todoWedDate.setTypeface(Typeface.DEFAULT)
+            binding.todoThuDate.setTypeface(Typeface.DEFAULT)
+            binding.todoFriDate.setTypeface(Typeface.DEFAULT)
+            binding.todoSatDate.setTypeface(Typeface.DEFAULT)
+
+            binding.todoSunDate.setBackgroundColor((Color.parseColor("#00000000")))
+            binding.todoMonDate.setBackgroundColor((Color.parseColor("#00000000")))
+            binding.todoTueDate.setBackgroundColor((Color.parseColor("#00000000")))
+            binding.todoWedDate.setBackgroundColor((Color.parseColor("#00000000")))
+            binding.todoThuDate.setBackgroundColor((Color.parseColor("#00000000")))
+            binding.todoFriDate.setBackgroundColor((Color.parseColor("#00000000")))
+            binding.todoSatDate.setBackgroundColor((Color.parseColor("#00000000")))
+
+            when(today){
+                date[0] -> {
+                    binding.todoSunDate.setTextColor(Color.parseColor("#2CA4FF"))
+                    binding.todoSunDate.setTypeface(Typeface.DEFAULT_BOLD)
+                    binding.todoSunDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    }
+                date[1] -> {
+                    binding.todoMonDate.setTextColor(Color.parseColor("#2CA4FF"))
+                    binding.todoMonDate.setTypeface(Typeface.DEFAULT_BOLD)
+                    binding.todoMonDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                }
+                date[2] -> {
+                    binding.todoTueDate.setTextColor(Color.parseColor("#2CA4FF"))
+                    binding.todoTueDate.setTypeface(Typeface.DEFAULT_BOLD)
+                    binding.todoTueDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                }
+                date[3] -> {
+                    binding.todoWedDate.setTextColor(Color.parseColor("#2CA4FF"))
+                    binding.todoWedDate.setTypeface(Typeface.DEFAULT_BOLD)
+                    binding.todoWedDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                }
+                date[4] -> {
+                    binding.todoThuDate.setTextColor(Color.parseColor("#2CA4FF"))
+                    binding.todoThuDate.setTypeface(Typeface.DEFAULT_BOLD)
+                    binding.todoThuDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                }
+                date[5] -> {
+                    binding.todoSatDate.setTextColor(Color.parseColor("#2CA4FF"))
+                    binding.todoSatDate.setTypeface(Typeface.DEFAULT_BOLD)
+                    binding.todoFriDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                }
+                date[6] -> {
+                    binding.todoSatDate.setTextColor(Color.parseColor("#2CA4FF"))
+                    binding.todoSatDate.setTypeface(Typeface.DEFAULT_BOLD)
+                    binding.todoSatDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                }
+            }
+
         }
 
         //투두 쿼리문 전송

@@ -17,13 +17,12 @@ import com.example.haru.databinding.ListItemDayBinding
 import java.util.Date
 
 
-class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
-    private var date = emptyList<CalendarDate>()
-    private var todocontent = emptyList<TodoCalendarData>()
-    private var schedulecontent = emptyList<ScheduleCalendarData>()
-
-    private var todo_schedule = true
-
+class AdapterDay(
+    var date:List<CalendarDate>,
+    var todocontent:List<TodoCalendarData>,
+    var schedulecontent:List<ScheduleCalendarData>,
+    var todo_schedule:Boolean
+) : RecyclerView.Adapter<AdapterDay.DayView>() {
     inner class DayView(private val binding: ListItemDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
             fun bind(content: ScheduleCalendarData){
@@ -91,17 +90,6 @@ class AdapterDay : RecyclerView.Adapter<AdapterDay.DayView>() {
                 binding.black = Color.BLACK
             }
         }
-
-    fun updateData(newdayList:List<CalendarDate>,
-                   newtodocontent:List<TodoCalendarData>,
-                   newschedulecontent:List<ScheduleCalendarData>,
-                   newtodo_schedule:Boolean) {
-        date = newdayList
-        todocontent = newtodocontent
-        schedulecontent = newschedulecontent
-        todo_schedule = newtodo_schedule
-        notifyDataSetChanged()
-    }
 
     var todoDupList = ArrayList<TodoCalendarData>()
     var scheduleDupList = ArrayList<ScheduleCalendarData>()

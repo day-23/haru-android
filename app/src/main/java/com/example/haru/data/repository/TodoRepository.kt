@@ -17,7 +17,7 @@ class TodoRepository() {
         callback: (todoData: List<Todo>) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response =
-            todoService.getTodoDates("881c51d1-06f1-47ce-99b6-b5582594db12", startDate, endDate)
+            todoService.getTodoDates("dd62593d-161b-45cb-9534-346cd5b5e556", startDate, endDate)
                 .execute()
         val data: GetTodoResponse
         val todoData: List<Todo>
@@ -50,14 +50,13 @@ class TodoRepository() {
         }
         callback(todoData)
     }
-
     suspend fun getSchedule(
         startDate: String,
         endDate: String,
         callback: (todoData: List<Schedule>) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = scheduleService.getScheduleDates(
-            "881c51d1-06f1-47ce-99b6-b5582594db12",
+            "dd62593d-161b-45cb-9534-346cd5b5e556",
             startDate,
             endDate
         ).execute()

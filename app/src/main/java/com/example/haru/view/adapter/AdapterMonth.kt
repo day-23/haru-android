@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.ScheduleCalendarData
-import com.example.haru.data.model.TodoCalendarData
+import com.example.haru.data.model.*
 import com.example.haru.viewmodel.CalendarViewModel
 import java.util.*
 import kotlin.collections.ArrayList
@@ -29,9 +28,11 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
 
     private var todo_schedule = false
 
-    lateinit var calendarviewModel: CalendarViewModel
-
     inner class MonthView(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    init {
+        setHasStableIds(true)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MonthView {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -40,14 +41,15 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
             false
         )
 
-        calendarviewModel = CalendarViewModel()
-
         return MonthView(view)
     }
 
     fun setView(holder:MonthView, position: Int){
-        val calendar_recyclerview =
-            holder.itemView.findViewById<RecyclerView>(R.id.calendar_recyclerview)
+        Log.d("month position", (position - Int.MAX_VALUE/2).toString())
+
+        var calendarviewModel = CalendarViewModel()
+
+        val calendar_recyclerview = holder.itemView.findViewById<RecyclerView>(R.id.calendar_recyclerview)
 
         calendar.time = Date()
         calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
@@ -58,6 +60,10 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
         )
 
         calendarviewModel.liveDateList.observe(lifecycle) { livedate ->
+//            val todoAdapter = AdapterDay(livedate, emptyList(), emptyList(), todo_schedule)
+//            calendar_recyclerview.adapter = todoAdapter
+//            calendar_recyclerview.layoutManager = GridLayoutManager(holder.itemView.context, 7)
+//            calendar_recyclerview.isNestedScrollingEnabled = false
             calendarviewModel.liveTodoCalendarList.observe(lifecycle) { livetodo ->
                 calendarviewModel.liveScheduleCalendarList.observe(lifecycle) { liveschedule ->
                     if (todo_schedule) {
@@ -156,12 +162,12 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
                             }
                         }
 
-                        val todoAdapter = AdapterDay()
+//                        val todoAdapter = AdapterDay(livedate, emptyList(), emptyList(), todo_schedule)
+
+                        val todoAdapter = AdapterDay(livedate, livetodo, liveschedule, todo_schedule)
 
                         calendar_recyclerview.adapter = todoAdapter
                         calendar_recyclerview.layoutManager = gridlayout
-
-                        todoAdapter.updateData(livedate, livetodo, liveschedule, todo_schedule)
                     } else {
                         var size = livedate.size * 5
 
@@ -258,12 +264,12 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
                             }
                         }
 
-                        val todoAdapter = AdapterDay()
+//                        val todoAdapter = AdapterDay(livedate, emptyList(), emptyList(), todo_schedule)
+
+                        val todoAdapter = AdapterDay(livedate, livetodo, liveschedule, todo_schedule)
 
                         calendar_recyclerview.adapter = todoAdapter
                         calendar_recyclerview.layoutManager = gridlayout
-
-                        todoAdapter.updateData(livedate, livetodo, liveschedule, todo_schedule)
                     }
                 }
             }
@@ -271,9 +277,7 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
     }
 
     override fun getItemId(position: Int): Long {
-        calendar.time = Date()
-        calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
-        return calendar.timeInMillis
+        return position.toLong()
     }
 
     override fun onBindViewHolder(holder: MonthView, position: Int) {
