@@ -25,7 +25,6 @@ class TimetableAdapter(val context: Context,
     }
 
     override fun onBindViewHolder(holder: TimetableViewHolder, position: Int) {
-        Log.d("TAG", "itemList:${itemList.size}")
         holder.timetable_time.text = itemList[position].time
     }
 

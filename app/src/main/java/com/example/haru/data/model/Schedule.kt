@@ -3,16 +3,16 @@ package com.example.haru.data.model
 data class Schedule(
     val type: Int = 2,
     val id: String = "",
-    val content: String = "",
-    val memo: String? = "",
-    val flag: Boolean = false,
+    var content: String = "",
+    var memo: String? = "",
+    var flag: Boolean = false,
     val timeOption: String? = null,
-    val repeatStart: String? = null,
-    val repeatEnd: String? = null,
-    val completed: Boolean = false,
+    var repeatStart: String? = null,
+    var repeatEnd: String? = null,
+    var completed: Boolean = false,
     val createdAt: String = "",
-    val category: Category? = null,
-    val alarms: List<Alarm> = emptyList(),
-    val repeatOption: String? = null,
-    val repeatValue: String? = null
+    var category: Category? = null,
+    var alarms: List<Alarm> = emptyList(),
+    var repeatOption: String? = null,
+    var repeatValue: String? = null
 )
