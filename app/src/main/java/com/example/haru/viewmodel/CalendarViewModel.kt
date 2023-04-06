@@ -90,8 +90,8 @@ class CalendarViewModel : ViewModel() {
 
         _liveDateList.postValue(dateList)
 
-//        getTodo(startDate, endDate, maxi)
-//        getSchedule(startDate, endDate, maxi)
+        getTodo(startDate, endDate, maxi)
+        getSchedule(startDate, endDate, maxi)
     }
 
     fun getTodo(startDate:String, endDate:String, maxi:Int){

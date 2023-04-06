@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.haru"
-        minSdk 31 //33으로 수정해야함
+        minSdk 29 //33으로 수정해야함
         targetSdk 33
         versionCode 1
         versionName "1.0"

@@ -29,13 +29,13 @@
             android:layout_height="1dp"/>
 
         <FrameLayout
+            android:background="@drawable/borderline"
             android:id="@+id/text_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="2sp">
 
             <FrameLayout
-                android:background="@drawable/borderline"
                 android:id="@+id/today_in_calendar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
