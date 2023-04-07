@@ -64,6 +64,10 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
             }
         }
 
+        todayRecyclerView.apply {
+            itemAnimator = null
+        }
+
         todayRecyclerView.adapter = todoAdapter
         todayRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

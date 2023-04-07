@@ -244,7 +244,7 @@ class TodoRepository() {
 
     suspend fun getTodayTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
-        endDate: String,
+        endDate: TodayEndDate,
         callback: (todoList: TodoList) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.getTodayTodo(userId, endDate).execute()

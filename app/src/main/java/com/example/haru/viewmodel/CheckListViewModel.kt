@@ -99,7 +99,7 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodayTodo(endDate: String, callback: () -> Unit) {
+    fun getTodayTodo(endDate: TodayEndDate, callback: () -> Unit) {
         viewModelScope.launch {
             todoRepository.getTodayTodo(endDate = endDate) {
                 todayList.clear()
