@@ -195,6 +195,7 @@ class CheckListViewModel() :
                     untaggedTodos.value?.let { todoList.addAll(it) }
                     completedTodos.value?.let { todoList.addAll(it) }
                     _todoDataList.postValue(todoList)
+                    Log.d("20191627", taggedTodos.value.toString())
                     callback()
                 }
                 Log.d("201916271", it.toString())

@@ -71,6 +71,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var subTodoCnt : Int = 1
     var subTodoClickPosition = -1
 
+    private val subTodoCompleted = mutableListOf<Boolean>()
+
 
     var tag: String = ""
     var content: String = ""
@@ -108,6 +110,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             for(i in 0 until clickedTodo.subTodos.size){
                 subTodoCnt++
                 subTodos.add(clickedTodo.subTodos[i].content)
+                subTodoCompleted.add(clickedTodo.subTodos[i].completed)
             }
             _subTodoList.value = subTodos
         }
@@ -253,6 +256,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun readyToSubmit() {
+        Log.d("20191627", subTodos.toString())
         for(i in 0 until  subTodos.size)
             if (subTodos[i] == "" || subTodos[i].replace(" ", "") == "")
                 subTodos[i] = ""
@@ -333,7 +337,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             repeatEnd = repeatEndDateStr,
             tags = tagList,
             subTodos = subTodos,
-            subTodosCompleted = emptyList(),
+            subTodosCompleted = subTodoCompleted,
             alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!)
             )
     }
