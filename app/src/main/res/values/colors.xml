@@ -16,4 +16,5 @@
     <color name="todo_description">#191919</color>
     <color name="bottom_navigation">#f1f1f5</color>
     <color name="bottom_navigation_label_uncheck">#707070</color>
+    <color name="divider">#DBDBDB</color>
 </resources>

@@ -13,6 +13,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginTop
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
@@ -76,12 +78,28 @@ class TodoAdapter(val context: Context) :
     private var untagCount = 0
     private var completeCount = 0
 
+    class DiffUtilCallback(private val oldList: List<Todo>, private val newList: List<Todo>) :
+        DiffUtil.Callback() {
+        override fun getOldListSize(): Int = oldList.size
+
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+            oldList[oldItemPosition] == newList[newItemPosition]
+    }
+
     override fun getItemViewType(position: Int): Int {
         return data[position].type
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
         return when (viewType) {
             HeaderType1 -> HeaderTypeOneViewHolder(
                 ChecklistHeaderType1Binding.inflate(
@@ -133,6 +151,7 @@ class TodoAdapter(val context: Context) :
     }
 
     override fun getItemCount(): Int = data.count()
+//        data.count()
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
@@ -217,7 +236,7 @@ class TodoAdapter(val context: Context) :
                     binding.tvTagDescription.text = tag.dropLast(1)
                     binding.tvTagDescription.visibility = View.VISIBLE
                 } else {
-                    binding.tvTagDescription.visibility = View.GONE
+                    binding.tvTagDescription.visibility = View.INVISIBLE
                     binding.tvTagDescription.text = tag
                 }
 
@@ -227,7 +246,7 @@ class TodoAdapter(val context: Context) :
                     binding.tvEndDateDescription.visibility = View.VISIBLE
                 } else {
                     binding.tvEndDateDescription.text = ""
-                    binding.tvEndDateDescription.visibility = View.GONE
+                    binding.tvEndDateDescription.visibility = View.INVISIBLE
                 }
             }
 
@@ -280,8 +299,16 @@ class TodoAdapter(val context: Context) :
         RecyclerView.ViewHolder(binding.root) {}
 
     fun setDataList(dataList: List<Todo>) {
-        this.data = dataList as MutableList<Todo>
-        notifyDataSetChanged()
+        data.let {
+            val diffCallback = DiffUtilCallback(data, dataList)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+            data.run {
+                clear()
+                addAll(dataList)
+                diffResult.dispatchUpdatesTo(this@TodoAdapter)
+            }
+        }
     }
 
     fun setFlagCount(count: Int?) {
