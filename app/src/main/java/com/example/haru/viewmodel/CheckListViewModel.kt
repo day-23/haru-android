@@ -261,12 +261,12 @@ class CheckListViewModel() :
 
                         todo.flag = flag.flag
 
-                        if (todoByTag.value == false) {
                             if (todo.flag && !todo.completed) {
                                 todoList.add(1, todo)
                             } else {
                                 if (todo.completed) {
-                                    val i = todoList.indexOf(Todo(type = 1, content = "완료"))
+                                    val i = if (todoByTag.value == false) todoList.indexOf(Todo(type = 1, content = "완료"))
+                                    else todoList.indexOf(Todo(type = 4, content = "완료"))
                                     todoList.add(i + 1, todo)
                                 } else {
                                     when (todo.tags.isEmpty()) {
@@ -282,7 +282,6 @@ class CheckListViewModel() :
                                     }
                                 }
                             }
-                        }
                         _todoDataList.postValue(todoList)
                     }
                 }
