@@ -6,14 +6,14 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
-import android.widget.TextView
-import android.widget.TimePicker
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
@@ -124,6 +124,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
         todoAddViewModel.setClickTodo(this.position)
         Log.d("20191627", todoAddViewModel.clickedTodo.toString())
         binding.vm = todoAddViewModel
+
         // flag 관련 UI Update
         todoAddViewModel.flagTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.cbInfoFlag.isChecked = it
@@ -138,7 +139,38 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
                     Paint.STRIKE_THRU_TEXT_FLAG
                 else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             binding.etInfoContent.setTextColor(ContextCompat.getColor(requireContext(), color))
+        })
 
+        // subTodo 관련 UI Update
+        todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (todoAddViewModel.subTodoCnt > binding.infoSubTodoLayout.childCount) {
+                Log.d("20191627", "나 눌렸다.")
+                for(i in binding.infoSubTodoLayout.childCount until todoAddViewModel.subTodoCnt){
+                    val layoutInflater =
+                        context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                    val addView = layoutInflater.inflate(R.layout.subtodo_input_layout, null)
+
+                    addView.findViewById<ImageView>(R.id.iv_subTodo_plus).setOnClickListener{
+                        todoAddViewModel.setSubTodoPosition(binding.infoSubTodoLayout.indexOfChild(addView))
+                        todoAddViewModel.plusSubTodo()
+                    }
+                    addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
+                        todoAddViewModel.setSubTodoPosition(binding.infoSubTodoLayout.indexOfChild(addView))
+                        todoAddViewModel.deleteSubTodo()
+                    }
+                    addView.findViewById<EditText>(R.id.et_subTodo).setText(todoAddViewModel.subTodos[todoAddViewModel.subTodoClickPosition + 1])
+                    addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object :
+                        TextWatcher {
+                        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                        override fun afterTextChanged(e: Editable?) {
+                            todoAddViewModel.subTodos[binding.infoSubTodoLayout.indexOfChild(addView)] = e.toString()
+                        }
+                    })
+                    binding.infoSubTodoLayout.addView(addView, todoAddViewModel.subTodoClickPosition + 1)
+                    todoAddViewModel.subTodoClickPosition++
+                }
+            }else binding.infoSubTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
         })
 
         // todayTodo 관련 UI Update

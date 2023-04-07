@@ -48,6 +48,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="horizontal"
+                    android:layout_marginBottom="14dp"
                     android:paddingStart="24dp">
 
                     <CheckBox
@@ -86,26 +87,7 @@
                     android:id="@+id/info_subTodo_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/plus_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="34dp"
-                        app:srcCompat="@drawable/add_icon" />
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/subTodo_input"
-                        android:textColorHint="@color/light_gray"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                    android:orientation="vertical"/>
 
                 <View
                     android:layout_width="match_parent"

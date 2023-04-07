@@ -101,6 +101,17 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _flagTodo.value = clickedTodo.flag
         _todayTodo.value = clickedTodo.todayTodo
         _isSelectedEndDateTime.value = clickedTodo.isAllDay
+
+        if (clickedTodo.subTodos.isNotEmpty()){
+            subTodos.clear()
+            subTodoCnt = 0
+            for(i in 0 until clickedTodo.subTodos.size){
+                subTodoCnt++
+                subTodos.add(clickedTodo.subTodos[i].content)
+            }
+            _subTodoList.value = subTodos
+        }
+
         if (clickedTodo.endDate != null) {
             _endDate.value = FormatDate.strToDate(clickedTodo.endDate!!)
             _endDateSwitch.value = true
@@ -149,9 +160,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _todayTodo.value = (_todayTodo.value == false)
     }
 
-    fun plusSubTodo(){
+    fun plusSubTodo(content : String = ""){
         subTodoCnt += 1
-        subTodos.add(subTodoClickPosition + 1, "")
+        subTodos.add(subTodoClickPosition + 1, content)
         _subTodoList.value = subTodos
     }
 

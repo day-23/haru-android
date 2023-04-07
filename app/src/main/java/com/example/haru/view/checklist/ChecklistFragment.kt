@@ -67,7 +67,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         binding.todayTodoLayout.setOnClickListener {
-            checkListViewModel.getTodayTodo(FormatDate.dateToStr(Date())){
+            checkListViewModel.getTodayTodo(FormatDate.dateToStr(Date())) {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
                     .addToBackStack(null)
@@ -142,10 +142,16 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
             override fun onClick(view: View, subTodoPosition: Int) {
                 val completed =
-                    if (checkListViewModel.todoDataList.value!![todoAdapter.subTodoClickPosition!!].subTodos[subTodoPosition].completed) Completed(false)
+                    if (checkListViewModel.todoDataList.value!![todoAdapter.subTodoClickPosition!!].subTodos[subTodoPosition].completed) Completed(
+                        false
+                    )
                     else Completed(true)
 
-                checkListViewModel.updateSubTodo(completed, todoAdapter.subTodoClickPosition!!, subTodoPosition)
+                checkListViewModel.updateSubTodo(
+                    completed,
+                    todoAdapter.subTodoClickPosition!!,
+                    subTodoPosition
+                )
             }
         }
 
@@ -153,10 +159,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoListView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        val animator = todoListView.itemAnimator
-        if (animator is SimpleItemAnimator)
-            animator.supportsChangeAnimations = false
 
+//        (todoListView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
+        todoListView.apply {
+            itemAnimator = null
+        }
         checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             todoAdapter.setFlagCount(checkListViewModel.flaggedTodos.value?.size)
             todoAdapter.setTagCount(checkListViewModel.taggedTodos.value?.size)
