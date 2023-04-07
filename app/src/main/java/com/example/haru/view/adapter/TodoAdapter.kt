@@ -33,30 +33,30 @@ class TodoAdapter(val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface TodoClick {
-        fun onClick(view: View, position: Int)
+        fun onClick(view: View, id: String)
     }
 
     interface CompleteClick {
-        fun onClick(view: View, position: Int)
+        fun onClick(view: View, id: String)
     }
 
     interface FlagClick {
-        fun onClick(view: View, position: Int)
+        fun onClick(view: View, id: String)
     }
 
-    interface SubTodoCompleteClick{
-        fun onClick(view: View, subTodoPosition : Int)
+    interface SubTodoCompleteClick {
+        fun onClick(view: View, subTodoPosition: Int)
     }
 
-    interface ToggleClick{
-        fun onClick(view: View, position: Int)
+    interface ToggleClick {
+        fun onClick(view: View, id: String)
     }
 
     var todoClick: TodoClick? = null
     var completeClick: CompleteClick? = null
     var flagClick: FlagClick? = null
-    var subTodoCompleteClick : SubTodoCompleteClick? = null
-    var toggleClick : ToggleClick? = null
+    var subTodoCompleteClick: SubTodoCompleteClick? = null
+    var toggleClick: ToggleClick? = null
 
     val HeaderType1 = 0
     val HeaderType2 = 1
@@ -69,7 +69,7 @@ class TodoAdapter(val context: Context) :
 
     var data = mutableListOf<Todo>()
 
-    var subTodoClickPosition : Int? = null
+    var subTodoClickId: String? = null
 
     private var todoByTag = false
     private var todoByFlag = false
@@ -153,7 +153,11 @@ class TodoAdapter(val context: Context) :
     override fun getItemCount(): Int = data.count()
 //        data.count()
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int
+    ) {
+        val todoId = data[position].id
         when (holder) {
             is HeaderTypeOneViewHolder -> {}
             is HeaderTypeTwoViewHolder -> holder.bind(data[position].content)
@@ -163,33 +167,34 @@ class TodoAdapter(val context: Context) :
                 holder.bind(data[position])
                 if (todoClick != null) {
                     holder.binding.ClickLayout.setOnClickListener {
-                        todoClick?.onClick(it, position)
+                        todoClick?.onClick(it, todoId)
                     }
                 }
 
                 if (flagClick != null) {
                     holder.binding.checkFlag.setOnClickListener {
-                        flagClick?.onClick(it, position)
+                        flagClick?.onClick(it, todoId)
                     }
                 }
 
                 if (completeClick != null) {
                     holder.binding.checkDone.setOnClickListener {
-                        completeClick?.onClick(it, position)
+                        completeClick?.onClick(it, todoId)
                     }
                 }
 
-                if (subTodoCompleteClick != null){
+                if (subTodoCompleteClick != null) {
                     holder.binding.subTodoItemLayout.setOnClickListener {
-                        subTodoClickPosition = position
+                        subTodoClickId = todoId
                     }
                 }
 
-                if (toggleClick != null){
+                if (toggleClick != null) {
                     holder.binding.subTodoToggle.setOnClickListener {
                         holder.binding.subTodoToggle.isSelected = !it.isSelected
-                        holder.binding.subTodoItemLayout.visibility = if (it.isSelected) View.GONE else View.VISIBLE
-                        toggleClick?.onClick(it, position)
+                        holder.binding.subTodoItemLayout.visibility =
+                            if (it.isSelected) View.GONE else View.VISIBLE
+                        toggleClick?.onClick(it, todoId)
                     }
                 }
             }
@@ -272,7 +277,10 @@ class TodoAdapter(val context: Context) :
                     if (subTodoCompleteClick != null) {
                         this.setOnClickListener {
                             binding.subTodoItemLayout.performClick()
-                            subTodoCompleteClick?.onClick(it, binding.subTodoItemLayout.indexOfChild(addView))
+                            subTodoCompleteClick?.onClick(
+                                it,
+                                binding.subTodoItemLayout.indexOfChild(addView)
+                            )
                         }
                     }
                 }

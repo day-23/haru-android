@@ -113,12 +113,14 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         val todoListView: RecyclerView = binding.recyclerTodos
         val todoAdapter = TodoAdapter(requireContext())
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
-            override fun onClick(view: View, position: Int) {
-                if (checkListViewModel.todoDataList.value!![position].type == 2) {
+            override fun onClick(view: View, id : String) {
+                if (checkListViewModel.todoDataList.value!!.find {
+                        it.id == id
+                    }!!.type == 2) {
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
-                            ChecklistItemFragment(checkListViewModel, position)
+                            ChecklistItemFragment(checkListViewModel, id)
                         )
                         .addToBackStack(null)
                         .commit()
@@ -127,47 +129,47 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         todoAdapter.flagClick = object : TodoAdapter.FlagClick {
-            override fun onClick(view: View, position: Int) {
-                val flag = if (checkListViewModel.todoDataList.value!![position].flag) Flag(false)
+            override fun onClick(view: View, id: String) {
+                val flag = if (checkListViewModel.todoDataList.value!!.find { it.id == id }!!.flag) Flag(false)
                 else Flag(true)
                 checkListViewModel.updateFlag(
                     flag,
-                    position
+                    id
                 )
             }
         }
 
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
-            override fun onClick(view: View, position: Int) {
+            override fun onClick(view: View, id: String) {
                 val completed =
-                    if (checkListViewModel.todoDataList.value!![position].completed) Completed(false)
+                    if (checkListViewModel.todoDataList.value!!.find{ it.id == id}!!.completed) Completed(false)
                     else Completed(true)
 
-                checkListViewModel.updateNotRepeatTodo(completed, position)
+                checkListViewModel.updateNotRepeatTodo(completed, id)
             }
         }
 
         todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
             override fun onClick(view: View, subTodoPosition: Int) {
                 val completed =
-                    if (checkListViewModel.todoDataList.value!![todoAdapter.subTodoClickPosition!!].subTodos[subTodoPosition].completed) Completed(
+                    if (checkListViewModel.todoDataList.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition].completed) Completed(
                         false
                     )
                     else Completed(true)
 
                 checkListViewModel.updateSubTodo(
                     completed,
-                    todoAdapter.subTodoClickPosition!!,
+                    todoAdapter.subTodoClickId!!,
                     subTodoPosition
                 )
             }
         }
 
         todoAdapter.toggleClick = object : TodoAdapter.ToggleClick{
-            override fun onClick(view: View, position: Int) {
+            override fun onClick(view: View, id: String) {
                 val folded = if (view.isSelected) Folded(true) else Folded(false)
 
-                checkListViewModel.updateFolded(folded, position)
+                checkListViewModel.updateFolded(folded, id)
             }
         }
 

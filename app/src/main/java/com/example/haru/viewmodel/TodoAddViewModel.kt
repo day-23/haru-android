@@ -97,8 +97,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         this.checklistViewModel = checkListViewModel
     }
 
-    fun setClickTodo(position: Int) {
-        clickedTodo = checklistViewModel.todoDataList.value!![position]
+    fun setClickTodo(id : String) {
+        clickedTodo = checklistViewModel.todoDataList.value!!.find {
+            it.id == id
+        }!!
+//        clickedTodo = checklistViewModel.todoDataList.value!![position]
         _completedTodo.value = clickedTodo.completed
         _flagTodo.value = clickedTodo.flag
         _todayTodo.value = clickedTodo.todayTodo
@@ -348,8 +351,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-    fun deleteTodo(position: Int, callback: () -> Unit){
-        checklistViewModel.deleteTodo(todoId = clickedTodo.id, position = position){
+    fun deleteTodo(callback: () -> Unit){
+        checklistViewModel.deleteTodo(todoId = clickedTodo.id){
             callback()
         }
     }

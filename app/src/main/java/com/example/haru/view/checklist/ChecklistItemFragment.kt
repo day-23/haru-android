@@ -27,14 +27,16 @@ import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import java.util.*
 
-class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: Int) : Fragment() {
+class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) : Fragment() {
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
-    private var position: Int
+//    private var position: Int
+    private var id : String
 
     init {
         this.todoAddViewModel = TodoAddViewModel(checkListViewModel)
-        this.position = position
+//        this.position = position
+        this.id = id
     }
 
     companion object {
@@ -42,9 +44,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
 
         fun newInstance(
             checkListViewModel: CheckListViewModel,
-            position: Int
+            id : String
         ): ChecklistItemFragment {
-            return ChecklistItemFragment(checkListViewModel, position)
+            return ChecklistItemFragment(checkListViewModel, id)
         }
     }
 
@@ -121,7 +123,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        todoAddViewModel.setClickTodo(this.position)
+        todoAddViewModel.setClickTodo(id)
         Log.d("20191627", todoAddViewModel.clickedTodo.toString())
         binding.vm = todoAddViewModel
 
@@ -460,7 +462,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, position: In
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
-                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo(position){
+                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo(){
                     requireActivity().supportFragmentManager.popBackStack()
                 }
                 binding.btnInfoSave.id -> {

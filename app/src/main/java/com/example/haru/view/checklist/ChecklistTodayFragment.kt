@@ -58,10 +58,10 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         val todoAdapter = TodoAdapter(requireContext())
 
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
-            override fun onClick(view: View, position: Int) {
-                if (checkListViewModel.todayTodo.value!![position].type == 2){
+            override fun onClick(view: View, id: String) {
+                if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.type == 2){
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, ChecklistItemFragment(checkListViewModel, position))
+                        .replace(R.id.fragments_frame, ChecklistItemFragment(checkListViewModel, id))
                         .addToBackStack(null)
                         .commit()
                 }
