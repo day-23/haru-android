@@ -8,9 +8,10 @@
     <LinearLayout
         android:id="@+id/sns_menu"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="52dp"
         android:paddingHorizontal="20dp"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        android:background="@drawable/todo_table_selected">
 
         <TextView
             android:layout_width="wrap_content"
@@ -18,6 +19,7 @@
             android:gravity="center"
             android:text="HARU"
             android:textStyle="bold"
+            android:textColor="#191919"
             android:textSize="18dp">
         </TextView>
 
@@ -28,6 +30,7 @@
     </LinearLayout>
     
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/post_of_all"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/sns_menu"/>
