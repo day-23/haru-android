@@ -24,6 +24,8 @@ object FormatDate {
     private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd", Locale.US)
     private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
 
+    private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
+
 
     private fun initDiff(): Long {
         val gmtZoneId = ZoneId.of("GMT")
@@ -72,6 +74,10 @@ object FormatDate {
 
     fun simpleTimeToStr(date: Date): String {
         return simpleFormatterTime.format(date)
+    }
+
+    fun simpleTodayToStr(date: Date) : String{
+        return simpleFormatterKorea.format(date)
     }
 
     // String으로 된 날짜 정보에 local Date와 그리니치 시간대의 차이를 더해서 Date 타입으로 반환

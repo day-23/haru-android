@@ -11,8 +11,10 @@ import com.example.haru.R
 import com.example.haru.data.model.Flag
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentChecklistTodayBinding
+import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.viewmodel.CheckListViewModel
+import java.util.*
 
 class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment() {
     private lateinit var binding : FragmentChecklistTodayBinding
@@ -43,6 +45,8 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToday()
+
+        binding.tvTodayDate.text = FormatDate.simpleTodayToStr(Date())
 
         binding.ivTodayBackIcon.setOnClickListener{
             requireActivity().supportFragmentManager.popBackStack()
