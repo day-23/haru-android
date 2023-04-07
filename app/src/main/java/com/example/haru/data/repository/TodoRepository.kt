@@ -280,4 +280,23 @@ class TodoRepository() {
         }
         callback(successData)
     }
+
+    suspend fun updateFolded(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        folded: Folded,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO){
+        val response = todoService.updateFolded(userId, todoId, folded).execute()
+        val data = response.body()!!
+
+        val successData: SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Update Folded")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update Folded")
+            data
+        }
+        callback(successData)
+    }
 }

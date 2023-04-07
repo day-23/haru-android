@@ -294,5 +294,18 @@ class CheckListViewModel() :
         }
     }
 
+    fun updateFolded(folded: Folded, position: Int) {
+        viewModelScope.launch {
+            val successData = todoRepository.updateFolded(todoId = todoDataList.value!![position].id,
+            folded = folded){
+                if (it.success) {
+                    todoList[position].folded = folded.folded
+
+                    _todoDataList.postValue(todoList)
+                }
+            }
+        }
+    }
+
 
 }

@@ -46,4 +46,7 @@ interface TodoService {
 
     @PATCH("todo/{userId}/complete/subtodo/{subTodoId}")
     fun updateSubTodo(@Path("userId") userId: String, @Path("subTodoId") subTodoId : String, @Body completed: Completed) : Call<SuccessFail>
+
+    @PATCH("todo/{userId}/folded/{todoId}")
+    fun updateFolded(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body folded: Folded) : Call<SuccessFail>
 }

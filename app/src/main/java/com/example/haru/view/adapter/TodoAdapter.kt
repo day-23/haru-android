@@ -46,10 +46,15 @@ class TodoAdapter(val context: Context) :
         fun onClick(view: View, subTodoPosition : Int)
     }
 
+    interface ToggleClick{
+        fun onClick(view: View, position: Int)
+    }
+
     var todoClick: TodoClick? = null
     var completeClick: CompleteClick? = null
     var flagClick: FlagClick? = null
     var subTodoCompleteClick : SubTodoCompleteClick? = null
+    var toggleClick : ToggleClick? = null
 
     val HeaderType1 = 0
     val HeaderType2 = 1
@@ -161,9 +166,12 @@ class TodoAdapter(val context: Context) :
                     }
                 }
 
-                holder.binding.subTodoToggle.setOnClickListener {
-                    holder.binding.subTodoToggle.isSelected = !it.isSelected
-                    holder.binding.subTodoItemLayout.visibility = if (it.isSelected) View.VISIBLE else View.GONE
+                if (toggleClick != null){
+                    holder.binding.subTodoToggle.setOnClickListener {
+                        holder.binding.subTodoToggle.isSelected = !it.isSelected
+                        holder.binding.subTodoItemLayout.visibility = if (it.isSelected) View.GONE else View.VISIBLE
+                        toggleClick?.onClick(it, position)
+                    }
                 }
             }
         }
@@ -259,10 +267,10 @@ class TodoAdapter(val context: Context) :
                 binding.subTodoItemLayout.addView(addView)
             }
             if (item.folded) {
-                binding.subTodoToggle.isSelected = false
+                binding.subTodoToggle.isSelected = true
                 binding.subTodoItemLayout.visibility = View.GONE
             } else {
-                binding.subTodoToggle.isSelected = true
+                binding.subTodoToggle.isSelected = false
                 binding.subTodoItemLayout.visibility = View.VISIBLE
             }
         }

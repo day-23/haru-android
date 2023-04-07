@@ -13,10 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.haru.R
-import com.example.haru.data.model.Completed
-import com.example.haru.data.model.Flag
-import com.example.haru.data.model.Tag
-import com.example.haru.data.model.Todo
+import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TagAdapter
@@ -152,6 +149,14 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     todoAdapter.subTodoClickPosition!!,
                     subTodoPosition
                 )
+            }
+        }
+
+        todoAdapter.toggleClick = object : TodoAdapter.ToggleClick{
+            override fun onClick(view: View, position: Int) {
+                val folded = if (view.isSelected) Folded(true) else Folded(false)
+
+                checkListViewModel.updateFolded(folded, position)
             }
         }
 
