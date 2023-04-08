@@ -11,8 +11,10 @@ import com.example.haru.R
 import com.example.haru.data.model.Flag
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentChecklistTodayBinding
+import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.viewmodel.CheckListViewModel
+import java.util.*
 
 class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment() {
     private lateinit var binding : FragmentChecklistTodayBinding
@@ -44,6 +46,8 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         super.onViewCreated(view, savedInstanceState)
         initToday()
 
+        binding.tvTodayDate.text = FormatDate.simpleTodayToStr(Date())
+
         binding.ivTodayBackIcon.setOnClickListener{
             requireActivity().supportFragmentManager.popBackStack()
         }
@@ -54,14 +58,18 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         val todoAdapter = TodoAdapter(requireContext())
 
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
-            override fun onClick(view: View, position: Int) {
-                if (checkListViewModel.todayTodo.value!![position].type == 2){
+            override fun onClick(view: View, id: String) {
+                if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.type == 2){
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, ChecklistItemFragment(checkListViewModel, position))
+                        .replace(R.id.fragments_frame, ChecklistItemFragment(checkListViewModel, id))
                         .addToBackStack(null)
                         .commit()
                 }
             }
+        }
+
+        todayRecyclerView.apply {
+            itemAnimator = null
         }
 
         todayRecyclerView.adapter = todoAdapter

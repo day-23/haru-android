@@ -30,6 +30,19 @@
                 android:background="@drawable/arrow"
                 android:backgroundTint="@color/black"
                 android:rotation="180" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/btn_info_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/check_icon"
+                android:backgroundTint="@color/todo_description" />
         </LinearLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -48,6 +61,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="horizontal"
+                    android:layout_marginBottom="14dp"
                     android:paddingStart="24dp">
 
                     <CheckBox
@@ -86,26 +100,7 @@
                     android:id="@+id/info_subTodo_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/plus_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="34dp"
-                        app:srcCompat="@drawable/add_icon" />
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/subTodo_input"
-                        android:textColorHint="@color/light_gray"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                    android:orientation="vertical"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -171,7 +166,7 @@
                         style="@style/minSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="28dp"
+                        android:layout_marginEnd="20dp"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
 
@@ -228,7 +223,7 @@
                             style="@style/minSize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="28dp"
+                            android:layout_marginEnd="20dp"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -269,7 +264,7 @@
                             style="@style/minSize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="28dp"
+                            android:layout_marginEnd="20dp"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
 
@@ -332,7 +327,7 @@
                         style="@style/minSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="28dp"
+                        android:layout_marginEnd="20dp"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
 
@@ -376,7 +371,7 @@
                             style="@style/minSize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="28dp"
+                            android:layout_marginEnd="20dp"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -656,8 +651,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="38dp"
-            android:paddingHorizontal="61dp"
+            android:gravity="center"
+            android:paddingBottom="36dp"
             android:orientation="horizontal">
 
             <Button
@@ -666,23 +661,15 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:background="@android:color/transparent"
-                android:textColor="@color/date_text"
+                android:textColor="@color/delete_red"
                 android:text="@string/delete"
                 />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/btn_info_save"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:background="@android:color/transparent"
-                android:textColor="@color/highlight"
-                android:text="@string/save"/>
+                android:backgroundTint="@color/delete_red"
+                android:background="@drawable/big_delete_icon"/>
 
 
         </LinearLayout>

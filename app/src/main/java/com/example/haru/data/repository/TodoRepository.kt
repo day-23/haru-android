@@ -50,6 +50,7 @@ class TodoRepository() {
         }
         callback(todoData)
     }
+
     suspend fun getSchedule(
         startDate: String,
         endDate: String,
@@ -243,14 +244,14 @@ class TodoRepository() {
 
     suspend fun getTodayTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
-        endDate: String,
-        callback: (todoList : TodoList) -> Unit
+        endDate: TodayEndDate,
+        callback: (todoList: TodoList) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.getTodayTodo(userId, endDate).execute()
-        val data : GetTodayTodo
-        val todoList : TodoList
+        val data: GetTodayTodo
+        val todoList: TodoList
 
-        if (response.isSuccessful){
+        if (response.isSuccessful) {
             Log.d("TAG", "Success to Get Today Todo")
             data = response.body()!!
             todoList = data.data
@@ -259,5 +260,43 @@ class TodoRepository() {
             todoList = TodoList()
         }
         callback(todoList)
+    }
+
+    suspend fun updateSubTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        subTodoId: String,
+        completed: Completed,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.updateSubTodo(userId, subTodoId, completed).execute()
+        val data = response.body()!!
+
+        val successData: SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Update SubTodo Complete")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update SubTodo Complete")
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun updateFolded(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        folded: Folded,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO){
+        val response = todoService.updateFolded(userId, todoId, folded).execute()
+        val data = response.body()!!
+
+        val successData: SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Update Folded")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update Folded")
+            data
+        }
+        callback(successData)
     }
 }

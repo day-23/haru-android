@@ -536,23 +536,16 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 val addView = layoutInflater.inflate(R.layout.subtodo_input_layout, null)
 
                 addView.findViewById<ImageView>(R.id.iv_subTodo_plus).setOnClickListener{
-                    Log.d("20191627", "plus click " + binding.subTodoLayout.indexOfChild(addView))
                     todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
                     todoAddViewModel.plusSubTodo()
                 }
                 addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
-                    Log.d("20191627", "delete click " + binding.subTodoLayout.indexOfChild(addView))
                     todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
                     todoAddViewModel.deleteSubTodo()
                 }
                 addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object : TextWatcher{
-                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    }
-
-                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                    }
-
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                     override fun afterTextChanged(e: Editable?) {
                         todoAddViewModel.subTodos[binding.subTodoLayout.indexOfChild(addView)] = e.toString()
                     }
@@ -561,7 +554,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 binding.subTodoLayout.addView(addView, todoAddViewModel.subTodoClickPosition + 1)
             }else binding.subTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
 
-            Log.d("20191627", todoAddViewModel.subTodos.toString())
         })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())

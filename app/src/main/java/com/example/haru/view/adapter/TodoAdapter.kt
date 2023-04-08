@@ -1,6 +1,7 @@
 package com.example.haru.view.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.Log
@@ -10,7 +11,10 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.marginTop
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
@@ -29,20 +33,30 @@ class TodoAdapter(val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface TodoClick {
-        fun onClick(view: View, position: Int)
+        fun onClick(view: View, id: String)
     }
 
     interface CompleteClick {
-        fun onClick(view: View, position: Int)
+        fun onClick(view: View, id: String)
     }
 
     interface FlagClick {
-        fun onClick(view: View, position: Int)
+        fun onClick(view: View, id: String)
+    }
+
+    interface SubTodoCompleteClick {
+        fun onClick(view: View, subTodoPosition: Int)
+    }
+
+    interface ToggleClick {
+        fun onClick(view: View, id: String)
     }
 
     var todoClick: TodoClick? = null
     var completeClick: CompleteClick? = null
     var flagClick: FlagClick? = null
+    var subTodoCompleteClick: SubTodoCompleteClick? = null
+    var toggleClick: ToggleClick? = null
 
     val HeaderType1 = 0
     val HeaderType2 = 1
@@ -55,6 +69,8 @@ class TodoAdapter(val context: Context) :
 
     var data = mutableListOf<Todo>()
 
+    var subTodoClickId: String? = null
+
     private var todoByTag = false
     private var todoByFlag = false
     private var flagCount = 0
@@ -62,12 +78,28 @@ class TodoAdapter(val context: Context) :
     private var untagCount = 0
     private var completeCount = 0
 
+    class DiffUtilCallback(private val oldList: List<Todo>, private val newList: List<Todo>) :
+        DiffUtil.Callback() {
+        override fun getOldListSize(): Int = oldList.size
+
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+            oldList[oldItemPosition] == newList[newItemPosition]
+    }
+
     override fun getItemViewType(position: Int): Int {
         return data[position].type
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
         return when (viewType) {
             HeaderType1 -> HeaderTypeOneViewHolder(
                 ChecklistHeaderType1Binding.inflate(
@@ -119,8 +151,13 @@ class TodoAdapter(val context: Context) :
     }
 
     override fun getItemCount(): Int = data.count()
+//        data.count()
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int
+    ) {
+        val todoId = data[position].id
         when (holder) {
             is HeaderTypeOneViewHolder -> {}
             is HeaderTypeTwoViewHolder -> holder.bind(data[position].content)
@@ -130,19 +167,34 @@ class TodoAdapter(val context: Context) :
                 holder.bind(data[position])
                 if (todoClick != null) {
                     holder.binding.ClickLayout.setOnClickListener {
-                        todoClick?.onClick(it, position)
+                        todoClick?.onClick(it, todoId)
                     }
                 }
 
                 if (flagClick != null) {
                     holder.binding.checkFlag.setOnClickListener {
-                        flagClick?.onClick(it, position)
+                        flagClick?.onClick(it, todoId)
                     }
                 }
 
                 if (completeClick != null) {
                     holder.binding.checkDone.setOnClickListener {
-                        completeClick?.onClick(it, position)
+                        completeClick?.onClick(it, todoId)
+                    }
+                }
+
+                if (subTodoCompleteClick != null) {
+                    holder.binding.subTodoItemLayout.setOnClickListener {
+                        subTodoClickId = todoId
+                    }
+                }
+
+                if (toggleClick != null) {
+                    holder.binding.subTodoToggle.setOnClickListener {
+                        holder.binding.subTodoToggle.isSelected = !it.isSelected
+                        holder.binding.subTodoItemLayout.visibility =
+                            if (it.isSelected) View.GONE else View.VISIBLE
+                        toggleClick?.onClick(it, todoId)
                     }
                 }
             }
@@ -175,12 +227,11 @@ class TodoAdapter(val context: Context) :
         fun bind(item: Todo) {
             binding.todo = item
 
-            if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null){
+            if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null) {
                 binding.blankView.visibility = View.VISIBLE
                 binding.tvTagDescription.text = ""
                 binding.tvEndDateDescription.text = ""
-            }
-            else {
+            } else {
                 binding.blankView.visibility = View.GONE
                 var tag = ""
                 for (i in 0 until item.tags.size) {
@@ -190,8 +241,8 @@ class TodoAdapter(val context: Context) :
                     binding.tvTagDescription.text = tag.dropLast(1)
                     binding.tvTagDescription.visibility = View.VISIBLE
                 } else {
-                    binding.tvTagDescription.visibility = View.GONE
-                    binding.tvTagDescription.text =  tag
+                    binding.tvTagDescription.visibility = View.INVISIBLE
+                    binding.tvTagDescription.text = tag
                 }
 
                 if (item.endDate != null) {
@@ -200,7 +251,7 @@ class TodoAdapter(val context: Context) :
                     binding.tvEndDateDescription.visibility = View.VISIBLE
                 } else {
                     binding.tvEndDateDescription.text = ""
-                    binding.tvEndDateDescription.visibility = View.GONE
+                    binding.tvEndDateDescription.visibility = View.INVISIBLE
                 }
             }
 
@@ -208,19 +259,46 @@ class TodoAdapter(val context: Context) :
             else binding.tvTitle.paintFlags = 0
 
 
-            if (item.subTodos.isEmpty()) return
             binding.subTodoItemLayout.removeAllViews()
-            for(i in 0 until item.subTodos.size){
+            if (item.subTodos.isEmpty()) {
+                binding.subTodoToggle.visibility = View.INVISIBLE
+                return
+            }
+
+            binding.subTodoToggle.visibility = View.VISIBLE
+            for (i in 0 until item.subTodos.size) {
                 val layoutInflater =
                     context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.subtodo_layout, null)
-                // subtodo completed 클릭 리스너
-                // TODO
 
-                addView.findViewById<CheckBox>(R.id.cb_subTodo_complete).isChecked = item.subTodos[i].completed
-                addView.findViewById<TextView>(R.id.tv_subTodo).text = item.subTodos[i].content
+                // subtodo completed 클릭 리스너
+                addView.findViewById<CheckBox>(R.id.cb_subTodo_complete).apply {
+                    isChecked = item.subTodos[i].completed
+                    if (subTodoCompleteClick != null) {
+                        this.setOnClickListener {
+                            binding.subTodoItemLayout.performClick()
+                            subTodoCompleteClick?.onClick(
+                                it,
+                                binding.subTodoItemLayout.indexOfChild(addView)
+                            )
+                        }
+                    }
+                }
+                addView.findViewById<TextView>(R.id.tv_subTodo).apply {
+                    text = item.subTodos[i].content
+                    paintFlags = if (item.subTodos[i].completed) Paint.STRIKE_THRU_TEXT_FLAG else 0
+                    if (item.subTodos[i].completed)
+                        setTextColor(ContextCompat.getColor(context, R.color.light_gray))
+                }
 
                 binding.subTodoItemLayout.addView(addView)
+            }
+            if (item.folded) {
+                binding.subTodoToggle.isSelected = true
+                binding.subTodoItemLayout.visibility = View.GONE
+            } else {
+                binding.subTodoToggle.isSelected = false
+                binding.subTodoItemLayout.visibility = View.VISIBLE
             }
         }
     }
@@ -229,8 +307,16 @@ class TodoAdapter(val context: Context) :
         RecyclerView.ViewHolder(binding.root) {}
 
     fun setDataList(dataList: List<Todo>) {
-        this.data = dataList as MutableList<Todo>
-        notifyDataSetChanged()
+        data.let {
+            val diffCallback = DiffUtilCallback(data, dataList)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+            data.run {
+                clear()
+                addAll(dataList)
+                diffResult.dispatchUpdatesTo(this@TodoAdapter)
+            }
+        }
     }
 
     fun setFlagCount(count: Int?) {
