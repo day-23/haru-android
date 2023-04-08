@@ -1,11 +1,14 @@
 package com.example.haru.view.checklist
 
+import android.content.Context
+import android.graphics.Point
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
@@ -185,6 +188,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
             val dataList = it.filterIsInstance<Todo>()
             todoAdapter.setDataList(dataList)
+        })
+
+        checkListViewModel.addTodoId.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            val layoutManager = todoListView.layoutManager as LinearLayoutManager
+            val todo = checkListViewModel.getTodoList().find { todo -> todo.id == it }
+            val position = checkListViewModel.getTodoList().indexOf(todo)
+            val height = todoListView.height
+
+            layoutManager.scrollToPositionWithOffset(position, height)
         })
 
         checkListViewModel.todoByTag.observe(viewLifecycleOwner, androidx.lifecycle.Observer {

@@ -32,6 +32,9 @@ class CheckListViewModel() :
     private val _todoByTag = MutableLiveData<Boolean>()
     val todoByTag: LiveData<Boolean> = _todoByTag
 
+    private val _addTodoId = MutableLiveData<String>()
+    val addTodoId : LiveData<String> = _addTodoId
+
     private val _todayTodo = MutableLiveData<List<Todo>>()
     val todayTodo: LiveData<List<Todo>> get() = _todayTodo
     private val todayList = mutableListOf<Todo>()
@@ -55,6 +58,10 @@ class CheckListViewModel() :
             _todoDataList.postValue(todoList)
         }
         getTag()
+    }
+
+    fun getTodoList() : List<Todo> {
+        return todoList
     }
 
     fun getTag() {
@@ -128,7 +135,6 @@ class CheckListViewModel() :
 
 
     fun addTodo(todoRequest: TodoRequest, callback: () -> Unit) {
-        Log.d("20191627", todoRequest.toString())
         viewModelScope.launch {
             todoRepository.createTodo(todoRequest) {
                 getTag()
@@ -138,6 +144,7 @@ class CheckListViewModel() :
                     untaggedTodos.value?.let { todoList.addAll(it) }
                     completedTodos.value?.let { todoList.addAll(it) }
                     _todoDataList.postValue(todoList)
+                    _addTodoId.postValue(it.id)
                     callback()
                 }
             }
