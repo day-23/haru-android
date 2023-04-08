@@ -90,13 +90,13 @@ class CalendarViewModel : ViewModel() {
 
         _liveDateList.postValue(dateList)
 
-        getTodo(startDate, endDate, maxi)
-        getSchedule(startDate, endDate, maxi)
+        //getTodo(startDate, endDate, maxi)
+        //getSchedule(startDate, endDate, body, maxi)
     }
 
-    fun getTodo(startDate:String, endDate:String, maxi:Int){
+    fun getTodo(startDate:String, endDate:String, body: ScheduleRequest ,maxi:Int){
         viewModelScope.launch {
-            todoRepository.getTodoDates(startDate,endDate){
+            todoRepository.getTodoDates(startDate,endDate, body){
 
                 var contentList = ArrayList<CalendarTodo>()
 
@@ -299,9 +299,9 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    fun getSchedule(startDate:String, endDate:String, maxi:Int){
+    fun getSchedule(startDate:String, endDate:String, body: ScheduleRequest,maxi:Int){
         viewModelScope.launch {
-            scheduleRepository.getScheduleByDates(startDate,endDate){
+            scheduleRepository.getScheduleByDates(startDate,endDate, body){
 
                 var contentList = ArrayList<CalendarSchedule>()
 
