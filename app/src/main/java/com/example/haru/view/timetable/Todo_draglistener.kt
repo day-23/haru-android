@@ -42,7 +42,6 @@ class Todo_draglistener () : View.OnDragListener {
 
                 var targetList: ArrayList<Todo> = ArrayList()
                 targetAdapter?.setItem(item)
-                targetRecyclerView.setBackgroundColor(Color.TRANSPARENT)
 
             }
             return true
@@ -55,7 +54,6 @@ class Todo_draglistener () : View.OnDragListener {
             catch (e: java.lang.ClassCastException){
                 targetRecyclerView = view as RecyclerView
             }
-            targetRecyclerView.setBackgroundColor(Color.parseColor("#4D7f7f7f"))
             return true
         }
 
