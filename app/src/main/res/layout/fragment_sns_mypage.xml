@@ -93,7 +93,7 @@
                     android:textColor="#191919"
                     android:textStyle="bold"
                     android:background="@drawable/todotable_item_border"
-                    android:text="프로필 편집"/>
+                    android:text="프로필 공유"/>
             </LinearLayout>
     </LinearLayout>
 
