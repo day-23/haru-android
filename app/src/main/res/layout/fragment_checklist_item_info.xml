@@ -30,6 +30,19 @@
                 android:background="@drawable/arrow"
                 android:backgroundTint="@color/black"
                 android:rotation="180" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/btn_info_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/check_icon"
+                android:backgroundTint="@color/todo_description" />
         </LinearLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -153,7 +166,7 @@
                         style="@style/minSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="28dp"
+                        android:layout_marginEnd="20dp"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
 
@@ -210,7 +223,7 @@
                             style="@style/minSize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="28dp"
+                            android:layout_marginEnd="20dp"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -251,7 +264,7 @@
                             style="@style/minSize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="28dp"
+                            android:layout_marginEnd="20dp"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
 
@@ -314,7 +327,7 @@
                         style="@style/minSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="28dp"
+                        android:layout_marginEnd="20dp"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
 
@@ -358,7 +371,7 @@
                             style="@style/minSize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="28dp"
+                            android:layout_marginEnd="20dp"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -638,8 +651,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="38dp"
-            android:paddingHorizontal="61dp"
+            android:gravity="center"
+            android:paddingBottom="36dp"
             android:orientation="horizontal">
 
             <Button
@@ -648,23 +661,15 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:background="@android:color/transparent"
-                android:textColor="@color/date_text"
+                android:textColor="@color/delete_red"
                 android:text="@string/delete"
                 />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/btn_info_save"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:background="@android:color/transparent"
-                android:textColor="@color/highlight"
-                android:text="@string/save"/>
+                android:backgroundTint="@color/delete_red"
+                android:background="@drawable/big_delete_icon"/>
 
 
         </LinearLayout>

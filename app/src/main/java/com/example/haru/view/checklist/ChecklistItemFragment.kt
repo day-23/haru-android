@@ -30,12 +30,10 @@ import java.util.*
 class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) : Fragment() {
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
-//    private var position: Int
     private var id : String
 
     init {
         this.todoAddViewModel = TodoAddViewModel(checkListViewModel)
-//        this.position = position
         this.id = id
     }
 

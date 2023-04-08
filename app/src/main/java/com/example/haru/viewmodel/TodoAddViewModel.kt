@@ -4,13 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.Alarm
 import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoRequest
 import com.example.haru.data.model.UpdateTodo
 import com.example.haru.utils.FormatDate
-import java.text.FieldPosition
 import java.util.*
 
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
@@ -101,7 +99,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         clickedTodo = checklistViewModel.todoDataList.value!!.find {
             it.id == id
         }!!
-//        clickedTodo = checklistViewModel.todoDataList.value!![position]
         _completedTodo.value = clickedTodo.completed
         _flagTodo.value = clickedTodo.flag
         _todayTodo.value = clickedTodo.todayTodo
