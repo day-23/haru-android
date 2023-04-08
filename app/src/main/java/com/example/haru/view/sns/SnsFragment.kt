@@ -56,6 +56,16 @@ class SnsFragment : Fragment() {
             true
         }
 
+        binding.menuButton.setOnClickListener{
+            if(click == false){
+                binding.snsButtons.visibility = View.VISIBLE
+                click = true
+            }
+            else{
+                binding.snsButtons.visibility = View.GONE
+                click = false
+            }
+        }
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://jsonplaceholder.typicode.com/todos/")

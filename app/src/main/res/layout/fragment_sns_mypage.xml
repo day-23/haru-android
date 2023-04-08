@@ -14,19 +14,65 @@
         tools:ignore="MissingConstraints">
 
         <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="HARU"
             android:textColor="#191919"
             android:textStyle="bold"
-            android:textSize="18dp">
+            android:textSize="18dp"
+            android:layout_marginRight="8dp">
         </TextView>
 
         <ImageView
+            android:id="@+id/menu_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/___20513"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sns_buttons"
+        android:layout_width="94dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/sns_select_buttons"
+        app:layout_constraintTop_toBottomOf="@id/sns_menu"
+        android:layout_marginTop="8dp"
+        tools:ignore="MissingConstraints"
+        android:visibility="gone"
+        android:elevation="10dp">
+        <TextView
+            android:id="@+id/friend_feed"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="친구피드"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#707070"/>
+        <TextView
+            android:id="@+id/look_around"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="둘러보기"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#707070"/>
+
+        <TextView
+            android:id="@+id/my_records"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="내 기록" />
     </LinearLayout>
 
     <!--프로필-->
