@@ -47,6 +47,15 @@ class MyPageFragment : Fragment() {
             }
         }
 
+        binding.editProfile.setOnClickListener {
+            val newFrag = EditProfileFragment.newInstance()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.addToBackStack(null)
+            transaction.commit()
+            true
+        }
+
         binding.friendFeed.setOnClickListener {
             val newFrag = SnsFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
