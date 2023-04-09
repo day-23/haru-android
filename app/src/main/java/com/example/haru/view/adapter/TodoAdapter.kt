@@ -80,6 +80,9 @@ class TodoAdapter(val context: Context) :
     private var untagCount = 0
     private var completeCount = 0
 
+    private var dragLimitTop: Int? = null
+    private var dragLimitBottom: Int? = null
+
 //    class DiffUtilCallback(private val oldList: List<Todo>, private val newList: List<Todo>) :
 //        DiffUtil.Callback() {
 //        override fun getOldListSize(): Int = oldList.size
@@ -97,7 +100,7 @@ class TodoAdapter(val context: Context) :
 //            oldList[oldItemPosition] == newList[newItemPosition]
 //    }
 
-    private val diffCallback = object : DiffUtil.ItemCallback<Todo>(){
+    private val diffCallback = object : DiffUtil.ItemCallback<Todo>() {
         override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
             return oldItem.id == newItem.id
         }
@@ -171,7 +174,7 @@ class TodoAdapter(val context: Context) :
         holder: RecyclerView.ViewHolder,
         position: Int
     ) {
-            val todo = diffUtil.currentList[position]
+        val todo = diffUtil.currentList[position]
 //        val todo = data[position]
         when (holder) {
             is HeaderTypeOneViewHolder -> {}
@@ -361,14 +364,27 @@ class TodoAdapter(val context: Context) :
     }
 
     override fun onItemMove(formPosition: Int, toPosition: Int): Boolean {
-        if (diffUtil.currentList[toPosition].type != 2)
-            return false
-        val list = mutableListOf<Todo>()
-        list.addAll(diffUtil.currentList)
-        Collections.swap(list, formPosition, toPosition)
+        for (i in 0..formPosition)
+            if (diffUtil.currentList[i].type in listOf(0, 1, 4)) {
+                dragLimitTop = i
+                break
+            }
 
-        setDataList(list)
-        return true
+        for (i in formPosition until diffUtil.currentList.size)
+            if (diffUtil.currentList[i].type == 3) {
+                dragLimitBottom = i
+                break
+            }
+
+        if ((toPosition > dragLimitTop!!) && (toPosition < dragLimitBottom!!)) {
+            val list = mutableListOf<Todo>()
+            list.addAll(diffUtil.currentList)
+            Collections.swap(list, formPosition, toPosition)
+            setDataList(list)
+            return true
+        }
+        return false
+
     }
 
 }
