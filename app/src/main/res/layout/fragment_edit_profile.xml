@@ -94,7 +94,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
-                android:hint="모모의 유혹"
+                android:hint="momo"
                 android:textSize="14dp"
                 android:background="@null"/>
         </LinearLayout>
@@ -123,7 +123,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
-                android:hint="모모는 장난꾸러기"
+                android:hint="야옹"
                 android:textSize="14dp"
                 android:background="@null"/>
         </LinearLayout>
