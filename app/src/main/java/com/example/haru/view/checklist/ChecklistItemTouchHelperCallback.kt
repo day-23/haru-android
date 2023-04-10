@@ -2,6 +2,8 @@ package com.example.haru.view.checklist
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.data.model.Todo
+import com.example.haru.view.adapter.TodoAdapter
 
 class ChecklistItemTouchHelperCallback(val listener: ItemTouchHelperListener) :
     ItemTouchHelper.Callback() {
@@ -11,7 +13,7 @@ class ChecklistItemTouchHelperCallback(val listener: ItemTouchHelperListener) :
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+        val dragFlags = if (viewHolder is TodoAdapter.TodoViewHolder) ItemTouchHelper.UP or ItemTouchHelper.DOWN else 0
 //        val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
         return makeMovementFlags(dragFlags, 0)
     }

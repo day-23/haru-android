@@ -364,7 +364,7 @@ class TodoAdapter(val context: Context) :
     }
 
     override fun onItemMove(formPosition: Int, toPosition: Int): Boolean {
-        for (i in 0..formPosition)
+        for (i in formPosition downTo 0)
             if (diffUtil.currentList[i].type in listOf(0, 1, 4)) {
                 dragLimitTop = i
                 break
