@@ -287,8 +287,8 @@ class CheckListViewModel() :
                     todo.completed = completed.completed
                     for (i in 0 until todo.subTodos.size)
                         todo.subTodos[i].completed = completed.completed
-
-                    if (todo.completed)
+                    if (todoByTag.value == true)
+                    else if (todo.completed)
                         todoList.add(todoList.indexOf(Todo(type = 1, content = "완료")) + 1, todo)
                     else {
                         val i = if (todo.flag) 0 else if (todo.tags.isEmpty()) todoList.indexOf(
