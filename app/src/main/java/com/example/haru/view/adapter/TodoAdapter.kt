@@ -27,10 +27,12 @@ import com.example.haru.databinding.ChecklistHeaderType3Binding
 import com.example.haru.databinding.FragmentChecklistDividerBinding
 import com.example.haru.databinding.FragmentChecklistItemBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.view.checklist.ItemTouchHelperListener
+import java.util.*
 
 
 class TodoAdapter(val context: Context) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperListener {
 
     interface TodoClick {
         fun onClick(view: View, id: String)
@@ -78,26 +80,41 @@ class TodoAdapter(val context: Context) :
     private var untagCount = 0
     private var completeCount = 0
 
-    class DiffUtilCallback(private val oldList: List<Todo>, private val newList: List<Todo>) :
-        DiffUtil.Callback() {
-        override fun getOldListSize(): Int = oldList.size
+    private var dragLimitTop: Int? = null
+    private var dragLimitBottom: Int? = null
 
-        override fun getNewListSize(): Int = newList.size
+//    class DiffUtilCallback(private val oldList: List<Todo>, private val newList: List<Todo>) :
+//        DiffUtil.Callback() {
+//        override fun getOldListSize(): Int = oldList.size
+//
+//        override fun getNewListSize(): Int = newList.size
+//
+//        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//            val oldItem = oldList[oldItemPosition]
+//            val newItem = newList[newItemPosition]
+//
+//            return oldItem.id == newItem.id
+//        }
+//
+//        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+//            oldList[oldItemPosition] == newList[newItemPosition]
+//    }
 
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldList[oldItemPosition]
-            val newItem = newList[newItemPosition]
-
+    private val diffCallback = object : DiffUtil.ItemCallback<Todo>() {
+        override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-            oldList[oldItemPosition] == newList[newItemPosition]
+        override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+            return oldItem == newItem
+        }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return data[position].type
-    }
+    val diffUtil = AsyncListDiffer(this, diffCallback)
+
+    override fun getItemViewType(position: Int): Int = diffUtil.currentList[position].type
+//        return data[position].type
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -150,53 +167,22 @@ class TodoAdapter(val context: Context) :
 
     }
 
-    override fun getItemCount(): Int = data.count()
+    override fun getItemCount(): Int = diffUtil.currentList.count()
 //        data.count()
 
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int
     ) {
-        val todoId = data[position].id
+        val todo = diffUtil.currentList[position]
+//        val todo = data[position]
         when (holder) {
             is HeaderTypeOneViewHolder -> {}
-            is HeaderTypeTwoViewHolder -> holder.bind(data[position].content)
-            is HeaderTypeThreeViewHolder -> holder.bind(data[position].content)
+            is HeaderTypeTwoViewHolder -> holder.bind(todo.content)
+            is HeaderTypeThreeViewHolder -> holder.bind(todo.content)
             is DividerViewHolder -> {}
             is TodoViewHolder -> {
-                holder.bind(data[position])
-                if (todoClick != null) {
-                    holder.binding.ClickLayout.setOnClickListener {
-                        todoClick?.onClick(it, todoId)
-                    }
-                }
-
-                if (flagClick != null) {
-                    holder.binding.checkFlag.setOnClickListener {
-                        flagClick?.onClick(it, todoId)
-                    }
-                }
-
-                if (completeClick != null) {
-                    holder.binding.checkDone.setOnClickListener {
-                        completeClick?.onClick(it, todoId)
-                    }
-                }
-
-                if (subTodoCompleteClick != null) {
-                    holder.binding.subTodoItemLayout.setOnClickListener {
-                        subTodoClickId = todoId
-                    }
-                }
-
-                if (toggleClick != null) {
-                    holder.binding.subTodoToggle.setOnClickListener {
-                        holder.binding.subTodoToggle.isSelected = !it.isSelected
-                        holder.binding.subTodoItemLayout.visibility =
-                            if (it.isSelected) View.GONE else View.VISIBLE
-                        toggleClick?.onClick(it, todoId)
-                    }
-                }
+                holder.bind(todo)
             }
         }
     }
@@ -226,6 +212,39 @@ class TodoAdapter(val context: Context) :
 
         fun bind(item: Todo) {
             binding.todo = item
+
+            if (todoClick != null) {
+                binding.ClickLayout.setOnClickListener {
+                    todoClick?.onClick(it, item.id)
+                }
+            }
+
+            if (flagClick != null) {
+                binding.checkFlag.setOnClickListener {
+                    flagClick?.onClick(it, item.id)
+                }
+            }
+
+            if (completeClick != null) {
+                binding.checkDone.setOnClickListener {
+                    completeClick?.onClick(it, item.id)
+                }
+            }
+
+            if (subTodoCompleteClick != null) {
+                binding.subTodoItemLayout.setOnClickListener {
+                    subTodoClickId = item.id
+                }
+            }
+
+            if (toggleClick != null) {
+                binding.subTodoToggle.setOnClickListener {
+                    binding.subTodoToggle.isSelected = !it.isSelected
+                    binding.subTodoItemLayout.visibility =
+                        if (it.isSelected) View.GONE else View.VISIBLE
+                    toggleClick?.onClick(it, item.id)
+                }
+            }
 
             if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null) {
                 binding.blankView.visibility = View.VISIBLE
@@ -307,16 +326,18 @@ class TodoAdapter(val context: Context) :
         RecyclerView.ViewHolder(binding.root) {}
 
     fun setDataList(dataList: List<Todo>) {
-        data.let {
-            val diffCallback = DiffUtilCallback(data, dataList)
-            val diffResult = DiffUtil.calculateDiff(diffCallback)
-
-            data.run {
-                clear()
-                addAll(dataList)
-                diffResult.dispatchUpdatesTo(this@TodoAdapter)
-            }
-        }
+        data = dataList as MutableList<Todo>
+        diffUtil.submitList(dataList)
+//        data.let {
+//            val diffCallback = DiffUtilCallback(data, dataList)
+//            val diffResult = DiffUtil.calculateDiff(diffCallback)
+//
+//            data.run {
+//                clear()
+//                addAll(dataList)
+//                diffResult.dispatchUpdatesTo(this@TodoAdapter)
+//            }
+//        }
     }
 
     fun setFlagCount(count: Int?) {
@@ -340,6 +361,30 @@ class TodoAdapter(val context: Context) :
             todoByTag = true
             tags[3].content = content
         } else todoByTag = false
+    }
+
+    override fun onItemMove(formPosition: Int, toPosition: Int): Boolean {
+        for (i in formPosition downTo 0)
+            if (diffUtil.currentList[i].type in listOf(0, 1, 4)) {
+                dragLimitTop = i
+                break
+            }
+
+        for (i in formPosition until diffUtil.currentList.size)
+            if (diffUtil.currentList[i].type == 3) {
+                dragLimitBottom = i
+                break
+            }
+
+        if ((toPosition > dragLimitTop!!) && (toPosition < dragLimitBottom!!)) {
+            val list = mutableListOf<Todo>()
+            list.addAll(diffUtil.currentList)
+            Collections.swap(list, formPosition, toPosition)
+            setDataList(list)
+            return true
+        }
+        return false
+
     }
 
 }
