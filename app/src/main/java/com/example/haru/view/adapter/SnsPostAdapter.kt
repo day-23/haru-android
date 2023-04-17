@@ -1,11 +1,13 @@
 package com.example.haru.view.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.SnsPost
@@ -24,10 +26,7 @@ class SnsPostAdapter(val context: Context,
         holder.userid.text = "momo"
         holder.picture.setBackgroundResource(R.drawable.momo)
         holder.content.text = "Draw Of MOMO"
-        holder.likeBtn.setOnClickListener{
-            val unlike = R.drawable.likedyet
-            val liked = R.drawable.liked
-        }
+        var likeclick = 0
     }
 
     override fun getItemCount(): Int {
