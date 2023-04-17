@@ -24,6 +24,10 @@ class SnsPostAdapter(val context: Context,
         holder.userid.text = "momo"
         holder.picture.setBackgroundResource(R.drawable.momo)
         holder.content.text = "Draw Of MOMO"
+        holder.likeBtn.setOnClickListener{
+            val unlike = R.drawable.likedyet
+            val liked = R.drawable.liked
+        }
     }
 
     override fun getItemCount(): Int {
@@ -34,5 +38,6 @@ class SnsPostAdapter(val context: Context,
         var userid = itemView.findViewById<TextView>(R.id.user_id)
         var picture = itemView.findViewById<ImageView>(R.id.post_picture)
         var content = itemView.findViewById<TextView>(R.id.post_contents)
+        var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
     }
 }
