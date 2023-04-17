@@ -14,7 +14,7 @@ class ProfileRepository() {
     suspend fun editProfile(imageFile: MultipartBody.Part, callback:(profile : Profile) -> Unit) = withContext(
         Dispatchers.IO) {
         val response = profileService.editProfile(
-            "dd62593d-161b-45cb-9534-346cd5b5e556",
+            "jts",
             imageFile,
         ).execute()
         val profile: Profile
@@ -31,5 +31,21 @@ class ProfileRepository() {
         callback(profile)
     }
 
-    suspend fun getProfile()
+    suspend fun getProfile(callback: (profile: Profile) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = profileService.getProfile(
+            "jts",
+        ).execute()
+        val profile: Profile
+        val data: GetProfileResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get profile")
+            data = response.body()!!
+            profile = data.data
+        } else{
+            Log.d("TAG", "Fail to get Profile")
+            profile = Profile("","","","")
+        }
+        callback(profile)
+    }
 }

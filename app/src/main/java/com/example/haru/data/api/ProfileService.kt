@@ -11,6 +11,6 @@ interface ProfileService {
     @POST("post/{userId}/profile/image")
     fun editProfile(@Path("userId") userId: String, @Part imageFile: MultipartBody.Part) : Call<GetProfileResponse>
 
-//    @GET("post/{userId}/profile/images")
-//    fun getProfile(@Path("userId") userId: String, @Part imageFile: MultipartBody.Part) : Call<GetProfileResponse>
+    @GET("post/{userId}/profile/images")
+    fun getProfile(@Path("userId") userId: String) : Call<GetProfileResponse>
 }
