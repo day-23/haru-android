@@ -6,11 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.SnsPost
 import com.example.haru.databinding.FragmentSnsMypageBinding
+import com.example.haru.view.adapter.MyFeedAdapter
+import com.example.haru.view.adapter.SnsPostAdapter
 
 class MyPageFragment : Fragment() {
     private lateinit var binding: FragmentSnsMypageBinding
+    private lateinit var myFeedRecyclerView: RecyclerView
+    private lateinit var feedAdapter: SnsPostAdapter
+    private lateinit var mediaAdapter: MyFeedAdapter
     private var click = false
 
     companion object{
@@ -35,6 +43,11 @@ class MyPageFragment : Fragment() {
         Log.d(TAG, "SnsFragment - onCreateView() called")
 
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
+        val dummy = arrayListOf<SnsPost>(SnsPost("","",""),SnsPost("","",""),SnsPost("","",""),SnsPost("","",""),SnsPost("","",""))
+        myFeedRecyclerView = binding.feedRecycler
+        myFeedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        feedAdapter = SnsPostAdapter(requireContext(), dummy)
+        myFeedRecyclerView.adapter = feedAdapter
 
         binding.menuButton.setOnClickListener {
             if(click == false){

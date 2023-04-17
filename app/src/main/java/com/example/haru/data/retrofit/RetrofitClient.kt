@@ -1,6 +1,7 @@
 package com.example.haru.data.retrofit
 
 import android.util.Log
+import com.example.haru.data.api.ProfileService
 import com.example.haru.data.api.ScheduleService
 import com.example.haru.data.api.TagService
 import com.example.haru.data.api.TodoService
@@ -40,4 +41,9 @@ object RetrofitClient {
     val tagService: TagService by lazy {
         retrofit.create(TagService::class.java)
     }
+
+    val profileService: ProfileService by lazy {
+        retrofit.create(ProfileService::class.java)
+    }
+
 }
