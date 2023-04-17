@@ -9,10 +9,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.haru.R
 import com.example.haru.data.api.UserService
+import com.example.haru.data.model.SnsPost
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.databinding.FragmentSnsBinding
+import com.example.haru.view.adapter.SnsPostAdapter
+import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.view.timetable.TodotableFragment
 import com.example.haru.viewmodel.UserViewModel
 import okhttp3.OkHttpClient
@@ -23,6 +27,7 @@ class SnsFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private lateinit var binding: FragmentSnsBinding
     private var click = false
+    private lateinit var snsPostAdapter: SnsPostAdapter
 
     companion object{
         const val TAG : String = "로그"
@@ -46,6 +51,11 @@ class SnsFragment : Fragment() {
         Log.d(TAG, "SnsFragment - onCreateView() called")
 
         binding = FragmentSnsBinding.inflate(inflater, container, false)
+        val dummy = arrayListOf<SnsPost>(SnsPost("","",""),SnsPost("","",""),SnsPost("","",""))
+        val postRecycler = binding.postOfAll
+        snsPostAdapter = SnsPostAdapter(requireContext(), dummy)
+        postRecycler.layoutManager = LinearLayoutManager(requireContext())
+        postRecycler.adapter = snsPostAdapter
 
         binding.myRecords.setOnClickListener {
             val newFrag = MyPageFragment.newInstance()

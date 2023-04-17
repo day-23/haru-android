@@ -8,20 +8,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.view.marginTop
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Schedule
-import com.example.haru.data.model.Todo
 import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
+import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
-import org.w3c.dom.Text
 
 //드래그 앤 드롭 그림자 없어지게 하는 클래스
 class EmptyShadowBuilder(view: View) : View.DragShadowBuilder(view) {
@@ -51,7 +48,6 @@ class TimetableFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reviewModel = TimeTableRecyclerViewModel()
-
         Log.d(TAG, "TimetableFragment - onCreate() called")
     }
 
