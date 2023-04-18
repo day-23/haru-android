@@ -33,6 +33,11 @@ class SnsPostAdapter(val context: Context,
         return itemList.size
     }
 
+    fun newPage(post: SnsPost){
+        itemList.add(post)
+        notifyItemInserted(itemCount)
+    }
+
     inner class SnsPostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var userid = itemView.findViewById<TextView>(R.id.user_id)
         var picture = itemView.findViewById<ImageView>(R.id.post_picture)

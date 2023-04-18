@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
+import com.example.haru.data.model.Profile
 import com.example.haru.data.model.SnsPost
 import com.example.haru.databinding.FragmentSnsMypageBinding
 import com.example.haru.view.adapter.MyFeedAdapter
@@ -24,6 +26,8 @@ class MyPageFragment : Fragment() {
     private lateinit var mediaAdapter: MyFeedAdapter
     private lateinit var mypageViewModel: MyPageViewModel
     private var click = false
+
+
 
     companion object{
         const val TAG : String = "로그"
@@ -47,11 +51,25 @@ class MyPageFragment : Fragment() {
         Log.d(TAG, "SnsFragment - onCreateView() called")
 
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
-        val dummy = arrayListOf<SnsPost>(SnsPost("","",""),SnsPost("","",""),SnsPost("","",""),SnsPost("","",""),SnsPost("","",""))
+        val dummy = arrayListOf<SnsPost>(SnsPost("","",""),SnsPost("","",""),SnsPost("","",""))
         myFeedRecyclerView = binding.feedRecycler
-        myFeedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         feedAdapter = SnsPostAdapter(requireContext(), dummy)
         myFeedRecyclerView.adapter = feedAdapter
+        val layoutManager = LinearLayoutManager(context)
+        layoutManager.initialPrefetchItemCount = 1 // 1개의 아이템을 미리 로딩합니다
+
+        //recyclerview 무한스크롤 감지
+        val scrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!myFeedRecyclerView.canScrollVertically(1)) {
+                    feedAdapter.newPage(SnsPost("","",""))
+                    Toast.makeText(context, "추가됨", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        myFeedRecyclerView.addOnScrollListener(scrollListener)
+        myFeedRecyclerView.layoutManager = layoutManager
 
         mypageViewModel.Profile.observe(viewLifecycleOwner){profile ->
             if(profile.url != "") {

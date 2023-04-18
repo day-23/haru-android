@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Profile
 import com.example.haru.data.model.SnsPost
 
 class MyFeedAdapter (val context: Context,
@@ -27,6 +28,11 @@ class MyFeedAdapter (val context: Context,
 
     override fun getItemCount(): Int {
         return itemList.size
+    }
+
+    fun newPage(post: SnsPost){
+        itemList.add(post)
+        notifyItemInserted(itemCount)
     }
 
     inner class MyFeedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
