@@ -9,8 +9,8 @@ interface ProfileService {
 
     @Multipart
     @POST("post/{userId}/profile/image")
-    fun editProfile(@Path("userId") userId: String, @Part imageFile: MultipartBody.Part) : Call<GetProfileResponse>
+    fun editProfile(@Path("userId") userId: String, @Part image: MultipartBody.Part) : Call<GetProfileResponse>
 
     @GET("post/{userId}/profile/images")
-    fun getProfile(@Path("userId") userId: String) : Call<GetProfileResponse>
+    fun getProfile(@Path("userId") userId: String) : Call<ProfileListResponse>
 }

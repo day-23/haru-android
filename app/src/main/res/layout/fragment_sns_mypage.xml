@@ -85,6 +85,7 @@
         android:paddingHorizontal="20dp">
         
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
                 android:layout_width="62dp"
                 android:layout_height="62dp"
                 android:src="@drawable/drawofmomo"

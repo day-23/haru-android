@@ -25,7 +25,7 @@ class ProfileRepository() {
             profile = data.data
 
         } else {
-            Log.d("TAG", "Fail to update Profile")
+            Log.d("TAG", "Fail to update Profile: $response")
             profile = Profile("","","","")
         }
         callback(profile)
@@ -37,11 +37,11 @@ class ProfileRepository() {
             "jts",
         ).execute()
         val profile: Profile
-        val data: GetProfileResponse
+        val data: ProfileListResponse
         if (response.isSuccessful) {
             Log.d("TAG", "Success to get profile")
             data = response.body()!!
-            profile = data.data
+            profile = data.data[0]
         } else{
             Log.d("TAG", "Fail to get Profile")
             profile = Profile("","","","")
