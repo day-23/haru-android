@@ -21,7 +21,6 @@ class CheckListViewModel() :
 
     private val basicTag = listOf<Tag>(Tag("완료", "완료"), Tag("미분류", "미분류"))
 
-    private val todoList = mutableListOf<Todo>()
     private val _todoDataList = MutableLiveData<List<Todo>>()
     private val _tagDataList = MutableLiveData<List<Tag>>()
     private val _flaggedTodos = MutableLiveData<List<Todo>>()
@@ -39,6 +38,7 @@ class CheckListViewModel() :
     val todayTodo: LiveData<List<Todo>> get() = _todayTodo
     private val todayList = mutableListOf<Todo>()
 
+    private val todoList = mutableListOf<Todo>()
     val todoDataList: LiveData<List<Todo>> get() = _todoDataList
     val tagDataList: LiveData<List<Tag>> get() = _tagDataList
     val flaggedTodos: LiveData<List<Todo>> get() = _flaggedTodos
@@ -58,6 +58,20 @@ class CheckListViewModel() :
             _todoDataList.postValue(todoList)
         }
         getTag()
+    }
+
+    fun checkTodayEmpty(){
+        var count = -1
+        var idx = 0
+        for(i in 0 until todayList.size){
+            if (count == 0 && (todayList[i].type == 4 || todayList[i].type == 3)){
+                todayList.removeAt(idx)
+            } else if (todayList[i].type == 4){
+                count = 0
+                idx = i
+            }
+            else count++
+        }
     }
 
     fun getTodoList() : List<Todo> {
@@ -233,7 +247,12 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData = todoRepository.deleteTodo(todoId = todoId) {
                 if (it.success) {
+                    if (todayList.isNotEmpty()){
+                        todayList.remove(todayList.find{ todo -> todo.id == todoId})
+                        _todayTodo.postValue(todayList)
+                    }
                     todoList.remove(todoList.find { todo -> todo.id == todoId })
+                    checkTodayEmpty()
                     _todoDataList.postValue(todoList)
                 }
                 callback()

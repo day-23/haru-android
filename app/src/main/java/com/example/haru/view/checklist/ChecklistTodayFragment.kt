@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Completed
 import com.example.haru.data.model.Flag
+import com.example.haru.data.model.Folded
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentChecklistTodayBinding
 import com.example.haru.utils.FormatDate
@@ -42,6 +45,11 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("20191627", "파괴")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToday()
@@ -65,6 +73,17 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                         .addToBackStack(null)
                         .commit()
                 }
+            }
+        }
+
+        todoAdapter.flagClick = object : TodoAdapter.FlagClick {
+            override fun onClick(view: View, id: String) {
+                val flag = if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.flag) Flag(false)
+                else Flag(true)
+                checkListViewModel.updateFlag(
+                    flag,
+                    id
+                )
             }
         }
 
