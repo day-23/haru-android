@@ -9,12 +9,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
+import com.example.haru.data.model.Post
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.model.timetable_data
 
 class SnsPostAdapter(val context: Context,
-                     private var itemList: ArrayList<SnsPost>): RecyclerView.Adapter<SnsPostAdapter.SnsPostViewHolder>(){
+                     private var itemList: ArrayList<Post> = ArrayList()): RecyclerView.Adapter<SnsPostAdapter.SnsPostViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SnsPostViewHolder {
         val view = LayoutInflater.from(context)
@@ -23,24 +25,35 @@ class SnsPostAdapter(val context: Context,
     }
 
     override fun onBindViewHolder(holder: SnsPostViewHolder, position: Int) {
-        holder.userid.text = "momo"
-        holder.picture.setBackgroundResource(R.drawable.momo)
-        holder.content.text = "Draw Of MOMO"
-        var likeclick = 0
+        val adapter = PicturesPagerAdapter(holder.itemView.context, itemList[position].images)
+        holder.picture.adapter = adapter
+        holder.userid.text = itemList[position].user.name
+        holder.content.text = itemList[position].content
+        if(itemList[position].isLiked){
+            holder.likeBtn.setImageResource(R.drawable.liked)
+        }
+        else{
+            holder.likeBtn.setImageResource(R.drawable.likedyet)
+        }
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
 
-    fun newPage(post: SnsPost){
-        itemList.add(post)
-        notifyItemInserted(itemCount)
+    fun initList(post : ArrayList<Post>){
+        itemList = post
+        notifyDataSetChanged()
+    }
+
+    fun newPage(post: ArrayList<Post>){
+        itemList.addAll(post)
+        notifyDataSetChanged()
     }
 
     inner class SnsPostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var userid = itemView.findViewById<TextView>(R.id.user_id)
-        var picture = itemView.findViewById<ImageView>(R.id.post_picture)
+        var picture = itemView.findViewById<ViewPager2>(R.id.post_picture)
         var content = itemView.findViewById<TextView>(R.id.post_contents)
         var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
     }

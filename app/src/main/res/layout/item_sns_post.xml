@@ -62,12 +62,12 @@
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
-        <ImageView
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/post_picture"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/drawofmomo"/>
+            android:orientation="horizontal"/>
         
     </LinearLayout>
     

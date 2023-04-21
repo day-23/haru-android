@@ -1,10 +1,7 @@
 package com.example.haru.data.retrofit
 
 import android.util.Log
-import com.example.haru.data.api.ProfileService
-import com.example.haru.data.api.ScheduleService
-import com.example.haru.data.api.TagService
-import com.example.haru.data.api.TodoService
+import com.example.haru.data.api.*
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -44,6 +41,10 @@ object RetrofitClient {
 
     val profileService: ProfileService by lazy {
         retrofit.create(ProfileService::class.java)
+    }
+
+    val postService: PostService by lazy {
+        retrofit.create(PostService::class.java)
     }
 
 }

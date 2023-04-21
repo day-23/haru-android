@@ -53,22 +53,21 @@ class MyPageFragment : Fragment() {
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
         val dummy = arrayListOf<SnsPost>(SnsPost("","",""),SnsPost("","",""),SnsPost("","",""))
         myFeedRecyclerView = binding.feedRecycler
-        feedAdapter = SnsPostAdapter(requireContext(), dummy)
+        feedAdapter = SnsPostAdapter(requireContext())
         myFeedRecyclerView.adapter = feedAdapter
         val layoutManager = LinearLayoutManager(context)
-        layoutManager.initialPrefetchItemCount = 1 // 1개의 아이템을 미리 로딩합니다
 
         //recyclerview 무한스크롤 감지
-        val scrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (!myFeedRecyclerView.canScrollVertically(1)) {
-                    feedAdapter.newPage(SnsPost("","",""))
-                    Toast.makeText(context, "추가됨", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        myFeedRecyclerView.addOnScrollListener(scrollListener)
+//        val scrollListener = object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                if (!myFeedRecyclerView.canScrollVertically(1)) {
+//                    feedAdapter.newPage(SnsPost("","",""))
+//                    Toast.makeText(context, "추가됨", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        }
+//        myFeedRecyclerView.addOnScrollListener(scrollListener)
         myFeedRecyclerView.layoutManager = layoutManager
 
         mypageViewModel.Profile.observe(viewLifecycleOwner){profile ->
