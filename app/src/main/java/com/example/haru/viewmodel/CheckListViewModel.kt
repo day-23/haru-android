@@ -282,12 +282,12 @@ class CheckListViewModel() :
                 completed = completed
             ) {
                 if (it.success) {
-                    val todo = todoList.find { todo -> todo.id == id }!!
+                    val todo = todoList.find { todo -> todo.id == id }!!.copy()
                     todoList.remove(todo)
                     todo.completed = completed.completed
                     for (i in 0 until todo.subTodos.size)
                         todo.subTodos[i].completed = completed.completed
-                    if (todoByTag.value == true)
+                    if (todoByTag.value == true) {}
                     else if (todo.completed)
                         todoList.add(todoList.indexOf(Todo(type = 1, content = "완료")) + 1, todo)
                     else {
@@ -313,9 +313,19 @@ class CheckListViewModel() :
                 completed = completed
             ) {
                 if (it.success) {
-                    val todo = todoList.find { todo -> todo.id == id }
-                    val idx = todoList.indexOf(todo)
-                    todoList[idx].subTodos[subTodoPosition].completed = completed.completed
+                    val idx = todoList.indexOf(todoList.find { todo -> todo.id == id })
+                    val todo = todoList[idx].copy()
+                    val subTodoList = todoList.find { todo -> todo.id == id }!!.subTodos.toMutableList()
+                    val subTodo = subTodoList[subTodoPosition].copy(completed = completed.completed)
+                    subTodoList.apply {
+                        removeAt(subTodoPosition)
+                        add(subTodoPosition, subTodo)
+                    }
+                    todoList.remove(todo)
+                    todoList.apply {
+                        add(idx, todo)
+                        this[idx].subTodos = subTodoList
+                    }
                     _todoDataList.postValue(todoList)
                 }
             }
@@ -333,7 +343,6 @@ class CheckListViewModel() :
                     val todo = todoList.find { todo -> todo.id == id }
                     val idx = todoList.indexOf(todo)
                     todoList[idx].folded = folded.folded
-//                    todoList.find { todo-> todo.id == id }!!.folded = folded.folded
                     _todoDataList.postValue(todoList)
                 }
             }

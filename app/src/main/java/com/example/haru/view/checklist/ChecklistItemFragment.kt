@@ -460,7 +460,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
-                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo(){
+                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo{
                     requireActivity().supportFragmentManager.popBackStack()
                 }
                 binding.btnInfoSave.id -> {

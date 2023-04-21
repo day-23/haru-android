@@ -189,6 +189,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             todoAdapter.setUnTagCount(checkListViewModel.untaggedTodos.value?.size)
             todoAdapter.setCompleteCount(checkListViewModel.completedTodos.value?.size)
 
+            Log.d("20191627", "todoDataList Update")
             val dataList = it.filterIsInstance<Todo>()
             todoAdapter.setDataList(dataList)
         })
