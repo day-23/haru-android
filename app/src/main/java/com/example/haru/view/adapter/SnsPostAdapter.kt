@@ -10,10 +10,12 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.model.timetable_data
+import de.hdodenhof.circleimageview.CircleImageView
 
 class SnsPostAdapter(val context: Context,
                      private var itemList: ArrayList<Post> = ArrayList()): RecyclerView.Adapter<SnsPostAdapter.SnsPostViewHolder>(){
@@ -29,6 +31,14 @@ class SnsPostAdapter(val context: Context,
         holder.picture.adapter = adapter
         holder.userid.text = itemList[position].user.name
         holder.content.text = itemList[position].content
+
+        if(itemList[position].user.profileImage != null) {
+            Log.d("AAAAA", "${itemList[position].user.profileImage}")
+            Glide.with(holder.itemView.context)
+                .load(itemList[position].user.profileImage)
+                .into(holder.profileImg)
+        }
+
         if(itemList[position].isLiked){
             holder.likeBtn.setImageResource(R.drawable.liked)
         }
@@ -53,6 +63,7 @@ class SnsPostAdapter(val context: Context,
 
     inner class SnsPostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var userid = itemView.findViewById<TextView>(R.id.user_id)
+        var profileImg = itemView.findViewById<CircleImageView>(R.id.post_profile)
         var picture = itemView.findViewById<ViewPager2>(R.id.post_picture)
         var content = itemView.findViewById<TextView>(R.id.post_contents)
         var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
