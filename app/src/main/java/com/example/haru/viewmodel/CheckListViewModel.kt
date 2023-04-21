@@ -126,6 +126,10 @@ class CheckListViewModel() :
                         this.addAll(it.endDatedTodos)
                     }
                     this.add(Todo(type = 3))
+                    if (it.completedTodos.isNotEmpty()){
+                        this.add(Todo(type=4, content = "완료"))
+                        this.addAll(it.completedTodos)
+                    }
                 }
                 _todayTodo.postValue(todayList)
                 callback()
