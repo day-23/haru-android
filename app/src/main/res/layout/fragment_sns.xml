@@ -1,25 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/user_name_textview"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/sns_menu"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:paddingHorizontal="20dp"
+        tools:ignore="MissingConstraints"
+        android:background="@drawable/todo_table_selected">
+
+        <TextView
+            android:id="@+id/haru_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="HARU"
+            android:textStyle="bold"
+            android:textColor="#191919"
+            android:textSize="18dp"
+            android:layout_marginRight="8dp"/>
+
+        <ImageView
+            android:id="@+id/menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/___20513"/>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/sns_buttons"
+        android:layout_width="94dp"
         android:layout_height="wrap_content"
-        android:text="User Name" />
+        android:orientation="vertical"
+        android:background="@drawable/sns_select_buttons"
+        app:layout_constraintTop_toBottomOf="@id/sns_menu"
+        android:layout_marginTop="8dp"
+        tools:ignore="MissingConstraints"
+        android:visibility="gone"
+        android:elevation="10dp">
+        <TextView
+            android:id="@+id/friend_feed"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="친구피드"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#707070"/>
+        <TextView
+            android:id="@+id/look_around"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="둘러보기"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#707070"/>
 
-    <TextView
-        android:id="@+id/user_email_textview"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/my_records"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="내 기록" />
+    </LinearLayout>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/post_of_all"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="User Email" />
+        app:layout_constraintTop_toBottomOf="@+id/sns_menu"/>
 
-    <Button
-        android:id="@+id/fetch_user_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fetch User" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

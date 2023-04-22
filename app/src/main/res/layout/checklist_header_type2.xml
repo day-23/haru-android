@@ -14,6 +14,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="7dp"
         android:background="@drawable/tag_btn_custom"
+        android:outlineProvider="none"
         android:clickable="false"
         android:paddingStart="11dp"
         android:paddingEnd="11dp"

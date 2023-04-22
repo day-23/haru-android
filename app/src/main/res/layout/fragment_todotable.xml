@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -66,27 +68,53 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="10"/>
-
-                    <ImageButton
-                        android:id="@+id/todolist_change"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="28dp"
                         android:layout_height="match_parent"
-                        android:src="@drawable/______21___1"
-                        android:layout_weight="0"
-                        android:layout_gravity="center_horizontal"
-                        android:background="#00000000" />
+                        android:orientation="vertical">
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/calendar_today_background_image">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="@{viewModel.todayDay}"
+                                android:textColor="#2CA4FF"
+                                android:hint="1"
+                                android:textStyle="bold"
+                                android:textSize="12dp"
+                                android:background="#00000000"
+                                android:onClick="@{() -> viewModel.todayClick()}"
+                                />
+                        </LinearLayout>
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
                     <View
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"/>
-
                     <ImageButton
+                        android:id="@+id/todolist_change"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/______22___1"
+                        android:src="@drawable/___20565"
+                        android:layout_weight="0"
                         android:layout_gravity="center_horizontal"
                         android:background="#00000000" />
+
+
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -102,12 +130,13 @@
                         android:gravity="center">
 
                         <TextView
+                            android:id="@+id/sunday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="일"
                             android:textSize="12dp"
                             android:textStyle="bold"
-                            android:textColor="#F71E58"
+                            android:textColor= "#F71E58"
                             android:layout_marginBottom="7dp"/>
 
                         <TextView
@@ -115,7 +144,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@{viewModel.days.get(0)}"
+                            android:gravity="center"
                             android:textSize="12dp"
+                            android:hint="1"
                             android:textColor="#F71E58"/>
 
                     </LinearLayout>
@@ -144,6 +175,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/monday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="월"
@@ -158,6 +190,8 @@
                             android:layout_height="wrap_content"
                             android:text="@{viewModel.days.get(1)}"
                             android:textSize="12dp"
+                            android:hint="2"
+                            android:gravity="center"
                             android:textColor="#191919"/>
 
                     </LinearLayout>
@@ -184,6 +218,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/tueday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="화"
@@ -198,6 +233,8 @@
                             android:layout_height="wrap_content"
                             android:text="@{viewModel.days.get(2)}"
                             android:textSize="12dp"
+                            android:hint="3"
+                            android:gravity="center"
                             android:textColor="#191919"/>
 
                     </LinearLayout>
@@ -224,6 +261,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/wedday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="수"
@@ -238,6 +276,8 @@
                             android:layout_height="wrap_content"
                             android:text="@{viewModel.days.get(3)}"
                             android:textSize="12dp"
+                            android:gravity="center"
+                            android:hint="4"
                             android:textColor="#191919"/>
 
                     </LinearLayout>
@@ -264,6 +304,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/thuday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="목"
@@ -278,6 +319,8 @@
                             android:layout_height="wrap_content"
                             android:text="@{viewModel.days.get(4)}"
                             android:textSize="12dp"
+                            android:gravity="center"
+                            android:hint="5"
                             android:textColor="#191919"/>
 
                     </LinearLayout>
@@ -304,6 +347,7 @@
                         >
 
                         <TextView
+                            android:id="@+id/friday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="금"
@@ -318,6 +362,8 @@
                             android:layout_height="wrap_content"
                             android:text="@{viewModel.days.get(5)}"
                             android:textSize="12dp"
+                            android:gravity="center"
+                            android:hint="6"
                             android:textColor="#191919"/>
 
                     </LinearLayout>
@@ -343,6 +389,7 @@
                         android:gravity="center"
                         >
                         <TextView
+                            android:id="@+id/satday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="토"
@@ -357,6 +404,8 @@
                             android:layout_height="wrap_content"
                             android:text="@{viewModel.days.get(6)}"
                             android:textSize="12dp"
+                            android:gravity="center"
+                            android:hint="7"
                             android:textColor="#1DAFFF"/>
 
                     </LinearLayout>
@@ -372,15 +421,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:gravity="right">
 
-
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/todo_days_recycler"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                tools:listitem="@layout/items_todotable"/>-->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btn_add_todo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:layout_margin="8dp"
+                    android:clickable="true"
+                    app:borderWidth="0dp"
+                    app:elevation="0dp"
+                    app:maxImageSize="56dp"
+                    app:srcCompat="@drawable/fab"
+                    app:tint="@null" />
+                </LinearLayout>
 
     </LinearLayout>
 

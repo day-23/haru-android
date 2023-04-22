@@ -49,6 +49,6 @@
     <string name="T.T">T.T</string>
     <string name="MY">MY</string>
 
-    <string name="delete">삭제</string>
+    <string name="delete">할일 삭제하기</string>
     <string name="save">저장</string>
 </resources>
