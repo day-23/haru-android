@@ -1,6 +1,7 @@
 package com.example.haru.view.calendar
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -10,10 +11,14 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.databinding.FragmentCalendarBinding
 import com.example.haru.view.adapter.AdapterMonth
+import com.example.haru.view.adapter.CategoryAdapter
+import com.example.haru.viewmodel.CalendarViewModel
 import java.util.*
 
 class CalendarFragment : Fragment() {
@@ -52,8 +57,12 @@ class CalendarFragment : Fragment() {
         val categoryDrawerLayout = view.findViewById<DrawerLayout>(R.id.category_drawerlayout)
         val month_viewpager = view.findViewById<ViewPager2>(R.id.month_viewpager)
         val item_month_btn = view.findViewById<Button>(R.id.item_month_btn)
+        val categoryRecyclerView = view.findViewById<RecyclerView>(R.id.category_recyclerView)
+        val categoryAddImage = view.findViewById<ImageView>(R.id.category_add_image)
 
         val calendar = Calendar.getInstance()
+
+        val calendarViewModel = CalendarViewModel()
 
         calendar.time = Date()
 
@@ -93,6 +102,10 @@ class CalendarFragment : Fragment() {
             }
         }
 
+        categoryAddImage.setOnClickListener{
+
+        }
+
         month_viewpager.layoutParams = LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
@@ -115,5 +128,13 @@ class CalendarFragment : Fragment() {
         month_viewpager.registerOnPageChangeCallback(callback)
 
         month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
+        month_viewpager.offscreenPageLimit = 2
+
+        calendarViewModel.getCategories()
+        calendarViewModel.liveCategoryList.observe(viewLifecycleOwner){
+            Log.d("categories", it.toString())
+            categoryRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+            categoryRecyclerView.adapter = CategoryAdapter(it)
+        }
     }
 }

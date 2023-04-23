@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.*
+import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -23,7 +24,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class TimetableViewModel(val context : Context): ViewModel() {
-    private val scheduleRepository = TodoRepository()
+    private val scheduleRepository = ScheduleRepository()
 
     private val _Dates = MutableLiveData<ArrayList<String>>()
     val Dates : LiveData<ArrayList<String>>
@@ -167,7 +168,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
             val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", false,"" , "", Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
             IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
-            scheduleRepository.getSchedule(date[0], date[6]) {
+            scheduleRepository.getScheduleByDates(date[0], date[6]) {
                 val TodoList = it
 
                 //내용 추출

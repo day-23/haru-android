@@ -1,9 +1,6 @@
 package com.example.haru.data.retrofit
 
-import com.example.haru.data.api.AllDoService
-import com.example.haru.data.api.ScheduleService
-import com.example.haru.data.api.TagService
-import com.example.haru.data.api.TodoService
+import com.example.haru.data.api.*
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -42,5 +39,9 @@ object RetrofitClient {
     
     val tagService: TagService by lazy {
         retrofit.create(TagService::class.java)
+    }
+
+    val categoryService: CategoryService by lazy {
+        retrofit.create(CategoryService::class.java)
     }
 }
