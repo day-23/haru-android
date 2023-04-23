@@ -32,7 +32,7 @@ class CheckListViewModel() :
     val todoByTag: LiveData<Boolean> = _todoByTag
 
     private val _addTodoId = MutableLiveData<String>()
-    val addTodoId : LiveData<String> = _addTodoId
+    val addTodoId: LiveData<String> = _addTodoId
 
     private val _todayTodo = MutableLiveData<List<Todo>>()
     val todayTodo: LiveData<List<Todo>> get() = _todayTodo
@@ -60,21 +60,34 @@ class CheckListViewModel() :
         getTag()
     }
 
-    fun checkTodayEmpty(){
-        var count = -1
-        var idx = 0
-        for(i in 0 until todayList.size){
-            if (count == 0 && (todayList[i].type == 4 || todayList[i].type == 3)){
-                todayList.removeAt(idx)
-            } else if (todayList[i].type == 4){
-                count = 0
-                idx = i
-            }
-            else count++
-        }
+    fun clearToday() {
+        todayList.clear()
     }
 
-    fun getTodoList() : List<Todo> {
+    fun checkTodayEmpty() {
+        var count = -1
+        var idx = 0
+        val idxList = mutableListOf<Int>()
+        for (i in 0 until todayList.size) {
+            if (count == 0 && (todayList[i].type == 4 || todayList[i].type == 3)) {
+                idxList.add(idx)
+//                todayList.removeAt(idx)
+                count = -1
+            } else if (todayList[i].type == 4) {
+                count = 0
+                idx = i
+            } else count++
+        }
+        if (count == 0 && todayList.last().type == 4)
+            idxList.add(todayList.size-1)
+        if (idxList.isNotEmpty())
+            todayList.removeAll{
+                idxList.contains(todayList.indexOf(it))
+            }
+
+    }
+
+    fun getTodoList(): List<Todo> {
         return todoList
     }
 
@@ -140,8 +153,8 @@ class CheckListViewModel() :
                         this.addAll(it.endDatedTodos)
                     }
                     this.add(Todo(type = 3))
-                    if (it.completedTodos.isNotEmpty()){
-                        this.add(Todo(type=4, content = "완료"))
+                    if (it.completedTodos.isNotEmpty()) {
+                        this.add(Todo(type = 4, content = "완료"))
                         this.addAll(it.completedTodos)
                     }
                 }
@@ -247,12 +260,12 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData = todoRepository.deleteTodo(todoId = todoId) {
                 if (it.success) {
-                    if (todayList.isNotEmpty()){
-                        todayList.remove(todayList.find{ todo -> todo.id == todoId})
+                    if (todayList.isNotEmpty()) {
+                        todayList.remove(todayList.find { todo -> todo.id == todoId })
+                        checkTodayEmpty()
                         _todayTodo.postValue(todayList)
                     }
                     todoList.remove(todoList.find { todo -> todo.id == todoId })
-                    checkTodayEmpty()
                     _todoDataList.postValue(todoList)
                 }
                 callback()
@@ -265,6 +278,49 @@ class CheckListViewModel() :
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {
                     if (it.success) {
+                        if (todayList.isNotEmpty()){
+                            val todo = todayList.find{ todo -> todo.id == id}
+                            todayList.remove(todo)
+                            // 분기 설정하기
+                            todo!!.flag = flag.flag
+                            if (todo.completed){
+                                val i = todayList.indexOf(Todo(type = 4, content = "완료"))
+                                if (i == -1)
+                                    todayList.addAll(listOf(Todo(type = 4, content = "완료"), todo))
+                                else
+                                    todayList.add(i + 1, todo)
+                            }
+                            else {
+                                if (todo.flag){
+                                    val i = todayList.indexOf(Todo(type = 4, content = "중요"))
+                                    if (i == -1)
+                                        todayList.addAll(0, listOf(Todo(type = 4, content = "중요"), todo))
+                                    else
+                                        todayList.add(i + 1, todo)
+                                } else {
+                                    if (todo.todayTodo){
+                                        val i = todayList.indexOf(Todo(type = 4, content = "오늘 할 일"))
+                                        if (i == -1){
+                                            var endIdx = todayList.indexOf(Todo(type = 4, content = "오늘 마감"))
+                                            if (endIdx == -1)
+                                                endIdx = todayList.indexOf(Todo(type = 3))
+                                            todayList.addAll(endIdx, listOf(Todo(type = 4, content = "오늘 할 일"), todo))
+                                        }else
+                                            todayList.add(i + 1, todo)
+                                    } else {
+                                        val i = todayList.indexOf(Todo(type = 4, content = "오늘 마감"))
+                                        if (i == -1){
+                                            var dividerIdx = todayList.indexOf(Todo(type = 3))
+                                            todayList.addAll(dividerIdx, listOf(Todo(type = 4, content = "오늘 마감"), todo))
+                                        } else
+                                            todayList.add(i + 1, todo)
+                                    }
+                                }
+                            }
+                            checkTodayEmpty()
+                            _todayTodo.postValue(todayList)
+                            return@updateFlag
+                        }
                         val todo = todoList.find { todo -> todo.id == id }!!
                         todoList.remove(todo)
 
@@ -285,7 +341,12 @@ class CheckListViewModel() :
                                         todoList.add(i + 1, todo)
                                     }
                                     false -> {
-                                        val i = if (type == 4) todoList.indexOf(Todo(type = type, content = todoByTagItem!!))
+                                        val i = if (type == 4) todoList.indexOf(
+                                            Todo(
+                                                type = type,
+                                                content = todoByTagItem!!
+                                            )
+                                        )
                                         else todoList.indexOf(Todo(type = type, content = "분류"))
                                         todoList.add(i + 1, todo)
                                     }
@@ -310,8 +371,8 @@ class CheckListViewModel() :
                     todo.completed = completed.completed
                     for (i in 0 until todo.subTodos.size)
                         todo.subTodos[i].completed = completed.completed
-                    if (todoByTag.value == true) {}
-                    else if (todo.completed)
+                    if (todoByTag.value == true) {
+                    } else if (todo.completed)
                         todoList.add(todoList.indexOf(Todo(type = 1, content = "완료")) + 1, todo)
                     else {
                         val i = if (todo.flag) 0 else if (todo.tags.isEmpty()) todoList.indexOf(
@@ -338,7 +399,8 @@ class CheckListViewModel() :
                 if (it.success) {
                     val idx = todoList.indexOf(todoList.find { todo -> todo.id == id })
                     val todo = todoList[idx].copy()
-                    val subTodoList = todoList.find { todo -> todo.id == id }!!.subTodos.toMutableList()
+                    val subTodoList =
+                        todoList.find { todo -> todo.id == id }!!.subTodos.toMutableList()
                     val subTodo = subTodoList[subTodoPosition].copy(completed = completed.completed)
                     subTodoList.apply {
                         removeAt(subTodoPosition)

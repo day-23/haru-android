@@ -47,7 +47,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("20191627", "파괴")
+        checkListViewModel.clearToday()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,10 +85,6 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     id
                 )
             }
-        }
-
-        todayRecyclerView.apply {
-            itemAnimator = null
         }
 
         todayRecyclerView.adapter = todoAdapter
