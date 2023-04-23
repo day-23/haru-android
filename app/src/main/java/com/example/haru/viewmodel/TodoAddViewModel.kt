@@ -4,13 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.Alarm
 import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoRequest
 import com.example.haru.data.model.UpdateTodo
 import com.example.haru.utils.FormatDate
-import java.text.FieldPosition
 import java.util.*
 
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
@@ -26,6 +24,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     private val _todayTodo = MutableLiveData<Boolean>(false)
     val todayTodo: LiveData<Boolean> = _todayTodo
+
+    private val _subTodoList = MutableLiveData<List<String>>(listOf(""))
+    val subTodoList : LiveData<List<String>> = _subTodoList
 
     private val _isSelectedEndDateTime = MutableLiveData<Boolean>(false)
     val isSelectedEndDateTime: LiveData<Boolean> = _isSelectedEndDateTime
@@ -64,7 +65,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     val repeatEndDate: LiveData<Date> = _repeatEndDate
 
     var tagList: MutableList<String> = mutableListOf()
-    var subTodos: MutableList<String> = mutableListOf()
+    var subTodos: MutableList<String> = mutableListOf("")
+    var subTodoCnt : Int = 1
+    var subTodoClickPosition = -1
+
+    private val subTodoCompleted = mutableListOf<Boolean>()
+
 
     var tag: String = ""
     var content: String = ""
@@ -89,12 +95,26 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         this.checklistViewModel = checkListViewModel
     }
 
-    fun setClickTodo(position: Int) {
-        clickedTodo = checklistViewModel.todoDataList.value!![position]
+    fun setClickTodo(id : String) {
+        clickedTodo = checklistViewModel.todoDataList.value!!.find {
+            it.id == id
+        }!!
         _completedTodo.value = clickedTodo.completed
         _flagTodo.value = clickedTodo.flag
         _todayTodo.value = clickedTodo.todayTodo
         _isSelectedEndDateTime.value = clickedTodo.isAllDay
+
+        if (clickedTodo.subTodos.isNotEmpty()){
+            subTodos.clear()
+            subTodoCnt = 0
+            for(i in 0 until clickedTodo.subTodos.size){
+                subTodoCnt++
+                subTodos.add(clickedTodo.subTodos[i].content)
+                subTodoCompleted.add(clickedTodo.subTodos[i].completed)
+            }
+            _subTodoList.value = subTodos
+        }
+
         if (clickedTodo.endDate != null) {
             _endDate.value = FormatDate.strToDate(clickedTodo.endDate!!)
             _endDateSwitch.value = true
@@ -141,6 +161,23 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setTodayTodo() {
         _todayTodo.value = (_todayTodo.value == false)
+    }
+
+    fun plusSubTodo(content : String = ""){
+        subTodoCnt += 1
+        subTodos.add(subTodoClickPosition + 1, content)
+        _subTodoList.value = subTodos
+    }
+
+    fun deleteSubTodo(){
+        if (subTodoCnt == 1) return
+        subTodoCnt -= 1
+        subTodos.removeAt(subTodoClickPosition)
+        _subTodoList.value = subTodos
+    }
+
+    fun setSubTodoPosition(position: Int){
+        subTodoClickPosition = position
     }
 
     fun setIsSelectedEndDateTime() {
@@ -219,6 +256,13 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun readyToSubmit() {
+        Log.d("20191627", subTodos.toString())
+        for(i in 0 until  subTodos.size)
+            if (subTodos[i] == "" || subTodos[i].replace(" ", "") == "")
+                subTodos[i] = ""
+
+        subTodos.removeAll(listOf(""))
+
         tagList = if (tag == "" || tag.replace(" ", "") == "")
             mutableListOf()
         else tag.split(" ") as MutableList<String>
@@ -234,8 +278,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         } else {
             null
         }
-
-        Log.d("20191627", endDateStr.toString())
 
         alarmDateTimeStr =
             if (alarmSwitch.value == true && alarmDate.value != null && alarmTime.value != null)
@@ -295,7 +337,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             repeatEnd = repeatEndDateStr,
             tags = tagList,
             subTodos = subTodos,
-            subTodosCompleted = emptyList(),
+            subTodosCompleted = subTodoCompleted,
             alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!)
             )
     }
@@ -306,8 +348,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-    fun deleteTodo(position: Int, callback: () -> Unit){
-        checklistViewModel.deleteTodo(todoId = clickedTodo.id, position = position){
+    fun deleteTodo(callback: () -> Unit){
+        checklistViewModel.deleteTodo(todoId = clickedTodo.id){
             callback()
         }
     }

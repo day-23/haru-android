@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <!--정보-->
+    <LinearLayout
+        android:id="@+id/post_info"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:paddingHorizontal="20dp"
+        tools:ignore="MissingConstraints">
+        
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center"
+            android:src="@color/baby_blue"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="게으름민수"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:textSize="14dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="1일 전"
+            android:textSize="10dp"
+            />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/change_category"
+            android:layout_gravity="right"/>
+    </LinearLayout>
+    
+    <!--사진-->
+    <LinearLayout
+        android:id="@+id/post_picture"
+        android:layout_width="match_parent"
+        android:layout_height="390dp"
+        app:layout_constraintTop_toBottomOf="@id/post_info"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/drawofmomo"/>
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/post_interaction"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        app:layout_constraintTop_toBottomOf="@id/post_picture"
+        android:paddingHorizontal="25dp">
+
+        <ImageView
+            android:id="@+id/button_like"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/______22___1"
+            android:layout_marginRight="10dp"/>
+        <ImageView
+            android:id="@+id/button_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/______21___1"/>
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/change_category"/>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/post_interaction"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="10dp"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/post_comment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Draw Of MOMO"
+            android:textColor="#191919"/>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

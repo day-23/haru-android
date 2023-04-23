@@ -24,6 +24,8 @@ object FormatDate {
     private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd", Locale.US)
     private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
 
+    private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
+
 
     private fun initDiff(): Long {
         val gmtZoneId = ZoneId.of("GMT")
@@ -31,6 +33,8 @@ object FormatDate {
         val localTime = LocalDateTime.now()
         return ChronoUnit.HOURS.between(gmtDateTime, localTime)
     }
+
+    // Today 화면에서 쿼리로 보내는 endDate를 해당 날짜의 자정으로 날린다.
 
     // LocalDateTime을 넣으면 formatter에 정의된 패턴 형식, 타입은 String으로 반환
 //    fun localTimeToStr(time: LocalDateTime): String {
@@ -70,6 +74,10 @@ object FormatDate {
 
     fun simpleTimeToStr(date: Date): String {
         return simpleFormatterTime.format(date)
+    }
+
+    fun simpleTodayToStr(date: Date) : String{
+        return simpleFormatterKorea.format(date)
     }
 
     // String으로 된 날짜 정보에 local Date와 그리니치 시간대의 차이를 더해서 Date 타입으로 반환

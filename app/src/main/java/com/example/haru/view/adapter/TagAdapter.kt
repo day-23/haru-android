@@ -1,17 +1,25 @@
 package com.example.haru.view.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.R
 import com.example.haru.data.model.Tag
 import com.example.haru.databinding.FragmentChecklistTagBinding
 import com.example.haru.databinding.FragmentChecklistTagHeaderBinding
 
 class TagAdapter(val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    var clickedPosition : Int? = null
 
     val HEADER = 0
     val ITEM = 1
@@ -74,6 +82,22 @@ class TagAdapter(val context: Context) :
                 if (tagClick != null) {
                     holder.binding.tagBtn.setOnClickListener {
                         tagClick?.onClick(it, position)
+
+                        if (clickedPosition != null){
+                            data[clickedPosition!! - 1].clicked = false
+                            notifyItemChanged(clickedPosition!!)
+                        }
+
+                        clickedPosition = position
+                        data[position - 1].clicked = true
+                        holder.binding.tagBtn.background =
+                            ContextCompat.getDrawable(context, R.drawable.tag_btn_clicked)
+                        holder.binding.tagBtn.setTextColor(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.white
+                            )
+                        )
                     }
                 }
             }
@@ -86,6 +110,17 @@ class TagAdapter(val context: Context) :
 
         fun bind(item: Tag) {
             binding.tag = item
+            val drawable: Drawable?
+            val color: Int
+            if (item.clicked) {
+                drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_clicked)
+                color = ContextCompat.getColor(context, R.color.white)
+            } else {
+                drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_custom)
+                color = ContextCompat.getColor(context, R.color.todo_description)
+            }
+            binding.tagBtn.background = drawable
+            binding.tagBtn.setTextColor(color)
         }
     }
 

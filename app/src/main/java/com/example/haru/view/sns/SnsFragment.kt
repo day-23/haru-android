@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.haru.R
 import com.example.haru.data.api.UserService
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.databinding.FragmentSnsBinding
+import com.example.haru.view.timetable.TodotableFragment
 import com.example.haru.viewmodel.UserViewModel
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -20,6 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class SnsFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private lateinit var binding: FragmentSnsBinding
+    private var click = false
 
     companion object{
         const val TAG : String = "로그"
@@ -44,6 +47,26 @@ class SnsFragment : Fragment() {
 
         binding = FragmentSnsBinding.inflate(inflater, container, false)
 
+        binding.myRecords.setOnClickListener {
+            val newFrag = MyPageFragment.newInstance()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.addToBackStack(null)
+            transaction.commit()
+            true
+        }
+
+        binding.menuButton.setOnClickListener{
+            if(click == false){
+                binding.snsButtons.visibility = View.VISIBLE
+                click = true
+            }
+            else{
+                binding.snsButtons.visibility = View.GONE
+                click = false
+            }
+        }
+
         val retrofit = Retrofit.Builder()
             .baseUrl("https://jsonplaceholder.typicode.com/todos/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -56,11 +79,7 @@ class SnsFragment : Fragment() {
         val viewModelFactory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, viewModelFactory).get(UserViewModel::class.java)
 
-        userViewModel.user.observe(viewLifecycleOwner, Observer { user ->
-            // Update UI with user data
-            binding.userNameTextview.text = user.name
-            binding.userEmailTextview.text = user.email
-        })
+
 
         val userId = 1// Replace with actual user ID
         userViewModel.fetchUser(userId)

@@ -31,9 +31,11 @@
 
 
         <LinearLayout
+            android:id="@+id/today_todo_layout"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:background="@drawable/today_layout_gradient"
+            android:clickable="true"
             android:orientation="horizontal">
 
 

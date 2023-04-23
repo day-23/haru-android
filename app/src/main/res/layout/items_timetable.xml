@@ -19,7 +19,7 @@
                 android:layout_height="match_parent"
                 android:gravity="right"
                 android:layout_weight="1"
-                android:textSize="8dp"
+                android:textSize="10dp"
                 android:paddingRight="4dp"
                 android:textColor="#191919"
                 android:text="1\n오전" />
@@ -36,10 +36,21 @@
                     android:background="#EDEDED" />
 
                 <ImageView
-                    android:id="@+id/tv_timetable_mon"
+                    android:id="@+id/tv_timetable_sun"
                     android:layout_width="0dp"
                     android:layout_weight="2"
                     android:layout_height="match_parent"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="#EDEDED" />
+
+                <ImageView
+                    android:id="@+id/tv_timetable_mon"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"/>
 
                 <View
                     android:layout_width="1dp"
@@ -92,17 +103,6 @@
 
                 <ImageView
                     android:id="@+id/tv_timetable_sat"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"/>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#EDEDED" />
-
-                <ImageView
-                    android:id="@+id/tv_timetable_sun"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"/>
