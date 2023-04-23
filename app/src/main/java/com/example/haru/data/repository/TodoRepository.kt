@@ -9,7 +9,6 @@ import kotlinx.coroutines.withContext
 
 class TodoRepository() {
     private val todoService = RetrofitClient.todoService
-    private val scheduleService = RetrofitClient.scheduleService
 
     suspend fun getTodoDates(
         startDate: String,
@@ -51,6 +50,8 @@ class TodoRepository() {
         }
         callback(todoData)
     }
+<<<<<<< HEAD
+=======
 
     suspend fun getSchedule(
         startDate: String,
@@ -77,6 +78,7 @@ class TodoRepository() {
         }
         callback(todoData)
     }
+>>>>>>> 85eba2e7da46d46019fdcd4834016f86009771fe
 
     suspend fun createTodo(todoRequest: TodoRequest, callback: (todoData: Todo) -> Unit) =
         withContext(Dispatchers.IO) {

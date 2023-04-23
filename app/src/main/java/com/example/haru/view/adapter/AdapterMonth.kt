@@ -40,7 +40,7 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
     RecyclerView.Adapter<AdapterMonth.MonthView>() {
     private val lifecycle = lifecycleOwner
 
-    private var todo_schedule = false
+    private var todo_schedule = true
 
     inner class MonthView(itemView: View) : RecyclerView.ViewHolder(itemView)
 

@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.*
+import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -26,7 +27,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class TimetableViewModel(val context : Context): ViewModel() {
-    private val scheduleRepository = TodoRepository()
+    private val scheduleRepository = ScheduleRepository()
 
     private val _Dates = MutableLiveData<ArrayList<String>>()
     val Dates : LiveData<ArrayList<String>>
@@ -206,10 +207,15 @@ class TimetableViewModel(val context : Context): ViewModel() {
         viewModelScope.launch {
             val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", false,"" , "", Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
+<<<<<<< HEAD
+            IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
+            scheduleRepository.getScheduleByDates(date[0], date[6]) {
+=======
             val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
             val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
             val body = ScheduleRequest(startDate, endDate)
             scheduleRepository.getSchedule(date[0], date[6], body) {
+>>>>>>> 85eba2e7da46d46019fdcd4834016f86009771fe
                 val TodoList = it
 
                 //내용 추출
