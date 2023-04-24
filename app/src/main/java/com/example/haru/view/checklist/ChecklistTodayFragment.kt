@@ -87,6 +87,16 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
             }
         }
 
+        todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
+            override fun onClick(view: View, id: String) {
+                val completed =
+                    if (checkListViewModel.todayTodo.value!!.find{ it.id == id}!!.completed) Completed(false)
+                    else Completed(true)
+
+                checkListViewModel.updateNotRepeatTodo(completed, id)
+            }
+        }
+
         todayRecyclerView.adapter = todoAdapter
         todayRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

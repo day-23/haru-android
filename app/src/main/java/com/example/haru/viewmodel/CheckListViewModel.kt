@@ -310,7 +310,7 @@ class CheckListViewModel() :
                                     } else {
                                         val i = todayList.indexOf(Todo(type = 4, content = "오늘 마감"))
                                         if (i == -1){
-                                            var dividerIdx = todayList.indexOf(Todo(type = 3))
+                                            val dividerIdx = todayList.indexOf(Todo(type = 3))
                                             todayList.addAll(dividerIdx, listOf(Todo(type = 4, content = "오늘 마감"), todo))
                                         } else
                                             todayList.add(i + 1, todo)
@@ -366,6 +366,43 @@ class CheckListViewModel() :
                 completed = completed
             ) {
                 if (it.success) {
+                    if (todayList.isNotEmpty()){
+                        val todo = todayList.find { todo -> todo.id == id }
+                        todayList.remove(todo)
+                        todo!!.completed = completed.completed
+                        if (todo.completed){
+                            val i = todayList.indexOf(Todo(type = 4, content = "완료"))
+                            if (i == -1)
+                                todayList.addAll(listOf(Todo(type = 4, content = "완료"), todo))
+                            else todayList.add(i + 1, todo)
+                        } else {
+                            if (todo.flag){
+                                val i = todayList.indexOf(Todo(type = 4, content = "중요"))
+                                if (i == -1)
+                                    todayList.addAll(0, listOf(Todo(type = 4, content = "중요"), todo))
+                                else todayList.add(i + 1, todo)
+                            } else {
+                                if (todo.todayTodo){
+                                    val i = todayList.indexOf(Todo(type = 4, content = "오늘 할 일"))
+                                    if (i == -1){
+                                        var endIdx = todayList.indexOf(Todo(type = 4, content = "오늘 마감"))
+                                        if (endIdx == -1)
+                                            endIdx = todayList.indexOf(Todo(type = 3))
+                                        todayList.addAll(endIdx, listOf(Todo(type = 4, content = "오늘 할 일"), todo))
+                                    } else todayList.add(i + 1, todo)
+                                } else {
+                                    val i = todayList.indexOf(Todo(type = 4, content = "오늘 마감"))
+                                    if (i == -1){
+                                        val dividerIdx = todayList.indexOf(Todo(type=3))
+                                        todayList.addAll(dividerIdx, listOf(Todo(type = 4, content = "오늘 마감"), todo))
+                                    } else todayList.add(i + 1, todo)
+                                }
+                            }
+                        }
+                        checkTodayEmpty()
+                        _todayTodo.postValue(todayList)
+                        return@updateNotRepeatTodo
+                    }
                     val todo = todoList.find { todo -> todo.id == id }!!.copy()
                     todoList.remove(todo)
                     todo.completed = completed.completed
