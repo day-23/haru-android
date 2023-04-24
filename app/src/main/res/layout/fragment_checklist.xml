@@ -118,5 +118,6 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include
+        android:id="@+id/tag_etc_layout"
         layout="@layout/tag_etc_fragment"/>
 </androidx.drawerlayout.widget.DrawerLayout>

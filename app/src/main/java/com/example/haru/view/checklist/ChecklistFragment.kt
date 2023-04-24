@@ -9,6 +9,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
@@ -119,6 +120,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         checkListViewModel.tagDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
+
+            for(i in 2 until checkListViewModel.tagDataList.value!!.size){
+                val layoutInflater =
+                    requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val addView = layoutInflater.inflate(R.layout.tag_example_layout, null)
+
+                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text = checkListViewModel.tagDataList.value!![i].content
+                binding.tagEtcLayout.tagLayout.addView(addView)
+            }
         })
     }
 
