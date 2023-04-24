@@ -188,7 +188,6 @@ class CheckListViewModel() :
             _todoByTag.value = true
             todoList.apply {
                 clear()
-
                 addAll(
                     when (position) {
                         1 -> listOf(
@@ -319,7 +318,6 @@ class CheckListViewModel() :
                             }
                             checkTodayEmpty()
                             _todayTodo.postValue(todayList)
-                            return@updateFlag
                         }
                         val todo = todoList.find { todo -> todo.id == id }!!
                         todoList.remove(todo)
@@ -401,7 +399,6 @@ class CheckListViewModel() :
                         }
                         checkTodayEmpty()
                         _todayTodo.postValue(todayList)
-                        return@updateNotRepeatTodo
                     }
                     val todo = todoList.find { todo -> todo.id == id }!!.copy()
                     todoList.remove(todo)
@@ -434,6 +431,23 @@ class CheckListViewModel() :
                 completed = completed
             ) {
                 if (it.success) {
+                    if (todayList.isNotEmpty()){
+                        val idx = todayList.indexOf(todayList.find { todo -> todo.id == id })
+                        val todo = todayList[idx].copy()
+                        val subTodoList =
+                            todayList.find { todo -> todo.id == id }!!.subTodos.toMutableList()
+                        val subTodo = subTodoList[subTodoPosition].copy(completed = completed.completed)
+                        subTodoList.apply {
+                            removeAt(subTodoPosition)
+                            add(subTodoPosition, subTodo)
+                        }
+                        todayList.remove(todo)
+                        todayList.apply {
+                            add(idx, todo)
+                            this[idx].subTodos = subTodoList
+                        }
+                        _todayTodo.postValue(todayList)
+                    }
                     val idx = todoList.indexOf(todoList.find { todo -> todo.id == id })
                     val todo = todoList[idx].copy()
                     val subTodoList =

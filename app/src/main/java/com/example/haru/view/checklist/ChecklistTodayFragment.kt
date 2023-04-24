@@ -48,6 +48,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
     override fun onDestroy() {
         super.onDestroy()
         checkListViewModel.clearToday()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,6 +95,22 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     else Completed(true)
 
                 checkListViewModel.updateNotRepeatTodo(completed, id)
+            }
+        }
+
+        todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
+            override fun onClick(view: View, subTodoPosition: Int) {
+                val completed =
+                    if (checkListViewModel.todayTodo.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition].completed) Completed(
+                        false
+                    )
+                    else Completed(true)
+
+                checkListViewModel.updateSubTodo(
+                    completed,
+                    todoAdapter.subTodoClickId!!,
+                    subTodoPosition
+                )
             }
         }
 
