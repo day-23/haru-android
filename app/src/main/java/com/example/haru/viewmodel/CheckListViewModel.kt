@@ -475,6 +475,12 @@ class CheckListViewModel() :
                 folded = folded
             ) {
                 if (it.success) {
+                    if (todayList.isNotEmpty()){
+                        val todo = todayList.find { todo -> todo.id == id }
+                        val idx = todayList.indexOf(todo)
+                        todayList[idx].folded = folded.folded
+                        _todayTodo.postValue(todayList)
+                    }
                     val todo = todoList.find { todo -> todo.id == id }
                     val idx = todoList.indexOf(todo)
                     todoList[idx].folded = folded.folded

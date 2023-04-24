@@ -114,6 +114,14 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
             }
         }
 
+        todoAdapter.toggleClick = object : TodoAdapter.ToggleClick {
+            override fun onClick(view: View, id: String) {
+                val folded = if (view.isSelected) Folded(true) else Folded(false)
+
+                checkListViewModel.updateFolded(folded, id)
+            }
+        }
+
         todayRecyclerView.adapter = todoAdapter
         todayRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
