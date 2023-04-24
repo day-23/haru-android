@@ -3,11 +3,15 @@ package com.example.haru.view.adapter
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -15,14 +19,17 @@ import com.example.haru.R
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.model.timetable_data
+import com.example.haru.viewmodel.SnsViewModel
 import de.hdodenhof.circleimageview.CircleImageView
 
 class SnsPostAdapter(val context: Context,
                      private var itemList: ArrayList<Post> = ArrayList()): RecyclerView.Adapter<SnsPostAdapter.SnsPostViewHolder>(){
 
+    private lateinit var snsViewModel: SnsViewModel
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SnsPostViewHolder {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.item_sns_post, parent, false)
+        snsViewModel = ViewModelProvider(context as ViewModelStoreOwner).get(SnsViewModel::class.java)
         return SnsPostViewHolder(view)
     }
 
@@ -31,6 +38,23 @@ class SnsPostAdapter(val context: Context,
         holder.picture.adapter = adapter
         holder.userid.text = itemList[position].user.name
         holder.content.text = itemList[position].content
+
+        holder.picture.setOnTouchListener(object : OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                when (event?.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        // 뷰에 손가락이 닿는 순간
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        // 뷰 위에서 손가락을 움직이는 중
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        // 뷰에서 손가락을 떼는 순간
+                    }
+                }
+                return true
+            }
+        })
 
         if(itemList[position].user.profileImage != null) {
             Log.d("AAAAA", "${itemList[position].user.profileImage}")
@@ -44,6 +68,18 @@ class SnsPostAdapter(val context: Context,
         }
         else{
             holder.likeBtn.setImageResource(R.drawable.likedyet)
+        }
+
+        holder.likeBtn.setOnClickListener{
+            if(itemList[position].isLiked){
+                holder.likeBtn.setImageResource(R.drawable.likedyet)
+                itemList[position].isLiked = false
+            }else{
+                holder.likeBtn.setImageResource(R.drawable.liked)
+                itemList[position].isLiked = true
+            }
+            snsViewModel.likeAction(itemList[position].id)
+
         }
     }
 

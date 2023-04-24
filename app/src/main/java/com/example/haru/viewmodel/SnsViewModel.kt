@@ -1,5 +1,6 @@
 package com.example.haru.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -48,5 +49,15 @@ class SnsViewModel: ViewModel() {
     fun addPage(){
         var current = _Page.value ?: 1
         _Page.value = current.plus(1)
+    }
+
+    fun likeAction(id: String){
+        viewModelScope.launch {
+            PostRepository.postLike(id) {
+                if(it){
+                    Log.d("LIKE", "LIKE ACTIONED")
+                }
+            }
+        }
     }
 }
