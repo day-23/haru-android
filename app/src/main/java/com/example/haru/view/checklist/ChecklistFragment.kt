@@ -62,6 +62,13 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         initTagList()
         initTodoList()
 
+        binding.ivTagEtc.setOnClickListener {
+            if (!binding.drawableLayout.isDrawerOpen(Gravity.RIGHT))
+                binding.drawableLayout.openDrawer(Gravity.RIGHT)
+            else
+                binding.drawableLayout.closeDrawer(Gravity.RIGHT)
+        }
+
         binding.btnAddTodo.setOnClickListener {
             val todoInput = ChecklistInputFragment(checkListViewModel)
             todoInput.show(parentFragmentManager, todoInput.tag)

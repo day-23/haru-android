@@ -1,88 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/category_drawerlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardElevation="0dp"
-        app:cardUseCompatPadding="true"
-        app:contentPadding="20sp">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="20sp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="7"
-                    android:layout_height="wrap_content">
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/item_month_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="2023년 3월"
-                        android:textColor="@color/black"
-                        android:textSize="28sp"
-                        android:textStyle="bold"
-                        android:background="#FFFFFF"
-                        android:drawableRight="@drawable/down_arrow"/>
-                </FrameLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="28sp"
-                    android:layout_height="28sp"
-                    android:background="@drawable/calendar_today_background_image"
-                    android:layout_gravity="center">
-
-                    <TextView
-                        android:id="@+id/calendar_today_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="6"
-                        android:textColor="#2CA4FF"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <ImageView
-                    android:id="@+id/category_button_imv"
-                    android:background="@drawable/calendar_category"
-                    android:backgroundTint="@color/black"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:layout_height="40sp"/>
-            </LinearLayout>
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/month_viewpager"
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#00000000"
-                android:orientation="horizontal" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="7">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/item_month_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#FFFFFF"
+                            android:drawableRight="@drawable/down_arrow"
+                            android:text="2023년 3월"
+                            android:textColor="@color/black"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+                    </FrameLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="28sp"
+                        android:layout_height="28sp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/calendar_today_background_image">
+
+                        <TextView
+                            android:id="@+id/calendar_today_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="6"
+                            android:textColor="#2CA4FF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <ImageView
+                        android:id="@+id/category_button_imv"
+                        android:layout_width="0dp"
+                        android:layout_height="40sp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/calendar_category"
+                        android:backgroundTint="@color/black" />
+                </LinearLayout>
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/month_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00000000"
+                    android:orientation="horizontal" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <LinearLayout
             android:layout_width="373sp"
             android:layout_height="600sp"
-            android:background="@color/white"
             android:layout_gravity="right"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -119,6 +121,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -127,30 +130,32 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/calendar_schedule_image"/>
+                            android:src="@drawable/calendar_schedule_image" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
                             android:text="일정"
-                            android:textColor="#1DAFFF"/>
+                            android:textColor="#1DAFFF"
+                            android:textSize="14sp" />
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:gravity="right">
+                            android:gravity="right"
+                            android:orientation="horizontal">
 
                             <ImageView
-                                android:foregroundGravity="right"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/calendar_schedule_plus_image"/>
+                                android:foregroundGravity="right"
+                                android:src="@drawable/calendar_schedule_plus_image" />
                         </LinearLayout>
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -158,7 +163,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#DBDBDB"/>
+                android:background="#DBDBDB" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -181,19 +186,20 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/calendar_todo_image"/>
+                            android:src="@drawable/calendar_todo_image" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="할일"
-                            android:textColor="#1DAFFF"/>
+                            android:textColor="#1DAFFF" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="bottom">
+                        android:gravity="bottom"
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -206,7 +212,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center"
                                 android:text="모두 가리기"
-                                android:textColor="#646464"/>
+                                android:textColor="#646464" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -214,7 +220,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center"
                                 android:text="완료"
-                                android:textColor="#1DAFFF"/>
+                                android:textColor="#1DAFFF" />
 
                         </LinearLayout>
 
@@ -227,10 +233,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1">
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/calendar_gardient_background"/>
+                    android:background="@drawable/calendar_gardient_background" />
             </LinearLayout>
 
         </LinearLayout>
