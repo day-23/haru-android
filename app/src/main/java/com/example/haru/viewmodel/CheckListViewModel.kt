@@ -279,7 +279,7 @@ class CheckListViewModel() :
                 todoRepository.updateFlag(todoId = id, flag = flag) {
                     if (it.success) {
                         if (todayList.isNotEmpty()){
-                            val todo = todayList.find{ todo -> todo.id == id}
+                            val todo = todayList.find{ todo -> todo.id == id}?.copy()
                             todayList.remove(todo)
                             // 분기 설정하기
                             todo!!.flag = flag.flag
@@ -367,7 +367,7 @@ class CheckListViewModel() :
             ) {
                 if (it.success) {
                     if (todayList.isNotEmpty()){
-                        val todo = todayList.find { todo -> todo.id == id }
+                        val todo = todayList.find { todo -> todo.id == id }?.copy()
                         todayList.remove(todo)
                         todo!!.completed = completed.completed
                         if (todo.completed){
