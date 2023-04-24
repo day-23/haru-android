@@ -86,6 +86,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     private fun initTagList() {
         val tagRecyclerView: RecyclerView = binding.recyclerTags
         val tagAdapter = TagAdapter(requireContext())
+        tagAdapter.setTagPosition(checkListViewModel.clickedTag) // 이전 Tag 클릭 값 있으면 해당 값으로
         tagAdapter.tagClick = object : TagAdapter.TagClick {
             override fun onClick(view: View, position: Int) {
                 if (position == 0)
@@ -93,8 +94,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 else if (position > 0) {
                     checkListViewModel.clear()
                     checkListViewModel.getTodoByTag(position)
+                    checkListViewModel.clickedTag = position  // 이전 Tag 클릭 값 기억
                 }
-                Log.d("20191627", position.toString() + ": 눌렸다")
             }
         }
 
@@ -103,8 +104,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         val animator = tagRecyclerView.itemAnimator     //리사이클러뷰 애니메이터 get
-        if (animator is SimpleItemAnimator){          //아이템 애니메이커 기본 하위클래스
-            animator.supportsChangeAnimations = false  //애니메이션 값 false (리사이클러뷰가 화면을 다시 갱신 했을때 뷰들의 깜빡임 방지)
+        if (animator is SimpleItemAnimator) {          //아이템 애니메이커 기본 하위클래스
+            animator.supportsChangeAnimations =
+                false  //애니메이션 값 false (리사이클러뷰가 화면을 다시 갱신 했을때 뷰들의 깜빡임 방지)
         }
 
         checkListViewModel.tagDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -117,7 +119,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         val todoListView: RecyclerView = binding.recyclerTodos
         val todoAdapter = TodoAdapter(requireContext())
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
-            override fun onClick(view: View, id : String) {
+            override fun onClick(view: View, id: String) {
                 if (checkListViewModel.todoDataList.value!!.find {
                         it.id == id
                     }!!.type == 2) {
@@ -134,8 +136,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         todoAdapter.flagClick = object : TodoAdapter.FlagClick {
             override fun onClick(view: View, id: String) {
-                val flag = if (checkListViewModel.todoDataList.value!!.find { it.id == id }!!.flag) Flag(false)
-                else Flag(true)
+                val flag =
+                    if (checkListViewModel.todoDataList.value!!.find { it.id == id }!!.flag) Flag(
+                        false
+                    )
+                    else Flag(true)
                 checkListViewModel.updateFlag(
                     flag,
                     id
@@ -146,7 +151,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
             override fun onClick(view: View, id: String) {
                 val completed =
-                    if (checkListViewModel.todoDataList.value!!.find{ it.id == id}!!.completed) Completed(false)
+                    if (checkListViewModel.todoDataList.value!!.find { it.id == id }!!.completed) Completed(
+                        false
+                    )
                     else Completed(true)
 
                 checkListViewModel.updateNotRepeatTodo(completed, id)
@@ -169,7 +176,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             }
         }
 
-        todoAdapter.toggleClick = object : TodoAdapter.ToggleClick{
+        todoAdapter.toggleClick = object : TodoAdapter.ToggleClick {
             override fun onClick(view: View, id: String) {
                 val folded = if (view.isSelected) Folded(true) else Folded(false)
 
@@ -181,7 +188,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoListView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        ItemTouchHelper(ChecklistItemTouchHelperCallback(todoAdapter)).attachToRecyclerView(todoListView)
+        ItemTouchHelper(ChecklistItemTouchHelperCallback(todoAdapter)).attachToRecyclerView(
+            todoListView
+        )
 
         checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             todoAdapter.setFlagCount(checkListViewModel.flaggedTodos.value?.size)

@@ -20,6 +20,7 @@ class CheckListViewModel() :
     private val tagRepository = TagRepository()
 
     private val basicTag = listOf<Tag>(Tag("완료", "완료"), Tag("미분류", "미분류"))
+    var clickedTag : Int? = null
 
     private val _todoDataList = MutableLiveData<List<Todo>>()
     private val _tagDataList = MutableLiveData<List<Tag>>()
@@ -48,7 +49,6 @@ class CheckListViewModel() :
 
     var todoByTagItem: String? = null
 
-
     init {
         getTodoMain {
             flaggedTodos.value?.let { todoList.addAll(it) }
@@ -71,7 +71,6 @@ class CheckListViewModel() :
         for (i in 0 until todayList.size) {
             if (count == 0 && (todayList[i].type == 4 || todayList[i].type == 3)) {
                 idxList.add(idx)
-//                todayList.removeAt(idx)
                 count = -1
             } else if (todayList[i].type == 4) {
                 count = 0
