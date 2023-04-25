@@ -343,6 +343,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         // repeat Switch 토글 버튼
         binding.infoRepeatSwitch.setOnClickListener(BtnClickListener())
 
+        binding.btnInfoRepeatEndDate.setOnClickListener(BtnClickListener())
         binding.infoRepeatEndDateSwitch.setOnClickListener(BtnClickListener())
 
         // repeat Option 선택 버튼
