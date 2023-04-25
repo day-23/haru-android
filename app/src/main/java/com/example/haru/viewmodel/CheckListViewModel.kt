@@ -102,7 +102,7 @@ class CheckListViewModel() :
                 todoList.clear()
                 _todoByTag.postValue(false)
                 todoByTagItem = null
-                _flaggedTodos.postValue(listOf(Todo(type = 0)) + it.flaggedTodos + listOf(Todo(type = 3)))
+                _flaggedTodos.postValue(listOf(Todo(type = 1, content = "중요")) + it.flaggedTodos + listOf(Todo(type = 3)))
                 _taggedTodos.postValue(
                     listOf(
                         Todo(
@@ -181,7 +181,7 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodoByTag(position: Int) {
+    fun getTodoByTag(position: Int) { // 변경사항 적용하기!!!!!!!!!!!!!!!!!
         viewModelScope.launch {
             todoByTagItem = tagDataList.value!![position - 1].content
             _todoByTag.value = true
@@ -220,7 +220,7 @@ class CheckListViewModel() :
             _todoByTag.value = true
             todoList.apply {
                 clear()
-                addAll(listOf(Todo(type = 0)) + todoRepository.getTodoByFlag())
+                addAll(listOf(Todo(type = 4, content = "중요")) + todoRepository.getTodoByFlag())
             }
             _todoDataList.value = todoList
         }
