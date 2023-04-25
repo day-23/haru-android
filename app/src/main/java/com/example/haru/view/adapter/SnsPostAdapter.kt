@@ -1,5 +1,6 @@
 package com.example.haru.view.adapter
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -21,6 +23,7 @@ import com.example.haru.data.model.SnsPost
 import com.example.haru.data.model.timetable_data
 import com.example.haru.viewmodel.SnsViewModel
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.*
 
 class SnsPostAdapter(val context: Context,
                      private var itemList: ArrayList<Post> = ArrayList()): RecyclerView.Adapter<SnsPostAdapter.SnsPostViewHolder>(){
@@ -39,20 +42,22 @@ class SnsPostAdapter(val context: Context,
         holder.userid.text = itemList[position].user.name
         holder.content.text = itemList[position].content
 
-        holder.picture.setOnTouchListener(object : OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        // 뷰에 손가락이 닿는 순간
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        // 뷰 위에서 손가락을 움직이는 중
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        // 뷰에서 손가락을 떼는 순간
+        val pictureIndex = adapter.itemCount
+        var text = ""
+        var delayJob: Job? = null // 코루틴 취소를 위한 Job 변수
+        holder.picture.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
+            override fun onPageSelected(position: Int) {
+                delayJob?.cancel()
+                if(text != "" || position != 0) {
+                    holder.index.alpha = 1f
+                    text = "${position + 1}/${pictureIndex}"
+                    holder.index.text = text
+                    delayJob = CoroutineScope(Dispatchers.Main).launch {
+                        delay(2000L) // 2초 동안 코루틴을 멈춤
+                        holder.index.alpha = 0f
                     }
                 }
-                return true
             }
         })
 
@@ -103,5 +108,6 @@ class SnsPostAdapter(val context: Context,
         var picture = itemView.findViewById<ViewPager2>(R.id.post_picture)
         var content = itemView.findViewById<TextView>(R.id.post_contents)
         var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
+        var index = itemView.findViewById<Button>(R.id.picture_index)
     }
 }
