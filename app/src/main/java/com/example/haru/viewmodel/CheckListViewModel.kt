@@ -384,6 +384,8 @@ class CheckListViewModel() :
                         val todo = todayList.find { todo -> todo.id == id }?.copy()
                         todayList.remove(todo)
                         todo!!.completed = completed.completed
+                        for (i in 0 until todo.subTodos.size)
+                            todo.subTodos[i].completed = completed.completed
                         if (todo.completed) {
                             val i = todayList.indexOf(Todo(type = 4, content = "완료"))
                             if (i == -1)
