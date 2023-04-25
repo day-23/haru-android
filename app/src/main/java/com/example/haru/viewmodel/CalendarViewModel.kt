@@ -37,6 +37,26 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
+    fun postCategory(content: String, color: String, callback:(category: Category?) -> Unit){
+        viewModelScope.launch {
+            categoryRepository.postCategory(content, color){
+                callback(it)
+            }
+        }
+    }
+
+    fun updateCategory(updateCategory: Category){
+        viewModelScope.launch {
+            categoryRepository.updateCategory(updateCategory){}
+        }
+    }
+
+    fun deleteCategory(categoryId: String){
+        viewModelScope.launch {
+            categoryRepository.deleteCategory(categoryId){}
+        }
+    }
+
     fun init_viewModel(startDate: String, endDate: String, maxi: Int){
         getAlldo(startDate, endDate, maxi)
 //        getTodo(startDate, endDate, maxi)

@@ -3,13 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="40sp"
     android:orientation="horizontal">
-    
-    <ImageView
-        android:id="@+id/category_Color"
-        android:background="@drawable/category_image"
-        android:layout_marginTop="6sp"
+
+    <FrameLayout
         android:layout_width="28sp"
-        android:layout_height="28sp"/>
+        android:layout_height="34sp">
+        <ImageView
+            android:id="@+id/category_Color"
+            android:background="@drawable/category_image"
+            android:layout_marginTop="6sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <ImageView
+            android:id="@+id/category_Color_outside"
+            android:background="@drawable/category_image_outside"
+            android:layout_marginTop="6sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
 
     <TextView
         android:textColor="#191919"

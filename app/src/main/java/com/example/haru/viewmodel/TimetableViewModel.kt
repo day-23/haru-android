@@ -207,15 +207,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
         viewModelScope.launch {
             val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", false,"" , "", Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
-<<<<<<< HEAD
-            IndexList_allday = arrayListOf( arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule), arrayListOf(emptyschedule),)
-            scheduleRepository.getScheduleByDates(date[0], date[6]) {
-=======
             val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
             val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
             val body = ScheduleRequest(startDate, endDate)
-            scheduleRepository.getSchedule(date[0], date[6], body) {
->>>>>>> 85eba2e7da46d46019fdcd4834016f86009771fe
+            scheduleRepository.getScheduleByDates(date[0], date[6], body) {
                 val TodoList = it
 
                 //내용 추출
