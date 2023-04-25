@@ -100,8 +100,9 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
 
         todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
             override fun onClick(view: View, subTodoPosition: Int) {
+                val subTodo = checkListViewModel.todayTodo.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
                 val completed =
-                    if (checkListViewModel.todayTodo.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition].completed) Completed(
+                    if (subTodo.completed) Completed(
                         false
                     )
                     else Completed(true)
@@ -109,6 +110,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                 checkListViewModel.updateSubTodo(
                     completed,
                     todoAdapter.subTodoClickId!!,
+                    subTodo.id,
                     subTodoPosition
                 )
             }

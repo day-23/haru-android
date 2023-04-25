@@ -179,8 +179,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
             override fun onClick(view: View, subTodoPosition: Int) {
+                val subTodo = checkListViewModel.todoDataList.value!!.find{ it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
                 val completed =
-                    if (checkListViewModel.todoDataList.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition].completed) Completed(
+                    if (subTodo.completed) Completed(
                         false
                     )
                     else Completed(true)
@@ -188,6 +189,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 checkListViewModel.updateSubTodo(
                     completed,
                     todoAdapter.subTodoClickId!!,
+                    subTodo.id,
                     subTodoPosition
                 )
             }
