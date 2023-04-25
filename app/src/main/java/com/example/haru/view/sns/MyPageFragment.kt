@@ -21,7 +21,7 @@ import com.example.haru.viewmodel.MyPageViewModel
 
 class MyPageFragment : Fragment() {
     private lateinit var binding: FragmentSnsMypageBinding
-    private lateinit var myFeedRecyclerView: RecyclerView
+    private lateinit var FeedRecyclerView: RecyclerView
     private lateinit var feedAdapter: SnsPostAdapter
     private lateinit var mediaAdapter: MyFeedAdapter
     private lateinit var mypageViewModel: MyPageViewModel
@@ -51,11 +51,11 @@ class MyPageFragment : Fragment() {
         Log.d(TAG, "SnsFragment - onCreateView() called")
 
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
-        myFeedRecyclerView = binding.feedRecycler
+        FeedRecyclerView = binding.feedRecycler
         feedAdapter = SnsPostAdapter(requireContext())
-        myFeedRecyclerView.adapter = feedAdapter
+        FeedRecyclerView.adapter = feedAdapter
         val layoutManager = LinearLayoutManager(context)
-        myFeedRecyclerView.layoutManager = layoutManager
+        FeedRecyclerView.layoutManager = layoutManager
 
         mypageViewModel.Profile.observe(viewLifecycleOwner){profile ->
             if(profile.url != "") {
@@ -65,6 +65,27 @@ class MyPageFragment : Fragment() {
                     .into(binding.profileImage)
             }
         }
+
+        mypageViewModel.Page.observe(viewLifecycleOwner){page ->
+            val page = page.toString()
+            mypageViewModel.getFeed(page)
+        }
+
+        mypageViewModel.NewFeed.observe(viewLifecycleOwner){feeds ->
+            feedAdapter.newPage(feeds)
+            if(feeds.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        val scrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!FeedRecyclerView.canScrollVertically(1)) {
+                    mypageViewModel.addPage()
+                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        FeedRecyclerView.addOnScrollListener(scrollListener)
 
         binding.menuButton.setOnClickListener {
             if(click == false){
