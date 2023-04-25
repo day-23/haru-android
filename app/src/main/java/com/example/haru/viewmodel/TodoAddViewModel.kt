@@ -25,7 +25,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _todayTodo = MutableLiveData<Boolean>(false)
     val todayTodo: LiveData<Boolean> = _todayTodo
 
-    private val _subTodoList = MutableLiveData<List<String>>(listOf(""))
+    private val _subTodoList = MutableLiveData<List<String>>()
     val subTodoList : LiveData<List<String>> = _subTodoList
 
     private val _isSelectedEndDateTime = MutableLiveData<Boolean>(false)
@@ -65,8 +65,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     val repeatEndDate: LiveData<Date> = _repeatEndDate
 
     var tagList: MutableList<String> = mutableListOf()
-    var subTodos: MutableList<String> = mutableListOf("")
-    var subTodoCnt : Int = 1
+    var subTodos: MutableList<String> = mutableListOf()
+    var subTodoCnt : Int = 0
     var subTodoClickPosition = -1
 
     private val subTodoCompleted = mutableListOf<Boolean>()
@@ -89,7 +89,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var gridMonthHeight: Int = 0
     var gridYearHeight: Int = 0
 
-    lateinit var clickedTodo: Todo
+    var clickedTodo: Todo? = null
 
     init {
         this.checklistViewModel = checkListViewModel
@@ -98,55 +98,58 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     fun setClickTodo(id : String) {
         clickedTodo = checklistViewModel.todoDataList.value!!.find {
             it.id == id
-        }!!
-        _completedTodo.value = clickedTodo.completed
-        _flagTodo.value = clickedTodo.flag
-        _todayTodo.value = clickedTodo.todayTodo
-        _isSelectedEndDateTime.value = clickedTodo.isAllDay
+        }
+        if (clickedTodo == null)
+            clickedTodo = checklistViewModel.todayTodo.value!!.find{it.id == id}!!
 
-        if (clickedTodo.subTodos.isNotEmpty()){
+        _completedTodo.value = clickedTodo!!.completed
+        _flagTodo.value = clickedTodo!!.flag
+        _todayTodo.value = clickedTodo!!.todayTodo
+        _isSelectedEndDateTime.value = clickedTodo!!.isAllDay
+
+        if (clickedTodo!!.subTodos.isNotEmpty()){
             subTodos.clear()
             subTodoCnt = 0
-            for(i in 0 until clickedTodo.subTodos.size){
+            for(i in 0 until clickedTodo!!.subTodos.size){
                 subTodoCnt++
-                subTodos.add(clickedTodo.subTodos[i].content)
-                subTodoCompleted.add(clickedTodo.subTodos[i].completed)
+                subTodos.add(clickedTodo!!.subTodos[i].content)
+                subTodoCompleted.add(clickedTodo!!.subTodos[i].completed)
             }
             _subTodoList.value = subTodos
         }
 
-        if (clickedTodo.endDate != null) {
-            _endDate.value = FormatDate.strToDate(clickedTodo.endDate!!)
+        if (clickedTodo!!.endDate != null) {
+            _endDate.value = FormatDate.strToDate(clickedTodo!!.endDate!!)
             _endDateSwitch.value = true
         } else _endDateSwitch.value = false
 
         if (isSelectedEndDateTime.value!!)
-            _endTime.value = FormatDate.strToDate(clickedTodo.endDate!!)
+            _endTime.value = FormatDate.strToDate(clickedTodo!!.endDate!!)
 
         //alarm
-        if (clickedTodo.alarms != emptyList<Alarm>()) {
+        if (clickedTodo!!.alarms != emptyList<Alarm>()) {
             _alarmSwitch.value = true
-            _alarmDate.value = FormatDate.strToDate(clickedTodo.alarms[0].time)
-            _alarmTime.value = FormatDate.strToDate(clickedTodo.alarms[0].time)
+            _alarmDate.value = FormatDate.strToDate(clickedTodo!!.alarms[0].time)
+            _alarmTime.value = FormatDate.strToDate(clickedTodo!!.alarms[0].time)
         }
 
         //repeat
-        if (clickedTodo.repeatOption in repeatOptionList) {
+        if (clickedTodo!!.repeatOption in repeatOptionList) {
             _repeatSwitch.value = true
-            _repeatOption.value = repeatOptionList.indexOf(clickedTodo.repeatOption)
-            _repeatValue.value = clickedTodo.repeatValue
+            _repeatOption.value = repeatOptionList.indexOf(clickedTodo!!.repeatOption)
+            _repeatValue.value = clickedTodo!!.repeatValue
         } else _repeatSwitch.value = false
 
-        if (clickedTodo.repeatEnd != null) {
+        if (clickedTodo!!.repeatEnd != null) {
             _repeatEndDateSwitch.value = true
-            _repeatEndDate.value = FormatDate.strToDate(clickedTodo.repeatEnd!!)
+            _repeatEndDate.value = FormatDate.strToDate(clickedTodo!!.repeatEnd!!)
         }
 
-        content = clickedTodo.content
-        memo = clickedTodo.memo
-        for (i in 0 until clickedTodo.tags.size) {
-            tag += "${clickedTodo.tags[i].content} "
-            if (i + 1 == clickedTodo.tags.size)
+        content = clickedTodo!!.content
+        memo = clickedTodo!!.memo
+        for (i in 0 until clickedTodo!!.tags.size) {
+            tag += "${clickedTodo!!.tags[i].content} "
+            if (i + 1 == clickedTodo!!.tags.size)
                 tag = tag.dropLast(1)
         }
     }
@@ -165,12 +168,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun plusSubTodo(content : String = ""){
         subTodoCnt += 1
-        subTodos.add(subTodoClickPosition + 1, content)
+        subTodos.add(content)
         _subTodoList.value = subTodos
     }
 
     fun deleteSubTodo(){
-        if (subTodoCnt == 1) return
+        if (subTodoCnt == 0) return
         subTodoCnt -= 1
         subTodos.removeAt(subTodoClickPosition)
         _subTodoList.value = subTodos
@@ -343,13 +346,13 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun updateTodo(callback: () -> Unit) {
-        checklistViewModel.putTodo(clickedTodo.id, createUpdateTodoData()){
+        checklistViewModel.putTodo(clickedTodo!!.id, createUpdateTodoData()){
             callback()
         }
     }
 
     fun deleteTodo(callback: () -> Unit){
-        checklistViewModel.deleteTodo(todoId = clickedTodo.id){
+        checklistViewModel.deleteTodo(todoId = clickedTodo!!.id){
             callback()
         }
     }

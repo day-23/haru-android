@@ -530,15 +530,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         })
 
         todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (todoAddViewModel.subTodoCnt == (binding.subTodoLayout.childCount + 1)) {
+            if (todoAddViewModel.subTodoCnt == binding.subTodoLayout.childCount) {
                 val layoutInflater =
                     context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.subtodo_input_layout, null)
 
-                addView.findViewById<ImageView>(R.id.iv_subTodo_plus).setOnClickListener{
-                    todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
-                    todoAddViewModel.plusSubTodo()
-                }
                 addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
                     todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
                     todoAddViewModel.deleteSubTodo()
@@ -551,7 +547,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     }
                 })
 
-                binding.subTodoLayout.addView(addView, todoAddViewModel.subTodoClickPosition + 1)
+                binding.subTodoLayout.addView(addView, binding.subTodoLayout.childCount - 1)
             }else binding.subTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
 
         })
@@ -589,7 +585,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 //
         binding.btnClose.setOnClickListener(btnListener())
 
-//        binding.ivSubTodoPlus.setOnClickListener(btnListener())
+        binding.subTodoAddLayout.setOnClickListener(btnListener())
 //        binding.ivSubTodoCancel.setOnClickListener(btnListener())
 
     }
@@ -604,6 +600,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             when (v?.id) {
                 R.id.check_flag_todo -> todoAddViewModel.setFlagTodo()
                 R.id.today_switch -> todoAddViewModel.setTodayTodo()
+
+                binding.subTodoAddLayout.id -> todoAddViewModel.plusSubTodo()
 
                 R.id.endDate_switch -> todoAddViewModel.setEndDateSwitch()
                 R.id.endDateTime_switch -> todoAddViewModel.setIsSelectedEndDateTime()
