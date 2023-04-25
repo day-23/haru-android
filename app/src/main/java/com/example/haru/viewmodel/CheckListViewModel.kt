@@ -253,10 +253,16 @@ class CheckListViewModel() :
                     untaggedTodos.value?.let { todoList.addAll(it) }
                     completedTodos.value?.let { todoList.addAll(it) }
                     _todoDataList.postValue(todoList)
-                    Log.d("20191627", taggedTodos.value.toString())
-                    callback()
+                    if (todayList.isNotEmpty()){
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                            set(Calendar.SECOND, 59) // 초를 59초로 설정
+                        }
+                        val todayEndDate = TodayEndDate(FormatDate.dateToStr(calendar.time))
+                        getTodayTodo(todayEndDate){ callback() }
+                    } else callback()
                 }
-                Log.d("201916271", it.toString())
             }
         }
     }
