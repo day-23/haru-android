@@ -8,9 +8,11 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -96,6 +98,10 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 )
                 checkListViewModel.addTodo(todo) {
                     binding.etSimpleAddTodo.setText("")
+                    binding.etSimpleAddTodo.clearFocus()
+                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.etSimpleAddTodo.windowToken, 0)
                 }
             }
         }
