@@ -70,6 +70,10 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 binding.drawableLayout.closeDrawer(Gravity.RIGHT)
         }
 
+        binding.tagEtcLayout.btnTagEtcDone.setOnClickListener {
+            binding.drawableLayout.closeDrawer(Gravity.RIGHT)
+        }
+
         binding.btnAddTodo.setOnClickListener {
             val todoInput = ChecklistInputFragment(checkListViewModel)
             todoInput.show(parentFragmentManager, todoInput.tag)
