@@ -75,8 +75,29 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         binding.btnAddTodo.setOnClickListener {
-            val todoInput = ChecklistInputFragment(checkListViewModel)
-            todoInput.show(parentFragmentManager, todoInput.tag)
+            Log.d("20191627", "클릭됨")
+            var text = binding.etSimpleAddTodo.text.toString()
+            text = text.replace(" ", "")
+            if (text == "") {
+                Log.d("20191627", "새로운 창 진입")
+                val todoInput = ChecklistInputFragment(checkListViewModel)
+                todoInput.show(parentFragmentManager, todoInput.tag)
+            } else {
+                Log.d("20191627", "바로 추가")
+                val todo = TodoRequest(
+                    content = binding.etSimpleAddTodo.text.toString(),
+                    memo = "",
+                    todayTodo = true,
+                    flag = false,
+                    isAllDay = false,
+                    tags = emptyList(),
+                    subTodos = emptyList(),
+                    alarms = emptyList()
+                )
+                checkListViewModel.addTodo(todo) {
+                    binding.etSimpleAddTodo.setText("")
+                }
+            }
         }
 
         binding.todayTodoLayout.setOnClickListener {
@@ -125,12 +146,13 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
 
-            for(i in 2 until checkListViewModel.tagDataList.value!!.size){
+            for (i in 2 until checkListViewModel.tagDataList.value!!.size) {
                 val layoutInflater =
                     requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.tag_example_layout, null)
 
-                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text = checkListViewModel.tagDataList.value!![i].content
+                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text =
+                    checkListViewModel.tagDataList.value!![i].content
                 binding.tagEtcLayout.tagLayout.addView(addView)
             }
         })
@@ -183,7 +205,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
             override fun onClick(view: View, subTodoPosition: Int) {
-                val subTodo = checkListViewModel.todoDataList.value!!.find{ it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
+                val subTodo =
+                    checkListViewModel.todoDataList.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
                 val completed =
                     if (subTodo.completed) Completed(
                         false
@@ -215,15 +238,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                    binding.btnAddTodo.show()
-                else binding.btnAddTodo.hide()
+                    binding.simpleAddFabLayout.visibility = View.VISIBLE
+                else binding.simpleAddFabLayout.visibility = View.GONE
             }
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                if (dy == 0)
-//                    binding.btnAddTodo.visibility = View.VISIBLE
-//                else binding.btnAddTodo.visibility = View.INVISIBLE
-//            }
         })
 
         ItemTouchHelper(ChecklistItemTouchHelperCallback(todoAdapter)).attachToRecyclerView(
