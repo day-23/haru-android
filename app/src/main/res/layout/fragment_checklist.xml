@@ -109,9 +109,8 @@
             android:layout_margin="8dp"
             android:clickable="true"
             app:borderWidth="0dp"
-            app:elevation="0dp"
-            app:maxImageSize="56dp"
-            app:srcCompat="@drawable/fab"
+            android:src="@drawable/fab"
+            android:backgroundTint="@android:color/transparent"
             app:tint="@null" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

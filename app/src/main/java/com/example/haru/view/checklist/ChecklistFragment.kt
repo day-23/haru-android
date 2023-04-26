@@ -211,6 +211,21 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoListView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
+        todoListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    binding.btnAddTodo.show()
+                else binding.btnAddTodo.hide()
+            }
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                if (dy == 0)
+//                    binding.btnAddTodo.visibility = View.VISIBLE
+//                else binding.btnAddTodo.visibility = View.INVISIBLE
+//            }
+        })
+
         ItemTouchHelper(ChecklistItemTouchHelperCallback(todoAdapter)).attachToRecyclerView(
             todoListView
         )
