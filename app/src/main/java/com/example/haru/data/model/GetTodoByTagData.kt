@@ -1,5 +1,7 @@
 package com.example.haru.data.model
 
 data class GetTodoByTagData(
-    val todos : List<Todo>
+    val flaggedTodos : List<Todo> = emptyList(),
+    val unFlaggedTodos : List<Todo> = emptyList(),
+    val completedTodos : List<Todo> = emptyList()
 )

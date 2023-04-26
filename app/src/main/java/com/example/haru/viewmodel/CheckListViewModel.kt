@@ -86,7 +86,7 @@ class CheckListViewModel() :
             }
     }
 
-    fun plusTodoEmpty(){
+    fun plusTodoEmpty() {
         if (todoByTag.value == true) return
 
         var idx = todoList.indexOf(Todo(type = 1, content = "분류"))
@@ -234,28 +234,44 @@ class CheckListViewModel() :
             _todoByTag.value = true
             todoList.apply {
                 clear()
-                addAll(
-                    when (position) {
-                        1 -> listOf(
+                when (position) {
+                    1 -> addAll(
+                        listOf(
                             Todo(
                                 type = 4,
                                 content = todoByTagItem!!
                             )
                         ) + todoRepository.getTodoByComplete()
-                        2 -> listOf(
+                    )
+                    2 -> addAll(
+                        listOf(
                             Todo(
                                 type = 4,
                                 content = todoByTagItem!!
                             )
                         ) + todoRepository.getTodoByUntag()
-                        else -> listOf(
-                            Todo(
-                                type = 4,
-                                content = todoByTagItem!!
-                            )
-                        ) + todoRepository.getTodoByTag(tagDataList.value!![position - 1].id)
+                    )
+                    else -> {
+                        todoRepository.getTodoByTag(tagDataList.value!![position - 1].id) {
+                            if (it.flaggedTodos.isNotEmpty()) {
+                                this.add(Todo(type = 4, content = "중요"))
+                                this.addAll(it.flaggedTodos)
+                                this.add(Todo(type = 3))
+                            }
+
+                            this.add(Todo(type = 4, content = todoByTagItem!!))
+                            if (it.unFlaggedTodos.isNotEmpty()){
+                                this.addAll(it.unFlaggedTodos)
+                                this.add(Todo(type = 3))
+                            } else this.addAll(listOf(Todo(type = 5), Todo(type = 3)))
+
+                            if (it.completedTodos.isNotEmpty()) {
+                                this.add(Todo(type = 4, content = "완료"))
+                                this.addAll(it.completedTodos)
+                            }
+                        }
                     }
-                )
+                }
             }
             _todoDataList.value = todoList
         }
@@ -490,13 +506,12 @@ class CheckListViewModel() :
                     for (i in 0 until todo.subTodos.size)
                         todo.subTodos[i].completed = completed.completed
                     if (todoByTag.value == true) {
-                    } else if (todo.completed){
+                    } else if (todo.completed) {
                         val i = todoList.indexOf(Todo(type = 1, content = "완료"))
                         if (todoList[i + 1].type == 5)
                             todoList.removeAt(i + 1)
                         todoList.add(i + 1, todo)
-                    }
-                    else {
+                    } else {
                         val i = if (todo.flag) 0 else if (todo.tags.isEmpty()) todoList.indexOf(
                             Todo(
                                 type = 1,
