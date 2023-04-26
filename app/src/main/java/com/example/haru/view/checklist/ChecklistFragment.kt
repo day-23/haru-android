@@ -77,15 +77,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         binding.btnAddTodo.setOnClickListener {
-            Log.d("20191627", "클릭됨")
             var text = binding.etSimpleAddTodo.text.toString()
             text = text.replace(" ", "")
             if (text == "") {
-                Log.d("20191627", "새로운 창 진입")
                 val todoInput = ChecklistInputFragment(checkListViewModel)
                 todoInput.show(parentFragmentManager, todoInput.tag)
             } else {
-                Log.d("20191627", "바로 추가")
                 val todo = TodoRequest(
                     content = binding.etSimpleAddTodo.text.toString(),
                     memo = "",

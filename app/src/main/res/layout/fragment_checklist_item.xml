@@ -64,7 +64,6 @@
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/pretendard_variable"
                     android:text="@{todo.content}"
                     android:textColor="@{todo.completed ? @color/light_gray : @color/todo_description}"
                     android:textSize="16sp"
