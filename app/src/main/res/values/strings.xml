@@ -53,4 +53,6 @@
     <string name="save">저장</string>
 
     <string name="done">완료</string>
+
+    <string name="everyThingDone">모든 할 일을 마쳤습니다!</string>
 </resources>

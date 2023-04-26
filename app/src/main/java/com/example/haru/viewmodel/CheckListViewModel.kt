@@ -12,6 +12,7 @@ import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import java.util.*
 
 class CheckListViewModel() :
@@ -83,7 +84,22 @@ class CheckListViewModel() :
             todayList.removeAll {
                 idxList.contains(todayList.indexOf(it))
             }
+    }
 
+    fun plusTodoEmpty(){
+        if (todoByTag.value == true) return
+
+        var idx = todoList.indexOf(Todo(type = 1, content = "분류"))
+        if (todoList[1].type == 3)
+            todoList.add(1, Todo(type = 5))
+        if (todoList[idx + 1].type == 3)
+            todoList.add(idx + 1, Todo(type = 5))
+        idx = todoList.indexOf(Todo(type = 1, content = "미분류"))
+        if (todoList[idx + 1].type == 3)
+            todoList.add(idx + 1, Todo(type = 5))
+        idx = todoList.indexOf(Todo(type = 1, content = "완료"))
+        if (idx == todoList.size - 1)
+            todoList.add(Todo(type = 5))
     }
 
     fun getTodoList(): List<Todo> {
@@ -102,37 +118,61 @@ class CheckListViewModel() :
                 todoList.clear()
                 _todoByTag.postValue(false)
                 todoByTagItem = null
-                _flaggedTodos.postValue(
+                if (it.flaggedTodos.isNotEmpty())
+                    _flaggedTodos.postValue(
+                        listOf(Todo(type = 1, content = "중요"))
+                                + it.flaggedTodos + listOf(Todo(type = 3))
+                    )
+                else _flaggedTodos.postValue(
                     listOf(
-                        Todo(
-                            type = 1,
-                            content = "중요"
-                        )
-                    ) + it.flaggedTodos + listOf(Todo(type = 3))
+                        Todo(type = 1, content = "중요"),
+                        Todo(type = 5), Todo(type = 3)
+                    )
                 )
-                _taggedTodos.postValue(
+
+                if (it.taggedTodos.isNotEmpty())
+                    _taggedTodos.postValue(
+                        listOf(
+                            Todo(
+                                type = 1,
+                                content = "분류"
+                            )
+                        ) + it.taggedTodos + listOf(Todo(type = 3))
+                    ) else _taggedTodos.postValue(
                     listOf(
-                        Todo(
-                            type = 1,
-                            content = "분류"
-                        )
-                    ) + it.taggedTodos + listOf(Todo(type = 3))
+                        Todo(type = 1, content = "분류"),
+                        Todo(type = 5),
+                        Todo(type = 3)
+                    )
                 )
-                _untaggedTodos.postValue(
+                if (it.untaggedTodos.isNotEmpty())
+                    _untaggedTodos.postValue(
+                        listOf(
+                            Todo(
+                                type = 1,
+                                content = "미분류"
+                            )
+                        ) + it.untaggedTodos + listOf(Todo(type = 3))
+                    ) else _untaggedTodos.postValue(
                     listOf(
-                        Todo(
-                            type = 1,
-                            content = "미분류"
-                        )
-                    ) + it.untaggedTodos + listOf(Todo(type = 3))
+                        Todo(type = 1, content = "미분류"),
+                        Todo(type = 5),
+                        Todo(type = 3)
+                    )
                 )
-                _completedTodos.postValue(
+                if (it.completedTodos.isNotEmpty())
+                    _completedTodos.postValue(
+                        listOf(
+                            Todo(
+                                type = 1,
+                                content = "완료"
+                            )
+                        ) + it.completedTodos
+                    ) else _completedTodos.postValue(
                     listOf(
-                        Todo(
-                            type = 1,
-                            content = "완료"
-                        )
-                    ) + it.completedTodos
+                        Todo(type = 1, content = "완료"),
+                        Todo(type = 5)
+                    )
                 )
                 _todoByTag.postValue(false)
                 todoByTagItem = null
@@ -253,14 +293,14 @@ class CheckListViewModel() :
                     untaggedTodos.value?.let { todoList.addAll(it) }
                     completedTodos.value?.let { todoList.addAll(it) }
                     _todoDataList.postValue(todoList)
-                    if (todayList.isNotEmpty()){
+                    if (todayList.isNotEmpty()) {
                         val calendar = Calendar.getInstance().apply {
                             set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
                         val todayEndDate = TodayEndDate(FormatDate.dateToStr(calendar.time))
-                        getTodayTodo(todayEndDate){ callback() }
+                        getTodayTodo(todayEndDate) { callback() }
                     } else callback()
                 }
             }
@@ -348,16 +388,22 @@ class CheckListViewModel() :
                         val type = if (todoByTag.value == false) 1 else 4
 
                         if (todo.flag && !todo.completed) {
+                            if (todoList[1].type == 5)
+                                todoList.removeAt(1)
                             todoList.add(1, todo)
                         } else {
                             if (todo.completed) {
                                 val i = todoList.indexOf(Todo(type = type, content = "완료"))
+                                if (todoList[i + 1].type == 5)
+                                    todoList.removeAt(i + 1)
                                 todoList.add(i + 1, todo)
                             } else {
                                 when (todo.tags.isEmpty()) {
                                     true -> {
                                         val i =
                                             todoList.indexOf(Todo(type = type, content = "미분류"))
+                                        if (todoList[i + 1].type == 5)
+                                            todoList.removeAt(i + 1)
                                         todoList.add(i + 1, todo)
                                     }
                                     false -> {
@@ -368,11 +414,14 @@ class CheckListViewModel() :
                                             )
                                         )
                                         else todoList.indexOf(Todo(type = type, content = "분류"))
+                                        if (todoList[i + 1].type == 5)
+                                            todoList.removeAt(i + 1)
                                         todoList.add(i + 1, todo)
                                     }
                                 }
                             }
                         }
+                        plusTodoEmpty()
                         _todoDataList.postValue(todoList)
                     }
                 }
@@ -434,14 +483,19 @@ class CheckListViewModel() :
                         checkTodayEmpty()
                         _todayTodo.postValue(todayList)
                     }
-                    val todo = todoList.find { todo -> todo.id == id }?.copy() ?: return@updateNotRepeatTodo
+                    val todo = todoList.find { todo -> todo.id == id }?.copy()
+                        ?: return@updateNotRepeatTodo
                     todoList.remove(todo)
                     todo.completed = completed.completed
                     for (i in 0 until todo.subTodos.size)
                         todo.subTodos[i].completed = completed.completed
                     if (todoByTag.value == true) {
-                    } else if (todo.completed)
-                        todoList.add(todoList.indexOf(Todo(type = 1, content = "완료")) + 1, todo)
+                    } else if (todo.completed){
+                        val i = todoList.indexOf(Todo(type = 1, content = "완료"))
+                        if (todoList[i + 1].type == 5)
+                            todoList.removeAt(i + 1)
+                        todoList.add(i + 1, todo)
+                    }
                     else {
                         val i = if (todo.flag) 0 else if (todo.tags.isEmpty()) todoList.indexOf(
                             Todo(
@@ -450,8 +504,11 @@ class CheckListViewModel() :
                             )
                         )
                         else todoList.indexOf(Todo(type = 1, content = "분류"))
+                        if (todoList[i + 1].type == 5)
+                            todoList.removeAt(i + 1)
                         todoList.add(i + 1, todo)
                     }
+                    plusTodoEmpty()
                     _todoDataList.postValue(todoList)
                 }
             }
