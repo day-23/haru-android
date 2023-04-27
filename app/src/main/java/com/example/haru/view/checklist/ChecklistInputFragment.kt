@@ -539,16 +539,47 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
                     todoAddViewModel.deleteSubTodo()
                 }
-                addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object : TextWatcher{
-                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                    override fun afterTextChanged(e: Editable?) {
-                        todoAddViewModel.subTodos[binding.subTodoLayout.indexOfChild(addView)] = e.toString()
-                    }
-                })
+                addView.findViewById<EditText>(R.id.et_subTodo)
+                    .addTextChangedListener(object : TextWatcher {
+                        override fun beforeTextChanged(
+                            p0: CharSequence?,
+                            p1: Int,
+                            p2: Int,
+                            p3: Int
+                        ) {
+                        }
+
+                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                        override fun afterTextChanged(e: Editable?) {
+                            todoAddViewModel.subTodos[binding.subTodoLayout.indexOfChild(addView)] =
+                                e.toString()
+                        }
+                    })
 
                 binding.subTodoLayout.addView(addView, binding.subTodoLayout.childCount - 1)
-            }else binding.subTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
+            } else binding.subTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
+
+        })
+
+        binding.etMemo.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                binding.ivMemoIcon.backgroundTintList =
+                    if (s.toString() == "") ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.icon_gray
+                        )
+                    ) else ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.todo_description
+                        )
+                    )
+            }
 
         })
 

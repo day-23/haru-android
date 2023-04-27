@@ -77,14 +77,14 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         binding.btnAddTodo.setOnClickListener {
-            var text = binding.etSimpleAddTodo.text.toString()
-            text = text.replace(" ", "")
-            if (text == "") {
+            val text = binding.etSimpleAddTodo.text.toString()
+
+            if (text.replace(" ", "") == "") {
                 val todoInput = ChecklistInputFragment(checkListViewModel)
                 todoInput.show(parentFragmentManager, todoInput.tag)
             } else {
                 val todo = TodoRequest(
-                    content = binding.etSimpleAddTodo.text.toString(),
+                    content = text,
                     memo = "",
                     todayTodo = true,
                     flag = false,

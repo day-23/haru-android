@@ -134,11 +134,11 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/baseline_tag_24" />
-
+                        android:background="@drawable/tag_icon" />
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tag_et"
@@ -646,7 +646,6 @@
                         android:ems="10"
                         android:hint="@string/memo_set"
                         android:inputType="textMultiLine"
-                        android:scrollbars="vertical"
                         android:text="@={viewModel.memo}"
                         android:textColorHint="@color/light_gray"
                         android:textSize="14sp" />
