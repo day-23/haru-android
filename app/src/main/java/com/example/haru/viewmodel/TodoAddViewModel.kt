@@ -49,8 +49,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _repeatEndDateSwitch = MutableLiveData<Boolean>(false)
     val repeatEndDateSwitch: LiveData<Boolean> = _repeatEndDateSwitch
 
-    private val _repeatOption = MutableLiveData<Int?>()
-    val repeatOption: LiveData<Int?> = _repeatOption
+    private val _repeatOption = MutableLiveData<Int>()
+    val repeatOption: LiveData<Int> = _repeatOption
 
     private val _repeatValue = MutableLiveData<String?>()
     val repeatValue: LiveData<String?> = _repeatValue
@@ -199,9 +199,13 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun setRepeatSwitch() {
-        if (_repeatSwitch.value == null) _repeatSwitch.value = true
+        if (_repeatSwitch.value == null) {
+            _repeatSwitch.value = true
+        }
         else _repeatSwitch.value = (_repeatSwitch.value == false)
 
+        if (repeatSwitch.value == true)
+            _repeatOption.value = 0
     }
 
     fun setRepeatEndSwitch() {

@@ -238,7 +238,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             androidx.lifecycle.Observer {
                 when (it) {
                     true -> {
-                        val date = Date()
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.VISIBLE
 
@@ -260,6 +259,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         binding.tvEndDateSet.setTextColor(resources.getColor(R.color.todo_description))
                     }
                     else -> {
+                        if (todoAddViewModel.repeatSwitch.value == true)
+                            todoAddViewModel.setRepeatSwitch()
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.INVISIBLE
                         val valueAnimator = ValueAnimator.ofInt(
@@ -329,7 +330,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
-                    if (todoAddViewModel.endDateSwitch.value == false)
+                    if (todoAddViewModel.endDateSwitch.value != true)
                         todoAddViewModel.setEndDateSwitch()
 
                     binding.repeatSwitch.isChecked = it
@@ -532,21 +533,97 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 }
             }
 
-//            if (todoAddViewModel.repeatOption.value != null){
-//                var date = Date()
-//                FormatDate.cal.time = date
-//                when(todoAddViewModel.repeatValue.value?.length){
-//                    1 -> FormatDate.cal.add(Calendar.DATE, 1)
-//
-//                    7 -> {
-//
-//                    }
-//                    31 -> {}
-//                    12 -> {}
-//                }
-//                date = FormatDate.cal.time
-//                todoAddViewModel.setDate(0, date)
-//            }
+            if (todoAddViewModel.repeatOption.value != null) {
+                val flag = todoAddViewModel.repeatValue.value!!.contains('1')
+                if (!flag) {
+                    todoAddViewModel.setDate(0, Date())
+                    return@Observer
+                } else {
+                                    // 달이 변경되면 다시 그 전달로 날짜가 바뀌지 않음 해결하도록!
+                    var date = Date()
+                    FormatDate.cal.time = date
+                    when (todoAddViewModel.repeatValue.value?.length) {
+                        1 -> {}
+                        7 -> {
+                            val nWeek = FormatDate.cal.get(Calendar.DAY_OF_WEEK)
+                            val idx = nWeek - 1
+                            var flag = false
+                            for (i in idx until 7)
+                                if (todoAddViewModel.repeatValue.value!![i] == '1') {
+                                    FormatDate.cal.add(Calendar.DATE, i - idx)
+                                    flag = true
+                                    break
+                                }
+                            if (!flag) {
+                                for (i in 0 until idx)
+                                    if (todoAddViewModel.repeatValue.value!![i] == '1') {
+                                        val value = 6 - idx + i + 1
+                                        FormatDate.cal.add(Calendar.DATE, value)
+                                        break
+                                    }
+                            }
+                        }
+                        31 -> {
+                            val idx = FormatDate.cal.get(Calendar.DAY_OF_MONTH) - 1
+                            var flag = false
+                            var days = 32
+                            for (i in idx until 31)
+                                if (todoAddViewModel.repeatValue.value!![i] == '1') {
+                                    days = i + 1
+                                    flag = true
+                                    break
+                                }
+                            if (!flag) {
+                                for (i in 0 until idx)
+                                    if (todoAddViewModel.repeatValue.value!![i] == '1') {
+                                        days = i + 1
+                                        break
+                                    }
+                            }
+
+                            if (days < idx + 1) {
+                                FormatDate.cal.add(Calendar.MONTH, 1)
+                                if (FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
+                                    FormatDate.cal.add(Calendar.MONTH, 1)
+                                FormatDate.cal.set(Calendar.DAY_OF_MONTH, days)
+                            } else {
+                                if (FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
+                                    FormatDate.cal.add(Calendar.MONTH, 1)
+                                FormatDate.cal.set(Calendar.DAY_OF_MONTH, days)
+                            }
+
+                        }
+                        12 -> {
+                            val idx = FormatDate.cal.get(Calendar.MONTH)
+                            val days = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+                            var month = 13
+                            var flag = false
+                            for (i in idx until 12)
+                                if (todoAddViewModel.repeatValue.value!![i] == '1') {
+                                    month = i
+                                    FormatDate.cal.set(Calendar.MONTH, month)
+                                    if (days <= FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                                        flag = true
+                                        break
+                                    }
+                                }
+                            if (!flag) {
+                                FormatDate.cal.add(Calendar.YEAR, 1)
+                                for (i in 0 until idx)
+                                    if (todoAddViewModel.repeatValue.value!![i] == '1') {
+                                        month = i
+                                        FormatDate.cal.set(Calendar.MONTH, month)
+                                        if (days <= FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                                            break
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                    date = FormatDate.cal.time
+                    todoAddViewModel.setDate(0, date)
+                }
+            }
         })
 
         todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -668,13 +745,13 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 R.id.btn_everyMonth -> todoAddViewModel.setRepeatOpt(3)
                 R.id.btn_everyYear -> todoAddViewModel.setRepeatOpt(4)
 
-                R.id.tv_monday -> todoAddViewModel.setRepeatVal(0)
-                R.id.tv_tuesday -> todoAddViewModel.setRepeatVal(1)
-                R.id.tv_wednesday -> todoAddViewModel.setRepeatVal(2)
-                R.id.tv_thursday -> todoAddViewModel.setRepeatVal(3)
-                R.id.tv_friday -> todoAddViewModel.setRepeatVal(4)
-                R.id.tv_saturday -> todoAddViewModel.setRepeatVal(5)
-                R.id.tv_sunday -> todoAddViewModel.setRepeatVal(6)
+                R.id.tv_sunday -> todoAddViewModel.setRepeatVal(0)
+                R.id.tv_monday -> todoAddViewModel.setRepeatVal(1)
+                R.id.tv_tuesday -> todoAddViewModel.setRepeatVal(2)
+                R.id.tv_wednesday -> todoAddViewModel.setRepeatVal(3)
+                R.id.tv_thursday -> todoAddViewModel.setRepeatVal(4)
+                R.id.tv_friday -> todoAddViewModel.setRepeatVal(5)
+                R.id.tv_saturday -> todoAddViewModel.setRepeatVal(6)
 
 
                 R.id.btn_alarmTime_pick, R.id.btn_endTime_pick -> {

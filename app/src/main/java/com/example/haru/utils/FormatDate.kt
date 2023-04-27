@@ -26,7 +26,7 @@ object FormatDate {
 
     private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
 
-//    val cal = Calendar.getInstance()
+    val cal = Calendar.getInstance()
 
 
     private fun initDiff(): Long {
