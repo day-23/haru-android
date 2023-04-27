@@ -227,11 +227,11 @@ class TodoAdapter(val context: Context) :
             }
 
             if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null) {
-                binding.blankView.visibility = View.VISIBLE
+//                binding.blankView.visibility = View.VISIBLE
                 binding.tvTagDescription.text = ""
                 binding.tvEndDateDescription.text = ""
             } else {
-                binding.blankView.visibility = View.GONE
+//                binding.blankView.visibility = View.GONE
                 var tag = ""
                 for (i in 0 until item.tags.size) {
                     tag += "${item.tags[i].content} "
@@ -356,12 +356,5 @@ class TodoAdapter(val context: Context) :
         return false
 
     }
-
-    // 1. 오늘 나의 하루에 들어가서 클릭 기능 구현 -> clear
-    // 2. 반복 할 일에 대한 완료 기능 구현
-    // 3. 태그 chip으로 가시적으로 구현
-    // 4. 하위 투두 입력창 디자인 시안에 맞게 구현 -> clear
-    // 5. 반복 일정 설정 시 레이아웃에 애니메이션 적용
-    // 6. 간편 추가 기능
 
 }

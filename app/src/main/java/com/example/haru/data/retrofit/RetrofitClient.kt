@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 //    private const val BASE_URL = "http://localhost:8000/"
     private const val BASE_URL = "http://api.23haru.com/"
+//    private const val BASE_URL = "http://10.30.113.37:8000/"
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {
