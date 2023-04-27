@@ -228,15 +228,11 @@ class TodoAdapter(val context: Context) :
             }
 
             if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null) {
-//                binding.blankView.visibility = View.VISIBLE
-//                binding.tvTagDescription.text = ""
-//                binding.tvEndDateDescription.text = ""
                 binding.blankView.visibility = View.VISIBLE
                 binding.iconLayout.visibility = View.GONE
             } else {
-                binding.iconLayout.visibility = View.VISIBLE
                 binding.blankView.visibility = View.GONE
-//                binding.blankView.visibility = View.GONE
+                binding.iconLayout.visibility = View.VISIBLE
                 var tag = ""
                 for (i in 0 until item.tags.size) {
                     tag += "${item.tags[i].content} "
@@ -245,7 +241,7 @@ class TodoAdapter(val context: Context) :
                     binding.tvTagDescription.text = tag.dropLast(1)
                     binding.tvTagDescription.visibility = View.VISIBLE
                 } else {
-                    binding.tvTagDescription.visibility = View.INVISIBLE
+                    binding.tvTagDescription.visibility = View.GONE
                     binding.tvTagDescription.text = tag
                 }
 
@@ -255,7 +251,7 @@ class TodoAdapter(val context: Context) :
                     binding.tvEndDateDescription.visibility = View.VISIBLE
                 } else {
                     binding.tvEndDateDescription.text = ""
-                    binding.tvEndDateDescription.visibility = View.INVISIBLE
+                    binding.tvEndDateDescription.visibility = View.GONE
                 }
             }
 

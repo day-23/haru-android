@@ -109,7 +109,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                 set(Calendar.SECOND, 59) // 초를 59초로 설정
             }
-            val todayEndDate = TodayEndDate(FormatDate.dateToStr(calendar.time))
+            val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
             checkListViewModel.getTodayTodo(todayEndDate) {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
@@ -196,13 +196,22 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
             override fun onClick(view: View, id: String) {
+                val todo = checkListViewModel.todoDataList.value!!.find { it.id == id }!!
                 val completed =
-                    if (checkListViewModel.todoDataList.value!!.find { it.id == id }!!.completed) Completed(
+                    if (todo.completed) Completed(
                         false
                     )
                     else Completed(true)
 
-                checkListViewModel.updateNotRepeatTodo(completed, id)
+                if (todo.completed || todo.repeatOption == null)
+                    checkListViewModel.updateNotRepeatTodo(completed, id)
+                else {
+
+
+//                    val endDate = EndDate()
+//                    checkListViewModel.updateRepeatTodo(id, endDate)
+                }
+
             }
         }
 

@@ -14,7 +14,7 @@ import java.util.*
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val checklistViewModel: CheckListViewModel
 
-    private val repeatOptionList = listOf<String>("매일", "매주", "2주마다", "매월", "매년")
+    private val repeatOptionList = listOf("매일", "매주", "2주마다", "매월", "매년")
 
     private val _flagTodo = MutableLiveData<Boolean>(false)
     val flagTodo: LiveData<Boolean> = _flagTodo
@@ -211,7 +211,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     fun setRepeatOpt(num: Int) {
         _repeatOption.value = num
         when (num) {
-            0 -> _repeatValue.value = null
+            0 -> _repeatValue.value = "1"
             1, 2 -> _repeatValue.value = String.format("%-7s", "").replace(' ', '0')
             3 -> _repeatValue.value = String.format("%-31s", "").replace(' ', '0')
             4 -> _repeatValue.value = String.format("%-12s", "").replace(' ', '0')

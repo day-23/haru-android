@@ -28,6 +28,7 @@ import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.text.Format
 import java.util.*
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
@@ -328,6 +329,9 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
+                    if (todoAddViewModel.endDateSwitch.value == false)
+                        todoAddViewModel.setEndDateSwitch()
+
                     binding.repeatSwitch.isChecked = it
                     binding.ivRepeatIcon.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.todo_description))
@@ -527,6 +531,22 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     )
                 }
             }
+
+//            if (todoAddViewModel.repeatOption.value != null){
+//                var date = Date()
+//                FormatDate.cal.time = date
+//                when(todoAddViewModel.repeatValue.value?.length){
+//                    1 -> FormatDate.cal.add(Calendar.DATE, 1)
+//
+//                    7 -> {
+//
+//                    }
+//                    31 -> {}
+//                    12 -> {}
+//                }
+//                date = FormatDate.cal.time
+//                todoAddViewModel.setDate(0, date)
+//            }
         })
 
         todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {

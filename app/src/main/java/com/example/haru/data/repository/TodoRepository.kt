@@ -95,23 +95,24 @@ class TodoRepository() {
             callback(todoData)
         }
 
-    suspend fun getTodoByTag(tagId: String, callback: (todoData : GetTodoByTagData) -> Unit) = withContext(Dispatchers.IO) {
-        val response =
-            todoService.getTodoByTag("005224c0-eec1-4638-9143-58cbfc9688c5", tagId).execute()
-        val data: GetTodoByTag
-        val todoData: GetTodoByTagData
-        Log.d("20191627", "여기는 getTodoByTag")
+    suspend fun getTodoByTag(tagId: String, callback: (todoData: GetTodoByTagData) -> Unit) =
+        withContext(Dispatchers.IO) {
+            val response =
+                todoService.getTodoByTag("005224c0-eec1-4638-9143-58cbfc9688c5", tagId).execute()
+            val data: GetTodoByTag
+            val todoData: GetTodoByTagData
+            Log.d("20191627", "여기는 getTodoByTag")
 
-        if (response.isSuccessful) {
-            Log.d("TAG", "Success to get Todo By Tag")
-            data = response.body()!!
-            todoData = data.data
-        } else {
-            Log.d("TAG", "Fail to get Todo By Tag")
-            todoData = GetTodoByTagData()
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to get Todo By Tag")
+                data = response.body()!!
+                todoData = data.data
+            } else {
+                Log.d("TAG", "Fail to get Todo By Tag")
+                todoData = GetTodoByTagData()
+            }
+            callback(todoData)
         }
-        callback(todoData)
-    }
 
     suspend fun getTodoByFlag() = withContext(Dispatchers.IO) {
         val response = todoService.getTodoByFlag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
@@ -243,7 +244,7 @@ class TodoRepository() {
 
     suspend fun getTodayTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
-        endDate: TodayEndDate,
+        endDate: EndDate,
         callback: (todoList: TodoList) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.getTodayTodo(userId, endDate).execute()
@@ -285,7 +286,7 @@ class TodoRepository() {
         todoId: String,
         folded: Folded,
         callback: (successData: SuccessFail) -> Unit
-    ) = withContext(Dispatchers.IO){
+    ) = withContext(Dispatchers.IO) {
         val response = todoService.updateFolded(userId, todoId, folded).execute()
         val data = response.body()!!
 
@@ -294,6 +295,25 @@ class TodoRepository() {
             data
         } else {
             Log.d("TAG", "Fail to Update Folded")
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun updateRepeatTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        endDate: EndDate,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.updateRepeatTodo(userId, todoId, endDate).execute()
+        val data = response.body()!!
+
+        val successData : SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Update Repeat Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update Repeat Todo")
             data
         }
         callback(successData)

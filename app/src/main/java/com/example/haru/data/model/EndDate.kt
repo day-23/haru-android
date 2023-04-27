@@ -1,5 +1,5 @@
 package com.example.haru.data.model
 
-data class TodayEndDate(
+data class EndDate(
     val endDate : String
 )

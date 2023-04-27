@@ -90,11 +90,14 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
 
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
             override fun onClick(view: View, id: String) {
+                val todo = checkListViewModel.todayTodo.value!!.find{ it.id == id}!!
                 val completed =
-                    if (checkListViewModel.todayTodo.value!!.find{ it.id == id}!!.completed) Completed(false)
+                    if (todo.completed) Completed(false)
                     else Completed(true)
 
-                checkListViewModel.updateNotRepeatTodo(completed, id)
+                if (todo.completed || todo.repeatOption == null)
+                    checkListViewModel.updateNotRepeatTodo(completed, id)
+                else {}
             }
         }
 
