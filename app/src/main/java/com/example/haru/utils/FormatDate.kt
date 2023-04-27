@@ -82,14 +82,90 @@ object FormatDate {
         return simpleFormatterKorea.format(date)
     }
 
-//    fun plusDate(date: Date) : Date{
-//
-//    }
-
     // String으로 된 날짜 정보에 local Date와 그리니치 시간대의 차이를 더해서 Date 타입으로 반환
     fun strToDate(str: String) : Date{
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         val instant = date.atZone(ZoneId.systemDefault()).toInstant()
         return Date.from(instant)
+    }
+
+    fun nextEndDateEveryWeek(repeatValue : String) : Date {
+        val nWeek = cal.get(Calendar.DAY_OF_WEEK)
+        val idx = nWeek - 1
+        var flag = false
+        for (i in idx until 7)
+            if (repeatValue[i] == '1') {
+                cal.add(Calendar.DATE, i - idx)
+                flag = true
+                break
+            }
+        if (!flag) {
+            for (i in 0 until idx)
+                if (repeatValue[i] == '1') {
+                    val value = 6 - idx + i + 1
+                    cal.add(Calendar.DATE, value)
+                    break
+                }
+        }
+        return cal.time
+    }
+
+    fun nextEndDateEveryMonth(repeatValue : String) : Date {
+        val idx = cal.get(Calendar.DAY_OF_MONTH) - 1
+        var flag = false
+        var days = 32
+        for (i in idx until 31)
+            if (repeatValue[i] == '1') {
+                days = i + 1
+                flag = true
+                break
+            }
+        if (!flag) {
+            for (i in 0 until idx)
+                if (repeatValue[i] == '1') {
+                    days = i + 1
+                    break
+                }
+        }
+
+        if (days < idx + 1) {
+            cal.add(Calendar.MONTH, 1)
+            if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
+                cal.add(Calendar.MONTH, 1)
+            cal.set(Calendar.DAY_OF_MONTH, days)
+        } else {
+            if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
+                cal.add(Calendar.MONTH, 1)
+            cal.set(Calendar.DAY_OF_MONTH, days)
+        }
+        return cal.time
+    }
+
+    fun nextEndDateEveryYear(repeatValue: String) : Date {
+        val idx = cal.get(Calendar.MONTH)
+        val days = cal.get(Calendar.DAY_OF_MONTH)
+        var month = 13
+        var flag = false
+        for (i in idx until 12)
+            if (repeatValue[i] == '1') {
+                month = i
+                cal.set(Calendar.MONTH, month)
+                if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                    flag = true
+                    break
+                }
+            }
+        if (!flag) {
+            cal.add(Calendar.YEAR, 1)
+            for (i in 0 until idx)
+                if (repeatValue[i] == '1') {
+                    month = i
+                    cal.set(Calendar.MONTH, month)
+                    if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                        break
+                    }
+                }
+        }
+        return cal.time
     }
 }
