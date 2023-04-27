@@ -12,6 +12,7 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -228,9 +229,13 @@ class TodoAdapter(val context: Context) :
 
             if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null) {
 //                binding.blankView.visibility = View.VISIBLE
-                binding.tvTagDescription.text = ""
-                binding.tvEndDateDescription.text = ""
+//                binding.tvTagDescription.text = ""
+//                binding.tvEndDateDescription.text = ""
+                binding.blankView.visibility = View.VISIBLE
+                binding.iconLayout.visibility = View.GONE
             } else {
+                binding.iconLayout.visibility = View.VISIBLE
+                binding.blankView.visibility = View.GONE
 //                binding.blankView.visibility = View.GONE
                 var tag = ""
                 for (i in 0 until item.tags.size) {

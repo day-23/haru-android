@@ -55,11 +55,6 @@
                 android:paddingStart="8dp"
                 android:paddingTop="6dp">
 
-<!--                <View-->
-<!--                    android:id="@+id/blank_view"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="2dp" />-->
-
                 <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
@@ -68,6 +63,13 @@
                     android:textColor="@{todo.completed ? @color/light_gray : @color/todo_description}"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/blank_view"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="18dp"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/icon_layout"
