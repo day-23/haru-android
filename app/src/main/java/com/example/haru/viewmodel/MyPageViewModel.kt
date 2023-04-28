@@ -2,10 +2,12 @@ package com.example.haru.viewmodel
 
 import android.os.Build.VERSION_CODES.P
 import android.provider.ContactsContract.Profile
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.haru.data.model.ExternalImages
 import com.example.haru.data.model.Post
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
@@ -33,11 +35,26 @@ class MyPageViewModel(): ViewModel() {
     val Page: LiveData<Int>
         get() = _Page
 
+    private val _StoredImages = MutableLiveData<ArrayList<ExternalImages>>()
+    val StoredImages: LiveData<ArrayList<ExternalImages>>
+        get() = _StoredImages
+
     var profile_info = com.example.haru.data.model.Profile("", "", "", "")
 
     init {
         getProfile()
         _Page.value = 1
+    }
+
+    fun loadGallery(images: ArrayList<ExternalImages>){
+        Log.d("Image", "upload ---------------$images")
+        _StoredImages.value = images
+    }
+
+    fun getGallery(): ArrayList<ExternalImages> {
+        val images = _StoredImages.value!!
+        Log.d("Image", "download -------------------$images")
+        return images
     }
 
     fun updateProfile(image: MultipartBody.Part) {
