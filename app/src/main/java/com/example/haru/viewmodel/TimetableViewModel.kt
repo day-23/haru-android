@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.*
+import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -26,7 +27,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class TimetableViewModel(val context : Context): ViewModel() {
-    private val scheduleRepository = TodoRepository()
+    private val scheduleRepository = ScheduleRepository()
 
     private val _Dates = MutableLiveData<ArrayList<String>>()
     val Dates : LiveData<ArrayList<String>>
@@ -204,9 +205,12 @@ class TimetableViewModel(val context : Context): ViewModel() {
     //스케줄 쿼리문 전송
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
-            val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", false,"" , Category("","","",false), emptyList(), null, null,)
+            val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", false,"" , "", Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
-            scheduleRepository.getSchedule(date[0], date[6]) {
+            val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
+            val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
+            val body = ScheduleRequest(startDate, endDate)
+            scheduleRepository.getScheduleByDates(date[0], date[6], body) {
                 val TodoList = it
 
                 //내용 추출
@@ -220,8 +224,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                     val month_end = data.repeatEnd?.slice(IntRange(5,6))
                     val day_end = data.repeatEnd?.slice(IntRange(8,9))
                     val result_end = year_end+month_end+day_end
+                    Log.d("ALLDAYsss", "$data")
 
-                    if(data.repeatStart != data.repeatEnd && result_start == result_end){ //하루치 일정
+                    if(data.repeatStart?.slice(IntRange(11,15)) != data.repeatEnd?.slice(IntRange(11,15)) && result_start == result_end){ //하루치 일정
                         when(result_start){
                             date[0] -> IndexList[0].add(data)
                             date[1] -> IndexList[1].add(data)
@@ -236,7 +241,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                         IndexList_allday.add(data)// 하루종일 or 하루이상 일정
                     }
                 }
-                Log.d("Schedules", "index : $IndexList")
+                Log.d("ALLDAYsss", "index : $IndexList")
+                Log.d("ALLDAYsss", "index : $IndexList_allday")
             }
             _Schedules.value = IndexList
             _SchedulesAllday.value = IndexList_allday
@@ -249,10 +255,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
         val day_start = data.repeatStart?.slice(IntRange(8,9))
         val result_start = year_start+month_start+day_start
 
-        val year_end = data.repeatEnd?.slice(IntRange(0,3))
-        val month_end = data.repeatEnd?.slice(IntRange(5,6))
-        val day_end = data.repeatEnd?.slice(IntRange(8,9))
-        val result_end = year_end+month_end+day_end
         val sortedIndex: ArrayList<Schedule>
         //하루치 일정
         when(result_start){

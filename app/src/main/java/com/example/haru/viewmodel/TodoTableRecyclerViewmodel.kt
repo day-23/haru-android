@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.haru.data.model.ScheduleRequest
 import com.example.haru.data.model.Todo
 import com.example.haru.data.model.TodoTable_data
 import com.example.haru.data.repository.TodoRepository
@@ -47,9 +48,11 @@ class TodoTableRecyclerViewmodel : ViewModel() {
                 arrayListOf(),
                 arrayListOf(),
             )
-
+            val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
+            val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
+            val body = ScheduleRequest(startDate, endDate)
             //GET 쿼리 전송
-            todoRepository.getTodoDates(date[0], date[6]) {
+            todoRepository.getTodoDates(date[0], date[6], body) {
                 val TodoList = it
                 Log.d("GET1", "${TodoList}, ${date[0]}, ${date[6]} ")
 

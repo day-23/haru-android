@@ -17,8 +17,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Haru"
-        tools:targetApi="31"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".view.calendar.CategoryAddActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.calendar.CategoryCorrectionActivity"
+            android:exported="false" />
         <activity
             android:name=".view.auth.LoginActivity"
             android:exported="false"
@@ -46,8 +52,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
-
     </application>
 
 </manifest>

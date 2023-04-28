@@ -6,6 +6,7 @@ import android.graphics.ColorMatrixColorFilter
 import android.graphics.PorterDuff
 import android.view.DragEvent
 import android.view.View
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Todo
 
@@ -21,7 +22,6 @@ class Todo_draglistener () : View.OnDragListener {
         val sourceRecyclerView: RecyclerView = viewSource.parent.parent as RecyclerView
 
         if (event.action == DragEvent.ACTION_DROP) {
-            val viewId = view.id
 
             try {
                 targetRecyclerView = view.parent.parent as RecyclerView
@@ -42,7 +42,6 @@ class Todo_draglistener () : View.OnDragListener {
 
                 var targetList: ArrayList<Todo> = ArrayList()
                 targetAdapter?.setItem(item)
-                targetRecyclerView.setBackgroundColor(Color.TRANSPARENT)
 
             }
             return true
@@ -55,7 +54,6 @@ class Todo_draglistener () : View.OnDragListener {
             catch (e: java.lang.ClassCastException){
                 targetRecyclerView = view as RecyclerView
             }
-            targetRecyclerView.setBackgroundColor(Color.parseColor("#4D7f7f7f"))
             return true
         }
 

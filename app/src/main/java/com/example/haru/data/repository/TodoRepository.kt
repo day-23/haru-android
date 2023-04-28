@@ -9,15 +9,15 @@ import kotlinx.coroutines.withContext
 
 class TodoRepository() {
     private val todoService = RetrofitClient.todoService
-    private val scheduleService = RetrofitClient.scheduleService
 
     suspend fun getTodoDates(
         startDate: String,
         endDate: String,
+        body: ScheduleRequest,
         callback: (todoData: List<Todo>) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response =
-            todoService.getTodoDates("dd62593d-161b-45cb-9534-346cd5b5e556", startDate, endDate)
+            todoService.getTodoDates("dd62593d-161b-45cb-9534-346cd5b5e556", startDate, endDate)//, body)
                 .execute()
         val data: GetTodoResponse
         val todoData: List<Todo>
@@ -51,29 +51,6 @@ class TodoRepository() {
         callback(todoData)
     }
 
-    suspend fun getSchedule(
-        startDate: String,
-        endDate: String,
-        callback: (todoData: List<Schedule>) -> Unit
-    ) = withContext(Dispatchers.IO) {
-        val response = scheduleService.getScheduleDates(
-            "dd62593d-161b-45cb-9534-346cd5b5e556",
-            startDate,
-            endDate
-        ).execute()
-        val data: GetScheduleResponse
-        val todoData: List<Schedule>
-
-        if (response.isSuccessful) {
-            Log.d("TAG", "Success to get todos")
-            data = response.body()!!
-            todoData = data.data
-        } else {
-            Log.d("TAG", "Fail to get todos")
-            todoData = emptyList()
-        }
-        callback(todoData)
-    }
 
     suspend fun createTodo(todoRequest: TodoRequest, callback: (todoData: Todo) -> Unit) =
         withContext(Dispatchers.IO) {
