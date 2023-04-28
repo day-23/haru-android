@@ -192,6 +192,7 @@ object FormatDate {
                     break
                 }
         }
+        cal.set(Calendar.DAY_OF_MONTH, 1)  // 만약 31일인 상태에서 3월에서 + 1하면 5월 1일로 간다. 그렇기 때문에 날짜를 1로 설정해줌
 
         if (days < idx + 1) {
             cal.add(Calendar.MONTH, 1)
@@ -241,9 +242,11 @@ object FormatDate {
         for (i in idx + idxPlus until 12)
             if (repeatValue[i] == '1') {
                 month = i
+                cal.set(Calendar.DAY_OF_MONTH, 1)
                 cal.set(Calendar.MONTH, month)
                 if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                     flag = true
+                    cal.set(Calendar.DAY_OF_MONTH, days)
                     break
                 }
             }
@@ -252,6 +255,7 @@ object FormatDate {
             for (i in 0 until 12) {
                 if (repeatValue[i] == '1') {
                     month = i
+                    cal.set(Calendar.DAY_OF_MONTH, 1)
                     cal.set(Calendar.MONTH, month)
                     if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                         Log.d("20191627", "$days")
