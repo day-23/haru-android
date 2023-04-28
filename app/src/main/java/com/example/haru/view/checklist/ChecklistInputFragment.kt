@@ -30,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.Format
 import java.util.*
+import kotlin.time.Duration.Companion.days
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     BottomSheetDialogFragment() {
@@ -490,6 +491,15 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.btnEndDatePick.text = FormatDate.simpleDateToStr(it)
+            if (todoAddViewModel.repeatOption.value == 4){
+                FormatDate.cal.time = it
+                val days = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+                if (days == 31){ // 2,4,6,9,11
+                    for(i in listOf(2, 4, 6, 9, 11)){
+                        binding.gridYear.getChildAt(i - 1)
+                    }
+                }
+            }
         })
 //
         todoAddViewModel.alarmTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {

@@ -301,7 +301,17 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun setRepeatVal(position: Int) {
+//        , value : Int? = null
+        // value = 0이면 0으로 바꾸고, 1이면 1로 바꾸고, null이면 그냥 값보고 판단
         val repeatValue = _repeatValue.value
+//        val changeValue =
+//            if (value != null) value.toChar()
+//            else {
+//                if (repeatValue!![position] == '1')
+//                    '0'
+//                else '1'
+//            }
+
         _repeatValue.value = if (repeatValue!![position] == '1')
             repeatValue.substring(0, position) + '0' + repeatValue.substring(position + 1)
         else repeatValue.substring(0, position) + '1' + repeatValue.substring(position + 1)

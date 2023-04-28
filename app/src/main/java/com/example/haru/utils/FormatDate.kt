@@ -254,6 +254,9 @@ object FormatDate {
                     month = i
                     cal.set(Calendar.MONTH, month)
                     if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                        Log.d("20191627", "$days")
+                        Log.d("20191627", cal.getActualMaximum(Calendar.DAY_OF_MONTH).toString())
+                        Log.d("20191627", cal.time.toString())
                         flag = true
                         cal.set(Calendar.DAY_OF_MONTH, days)
                         break
