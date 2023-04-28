@@ -31,7 +31,7 @@
     <string name="every2Week">이주</string>
     <string name="everyMonth">매월</string>
     <string name="everyYear">매년</string>
-    
+
     <string name="MonthDay">%1$d</string>
     <string name="YearMonth">%1$d월</string>
 

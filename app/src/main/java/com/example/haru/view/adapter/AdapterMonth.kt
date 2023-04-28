@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.*
+import com.example.haru.view.calendar.calendarMainData
 import com.example.haru.viewmodel.CalendarViewModel
 import org.w3c.dom.Text
 import java.text.SimpleDateFormat
@@ -40,7 +41,7 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
     RecyclerView.Adapter<AdapterMonth.MonthView>() {
     private val lifecycle = lifecycleOwner
 
-    private var todo_schedule = false
+    private var todo_schedule = true
 
     inner class MonthView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -276,329 +277,295 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
 
         calendarviewModel.liveTodoCalendarList.observe(lifecycle) { livetodo ->
             calendarviewModel.liveScheduleCalendarList.observe(lifecycle) { liveschedule ->
+                var cloneLiveTodo = livetodo as ArrayList
                 var cloneLiveSchedule = liveschedule as ArrayList
-                var scheduleCntList = ArrayList<Int>()
 
-                if(size == 4){
-                    for(i in 0..34){
-                        scheduleCntList.add(0)
+                var spanList = ArrayList<Int>()
+
+                var cntlist = ArrayList<Int>()
+                var positionplus = 0
+
+                var saveLineList = ArrayList<Int>()
+                var saveCntList = ArrayList<Int>()
+                var saveScheduleList = ArrayList<Schedule>()
+
+                loop@for (position2 in 0 until 210) {
+                    val newpostion = positionplus + position2
+
+                    if(size == 4){
+                        if(newpostion/7 in arrayOf(0,6,12,18,24,30)) continue
+                    } else if(size == 5){
+                        if(newpostion/7 in arrayOf(0,5,10,15,20,25,30)) continue
                     }
-                } else if(size == 5){
-                    for(i in 0..41){
-                        scheduleCntList.add(0)
+
+                    var contentPosition = 0
+                    var contentLine = 0
+
+                    if(size == 5) {
+                        val cyclevalue = newpostion / 35 * 7
+                        contentPosition = cyclevalue + newpostion % 7
+                        contentLine = (newpostion / 7) % 5 - 1
+
+                        if(contentLine >= 3) continue
+                    } else {
+                        val cyclevalue = newpostion / 42 * 7
+                        contentPosition = cyclevalue + newpostion % 7
+                        contentLine = (newpostion / 7) % 6 - 1
+
+                        if(contentLine >= 4) continue
                     }
-                }
 
-                for(schedule in cloneLiveSchedule){
-                    for(i in schedule.position until schedule.position+schedule.cnt){
-                        scheduleCntList[i]++
-                    }
-                }
+                    if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
+                        val index = saveLineList.indexOf(contentLine)
 
-                Log.d("scheduleCntList",scheduleCntList.toString())
+                        if (saveCntList[index] > 7) {
+                            saveCntList[index] -= 7
+                            positionplus += 6
+                            spanList.add(7)
 
-//                Log.d("cloneScheudle", cloneLiveSchedule.toString())
+                            var color = Color.rgb(0xBB ,0xE7, 0xFF)
 
-                if (todo_schedule) {
-                    for(i in 0 until livetodo.size){
-                        for(j in 0 until livetodo[i].todos.size) {
-                            if(size == 5){
-                                if (j >= 3){
-                                    addViewFunction(
-                                        holder,
-                                        "+"+(livetodo[i].todos.size - 3).toString(),
-                                        (i % 7) / 6f,
-                                        (5 * (i / 7) + (j + 1)) / 29f,
-                                        1,
-                                        Color.rgb(0xED, 0xED, 0xED),
-                                        false
-                                    )
-
-                                    break
-                                }
-                            } else if(size == 4){
-                                if(j >= 4){
-                                    addViewFunction(
-                                        holder,
-                                        "+"+(livetodo[i].todos.size - 4).toString(),
-                                        (i % 7) / 6f,
-                                        (5 * (i / 7) + (j + 1)) / 29f,
-                                        1,
-                                        Color.rgb(0xED, 0xED, 0xED),
-                                        false
-                                    )
-
-                                    break
-                                }
+                            if (saveScheduleList[index].category != null &&
+                                saveScheduleList[index].category!!.color != null){
+                                color = Color.parseColor(saveScheduleList[index].category!!.color)
                             }
 
                             if(size == 5) {
                                 addViewFunction(
                                     holder,
-                                    livetodo[i].todos[j].content,
-                                    (i % 7) / 6f,
-                                    (5 * (i / 7) + (j + 1)) / 29f,
-                                    1,
-                                    Color.rgb(0xED, 0xED, 0xED),
-                                    livetodo[i].todos[j].completed
+                                    "",
+                                    0f,
+                                    (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                    7,
+                                    color,
+                                    saveScheduleList[index].completed
                                 )
                             } else {
                                 addViewFunction(
                                     holder,
-                                    livetodo[i].todos[j].content,
-                                    (i % 7) / 6f,
-                                    (6 * (i / 7) + (j + 1)) / 29f,
+                                    "",
+                                    0f,
+                                    (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                    7,
+                                    color,
+                                    saveScheduleList[index].completed
+                                )
+                            }
+
+                            continue
+                        } else {
+                            val returncnt = saveCntList[index]
+
+                            var color = Color.rgb(0xBB ,0xE7, 0xFF)
+
+                            if (saveScheduleList[index].category != null &&
+                                saveScheduleList[index].category!!.color != null){
+                                color = Color.parseColor(saveScheduleList[index].category!!.color)
+                            }
+
+                            val completed = saveScheduleList[index].completed
+
+                            saveCntList.removeAt(index)
+                            saveScheduleList.removeAt(index)
+                            saveLineList.removeAt(index)
+
+                            positionplus += returncnt - 1
+                            spanList.add(returncnt)
+
+                            if(size == 5) {
+                                addViewFunction(
+                                    holder,
+                                    "",
+                                    0f,
+                                    (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                    returncnt,
+                                    color,
+                                    completed
+                                )
+                            } else {
+                                addViewFunction(
+                                    holder,
+                                    "",
+                                    0f,
+                                    (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                    returncnt,
+                                    color,
+                                    completed
+                                )
+                            }
+
+                            continue
+                        }
+                    }
+
+                    var returnvalue = 1
+
+                    if(calendarMainData.scheduleApply) {
+                        for (content in cloneLiveSchedule) {
+                            if(content.schedule.category != null) {
+                                if (content.schedule.category.isSelected) {
+                                    if (content.position == contentPosition) {
+                                        cloneLiveSchedule.remove(content)
+
+                                        var color = Color.rgb(0xBB, 0xE7, 0xFF)
+
+                                        if (content.schedule.category != null &&
+                                            content.schedule.category!!.color != null
+                                        ) {
+                                            color =
+                                                Color.parseColor(content.schedule.category!!.color)
+                                        }
+
+                                        if ((contentPosition + content.cnt - 1) / 7 != contentPosition / 7) {
+                                            val overflowvalue =
+                                                contentPosition + content.cnt - (contentPosition + content.cnt) / 7 * 7
+                                            saveCntList.add(overflowvalue)
+                                            saveScheduleList.add(content.schedule)
+                                            saveLineList.add(contentLine)
+
+                                            positionplus += content.cnt - overflowvalue - 1
+                                            returnvalue = content.cnt - overflowvalue
+                                            cntlist.add(returnvalue)
+
+                                            if (size == 5) {
+                                                addViewFunction(
+                                                    holder,
+                                                    content.schedule.content,
+                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                    (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                                    returnvalue,
+                                                    color,
+                                                    content.schedule.completed
+                                                )
+                                            } else {
+                                                addViewFunction(
+                                                    holder,
+                                                    content.schedule.content,
+                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                    (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                                    returnvalue,
+                                                    color,
+                                                    content.schedule.completed
+                                                )
+                                            }
+
+                                            continue@loop
+                                        }
+
+                                        positionplus += content.cnt - 1
+                                        returnvalue = content.cnt
+                                        cntlist.add(returnvalue)
+
+                                        if (size == 5) {
+                                            addViewFunction(
+                                                holder,
+                                                content.schedule.content,
+                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                                returnvalue,
+                                                color,
+                                                content.schedule.completed
+                                            )
+                                        } else {
+                                            addViewFunction(
+                                                holder,
+                                                content.schedule.content,
+                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                                returnvalue,
+                                                color,
+                                                content.schedule.completed
+                                            )
+                                        }
+
+                                        continue@loop
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (calendarMainData.todoApply) {
+                        if(cloneLiveTodo[contentPosition].todos.size > 0) {
+                            if (size == 5) {
+                                addViewFunction(
+                                    holder,
+                                    cloneLiveTodo[contentPosition].todos[0].content,
+                                    (contentPosition % 7) / 6f,
+                                    (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
                                     1,
                                     Color.rgb(0xED, 0xED, 0xED),
-                                    livetodo[i].todos[j].completed
+                                    cloneLiveTodo[contentPosition].todos[0].completed
                                 )
+                            } else {
+                                addViewFunction(
+                                    holder,
+                                    cloneLiveTodo[contentPosition].todos[0].content,
+                                    (contentPosition % 7) / 6f,
+                                    (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                    1,
+                                    Color.rgb(0xED, 0xED, 0xED),
+                                    cloneLiveTodo[contentPosition].todos[0].completed
+                                )
+                            }
+
+                            cloneLiveTodo[contentPosition].todos.removeAt(0)
+                        }
+                    }
+                }
+
+                var allCntList = ArrayList<Int>()
+
+                if(size == 4){
+                    for(i in 0..34){
+                        allCntList.add(0)
+                    }
+                } else if(size == 5){
+                    for(i in 0..41){
+                        allCntList.add(0)
+                    }
+                }
+
+                if(calendarMainData.todoApply) {
+                    for (i in 0 until cloneLiveTodo.size) {
+                        allCntList[i] += cloneLiveTodo[i].todos.size
+                    }
+                }
+
+                if(calendarMainData.scheduleApply) {
+                    for (k in 0 until cloneLiveSchedule.size) {
+                        if(cloneLiveSchedule[k].schedule.category != null) {
+                            if (cloneLiveSchedule[k].schedule.category!!.isSelected) {
+                                for (j in cloneLiveSchedule[k].position until cloneLiveSchedule[k].position + cloneLiveSchedule[k].cnt) {
+                                    allCntList[j]++
+                                }
                             }
                         }
                     }
                 }
-                else {
-                    var spanList = ArrayList<Int>()
 
-                    var cntlist = ArrayList<Int>()
-                    var positionplus = 0
-
-                    var saveLineList = ArrayList<Int>()
-                    var saveCntList = ArrayList<Int>()
-                    var saveScheduleList = ArrayList<Schedule>()
-
-                    loop@for (position2 in 0 until 210) {
-                        val newpostion = positionplus + position2
-
-                        if(size == 4){
-                            if(newpostion/7 in arrayOf(0,6,12,18,24,30)) continue
-                        } else if(size == 5){
-                            if(newpostion/7 in arrayOf(0,5,10,15,20,25,30)) continue
-                        }
-
-                        var contentPosition = 0
-                        var contentLine = 0
-
-                        if(size == 5) {
-                            val cyclevalue = newpostion / 35 * 7
-                            contentPosition = cyclevalue + newpostion % 7
-                            contentLine = (newpostion / 7) % 5 - 1
-
-                            if(contentLine >= 3) continue
-                        } else {
-                            val cyclevalue = newpostion / 42 * 7
-                            contentPosition = cyclevalue + newpostion % 7
-                            contentLine = (newpostion / 7) % 6 - 1
-
-                            if(contentLine >= 4) continue
-                        }
-
-                        if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
-                            val index = saveLineList.indexOf(contentLine)
-
-                            if (saveCntList[index] > 7) {
-                                saveCntList[index] -= 7
-                                positionplus += 6
-                                spanList.add(7)
-
-                                var color = Color.rgb(0xBB ,0xE7, 0xFF)
-
-                                if (saveScheduleList[index].category != null &&
-                                    saveScheduleList[index].category!!.color != null){
-                                    color = Color.parseColor(saveScheduleList[index].category!!.color)
-                                }
-
-                                if(size == 5) {
-                                    addViewFunction(
-                                        holder,
-                                        "",
-                                        0f,
-                                        (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                        7,
-                                        color,
-                                        saveScheduleList[index].completed
-                                    )
-                                } else {
-                                    addViewFunction(
-                                        holder,
-                                        "",
-                                        0f,
-                                        (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                        7,
-                                        color,
-                                        saveScheduleList[index].completed
-                                    )
-                                }
-
-                                for(i in contentPosition until contentPosition+7){
-                                    scheduleCntList[i]--
-                                }
-
-                                continue
-                            } else {
-                                val returncnt = saveCntList[index]
-
-                                var color = Color.rgb(0xBB ,0xE7, 0xFF)
-
-                                if (saveScheduleList[index].category != null &&
-                                    saveScheduleList[index].category!!.color != null){
-                                    color = Color.parseColor(saveScheduleList[index].category!!.color)
-                                }
-
-                                val completed = saveScheduleList[index].completed
-
-                                saveCntList.removeAt(index)
-                                saveScheduleList.removeAt(index)
-                                saveLineList.removeAt(index)
-
-                                positionplus += returncnt - 1
-                                spanList.add(returncnt)
-
-                                if(size == 5) {
-                                    addViewFunction(
-                                        holder,
-                                        "",
-                                        0f,
-                                        (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                        returncnt,
-                                        color,
-                                        completed
-                                    )
-                                } else {
-                                    addViewFunction(
-                                        holder,
-                                        "",
-                                        0f,
-                                        (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                        returncnt,
-                                        color,
-                                        completed
-                                    )
-                                }
-
-                                for(i in contentPosition until contentPosition+returncnt){
-                                    scheduleCntList[i]--
-                                }
-
-                                continue
-                            }
-                        }
-
-                        var returnvalue = 1
-
-                        for (content in cloneLiveSchedule) {
-                            if (content.position == contentPosition) {
-//                                Log.d("확인용", "newPosition:"+newpostion.toString())
-//                                Log.d("확인용", "contentPosition: "+contentPosition.toString())
-//                                Log.d("확인용", "contentLine: "+contentLine.toString())
-//                                Log.d("확인용", "content:"+content.schedule.content)
-
-                                cloneLiveSchedule.remove(content)
-
-                                var color = Color.rgb(0xBB ,0xE7, 0xFF)
-
-                                if (content.schedule.category != null &&
-                                    content.schedule.category!!.color != null){
-                                    color = Color.parseColor(content.schedule.category!!.color)
-                                }
-
-                                if ((contentPosition + content.cnt - 1) / 7 != contentPosition / 7) {
-                                    val overflowvalue =
-                                        contentPosition + content.cnt - (contentPosition + content.cnt) / 7 * 7
-                                    saveCntList.add(overflowvalue)
-                                    saveScheduleList.add(content.schedule)
-                                    saveLineList.add(contentLine)
-
-                                    positionplus += content.cnt - overflowvalue - 1
-                                    returnvalue = content.cnt - overflowvalue
-                                    cntlist.add(returnvalue)
-
-                                    if(size == 5) {
-                                        addViewFunction(
-                                            holder,
-                                            content.schedule.content,
-                                            (contentPosition % 7) / (7-returnvalue).toFloat(),
-                                            (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                            returnvalue,
-                                            color,
-                                            content.schedule.completed
-                                        )
-                                    } else {
-                                        addViewFunction(
-                                            holder,
-                                            content.schedule.content,
-                                            (contentPosition % 7) / (7-returnvalue).toFloat(),
-                                            (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                            returnvalue,
-                                            color,
-                                            content.schedule.completed
-                                        )
-                                    }
-
-                                    for(i in contentPosition until contentPosition+returnvalue){
-                                        scheduleCntList[i]--
-                                    }
-
-                                    continue@loop
-                                }
-
-                                positionplus += content.cnt - 1
-                                returnvalue = content.cnt
-                                cntlist.add(returnvalue)
-
-                                if(size == 5) {
-                                    addViewFunction(
-                                        holder,
-                                        content.schedule.content,
-                                        (contentPosition % 7) / (7-returnvalue).toFloat(),
-                                        (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                        returnvalue,
-                                        color,
-                                        content.schedule.completed
-                                    )
-                                } else {
-                                    addViewFunction(
-                                        holder,
-                                        content.schedule.content,
-                                        (contentPosition % 7) / (7-returnvalue).toFloat(),
-                                        (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                        returnvalue,
-                                        color,
-                                        content.schedule.completed
-                                    )
-                                }
-
-                                for(i in contentPosition until contentPosition+returnvalue){
-                                    scheduleCntList[i]--
-                                }
-
-                                continue@loop
-                            }
-                        }
-                    }
-
-                    for(i in 0 until scheduleCntList.size){
-                        if(scheduleCntList[i] > 0){
-                            if(size==5) {
-                                addViewFunction(
-                                    holder,
-                                    "+" + scheduleCntList[i].toString(),
-                                    (i % 7) / 6f,
-                                    (5 * (i / 7) + 4) / 29f,
-                                    1,
-                                    Color.rgb(0xED, 0xED, 0xED),
-                                    false
-                                )
-                            } else if(size == 4){
-                                addViewFunction(
-                                    holder,
-                                    "+" + scheduleCntList[i].toString(),
-                                    (i % 7) / 6f,
-                                    (6 * (i / 7) + 5) / 29f,
-                                    1,
-                                    Color.rgb(0xED, 0xED, 0xED),
-                                    false
-                                )
-                            }
+                for(i in 0 until allCntList.size) {
+                    if (allCntList[i] > 0) {
+                        if (size == 5) {
+                            addViewFunction(
+                                holder,
+                                "+" + allCntList[i].toString(),
+                                (i % 7) / 6f,
+                                (5 * (i / 7) + 4) / 29f,
+                                1,
+                                Color.rgb(0xED, 0xED, 0xED),
+                                false
+                            )
+                        } else if (size == 4) {
+                            addViewFunction(
+                                holder,
+                                "+" + allCntList[i].toString(),
+                                (i % 7) / 6f,
+                                (6 * (i / 7) + 5) / 29f,
+                                1,
+                                Color.rgb(0xED, 0xED, 0xED),
+                                false
+                            )
                         }
                     }
                 }

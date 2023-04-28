@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.AllDoRepository
+import com.example.haru.data.repository.CategoryRepository
 import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
@@ -17,12 +18,53 @@ class CalendarViewModel : ViewModel() {
 //    private val todoRepository = TodoRepository()
 //    private val scheduleRepository = ScheduleRepository()
     private val alldoRepository = AllDoRepository()
+    private val categoryRepository = CategoryRepository()
+    private val ScheduleRepository = ScheduleRepository()
+
+    val _liveCategoryList = MutableLiveData<List<Category>>()
+    val liveCategoryList: MutableLiveData<List<Category>> get() = _liveCategoryList
 
     val _liveTodoCalendarList = MutableLiveData<List<CalendarTodo>>()
     val liveTodoCalendarList: MutableLiveData<List<CalendarTodo>> get() = _liveTodoCalendarList
 
     val _liveScheduleCalendarList = MutableLiveData<List<ScheduleCalendarData>>()
     val liveScheduleCalendarList: MutableLiveData<List<ScheduleCalendarData>> get() = _liveScheduleCalendarList
+
+    fun getCategories(){
+        viewModelScope.launch {
+            categoryRepository.getCategories {
+                _liveCategoryList.postValue(it)
+            }
+        }
+    }
+
+    fun postCategory(content: String, color: String, callback:(category: Category?) -> Unit){
+        viewModelScope.launch {
+            categoryRepository.postCategory(content, color){
+                callback(it)
+            }
+        }
+    }
+
+    fun postSchedule(body: PostSchedule, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.postSchedule(body){
+                callback()
+            }
+        }
+    }
+
+    fun updateCategory(updateCategory: Category){
+        viewModelScope.launch {
+            categoryRepository.updateCategory(updateCategory){}
+        }
+    }
+
+    fun deleteCategory(categoryId: String){
+        viewModelScope.launch {
+            categoryRepository.deleteCategory(categoryId){}
+        }
+    }
 
     fun init_viewModel(startDate: String, endDate: String, maxi: Int){
         getAlldo(startDate, endDate, maxi)
