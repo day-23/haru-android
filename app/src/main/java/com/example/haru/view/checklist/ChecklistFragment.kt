@@ -218,8 +218,17 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                                 todo.repeatEnd
                             )
                         }
-                        "2주마다" -> {null}
-                        "매월" -> {null}
+                        "2주마다" -> {
+                            FormatDate.nextEndDateEveryWeek(
+                                todo.repeatValue!!,
+                                2,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
+                        }
+                        "매월" -> {
+                            FormatDate.nextEndDateEveryMonth(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                        }
                         "매년" -> {null}
                         else -> null
                     }
