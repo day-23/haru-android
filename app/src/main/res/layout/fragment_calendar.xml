@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -12,76 +12,77 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardElevation="0dp"
-            app:cardUseCompatPadding="true"
-            app:contentPadding="20sp">
-
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="20sp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="7"
-                        android:layout_height="wrap_content">
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/item_month_btn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2023년 3월"
-                            android:textColor="@color/black"
-                            android:textSize="28sp"
-                            android:textStyle="bold"
-                            android:background="#FFFFFF"
-                            android:drawableRight="@drawable/down_arrow"/>
-                    </FrameLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="28sp"
-                        android:layout_height="28sp"
-                        android:background="@drawable/calendar_today_background_image"
-                        android:layout_gravity="center">
-
-                        <TextView
-                            android:id="@+id/calendar_today_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="6"
-                            android:textColor="#2CA4FF"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <ImageView
-                        android:id="@+id/category_button_imv"
-                        android:background="@drawable/calendar_category"
-                        android:backgroundTint="@color/black"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:layout_height="40sp"/>
-                </LinearLayout>
-
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/month_viewpager"
-                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#00000000"
-                    android:orientation="horizontal" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="7"
+                            android:layout_height="wrap_content">
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/item_month_btn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2023년 3월"
+                                android:textColor="@color/black"
+                                android:textSize="28sp"
+                                android:textStyle="bold"
+                                android:background="#FFFFFF"
+                                android:drawableRight="@drawable/down_arrow"/>
+                        </FrameLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="28sp"
+                            android:layout_height="28sp"
+                            android:background="@drawable/calendar_today_background_image"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:id="@+id/calendar_today_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="6"
+                                android:textColor="#2CA4FF"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <ImageView
+                            android:id="@+id/category_button_imv"
+                            android:background="@drawable/calendar_category"
+                            android:backgroundTint="@color/black"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_gravity="center"
+                            android:layout_height="40sp"/>
+                    </LinearLayout>
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/month_viewpager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#00000000"
+                        android:orientation="horizontal" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <LinearLayout
                 android:layout_width="373sp"
                 android:layout_height="600sp"
@@ -260,13 +261,45 @@
             android:id="@+id/btn_add_todo_incalendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_add_schedule_incalendar"
+            app:maxImageSize="56dp"
+            app:srcCompat="@drawable/fab"
+            app:tint="@null" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_add_schedule_incalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="8dp"
             android:clickable="true"
             app:borderWidth="0dp"
             app:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_add_main_incalendar"
             app:maxImageSize="56dp"
             app:srcCompat="@drawable/fab"
             app:tint="@null" />
-    </FrameLayout>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_add_main_incalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:maxImageSize="56dp"
+            app:srcCompat="@drawable/fab"
+            app:tint="@null" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

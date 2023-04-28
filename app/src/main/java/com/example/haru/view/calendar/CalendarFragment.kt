@@ -27,6 +27,7 @@ import com.example.haru.data.model.Schedule
 import com.example.haru.databinding.FragmentCalendarBinding
 import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.view.adapter.CategoryAdapter
+import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.view.checklist.ChecklistInputFragment
 import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.CheckListViewModel
@@ -105,7 +106,9 @@ class CalendarFragment : Fragment() {
 
         val categoryRecyclerView = view.findViewById<RecyclerView>(R.id.category_recyclerView)
 
+        val btnAddScheduleInCalendar = view.findViewById<FloatingActionButton>(R.id.btn_add_schedule_incalendar)
         val btnAddTodoInCalendar = view.findViewById<FloatingActionButton>(R.id.btn_add_todo_incalendar)
+        val btnAddMainInCalendar = view.findViewById<FloatingActionButton>(R.id.btn_add_main_incalendar)
 
         val todoApplyLayout = view.findViewById<LinearLayout>(R.id.todo_apply_layout)
         val todoApplyImv = view.findViewById<ImageView>(R.id.todo_apply_imv)
@@ -202,6 +205,7 @@ class CalendarFragment : Fragment() {
             categoryDrawerLayout.closeDrawer(Gravity.RIGHT)
         }
 
+        //모두 잠그기
         allBlindTv.setOnClickListener {
             var changeStatus = false
 
@@ -235,6 +239,7 @@ class CalendarFragment : Fragment() {
             }
         }
 
+        //달 선택 버튼
         item_month_btn.setOnClickListener {
             val today = GregorianCalendar()
             val year: Int = today.get(Calendar.YEAR)
@@ -253,14 +258,16 @@ class CalendarFragment : Fragment() {
             }, year, month, date)
             dlg.show()
         }
-
+        
+        //오늘 날짜 버튼
         calendarTodayTv.text = calendar.time.date.toString()
-
+        
         calendarTodayTv.setOnClickListener{
             month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
             item_month_btn.text = "${Date().year+1900}년 ${Date().month+1}월"
         }
 
+        //카테고리 메뉴 버튼
         categoryButtonImv.setOnClickListener{
             if(!categoryDrawerLayout.isDrawerOpen(Gravity.RIGHT)){
                 categoryDrawerLayout.openDrawer(Gravity.RIGHT)
@@ -269,16 +276,27 @@ class CalendarFragment : Fragment() {
             }
         }
 
+        //카테고리 추가 버튼
         categoryAddImage.setOnClickListener{
             val intent = Intent(view.context, CategoryAddActivity::class.java)
             resultLauncher.launch(intent)
         }
+        
+        //추가 버튼 3개
+        btnAddMainInCalendar.setOnClickListener {
 
+        }
+        
         btnAddTodoInCalendar.setOnClickListener {
             val todoInput = ChecklistInputFragment(checkListViewModel)
             todoInput.show(parentFragmentManager, todoInput.tag)
         }
 
+        btnAddScheduleInCalendar.setOnClickListener {
+            val scheduleInput = CalendarAddFragment()
+            scheduleInput.show(parentFragmentManager, scheduleInput.tag)
+        }
+        
         month_viewpager.layoutParams = LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT

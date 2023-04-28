@@ -40,6 +40,7 @@ class CategoryAdapter(val categoryList: ArrayList<Category>, private val onItemC
     fun dataDelete(index: Int){
         categoryList.removeAt(index)
         notifyItemRemoved(index)
+        notifyItemRangeRemoved(index, 1)
     }
 
     fun dataAdd(category: Category){

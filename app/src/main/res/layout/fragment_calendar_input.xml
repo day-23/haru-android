@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".view.calendar.CalendarAddFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="30dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btn_close_schedule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/todo_description"
+                android:background="@drawable/cancel_icon" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/btn_submit_schedule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/todo_description"
+                android:background="@drawable/check_icon" />
+
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="27dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginBottom="14dp"
+                    android:orientation="horizontal">
+
+
+                    <EditText
+                        android:id="@+id/schedule_content_et"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:hint="일정 입력"
+                        android:inputType="text"
+                        android:textColorHint="@color/light_gray"
+                        android:textSize="24sp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:background="@color/light_gray" />
+
+                <LinearLayout
+                    style="@style/linearBorderLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/linear_border_up_bottom"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="28sp"
+                        android:layout_height="28sp"
+                        android:background="@drawable/category_image" />
+
+                    <TextView
+                        android:id="@+id/tag_et"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="@android:color/transparent"
+                        android:text=""
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:background="@drawable/linear_border_up_bottom">
+
+                    <LinearLayout
+                        style="@style/linearBorderLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/big_today_icon" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:text="하루 종일"
+                            android:textColor="@color/light_gray"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/today_switch"
+                            style="@style/minSize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:thumb="@drawable/custom_switch_thumb"
+                            app:track="@drawable/custom_switch" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="20dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/repeatStart_Date_Btn"
+                                style="@style/minSize"
+                                android:text="2023.03.14 화"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/custom_btn_date"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp"
+                                app:backgroundTint="@null" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/repeatStart_Time_Btn"
+                                style="@style/minSize"
+                                android:text="오전 05:12"
+                                android:layout_marginTop="10dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/custom_btn_date"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp"
+                                app:backgroundTint="@null" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/repeatEnd_Date_Btn"
+                                style="@style/minSize"
+                                android:text="2023.03.14 화"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/custom_btn_date"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp"
+                                app:backgroundTint="@null" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/repeatEnd_Time_Btn"
+                                style="@style/minSize"
+                                android:text="오전 05:12"
+                                android:layout_marginTop="10dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/custom_btn_date"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp"
+                                app:backgroundTint="@null" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/linearBorderLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:background="@drawable/linear_border_up_bottom"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/big_alarm_icon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:text="@string/alarm_set"
+                        android:textColor="@color/light_gray"
+                        android:textSize="14sp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_alarmDate_pick_schedule"
+                        style="@style/minSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/custom_btn_date"
+                        android:textColor="@color/date_text"
+                        android:textSize="14sp"
+                        android:visibility="invisible"
+                        app:backgroundTint="@null" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_alarmTime_pick_schedule"
+                        style="@style/minSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/custom_btn_date"
+                        android:textColor="@color/date_text"
+                        android:textSize="14sp"
+                        android:visibility="invisible"
+                        app:backgroundTint="@null" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/alarm_switch_schedule"
+                        style="@style/minSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        android:thumb="@drawable/custom_switch_thumb"
+                        app:track="@drawable/custom_switch" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/repeatSetLayout_schedule"
+                    style="@style/linearBorderLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:background="@drawable/linear_border_up_bottom"
+                    android:orientation="vertical">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/big_repeat_icon" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:text="@string/repeat_set"
+                            android:textColor="@color/light_gray"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/repeat_switch_schedule"
+                            style="@style/minSize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:thumb="@drawable/custom_switch_thumb"
+                            app:track="@drawable/custom_switch" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:animateLayoutChanges="true"
+                        android:paddingTop="8dp">
+
+                        <LinearLayout
+                            android:id="@+id/repeatOptionSelect_schedule"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="35dp"
+                            android:layout_marginEnd="55dp"
+                            android:animateLayoutChanges="true"
+                            android:background="@drawable/btn_group_custom"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_everyDay_schedule"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/everyDay"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_everyWeek_schedule"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/everyWeek"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_every2Week_schedule"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/every2Week"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_everyMonth_schedule"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/everyMonth"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btn_everyYear_schedule"
+                                style="@style/minSize"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat_btn_custom"
+                                android:backgroundTint="@android:color/transparent"
+                                android:outlineProvider="none"
+                                android:text="@string/everyYear"
+                                android:textColor="@color/date_text"
+                                android:textSize="14sp" />
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginEnd="55dp"
+                        android:animateLayoutChanges="true"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp">
+
+                        <TextView
+                            android:id="@+id/tv_monday_schedule"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Monday"
+                            android:textColor="@color/date_text" />
+
+                        <TextView
+                            android:id="@+id/tv_tuesday_schedule"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Tuesday"
+                            android:textColor="@color/date_text" />
+
+                        <TextView
+                            android:id="@+id/tv_wednesday_schedule"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Wednesday"
+                            android:textColor="@color/date_text" />
+
+                        <TextView
+                            android:id="@+id/tv_thursday_schedule"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Thursday"
+                            android:textColor="@color/date_text" />
+
+                        <TextView
+                            android:id="@+id/tv_friday_schedule"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Friday"
+                            android:textColor="@color/date_text" />
+
+                        <TextView
+                            android:id="@+id/tv_saturday_schedule"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Saturday"
+                            android:textColor="@color/date_text" />
+
+                        <TextView
+                            android:id="@+id/tv_sunday_schedule"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Sunday"
+                            android:textColor="@color/date_text" />
+
+                    </LinearLayout>
+
+                    <GridLayout
+                        android:id="@+id/gridMonth_schedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginEnd="55dp"
+                        android:alignmentMode="alignBounds"
+                        android:columnCount="7"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:rowCount="5"
+                        android:useDefaultMargins="true" />
+
+
+                    <GridLayout
+                        android:id="@+id/gridYear_schedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginEnd="55dp"
+                        android:alignmentMode="alignBounds"
+                        android:columnCount="6"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp"
+                        android:rowCount="2"
+                        android:useDefaultMargins="true" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:animateLayoutChanges="true"
+                        android:paddingTop="14dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="38dp"
+                            android:layout_weight="1"
+                            android:text="@string/repeat_endDate_set"
+                            android:textColor="@color/light_gray"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_repeat_end_date_schedule"
+                            style="@style/minSize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/custom_btn_date"
+                            android:textColor="@color/date_text"
+                            android:textSize="14sp"
+                            android:visibility="invisible"
+                            app:backgroundTint="@null" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/repeatEndDate_switch_schedule"
+                            style="@style/minSize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="20dp"
+                            android:thumb="@drawable/custom_switch_thumb"
+                            app:track="@drawable/custom_switch" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/linearBorderLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/linear_border_up_bottom"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_memo_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/big_memo_icon" />
+
+                    <EditText
+                        android:id="@+id/et_memo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="72dp"
+                        android:background="@android:color/transparent"
+                        android:ems="10"
+                        android:hint="@string/memo_set"
+                        android:inputType="textMultiLine"
+                        android:scrollbars="vertical"
+                        android:textColorHint="@color/light_gray"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+</layout>
