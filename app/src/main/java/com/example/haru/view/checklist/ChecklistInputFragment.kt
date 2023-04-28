@@ -543,7 +543,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     FormatDate.cal.time = date
                     date = when (todoAddViewModel.repeatValue.value?.length) {
                         1 -> FormatDate.cal.time
-                        7 -> FormatDate.nextEndDateEveryWeek(todoAddViewModel.repeatValue.value!!)
+                        7 -> FormatDate.nextEndDateEveryWeek(todoAddViewModel.repeatValue.value!!, todoAddViewModel.repeatOption.value)
                         31 -> FormatDate.nextEndDateEveryMonth(todoAddViewModel.repeatValue.value!!)
                         12 -> FormatDate.nextEndDateEveryYear(todoAddViewModel.repeatValue.value!!)
                         else -> FormatDate.cal.time

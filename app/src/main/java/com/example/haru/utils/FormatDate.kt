@@ -89,7 +89,11 @@ object FormatDate {
         return Date.from(instant)
     }
 
-    fun nextEndDateEveryWeek(repeatValue : String) : Date {
+    fun nextEndDateEveryWeek(repeatValue : String, repeatOption : Int?) : Date {
+        var plusValue = 1
+        if (repeatOption == 2){
+            plusValue = 8
+        }
         val nWeek = cal.get(Calendar.DAY_OF_WEEK)
         val idx = nWeek - 1
         var flag = false
@@ -102,7 +106,7 @@ object FormatDate {
         if (!flag) {
             for (i in 0 until idx)
                 if (repeatValue[i] == '1') {
-                    val value = 6 - idx + i + 1
+                    val value = 6 - idx + i + plusValue
                     cal.add(Calendar.DATE, value)
                     break
                 }
