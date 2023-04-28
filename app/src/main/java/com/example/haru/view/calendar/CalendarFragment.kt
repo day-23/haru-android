@@ -315,7 +315,7 @@ class CalendarFragment : Fragment() {
         }
 
         btnAddScheduleInCalendar.setOnClickListener {
-            val scheduleInput = CalendarAddFragment()
+            val scheduleInput = CalendarAddFragment(categoryAdapter.categoryList, adapterMonth)
             scheduleInput.show(parentFragmentManager, scheduleInput.tag)
         }
         

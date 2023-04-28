@@ -19,6 +19,7 @@ class CalendarViewModel : ViewModel() {
 //    private val scheduleRepository = ScheduleRepository()
     private val alldoRepository = AllDoRepository()
     private val categoryRepository = CategoryRepository()
+    private val ScheduleRepository = ScheduleRepository()
 
     val _liveCategoryList = MutableLiveData<List<Category>>()
     val liveCategoryList: MutableLiveData<List<Category>> get() = _liveCategoryList
@@ -41,6 +42,14 @@ class CalendarViewModel : ViewModel() {
         viewModelScope.launch {
             categoryRepository.postCategory(content, color){
                 callback(it)
+            }
+        }
+    }
+
+    fun postSchedule(body: PostSchedule, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.postSchedule(body){
+                callback()
             }
         }
     }
