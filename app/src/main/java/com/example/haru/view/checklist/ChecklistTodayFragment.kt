@@ -95,23 +95,39 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                 if (todo.completed || todo.repeatOption == null)
                     checkListViewModel.updateNotRepeatTodo(completed, id)
                 else {
-                    when(todo.repeatOption){
+                    val nextEndDate = when (todo.repeatOption) {
                         "매일" -> {
-                            val nextEndDate = FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
-
-                            if (nextEndDate != null){  // nextEndDate가 null이 아니라면 다음 반복이 있다는 의미
-                                val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                                checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
-                            } else // null이라면 반복 종료
-                                checkListViewModel.updateNotRepeatTodo(completed, id)
+                            FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
                         }
                         "매주" -> {
-
+                            FormatDate.nextEndDateEveryWeek(
+                                todo.repeatValue!!,
+                                1,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
                         }
-                        "2주마다" -> {}
-                        "매월" -> {}
-                        "매년" -> {}
+                        "2주마다" -> {
+                            FormatDate.nextEndDateEveryWeek(
+                                todo.repeatValue!!,
+                                2,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
+                        }
+                        "매월" -> {
+                            FormatDate.nextEndDateEveryMonth(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                        }
+                        "매년" -> {
+                            FormatDate.nextEndDateEveryYear(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                        }
+                        else -> null
                     }
+                    if (nextEndDate != null) {
+                        val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
+                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
+                    } else
+                        checkListViewModel.updateNotRepeatTodo(completed, id)
                 }
             }
         }
