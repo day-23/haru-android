@@ -371,7 +371,16 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData = todoRepository.updateRepeatTodo(todoId = id, endDate = endDate) {
                 if (it.success) {
-
+                    if (todayList.isNotEmpty()){
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                            set(Calendar.SECOND, 59) // 초를 59초로 설정
+                        }
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        getTodayTodo(todayEndDate) {}
+                    }
+                    withTagUpdate()
                 }
             }
         }

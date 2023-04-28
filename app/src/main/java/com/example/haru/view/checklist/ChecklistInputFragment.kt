@@ -331,7 +331,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             when (it) {
                 true -> {
                     if (todoAddViewModel.endDateSwitch.value != true){
-
                         todoAddViewModel.setEndDateSwitch()
                     }
 
@@ -541,10 +540,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     todoAddViewModel.setDate(0, Date())
                     return@Observer
                 } else {
-                    var date = Date()
-                    FormatDate.cal.time = date
-                    date = when (todoAddViewModel.repeatValue.value?.length) {
-                        1 -> FormatDate.cal.time
+                    val date = when (todoAddViewModel.repeatValue.value?.length) {
+                        1 -> {
+                            FormatDate.cal.time = Date()
+                            FormatDate.cal.time
+                        }
                         7 -> FormatDate.nextEndDateEveryWeek(todoAddViewModel.repeatValue.value!!, todoAddViewModel.repeatOption.value)
                         31 -> FormatDate.nextEndDateEveryMonth(todoAddViewModel.repeatValue.value!!)
                         12 -> FormatDate.nextEndDateEveryYear(todoAddViewModel.repeatValue.value!!)

@@ -60,7 +60,7 @@ object FormatDate {
         return time.format(localTimeFormatter)
     }
 
-    fun dateToGMT(str: String) : String{
+    fun dateToGMT(str: String): String {
         val time = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(-diff)
         return time.toString()
     }
@@ -78,20 +78,46 @@ object FormatDate {
         return simpleFormatterTime.format(date)
     }
 
-    fun simpleTodayToStr(date: Date) : String{
+    fun simpleTodayToStr(date: Date): String {
         return simpleFormatterKorea.format(date)
     }
 
     // String으로 된 날짜 정보에 local Date와 그리니치 시간대의 차이를 더해서 Date 타입으로 반환
-    fun strToDate(str: String) : Date{
+    fun strToDate(str: String): Date {
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         val instant = date.atZone(ZoneId.systemDefault()).toInstant()
         return Date.from(instant)
     }
 
-    fun nextEndDateEveryWeek(repeatValue : String, repeatOption : Int?) : Date {
+    fun nextEndDate(endDateStr: String?, repeatEndDateStr: String?): Date? {
+        if (endDateStr == null)
+            return null
+        val endDate = strToDate(endDateStr)
+        cal.apply {
+            time = endDate
+            add(Calendar.DATE, 1)
+        }
+        val nextEndDate = cal.time
+
+        if (repeatEndDateStr != null) {
+            cal.apply {
+                time = strToDate(repeatEndDateStr)
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+            }
+            val repeatEndDate = cal.time
+            return if (!nextEndDate.after(repeatEndDate))
+                nextEndDate
+            else null
+        }
+        return nextEndDate
+    }
+
+    fun nextEndDateEveryWeek(repeatValue: String, repeatOption: Int?): Date {
+        cal.time = Date()
         var plusValue = 1
-        if (repeatOption == 2){
+        if (repeatOption == 2) {
             plusValue = 8
         }
         val nWeek = cal.get(Calendar.DAY_OF_WEEK)
@@ -114,7 +140,8 @@ object FormatDate {
         return cal.time
     }
 
-    fun nextEndDateEveryMonth(repeatValue : String) : Date {
+    fun nextEndDateEveryMonth(repeatValue: String): Date {
+        cal.time = Date()
         val idx = cal.get(Calendar.DAY_OF_MONTH) - 1
         var flag = false
         var days = 32
@@ -145,7 +172,8 @@ object FormatDate {
         return cal.time
     }
 
-    fun nextEndDateEveryYear(repeatValue: String) : Date {
+    fun nextEndDateEveryYear(repeatValue: String): Date {
+        cal.time = Date()
         val idx = cal.get(Calendar.MONTH)
         val days = cal.get(Calendar.DAY_OF_MONTH)
         var month = 13

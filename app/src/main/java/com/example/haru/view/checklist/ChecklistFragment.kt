@@ -206,10 +206,21 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 if (todo.completed || todo.repeatOption == null)
                     checkListViewModel.updateNotRepeatTodo(completed, id)
                 else {
+                    when(todo.repeatOption){
+                        "매일" -> {
+                            val nextEndDate = FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
 
-
-//                    val endDate = EndDate()
-//                    checkListViewModel.updateRepeatTodo(id, endDate)
+                            if (nextEndDate != null){
+                                val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
+                                checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
+                            } else
+                                checkListViewModel.updateNotRepeatTodo(completed, id)
+                        }
+                        "매주" -> {}
+                        "2주마다" -> {}
+                        "매월" -> {}
+                        "매년" -> {}
+                    }
                 }
 
             }

@@ -9,10 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Completed
-import com.example.haru.data.model.Flag
-import com.example.haru.data.model.Folded
-import com.example.haru.data.model.Todo
+import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentChecklistTodayBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TodoAdapter
@@ -97,7 +94,23 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
 
                 if (todo.completed || todo.repeatOption == null)
                     checkListViewModel.updateNotRepeatTodo(completed, id)
-                else {}
+                else {
+                    when(todo.repeatOption){
+                        "매일" -> {
+                            val nextEndDate = FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
+
+                            if (nextEndDate != null){
+                                val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
+                                checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
+                            } else
+                                checkListViewModel.updateNotRepeatTodo(completed, id)
+                        }
+                        "매주" -> {}
+                        "2주마다" -> {}
+                        "매월" -> {}
+                        "매년" -> {}
+                    }
+                }
             }
         }
 
