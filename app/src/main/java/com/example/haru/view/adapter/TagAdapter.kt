@@ -19,7 +19,7 @@ import com.example.haru.databinding.FragmentChecklistTagHeaderBinding
 
 class TagAdapter(val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var clickedPosition : Int? = null
+    private var clickedPosition : Int? = null
 
     val HEADER = 0
     val ITEM = 1
@@ -74,6 +74,11 @@ class TagAdapter(val context: Context) :
                 if (tagClick != null) {
                     holder.binding.tagHeader.setOnClickListener {
                         tagClick?.onClick(it, position)
+
+                        if (clickedPosition != null){
+                            data[clickedPosition!! - 1].clicked = false
+                            notifyItemChanged(clickedPosition!!)
+                        }
                     }
                 }
             }
@@ -88,7 +93,7 @@ class TagAdapter(val context: Context) :
                             notifyItemChanged(clickedPosition!!)
                         }
 
-                        clickedPosition = position
+                        setTagPosition(position)
                         data[position - 1].clicked = true
                         holder.binding.tagBtn.background =
                             ContextCompat.getDrawable(context, R.drawable.tag_btn_clicked)
@@ -127,6 +132,9 @@ class TagAdapter(val context: Context) :
     inner class HeaderViewHolder(val binding: FragmentChecklistTagHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {}
 
+    fun setTagPosition(position : Int?){
+        clickedPosition = position
+    }
     fun setDataList(dataList: List<Tag>) {
         this.data = dataList
         notifyDataSetChanged()

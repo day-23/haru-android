@@ -143,22 +143,17 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
         // subTodo 관련 UI Update
         todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (todoAddViewModel.subTodoCnt > binding.infoSubTodoLayout.childCount) {
-                Log.d("20191627", "나 눌렸다.")
-                for(i in binding.infoSubTodoLayout.childCount until todoAddViewModel.subTodoCnt){
+            if (todoAddViewModel.subTodoCnt > binding.infoSubTodoLayout.childCount - 1) {
+                for(i in binding.infoSubTodoLayout.childCount - 1 until todoAddViewModel.subTodoCnt){
                     val layoutInflater =
                         context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val addView = layoutInflater.inflate(R.layout.subtodo_input_layout, null)
 
-                    addView.findViewById<ImageView>(R.id.iv_subTodo_plus).setOnClickListener{
-                        todoAddViewModel.setSubTodoPosition(binding.infoSubTodoLayout.indexOfChild(addView))
-                        todoAddViewModel.plusSubTodo()
-                    }
                     addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
                         todoAddViewModel.setSubTodoPosition(binding.infoSubTodoLayout.indexOfChild(addView))
                         todoAddViewModel.deleteSubTodo()
                     }
-                    addView.findViewById<EditText>(R.id.et_subTodo).setText(todoAddViewModel.subTodos[todoAddViewModel.subTodoClickPosition + 1])
+                    addView.findViewById<EditText>(R.id.et_subTodo).setText(todoAddViewModel.subTodos[i])
                     addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object :
                         TextWatcher {
                         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -167,7 +162,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                             todoAddViewModel.subTodos[binding.infoSubTodoLayout.indexOfChild(addView)] = e.toString()
                         }
                     })
-                    binding.infoSubTodoLayout.addView(addView, todoAddViewModel.subTodoClickPosition + 1)
+                    binding.infoSubTodoLayout.addView(addView, binding.infoSubTodoLayout.childCount - 1)
                     todoAddViewModel.subTodoClickPosition++
                 }
             }else binding.infoSubTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
@@ -309,7 +304,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                         color
                     )
                 )
-                binding.btnInfoRepeatEndDate.visibility = if (it) View.VISIBLE else View.GONE
+                binding.btnInfoRepeatEndDate.visibility = if (it) View.VISIBLE else View.INVISIBLE
             })
 
         // repeat EndDate 관련 UI Update
@@ -322,6 +317,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
         // complete click event
         binding.cbInfoCompleted.setOnClickListener(BtnClickListener())
+
+        binding.infoSubTodoAddLayout.setOnClickListener(BtnClickListener())
 
         // today Todo switch click event
         binding.infoTodaySwitch.setOnClickListener(BtnClickListener())
@@ -343,6 +340,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         // repeat Switch 토글 버튼
         binding.infoRepeatSwitch.setOnClickListener(BtnClickListener())
 
+        binding.btnInfoRepeatEndDate.setOnClickListener(BtnClickListener())
         binding.infoRepeatEndDateSwitch.setOnClickListener(BtnClickListener())
 
         // repeat Option 선택 버튼
@@ -370,6 +368,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
             when (v?.id) {
                 binding.cbInfoFlag.id -> todoAddViewModel.setFlagTodo()
                 binding.cbInfoCompleted.id -> todoAddViewModel.setCompleteTodo()
+
+                binding.infoSubTodoAddLayout.id -> todoAddViewModel.plusSubTodo()
 
                 binding.infoTodaySwitch.id -> todoAddViewModel.setTodayTodo()
 
@@ -450,17 +450,17 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                 binding.btnInfoEveryMonth.id -> todoAddViewModel.setRepeatOpt(3)
                 binding.btnInfoEveryYear.id -> todoAddViewModel.setRepeatOpt(4)
 
-                binding.tvInfoMonday.id -> todoAddViewModel.setRepeatVal(0)
-                binding.tvInfoTuesday.id -> todoAddViewModel.setRepeatVal(1)
-                binding.tvInfoWednesday.id -> todoAddViewModel.setRepeatVal(2)
-                binding.tvInfoThursday.id -> todoAddViewModel.setRepeatVal(3)
-                binding.tvInfoFriday.id -> todoAddViewModel.setRepeatVal(4)
-                binding.tvInfoSaturday.id -> todoAddViewModel.setRepeatVal(5)
-                binding.tvInfoSunday.id -> todoAddViewModel.setRepeatVal(6)
+                binding.tvInfoSunday.id -> todoAddViewModel.setRepeatVal(0)
+                binding.tvInfoMonday.id -> todoAddViewModel.setRepeatVal(1)
+                binding.tvInfoTuesday.id -> todoAddViewModel.setRepeatVal(2)
+                binding.tvInfoWednesday.id -> todoAddViewModel.setRepeatVal(3)
+                binding.tvInfoThursday.id -> todoAddViewModel.setRepeatVal(4)
+                binding.tvInfoFriday.id -> todoAddViewModel.setRepeatVal(5)
+                binding.tvInfoSaturday.id -> todoAddViewModel.setRepeatVal(6)
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
-                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo(){
+                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo{
                     requireActivity().supportFragmentManager.popBackStack()
                 }
                 binding.btnInfoSave.id -> {

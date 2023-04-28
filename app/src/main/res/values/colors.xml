@@ -18,4 +18,6 @@
     <color name="bottom_navigation_label_uncheck">#707070</color>
     <color name="divider">#DBDBDB</color>
     <color name="delete_red">#F71E58</color>
+
+    <color name="icon_gray">#767676</color>
 </resources>

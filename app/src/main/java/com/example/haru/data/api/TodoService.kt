@@ -39,11 +39,14 @@ interface TodoService {
     fun updateNotRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body completed: Completed) : Call<SuccessFail>
 
     @POST("todo/{userId}/todos/today")
-    fun getTodayTodo(@Path("userId") userId: String, @Body endDate : TodayEndDate) : Call<GetTodayTodo>
+    fun getTodayTodo(@Path("userId") userId: String, @Body endDate : EndDate) : Call<GetTodayTodo>
 
     @PATCH("todo/{userId}/complete/subtodo/{subTodoId}")
     fun updateSubTodo(@Path("userId") userId: String, @Path("subTodoId") subTodoId : String, @Body completed: Completed) : Call<SuccessFail>
 
     @PATCH("todo/{userId}/folded/{todoId}")
     fun updateFolded(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body folded: Folded) : Call<SuccessFail>
+
+    @PATCH("todo/{userId}/complete/todo/{todoId}/repeat/front")
+    fun updateRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body endDate: EndDate) : Call<SuccessFail>
 }
