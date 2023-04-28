@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -261,12 +261,13 @@
             android:id="@+id/btn_add_todo_incalendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:clickable="true"
+            android:layout_above="@+id/btn_add_schedule_incalendar"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="20dp"
+            android:visibility="invisible"
             app:borderWidth="0dp"
             app:elevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btn_add_schedule_incalendar"
             app:maxImageSize="56dp"
             app:srcCompat="@drawable/fab"
             app:tint="@null" />
@@ -275,13 +276,13 @@
             android:id="@+id/btn_add_schedule_incalendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="8dp"
-            android:clickable="true"
+            android:layout_above="@+id/btn_add_main_incalendar"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="20dp"
+            android:visibility="invisible"
             app:borderWidth="0dp"
             app:elevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btn_add_main_incalendar"
             app:maxImageSize="56dp"
             app:srcCompat="@drawable/fab"
             app:tint="@null" />
@@ -291,9 +292,10 @@
             android:id="@+id/btn_add_main_incalendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="8dp"
-            android:clickable="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
             app:borderWidth="0dp"
             app:elevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -301,5 +303,5 @@
             app:maxImageSize="56dp"
             app:srcCompat="@drawable/fab"
             app:tint="@null" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 </layout>

@@ -1,10 +1,10 @@
 package com.example.haru.view.calendar
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -12,19 +12,18 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.data.model.Category
-import com.example.haru.data.model.Schedule
 import com.example.haru.databinding.FragmentCalendarBinding
 import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.view.adapter.CategoryAdapter
@@ -33,9 +32,8 @@ import com.example.haru.view.checklist.ChecklistInputFragment
 import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.CheckListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import org.w3c.dom.Text
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class CalendarFragment : Fragment() {
     private lateinit var binding: FragmentCalendarBinding
@@ -43,6 +41,11 @@ class CalendarFragment : Fragment() {
     private lateinit var categoryAdapter: CategoryAdapter
 
     private lateinit var checkListViewModel: CheckListViewModel
+
+    private lateinit var fab_open: Animation
+    private lateinit var fab_close:Animation
+
+    private var fabMain_status = false
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val status = result.data?.getSerializableExtra("status") as String
@@ -77,6 +80,9 @@ class CalendarFragment : Fragment() {
         Log.d(TAG, "CalendarFragment - onCreate() called")
 
         checkListViewModel = CheckListViewModel()
+
+        fab_open = AnimationUtils.loadAnimation(context, R.anim.fab_open)
+        fab_close = AnimationUtils.loadAnimation(context, R.anim.fab_close)
     }
 
     override fun onCreateView(
@@ -286,7 +292,21 @@ class CalendarFragment : Fragment() {
         
         //추가 버튼 3개
         btnAddMainInCalendar.setOnClickListener {
+            if (fabMain_status) {
+//                fab_main.setImageResource(R.drawable.ic_add);
+                binding.btnAddTodoIncalendar.startAnimation(fab_close);
+                binding.btnAddScheduleIncalendar.startAnimation(fab_close);
+                binding.btnAddTodoIncalendar.setClickable(false);
+                binding.btnAddScheduleIncalendar.setClickable(false);
+            } else {
+//                fab_main.setImageResource(R.drawable.ic_add);
+                binding.btnAddTodoIncalendar.startAnimation(fab_open);
+                binding.btnAddScheduleIncalendar.startAnimation(fab_open);
+                binding.btnAddTodoIncalendar.setClickable(true);
+                binding.btnAddScheduleIncalendar.setClickable(true);
+            }
 
+            fabMain_status = !fabMain_status
         }
         
         btnAddTodoInCalendar.setOnClickListener {
