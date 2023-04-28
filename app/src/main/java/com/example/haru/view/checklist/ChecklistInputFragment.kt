@@ -330,8 +330,10 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
-                    if (todoAddViewModel.endDateSwitch.value != true)
+                    if (todoAddViewModel.endDateSwitch.value != true){
+
                         todoAddViewModel.setEndDateSwitch()
+                    }
 
                     binding.repeatSwitch.isChecked = it
                     binding.ivRepeatIcon.backgroundTintList =

@@ -205,7 +205,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         else _repeatSwitch.value = (_repeatSwitch.value == false)
 
         if (repeatSwitch.value == true)
-            _repeatOption.value = 0
+            setRepeatOpt(0)
+
     }
 
     fun setRepeatEndSwitch() {
