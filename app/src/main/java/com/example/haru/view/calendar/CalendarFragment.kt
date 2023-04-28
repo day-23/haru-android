@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -202,6 +203,7 @@ class CalendarFragment : Fragment() {
         }
 
         categoryOkTv.setOnClickListener {
+            adapterMonth.notifyDataSetChanged()
             categoryDrawerLayout.closeDrawer(Gravity.RIGHT)
         }
 
