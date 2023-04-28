@@ -548,7 +548,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                             null
                         )
                         31 -> FormatDate.nextEndDateEveryMonth(todoAddViewModel.repeatValue.value!!, null, null)
-                        12 -> FormatDate.nextEndDateEveryYear(todoAddViewModel.repeatValue.value!!)
+                        12 -> FormatDate.nextEndDateEveryYear(todoAddViewModel.repeatValue.value!!, null, null)
                         else -> {
                             FormatDate.cal.time = Date()
                             FormatDate.cal.time

@@ -229,7 +229,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         "매월" -> {
                             FormatDate.nextEndDateEveryMonth(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
                         }
-                        "매년" -> {null}
+                        "매년" -> {
+                            FormatDate.nextEndDateEveryYear(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                        }
                         else -> null
                     }
                     if (nextEndDate != null) {
