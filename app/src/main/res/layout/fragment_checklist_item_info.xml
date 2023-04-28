@@ -498,6 +498,15 @@
                         android:visibility="gone">
 
                         <TextView
+                            android:id="@+id/tv_info_sunday"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Sunday"
+                            android:textColor="@color/date_text" />
+
+                        <TextView
                             android:id="@+id/tv_info_monday"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -551,14 +560,6 @@
                             android:text="@string/Saturday"
                             android:textColor="@color/date_text" />
 
-                        <TextView
-                            android:id="@+id/tv_info_sunday"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="@string/Sunday"
-                            android:textColor="@color/date_text" />
 
                     </LinearLayout>
 

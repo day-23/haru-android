@@ -304,7 +304,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                         color
                     )
                 )
-                binding.btnInfoRepeatEndDate.visibility = if (it) View.VISIBLE else View.GONE
+                binding.btnInfoRepeatEndDate.visibility = if (it) View.VISIBLE else View.INVISIBLE
             })
 
         // repeat EndDate 관련 UI Update
@@ -450,13 +450,13 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                 binding.btnInfoEveryMonth.id -> todoAddViewModel.setRepeatOpt(3)
                 binding.btnInfoEveryYear.id -> todoAddViewModel.setRepeatOpt(4)
 
-                binding.tvInfoMonday.id -> todoAddViewModel.setRepeatVal(0)
-                binding.tvInfoTuesday.id -> todoAddViewModel.setRepeatVal(1)
-                binding.tvInfoWednesday.id -> todoAddViewModel.setRepeatVal(2)
-                binding.tvInfoThursday.id -> todoAddViewModel.setRepeatVal(3)
-                binding.tvInfoFriday.id -> todoAddViewModel.setRepeatVal(4)
-                binding.tvInfoSaturday.id -> todoAddViewModel.setRepeatVal(5)
-                binding.tvInfoSunday.id -> todoAddViewModel.setRepeatVal(6)
+                binding.tvInfoSunday.id -> todoAddViewModel.setRepeatVal(0)
+                binding.tvInfoMonday.id -> todoAddViewModel.setRepeatVal(1)
+                binding.tvInfoTuesday.id -> todoAddViewModel.setRepeatVal(2)
+                binding.tvInfoWednesday.id -> todoAddViewModel.setRepeatVal(3)
+                binding.tvInfoThursday.id -> todoAddViewModel.setRepeatVal(4)
+                binding.tvInfoFriday.id -> todoAddViewModel.setRepeatVal(5)
+                binding.tvInfoSaturday.id -> todoAddViewModel.setRepeatVal(6)
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 

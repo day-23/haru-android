@@ -330,7 +330,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
-                    if (todoAddViewModel.endDateSwitch.value != true){
+                    if (todoAddViewModel.endDateSwitch.value != true) {
                         todoAddViewModel.setEndDateSwitch()
                     }
 
@@ -541,16 +541,23 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     return@Observer
                 } else {
                     val date = when (todoAddViewModel.repeatValue.value?.length) {
-                        1 -> {
+                        7 -> FormatDate.nextEndDateEveryWeek(
+                            todoAddViewModel.repeatValue.value,
+                            todoAddViewModel.repeatOption.value,
+                            null,
+                            null
+                        )
+                        31 -> FormatDate.nextEndDateEveryMonth(todoAddViewModel.repeatValue.value!!)
+                        12 -> FormatDate.nextEndDateEveryYear(todoAddViewModel.repeatValue.value!!)
+                        else -> {
                             FormatDate.cal.time = Date()
                             FormatDate.cal.time
                         }
-                        7 -> FormatDate.nextEndDateEveryWeek(todoAddViewModel.repeatValue.value!!, todoAddViewModel.repeatOption.value)
-                        31 -> FormatDate.nextEndDateEveryMonth(todoAddViewModel.repeatValue.value!!)
-                        12 -> FormatDate.nextEndDateEveryYear(todoAddViewModel.repeatValue.value!!)
-                        else -> FormatDate.cal.time
                     }
-                    todoAddViewModel.setDate(0, date)
+                    if (date == null)
+                        todoAddViewModel.setDate(0, Date())
+                    else
+                        todoAddViewModel.setDate(0, date)
                 }
             }
         })

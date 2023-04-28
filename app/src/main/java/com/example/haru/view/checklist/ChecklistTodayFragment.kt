@@ -99,13 +99,15 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                         "매일" -> {
                             val nextEndDate = FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
 
-                            if (nextEndDate != null){
+                            if (nextEndDate != null){  // nextEndDate가 null이 아니라면 다음 반복이 있다는 의미
                                 val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
                                 checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
-                            } else
+                            } else // null이라면 반복 종료
                                 checkListViewModel.updateNotRepeatTodo(completed, id)
                         }
-                        "매주" -> {}
+                        "매주" -> {
+
+                        }
                         "2주마다" -> {}
                         "매월" -> {}
                         "매년" -> {}

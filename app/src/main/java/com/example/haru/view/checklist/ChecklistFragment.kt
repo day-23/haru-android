@@ -203,24 +203,31 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     )
                     else Completed(true)
 
-                if (todo.completed || todo.repeatOption == null)
+                if (todo.completed || todo.repeatOption == null) // 완료된 Todo이거나 repeatOption이 null
                     checkListViewModel.updateNotRepeatTodo(completed, id)
                 else {
-                    when(todo.repeatOption){
+                    val nextEndDate = when (todo.repeatOption) {
                         "매일" -> {
-                            val nextEndDate = FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
-
-                            if (nextEndDate != null){
-                                val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                                checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
-                            } else
-                                checkListViewModel.updateNotRepeatTodo(completed, id)
+                            FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
                         }
-                        "매주" -> {}
-                        "2주마다" -> {}
-                        "매월" -> {}
-                        "매년" -> {}
+                        "매주" -> {
+                            FormatDate.nextEndDateEveryWeek(
+                                todo.repeatValue!!,
+                                1,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
+                        }
+                        "2주마다" -> {null}
+                        "매월" -> {null}
+                        "매년" -> {null}
+                        else -> null
                     }
+                    if (nextEndDate != null) {
+                        val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
+                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
+                    } else
+                        checkListViewModel.updateNotRepeatTodo(completed, id)
                 }
 
             }

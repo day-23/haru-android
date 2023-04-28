@@ -1,14 +1,13 @@
 package com.example.haru.utils
 
 import android.util.Log
-import java.sql.Timestamp
+import androidx.core.util.rangeTo
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.reflect.typeOf
 
 object FormatDate {
     // 그리니치 시간과 Local시간의 차이
@@ -107,37 +106,64 @@ object FormatDate {
                 set(Calendar.SECOND, 59)
             }
             val repeatEndDate = cal.time
-            return if (!nextEndDate.after(repeatEndDate))
-                nextEndDate
-            else null
+            return if (nextEndDate.after(repeatEndDate))
+                null
+            else nextEndDate
         }
         return nextEndDate
     }
 
-    fun nextEndDateEveryWeek(repeatValue: String, repeatOption: Int?): Date {
-        cal.time = Date()
-        var plusValue = 1
-        if (repeatOption == 2) {
-            plusValue = 8
-        }
+    fun nextEndDateEveryWeek(
+        repeatValue: String?,
+        repeatOption: Int?,
+        endDateStr: String?,
+        repeatEndDateStr: String?
+    ): Date? {
+        if (repeatValue == null || repeatOption == null)
+            return null
+
+        val plusValue = if (repeatOption == 2) 8 else 1
+
+        if (endDateStr == null)  // endDateStr이 null이라면 Todo를 추가하는 과정
+            cal.time = Date()
+        else cal.time =
+            strToDate(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
+
         val nWeek = cal.get(Calendar.DAY_OF_WEEK)
+
         val idx = nWeek - 1
+        val idxPlus = if (endDateStr == null) 0 else 1  // Todo를 완료하기 위해서 다음 endDate를 구할때는 해당 날이 포함되서는 안된다.
         var flag = false
-        for (i in idx until 7)
+
+        for (i in idx + idxPlus  until 7)
             if (repeatValue[i] == '1') {
                 cal.add(Calendar.DATE, i - idx)
                 flag = true
                 break
             }
         if (!flag) {
-            for (i in 0 until idx)
+            for (i in 0 until idx + idxPlus)
                 if (repeatValue[i] == '1') {
                     val value = 6 - idx + i + plusValue
                     cal.add(Calendar.DATE, value)
                     break
                 }
         }
-        return cal.time
+        val nextEndDate = cal.time
+
+        if (repeatEndDateStr != null) {
+            cal.apply {
+                time = strToDate(repeatEndDateStr)
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+            }
+            val repeatEndDate = cal.time
+            return if (nextEndDate.after(repeatEndDate)) // 반복 마감일보다 다음 마감일이 더 뒤라면 반복 종료
+                null
+            else nextEndDate
+        }
+        return nextEndDate
     }
 
     fun nextEndDateEveryMonth(repeatValue: String): Date {
