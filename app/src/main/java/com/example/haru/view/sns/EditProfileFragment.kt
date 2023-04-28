@@ -28,6 +28,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.haru.R
@@ -131,6 +132,11 @@ class EditProfileFragment: Fragment() {
                     MediaStore.Images.Media.DISPLAY_NAME,
                     MediaStore.Images.Media.RELATIVE_PATH)
 
+                val path = Environment.getExternalStorageDirectory().absolutePath
+                val mimeType = "image/*"
+                MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType), null)
+
+
                 val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
                 val gallery = ArrayList<ExternalImages>()
                 val cursor = requireContext().contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, sortOrder)
@@ -147,6 +153,7 @@ class EditProfileFragment: Fragment() {
                 cursor?.close()
                 Log.d("Image", "${gallery}")
                 profileViewModel.loadGallery(gallery)
+                binding.popupGallery.visibility = View.VISIBLE
                 val fragment = GalleryFragment()
                 val fragmentManager = childFragmentManager
                 val transaction = fragmentManager.beginTransaction()
@@ -183,7 +190,8 @@ class GalleryFragment : Fragment() {
             galleryImages = image
             galleryAdapter = GalleryAdapter(requireContext(), galleryImages)
             recycler.adapter = galleryAdapter
-            recycler.layoutManager = LinearLayoutManager(requireContext())
+            val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+            recycler.layoutManager = gridLayoutManager
         }
         return binding.root
     }
