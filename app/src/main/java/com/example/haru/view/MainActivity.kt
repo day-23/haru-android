@@ -1,13 +1,17 @@
 package com.example.haru.view
 
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.databinding.ActivityMainBinding
+import com.example.haru.view.calendar.calendarMainData
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
@@ -16,6 +20,9 @@ import com.example.haru.view.timetable.TimetableFragment
 class MainActivity : AppCompatActivity() {
     private val fragments = arrayOfNulls<Fragment>(5)
 
+    private lateinit var sharedPreference: SharedPreferences
+    private lateinit var editor: Editor
+
     companion object{
         private lateinit var binding: ActivityMainBinding
         fun hideNavi(state: Boolean){
@@ -23,6 +30,14 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNav.visibility = View.GONE
             else binding.bottomNav.visibility = View.VISIBLE
         }
+    }
+
+    override fun onPause(){
+        editor.putBoolean("todoApply", calendarMainData.todoApply)
+        editor.putBoolean("scheduleApply", calendarMainData.scheduleApply)
+        editor.apply()
+
+        super.onPause()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +55,11 @@ class MainActivity : AppCompatActivity() {
             handleNavigation(menuItem.itemId)
         }
 
+        sharedPreference = getSharedPreferences("ApplyData", 0)
+        editor = sharedPreference.edit()
+
+        calendarMainData.todoApply = sharedPreference.getBoolean("todoApply", false)
+        calendarMainData.scheduleApply = sharedPreference.getBoolean("scheduleApply", false)
     }
 
     private fun initFragments() {

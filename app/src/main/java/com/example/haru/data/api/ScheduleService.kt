@@ -1,15 +1,13 @@
 package com.example.haru.data.api
 
-import com.example.haru.data.model.GetScheduleResponse
-import com.example.haru.data.model.PostTodoResponse
-import com.example.haru.data.model.TodoRequest
+import com.example.haru.data.model.*
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ScheduleService {
-    @GET("schedule/{userId}/schedules/date")
-    fun getScheduleDates(@Path("userId") userId: String, @Query("startDate") startDate:String, @Query("endDate") endDate:String) : Call<GetScheduleResponse>
+    @POST("schedule/{userId}/schedules/date")
+    fun getScheduleDates(@Path("userId") userId: String, @Query("startDate") startDate:String, @Query("endDate") endDate:String, @Body scheduleRequest: ScheduleRequest) : Call<GetScheduleResponse>
 
-    @POST("todo/{userId}")
-    fun createSchedule(@Path("userId") userId: String, @Body todoRequest: TodoRequest) : Call<PostTodoResponse>
+    @POST("schedule/{userId}")
+    fun createSchedule(@Path("userId") userId: String, @Body postSchedule: PostSchedule) : Call<PostScheduleResponse>
 }

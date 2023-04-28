@@ -1,7 +1,5 @@
 package com.example.haru.data.model
 
-import com.example.haru.databinding.ListItemDayBinding
-
 data class UpdateTodo(
     val content: String = "",
     val memo: String? = "",
