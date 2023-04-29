@@ -1,19 +1,16 @@
-package com.example.haru.view.timetable
+package com.example.haru.view.adapter
 
 import android.content.ClipData
 import android.content.Context
-import android.util.Log
-import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.User
 import com.example.haru.data.model.timetable_data
+import com.example.haru.view.timetable.TimetableDraglistener
 import kotlin.collections.ArrayList
 
 

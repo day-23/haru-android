@@ -43,6 +43,14 @@ object RetrofitClient {
         retrofit.create(TagService::class.java)
     }
 
+    val profileService: ProfileService by lazy {
+        retrofit.create(ProfileService::class.java)
+    }
+
+    val postService: PostService by lazy {
+        retrofit.create(PostService::class.java)
+    }
+
     val categoryService: CategoryService by lazy {
         retrofit.create(CategoryService::class.java)
     }

@@ -7,22 +7,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Todo
-import com.example.haru.data.model.TodoTable_data
 import com.example.haru.databinding.FragmentTodotableBinding
+import com.example.haru.view.adapter.TodotableAdapter
 import com.example.haru.view.checklist.ChecklistInputFragment
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import com.example.haru.viewmodel.TodoTableRecyclerViewmodel
-import java.lang.reflect.Type
-import java.util.*
 import kotlin.collections.ArrayList
 
 class TodotableFragment : Fragment() {

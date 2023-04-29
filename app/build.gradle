@@ -78,4 +78,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
     /*KTX*/
     implementation "androidx.fragment:fragment-ktx:1.4.1"
+    /*원형프로필*/
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
