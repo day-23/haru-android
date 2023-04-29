@@ -30,4 +30,18 @@ class ScheduleRepository() {
         }
         callback(todoData)
     }
+
+    suspend fun postSchedule(body: PostSchedule, callback: () -> Unit){
+        val response = scheduleService.createSchedule(
+            "ysr",
+            body
+        ).execute()
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to post schedule")
+            callback()
+        } else {
+            Log.d("TAG", "Fail to post schedule")
+        }
+    }
 }

@@ -12,6 +12,7 @@ import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import java.util.*
 
 class CheckListViewModel() :
@@ -20,8 +21,8 @@ class CheckListViewModel() :
     private val tagRepository = TagRepository()
 
     private val basicTag = listOf<Tag>(Tag("완료", "완료"), Tag("미분류", "미분류"))
+    var clickedTag: Int? = null
 
-    private val todoList = mutableListOf<Todo>()
     private val _todoDataList = MutableLiveData<List<Todo>>()
     private val _tagDataList = MutableLiveData<List<Tag>>()
     private val _flaggedTodos = MutableLiveData<List<Todo>>()
@@ -33,12 +34,13 @@ class CheckListViewModel() :
     val todoByTag: LiveData<Boolean> = _todoByTag
 
     private val _addTodoId = MutableLiveData<String>()
-    val addTodoId : LiveData<String> = _addTodoId
+    val addTodoId: LiveData<String> = _addTodoId
 
     private val _todayTodo = MutableLiveData<List<Todo>>()
     val todayTodo: LiveData<List<Todo>> get() = _todayTodo
     private val todayList = mutableListOf<Todo>()
 
+    private val todoList = mutableListOf<Todo>()
     val todoDataList: LiveData<List<Todo>> get() = _todoDataList
     val tagDataList: LiveData<List<Tag>> get() = _tagDataList
     val flaggedTodos: LiveData<List<Todo>> get() = _flaggedTodos
@@ -47,7 +49,6 @@ class CheckListViewModel() :
     val completedTodos: LiveData<List<Todo>> get() = _completedTodos
 
     var todoByTagItem: String? = null
-
 
     init {
         getTodoMain {
@@ -60,7 +61,11 @@ class CheckListViewModel() :
         getTag()
     }
 
-    fun getTodoList() : List<Todo> {
+    fun clearToday() {
+        todayList.clear()
+    }
+
+    fun getTodoList(): List<Todo> {
         return todoList
     }
 
@@ -70,36 +75,94 @@ class CheckListViewModel() :
         }
     }
 
+    fun withTagUpdate() {
+        if (todoByTag.value == true) {
+            when (todoByTagItem) {
+                null -> {}
+                "중요" -> getTodoByFlag()
+                "완료" -> getTodoByTag(1)
+                "미분류" -> getTodoByTag(2)
+                else -> {
+                    val tag = tagDataList.value!!.find { it.content == todoByTagItem }
+                    val i = tagDataList.value!!.indexOf(tag)
+                    getTodoByTag(i + 1)
+                }
+            }
+            return
+        }
+        getTodoMain {
+            _todoByTag.postValue(false)
+            todoByTagItem = null
+            todoList.clear()
+            flaggedTodos.value?.let { todoList.addAll(it) }
+            taggedTodos.value?.let { todoList.addAll(it) }
+            untaggedTodos.value?.let { todoList.addAll(it) }
+            completedTodos.value?.let { todoList.addAll(it) }
+            _todoDataList.postValue(todoList)
+        }
+    }
+
     fun getTodoMain(callback: () -> Unit) {
         viewModelScope.launch {
             todoRepository.getTodoMain {
                 todoList.clear()
                 _todoByTag.postValue(false)
                 todoByTagItem = null
-                _flaggedTodos.postValue(listOf(Todo(type = 0)) + it.flaggedTodos + listOf(Todo(type = 3)))
-                _taggedTodos.postValue(
+                if (it.flaggedTodos.isNotEmpty())
+                    _flaggedTodos.postValue(
+                        listOf(Todo(type = 1, content = "중요"))
+                                + it.flaggedTodos + listOf(Todo(type = 3))
+                    )
+                else _flaggedTodos.postValue(
                     listOf(
-                        Todo(
-                            type = 1,
-                            content = "분류"
-                        )
-                    ) + it.taggedTodos + listOf(Todo(type = 3))
+                        Todo(type = 1, content = "중요"),
+                        Todo(type = 5), Todo(type = 3)
+                    )
                 )
-                _untaggedTodos.postValue(
+
+                if (it.taggedTodos.isNotEmpty())
+                    _taggedTodos.postValue(
+                        listOf(
+                            Todo(
+                                type = 1,
+                                content = "분류"
+                            )
+                        ) + it.taggedTodos + listOf(Todo(type = 3))
+                    ) else _taggedTodos.postValue(
                     listOf(
-                        Todo(
-                            type = 1,
-                            content = "미분류"
-                        )
-                    ) + it.untaggedTodos + listOf(Todo(type = 3))
+                        Todo(type = 1, content = "분류"),
+                        Todo(type = 5),
+                        Todo(type = 3)
+                    )
                 )
-                _completedTodos.postValue(
+                if (it.untaggedTodos.isNotEmpty())
+                    _untaggedTodos.postValue(
+                        listOf(
+                            Todo(
+                                type = 1,
+                                content = "미분류"
+                            )
+                        ) + it.untaggedTodos + listOf(Todo(type = 3))
+                    ) else _untaggedTodos.postValue(
                     listOf(
-                        Todo(
-                            type = 1,
-                            content = "완료"
-                        )
-                    ) + it.completedTodos
+                        Todo(type = 1, content = "미분류"),
+                        Todo(type = 5),
+                        Todo(type = 3)
+                    )
+                )
+                if (it.completedTodos.isNotEmpty())
+                    _completedTodos.postValue(
+                        listOf(
+                            Todo(
+                                type = 1,
+                                content = "완료"
+                            )
+                        ) + it.completedTodos
+                    ) else _completedTodos.postValue(
+                    listOf(
+                        Todo(type = 1, content = "완료"),
+                        Todo(type = 5)
+                    )
                 )
                 _todoByTag.postValue(false)
                 todoByTagItem = null
@@ -108,7 +171,7 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodayTodo(endDate: TodayEndDate, callback: () -> Unit) {
+    fun getTodayTodo(endDate: EndDate, callback: () -> Unit) {
         viewModelScope.launch {
             todoRepository.getTodayTodo(endDate = endDate) {
                 todayList.clear()
@@ -126,6 +189,10 @@ class CheckListViewModel() :
                         this.addAll(it.endDatedTodos)
                     }
                     this.add(Todo(type = 3))
+                    if (it.completedTodos.isNotEmpty()) {
+                        this.add(Todo(type = 4, content = "완료"))
+                        this.addAll(it.completedTodos)
+                    }
                 }
                 _todayTodo.postValue(todayList)
                 callback()
@@ -151,35 +218,50 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodoByTag(position: Int) {
+    fun getTodoByTag(position: Int) { // 변경사항 적용하기!!!!!!!!!!!!!!!!!
         viewModelScope.launch {
             todoByTagItem = tagDataList.value!![position - 1].content
             _todoByTag.value = true
             todoList.apply {
                 clear()
-
-                addAll(
-                    when (position) {
-                        1 -> listOf(
+                when (position) {
+                    1 -> addAll(
+                        listOf(
                             Todo(
                                 type = 4,
                                 content = todoByTagItem!!
                             )
                         ) + todoRepository.getTodoByComplete()
-                        2 -> listOf(
+                    )
+                    2 -> addAll(
+                        listOf(
                             Todo(
                                 type = 4,
                                 content = todoByTagItem!!
                             )
                         ) + todoRepository.getTodoByUntag()
-                        else -> listOf(
-                            Todo(
-                                type = 4,
-                                content = todoByTagItem!!
-                            )
-                        ) + todoRepository.getTodoByTag(tagDataList.value!![position - 1].id)
+                    )
+                    else -> {
+                        todoRepository.getTodoByTag(tagDataList.value!![position - 1].id) {
+                            if (it.flaggedTodos.isNotEmpty()) {
+                                this.add(Todo(type = 4, content = "중요"))
+                                this.addAll(it.flaggedTodos)
+                                this.add(Todo(type = 3))
+                            }
+
+                            this.add(Todo(type = 4, content = todoByTagItem!!))
+                            if (it.unFlaggedTodos.isNotEmpty()) {
+                                this.addAll(it.unFlaggedTodos)
+                                this.add(Todo(type = 3))
+                            } else this.addAll(listOf(Todo(type = 5), Todo(type = 3)))
+
+                            if (it.completedTodos.isNotEmpty()) {
+                                this.add(Todo(type = 4, content = "완료"))
+                                this.addAll(it.completedTodos)
+                            }
+                        }
                     }
-                )
+                }
             }
             _todoDataList.value = todoList
         }
@@ -191,7 +273,7 @@ class CheckListViewModel() :
             _todoByTag.value = true
             todoList.apply {
                 clear()
-                addAll(listOf(Todo(type = 0)) + todoRepository.getTodoByFlag())
+                addAll(listOf(Todo(type = 4, content = "중요")) + todoRepository.getTodoByFlag())
             }
             _todoDataList.value = todoList
         }
@@ -208,19 +290,17 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val updateTodo = todoRepository.putTodo(todoId = todoId, todo = todo) {
                 getTag()
-                getTodoMain {
-                    _todoByTag.postValue(false)
-                    todoByTagItem = null
-                    todoList.clear()
-                    flaggedTodos.value?.let { todoList.addAll(it) }
-                    taggedTodos.value?.let { todoList.addAll(it) }
-                    untaggedTodos.value?.let { todoList.addAll(it) }
-                    completedTodos.value?.let { todoList.addAll(it) }
-                    _todoDataList.postValue(todoList)
-                    Log.d("20191627", taggedTodos.value.toString())
-                    callback()
+                if (todayList.isNotEmpty()) {
+                    val calendar = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                        set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                        set(Calendar.SECOND, 59) // 초를 59초로 설정
+                    }
+                    val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                    getTodayTodo(todayEndDate) {}
                 }
-                Log.d("201916271", it.toString())
+                withTagUpdate()
+                callback()
             }
         }
     }
@@ -229,8 +309,16 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData = todoRepository.deleteTodo(todoId = todoId) {
                 if (it.success) {
-                    todoList.remove(todoList.find { todo -> todo.id == todoId })
-                    _todoDataList.postValue(todoList)
+                    if (todayList.isNotEmpty()) {
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                            set(Calendar.SECOND, 59) // 초를 59초로 설정
+                        }
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        getTodayTodo(todayEndDate) {}
+                    }
+                    withTagUpdate()
                 }
                 callback()
             }
@@ -242,34 +330,16 @@ class CheckListViewModel() :
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {
                     if (it.success) {
-                        val todo = todoList.find { todo -> todo.id == id }!!
-                        todoList.remove(todo)
-
-                        todo.flag = flag.flag
-                        val type = if (todoByTag.value == false) 1 else 4
-
-                        if (todo.flag && !todo.completed) {
-                            todoList.add(1, todo)
-                        } else {
-                            if (todo.completed) {
-                                val i = todoList.indexOf(Todo(type = type, content = "완료"))
-                                todoList.add(i + 1, todo)
-                            } else {
-                                when (todo.tags.isEmpty()) {
-                                    true -> {
-                                        val i =
-                                            todoList.indexOf(Todo(type = type, content = "미분류"))
-                                        todoList.add(i + 1, todo)
-                                    }
-                                    false -> {
-                                        val i = if (type == 4) todoList.indexOf(Todo(type = type, content = todoByTagItem!!))
-                                        else todoList.indexOf(Todo(type = type, content = "분류"))
-                                        todoList.add(i + 1, todo)
-                                    }
-                                }
+                        if (todayList.isNotEmpty()) {
+                            val calendar = Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                                set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                                set(Calendar.SECOND, 59) // 초를 59초로 설정
                             }
+                            val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                            getTodayTodo(todayEndDate) {}
                         }
-                        _todoDataList.postValue(todoList)
+                        withTagUpdate()
                     }
                 }
         }
@@ -282,41 +352,57 @@ class CheckListViewModel() :
                 completed = completed
             ) {
                 if (it.success) {
-                    val todo = todoList.find { todo -> todo.id == id }!!
-                    todoList.remove(todo)
-                    todo.completed = completed.completed
-                    for (i in 0 until todo.subTodos.size)
-                        todo.subTodos[i].completed = completed.completed
-
-                    if (todo.completed)
-                        todoList.add(todoList.indexOf(Todo(type = 1, content = "완료")) + 1, todo)
-                    else {
-                        val i = if (todo.flag) 0 else if (todo.tags.isEmpty()) todoList.indexOf(
-                            Todo(
-                                type = 1,
-                                content = "미분류"
-                            )
-                        )
-                        else todoList.indexOf(Todo(type = 1, content = "분류"))
-                        todoList.add(i + 1, todo)
+                    if (todayList.isNotEmpty()) {
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                            set(Calendar.SECOND, 59) // 초를 59초로 설정
+                        }
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        getTodayTodo(todayEndDate) {}
                     }
-                    _todoDataList.postValue(todoList)
+                    withTagUpdate()
                 }
             }
         }
     }
 
-    fun updateSubTodo(completed: Completed, id: String, subTodoPosition: Int) {
+    fun updateRepeatTodo(id: String, endDate: EndDate) {
+        viewModelScope.launch {
+            val successData = todoRepository.updateRepeatTodo(todoId = id, endDate = endDate) {
+                if (it.success) {
+                    if (todayList.isNotEmpty()){
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                            set(Calendar.SECOND, 59) // 초를 59초로 설정
+                        }
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        getTodayTodo(todayEndDate) {}
+                    }
+                    withTagUpdate()
+                }
+            }
+        }
+    }
+
+    fun updateSubTodo(completed: Completed, id: String, subTodoId: String, subTodoPosition: Int) {
         viewModelScope.launch {
             val successData = todoRepository.updateSubTodo(
-                subTodoId = todoDataList.value!!.find { it.id == id }!!.subTodos[subTodoPosition].id,
+                subTodoId = subTodoId,
                 completed = completed
             ) {
                 if (it.success) {
-                    val todo = todoList.find { todo -> todo.id == id }
-                    val idx = todoList.indexOf(todo)
-                    todoList[idx].subTodos[subTodoPosition].completed = completed.completed
-                    _todoDataList.postValue(todoList)
+                    if (todayList.isNotEmpty()) {
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                            set(Calendar.SECOND, 59) // 초를 59초로 설정
+                        }
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        getTodayTodo(todayEndDate) {}
+                    }
+                    withTagUpdate()
                 }
             }
 
@@ -330,15 +416,18 @@ class CheckListViewModel() :
                 folded = folded
             ) {
                 if (it.success) {
-                    val todo = todoList.find { todo -> todo.id == id }
-                    val idx = todoList.indexOf(todo)
-                    todoList[idx].folded = folded.folded
-//                    todoList.find { todo-> todo.id == id }!!.folded = folded.folded
-                    _todoDataList.postValue(todoList)
+                    if (todayList.isNotEmpty()) {
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                            set(Calendar.SECOND, 59) // 초를 59초로 설정
+                        }
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        getTodayTodo(todayEndDate) {}
+                    }
+                    withTagUpdate()
                 }
             }
         }
     }
-
-
 }

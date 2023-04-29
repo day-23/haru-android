@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:text="할 일을 모두 완료했습니다."
-    android:textSize="30sp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="40dp"
+    android:layout_marginTop="17dp"
+    android:layout_marginBottom="24dp"
+    android:text="@string/everyThingDone"
+    android:textColor="@color/light_gray"
+    android:textSize="14sp">
 
 </TextView>

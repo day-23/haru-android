@@ -28,7 +28,9 @@ import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.text.Format
 import java.util.*
+import kotlin.time.Duration.Companion.days
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     BottomSheetDialogFragment() {
@@ -237,7 +239,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             androidx.lifecycle.Observer {
                 when (it) {
                     true -> {
-                        val date = Date()
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.VISIBLE
 
@@ -259,6 +260,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         binding.tvEndDateSet.setTextColor(resources.getColor(R.color.todo_description))
                     }
                     else -> {
+                        if (todoAddViewModel.repeatSwitch.value == true)
+                            todoAddViewModel.setRepeatSwitch()
                         binding.endDateSwitch.isChecked = it
                         binding.btnEndDatePick.visibility = View.INVISIBLE
                         val valueAnimator = ValueAnimator.ofInt(
@@ -328,6 +331,10 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
+                    if (todoAddViewModel.endDateSwitch.value != true) {
+                        todoAddViewModel.setEndDateSwitch()
+                    }
+
                     binding.repeatSwitch.isChecked = it
                     binding.ivRepeatIcon.backgroundTintList =
                         ColorStateList.valueOf(resources.getColor(R.color.todo_description))
@@ -484,6 +491,15 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.btnEndDatePick.text = FormatDate.simpleDateToStr(it)
+            if (todoAddViewModel.repeatOption.value == 4){
+                FormatDate.cal.time = it
+                val days = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+                if (days == 31){ // 2,4,6,9,11
+                    for(i in listOf(2, 4, 6, 9, 11)){
+                        binding.gridYear.getChildAt(i - 1)
+                    }
+                }
+            }
         })
 //
         todoAddViewModel.alarmTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -527,32 +543,86 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     )
                 }
             }
+
+            if (todoAddViewModel.repeatOption.value != null) {
+                val flag = todoAddViewModel.repeatValue.value!!.contains('1')
+                if (!flag) {
+                    todoAddViewModel.setDate(0, Date())
+                    return@Observer
+                } else {
+                    val date = when (todoAddViewModel.repeatValue.value?.length) {
+                        7 -> FormatDate.nextEndDateEveryWeek(
+                            todoAddViewModel.repeatValue.value,
+                            todoAddViewModel.repeatOption.value,
+                            null,
+                            null
+                        )
+                        31 -> FormatDate.nextEndDateEveryMonth(todoAddViewModel.repeatValue.value!!, null, null)
+                        12 -> FormatDate.nextEndDateEveryYear(todoAddViewModel.repeatValue.value!!, null, null)
+                        else -> {
+                            FormatDate.cal.time = Date()
+                            FormatDate.cal.time
+                        }
+                    }
+                    if (date == null)
+                        todoAddViewModel.setDate(0, Date())
+                    else
+                        todoAddViewModel.setDate(0, date)
+                }
+            }
         })
 
         todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (todoAddViewModel.subTodoCnt == (binding.subTodoLayout.childCount + 1)) {
+            if (todoAddViewModel.subTodoCnt == binding.subTodoLayout.childCount) {
                 val layoutInflater =
                     context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.subtodo_input_layout, null)
 
-                addView.findViewById<ImageView>(R.id.iv_subTodo_plus).setOnClickListener{
-                    todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
-                    todoAddViewModel.plusSubTodo()
-                }
                 addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
                     todoAddViewModel.setSubTodoPosition(binding.subTodoLayout.indexOfChild(addView))
                     todoAddViewModel.deleteSubTodo()
                 }
-                addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object : TextWatcher{
-                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                    override fun afterTextChanged(e: Editable?) {
-                        todoAddViewModel.subTodos[binding.subTodoLayout.indexOfChild(addView)] = e.toString()
-                    }
-                })
+                addView.findViewById<EditText>(R.id.et_subTodo)
+                    .addTextChangedListener(object : TextWatcher {
+                        override fun beforeTextChanged(
+                            p0: CharSequence?,
+                            p1: Int,
+                            p2: Int,
+                            p3: Int
+                        ) {
+                        }
 
-                binding.subTodoLayout.addView(addView, todoAddViewModel.subTodoClickPosition + 1)
-            }else binding.subTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
+                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                        override fun afterTextChanged(e: Editable?) {
+                            todoAddViewModel.subTodos[binding.subTodoLayout.indexOfChild(addView)] =
+                                e.toString()
+                        }
+                    })
+
+                binding.subTodoLayout.addView(addView, binding.subTodoLayout.childCount - 1)
+            } else binding.subTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
+
+        })
+
+        binding.etMemo.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                binding.ivMemoIcon.backgroundTintList =
+                    if (s.toString() == "") ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.icon_gray
+                        )
+                    ) else ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.todo_description
+                        )
+                    )
+            }
 
         })
 
@@ -589,7 +659,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 //
         binding.btnClose.setOnClickListener(btnListener())
 
-//        binding.ivSubTodoPlus.setOnClickListener(btnListener())
+        binding.subTodoAddLayout.setOnClickListener(btnListener())
 //        binding.ivSubTodoCancel.setOnClickListener(btnListener())
 
     }
@@ -605,6 +675,8 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 R.id.check_flag_todo -> todoAddViewModel.setFlagTodo()
                 R.id.today_switch -> todoAddViewModel.setTodayTodo()
 
+                binding.subTodoAddLayout.id -> todoAddViewModel.plusSubTodo()
+
                 R.id.endDate_switch -> todoAddViewModel.setEndDateSwitch()
                 R.id.endDateTime_switch -> todoAddViewModel.setIsSelectedEndDateTime()
 
@@ -619,13 +691,13 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 R.id.btn_everyMonth -> todoAddViewModel.setRepeatOpt(3)
                 R.id.btn_everyYear -> todoAddViewModel.setRepeatOpt(4)
 
-                R.id.tv_monday -> todoAddViewModel.setRepeatVal(0)
-                R.id.tv_tuesday -> todoAddViewModel.setRepeatVal(1)
-                R.id.tv_wednesday -> todoAddViewModel.setRepeatVal(2)
-                R.id.tv_thursday -> todoAddViewModel.setRepeatVal(3)
-                R.id.tv_friday -> todoAddViewModel.setRepeatVal(4)
-                R.id.tv_saturday -> todoAddViewModel.setRepeatVal(5)
-                R.id.tv_sunday -> todoAddViewModel.setRepeatVal(6)
+                R.id.tv_sunday -> todoAddViewModel.setRepeatVal(0)
+                R.id.tv_monday -> todoAddViewModel.setRepeatVal(1)
+                R.id.tv_tuesday -> todoAddViewModel.setRepeatVal(2)
+                R.id.tv_wednesday -> todoAddViewModel.setRepeatVal(3)
+                R.id.tv_thursday -> todoAddViewModel.setRepeatVal(4)
+                R.id.tv_friday -> todoAddViewModel.setRepeatVal(5)
+                R.id.tv_saturday -> todoAddViewModel.setRepeatVal(6)
 
 
                 R.id.btn_alarmTime_pick, R.id.btn_endTime_pick -> {

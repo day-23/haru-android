@@ -31,7 +31,7 @@
     <string name="every2Week">이주</string>
     <string name="everyMonth">매월</string>
     <string name="everyYear">매년</string>
-    
+
     <string name="MonthDay">%1$d</string>
     <string name="YearMonth">%1$d월</string>
 
@@ -51,4 +51,10 @@
 
     <string name="delete">할일 삭제하기</string>
     <string name="save">저장</string>
+
+    <string name="done">완료</string>
+
+    <string name="everyThingDone">모든 할 일을 마쳤습니다!</string>
+
+    <string name="simpleAddTodo">간편 추가</string>
 </resources>
