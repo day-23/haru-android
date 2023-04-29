@@ -110,12 +110,12 @@ class CheckListViewModel() :
                 todoByTagItem = null
                 if (it.flaggedTodos.isNotEmpty())
                     _flaggedTodos.postValue(
-                        listOf(Todo(type = 1, content = "중요"))
+                        listOf(Todo(type = 4, content = "중요"))
                                 + it.flaggedTodos + listOf(Todo(type = 3))
                     )
                 else _flaggedTodos.postValue(
                     listOf(
-                        Todo(type = 1, content = "중요"),
+                        Todo(type = 4, content = "중요"),
                         Todo(type = 5), Todo(type = 3)
                     )
                 )
@@ -124,13 +124,13 @@ class CheckListViewModel() :
                     _taggedTodos.postValue(
                         listOf(
                             Todo(
-                                type = 1,
+                                type = 4,
                                 content = "분류"
                             )
                         ) + it.taggedTodos + listOf(Todo(type = 3))
                     ) else _taggedTodos.postValue(
                     listOf(
-                        Todo(type = 1, content = "분류"),
+                        Todo(type = 4, content = "분류"),
                         Todo(type = 5),
                         Todo(type = 3)
                     )
@@ -139,13 +139,13 @@ class CheckListViewModel() :
                     _untaggedTodos.postValue(
                         listOf(
                             Todo(
-                                type = 1,
+                                type = 4,
                                 content = "미분류"
                             )
                         ) + it.untaggedTodos + listOf(Todo(type = 3))
                     ) else _untaggedTodos.postValue(
                     listOf(
-                        Todo(type = 1, content = "미분류"),
+                        Todo(type = 4, content = "미분류"),
                         Todo(type = 5),
                         Todo(type = 3)
                     )
@@ -154,13 +154,13 @@ class CheckListViewModel() :
                     _completedTodos.postValue(
                         listOf(
                             Todo(
-                                type = 1,
+                                type = 4,
                                 content = "완료"
                             )
                         ) + it.completedTodos
                     ) else _completedTodos.postValue(
                     listOf(
-                        Todo(type = 1, content = "완료"),
+                        Todo(type = 4, content = "완료"),
                         Todo(type = 5)
                     )
                 )

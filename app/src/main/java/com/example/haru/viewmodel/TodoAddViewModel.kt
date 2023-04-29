@@ -26,7 +26,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     val todayTodo: LiveData<Boolean> = _todayTodo
 
     private val _subTodoList = MutableLiveData<List<String>>()
-    val subTodoList : LiveData<List<String>> = _subTodoList
+    val subTodoList: LiveData<List<String>> = _subTodoList
 
     private val _isSelectedEndDateTime = MutableLiveData<Boolean>(false)
     val isSelectedEndDateTime: LiveData<Boolean> = _isSelectedEndDateTime
@@ -49,8 +49,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _repeatEndDateSwitch = MutableLiveData<Boolean>(false)
     val repeatEndDateSwitch: LiveData<Boolean> = _repeatEndDateSwitch
 
-    private val _repeatOption = MutableLiveData<Int>()
-    val repeatOption: LiveData<Int> = _repeatOption
+    private val _repeatOption = MutableLiveData<Int?>()
+    val repeatOption: LiveData<Int?> = _repeatOption
 
     private val _repeatValue = MutableLiveData<String?>()
     val repeatValue: LiveData<String?> = _repeatValue
@@ -66,11 +66,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     var tagList: MutableList<String> = mutableListOf()
     var subTodos: MutableList<String> = mutableListOf()
-    var subTodoCnt : Int = 0
+    var subTodoCnt: Int = 0
     var subTodoClickPosition = -1
 
     private val subTodoCompleted = mutableListOf<Boolean>()
 
+    var day : Int? = null
 
     var tag: String = ""
     var content: String = ""
@@ -95,22 +96,22 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         this.checklistViewModel = checkListViewModel
     }
 
-    fun setClickTodo(id : String) {
+    fun setClickTodo(id: String) {
         clickedTodo = checklistViewModel.todoDataList.value!!.find {
             it.id == id
         }
         if (clickedTodo == null)
-            clickedTodo = checklistViewModel.todayTodo.value!!.find{it.id == id}!!
+            clickedTodo = checklistViewModel.todayTodo.value!!.find { it.id == id }!!
 
         _completedTodo.value = clickedTodo!!.completed
         _flagTodo.value = clickedTodo!!.flag
         _todayTodo.value = clickedTodo!!.todayTodo
         _isSelectedEndDateTime.value = clickedTodo!!.isAllDay
 
-        if (clickedTodo!!.subTodos.isNotEmpty()){
+        if (clickedTodo!!.subTodos.isNotEmpty()) {
             subTodos.clear()
             subTodoCnt = 0
-            for(i in 0 until clickedTodo!!.subTodos.size){
+            for (i in 0 until clickedTodo!!.subTodos.size) {
                 subTodoCnt++
                 subTodos.add(clickedTodo!!.subTodos[i].content)
                 subTodoCompleted.add(clickedTodo!!.subTodos[i].completed)
@@ -166,20 +167,20 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _todayTodo.value = (_todayTodo.value == false)
     }
 
-    fun plusSubTodo(content : String = ""){
+    fun plusSubTodo(content: String = "") {
         subTodoCnt += 1
         subTodos.add(content)
         _subTodoList.value = subTodos
     }
 
-    fun deleteSubTodo(){
+    fun deleteSubTodo() {
         if (subTodoCnt == 0) return
         subTodoCnt -= 1
         subTodos.removeAt(subTodoClickPosition)
         _subTodoList.value = subTodos
     }
 
-    fun setSubTodoPosition(position: Int){
+    fun setSubTodoPosition(position: Int) {
         subTodoClickPosition = position
     }
 
@@ -201,8 +202,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     fun setRepeatSwitch() {
         if (_repeatSwitch.value == null) {
             _repeatSwitch.value = true
-        }
-        else _repeatSwitch.value = (_repeatSwitch.value == false)
+        } else _repeatSwitch.value = (_repeatSwitch.value == false)
 
         if (repeatSwitch.value == true)
             setRepeatOpt(0)
@@ -264,7 +264,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun readyToSubmit() {
         Log.d("20191627", subTodos.toString())
-        for(i in 0 until  subTodos.size)
+        for (i in 0 until subTodos.size)
             if (subTodos[i] == "" || subTodos[i].replace(" ", "") == "")
                 subTodos[i] = ""
 
@@ -298,23 +298,28 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             if (repeatSwitch.value == true && repeatEndDateSwitch.value == true && repeatEndDate.value != null)
                 FormatDate.dateToStr(repeatEndDate.value!!)
             else null
+
+        var repeat = repeatValue.value
+        if (repeat != null){
+            _repeatValue.value = repeat.replace('2', '0')
+            repeat = repeatValue.value
+            if (!repeat!!.contains('1')){
+                _repeatOption.value = null
+                _repeatValue.value = null
+                repeatEndDateStr = null
+            }
+        }
     }
 
-    fun setRepeatVal(position: Int) {
-//        , value : Int? = null
-        // value = 0이면 0으로 바꾸고, 1이면 1로 바꾸고, null이면 그냥 값보고 판단
-        val repeatValue = _repeatValue.value
-//        val changeValue =
-//            if (value != null) value.toChar()
-//            else {
-//                if (repeatValue!![position] == '1')
-//                    '0'
-//                else '1'
-//            }
+    fun setRepeatVal(position: Int, value: Char? = null) {
+        // value가 2이면 선택 불가, null이면 그냥 값보고 판단
+        val repeatValue : String = _repeatValue.value!!
+        val changeValue =
+            value ?: if (repeatValue[position] == '1' || repeatValue[position] == '2')
+                '0'
+            else '1'
 
-        _repeatValue.value = if (repeatValue!![position] == '1')
-            repeatValue.substring(0, position) + '0' + repeatValue.substring(position + 1)
-        else repeatValue.substring(0, position) + '1' + repeatValue.substring(position + 1)
+        _repeatValue.value = repeatValue.substring(0, position) + changeValue + repeatValue.substring(position + 1)
     }
 
     private fun createTodoData(): TodoRequest {
@@ -356,17 +361,17 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             subTodos = subTodos,
             subTodosCompleted = subTodoCompleted,
             alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!)
-            )
+        )
     }
 
     fun updateTodo(callback: () -> Unit) {
-        checklistViewModel.putTodo(clickedTodo!!.id, createUpdateTodoData()){
+        checklistViewModel.putTodo(clickedTodo!!.id, createUpdateTodoData()) {
             callback()
         }
     }
 
-    fun deleteTodo(callback: () -> Unit){
-        checklistViewModel.deleteTodo(todoId = clickedTodo!!.id){
+    fun deleteTodo(callback: () -> Unit) {
+        checklistViewModel.deleteTodo(todoId = clickedTodo!!.id) {
             callback()
         }
     }
