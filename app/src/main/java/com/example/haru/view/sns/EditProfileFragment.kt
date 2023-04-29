@@ -17,6 +17,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
@@ -53,29 +54,6 @@ class EditProfileFragment: Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
     private lateinit var imageUri: Uri
     private lateinit var profileViewModel: MyPageViewModel
-
-    // 이미지 선택 결과 MultipartBody.part로 바꾸기
-    private var getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val selectedImageUri: Uri? = data?.data
-            selectedImageUri?.let {
-                imageUri = it
-                val inputStream = requireActivity().contentResolver.openInputStream(imageUri)
-                val file = File(requireContext().cacheDir, "image.jpg")
-                inputStream?.let { input ->
-                    file.outputStream().use { output ->
-                        input.copyTo(output)
-                    }
-                }
-                val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
-                val requestFile: RequestBody = RequestBody.create(MediaType.parse(mimeType), file)
-                val body: MultipartBody.Part = MultipartBody.Part.createFormData("image", file.name, requestFile)
-                // body 객체를 사용하여 서버에 업로드
-                profileViewModel.updateProfile(body)
-            }
-        }
-    }
     companion object{
         const val TAG : String = "로그"
 
@@ -88,7 +66,6 @@ class EditProfileFragment: Fragment() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "SnsMypageFragment - onCreate() called")
         profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
-
     }
 
     override fun onCreateView(
@@ -111,13 +88,7 @@ class EditProfileFragment: Fragment() {
 
         // 이미지 선택 버튼에 클릭 이벤트 리스너 등록
         binding.editProfileImage.setOnClickListener {
-            // 내부 저장소에서 이미지 선택하는 창 열기
-//            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-//            intent.addCategory(Intent.CATEGORY_OPENABLE)
-//            intent.type = "image/*"
-//            getContent.launch(intent)
 
-            // TODO: 버전별로 나누어 처리해야함
             // TODO: 권한을 허락받자마자 코드가 계속 실행되면 좋을거 같음
             if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 // 권한이 없는 경우 권한 요청
@@ -169,7 +140,6 @@ class EditProfileFragment: Fragment() {
                         val name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
                         val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH))
                         val absuri: Uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                        Log.d("Image","${id}, ${name}, ${path} ${absuri}")
                         gallery.add(ExternalImages(id,name,path,absuri))
                     } while (cursor.moveToNext())
                 }
@@ -210,7 +180,7 @@ class GalleryFragment : Fragment() {
         val recycler = binding.customGalleryImage
         profileViewModel.StoredImages.observe(viewLifecycleOwner){image ->
             galleryImages = image
-            galleryAdapter = GalleryAdapter(requireContext(), galleryImages)
+            galleryAdapter = GalleryAdapter(requireContext(), galleryImages, profileViewModel)
             recycler.adapter = galleryAdapter
             val gridLayoutManager = GridLayoutManager(requireContext(), 3)
             gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -233,7 +203,6 @@ class GalleryFragment : Fragment() {
                     else outRect.set(0,0,3,3)
                 }
             })
-
         }
         return binding.root
     }
