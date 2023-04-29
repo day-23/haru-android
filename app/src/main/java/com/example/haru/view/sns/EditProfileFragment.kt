@@ -8,6 +8,7 @@ import android.content.ContentUris
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Rect
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -30,6 +31,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
@@ -120,17 +122,38 @@ class EditProfileFragment: Fragment() {
             if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 // 권한이 없는 경우 권한 요청
                 Log.d("Image", "denied")
+
+                if (Build.VERSION.SDK_INT >= 33) {
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
                     101
                 )
+                } else {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                    101
+                )
+                }
+
             } else {
+                val projection: Array<String>
                 // 권한이 있는 경우
-                val projection = arrayOf(
-                    MediaStore.Images.Media._ID,
-                    MediaStore.Images.Media.DISPLAY_NAME,
-                    MediaStore.Images.Media.RELATIVE_PATH)
+                if(Build.VERSION.SDK_INT >= 33) {
+                    projection = arrayOf(
+                        MediaStore.Images.Media._ID,
+                        MediaStore.Images.Media.DISPLAY_NAME,
+                        MediaStore.Images.Media.RELATIVE_PATH
+                    )
+                }
+                else{
+                    projection = arrayOf(
+                        MediaStore.Images.Media._ID,
+                        MediaStore.Images.Media.DISPLAY_NAME,
+                        MediaStore.Images.Media.DATE_MODIFIED
+                    )
+                }
 
                 val path = Environment.getExternalStorageDirectory().absolutePath
                 val mimeType = "image/*"
@@ -161,7 +184,6 @@ class EditProfileFragment: Fragment() {
                 transaction.commit()
             }
         }
-
         //프로필 사진 반영
         profileViewModel.Profile.observe(viewLifecycleOwner){profile ->
             Log.d("TAG", "profile update ${profile.url}")
@@ -191,7 +213,27 @@ class GalleryFragment : Fragment() {
             galleryAdapter = GalleryAdapter(requireContext(), galleryImages)
             recycler.adapter = galleryAdapter
             val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+            gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return 1 // 각 아이템의 너비를 1로 설정
+                }
+            }
             recycler.layoutManager = gridLayoutManager
+
+            recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val position = parent.getChildAdapterPosition(view) // item position
+                    val column = position % 3 // item column
+                    if(column == 3) outRect.set(0, 0, 0, 3)
+                    else outRect.set(0,0,3,3)
+                }
+            })
+
         }
         return binding.root
     }
