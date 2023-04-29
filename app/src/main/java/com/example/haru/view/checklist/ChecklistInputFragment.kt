@@ -504,13 +504,14 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 when (days) {
                     31  // 2,4,6,9,11 달들 선택 불가
                     -> for (i in listOf(2, 4, 6, 9, 11))
-                        todoAddViewModel.setRepeatVal(i - 1, '2')
+                        if (todoAddViewModel.repeatValue.value!![i - 1] != '2')
+                            todoAddViewModel.setRepeatVal(i - 1, '2')
                     30 // 2월달만
                     -> for (i in listOf(2, 4, 6, 9, 11))
                         if (i == 2 && todoAddViewModel.repeatValue.value!![i - 1] != '2')
                             todoAddViewModel.setRepeatVal(i - 1, '2')
                         else if (i != 2 && todoAddViewModel.repeatValue.value!![i - 1] == '2')
-                                todoAddViewModel.setRepeatVal(i - 1)
+                            todoAddViewModel.setRepeatVal(i - 1)
 
                     else -> {
                         for (i in listOf(2, 4, 6, 9, 11))
@@ -572,16 +573,19 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             if (todoAddViewModel.repeatOption.value != null) {
                 val flagOne = todoAddViewModel.repeatValue.value!!.contains('1')
                 val flagTwo = todoAddViewModel.repeatValue.value!!.contains('2')
-                if (!flagOne && !flagTwo){  // 1도 없고, 2도 없는 0으로만 이루어진 상황
+                if (!flagOne && !flagTwo) {  // 1도 없고, 2도 없는 0으로만 이루어진 상황
                     todoAddViewModel.setDate(0, Date())
                     return@Observer
-                } else if (flagTwo && !flagOne){
-                    FormatDate.cal.time = Date()
-                    FormatDate.cal.set(Calendar.DAY_OF_MONTH, todoAddViewModel.day!!)
+                } else if (flagTwo && !flagOne) {
+                    if (todoAddViewModel.selectedDate == null) {
+                        FormatDate.cal.time = Date()
+                        FormatDate.cal.set(Calendar.DAY_OF_MONTH, todoAddViewModel.day!!)
+                    } else {
+                        FormatDate.cal.time = todoAddViewModel.selectedDate!!
+                    }
                     todoAddViewModel.setDate(0, FormatDate.cal.time)
                     return@Observer
-                }
-                else {
+                } else {
                     Log.d("20191627", "최적 날짜 찾기")
                     val date = when (todoAddViewModel.repeatValue.value?.length) {
                         7 -> FormatDate.nextEndDateEveryWeek(
@@ -792,7 +796,10 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                             val date = calendar.time
 
                             when (v.id) {
-                                R.id.btn_endDate_pick -> todoAddViewModel.setDate(0, date)
+                                R.id.btn_endDate_pick -> {
+                                    todoAddViewModel.selectedDate = date
+                                    todoAddViewModel.setDate(0, date)
+                                }
                                 R.id.btn_alarmDate_pick -> todoAddViewModel.setDate(1, date)
                                 R.id.btn_repeat_end_date -> todoAddViewModel.setDate(2, date)
                             }

@@ -72,6 +72,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val subTodoCompleted = mutableListOf<Boolean>()
 
     var day : Int? = null
+    var selectedDate : Date? = null
 
     var tag: String = ""
     var content: String = ""
