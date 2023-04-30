@@ -176,23 +176,27 @@ class CheckListViewModel() :
             todoRepository.getTodayTodo(endDate = endDate) {
                 todayList.clear()
                 todayList.apply {
-                    if (it.flaggedTodos.isNotEmpty()) {
-                        this.add(Todo(type = 4, content = "중요"))
+                    this.add(Todo(type = 4, content = "중요"))
+                    if (it.flaggedTodos.isNotEmpty())
                         this.addAll(it.flaggedTodos)
-                    }
-                    if (it.todayTodos.isNotEmpty()) {
-                        this.add(Todo(type = 4, content = "오늘 할 일"))
+                    else this.add(Todo(type = 5))
+
+                    this.add(Todo(type = 4, content = "오늘 할 일"))
+                    if (it.todayTodos.isNotEmpty())
                         this.addAll(it.todayTodos)
-                    }
-                    if (it.endDatedTodos.isNotEmpty()) {
-                        this.add(Todo(type = 4, content = "오늘 마감"))
+                    else this.add(Todo(type = 5))
+
+                    this.add(Todo(type = 4, content = "오늘 마감"))
+                    if (it.endDatedTodos.isNotEmpty())
                         this.addAll(it.endDatedTodos)
-                    }
+                    else this.add(Todo(type = 5))
+
                     this.add(Todo(type = 3))
-                    if (it.completedTodos.isNotEmpty()) {
-                        this.add(Todo(type = 4, content = "완료"))
+
+                    this.add(Todo(type = 4, content = "완료"))
+                    if (it.completedTodos.isNotEmpty())
                         this.addAll(it.completedTodos)
-                    }
+                    else this.add(Todo(type = 5))
                 }
                 _todayTodo.postValue(todayList)
                 callback()
@@ -243,22 +247,22 @@ class CheckListViewModel() :
                     )
                     else -> {
                         todoRepository.getTodoByTag(tagDataList.value!![position - 1].id) {
-                            if (it.flaggedTodos.isNotEmpty()) {
-                                this.add(Todo(type = 4, content = "중요"))
+                            this.add(Todo(type = 4, content = "중요"))
+                            if (it.flaggedTodos.isNotEmpty())
                                 this.addAll(it.flaggedTodos)
-                                this.add(Todo(type = 3))
-                            }
+                            else this.add(Todo(type = 5))
+                            this.add(Todo(type = 3))
 
                             this.add(Todo(type = 4, content = todoByTagItem!!))
-                            if (it.unFlaggedTodos.isNotEmpty()) {
+                            if (it.unFlaggedTodos.isNotEmpty())
                                 this.addAll(it.unFlaggedTodos)
-                                this.add(Todo(type = 3))
-                            } else this.addAll(listOf(Todo(type = 5), Todo(type = 3)))
+                            else this.add(Todo(type = 5))
+                            this.add(Todo(type = 3))
 
-                            if (it.completedTodos.isNotEmpty()) {
-                                this.add(Todo(type = 4, content = "완료"))
+                            this.add(Todo(type = 4, content = "완료"))
+                            if (it.completedTodos.isNotEmpty())
                                 this.addAll(it.completedTodos)
-                            }
+                            else this.add(Todo(type = 5))
                         }
                     }
                 }
@@ -371,7 +375,7 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData = todoRepository.updateRepeatTodo(todoId = id, endDate = endDate) {
                 if (it.success) {
-                    if (todayList.isNotEmpty()){
+                    if (todayList.isNotEmpty()) {
                         val calendar = Calendar.getInstance().apply {
                             set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
