@@ -64,6 +64,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val _repeatEndDate = MutableLiveData<Date>(Date())
     val repeatEndDate: LiveData<Date> = _repeatEndDate
 
+    private val _selectedDate = MutableLiveData<Date>()
+    val selectedDate : LiveData<Date> = _selectedDate
+
     var tagList: MutableList<String> = mutableListOf()
     var subTodos: MutableList<String> = mutableListOf()
     var subTodoCnt: Int = 0
@@ -72,7 +75,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val subTodoCompleted = mutableListOf<Boolean>()
 
     var day : Int? = null
-    var selectedDate : Date? = null
+    var selectDateFlag = false
 
     var tag: String = ""
     var content: String = ""
@@ -95,6 +98,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     init {
         this.checklistViewModel = checkListViewModel
+    }
+
+    fun setSelectDate(date : Date) {
+        selectDateFlag = true
+        _selectedDate.value = date
     }
 
     fun setClickTodo(id: String) {
@@ -207,6 +215,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         if (repeatSwitch.value == true)
             setRepeatOpt(0)
+        selectDateFlag = false
     }
 
     fun setRepeatEndSwitch() {
@@ -215,6 +224,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setRepeatOpt(num: Int) {
         _repeatOption.value = num
+        selectDateFlag = false
         when (num) {
             0 -> _repeatValue.value = "1"
             1, 2 -> _repeatValue.value = String.format("%-7s", "").replace(' ', '0')
@@ -319,7 +329,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             value ?: if (repeatValue[position] == '1' || repeatValue[position] == '2')
                 '0'
             else '1'
-
+        if (value == null)
+            selectDateFlag = false
         _repeatValue.value = repeatValue.substring(0, position) + changeValue + repeatValue.substring(position + 1)
     }
 
