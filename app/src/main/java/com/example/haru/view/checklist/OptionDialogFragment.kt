@@ -53,4 +53,20 @@ class OptionDialogFragment : BottomSheetDialogFragment() {
         val displayMetrics: DisplayMetrics = this.resources.displayMetrics
         return displayMetrics.heightPixels
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+    }
+
+    inner class ButtonClickListener : View.OnClickListener{
+        override fun onClick(v: View?) {
+            when(v?.id){
+                binding.btnOptionOneDelete.id -> {}
+                binding.btnOptionAllDelete.id -> {}
+                binding.btnOptionCancel.id -> {}
+            }
+        }
+    }
 }

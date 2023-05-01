@@ -30,7 +30,7 @@ import java.util.*
 class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) : Fragment() {
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
-    private var id : String
+    private var id: String
 
     init {
         this.todoAddViewModel = TodoAddViewModel(checkListViewModel)
@@ -42,7 +42,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
         fun newInstance(
             checkListViewModel: CheckListViewModel,
-            id : String
+            id: String
         ): ChecklistItemFragment {
             return ChecklistItemFragment(checkListViewModel, id)
         }
@@ -144,28 +144,44 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         // subTodo 관련 UI Update
         todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (todoAddViewModel.subTodoCnt > binding.infoSubTodoLayout.childCount - 1) {
-                for(i in binding.infoSubTodoLayout.childCount - 1 until todoAddViewModel.subTodoCnt){
+                for (i in binding.infoSubTodoLayout.childCount - 1 until todoAddViewModel.subTodoCnt) {
                     val layoutInflater =
                         context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val addView = layoutInflater.inflate(R.layout.subtodo_input_layout, null)
 
                     addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
-                        todoAddViewModel.setSubTodoPosition(binding.infoSubTodoLayout.indexOfChild(addView))
+                        todoAddViewModel.setSubTodoPosition(
+                            binding.infoSubTodoLayout.indexOfChild(
+                                addView
+                            )
+                        )
                         todoAddViewModel.deleteSubTodo()
                     }
-                    addView.findViewById<EditText>(R.id.et_subTodo).setText(todoAddViewModel.subTodos[i])
+                    addView.findViewById<EditText>(R.id.et_subTodo)
+                        .setText(todoAddViewModel.subTodos[i])
                     addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object :
                         TextWatcher {
-                        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                        override fun beforeTextChanged(
+                            p0: CharSequence?,
+                            p1: Int,
+                            p2: Int,
+                            p3: Int
+                        ) {
+                        }
+
                         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                         override fun afterTextChanged(e: Editable?) {
-                            todoAddViewModel.subTodos[binding.infoSubTodoLayout.indexOfChild(addView)] = e.toString()
+                            todoAddViewModel.subTodos[binding.infoSubTodoLayout.indexOfChild(addView)] =
+                                e.toString()
                         }
                     })
-                    binding.infoSubTodoLayout.addView(addView, binding.infoSubTodoLayout.childCount - 1)
+                    binding.infoSubTodoLayout.addView(
+                        addView,
+                        binding.infoSubTodoLayout.childCount - 1
+                    )
                     todoAddViewModel.subTodoClickPosition++
                 }
-            }else binding.infoSubTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
+            } else binding.infoSubTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
         })
 
         // todayTodo 관련 UI Update
@@ -245,9 +261,16 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
             binding.infoRepeatOptionLayout.visibility = if (it) View.VISIBLE else View.GONE
             binding.infoRepeatEndDateLayout.visibility = if (it) View.VISIBLE else View.GONE
 
-            binding.infoEveryWeekSelectLayout.visibility = if (it && todoAddViewModel.repeatOption.value in listOf(1,2)) View.VISIBLE else View.GONE
-            binding.infoGridMonth.visibility = if (it && todoAddViewModel.repeatOption.value == 3) View.VISIBLE else View.GONE
-            binding.infoGridYear.visibility = if (it && todoAddViewModel.repeatOption.value == 4) View.VISIBLE else View.GONE
+            binding.infoEveryWeekSelectLayout.visibility =
+                if (it && todoAddViewModel.repeatOption.value in listOf(
+                        1,
+                        2
+                    )
+                ) View.VISIBLE else View.GONE
+            binding.infoGridMonth.visibility =
+                if (it && todoAddViewModel.repeatOption.value == 3) View.VISIBLE else View.GONE
+            binding.infoGridYear.visibility =
+                if (it && todoAddViewModel.repeatOption.value == 4) View.VISIBLE else View.GONE
 
         })
 
@@ -281,13 +304,21 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
             }
 
             if (layout != null) {
-                for(i in 0 until it!!.length) {
-                    if (it[i] == '1'){
+                for (i in 0 until it!!.length) {
+                    if (it[i] == '1') {
                         Log.d("20191627", it[i].toString())
-                        (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
-                    }
-
-                    else (layout.getChildAt(i) as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        (layout.getChildAt(i) as TextView).setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.highlight
+                            )
+                        )
+                    } else (layout.getChildAt(i) as TextView).setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.light_gray
+                        )
+                    )
                 }
             }
         })
@@ -461,15 +492,16 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
                 binding.btnInfoDelete.id -> {
-                    val option = OptionDialogFragment()
-                    option.show(parentFragmentManager, option.tag)
+                    if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
+                        val option = OptionDialogFragment()
+                        option.show(parentFragmentManager, option.tag)
+                    } else todoAddViewModel.deleteTodo {
+                        requireActivity().supportFragmentManager.popBackStack()
+                    }
                 }
-//                    todoAddViewModel.deleteTodo{
-//                    requireActivity().supportFragmentManager.popBackStack()
-//                }
                 binding.btnInfoSave.id -> {
                     todoAddViewModel.readyToSubmit()
-                    todoAddViewModel.updateTodo{
+                    todoAddViewModel.updateTodo {
                         requireActivity().supportFragmentManager.popBackStack()
                     }
                 }
