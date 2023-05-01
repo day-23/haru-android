@@ -192,6 +192,7 @@ object FormatDate {
                     break
                 }
         }
+        cal.set(Calendar.DAY_OF_MONTH, 1)  // 만약 31일인 상태에서 3월에서 + 1하면 5월 1일로 간다. 그렇기 때문에 날짜를 1로 설정해줌
 
         if (days < idx + 1) {
             cal.add(Calendar.MONTH, 1)
@@ -227,23 +228,28 @@ object FormatDate {
     fun nextEndDateEveryYear(
         repeatValue: String,
         endDateStr: String?,
-        repeatEndDateStr: String?
-    ): Date? {
-        if (endDateStr == null)
+        repeatEndDateStr: String?,    // endDateStr을 하면 현재 시간으로 값을 정하지만 만약 사용자가 직접 날짜를 설정한다면????? 방법 강구하기
+        day : Int? = null
+    ): Date? {                       // todoAddViewModel에 사용자가 직접 endDate를 설정한 것을 표시할 수 있는 값 만들기???
+        if (endDateStr == null)      // endDatePick의 클릭이벤트를 통해서 가능
             cal.time = Date()
         else cal.time = strToDate(endDateStr)
 
+        Log.d("20191627", "day : $day")
         val idx = cal.get(Calendar.MONTH)
         val idxPlus = if (endDateStr == null) 0 else 1
-        val days = cal.get(Calendar.DAY_OF_MONTH)
+        val days = day ?: cal.get(Calendar.DAY_OF_MONTH)
+
         var month: Int
         var flag = false
         for (i in idx + idxPlus until 12)
             if (repeatValue[i] == '1') {
                 month = i
+                cal.set(Calendar.DAY_OF_MONTH, 1)
                 cal.set(Calendar.MONTH, month)
                 if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                     flag = true
+                    cal.set(Calendar.DAY_OF_MONTH, days)
                     break
                 }
             }
@@ -252,11 +258,9 @@ object FormatDate {
             for (i in 0 until 12) {
                 if (repeatValue[i] == '1') {
                     month = i
+                    cal.set(Calendar.DAY_OF_MONTH, 1)
                     cal.set(Calendar.MONTH, month)
                     if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
-                        Log.d("20191627", "$days")
-                        Log.d("20191627", cal.getActualMaximum(Calendar.DAY_OF_MONTH).toString())
-                        Log.d("20191627", cal.time.toString())
                         flag = true
                         cal.set(Calendar.DAY_OF_MONTH, days)
                         break
