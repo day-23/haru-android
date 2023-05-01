@@ -460,9 +460,13 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
-                binding.btnInfoDelete.id -> todoAddViewModel.deleteTodo{
-                    requireActivity().supportFragmentManager.popBackStack()
+                binding.btnInfoDelete.id -> {
+                    val option = OptionDialogFragment()
+                    option.show(parentFragmentManager, option.tag)
                 }
+//                    todoAddViewModel.deleteTodo{
+//                    requireActivity().supportFragmentManager.popBackStack()
+//                }
                 binding.btnInfoSave.id -> {
                     todoAddViewModel.readyToSubmit()
                     todoAddViewModel.updateTodo{
