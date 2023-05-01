@@ -1,8 +1,7 @@
 package com.example.haru.data.model
 
 data class User(
-    val id: Int,
+    val id: String,
     val name: String,
-    val email: String,
-    val avatarUrl: String
+    val profileImage: String?
 )

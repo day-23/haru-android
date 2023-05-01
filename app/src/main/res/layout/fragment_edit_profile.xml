@@ -61,7 +61,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="68dp">
             
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/edit_profile_image"
                 android:layout_width="94dp"
                 android:layout_height="94dp"
                 android:src="@drawable/drawofmomo"
@@ -69,7 +70,9 @@
         </FrameLayout>
     </LinearLayout>
 
+
     <LinearLayout
+        android:id="@+id/profile_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
@@ -133,9 +136,17 @@
             android:layout_height="1dp"
             android:background="#DBDBDB"
             android:layout_marginTop="16dp"/>
-
-
-
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/popup_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_info"
+        android:orientation="horizontal"
+        android:background="@drawable/custom_gallery_background"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

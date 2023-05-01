@@ -3,12 +3,11 @@ package com.example.haru.view.timetable
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
-import android.graphics.PorterDuff
 import android.view.DragEvent
 import android.view.View
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Todo
+import com.example.haru.view.adapter.TodotableAdapter
 
 
 class Todo_draglistener () : View.OnDragListener {

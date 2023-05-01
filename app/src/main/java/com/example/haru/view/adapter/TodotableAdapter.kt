@@ -1,4 +1,4 @@
-package com.example.haru.view.timetable
+package com.example.haru.view.adapter
 
 import android.content.ClipData
 import android.content.Context
@@ -8,18 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.databinding.adapters.ViewBindingAdapter.setOnLongClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Timetable_date
 import com.example.haru.data.model.Todo
-import com.example.haru.data.model.TodoTable_data
-import com.google.android.material.animation.AnimationUtils
+import com.example.haru.view.timetable.Todo_draglistener
 
 class TodotableAdapter(val context: Context,
                        private var itemList: ArrayList<Todo>,
                        private val Date: String,
-                       private val dragListener: Todo_draglistener) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
+                       private val dragListener: Todo_draglistener
+) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
 
         var animation = -1
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodotableViewHolder {
