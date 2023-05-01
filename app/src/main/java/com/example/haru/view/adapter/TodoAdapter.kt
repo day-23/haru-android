@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
+import com.example.haru.databinding.ChecklistBlankBinding
 import com.example.haru.databinding.ChecklistEmptyBinding
 import com.example.haru.databinding.ChecklistHeaderType1Binding
 import com.example.haru.databinding.ChecklistHeaderType2Binding
@@ -68,6 +69,7 @@ class TodoAdapter(val context: Context) :
     val Divider = 3
     val HeaderType3 = 4
     val Empty = 5
+    val Blank = 6
 
     var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
@@ -143,6 +145,12 @@ class TodoAdapter(val context: Context) :
                 )
             )
 
+            Blank -> BlankViewHolder(
+                ChecklistBlankBinding.inflate(
+                    LayoutInflater.from(context), parent, false
+                )
+            )
+
             else -> {
                 throw ClassCastException("Unknown viewType $viewType")
             }
@@ -165,6 +173,7 @@ class TodoAdapter(val context: Context) :
             is TodoViewHolder -> {
                 holder.bind(todo)
             }
+            is BlankViewHolder -> {}
         }
     }
 
@@ -186,6 +195,9 @@ class TodoAdapter(val context: Context) :
     }
 
     inner class DividerViewHolder(val binding: FragmentChecklistDividerBinding) :
+        RecyclerView.ViewHolder(binding.root) {}
+
+    inner class BlankViewHolder(val binding: ChecklistBlankBinding) :
         RecyclerView.ViewHolder(binding.root) {}
 
     inner class TodoViewHolder(val binding: FragmentChecklistItemBinding) :

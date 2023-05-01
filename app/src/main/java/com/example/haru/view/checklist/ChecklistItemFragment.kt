@@ -133,7 +133,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         // complete 관련 UI Update
         todoAddViewModel.completedTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val color = if (it) R.color.light_gray else R.color.todo_description
-            binding.cbInfoCompleted.isChecked = it
+//            binding.cbInfoCompleted.isChecked = it
             binding.etInfoContent.paintFlags =
                 if (it)
                     Paint.STRIKE_THRU_TEXT_FLAG
@@ -316,7 +316,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         binding.cbInfoFlag.setOnClickListener(BtnClickListener())
 
         // complete click event
-        binding.cbInfoCompleted.setOnClickListener(BtnClickListener())
+//        binding.cbInfoCompleted.setOnClickListener(BtnClickListener())
 
         binding.infoSubTodoAddLayout.setOnClickListener(BtnClickListener())
 
@@ -367,7 +367,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         override fun onClick(v: View?) {
             when (v?.id) {
                 binding.cbInfoFlag.id -> todoAddViewModel.setFlagTodo()
-                binding.cbInfoCompleted.id -> todoAddViewModel.setCompleteTodo()
+//                binding.cbInfoCompleted.id -> todoAddViewModel.setCompleteTodo()
 
                 binding.infoSubTodoAddLayout.id -> todoAddViewModel.plusSubTodo()
 

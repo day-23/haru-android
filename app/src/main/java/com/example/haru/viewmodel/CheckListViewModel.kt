@@ -157,13 +157,15 @@ class CheckListViewModel() :
                                 type = 4,
                                 content = "완료"
                             )
-                        ) + it.completedTodos
+                        ) + it.completedTodos + listOf(Todo(type = 6))
                     ) else _completedTodos.postValue(
                     listOf(
                         Todo(type = 4, content = "완료"),
-                        Todo(type = 5)
+                        Todo(type = 5),
+                        Todo(type = 6)
                     )
                 )
+
                 _todoByTag.postValue(false)
                 todoByTagItem = null
             }
@@ -266,6 +268,7 @@ class CheckListViewModel() :
                         }
                     }
                 }
+                add(Todo(type = 6))
             }
             _todoDataList.value = todoList
         }
