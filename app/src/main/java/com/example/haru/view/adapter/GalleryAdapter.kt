@@ -46,7 +46,7 @@ class GalleryAdapter (val context: Context,
 
                 val file = File(imagePath)
                 Log.d("Image", "4 $file")
-                val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), file)
+                val requestFile = RequestBody.create(MediaType.parse(fileExtension), file)
                 val part = MultipartBody.Part.createFormData("image", data.name, requestFile)
                 myPageViewModel.updateProfile(part)
             }
