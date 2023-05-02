@@ -1,19 +1,25 @@
 package com.example.haru.viewmodel
 
+import android.content.Context
 import android.os.Build.VERSION_CODES.P
 import android.provider.ContactsContract.Profile
+import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.haru.data.model.AddPost
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.data.model.Post
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.TodoRepository
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 
 class MyPageViewModel(): ViewModel() {
     private val ProfileRepository = ProfileRepository()
@@ -50,7 +56,7 @@ class MyPageViewModel(): ViewModel() {
         _Page.value = 1
     }
 
-    fun loadGallery(images: ArrayList<ExternalImages>){
+    fun loadGallery(images: ArrayList<ExternalImages>) {
         Log.d("Image", "upload ---------------$images")
         _StoredImages.value = images
     }
@@ -98,17 +104,66 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun addSelected(i : Int){
+    fun addSelected(i: Int) {
         var newlist = _SelectedPosition.value
-        if(newlist != null)
+        if (newlist != null)
             newlist?.add(i)
         else newlist = arrayListOf(i)
         _SelectedPosition.value = newlist!!
     }
 
-    fun delSelected(i : Int){
+    fun delSelected(i: Int) {
         var newlist = _SelectedPosition.value
         newlist?.remove(i)
         _SelectedPosition.value = newlist!!
+    }
+
+    fun convertMultiPart(context: Context): ArrayList<MultipartBody.Part> {
+        val images = ArrayList<ExternalImages>()
+        val indexSet = _SelectedPosition.value
+        val totalImage = _StoredImages.value
+        if(indexSet != null && totalImage != null) {
+            for (i in indexSet) {
+                images.add(totalImage.get(i))
+            }
+        }
+
+        val convertedImages = ArrayList<MultipartBody.Part>()
+        if (images.size > 0) {
+            for (data in images!!) {
+                val cursor = context.contentResolver.query(data.absuri, null, null, null, null)
+                cursor?.use {
+                    it.moveToFirst()
+                    val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                    val imagePath = it.getString(columnIndex)
+                    val fileName = data.name.substringAfterLast('.')
+                    val fileExtension = "image/" + fileName
+
+                    val file = File(imagePath)
+                    Log.d("Image", "4 $file")
+                    val requestFile = RequestBody.create(MediaType.parse(fileExtension), file)
+                    val part = MultipartBody.Part.createFormData("image", data.name, requestFile)
+                    convertedImages.add(part)
+                }
+            }
+        }
+        return convertedImages
+    }
+
+    fun postRequest(images : ArrayList<MultipartBody.Part>, content : String?, hashtag: ArrayList<String>){
+        val post = AddPost(images, content, hashtag)
+
+        viewModelScope.launch{
+            PostRepository.addPost(post) {
+                if(it.id != ""){ //get success
+                    Log.d("TAG", "Success to Post!!")
+                }
+            }
+        }
+    }
+
+    fun resetValue(){
+        _SelectedPosition.value = arrayListOf()
+        _StoredImages.value = arrayListOf()
     }
 }

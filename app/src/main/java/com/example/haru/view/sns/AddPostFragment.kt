@@ -90,7 +90,7 @@ class AddPostFragment : Fragment() {
                     ) {
                         val position = parent.getChildAdapterPosition(view) // item position
                         val column = position % 3 // item column
-                        if(column == 3) outRect.set(0, 0, 0, 3)
+                        if(column + 1 == 0) outRect.set(0, 0, 0, 3)
                         else outRect.set(0,0,3,3)
                     }
                 })
@@ -100,11 +100,33 @@ class AddPostFragment : Fragment() {
                 for(i in selected){
                     val layoutManager = galleryRecyclerView.layoutManager
                     if(layoutManager != null){
-                        val targetView = layoutManager?.findViewByPosition(i)
+                        val targetView = layoutManager.findViewByPosition(i)
                         val textView = targetView?.findViewById<TextView>(R.id.select_index)
-                        textView?.text = "${selected.indexOf(i)+1}"
+                        textView?.text = "${selected.indexOf(i) + 1}"
                     }
                 }
+            }
+
+            binding.addpostApply.setOnClickListener{
+                val converedImage =  galleryViewmodel.convertMultiPart(requireContext())
+                val content = binding.addpostContent.text.toString()
+                val hashtag = arrayListOf("해시스완")
+
+                galleryViewmodel.postRequest(converedImage, content, hashtag)
+                galleryViewmodel.resetValue()
+
+                val newFrag = SnsFragment.newInstance()
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragments_frame, newFrag)
+                transaction.commit()
+            }
+
+            binding.addpostCancel.setOnClickListener {
+                galleryViewmodel.resetValue()
+                val newFrag = SnsFragment.newInstance()
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragments_frame, newFrag)
+                transaction.commit()
             }
 
             return binding.root

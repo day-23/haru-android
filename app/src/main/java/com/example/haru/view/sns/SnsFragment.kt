@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -101,18 +102,20 @@ class SnsFragment : Fragment() {
             val newFrag = MyPageFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
-            transaction.addToBackStack(null)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
             transaction.commit()
-            true
         }
 
         binding.addPost.setOnClickListener {
             val newFrag = AddPostFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
-            transaction.addToBackStack(null)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
             transaction.commit()
-            true
         }
 
         //둘러보기 클릭
@@ -138,6 +141,16 @@ class SnsFragment : Fragment() {
         userViewModel.fetchUser(userId)
 
         return binding.root
+    }
+
+    fun isFragmentInBackStack(fragmentManager: FragmentManager, tag: String): Boolean {
+        for (i in 0 until fragmentManager.backStackEntryCount) {
+            val backStackEntry = fragmentManager.getBackStackEntryAt(i)
+            if (backStackEntry.name == tag) {
+                return true
+            }
+        }
+        return false
     }
 
 }

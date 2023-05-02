@@ -42,6 +42,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     
     <EditText
+        android:id="@+id/addpost_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:hint="텍스트를 입력해주세요"

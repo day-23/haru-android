@@ -40,9 +40,6 @@ class GalleryAdapter (val context: Context,
                 val imagePath = it.getString(columnIndex)
                 val fileName = data.name.substringAfterLast('.')
                 val fileExtension = "image/" + fileName
-                Log.d("Image", "1 ${fileExtension}")
-                Log.d("Image", "2 ${imagePath}")
-                Log.d("Image", "3 ${data.name}")
 
                 val file = File(imagePath)
                 Log.d("Image", "4 $file")
