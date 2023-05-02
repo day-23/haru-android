@@ -3,18 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
+    android:padding="5dp"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_one_delete"
-        style="@style/minSize"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
-        android:textSize="25sp"
-        android:background="@drawable/option_btn_background"
-        android:textColor="@color/delete_red"
-        android:text="이것만 삭제"/>
+        android:textSize="20sp"
+        android:background="@drawable/option_btn_one_delete"
+        android:textColor="@color/highlight"
+        android:text="@string/oneDelete"/>
 
     <View
         android:layout_width="match_parent"
@@ -23,25 +24,27 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_all_delete"
-        style="@style/minSize"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/option_btn_background"
+        android:background="@drawable/option_btn_all_delete"
         android:textColor="@color/delete_red"
-        android:textSize="25sp"
-        android:text="전체 삭제"/>
+        android:textSize="20sp"
+        android:text="@string/allDelete"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_cancel"
-        style="@style/minSize"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
-        android:background="@drawable/option_btn_background"
-        android:textColor="@color/delete_red"
-        android:textSize="25sp"
-        android:text="취소"/>
+        android:background="@drawable/option_btn_cancel"
+        android:textColor="@color/highlight"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textAllCaps="false"
+        android:text="@string/cancel"/>
 
 </LinearLayout>

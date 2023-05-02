@@ -14,7 +14,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class OptionDialogFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionDeleteBinding
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,14 +56,19 @@ class OptionDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        binding.btnOptionOneDelete.setOnClickListener(ButtonClickListener())
+        binding.btnOptionAllDelete.setOnClickListener(ButtonClickListener())
+        binding.btnOptionCancel.setOnClickListener(ButtonClickListener())
     }
 
     inner class ButtonClickListener : View.OnClickListener{
         override fun onClick(v: View?) {
             when(v?.id){
                 binding.btnOptionOneDelete.id -> {}
-                binding.btnOptionAllDelete.id -> {}
+                binding.btnOptionAllDelete.id -> {
+                        // 여기서 todoaddviewmodel의 deletetodo를 호출하고
+//                         dismiss하고나서 popBackStack()을하면 뒤에 꺼가 사라지는지 확인
+                }
                 binding.btnOptionCancel.id -> {}
             }
         }
