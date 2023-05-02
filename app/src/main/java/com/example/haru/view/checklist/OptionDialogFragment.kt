@@ -7,13 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.haru.databinding.FragmentOptionDeleteBinding
+import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class OptionDialogFragment : BottomSheetDialogFragment() {
+class OptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionDeleteBinding
+    private var todoAddViewModel: TodoAddViewModel
 
+    init{
+        this.todoAddViewModel = todoAddViewModel
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,7 +50,7 @@ class OptionDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun getBottomSheetDialogDefaultHeight(): Int {
-        return getWindowHeight() * 20 / 100
+        return getWindowHeight() * 23 / 100
     }
 
     private fun getWindowHeight(): Int {
@@ -66,8 +71,11 @@ class OptionDialogFragment : BottomSheetDialogFragment() {
             when(v?.id){
                 binding.btnOptionOneDelete.id -> {}
                 binding.btnOptionAllDelete.id -> {
-                        // 여기서 todoaddviewmodel의 deletetodo를 호출하고
-//                         dismiss하고나서 popBackStack()을하면 뒤에 꺼가 사라지는지 확인
+                    todoAddViewModel.deleteTodo {
+                        dismiss()
+                        requireActivity().supportFragmentManager.popBackStack()
+                    }
+                        
                 }
                 binding.btnOptionCancel.id -> {}
             }

@@ -493,7 +493,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
                 binding.btnInfoDelete.id -> {
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-                        val option = OptionDialogFragment()
+                        val option = OptionDialogFragment(todoAddViewModel)
                         option.show(parentFragmentManager, option.tag)
                     } else todoAddViewModel.deleteTodo {
                         requireActivity().supportFragmentManager.popBackStack()
