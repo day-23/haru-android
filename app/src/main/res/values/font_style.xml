@@ -19,4 +19,5 @@
     <style name="customCheckBoxFontStyle" parent="@android:style/Widget.DeviceDefault.CompoundButton.CheckBox">
         <item name="android:fontFamily">@font/pretendard_font_family</item>
     </style>
+
 </resources>
