@@ -36,10 +36,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
     private var onDismissListener: (() -> Unit)? = null
 
-    fun setOnDismissListener(listener: () -> Unit) {
-        onDismissListener = listener
-    }
-
     init {
         todoAddViewModel = TodoAddViewModel(checkListViewModel)
     }

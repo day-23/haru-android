@@ -69,15 +69,22 @@ class OptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSheetDia
     inner class ButtonClickListener : View.OnClickListener{
         override fun onClick(v: View?) {
             when(v?.id){
-                binding.btnOptionOneDelete.id -> {}
+                binding.btnOptionOneDelete.id -> {
+                    todoAddViewModel.deleteRepeatTodo {
+                        dismiss()
+                        requireActivity().supportFragmentManager.popBackStack()
+                    }
+                }
                 binding.btnOptionAllDelete.id -> {
                     todoAddViewModel.deleteTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
-                        
+
                 }
-                binding.btnOptionCancel.id -> {}
+                binding.btnOptionCancel.id -> {
+                    dismiss()
+                }
             }
         }
     }

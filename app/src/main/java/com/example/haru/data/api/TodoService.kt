@@ -49,4 +49,7 @@ interface TodoService {
 
     @PATCH("todo/{userId}/complete/todo/{todoId}/repeat/front")
     fun updateRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body endDate: EndDate) : Call<SuccessFail>
+
+    @HTTP(method = "DELETE", path = "todo/{userId}/todo/{todoId}/repeat/front", hasBody = true)
+    fun deleteRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body endDate: EndDate) : Call<SuccessFail>
 }

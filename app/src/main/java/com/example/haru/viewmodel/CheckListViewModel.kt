@@ -312,11 +312,40 @@ class CheckListViewModel() :
         }
     }
 
-    fun deleteTodo(todoId: String, callback: () -> Unit) {
+    fun deleteTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        callback: () -> Unit
+    ) {
         viewModelScope.launch {
-            val successData = todoRepository.deleteTodo(todoId = todoId) {
+            val successData = todoRepository.deleteTodo(userId = userId, todoId = todoId) {
                 if (it.success) {
                     if (todayList.isNotEmpty()) {
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                            set(Calendar.SECOND, 59) // 초를 59초로 설정
+                        }
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        getTodayTodo(todayEndDate) {}
+                    }
+                    withTagUpdate()
+                }
+                callback()
+            }
+        }
+    }
+
+    fun deleteRepeatTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        endDate: EndDate,
+        callback: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val successDate = todoRepository.deleteRepeatTodo(userId, todoId, endDate) {
+                if (it.success){
+                    if (todayList.isNotEmpty()){
                         val calendar = Calendar.getInstance().apply {
                             set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
