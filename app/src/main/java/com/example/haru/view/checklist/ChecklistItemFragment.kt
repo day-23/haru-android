@@ -158,8 +158,15 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                         )
                         todoAddViewModel.deleteSubTodo()
                     }
-                    addView.findViewById<EditText>(R.id.et_subTodo)
-                        .setText(todoAddViewModel.subTodos[i])
+                    addView.findViewById<EditText>(R.id.et_subTodo).apply {
+                        setText(todoAddViewModel.subTodos[i])
+                        paintFlags =
+                            if (todoAddViewModel.subTodoCompleted[i])
+                                Paint.STRIKE_THRU_TEXT_FLAG
+                            else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                        if (todoAddViewModel.subTodoCompleted[i]) setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+
+                    }
                     addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object :
                         TextWatcher {
                         override fun beforeTextChanged(
