@@ -133,6 +133,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         // complete 관련 UI Update
         todoAddViewModel.completedTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val color = if (it) R.color.light_gray else R.color.todo_description
+            binding.btnInfoSave.visibility = if (it) View.GONE else View.VISIBLE
 //            binding.cbInfoCompleted.isChecked = it
             binding.etInfoContent.paintFlags =
                 if (it)
