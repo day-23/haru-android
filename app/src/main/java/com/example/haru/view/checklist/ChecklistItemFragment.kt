@@ -175,6 +175,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                                 e.toString()
                         }
                     })
+
                     binding.infoSubTodoLayout.addView(
                         addView,
                         binding.infoSubTodoLayout.childCount - 1

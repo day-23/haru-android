@@ -29,7 +29,7 @@
     <string name="everyDay">매일</string>
     <string name="everyWeek">매주</string>
     <string name="every2Week">이주</string>
-    <string name="everyMonth">매월</string>
+    <string name="everyMonth">매달</string>
     <string name="everyYear">매년</string>
 
     <string name="MonthDay">%1$d</string>

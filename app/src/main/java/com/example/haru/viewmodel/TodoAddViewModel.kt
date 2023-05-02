@@ -11,7 +11,7 @@ import java.util.*
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val checklistViewModel: CheckListViewModel
 
-    private val repeatOptionList = listOf("매일", "매주", "2주마다", "매월", "매년")
+    private val repeatOptionList = listOf("매일", "매주", "2주마다", "매달", "매년")
 
     private val _flagTodo = MutableLiveData<Boolean>(false)
     val flagTodo: LiveData<Boolean> = _flagTodo
@@ -406,7 +406,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
                     clickedTodo!!.repeatEnd
                 )
             }
-            "매월" -> {
+            "매달" -> {
                 FormatDate.nextEndDateEveryMonth(clickedTodo!!.repeatValue!!, clickedTodo!!.endDate, clickedTodo!!.repeatEnd)
             }
             "매년" -> {
