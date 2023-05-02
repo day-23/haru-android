@@ -106,6 +106,15 @@ class SnsFragment : Fragment() {
             true
         }
 
+        binding.addPost.setOnClickListener {
+            val newFrag = AddPostFragment.newInstance()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.addToBackStack(null)
+            transaction.commit()
+            true
+        }
+
         //둘러보기 클릭
         binding.lookAround.setOnClickListener {
 

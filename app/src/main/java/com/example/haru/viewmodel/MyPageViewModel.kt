@@ -39,6 +39,10 @@ class MyPageViewModel(): ViewModel() {
     val StoredImages: LiveData<ArrayList<ExternalImages>>
         get() = _StoredImages
 
+    private val _SelectedPosition = MutableLiveData<ArrayList<Int>>()
+    val SelectedPosition: LiveData<ArrayList<Int>>
+        get() = _SelectedPosition
+
     var profile_info = com.example.haru.data.model.Profile("", "", "", "")
 
     init {
@@ -92,5 +96,19 @@ class MyPageViewModel(): ViewModel() {
             _NewFeed.value = newPost
             _Feed.value = allPost
         }
+    }
+
+    fun addSelected(i : Int){
+        var newlist = _SelectedPosition.value
+        if(newlist != null)
+            newlist?.add(i)
+        else newlist = arrayListOf(i)
+        _SelectedPosition.value = newlist!!
+    }
+
+    fun delSelected(i : Int){
+        var newlist = _SelectedPosition.value
+        newlist?.remove(i)
+        _SelectedPosition.value = newlist!!
     }
 }

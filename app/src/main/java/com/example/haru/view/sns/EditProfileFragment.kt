@@ -52,7 +52,6 @@ import java.util.jar.Manifest
 
 class EditProfileFragment: Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
-    private lateinit var imageUri: Uri
     private lateinit var profileViewModel: MyPageViewModel
     companion object{
         const val TAG : String = "로그"
