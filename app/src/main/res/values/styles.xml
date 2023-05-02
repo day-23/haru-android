@@ -5,6 +5,7 @@
         <!-- 상단 색 변경 -->
         <item name="colorAccent">@color/light_gray</item>
         <!-- 선택한 날짜를 표시할 색상 -->
+        <item name="background">@drawable/shape_rect_radius_10</item>
         <item name="colorControlActivated">@color/light_gray</item>
         <item name="colorControlHighlight">@color/light_gray</item>
 
@@ -32,6 +33,13 @@
     <style name="minSize">
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
+    </style>
+
+    <style name="datePickerText">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:text">1</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/date_text</item>
     </style>
 
 </resources>

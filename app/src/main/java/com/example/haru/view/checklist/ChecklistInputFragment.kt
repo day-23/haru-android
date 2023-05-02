@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.view.customCalendar.CustomCalendarDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -783,35 +784,38 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 }
 
                 R.id.btn_alarmDate_pick, R.id.btn_endDate_pick, R.id.btn_repeat_end_date -> {
-                    val calendar = Calendar.getInstance()
-                    val year = calendar.get(Calendar.YEAR)
-                    val month = calendar.get(Calendar.MONTH)
-                    val day = calendar.get(Calendar.DAY_OF_MONTH)
+                    val datePicker = CustomCalendarDialog()
+                    datePicker.show(parentFragmentManager, null)
 
-                    val datePickerDialog = DatePickerDialog(
-                        requireContext(),
-                        R.style.MyDatePickerStyle,
-                        { _, year, monthOfYear, dayOfMonth ->
-                            val calendar = Calendar.getInstance()
-
-                            calendar.set(year, monthOfYear, dayOfMonth)
-                            val date = calendar.time
-
-                            when (v.id) {
-                                R.id.btn_endDate_pick -> {
-                                    todoAddViewModel.setSelectDate(date)
-                                    todoAddViewModel.setDate(0, date)
-                                }
-                                R.id.btn_alarmDate_pick -> todoAddViewModel.setDate(1, date)
-                                R.id.btn_repeat_end_date -> todoAddViewModel.setDate(2, date)
-                            }
-                        },
-                        year,
-                        month,
-                        day
-                    )
-                    datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
-                    datePickerDialog.show()
+//                    val calendar = Calendar.getInstance()
+//                    val year = calendar.get(Calendar.YEAR)
+//                    val month = calendar.get(Calendar.MONTH)
+//                    val day = calendar.get(Calendar.DAY_OF_MONTH)
+//
+//                    val datePickerDialog = DatePickerDialog(
+//                        requireContext(),
+//                        R.style.MyDatePickerStyle,
+//                        { _, year, monthOfYear, dayOfMonth ->
+//                            val calendar = Calendar.getInstance()
+//
+//                            calendar.set(year, monthOfYear, dayOfMonth)
+//                            val date = calendar.time
+//
+//                            when (v.id) {
+//                                R.id.btn_endDate_pick -> {
+//                                    todoAddViewModel.setSelectDate(date)
+//                                    todoAddViewModel.setDate(0, date)
+//                                }
+//                                R.id.btn_alarmDate_pick -> todoAddViewModel.setDate(1, date)
+//                                R.id.btn_repeat_end_date -> todoAddViewModel.setDate(2, date)
+//                            }
+//                        },
+//                        year,
+//                        month,
+//                        day
+//                    )
+//                    datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
+//                    datePickerDialog.show()
                 }
 
                 R.id.btn_submit_todo -> {
