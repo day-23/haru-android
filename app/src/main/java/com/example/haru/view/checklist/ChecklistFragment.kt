@@ -1,18 +1,15 @@
 package com.example.haru.view.checklist
 
 import android.content.Context
-import android.graphics.Point
-import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.RequiresApi
+import android.view.MenuInflater
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -55,8 +52,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         Log.d(TAG, "ChecklistFragment - onCreateView() called")
 
         binding = FragmentChecklistBinding.inflate(inflater)
-
-
         return binding.root
     }
 
@@ -149,13 +144,26 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
 
+            for(i in 1 until binding.tagEtcLayout.tagLayout.childCount)
+                binding.tagEtcLayout.tagLayout.removeViewAt(i)
+
             for (i in 2 until checkListViewModel.tagDataList.value!!.size) {
                 val layoutInflater =
                     requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.tag_example_layout, null)
 
-                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text =
-                    checkListViewModel.tagDataList.value!![i].content
+                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text = checkListViewModel.tagDataList.value!![i].content
+
+                addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener {iv ->
+                    val popUp = PopupMenu(requireContext(), iv)
+                    popUp.menuInflater.inflate(R.menu.tag_context_menu, popUp.menu)
+                    popUp.setOnMenuItemClickListener {
+                        Toast.makeText(requireContext(), "delete", Toast.LENGTH_SHORT).show()
+                        return@setOnMenuItemClickListener true
+                    }
+                    popUp.show()
+                }
+
                 binding.tagEtcLayout.tagLayout.addView(addView)
             }
         })

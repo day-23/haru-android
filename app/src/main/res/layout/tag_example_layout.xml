@@ -1,36 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingStart="40dp"
-    android:paddingEnd="30dp"
-    android:paddingBottom="9dp"
-    android:orientation="horizontal">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_tag_etc"
-        android:layout_width="wrap_content"
+    <data>
+        <variable
+            name="tag"
+            type="com.example.haru.data.model.Tag" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/minSize"
-        android:background="@drawable/tag_btn_clicked"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingStart="11dp"
-        android:paddingEnd="11dp"
-        android:outlineProvider="none"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"/>
+        android:paddingStart="40dp"
+        android:paddingEnd="30dp"
+        android:paddingBottom="9dp"
+        android:orientation="horizontal">
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_tag_etc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/minSize"
+            android:background="@drawable/tag_btn_clicked"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="11dp"
+            android:paddingEnd="11dp"
+            android:text="@{tag.content}"
+            android:outlineProvider="none"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/iv_set_tag_etc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/set_icon" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/iv_set_tag_etc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/set_icon" />
+
+    </LinearLayout>
+</layout>

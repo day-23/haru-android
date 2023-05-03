@@ -677,7 +677,7 @@
                 android:textSize="20sp"
                 android:background="@android:color/transparent"
                 android:textColor="@color/delete_red"
-                android:text="@string/delete"
+                android:text="@string/todoDelete"
                 />
 
             <ImageView
