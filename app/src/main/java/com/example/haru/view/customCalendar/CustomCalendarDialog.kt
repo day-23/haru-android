@@ -163,8 +163,6 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
             else -> null
         }
 
-        Log.d("20191627", startDay.toString())
-
         maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)
         FormatDate.cal.set(Calendar.DAY_OF_MONTH, maxDay)
 

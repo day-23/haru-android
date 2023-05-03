@@ -784,54 +784,29 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 }
 
                 R.id.btn_alarmDate_pick, R.id.btn_endDate_pick, R.id.btn_repeat_end_date -> {
-                    val datePicker = CustomCalendarDialog(todoAddViewModel.endDate.value)
-
-                    datePicker.calendarClick = object : CustomCalendarDialog.CalendarClickListener {
-                        override fun onClick(view: View, year: Int, month: Int, day: Int) {
-                            Log.d("20191627", "클릭")
-                            FormatDate.cal.set(year, month, day)
-                            val date = FormatDate.cal.time
-                            when (v.id) {
-                                binding.btnAlarmDatePick.id -> todoAddViewModel.setDate(1, date)
-                                binding.btnEndDatePick.id -> {
-                                    todoAddViewModel.setSelectDate(date)
-                                    todoAddViewModel.setDate(0, date)
+                    val datePicker = when (v.id) {
+                        binding.btnEndDatePick.id -> CustomCalendarDialog(todoAddViewModel.endDate.value)
+                        binding.btnRepeatEndDate.id -> CustomCalendarDialog(todoAddViewModel.repeatEndDate.value)
+                        binding.btnAlarmDatePick.id -> CustomCalendarDialog(todoAddViewModel.alarmDate.value)
+                        else -> CustomCalendarDialog()
+                    }
+                    datePicker.calendarClick =
+                        object : CustomCalendarDialog.CalendarClickListener {
+                            override fun onClick(view: View, year: Int, month: Int, day: Int) {
+                                Log.d("20191627", "클릭")
+                                FormatDate.cal.set(year, month, day)
+                                val date = FormatDate.cal.time
+                                when (v.id) {
+                                    binding.btnAlarmDatePick.id -> todoAddViewModel.setDate(1, date)
+                                    binding.btnEndDatePick.id -> {
+                                        todoAddViewModel.setSelectDate(date)
+                                        todoAddViewModel.setDate(0, date)
+                                    }
+                                    binding.btnRepeatEndDate.id -> todoAddViewModel.setDate(2, date)
                                 }
-                                binding.btnRepeatEndDate.id -> todoAddViewModel.setDate(2, date)
                             }
                         }
-                    }
                     datePicker.show(parentFragmentManager, null)
-
-//                    val calendar = Calendar.getInstance()
-//                    val year = calendar.get(Calendar.YEAR)
-//                    val month = calendar.get(Calendar.MONTH)
-//                    val day = calendar.get(Calendar.DAY_OF_MONTH)
-//
-//                    val datePickerDialog = DatePickerDialog(
-//                        requireContext(),
-//                        R.style.MyDatePickerStyle,
-//                        { _, year, monthOfYear, dayOfMonth ->
-//                            val calendar = Calendar.getInstance()
-//
-//                            calendar.set(year, monthOfYear, dayOfMonth)
-//                            val date = calendar.time
-//
-//                            when (v.id) {
-//                                R.id.btn_endDate_pick -> {
-//                                    todoAddViewModel.setSelectDate(date)
-//                                    todoAddViewModel.setDate(0, date)
-//                                }
-//                                R.id.btn_alarmDate_pick -> todoAddViewModel.setDate(1, date)
-//                                R.id.btn_repeat_end_date -> todoAddViewModel.setDate(2, date)
-//                            }
-//                        },
-//                        year,
-//                        month,
-//                        day
-//                    )
-//                    datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
-//                    datePickerDialog.show()
                 }
 
                 R.id.btn_submit_todo -> {

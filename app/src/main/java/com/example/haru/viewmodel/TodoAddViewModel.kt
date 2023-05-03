@@ -161,10 +161,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-    fun setCompleteTodo() {
-        _completedTodo.value = (_completedTodo.value == false)
-    }
-
     fun setFlagTodo() {
         _flagTodo.value = (_flagTodo.value == false)
     }

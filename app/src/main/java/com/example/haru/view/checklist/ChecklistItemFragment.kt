@@ -23,6 +23,7 @@ import com.example.haru.databinding.FragmentChecklistItemBinding
 import com.example.haru.databinding.FragmentChecklistItemInfoBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
+import com.example.haru.view.customCalendar.CustomCalendarDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import java.util.*
@@ -422,35 +423,29 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                 binding.btnInfoEndDatePick.id,
                 binding.btnInfoAlarmDatePick.id,
                 binding.btnInfoRepeatEndDate.id -> {
-                    val calendar = Calendar.getInstance()
-                    val year = calendar.get(Calendar.YEAR)
-                    val month = calendar.get(Calendar.MONTH)
-                    val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-                    val datePickerDialog = DatePickerDialog(
-                        requireContext(),
-                        R.style.MyDatePickerStyle,
-                        { _, year, monthOfYear, dayOfMonth ->
-                            val calendar = Calendar.getInstance()
-
-                            calendar.set(year, monthOfYear, dayOfMonth)
-                            val date = calendar.time
-
-                            when (v.id) {
-                                binding.btnInfoEndDatePick.id ->
-                                    todoAddViewModel.setDate(0, date)
-                                binding.btnInfoAlarmDatePick.id ->
-                                    todoAddViewModel.setDate(1, date)
-                                binding.btnInfoRepeatEndDate.id ->
-                                    todoAddViewModel.setDate(2, date)
+                    val datePicker = when (v.id) {
+                        binding.btnInfoEndDatePick.id -> CustomCalendarDialog(todoAddViewModel.endDate.value)
+                        binding.btnInfoRepeatEndDate.id -> CustomCalendarDialog(todoAddViewModel.repeatEndDate.value)
+                        binding.btnInfoAlarmDatePick.id -> CustomCalendarDialog(todoAddViewModel.alarmDate.value)
+                        else -> CustomCalendarDialog()
+                    }
+                    datePicker.calendarClick =
+                        object : CustomCalendarDialog.CalendarClickListener {
+                            override fun onClick(view: View, year: Int, month: Int, day: Int) {
+                                Log.d("20191627", "클릭")
+                                FormatDate.cal.set(year, month, day)
+                                val date = FormatDate.cal.time
+                                when (v.id) {
+                                    binding.btnInfoAlarmDatePick.id -> todoAddViewModel.setDate(1, date)
+                                    binding.btnInfoEndDatePick.id -> {
+                                        todoAddViewModel.setSelectDate(date)
+                                        todoAddViewModel.setDate(0, date)
+                                    }
+                                    binding.btnInfoRepeatEndDate.id -> todoAddViewModel.setDate(2, date)
+                                }
                             }
-                        },
-                        year,
-                        month,
-                        day
-                    )
-                    datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000;
-                    datePickerDialog.show()
+                        }
+                    datePicker.show(parentFragmentManager, null)
                 }
 
                 binding.btnInfoEndTimePick.id,
