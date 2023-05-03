@@ -7,6 +7,7 @@ import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,9 +18,11 @@ import com.example.haru.R
 import com.example.haru.databinding.CustomCalendarBinding
 import com.example.haru.utils.FormatDate
 import java.util.*
+import kotlin.properties.Delegates
 
 class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     private lateinit var binding: CustomCalendarBinding
+
     private var changedMonth: Int = -1
     private var changedYear: Int = -1
     private var startDay: DayOfWeek? = null
@@ -31,6 +34,10 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     private var nowMonth: Int = -1
     private var nowDay: Int = -1
 
+    private var standardYear = -1
+    private var standardMonth = -1
+    private var standardDay = -1
+
     interface CalendarClickListener {
         fun onClick(view: View, year: Int, month: Int, day: Int)
     }
@@ -38,9 +45,13 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     var calendarClick: CalendarClickListener? = null
 
     init {
-        if (date == null)
-            FormatDate.cal.time = Date()
-        else
+        FormatDate.cal.time = Date()
+
+        standardYear = FormatDate.cal.get(Calendar.YEAR)
+        standardMonth = FormatDate.cal.get(Calendar.MONTH)
+        standardDay = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+
+        if (date != null)
             FormatDate.cal.time = date
 
         nowYear = FormatDate.cal.get(Calendar.YEAR)
@@ -82,7 +93,6 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
         Toast.makeText(requireContext(), "Custom Date Picker", Toast.LENGTH_SHORT).show()
 
         initCalendar()
-        binding.tvDate.text = "${changedYear}년 ${changedMonth + 1}월"
 
         binding.ivDownArrow.setOnClickListener {
 
@@ -137,6 +147,9 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     }
 
     private fun initCalendar() {
+        if (standardYear == changedYear && standardMonth == changedMonth)
+            binding.ivLeftArrow.visibility = View.GONE
+
         FormatDate.cal.set(Calendar.DAY_OF_MONTH, 1)
 
         startDay = when (FormatDate.cal.get(Calendar.DAY_OF_WEEK) - 1) {
@@ -149,6 +162,8 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
             6 -> DayOfWeek.SAT
             else -> null
         }
+
+        Log.d("20191627", startDay.toString())
 
         maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)
         FormatDate.cal.set(Calendar.DAY_OF_MONTH, maxDay)
@@ -166,8 +181,13 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
             for (k in 0 until addView.childCount) {
                 val view = addView.getChildAt(k) as TextView
                 view.setOnClickListener {
-                    if (it.visibility == View.VISIBLE){
-                        calendarClick?.onClick(it, changedYear, changedMonth, (it as TextView).text.toString().toInt())
+                    if (it.visibility == View.VISIBLE) {
+                        calendarClick?.onClick(
+                            it,
+                            changedYear,
+                            changedMonth,
+                            (it as TextView).text.toString().toInt()
+                        )
                         dismiss()
                     }
                 }
@@ -185,6 +205,7 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
             }
             binding.daysParentLayout.addView(addView)
         }
+        binding.tvDate.text = "${changedYear}년 ${changedMonth + 1}월"
     }
 
     private fun updateCalendar(flag: Int) {  // 1이면 증가, -1이면 감소
@@ -197,9 +218,10 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
                 changedYear++
             } else changedMonth++
 
+            startDay = DayOfWeek.values()[(startDay!!.ordinal + maxDay) % 7]   // 변경될 달의 시작 요일
             FormatDate.cal.set(changedYear, changedMonth, 1)
             maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)  // 변경될 달의 최대 일자
-            startDay = DayOfWeek.values()[(startDay!!.ordinal + maxDay) % 7]   // 변경될 달의 시작 요일
+
 
         } else if (flag == -1) {  // 왼쪽으로 이동
             if (changedMonth <= 0) {
@@ -251,6 +273,9 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
                 }
             }
         }
+        if (standardYear == changedYear && standardMonth == changedMonth)
+            binding.ivLeftArrow.visibility = View.GONE
+        else binding.ivLeftArrow.visibility = View.VISIBLE
     }
 
 
