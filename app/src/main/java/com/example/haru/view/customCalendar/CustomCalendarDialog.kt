@@ -9,20 +9,43 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
+import android.widget.LinearLayout.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.example.haru.R
 import com.example.haru.databinding.CustomCalendarBinding
 import com.example.haru.utils.FormatDate
 import java.util.*
 
-class CustomCalendarDialog : DialogFragment() {
+class CustomCalendarDialog(date : Date? = null) : DialogFragment() {
     private lateinit var binding: CustomCalendarBinding
-    private var month: Int = -1
-    private var year: Int = -1
+    private var changedMonth: Int = -1
+    private var changedYear: Int = -1
     private var startDay: DayOfWeek? = null
-    private var endDay: DayOfWeek? = null
+//    private var endDay: DayOfWeek? = null
+
+    private var maxDay : Int = -1
+
+    private var nowYear : Int = -1
+    private var nowMonth : Int = -1
+    private var nowDay : Int = -1
+
+    init {
+        if (date == null)
+            FormatDate.cal.time = Date()
+        else
+            FormatDate.cal.time = date
+
+        nowYear = FormatDate.cal.get(Calendar.YEAR)
+        changedYear = nowYear
+
+        nowMonth = FormatDate.cal.get(Calendar.MONTH)
+        changedMonth = nowMonth
+
+        nowDay = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+    }
 
     enum class DayOfWeek {
         SUN, MON, TUES, WED, THUR, FRI, SAT
@@ -55,13 +78,30 @@ class CustomCalendarDialog : DialogFragment() {
 
 
         initCalendar()
-        binding.tvDate.text = "{$year}년 ${month + 1}월"
+        binding.tvDate.text = "${changedYear}년 ${changedMonth + 1}월"
+
+        binding.ivDownArrow.setOnClickListener {
+
+        }
+
+        binding.ivLeftArrow.setOnClickListener {
+            updateCalendar(-1)
+            binding.tvDate.text = "${changedYear}년 ${changedMonth + 1}월"
+        }
+
+        binding.ivRightArrow.setOnClickListener {
+            updateCalendar(1)
+            binding.tvDate.text = "${changedYear}년 ${changedMonth + 1}월"
+        }
 
     }
 
     override fun onResume() {
         super.onResume()
 
+
+//        window?.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+//
         val windowManager =
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val width = 0.7f
@@ -92,14 +132,7 @@ class CustomCalendarDialog : DialogFragment() {
         }
     }
 
-    private fun initCalendar(date: Date? = null) {
-        if (date == null)
-            FormatDate.cal.time = Date()
-        else FormatDate.cal.time = date
-
-        year = FormatDate.cal.get(Calendar.YEAR)
-        month = FormatDate.cal.get(Calendar.MONTH)
-
+    private fun initCalendar() {
         FormatDate.cal.set(Calendar.DAY_OF_MONTH, 1)
 
         startDay = when (FormatDate.cal.get(Calendar.DAY_OF_WEEK) - 1) {
@@ -113,19 +146,19 @@ class CustomCalendarDialog : DialogFragment() {
             else -> null
         }
 
-        val maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+        maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)
         FormatDate.cal.set(Calendar.DAY_OF_MONTH, maxDay)
 
-        endDay = when (FormatDate.cal.get(Calendar.DAY_OF_WEEK) - 1) {
-            0 -> DayOfWeek.SUN
-            1 -> DayOfWeek.MON
-            2 -> DayOfWeek.TUES
-            3 -> DayOfWeek.WED
-            4 -> DayOfWeek.THUR
-            5 -> DayOfWeek.FRI
-            6 -> DayOfWeek.SAT
-            else -> null
-        }
+//        endDay = when (FormatDate.cal.get(Calendar.DAY_OF_WEEK) - 1) {
+//            0 -> DayOfWeek.SUN
+//            1 -> DayOfWeek.MON
+//            2 -> DayOfWeek.TUES
+//            3 -> DayOfWeek.WED
+//            4 -> DayOfWeek.THUR
+//            5 -> DayOfWeek.FRI
+//            6 -> DayOfWeek.SAT
+//            else -> null
+//        }
 
 
         var days = 1
@@ -142,6 +175,9 @@ class CustomCalendarDialog : DialogFragment() {
                     if (i == 0 && k == startDay!!.ordinal) flag = true
                     if (flag) {
                         (addView.getChildAt(k) as TextView).text = days.toString()
+                        if (nowDay == days) (addView.getChildAt(k) as TextView).setTextColor(
+                            ContextCompat.getColor(requireContext(), R.color.highlight)
+                        )
                         days++
                     }
                     if (maxDay + 1 == days)
@@ -152,16 +188,48 @@ class CustomCalendarDialog : DialogFragment() {
     }
 
     fun updateCalendar(flag: Int) {  // 1이면 증가, -1이면 감소
-        if (month == -1 || year == -1)
+        if (changedMonth == -1 || changedYear == -1 || maxDay == -1)
             return
 
         if (flag == 1) {
-            if (month >= 11) {
-                month = 0
-                year++
-            } else month++
+            if (changedMonth >= 11) {
+                changedMonth = 0
+                changedYear++
+            } else changedMonth++
 
-            FormatDate.cal.set(year, month, 1)
+            FormatDate.cal.set(changedYear, changedMonth, 1)
+
+            startDay = DayOfWeek.values()[(startDay!!.ordinal + maxDay) % 7]   // 변경될 달의 시작 요일
+
+            maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)  // 변경될 달의 최대 일자
+
+            var days = 1
+            var flag = false
+
+            for(i in 0 until 6){
+                val layout = binding.daysParentLayout.getChildAt(i + 1) as LinearLayout
+                if (maxDay + 1 == days)
+                    layout.visibility = View.GONE
+                else layout.visibility = View.VISIBLE
+                for(k in 0 until 7){
+                    val view = layout.getChildAt(k) as TextView
+                    if (i == 0 && k == startDay!!.ordinal) flag = true
+                    if (flag){
+                        view.visibility = View.VISIBLE
+                        view.text = days.toString()
+                        if (nowYear == changedYear && nowMonth == changedMonth && nowDay == days)
+                            view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                        else if (nowDay == days)
+                            view.setTextColor(ContextCompat.getColor(requireContext(), R.color.date_text))
+                        days++
+                        if (maxDay + 1 == days)
+                            flag = false
+                    } else {
+                        view.visibility = View.INVISIBLE
+                    }
+                }
+            }
+
 
         }
     }

@@ -56,13 +56,14 @@
     <LinearLayout
         android:id="@+id/days_parent_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
         android:paddingStart="28dp"
+        android:paddingEnd="28dp"
         android:paddingTop="22dp"
-        android:paddingEnd="28dp">
+        android:paddingBottom="30dp"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -135,10 +136,10 @@
 
     </LinearLayout>
 
-    <View
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.1"
+        android:layout_height="wrap_content"
+        android:paddingBottom="26dp"
         android:background="@drawable/custom_calendar_tail"/>
 
 
