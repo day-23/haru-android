@@ -19,18 +19,18 @@ import com.example.haru.databinding.CustomCalendarBinding
 import com.example.haru.utils.FormatDate
 import java.util.*
 
-class CustomCalendarDialog(date : Date? = null) : DialogFragment() {
+class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     private lateinit var binding: CustomCalendarBinding
     private var changedMonth: Int = -1
     private var changedYear: Int = -1
     private var startDay: DayOfWeek? = null
 //    private var endDay: DayOfWeek? = null
 
-    private var maxDay : Int = -1
+    private var maxDay: Int = -1
 
-    private var nowYear : Int = -1
-    private var nowMonth : Int = -1
-    private var nowDay : Int = -1
+    private var nowYear: Int = -1
+    private var nowMonth: Int = -1
+    private var nowDay: Int = -1
 
     init {
         if (date == null)
@@ -75,7 +75,6 @@ class CustomCalendarDialog(date : Date? = null) : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Toast.makeText(requireContext(), "Custom Date Picker", Toast.LENGTH_SHORT).show()
-
 
         initCalendar()
         binding.tvDate.text = "${changedYear}년 ${changedMonth + 1}월"
@@ -187,50 +186,67 @@ class CustomCalendarDialog(date : Date? = null) : DialogFragment() {
         }
     }
 
-    fun updateCalendar(flag: Int) {  // 1이면 증가, -1이면 감소
+    private fun updateCalendar(flag: Int) {  // 1이면 증가, -1이면 감소
         if (changedMonth == -1 || changedYear == -1 || maxDay == -1)
             return
 
-        if (flag == 1) {
+        if (flag == 1) { // 오른쪽으로 이동
             if (changedMonth >= 11) {
                 changedMonth = 0
                 changedYear++
             } else changedMonth++
 
             FormatDate.cal.set(changedYear, changedMonth, 1)
-
+            maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)  // 변경될 달의 최대 일자
             startDay = DayOfWeek.values()[(startDay!!.ordinal + maxDay) % 7]   // 변경될 달의 시작 요일
 
+        } else if (flag == -1) {  // 왼쪽으로 이동
+            if (changedMonth <= 0) {
+                changedMonth = 11
+                changedYear--
+            } else changedMonth--
+
+            FormatDate.cal.set(changedYear, changedMonth, 1)
             maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)  // 변경될 달의 최대 일자
+            val toPlusNumber = if (startDay!!.ordinal - maxDay < -28) 35 else 28 // beforeStart = 7 * ? + Start - Max
+            startDay = DayOfWeek.values()[startDay!!.ordinal - maxDay + toPlusNumber] // 변경 될 달의 날짜 시작 요일
+        }
 
-            var days = 1
-            var flag = false
+        var days = 1
+        var flag = false
 
-            for(i in 0 until 6){
-                val layout = binding.daysParentLayout.getChildAt(i + 1) as LinearLayout
-                if (maxDay + 1 == days)
-                    layout.visibility = View.GONE
-                else layout.visibility = View.VISIBLE
-                for(k in 0 until 7){
-                    val view = layout.getChildAt(k) as TextView
-                    if (i == 0 && k == startDay!!.ordinal) flag = true
-                    if (flag){
-                        view.visibility = View.VISIBLE
-                        view.text = days.toString()
-                        if (nowYear == changedYear && nowMonth == changedMonth && nowDay == days)
-                            view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
-                        else if (nowDay == days)
-                            view.setTextColor(ContextCompat.getColor(requireContext(), R.color.date_text))
-                        days++
-                        if (maxDay + 1 == days)
-                            flag = false
-                    } else {
-                        view.visibility = View.INVISIBLE
-                    }
+        for (i in 0 until 6) {
+            val layout = binding.daysParentLayout.getChildAt(i + 1) as LinearLayout
+            if (maxDay + 1 == days)
+                layout.visibility = View.GONE
+            else layout.visibility = View.VISIBLE
+            for (k in 0 until 7) {
+                val view = layout.getChildAt(k) as TextView
+                if (i == 0 && k == startDay!!.ordinal) flag = true
+                if (flag) {
+                    view.visibility = View.VISIBLE
+                    view.text = days.toString()
+                    if (nowYear == changedYear && nowMonth == changedMonth && nowDay == days)
+                        view.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.highlight
+                            )
+                        )
+                    else
+                        view.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.date_text
+                            )
+                        )
+                    days++
+                    if (maxDay + 1 == days)
+                        flag = false
+                } else {
+                    view.visibility = View.INVISIBLE
                 }
             }
-
-
         }
     }
 
