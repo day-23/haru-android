@@ -784,7 +784,23 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                 }
 
                 R.id.btn_alarmDate_pick, R.id.btn_endDate_pick, R.id.btn_repeat_end_date -> {
-                    val datePicker = CustomCalendarDialog()
+                    val datePicker = CustomCalendarDialog(todoAddViewModel.endDate.value)
+
+                    datePicker.calendarClick = object : CustomCalendarDialog.CalendarClickListener {
+                        override fun onClick(view: View, year: Int, month: Int, day: Int) {
+                            Log.d("20191627", "클릭")
+                            FormatDate.cal.set(year, month, day)
+                            val date = FormatDate.cal.time
+                            when (v.id) {
+                                binding.btnAlarmDatePick.id -> todoAddViewModel.setDate(1, date)
+                                binding.btnEndDatePick.id -> {
+                                    todoAddViewModel.setSelectDate(date)
+                                    todoAddViewModel.setDate(0, date)
+                                }
+                                binding.btnRepeatEndDate.id -> todoAddViewModel.setDate(2, date)
+                            }
+                        }
+                    }
                     datePicker.show(parentFragmentManager, null)
 
 //                    val calendar = Calendar.getInstance()

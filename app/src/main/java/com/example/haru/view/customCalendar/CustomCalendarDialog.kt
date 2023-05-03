@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
-import android.widget.LinearLayout.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -31,6 +30,12 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     private var nowYear: Int = -1
     private var nowMonth: Int = -1
     private var nowDay: Int = -1
+
+    interface CalendarClickListener {
+        fun onClick(view: View, year: Int, month: Int, day: Int)
+    }
+
+    var calendarClick: CalendarClickListener? = null
 
     init {
         if (date == null)
@@ -148,18 +153,6 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
         maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)
         FormatDate.cal.set(Calendar.DAY_OF_MONTH, maxDay)
 
-//        endDay = when (FormatDate.cal.get(Calendar.DAY_OF_WEEK) - 1) {
-//            0 -> DayOfWeek.SUN
-//            1 -> DayOfWeek.MON
-//            2 -> DayOfWeek.TUES
-//            3 -> DayOfWeek.WED
-//            4 -> DayOfWeek.THUR
-//            5 -> DayOfWeek.FRI
-//            6 -> DayOfWeek.SAT
-//            else -> null
-//        }
-
-
         var days = 1
         var flag = false
         for (i in 0 until 6) {
@@ -169,19 +162,27 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
                 layoutInflater.inflate(R.layout.custom_calendar_days_layout, null) as LinearLayout
             if (maxDay + 1 == days)
                 addView.visibility = View.GONE
-            else
-                for (k in 0 until addView.childCount) {
-                    if (i == 0 && k == startDay!!.ordinal) flag = true
-                    if (flag) {
-                        (addView.getChildAt(k) as TextView).text = days.toString()
-                        if (nowDay == days) (addView.getChildAt(k) as TextView).setTextColor(
-                            ContextCompat.getColor(requireContext(), R.color.highlight)
-                        )
-                        days++
+
+            for (k in 0 until addView.childCount) {
+                val view = addView.getChildAt(k) as TextView
+                view.setOnClickListener {
+                    if (it.visibility == View.VISIBLE){
+                        calendarClick?.onClick(it, changedYear, changedMonth, (it as TextView).text.toString().toInt())
+                        dismiss()
                     }
-                    if (maxDay + 1 == days)
-                        break
                 }
+                if (i == 0 && k == startDay!!.ordinal) flag = true
+                if (flag) {
+                    view.visibility = View.VISIBLE
+                    view.text = days.toString()
+                    if (nowDay == days) view.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.highlight)
+                    )
+                    days++
+                }
+                if (maxDay + 1 == days)
+                    flag = false
+            }
             binding.daysParentLayout.addView(addView)
         }
     }
@@ -208,12 +209,14 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
 
             FormatDate.cal.set(changedYear, changedMonth, 1)
             maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)  // 변경될 달의 최대 일자
-            val toPlusNumber = if (startDay!!.ordinal - maxDay < -28) 35 else 28 // beforeStart = 7 * ? + Start - Max
-            startDay = DayOfWeek.values()[startDay!!.ordinal - maxDay + toPlusNumber] // 변경 될 달의 날짜 시작 요일
+            val toPlusNumber =
+                if (startDay!!.ordinal - maxDay < -28) 35 else 28 // beforeStart = 7 * ? + Start - Max
+            startDay =
+                DayOfWeek.values()[startDay!!.ordinal - maxDay + toPlusNumber] // 변경 될 달의 날짜 시작 요일
         }
 
         var days = 1
-        var flag = false
+        var isEnabled = false
 
         for (i in 0 until 6) {
             val layout = binding.daysParentLayout.getChildAt(i + 1) as LinearLayout
@@ -222,8 +225,8 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
             else layout.visibility = View.VISIBLE
             for (k in 0 until 7) {
                 val view = layout.getChildAt(k) as TextView
-                if (i == 0 && k == startDay!!.ordinal) flag = true
-                if (flag) {
+                if (i == 0 && k == startDay!!.ordinal) isEnabled = true
+                if (isEnabled) {
                     view.visibility = View.VISIBLE
                     view.text = days.toString()
                     if (nowYear == changedYear && nowMonth == changedMonth && nowDay == days)
@@ -242,7 +245,7 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
                         )
                     days++
                     if (maxDay + 1 == days)
-                        flag = false
+                        isEnabled = false
                 } else {
                     view.visibility = View.INVISIBLE
                 }
