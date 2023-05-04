@@ -29,15 +29,15 @@ class TagRepository() {
     suspend fun createTag(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         content: Content,
-        callback: (successData : SuccessFailTag) -> Unit
+        callback: (successData: SuccessFailTag) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = tagService.createTag(userId, content).execute()
         val data = response.body()!!
 
-        val successData : SuccessFailTag = if (response.isSuccessful){
+        val successData: SuccessFailTag = if (response.isSuccessful) {
             Log.d("TAG", "Success to Create Tag")
             data
-        } else{
+        } else {
             Log.d("TAG", "Fail to Create Tag")
             data
         }
@@ -52,7 +52,7 @@ class TagRepository() {
         val response = tagService.createTagList(userId, contents).execute()
         val data = response.body()!!
 
-        val successData : SuccessFailTagList = if (response.isSuccessful){
+        val successData: SuccessFailTagList = if (response.isSuccessful) {
             Log.d("TAG", "Success to Create TagList")
             data
         } else {
@@ -70,11 +70,30 @@ class TagRepository() {
         val response = tagService.deleteTagList(userId, tagIdList).execute()
         val data = response.body()!!
 
-        val successData : SuccessFail = if (response.isSuccessful){
+        val successData: SuccessFail = if (response.isSuccessful) {
             Log.d("TAG", "Success to Delete TagList")
             data
         } else {
             Log.d("TAG", "Fail to Delete TagList")
+            data
+        }
+        callback(data)
+    }
+
+    suspend fun updateTag(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        tagId: String,
+        updateContent: TagUpdate,
+        callback: (successData: SuccessFailTag) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = tagService.updateTag(userId, tagId, updateContent).execute()
+        val data = response.body()!!
+
+        val successData : SuccessFailTag = if (response.isSuccessful){
+            Log.d("TAG", "Success to Update Tag")
+            data
+        }else {
+            Log.d("TAG", "Fail to Update Tag")
             data
         }
         callback(data)

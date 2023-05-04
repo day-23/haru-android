@@ -114,6 +114,15 @@ class CheckListViewModel() :
         }
     }
 
+    fun updateTag(tagId : String, updateContent : TagUpdate){
+        viewModelScope.launch {
+            tagRepository.updateTag(tagId = tagId, updateContent = updateContent){
+                getTag()
+                withTagUpdate()
+            }
+        }
+    }
+
     fun withTagUpdate() {
         if (todoByTag.value == true) {
             when (todoByTagItem) {

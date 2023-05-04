@@ -71,7 +71,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         binding.tagEtcLayout.ivTagAdd.setOnClickListener {
-            val list = checkListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
+            val list =
+                checkListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
             if (list == null)
                 Toast.makeText(requireContext(), "추가 할 태그가 없습니다.", Toast.LENGTH_SHORT).show()
             else if (list.size == 1)
@@ -155,7 +156,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
 
-            for(i in binding.tagEtcLayout.tagLayout.childCount - 1 downTo  1 )
+            for (i in binding.tagEtcLayout.tagLayout.childCount - 1 downTo 1)
                 binding.tagEtcLayout.tagLayout.removeViewAt(i)
 
             for (i in 2 until checkListViewModel.tagDataList.value!!.size) {
@@ -163,17 +164,34 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.tag_example_layout, null)
 
-                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text = checkListViewModel.tagDataList.value!![i].content
+                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text =
+                    checkListViewModel.tagDataList.value!![i].content
 
-                addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener {iv ->
-                    val themeWrapper = ContextThemeWrapper(context , R.style.MyPopupMenu) // tag popup menu 스타일 지정
-                    val popUp = PopupMenu(themeWrapper , iv, Gravity.END , 0 , R.style.MyPopupMenu) // 스타일 한 번 더  명시해줘야함.
+                addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener { iv ->
+                    val themeWrapper =
+                        ContextThemeWrapper(context, R.style.MyPopupMenu) // tag popup menu 스타일 지정
+                    val popUp = PopupMenu(
+                        themeWrapper,
+                        iv,
+                        Gravity.END,
+                        0,
+                        R.style.MyPopupMenu
+                    ) // 스타일 한 번 더  명시해줘야함.
                     popUp.menuInflater.inflate(R.menu.tag_popup_menu, popUp.menu)
-                    popUp.setOnMenuItemClickListener {
-                        Toast.makeText(requireContext(), "delete", Toast.LENGTH_SHORT).show()
-
-                        checkListViewModel.deleteTagList(TagIdList(listOf(checkListViewModel.tagDataList.value!![i].id)))
-
+                    popUp.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.tag_delete -> {
+                                Toast.makeText(requireContext(), "Delete", Toast.LENGTH_SHORT)
+                                    .show()
+                                checkListViewModel.deleteTagList(TagIdList(listOf(checkListViewModel.tagDataList.value!![i].id)))
+                            }
+                            R.id.tag_update -> {
+                                Toast.makeText(requireContext(), "Update", Toast.LENGTH_SHORT)
+                                    .show()
+//                                checkListViewModel.updateTag(checkListViewModel.tagDataList.value!![i].id, TagUpdate(content = ""))
+                            }
+                            else -> {}
+                        }
                         return@setOnMenuItemClickListener true
                     }
                     popUp.show()
@@ -244,10 +262,18 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         }
 
                         "매달" -> {
-                            FormatDate.nextEndDateEveryMonth(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                            FormatDate.nextEndDateEveryMonth(
+                                todo.repeatValue!!,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
                         }
                         "매년" -> {
-                            FormatDate.nextEndDateEveryYear(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                            FormatDate.nextEndDateEveryYear(
+                                todo.repeatValue!!,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
                         }
                         else -> null
                     }
