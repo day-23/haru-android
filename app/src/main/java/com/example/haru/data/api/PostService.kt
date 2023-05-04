@@ -7,16 +7,9 @@ import com.example.haru.data.model.PostResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface PostService {
-
     @GET("post/{userId}/posts/all")
     fun getPosts(@Path("userId") userId: String, @Query("page") page:String) : Call<PostResponse>
 
@@ -33,8 +26,7 @@ interface PostService {
     fun addPost(
         @Path("userId") userId: String,
         @Part images: List<MultipartBody.Part>,
-        @Part content: MultipartBody.Part,
-        @Part hashtags: MultipartBody.Part
+        @Part("content") content: RequestBody,
+        @PartMap hashTags: Map<String, @JvmSuppressWildcards RequestBody>
     ): Call<AddPostResponse>
-
 }

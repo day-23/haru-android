@@ -118,7 +118,8 @@ class MyPageViewModel(): ViewModel() {
         _SelectedPosition.value = newlist!!
     }
 
-    fun convertMultiPart(context: Context): ArrayList<MultipartBody.Part> {
+    //MutableList로 바꿈
+    fun convertMultiPart(context: Context): MutableList<MultipartBody.Part> {
         val images = ArrayList<ExternalImages>()
         val indexSet = _SelectedPosition.value
         val totalImage = _StoredImages.value
@@ -128,34 +129,34 @@ class MyPageViewModel(): ViewModel() {
             }
         }
 
-        val convertedImages = ArrayList<MultipartBody.Part>()
-        if (images.size > 0) {
-            for (data in images!!) {
-                val cursor = context.contentResolver.query(data.absuri, null, null, null, null)
-                cursor?.use {
-                    it.moveToFirst()
-                    val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                    val imagePath = it.getString(columnIndex)
-                    val fileName = data.name.substringAfterLast('.')
-                    val fileExtension = "image/" + fileName
+        val convertedImages = mutableListOf<MultipartBody.Part>()
 
-                    val file = File(imagePath)
-                    Log.d("Image", "4 $file")
-                    val requestFile = RequestBody.create(MediaType.parse(fileExtension), file)
-                    val part = MultipartBody.Part.createFormData("image", data.name, requestFile)
-                    convertedImages.add(part)
-                }
+        for (data in images) {
+            val cursor = context.contentResolver.query(data.absuri, null, null, null, null)
+            cursor?.use {
+                it.moveToFirst()
+                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                val imagePath = it.getString(columnIndex)
+                val fileName = data.name.substringAfterLast('.')
+                val fileExtension = "image/" + fileName
+
+                val file = File(imagePath)
+                Log.d("Image", "4 $file")
+
+                val requestFile = RequestBody.create(MediaType.parse(fileExtension), file)
+                val part = MultipartBody.Part.createFormData("image", fileName, requestFile)
+                convertedImages.add(part)
             }
         }
         return convertedImages
     }
 
-    fun postRequest(images : ArrayList<MultipartBody.Part>, content : String?, hashtag: ArrayList<String>){
-        val post = AddPost(images, content, hashtag)
+    fun postRequest(images: MutableList<MultipartBody.Part>, content: String, hashtags: List<String>) {
+        val post = AddPost(images, content, hashtags)
 
-        viewModelScope.launch{
+        viewModelScope.launch {
             PostRepository.addPost(post) {
-                if(it.id != ""){ //get success
+                if (it.id != "") { //get success
                     Log.d("TAG", "Success to Post!!")
                 }
             }

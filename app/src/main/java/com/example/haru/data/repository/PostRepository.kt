@@ -6,39 +6,42 @@ import androidx.lifecycle.viewModelScope
 import com.example.haru.data.api.PostService
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.*
+import org.json.JSONArray
+import java.io.File
+import java.util.UUID
 
 class PostRepository() {
     private val postService = RetrofitClient.postService
 
     //게시글 추가
-    suspend fun addPost(post : AddPost, callback: (postInfo: SendPost) -> Unit) = withContext(Dispatchers.IO){
-        val content = MultipartBody.Part.createFormData("content", post.content)
-        val hashtags = MultipartBody.Part.createFormData(
-            "hashtags",
-            TextUtils.join(",", post.hashtags)
-        )
-        val response = RetrofitClient.postService.addPost(
-            "jts",
-            post.images,
-            content,
-            hashtags
-        ).execute()
+    suspend fun addPost(post: AddPost, callback: (postInfo: SendPost) -> Unit) = withContext(Dispatchers.IO) {
+        // Prepare the request data
+        val content = RequestBody.create(MediaType.parse("text/plain"), "이미지 업로드 성공! post.content 여기 수정해야됨")
 
-        val result: AddPostResponse
-        val postInfo: SendPost
-        if(response.isSuccessful) {
+        val hashTags = post.hashtags.mapIndexed { index, hashtag ->
+            "hashTags[$index]" to RequestBody.create(MediaType.parse("text/plain"), hashtag)
+        }.toMap()
+
+        val images = post.images.map { imagePart ->
+            MultipartBody.Part.createFormData("images", imagePart.headers()?.get("Content-Disposition")?.substringAfter("filename=\"")?.substringBefore("\""), imagePart.body())
+        }
+
+        // Call the addPost function from the PostService
+        val call = postService.addPost("lmj", images, content, hashTags)
+        val response = call.execute()
+
+        val postInfo = SendPost()
+        if (response.isSuccessful) {
             Log.d("TAG", "Success to post")
-            result = response.body()!!
-            postInfo = result.data!!
-        } else{
+            // Deserialize the response body here to get the result (AddPostResponse)
+            // and then update postInfo
+        } else {
             Log.d("TAG", "Fail to post")
-            postInfo = SendPost()
         }
         callback(postInfo)
     }
