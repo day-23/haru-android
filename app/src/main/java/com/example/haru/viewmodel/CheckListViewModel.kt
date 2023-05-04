@@ -50,6 +50,8 @@ class CheckListViewModel() :
 
     var todoByTagItem: String? = null
 
+    var tagInputString : String = ""
+
     init {
         getTodoMain {
             flaggedTodos.value?.let { todoList.addAll(it) }
@@ -72,6 +74,24 @@ class CheckListViewModel() :
     fun getTag() {
         viewModelScope.launch {
             _tagDataList.value = basicTag + tagRepository.getTag()
+        }
+    }
+
+    fun readyCreateTag(string: String) : MutableList<String>? {
+        tagInputString = string
+        return if (tagInputString.replace(" ", "") == "")
+            null
+        else{
+            (tagInputString.split(" ") as MutableList<String>)
+        }
+    }
+
+    fun createTag(content: Content){
+        viewModelScope.launch {
+            tagRepository.createTag(content = content){
+                getTag()
+                withTagUpdate()
+            }
         }
     }
 

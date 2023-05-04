@@ -70,6 +70,18 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             binding.drawableLayout.closeDrawer(Gravity.RIGHT)
         }
 
+        binding.tagEtcLayout.ivTagAdd.setOnClickListener {
+            val list = checkListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
+            if (list == null)
+                Toast.makeText(requireContext(), "추가 할 태그가 없습니다.", Toast.LENGTH_SHORT).show()
+            else if (list.size == 1)
+                checkListViewModel.createTag(Content(list[0]))
+            else {
+
+            }
+            binding.tagEtcLayout.etTagInput.setText("")
+        }
+
         binding.btnAddTodo.setOnClickListener {
             val text = binding.etSimpleAddTodo.text.toString()
 
@@ -143,7 +155,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
 
-            for(i in 1 until binding.tagEtcLayout.tagLayout.childCount)
+            for(i in binding.tagEtcLayout.tagLayout.childCount - 1 downTo  1 )
                 binding.tagEtcLayout.tagLayout.removeViewAt(i)
 
             for (i in 2 until checkListViewModel.tagDataList.value!!.size) {
