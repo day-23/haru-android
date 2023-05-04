@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.view.MenuInflater
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -155,8 +154,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text = checkListViewModel.tagDataList.value!![i].content
 
                 addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener {iv ->
-                    val popUp = PopupMenu(requireContext(), iv)
-                    popUp.menuInflater.inflate(R.menu.tag_context_menu, popUp.menu)
+                    val themeWrapper = ContextThemeWrapper(context , R.style.MyPopupMenu) // tag popup menu 스타일 지정
+                    val popUp = PopupMenu(themeWrapper , iv, Gravity.END , 0 , R.style.MyPopupMenu) // 스타일 한 번 더  명시해줘야함.
+                    popUp.menuInflater.inflate(R.menu.tag_popup_menu, popUp.menu)
                     popUp.setOnMenuItemClickListener {
                         Toast.makeText(requireContext(), "delete", Toast.LENGTH_SHORT).show()
                         return@setOnMenuItemClickListener true

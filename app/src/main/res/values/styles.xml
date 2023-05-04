@@ -52,4 +52,9 @@
 <!--        <item name="android:windowAnimationStyle">@style/datePickerDialogAnimation</item>-->
     </style>
 
+    <style name="MyPopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/shape_rect_radius_10</item>
+<!--        <item name="android:textColor">@color/</item>-->
+    </style>
+
 </resources>
