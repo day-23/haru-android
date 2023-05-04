@@ -77,7 +77,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             else if (list.size == 1)
                 checkListViewModel.createTag(Content(list[0]))
             else {
-
+                checkListViewModel.createTagList(ContentList(list))
             }
             binding.tagEtcLayout.etTagInput.setText("")
         }

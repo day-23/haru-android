@@ -82,13 +82,23 @@ class CheckListViewModel() :
         return if (tagInputString.replace(" ", "") == "")
             null
         else{
-            (tagInputString.split(" ") as MutableList<String>)
+            tagInputString = tagInputString.replace("\\s+".toRegex(), " ")
+            return tagInputString.split(" ") as MutableList<String>
         }
     }
 
     fun createTag(content: Content){
         viewModelScope.launch {
             tagRepository.createTag(content = content){
+                getTag()
+                withTagUpdate()
+            }
+        }
+    }
+
+    fun createTagList(contents : ContentList){
+        viewModelScope.launch {
+            tagRepository.createTagList(contents = contents){
                 getTag()
                 withTagUpdate()
             }

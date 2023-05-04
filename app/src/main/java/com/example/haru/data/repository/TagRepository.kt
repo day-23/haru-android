@@ -43,4 +43,22 @@ class TagRepository() {
         }
         callback(successData)
     }
+
+    suspend fun createTagList(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        contents: ContentList,
+        callback: (successData: SuccessFailTagList) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = tagService.createTagList(userId, contents).execute()
+        val data = response.body()!!
+
+        val successData : SuccessFailTagList = if (response.isSuccessful){
+            Log.d("TAG", "Success to Creat TagList")
+            data
+        } else {
+            Log.d("TAG", "Fail to Creat TagList")
+            data
+        }
+        callback(successData)
+    }
 }
