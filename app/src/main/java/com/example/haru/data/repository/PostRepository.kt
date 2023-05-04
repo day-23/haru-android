@@ -112,7 +112,7 @@ class PostRepository() {
         Dispatchers.IO){
             val response = postService.getComments(
                 "jts",
-                "482051f1-b3be-477a-b81c-99640c8306ec"//postId
+                "482051f1-b3be-477a-b81c-99640c8306ec" //postId
             ).execute()
 
             val comments: ArrayList<Comments>
