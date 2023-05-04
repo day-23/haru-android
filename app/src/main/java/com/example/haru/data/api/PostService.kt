@@ -1,9 +1,6 @@
 package com.example.haru.data.api
 
-import com.example.haru.data.model.AddPost
-import com.example.haru.data.model.AddPostResponse
-import com.example.haru.data.model.LikeResponse
-import com.example.haru.data.model.PostResponse
+import com.example.haru.data.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -29,4 +26,10 @@ interface PostService {
         @Part("content") content: RequestBody,
         @PartMap hashTags: Map<String, @JvmSuppressWildcards RequestBody>
     ): Call<AddPostResponse>
+
+    @GET("comment/{userId}/{postId}/comments/all")
+    fun getComments(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String
+    ): Call<CommentsResponse>
 }

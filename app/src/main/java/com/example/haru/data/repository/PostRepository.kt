@@ -21,7 +21,7 @@ class PostRepository() {
     //게시글 추가
     suspend fun addPost(post: AddPost, callback: (postInfo: SendPost) -> Unit) = withContext(Dispatchers.IO) {
         // Prepare the request data
-        val content = RequestBody.create(MediaType.parse("text/plain"), "이미지 업로드 성공! post.content 여기 수정해야됨")
+        val content = RequestBody.create(MediaType.parse("text/plain"), post.content)
 
         val hashTags = post.hashtags.mapIndexed { index, hashtag ->
             "hashTags[$index]" to RequestBody.create(MediaType.parse("text/plain"), hashtag)
@@ -32,7 +32,7 @@ class PostRepository() {
         }
 
         // Call the addPost function from the PostService
-        val call = postService.addPost("lmj", images, content, hashTags)
+        val call = postService.addPost("jts", images, content, hashTags)
         val response = call.execute()
 
         val postInfo = SendPost()
@@ -106,5 +106,27 @@ class PostRepository() {
         }
         callback(posts)
     }
+
+    //전체 댓글
+    suspend fun getComment(postId: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
+        Dispatchers.IO){
+            val response = postService.getComments(
+                "jts",
+                "482051f1-b3be-477a-b81c-99640c8306ec"//postId
+            ).execute()
+
+            val comments: ArrayList<Comments>
+            val data: CommentsResponse
+
+            if(response.isSuccessful) {
+                Log.d("TAG","Success to get comments")
+                data = response.body()!!
+                comments = data.data
+            }else{
+                Log.d("TAG", "Fail to get comments")
+                comments = arrayListOf()
+            }
+            callback(comments)
+        }
 
 }

@@ -77,12 +77,11 @@ class EditProfileFragment: Fragment() {
         binding = FragmentEditProfileBinding.inflate(inflater, container, false)
 
         binding.backButton.setOnClickListener {
-            val newFrag = MyPageFragment.newInstance()
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            transaction.addToBackStack(null)
-            transaction.commit()
-            true
+            val fragmentManager = parentFragmentManager
+            if (fragmentManager.backStackEntryCount > 0) {
+                // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+                fragmentManager.popBackStack()
+            }
         }
 
         // 이미지 선택 버튼에 클릭 이벤트 리스너 등록
