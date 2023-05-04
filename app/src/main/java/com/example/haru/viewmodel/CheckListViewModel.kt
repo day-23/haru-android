@@ -105,6 +105,15 @@ class CheckListViewModel() :
         }
     }
 
+    fun deleteTagList(tagIdList: TagIdList){
+        viewModelScope.launch {
+            tagRepository.deleteTagList(tagIdList = tagIdList){
+                getTag()
+                withTagUpdate()
+            }
+        }
+    }
+
     fun withTagUpdate() {
         if (todoByTag.value == true) {
             when (todoByTagItem) {

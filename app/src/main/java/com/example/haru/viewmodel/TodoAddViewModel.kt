@@ -276,7 +276,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         tagList = if (tag == "" || tag.replace(" ", "") == "")
             mutableListOf()
-        else tag.split(" ") as MutableList<String>
+        else{
+            tag = tag.replace("\\s+".toRegex(), " ")
+            tag.split(" ") as MutableList<String>
+        }
 
         endDateStr = if (endDateSwitch.value == true) {
             if (!isSelectedEndDateTime.value!!) FormatDate.dateToStr(endDate.value!!)

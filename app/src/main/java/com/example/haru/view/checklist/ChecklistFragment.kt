@@ -171,6 +171,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     popUp.menuInflater.inflate(R.menu.tag_popup_menu, popUp.menu)
                     popUp.setOnMenuItemClickListener {
                         Toast.makeText(requireContext(), "delete", Toast.LENGTH_SHORT).show()
+
+                        checkListViewModel.deleteTagList(TagIdList(listOf(checkListViewModel.tagDataList.value!![i].id)))
+
                         return@setOnMenuItemClickListener true
                     }
                     popUp.show()

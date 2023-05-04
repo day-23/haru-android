@@ -53,12 +53,30 @@ class TagRepository() {
         val data = response.body()!!
 
         val successData : SuccessFailTagList = if (response.isSuccessful){
-            Log.d("TAG", "Success to Creat TagList")
+            Log.d("TAG", "Success to Create TagList")
             data
         } else {
-            Log.d("TAG", "Fail to Creat TagList")
+            Log.d("TAG", "Fail to Create TagList")
             data
         }
         callback(successData)
+    }
+
+    suspend fun deleteTagList(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        tagIdList: TagIdList,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = tagService.deleteTagList(userId, tagIdList).execute()
+        val data = response.body()!!
+
+        val successData : SuccessFail = if (response.isSuccessful){
+            Log.d("TAG", "Success to Delete TagList")
+            data
+        } else {
+            Log.d("TAG", "Fail to Delete TagList")
+            data
+        }
+        callback(data)
     }
 }
