@@ -160,15 +160,22 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                         )
                         todoAddViewModel.deleteSubTodo()
                     }
-                    addView.findViewById<EditText>(R.id.et_subTodo).apply {
-                        setText(todoAddViewModel.subTodos[i])
-                        paintFlags =
-                            if (todoAddViewModel.subTodoCompleted[i])
-                                Paint.STRIKE_THRU_TEXT_FLAG
-                            else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-                        if (todoAddViewModel.subTodoCompleted[i]) setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
 
-                    }
+                    if (todoAddViewModel.subTodoCompleted.isNotEmpty() && i < todoAddViewModel.subTodoCompleted.size)
+                        addView.findViewById<EditText>(R.id.et_subTodo).apply {
+                            setText(todoAddViewModel.subTodos[i])
+                            paintFlags =
+                                if (todoAddViewModel.subTodoCompleted[i])
+                                    Paint.STRIKE_THRU_TEXT_FLAG
+                                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                            if (todoAddViewModel.subTodoCompleted[i]) setTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.light_gray
+                                )
+                            )
+
+                        }
                     addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object :
                         TextWatcher {
                         override fun beforeTextChanged(
@@ -401,8 +408,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         })
 
 
-
-
         // flag click event
         binding.cbInfoFlag.setOnClickListener(BtnClickListener())
 
@@ -488,12 +493,18 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                                 FormatDate.cal.set(year, month, day)
                                 val date = FormatDate.cal.time
                                 when (v.id) {
-                                    binding.btnInfoAlarmDatePick.id -> todoAddViewModel.setDate(1, date)
+                                    binding.btnInfoAlarmDatePick.id -> todoAddViewModel.setDate(
+                                        1,
+                                        date
+                                    )
                                     binding.btnInfoEndDatePick.id -> {
                                         todoAddViewModel.setSelectDate(date)
                                         todoAddViewModel.setDate(0, date)
                                     }
-                                    binding.btnInfoRepeatEndDate.id -> todoAddViewModel.setDate(2, date)
+                                    binding.btnInfoRepeatEndDate.id -> todoAddViewModel.setDate(
+                                        2,
+                                        date
+                                    )
                                 }
                             }
                         }
