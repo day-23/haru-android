@@ -32,16 +32,26 @@ class ScheduleRepository() {
     }
 
     suspend fun postSchedule(body: PostSchedule, callback: () -> Unit){
-        val response = scheduleService.createSchedule(
-            "ysr",
-            body
-        ).execute()
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.createSchedule(
+                "ysr",
+                body
+            ).execute()
 
-        if(response.isSuccessful){
-            Log.d("TAG", "Success to post schedule")
-            callback()
-        } else {
-            Log.d("TAG", "Fail to post schedule")
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to post schedule")
+//                data = response.body()!!
+//                schedule = data.data
+            } else {
+                Log.d("TAG", "Fail to post schedule")
+//                schedule = null
+            }
+
+//            val data: PostScheduleResponse
+//            val schedule: Schedule?
+            withContext(Dispatchers.Main) {
+                callback()
+            }
         }
     }
 }

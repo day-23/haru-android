@@ -56,7 +56,7 @@ class TodoRepository() {
     }
 
 
-    suspend fun createTodo(todoRequest: TodoRequest, callback: (todoData: Todo) -> Unit) =
+    suspend fun createTodo(calendar: Boolean, todoRequest: TodoRequest, callback: (todoData: Todo) -> Unit) {
         withContext(Dispatchers.IO) {
             val response =
                 todoService.createTodo("005224c0-eec1-4638-9143-58cbfc9688c5", todoRequest)
@@ -73,8 +73,16 @@ class TodoRepository() {
                 Log.d("TAG", "Fail to create todo")
                 todoData = Todo()
             }
-            callback(todoData)
+
+            if (calendar) {
+                withContext(Dispatchers.Main) {
+                    callback(todoData)
+                }
+            } else {
+                callback(todoData)
+            }
         }
+    }
 
     suspend fun getTodoByTag(tagId: String, callback: (todoData: GetTodoByTagData) -> Unit) =
         withContext(Dispatchers.IO) {

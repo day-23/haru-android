@@ -70,6 +70,8 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         categoriesRecyclerview.adapter = CategoriesColorAdapter(this)
 
         correctionBackImageview.setOnClickListener {
+            intent.putExtra("status", "back")
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
 
