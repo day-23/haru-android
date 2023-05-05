@@ -205,9 +205,9 @@ class CheckListViewModel() :
     }
 
 
-    fun addTodo(todoRequest: TodoRequest, callback: () -> Unit) {
+    fun addTodo(todoRequest: TodoRequest, calendar: Boolean = false, callback: () -> Unit) {
         viewModelScope.launch {
-            todoRepository.createTodo(todoRequest) {
+            todoRepository.createTodo(calendar ,todoRequest) {
                 getTag()
                 getTodoMain {
                     flaggedTodos.value?.let { todoList.addAll(it) }
