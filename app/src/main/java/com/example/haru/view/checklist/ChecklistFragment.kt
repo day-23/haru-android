@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -92,6 +93,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
             if (text.replace(" ", "") == "") {
                 val todoInput = ChecklistInputFragment(checkListViewModel)
+
                 todoInput.show(parentFragmentManager, todoInput.tag)
             } else {
                 val todo = TodoRequest(

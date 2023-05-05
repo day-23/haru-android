@@ -70,8 +70,10 @@ class MainActivity : AppCompatActivity() {
         val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 
-        if (currentFocus is EditText)
+        if (currentFocus is EditText){
             currentFocus!!.clearFocus()
+            return false
+        }
 
         return super.dispatchTouchEvent(ev)
     }

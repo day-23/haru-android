@@ -2,7 +2,6 @@ package com.example.haru.view.checklist
 
 
 import android.animation.ValueAnimator
-import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
@@ -12,13 +11,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.FormatDate
@@ -29,6 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
+
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     BottomSheetDialogFragment() {
@@ -183,13 +181,27 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+        val dialog: Dialog = object : BottomSheetDialog(requireContext()){
+            override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+                val imm: InputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+
+                if (currentFocus is EditText){
+                    currentFocus!!.clearFocus()
+                    return false
+                }
+                return super.dispatchTouchEvent(ev)
+            }
+        }
+
         dialog.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
             setupRatio(bottomSheetDialog)
         }
+
         return dialog
     }
+
 
     private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
         val bottomSheet =
@@ -739,8 +751,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         binding.btnClose.setOnClickListener(btnListener())
 
         binding.subTodoAddLayout.setOnClickListener(btnListener())
-//        binding.ivSubTodoCancel.setOnClickListener(btnListener())
-
     }
 
     override fun dismiss() {
@@ -817,7 +827,6 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                     datePicker.calendarClick =
                         object : CustomCalendarDialog.CalendarClickListener {
                             override fun onClick(view: View, year: Int, month: Int, day: Int) {
-                                Log.d("20191627", "클릭")
                                 FormatDate.cal.set(year, month, day)
                                 val date = FormatDate.cal.time
                                 when (v.id) {

@@ -574,13 +574,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                 }
                 binding.ivBackIcon.id -> requireActivity().supportFragmentManager.popBackStack()
 
-//                binding.root.id -> {
-//                    if (activity != null && requireActivity().currentFocus != null){
-//                        val imm: InputMethodManager =   // 자동으로 키보드 내리기
-//                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//                        imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-//                    }
-//                }
             }
         }
     }
