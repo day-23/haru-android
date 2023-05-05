@@ -124,7 +124,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         super.onViewCreated(view, savedInstanceState)
 
         todoAddViewModel.setClickTodo(id)
-        Log.d("20191627", todoAddViewModel.clickedTodo.toString())
         binding.vm = todoAddViewModel
 
         // flag 관련 UI Update
@@ -132,7 +131,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
             binding.cbInfoFlag.isChecked = it
         })
 
-        // complete 관련 UI Update
+        // complete 관련 UI Update  --> 수정창에서 완료하는 기능을 뺐으므로 수정 예정
         todoAddViewModel.completedTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val color = if (it) R.color.light_gray else R.color.todo_description
             binding.btnInfoSave.visibility = if (it) View.GONE else View.VISIBLE
@@ -271,6 +270,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         // repeat Switch 관련 UI Update
         // 반복설정, 태그 연동, 하위 항목, 메모 만들어서 마무리하기
         todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it && todoAddViewModel.endDateSwitch.value != true) {
+                todoAddViewModel.setEndDateSwitch()
+            }
+
             val color = if (it) R.color.todo_description else R.color.light_gray
             binding.infoRepeatSwitch.isChecked = it
             binding.ivInfoRepeatIcon.backgroundTintList =
@@ -323,20 +326,82 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
             if (layout != null) {
                 for (i in 0 until it!!.length) {
-                    if (it[i] == '1') {
-                        Log.d("20191627", it[i].toString())
+                    if (it[i] == '1')
                         (layout.getChildAt(i) as TextView).setTextColor(
                             ContextCompat.getColor(
                                 requireContext(),
                                 R.color.highlight
                             )
                         )
-                    } else (layout.getChildAt(i) as TextView).setTextColor(
+                    else if (it[i] == '0') (layout.getChildAt(i) as TextView).setTextColor(
                         ContextCompat.getColor(
                             requireContext(),
                             R.color.light_gray
                         )
-                    )
+                    ) else
+                        (layout.getChildAt(i) as TextView).setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.delete_red
+                            )
+                        )
+                }
+            }
+
+            if (todoAddViewModel.repeatOption.value != null) {
+                val flagOne = todoAddViewModel.repeatValue.value!!.contains('1')
+                val flagTwo = todoAddViewModel.repeatValue.value!!.contains('2')
+
+                if (todoAddViewModel.selectDateFlag)
+                    return@Observer
+
+                if (!flagOne && !flagTwo) {  // 1도 없고, 2도 없는 0으로만 이루어진 상황
+                    todoAddViewModel.setDate(0, Date())
+                    return@Observer
+                } else if (flagTwo && !flagOne) { // endDate를 직접 설정하면 무조건 그 날짜를 표시, 그 후에 반복 옵션을 건드리면 날짜 계산 방식으로 변경해야한다.
+                    if (todoAddViewModel.selectedDate.value == null) {
+                        FormatDate.cal.time = Date()
+                        FormatDate.cal.set(Calendar.DAY_OF_MONTH, todoAddViewModel.day!!)
+                    } else {
+                        FormatDate.cal.time = todoAddViewModel.selectedDate.value!!
+                    }
+                    todoAddViewModel.setDate(0, FormatDate.cal.time)
+                    return@Observer
+                } else {
+                    Log.d("20191627", "최적 날짜 찾기")
+                    val date = when (todoAddViewModel.repeatValue.value?.length) {
+                        7 -> FormatDate.nextEndDateEveryWeek(
+                            todoAddViewModel.repeatValue.value,
+                            todoAddViewModel.repeatOption.value,
+                            null,
+                            null
+                        )
+                        31 -> FormatDate.nextEndDateEveryMonth(
+                            todoAddViewModel.repeatValue.value!!,
+                            null,
+                            null
+                        )
+                        12 -> {
+                            FormatDate.cal.time = todoAddViewModel.endDate.value!!
+
+                            val day = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+
+                            FormatDate.nextEndDateEveryYear(
+                                todoAddViewModel.repeatValue.value!!,
+                                null,
+                                null,
+                                day
+                            )
+                        }
+                        else -> {
+                            FormatDate.cal.time = Date()
+                            FormatDate.cal.time
+                        }
+                    }
+                    if (date == null)
+                        todoAddViewModel.setDate(0, Date())
+                    else
+                        todoAddViewModel.setDate(0, date)
                 }
             }
         })

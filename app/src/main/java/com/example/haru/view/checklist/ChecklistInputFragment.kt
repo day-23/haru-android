@@ -315,14 +315,12 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
         todoAddViewModel.alarmSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
-                    val date = Date()
+//                    val date = Date()
+//                    binding.btnAlarmDatePick.text = FormatDate.simpleDateToStr(date)
+//                    binding.btnAlarmTimePick.text = FormatDate.simpleTimeToStr(date)
+//                    todoAddViewModel.setDate(1, date)
+//                    todoAddViewModel.setTime(1, date)
                     binding.alarmSwitch.isChecked = it
-                    binding.btnAlarmDatePick.text = FormatDate.simpleDateToStr(date)
-                    binding.btnAlarmTimePick.text = FormatDate.simpleTimeToStr(date)
-                    todoAddViewModel.setDate(1, date)
-                    todoAddViewModel.setTime(1, date)
-
-
                     binding.btnAlarmDatePick.visibility = View.VISIBLE
                     binding.btnAlarmTimePick.visibility = View.VISIBLE
                     binding.ivAlarmIcon.backgroundTintList =
@@ -398,11 +396,11 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
             androidx.lifecycle.Observer {
                 when (it) {
                     true -> {
-                        val date = Date()
+//                        val date = Date()
+//                        binding.btnRepeatEndDate.text = FormatDate.simpleDateToStr(date)
+//                        todoAddViewModel.setDate(2, date)
                         binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.todo_description))
                         binding.btnRepeatEndDate.visibility = View.VISIBLE
-                        binding.btnRepeatEndDate.text = FormatDate.simpleDateToStr(date)
-                        todoAddViewModel.setDate(2, date)
                     }
                     else -> {
                         binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.light_gray))
