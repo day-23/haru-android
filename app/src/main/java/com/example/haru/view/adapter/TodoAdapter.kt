@@ -3,6 +3,7 @@ package com.example.haru.view.adapter
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,12 +22,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
+import com.example.haru.databinding.ChecklistBlankBinding
 import com.example.haru.databinding.ChecklistEmptyBinding
 import com.example.haru.databinding.ChecklistHeaderType1Binding
 import com.example.haru.databinding.ChecklistHeaderType2Binding
 import com.example.haru.databinding.ChecklistHeaderType3Binding
 import com.example.haru.databinding.FragmentChecklistDividerBinding
 import com.example.haru.databinding.FragmentChecklistItemBinding
+import com.example.haru.databinding.FragmentTestBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.checklist.ChecklistItemTouchHelperCallback
 import com.example.haru.view.checklist.ItemTouchHelperListener
@@ -68,6 +71,7 @@ class TodoAdapter(val context: Context) :
     val Divider = 3
     val HeaderType3 = 4
     val Empty = 5
+    val Blank = 6
 
     var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
@@ -143,6 +147,12 @@ class TodoAdapter(val context: Context) :
                 )
             )
 
+            Blank -> BlankViewHolder(
+                ChecklistBlankBinding.inflate(
+                    LayoutInflater.from(context), parent, false
+                )
+            )
+
             else -> {
                 throw ClassCastException("Unknown viewType $viewType")
             }
@@ -165,6 +175,7 @@ class TodoAdapter(val context: Context) :
             is TodoViewHolder -> {
                 holder.bind(todo)
             }
+            is BlankViewHolder -> {}
         }
     }
 
@@ -188,12 +199,15 @@ class TodoAdapter(val context: Context) :
     inner class DividerViewHolder(val binding: FragmentChecklistDividerBinding) :
         RecyclerView.ViewHolder(binding.root) {}
 
+    inner class BlankViewHolder(val binding: ChecklistBlankBinding) :
+        RecyclerView.ViewHolder(binding.root) {}
+
     inner class TodoViewHolder(val binding: FragmentChecklistItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Todo) {
             binding.todo = item
-
+            binding.tvTitle.text = item.content
             if (todoClick != null) {
                 binding.ClickLayout.setOnClickListener {
                     todoClick?.onClick(it, item.id)
@@ -255,8 +269,11 @@ class TodoAdapter(val context: Context) :
                 }
             }
 
-            if (item.completed) binding.tvTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-            else binding.tvTitle.paintFlags = 0
+            if (item.completed) binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
+            else binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
+
+            binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
+            binding.tvTitle.text = item.content
 
 
             binding.subTodoItemLayout.removeAllViews()
@@ -284,9 +301,10 @@ class TodoAdapter(val context: Context) :
                         }
                     }
                 }
+
                 addView.findViewById<TextView>(R.id.tv_subTodo).apply {
                     text = item.subTodos[i].content
-                    paintFlags = if (item.subTodos[i].completed) Paint.STRIKE_THRU_TEXT_FLAG else 0
+                    paintFlags = if (item.subTodos[i].completed) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
                     if (item.subTodos[i].completed)
                         setTextColor(ContextCompat.getColor(context, R.color.light_gray))
                 }
@@ -300,6 +318,7 @@ class TodoAdapter(val context: Context) :
                 binding.subTodoToggle.isSelected = false
                 binding.subTodoItemLayout.visibility = View.VISIBLE
             }
+
         }
     }
 

@@ -20,4 +20,6 @@
     <color name="delete_red">#F71E58</color>
 
     <color name="icon_gray">#767676</color>
+
+    <color name="option_background">#eff0ee</color>
 </resources>

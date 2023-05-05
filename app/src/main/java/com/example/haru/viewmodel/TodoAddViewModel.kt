@@ -4,17 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.haru.data.model.Alarm
-import com.example.haru.data.model.Todo
-import com.example.haru.data.model.TodoRequest
-import com.example.haru.data.model.UpdateTodo
+import com.example.haru.data.model.*
 import com.example.haru.utils.FormatDate
 import java.util.*
 
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val checklistViewModel: CheckListViewModel
 
-    private val repeatOptionList = listOf("매일", "매주", "2주마다", "매월", "매년")
+    private val repeatOptionList = listOf("매일", "매주", "2주마다", "매달", "매년")
 
     private val _flagTodo = MutableLiveData<Boolean>(false)
     val flagTodo: LiveData<Boolean> = _flagTodo
@@ -72,7 +69,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var subTodoCnt: Int = 0
     var subTodoClickPosition = -1
 
-    private val subTodoCompleted = mutableListOf<Boolean>()
+    var subTodoCompleted = mutableListOf<Boolean>()
 
     var day : Int? = null
     var selectDateFlag = false
@@ -164,10 +161,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-    fun setCompleteTodo() {
-        _completedTodo.value = (_completedTodo.value == false)
-    }
-
     fun setFlagTodo() {
         _flagTodo.value = (_flagTodo.value == false)
     }
@@ -239,7 +232,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setDate(id: Int, date: Date) {
         when (id) {
-            0 -> _endDate.value = date
+            0 -> {
+                _endDate.value = date
+                if (repeatEndDate.value != null && endDate.value!!.after(repeatEndDate.value))
+                    setDate(2, endDate.value!!)
+            }
             1 -> _alarmDate.value = date
             else -> _repeatEndDate.value = date
         }
@@ -283,7 +280,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         tagList = if (tag == "" || tag.replace(" ", "") == "")
             mutableListOf()
-        else tag.split(" ") as MutableList<String>
+        else{
+            tag = tag.replace("\\s+".toRegex(), " ")
+            tag.split(" ") as MutableList<String>
+        }
 
         endDateStr = if (endDateSwitch.value == true) {
             if (!isSelectedEndDateTime.value!!) FormatDate.dateToStr(endDate.value!!)
@@ -386,6 +386,44 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         checklistViewModel.deleteTodo(todoId = clickedTodo!!.id) {
             callback()
         }
+    }
+
+    fun deleteRepeatTodo(callback: () -> Unit){
+        val nextEndDate = when (clickedTodo!!.repeatOption) {
+            "매일" -> {
+                FormatDate.nextEndDate(clickedTodo!!.endDate, clickedTodo!!.repeatEnd)
+            }
+            "매주" -> {
+                FormatDate.nextEndDateEveryWeek(
+                    clickedTodo!!.repeatValue!!,
+                    1,
+                    clickedTodo!!.endDate,
+                    clickedTodo!!.repeatEnd
+                )
+            }
+            "2주마다" -> {
+                FormatDate.nextEndDateEveryWeek(
+                    clickedTodo!!.repeatValue!!,
+                    2,
+                    clickedTodo!!.endDate,
+                    clickedTodo!!.repeatEnd
+                )
+            }
+            "매달" -> {
+                FormatDate.nextEndDateEveryMonth(clickedTodo!!.repeatValue!!, clickedTodo!!.endDate, clickedTodo!!.repeatEnd)
+            }
+            "매년" -> {
+                FormatDate.nextEndDateEveryYear(clickedTodo!!.repeatValue!!, clickedTodo!!.endDate, clickedTodo!!.repeatEnd)
+            }
+            else -> null
+        }
+        if (nextEndDate != null) {
+            val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
+            checklistViewModel.deleteRepeatTodo(todoId = clickedTodo!!.id, endDate = EndDate(nextEndDateStr)){
+                callback()
+            }
+        } else
+            checklistViewModel.deleteTodo(todoId = clickedTodo!!.id){ callback() }
     }
 
 }

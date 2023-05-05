@@ -1,18 +1,15 @@
 package com.example.haru.view.checklist
 
 import android.content.Context
-import android.graphics.Point
-import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.RequiresApi
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -55,8 +52,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         Log.d(TAG, "ChecklistFragment - onCreateView() called")
 
         binding = FragmentChecklistBinding.inflate(inflater)
-
-
         return binding.root
     }
 
@@ -76,11 +71,29 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             binding.drawableLayout.closeDrawer(Gravity.RIGHT)
         }
 
+        binding.tagEtcLayout.ivTagAdd.setOnClickListener {
+            val inputTag =
+                checkListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
+            when (inputTag) {
+                null -> Toast.makeText(requireContext(), "태그에 공백이 포함될 수 없습니다..", Toast.LENGTH_SHORT).show()
+                "" -> Toast.makeText(requireContext(), "추가 할 태그가 없습니다.", Toast.LENGTH_SHORT).show()
+                else -> {
+                    checkListViewModel.createTag(Content(inputTag))
+                    binding.tagEtcLayout.etTagInput.setText("")
+                    binding.tagEtcLayout.etTagInput.clearFocus()
+                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.tagEtcLayout.etTagInput.windowToken, 0)
+                }
+            }
+        }
+
         binding.btnAddTodo.setOnClickListener {
             val text = binding.etSimpleAddTodo.text.toString()
 
             if (text.replace(" ", "") == "") {
                 val todoInput = ChecklistInputFragment(checkListViewModel)
+
                 todoInput.show(parentFragmentManager, todoInput.tag)
             } else {
                 val todo = TodoRequest(
@@ -149,6 +162,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
 
+            for (i in binding.tagEtcLayout.tagLayout.childCount - 1 downTo 1)
+                binding.tagEtcLayout.tagLayout.removeViewAt(i)
+
             for (i in 2 until checkListViewModel.tagDataList.value!!.size) {
                 val layoutInflater =
                     requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -156,6 +172,37 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
                 addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text =
                     checkListViewModel.tagDataList.value!![i].content
+
+                addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener { iv ->
+                    val themeWrapper =
+                        ContextThemeWrapper(context, R.style.MyPopupMenu) // tag popup menu 스타일 지정
+                    val popUp = PopupMenu(
+                        themeWrapper,
+                        iv,
+                        Gravity.END,
+                        0,
+                        R.style.MyPopupMenu
+                    ) // 스타일 한 번 더  명시해줘야함.
+                    popUp.menuInflater.inflate(R.menu.tag_popup_menu, popUp.menu)
+                    popUp.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.tag_delete -> {
+                                Toast.makeText(requireContext(), "Delete", Toast.LENGTH_SHORT)
+                                    .show()
+                                checkListViewModel.deleteTagList(TagIdList(listOf(checkListViewModel.tagDataList.value!![i].id)))
+                            }
+                            R.id.tag_update -> {
+                                Toast.makeText(requireContext(), "Update", Toast.LENGTH_SHORT)
+                                    .show()
+//                                checkListViewModel.updateTag(checkListViewModel.tagDataList.value!![i].id, TagUpdate(content = ""))
+                            }
+                            else -> {}
+                        }
+                        return@setOnMenuItemClickListener true
+                    }
+                    popUp.show()
+                }
+
                 binding.tagEtcLayout.tagLayout.addView(addView)
             }
         })
@@ -210,27 +257,29 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         "매일" -> {
                             FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
                         }
-                        "매주" -> {
+                        "매주", "2주마다" -> {
+                            val repeatOption = if (todo.repeatOption == "매주") 1 else 2
                             FormatDate.nextEndDateEveryWeek(
                                 todo.repeatValue!!,
-                                1,
+                                repeatOption,
                                 todo.endDate,
                                 todo.repeatEnd
                             )
                         }
-                        "2주마다" -> {
-                            FormatDate.nextEndDateEveryWeek(
+
+                        "매달" -> {
+                            FormatDate.nextEndDateEveryMonth(
                                 todo.repeatValue!!,
-                                2,
                                 todo.endDate,
                                 todo.repeatEnd
                             )
-                        }
-                        "매월" -> {
-                            FormatDate.nextEndDateEveryMonth(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
                         }
                         "매년" -> {
-                            FormatDate.nextEndDateEveryYear(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                            FormatDate.nextEndDateEveryYear(
+                                todo.repeatValue!!,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
                         }
                         else -> null
                     }

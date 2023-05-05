@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
+        android:background="@drawable/shape_rect_radius_top_40"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
