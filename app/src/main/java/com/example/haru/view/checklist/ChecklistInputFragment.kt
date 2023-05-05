@@ -19,7 +19,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.*
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.FormatDate
@@ -29,9 +28,7 @@ import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.text.Format
 import java.util.*
-import kotlin.time.Duration.Companion.days
 
 class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter:AdapterMonth? = null) :
     BottomSheetDialogFragment() {
@@ -94,7 +91,14 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter
             textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             textView.gravity = Gravity.CENTER
             textView.setOnClickListener {
-                todoAddViewModel.setRepeatVal(i - 1)
+                if ((it as TextView).textColors != ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.delete_red
+                        )
+                    )
+                )
+                    todoAddViewModel.setRepeatVal(i - 1)
             }
 
             val params = GridLayout.LayoutParams().apply {
@@ -492,12 +496,30 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter
 
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.btnEndDatePick.text = FormatDate.simpleDateToStr(it)
-            if (todoAddViewModel.repeatOption.value == 4){
+            Log.d("20191627", it.toString())
+
+            if (todoAddViewModel.repeatOption.value == 4) {  // 매년
                 FormatDate.cal.time = it
                 val days = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
-                if (days == 31){ // 2,4,6,9,11
-                    for(i in listOf(2, 4, 6, 9, 11)){
-                        binding.gridYear.getChildAt(i - 1)
+                todoAddViewModel.day = days
+                Log.d("20191627", days.toString())
+
+                when (days) {
+                    31  // 2,4,6,9,11 달들 선택 불가
+                    -> for (i in listOf(2, 4, 6, 9, 11))
+                        if (todoAddViewModel.repeatValue.value!![i - 1] != '2')
+                            todoAddViewModel.setRepeatVal(i - 1, '2')
+                    30 // 2월달만
+                    -> for (i in listOf(2, 4, 6, 9, 11))
+                        if (i == 2 && todoAddViewModel.repeatValue.value!![i - 1] != '2')
+                            todoAddViewModel.setRepeatVal(i - 1, '2')
+                        else if (i != 2 && todoAddViewModel.repeatValue.value!![i - 1] == '2')
+                            todoAddViewModel.setRepeatVal(i - 1, '0')
+
+                    else -> {
+                        for (i in listOf(2, 4, 6, 9, 11))
+                            if (todoAddViewModel.repeatValue.value!![i - 1] == '2')
+                                todoAddViewModel.setRepeatVal(i - 1, '0')
                     }
                 }
             }
@@ -536,21 +558,42 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter
                                 R.color.highlight
                             )
                         )
-                    else (layout.getChildAt(i) as TextView).setTextColor(
+                    else if (it[i] == '0') (layout.getChildAt(i) as TextView).setTextColor(
                         ContextCompat.getColor(
                             requireContext(),
                             R.color.light_gray
                         )
-                    )
+                    ) else
+                        (layout.getChildAt(i) as TextView).setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.delete_red
+                            )
+                        )
                 }
             }
 
             if (todoAddViewModel.repeatOption.value != null) {
-                val flag = todoAddViewModel.repeatValue.value!!.contains('1')
-                if (!flag) {
+                val flagOne = todoAddViewModel.repeatValue.value!!.contains('1')
+                val flagTwo = todoAddViewModel.repeatValue.value!!.contains('2')
+
+                if (todoAddViewModel.selectDateFlag)
+                    return@Observer
+
+                if (!flagOne && !flagTwo) {  // 1도 없고, 2도 없는 0으로만 이루어진 상황
                     todoAddViewModel.setDate(0, Date())
                     return@Observer
+                } else if (flagTwo && !flagOne) { // endDate를 직접 설정하면 무조건 그 날짜를 표시, 그 후에 반복 옵션을 건드리면 날짜 계산 방식으로 변경해야한다.
+                    if (todoAddViewModel.selectedDate.value == null) {
+                        FormatDate.cal.time = Date()
+                        FormatDate.cal.set(Calendar.DAY_OF_MONTH, todoAddViewModel.day!!)
+                    } else {
+                        FormatDate.cal.time = todoAddViewModel.selectedDate.value!!
+                    }
+                    todoAddViewModel.setDate(0, FormatDate.cal.time)
+                    return@Observer
                 } else {
+                    Log.d("20191627", "최적 날짜 찾기")
                     val date = when (todoAddViewModel.repeatValue.value?.length) {
                         7 -> FormatDate.nextEndDateEveryWeek(
                             todoAddViewModel.repeatValue.value,
@@ -558,8 +601,23 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter
                             null,
                             null
                         )
-                        31 -> FormatDate.nextEndDateEveryMonth(todoAddViewModel.repeatValue.value!!, null, null)
-                        12 -> FormatDate.nextEndDateEveryYear(todoAddViewModel.repeatValue.value!!, null, null)
+                        31 -> FormatDate.nextEndDateEveryMonth(
+                            todoAddViewModel.repeatValue.value!!,
+                            null,
+                            null
+                        )
+                        12 -> {
+                            FormatDate.cal.time = todoAddViewModel.endDate.value!!
+
+                            val day = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+
+                            FormatDate.nextEndDateEveryYear(
+                                todoAddViewModel.repeatValue.value!!,
+                                null,
+                                null,
+                                day
+                            )
+                        }
                         else -> {
                             FormatDate.cal.time = Date()
                             FormatDate.cal.time
@@ -745,7 +803,10 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter
                             val date = calendar.time
 
                             when (v.id) {
-                                R.id.btn_endDate_pick -> todoAddViewModel.setDate(0, date)
+                                R.id.btn_endDate_pick -> {
+                                    todoAddViewModel.setSelectDate(date)
+                                    todoAddViewModel.setDate(0, date)
+                                }
                                 R.id.btn_alarmDate_pick -> todoAddViewModel.setDate(1, date)
                                 R.id.btn_repeat_end_date -> todoAddViewModel.setDate(2, date)
                             }
