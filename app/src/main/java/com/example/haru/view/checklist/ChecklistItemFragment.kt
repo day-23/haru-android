@@ -13,6 +13,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -451,6 +452,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         binding.ivBackIcon.setOnClickListener(BtnClickListener())
         binding.btnInfoSave.setOnClickListener(BtnClickListener())
         binding.btnInfoDelete.setOnClickListener(BtnClickListener())
+
+//        binding.root.setOnClickListener(BtnClickListener())
     }
 
     inner class BtnClickListener : View.OnClickListener {
@@ -559,6 +562,14 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                     }
                 }
                 binding.ivBackIcon.id -> requireActivity().supportFragmentManager.popBackStack()
+
+//                binding.root.id -> {
+//                    if (activity != null && requireActivity().currentFocus != null){
+//                        val imm: InputMethodManager =   // 자동으로 키보드 내리기
+//                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                        imm.hideSoftInputFromWindow(requireActivity().currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+//                    }
+//                }
             }
         }
     }
