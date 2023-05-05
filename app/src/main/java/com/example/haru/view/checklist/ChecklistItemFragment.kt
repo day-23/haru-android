@@ -353,6 +353,55 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
             binding.btnInfoRepeatEndDate.text = FormatDate.simpleDateToStr(it)
         })
 
+        binding.infoTagEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                binding.ivInfoTagIcon.backgroundTintList = if (s.toString() == "")
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.icon_gray
+                        )
+                    )
+                else
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.todo_description
+                        )
+                    )
+            }
+
+        })
+
+        binding.etInfoMemo.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                binding.ivInfoMemoIcon.backgroundTintList =
+                    if (s.toString() == "") ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.icon_gray
+                        )
+                    ) else ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.todo_description
+                        )
+                    )
+            }
+
+        })
+
+
+
+
         // flag click event
         binding.cbInfoFlag.setOnClickListener(BtnClickListener())
 
