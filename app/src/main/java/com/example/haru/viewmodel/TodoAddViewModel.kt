@@ -232,7 +232,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setDate(id: Int, date: Date) {
         when (id) {
-            0 -> _endDate.value = date
+            0 -> {
+                _endDate.value = date
+                if (repeatEndDate.value != null && endDate.value!!.after(repeatEndDate.value))
+                    setDate(2, endDate.value!!)
+            }
             1 -> _alarmDate.value = date
             else -> _repeatEndDate.value = date
         }
