@@ -77,14 +77,13 @@ class CheckListViewModel() :
         }
     }
 
-    fun readyCreateTag(string: String) : MutableList<String>? {
+    fun readyCreateTag(string: String) : String? {
         tagInputString = string
-        return if (tagInputString.replace(" ", "") == "")
+        return if (tagInputString.contains(" "))
             null
-        else{
-            tagInputString = tagInputString.replace("\\s+".toRegex(), " ")
-            return tagInputString.split(" ") as MutableList<String>
-        }
+        else
+            return tagInputString
+
     }
 
     fun createTag(content: Content){
@@ -96,14 +95,14 @@ class CheckListViewModel() :
         }
     }
 
-    fun createTagList(contents : ContentList){
-        viewModelScope.launch {
-            tagRepository.createTagList(contents = contents){
-                getTag()
-                withTagUpdate()
-            }
-        }
-    }
+//    fun createTagList(contents : ContentList){  태그 여러개 추가
+//        viewModelScope.launch {
+//            tagRepository.createTagList(contents = contents){
+//                getTag()
+//                withTagUpdate()
+//            }
+//        }
+//    }
 
     fun deleteTagList(tagIdList: TagIdList){
         viewModelScope.launch {

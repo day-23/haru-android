@@ -71,16 +71,20 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         binding.tagEtcLayout.ivTagAdd.setOnClickListener {
-            val list =
+            val inputTag =
                 checkListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
-            if (list == null)
-                Toast.makeText(requireContext(), "추가 할 태그가 없습니다.", Toast.LENGTH_SHORT).show()
-            else if (list.size == 1)
-                checkListViewModel.createTag(Content(list[0]))
-            else {
-                checkListViewModel.createTagList(ContentList(list))
+            when (inputTag) {
+                null -> Toast.makeText(requireContext(), "태그에 공백이 포함될 수 없습니다..", Toast.LENGTH_SHORT).show()
+                "" -> Toast.makeText(requireContext(), "추가 할 태그가 없습니다.", Toast.LENGTH_SHORT).show()
+                else -> {
+                    checkListViewModel.createTag(Content(inputTag))
+                    binding.tagEtcLayout.etTagInput.setText("")
+                    binding.tagEtcLayout.etTagInput.clearFocus()
+                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.tagEtcLayout.etTagInput.windowToken, 0)
+                }
             }
-            binding.tagEtcLayout.etTagInput.setText("")
         }
 
         binding.btnAddTodo.setOnClickListener {
