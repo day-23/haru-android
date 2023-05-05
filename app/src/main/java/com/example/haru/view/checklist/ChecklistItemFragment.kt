@@ -632,9 +632,14 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                     }
                 }
                 binding.btnInfoSave.id -> {
-                    todoAddViewModel.readyToSubmit()
-                    todoAddViewModel.updateTodo {
-                        requireActivity().supportFragmentManager.popBackStack()
+                    if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
+                        val option = OptionDialogFragment(todoAddViewModel)
+                        option.show(parentFragmentManager, option.tag)
+                    } else {
+                        todoAddViewModel.readyToSubmit()
+                        todoAddViewModel.updateTodo {
+                            requireActivity().supportFragmentManager.popBackStack()
+                        }
                     }
                 }
                 binding.ivBackIcon.id -> requireActivity().supportFragmentManager.popBackStack()

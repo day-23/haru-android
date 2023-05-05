@@ -82,8 +82,6 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
 
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-//        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-
         return binding.root
     }
 
@@ -113,11 +111,9 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     override fun onResume() {
         super.onResume()
 
-
-//        window?.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-//
         val windowManager =
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
         val width = 0.7f
         val height = 0.45f
         if (Build.VERSION.SDK_INT < 30) {
