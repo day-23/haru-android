@@ -334,8 +334,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         )
     }
 
-    fun addTodo(callback: () -> Unit) {
-        checklistViewModel.addTodo(createTodoData()) {
+    fun addTodo(calendar: Boolean = false, callback: () -> Unit) {
+        checklistViewModel.addTodo(createTodoData(), calendar) {
             callback()
         }
     }

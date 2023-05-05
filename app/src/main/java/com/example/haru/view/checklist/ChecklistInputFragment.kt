@@ -23,6 +23,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -32,7 +33,7 @@ import java.text.Format
 import java.util.*
 import kotlin.time.Duration.Companion.days
 
-class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
+class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter:AdapterMonth? = null) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
     private var todoAddViewModel: TodoAddViewModel
@@ -766,9 +767,18 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
                         Toast.makeText(context, "할 일이 비어있습니다.", Toast.LENGTH_SHORT).show()
                     else {
                         todoAddViewModel.readyToSubmit()
-                        todoAddViewModel.addTodo {
-                            Log.d("20191627", "dismiss")
-                            dismiss()
+
+                        if(adapter == null) {
+                            todoAddViewModel.addTodo {
+                                Log.d("20191627", "dismiss")
+                                dismiss()
+                            }
+                        } else {
+                            todoAddViewModel.addTodo(true) {
+                                adapter.notifyDataSetChanged()
+                                Log.d("20191627", "dismiss")
+                                dismiss()
+                            }
                         }
                     }
                 }

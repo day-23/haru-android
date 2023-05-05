@@ -27,6 +27,8 @@ class CalendarViewModel : ViewModel() {
     val _liveTodoCalendarList = MutableLiveData<List<CalendarTodo>>()
     val liveTodoCalendarList: MutableLiveData<List<CalendarTodo>> get() = _liveTodoCalendarList
 
+    var scheduleCalendarList = mutableListOf<ScheduleCalendarData>()
+
     val _liveScheduleCalendarList = MutableLiveData<List<ScheduleCalendarData>>()
     val liveScheduleCalendarList: MutableLiveData<List<ScheduleCalendarData>> get() = _liveScheduleCalendarList
 
@@ -49,6 +51,18 @@ class CalendarViewModel : ViewModel() {
     fun postSchedule(body: PostSchedule, callback: () -> Unit){
         viewModelScope.launch {
             ScheduleRepository.postSchedule(body){
+//                if(it != null) {
+//                    scheduleCalendarList.add(
+//                        ScheduleCalendarData(
+//                            it,
+//                            28,
+//                            1
+//                        )
+//                    )
+//
+//                    _liveScheduleCalendarList.postValue(scheduleCalendarList)
+//                }
+
                 callback()
             }
         }
@@ -90,14 +104,13 @@ class CalendarViewModel : ViewModel() {
                 if(it != null){
                     Log.d("alldoit", it.toString())
                     val todoList = ArrayList<CalendarTodo>()
-                    val scheduleList = ArrayList<CalendarSchedule>()
+                    val scheduleList = ArrayList<ScheduleCalendarData>()
 
                     val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
                     val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
 
                     for (i in 0 until (maxi+1)*7){
                         todoList.add(CalendarTodo(ArrayList()))
-                        scheduleList.add(CalendarSchedule(ArrayList()))
                     }
 
                     for (todo in it.todos) {
@@ -125,11 +138,8 @@ class CalendarViewModel : ViewModel() {
 
                             when (repeatOption) {
                                 "매일" -> {
-                                    var dailycnt = 0
                                     var cnt = 0
-
                                     calendar.time = dateformat.parse(startDate)
-
 
                                     while ((repeateEnd == null || date_comparison(
                                             calendar.time,repeateEnd
@@ -139,16 +149,11 @@ class CalendarViewModel : ViewModel() {
                                             )
                                         ) <= 0
                                     ) {
-                                        if (date_comparison(calendar.time, createdAt) >= 0) {
-                                            if (dailycnt == 0) {
-                                                repeatDate[cnt] = true
-                                            }
-
-                                            dailycnt++
-
-                                            if (dailycnt.toString() == repeatValue) {
-                                                dailycnt = 0
-                                            }
+                                        if (date_comparison(
+                                                calendar.time, serverendDate!!
+                                            ) >= 0
+                                        ) {
+                                            repeatDate[cnt] = true
                                         }
 
                                         cnt++
@@ -161,7 +166,6 @@ class CalendarViewModel : ViewModel() {
                                     var cnt = 0
 
                                     calendar.time = dateformat.parse(startDate)
-
 
                                     while ((repeateEnd == null || date_comparison(
                                             calendar.time, repeateEnd
@@ -313,8 +317,6 @@ class CalendarViewModel : ViewModel() {
                     }
 
                     for (schedule in it.schedules) {
-                        val repeatDate = Array((maxi + 1) * 7) { false }
-
                         var repeatStart: Date? = null
                         var repeateEnd: Date? = null
 
@@ -330,168 +332,338 @@ class CalendarViewModel : ViewModel() {
                         }
 
                         if (repeatOption != null && repeatValue != null) {
-                            val calendar = Calendar.getInstance()
+                            if(!repeatValue.contains("T")) {
+                                val calendar = Calendar.getInstance()
 
-                            when (repeatOption) {
-                                "매일" -> {
-                                    var dailycnt = 0
-                                    var cnt = 0
+                                when (repeatOption) {
+                                    "매일" -> {
+                                        Log.d("매일","개수")
+                                        var cnt = 0
 
-                                    calendar.time = dateformat.parse(startDate)
+                                        calendar.time = dateformat.parse(startDate)
 
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                    ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                    ) <= 0
-                                    ) {
-                                        if (date_comparison(calendar.time, repeatStart!!) >= 0) {
-                                            if (dailycnt == 0) {
-                                                repeatDate[cnt] = true
+                                        while ((repeateEnd == null || date_comparison(
+                                                calendar.time, repeateEnd
+                                            ) <= 0) && date_comparison(
+                                                calendar.time, dateformat.parse(
+                                                    endDate
+                                                )
+                                            ) <= 0
+                                        ) {
+                                            if (date_comparison(
+                                                    calendar.time, repeatStart!!
+                                                ) >= 0
+                                            ) {
+                                                scheduleList.add(
+                                                    ScheduleCalendarData(
+                                                        schedule,
+                                                        cnt,
+                                                        1
+                                                    )
+                                                )
                                             }
 
-                                            dailycnt++
-
-                                            if (dailycnt.toString() == repeatValue) {
-                                                dailycnt = 0
-                                            }
+                                            cnt++
+                                            calendar.add(Calendar.DAY_OF_MONTH, 1)
                                         }
+                                    }
 
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                    "매주" -> {
+                                        var weeklycnt = 0
+                                        var cnt = 0
+
+                                        calendar.time = dateformat.parse(startDate)
+
+
+                                        while ((repeateEnd == null || date_comparison(
+                                                calendar.time, repeateEnd
+                                            ) <= 0) && date_comparison(
+                                                calendar.time, dateformat.parse(
+                                                    endDate
+                                                )
+                                            ) <= 0
+                                        ) {
+                                            if (date_comparison(
+                                                    calendar.time, repeatStart!!
+                                                ) >= 0
+                                            ) {
+                                                if (repeatValue[weeklycnt] == '1') {
+                                                    scheduleList.add(ScheduleCalendarData(
+                                                        schedule,
+                                                        cnt,
+                                                        1
+                                                    ))
+                                                }
+                                            }
+
+                                            weeklycnt++
+                                            cnt++
+
+                                            if (weeklycnt == 7) weeklycnt = 0
+
+                                            calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                        }
+                                    }
+
+                                    "2주마다" -> {
+                                        var weeklycnt = 0
+                                        var cnt = 0
+                                        var twoweek = true
+
+                                        calendar.time = dateformat.parse(startDate)
+
+                                        while ((repeateEnd == null || date_comparison(
+                                                calendar.time, repeateEnd
+                                            ) <= 0) && date_comparison(
+                                                calendar.time, dateformat.parse(
+                                                    endDate
+                                                )
+                                            ) <= 0
+                                        ) {
+                                            if (date_comparison(
+                                                    calendar.time, repeatStart!!
+                                                ) >= 0
+                                            ) {
+                                                if (repeatValue[weeklycnt] == '1' && twoweek) {
+                                                    scheduleList.add(ScheduleCalendarData(
+                                                        schedule,
+                                                        cnt,
+                                                        1
+                                                    ))
+                                                }
+                                            }
+
+                                            cnt++
+                                            weeklycnt++
+
+                                            if (weeklycnt == 7) {
+                                                weeklycnt = 0
+                                                twoweek = !twoweek
+                                            }
+
+                                            calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                        }
+                                    }
+
+                                    "매달" -> {
+                                        var cnt = 0
+
+                                        calendar.time = dateformat.parse(startDate)
+
+                                        while ((repeateEnd == null || date_comparison(
+                                                calendar.time, repeateEnd
+                                            ) <= 0) && date_comparison(
+                                                calendar.time, dateformat.parse(
+                                                    endDate
+                                                )
+                                            ) <= 0
+                                        ) {
+                                            if (date_comparison(
+                                                    calendar.time, repeatStart!!
+                                                ) >= 0
+                                            ) {
+                                                if (repeatValue[calendar.time.date - 1] == '1') {
+                                                    scheduleList.add(ScheduleCalendarData(
+                                                        schedule,
+                                                        cnt,
+                                                        1
+                                                    ))
+                                                }
+                                            }
+
+                                            cnt++
+
+                                            calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                        }
+                                    }
+
+                                    "매년" -> {
+                                        var cnt = 0
+
+                                        val tempStartDate = dateformat.parse(startDate)
+
+                                        calendar.time = tempStartDate
+
+                                        while ((repeateEnd == null || date_comparison(
+                                                calendar.time, repeateEnd
+                                            ) <= 0) && date_comparison(
+                                                calendar.time, dateformat.parse(
+                                                    endDate
+                                                )
+                                            ) <= 0
+                                        ) {
+                                            if (date_comparison(
+                                                    calendar.time, repeatStart!!
+                                                ) >= 0
+                                            ) {
+                                                if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
+                                                    if (calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day)
+                                                        scheduleList.add(ScheduleCalendarData(
+                                                            schedule,
+                                                            cnt,
+                                                            1
+                                                        ))
+                                                }
+                                            }
+
+                                            cnt++
+
+                                            calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                        }
                                     }
                                 }
+                            } else {
+                                val newRepeatValue = repeatValue.replace("T","")
+                                val calendar = Calendar.getInstance()
 
-                                "매주" -> {
-                                    var weeklycnt = 0
-                                    var cnt = 0
+                                when (repeatOption) {
+                                    "매주"->{
+                                        var cnt = 0
+                                        val tempStartDate = dateformat.parse(startDate)
+                                        calendar.time = tempStartDate
 
-                                    calendar.time = dateformat.parse(startDate)
+                                        while ((repeateEnd == null || date_comparison(
+                                                calendar.time, repeateEnd
+                                            ) <= 0) && date_comparison(
+                                                calendar.time, dateformat.parse(
+                                                    endDate
+                                                )
+                                            ) <= 0
+                                        ){
+                                            if (date_comparison(
+                                                    calendar.time, repeatStart!!
+                                                ) == 0
+                                            ){
+                                                val calendarTmp = Calendar.getInstance()
+                                                calendarTmp.time = repeatStart
+                                                calendarTmp.add(Calendar.DAY_OF_MONTH,7)
+                                                repeatStart = calendarTmp.time
 
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                    ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                    ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                        ) >= 0) {
-                                            if (repeatValue[weeklycnt] == '1') {
-                                                repeatDate[cnt] = true
+                                                scheduleList.add(ScheduleCalendarData(
+                                                    schedule,
+                                                    cnt,
+                                                    null,
+                                                    newRepeatValue.toInt()
+                                                ))
                                             }
+
+                                            cnt++
+                                            calendar.add(Calendar.DAY_OF_MONTH,1)
                                         }
-
-                                        weeklycnt++
-                                        cnt++
-
-                                        if (weeklycnt == 7) weeklycnt = 0
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
                                     }
-                                }
 
-                                "2주마다" -> {
-                                    var weeklycnt = 0
-                                    var cnt = 0
-                                    var twoweek = true
+                                    "2주마다"->{
+                                        var cnt = 0
+                                        val tempStartDate = dateformat.parse(startDate)
+                                        calendar.time = tempStartDate
 
-                                    calendar.time = dateformat.parse(startDate)
+                                        while ((repeateEnd == null || date_comparison(
+                                                calendar.time, repeateEnd
+                                            ) <= 0) && date_comparison(
+                                                calendar.time, dateformat.parse(
+                                                    endDate
+                                                )
+                                            ) <= 0
+                                        ){
+                                            if (date_comparison(
+                                                    calendar.time, repeatStart!!
+                                                ) == 0
+                                            ){
+                                                val calendarTmp = Calendar.getInstance()
+                                                calendarTmp.time = repeatStart
+                                                calendarTmp.add(Calendar.DAY_OF_MONTH,14)
+                                                repeatStart = calendarTmp.time
 
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                    ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                    ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                        ) >= 0) {
-                                            if (repeatValue[weeklycnt] == '1' && twoweek) {
-                                                repeatDate[cnt] = true
+                                                scheduleList.add(ScheduleCalendarData(
+                                                    schedule,
+                                                    cnt,
+                                                    null,
+                                                    newRepeatValue.toInt()
+                                                ))
                                             }
+
+                                            cnt++
+                                            calendar.add(Calendar.DAY_OF_MONTH,1)
                                         }
-
-                                        cnt++
-                                        weeklycnt++
-
-                                        if (weeklycnt == 7) {
-                                            weeklycnt = 0
-                                            twoweek = !twoweek
-                                        }
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
                                     }
-                                }
 
-                                "매달" -> {
-                                    var cnt = 0
+                                    "매달"->{
+                                        var cnt = 0
+                                        val tempStartDate = dateformat.parse(startDate)
+                                        calendar.time = tempStartDate
 
-                                    calendar.time = dateformat.parse(startDate)
+                                        while ((repeateEnd == null || date_comparison(
+                                                calendar.time, repeateEnd
+                                            ) <= 0) && date_comparison(
+                                                calendar.time, dateformat.parse(
+                                                    endDate
+                                                )
+                                            ) <= 0
+                                        ){
+                                            if (date_comparison(
+                                                    calendar.time, repeatStart!!
+                                                ) == 0
+                                            ){
+                                                val calendarTmp = Calendar.getInstance()
+                                                calendarTmp.time = repeatStart
+                                                calendarTmp.add(Calendar.MONTH,1)
+                                                repeatStart = calendarTmp.time
 
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                    ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                    ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                        ) >= 0) {
-                                            if (repeatValue[calendar.time.date - 1] == '1') {
-                                                repeatDate[cnt] = true
+                                                scheduleList.add(ScheduleCalendarData(
+                                                    schedule,
+                                                    cnt,
+                                                    null,
+                                                    newRepeatValue.toInt()
+                                                ))
                                             }
+
+                                            cnt++
+                                            calendar.add(Calendar.DAY_OF_MONTH,1)
                                         }
-
-                                        cnt++
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
                                     }
-                                }
 
-                                "매년" -> {
-                                    var cnt = 0
+                                    "매년"->{
+                                        var cnt = 0
+                                        val tempStartDate = dateformat.parse(startDate)
+                                        calendar.time = tempStartDate
 
-                                    val tempStartDate = dateformat.parse(startDate)
+                                        while ((repeateEnd == null || date_comparison(
+                                                calendar.time, repeateEnd
+                                            ) <= 0) && date_comparison(
+                                                calendar.time, dateformat.parse(
+                                                    endDate
+                                                )
+                                            ) <= 0
+                                        ){
+                                            if (date_comparison(
+                                                    calendar.time, repeatStart!!
+                                                ) == 0
+                                            ){
+                                                val calendarTmp = Calendar.getInstance()
+                                                calendarTmp.time = repeatStart
+                                                calendarTmp.add(Calendar.YEAR,1)
+                                                repeatStart = calendarTmp.time
 
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                    ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                    ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                        ) >= 0) {
-                                            if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
-                                                if (calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day) repeatDate[cnt] =
-                                                    true
+                                                scheduleList.add(ScheduleCalendarData(
+                                                    schedule,
+                                                    cnt,
+                                                    null,
+                                                    newRepeatValue.toInt()
+                                                ))
                                             }
+
+                                            cnt++
+                                            calendar.add(Calendar.DAY_OF_MONTH,1)
                                         }
-
-                                        cnt++
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
                                     }
                                 }
                             }
                         } else {
+                            var start = false
                             val calendar = Calendar.getInstance()
 
+                            var startcnt = 0
+                            var daycnt = 0
                             var cnt = 0
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
@@ -503,47 +675,29 @@ class CalendarViewModel : ViewModel() {
                                         calendar.time, repeatStart!!
                                 ) >= 0 && (repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
                                 ) {
-                                    repeatDate[cnt] = true
+                                    if(!start) {
+                                        startcnt = cnt
+                                        start = true
+                                    }
+
+                                    daycnt++
                                 }
 
                                 cnt++
 
                                 calendar.add(Calendar.DAY_OF_MONTH, 1)
                             }
-                        }
 
-                        for (i in 0 until repeatDate.size) {
-                            if (repeatDate[i]) {
-                                scheduleList[i].schedules.add(schedule)
-                            }
-                        }
-                    }
-
-                    val newscheduleList = ArrayList<ScheduleCalendarData>()
-
-                    for (i in 0 until scheduleList.size - 1) {
-                        for (j in 0 until scheduleList[i].schedules.size) {
-                            newscheduleList.add(
-                                ScheduleCalendarData(
-                                    scheduleList[i].schedules[j],
-                                    i,
-                                    1
-                                )
-                            )
-
-                            for (k in i + 1 until scheduleList.size) {
-                                if (scheduleList[k].schedules.contains(scheduleList[i].schedules[j])) {
-                                    newscheduleList[newscheduleList.lastIndex].cnt++
-
-                                    val position = scheduleList[k].schedules.indexOf(scheduleList[i].schedules[j])
-                                    scheduleList[k].schedules.removeAt(position)
-                                } else break
-                            }
+                            scheduleList.add(ScheduleCalendarData(
+                                schedule,
+                                startcnt,
+                                daycnt
+                            ))
                         }
                     }
 
                     _liveTodoCalendarList.postValue(todoList)
-                    _liveScheduleCalendarList.postValue(newscheduleList)
+                    _liveScheduleCalendarList.postValue(scheduleList)
                 }
             }
         }

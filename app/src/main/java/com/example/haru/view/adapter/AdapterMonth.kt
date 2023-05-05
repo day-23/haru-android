@@ -1,47 +1,48 @@
 package com.example.haru.view.adapter
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
-import android.provider.CalendarContract.Colors
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
+import android.view.*
 import android.widget.LinearLayout
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.annotation.Dimension
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet.Constraint
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.data.model.*
+import com.example.haru.view.calendar.CalendarDetailDialog
+import com.example.haru.view.calendar.CalendarFragment
+import com.example.haru.view.calendar.TouchEventDecoration
 import com.example.haru.view.calendar.calendarMainData
+import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.viewmodel.CalendarViewModel
-import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.abs
-import kotlin.math.max
 
 
 //월간 달력 어뎁터
-class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
+class AdapterMonth(val lifecycleOwner: LifecycleOwner,
+                   val thisViewPager: ViewPager2,
+                   val parentFragmentManager: FragmentManager,
+                   val parentFragment: CalendarFragment):
     RecyclerView.Adapter<AdapterMonth.MonthView>() {
-    private val lifecycle = lifecycleOwner
 
-    private var todo_schedule = true
+    private var categories: List<Category> = emptyList()
+
+    fun setCategories(new_categories:List<Category>){
+        categories = new_categories
+    }
 
     inner class MonthView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -59,7 +60,8 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
         return MonthView(view)
     }
 
-    fun init_date(holder: MonthView,year:Int, month:Int, viewModel:CalendarViewModel): Int{
+    @SuppressLint("ClickableViewAccessibility")
+    fun init_date(holder: MonthView, year:Int, month:Int, viewModel:CalendarViewModel): Int{
         val dateTextViewList = listOf(
             R.id.date_text_one,
             R.id.date_text_two,
@@ -127,6 +129,10 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
 
         val dateLayoutEnd = holder.itemView.findViewById<View>(R.id.date_layout_end)
 
+        val touchEventRecyclerView = holder.itemView.findViewById<RecyclerView>(R.id.touch_event_recyclerview)
+
+        var dateArrayList = ArrayList<Date>()
+
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, 1)
@@ -156,11 +162,12 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
                 }
 
                 dateTextViews[i*7 + k].text = calendar.time.date.toString()
+                dateArrayList.add(calendar.time)
 
                 if(calendar.time.year == Date().year &&
                     calendar.time.month == Date().month &&
                     calendar.time.date == Date().date){
-                    dateTextViews[i*7 + k].background = ContextCompat.getDrawable(holder.itemView.context,R.drawable.calendar_in_today_image)
+                    dateTextViews[i*7 + k].background = ContextCompat.getDrawable(parentFragment.requireContext(),R.drawable.calendar_in_today_image)
                 } else {
                     dateTextViews[i*7 + k].setBackgroundColor(Color.WHITE)
                 }
@@ -209,6 +216,124 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
 
         while (parentConstraintLayout.get(0).id != R.id.date_layout_start) {
             parentConstraintLayout.removeViewAt(0)
+        }
+
+        var touchList = ArrayList<Boolean>()
+
+        if(maxi == 4){
+            for(i in 0..34){
+                touchList.add(false)
+            }
+        } else {
+            for(i in 0..41){
+                touchList.add(false)
+            }
+        }
+
+        var adapter: AdapterCalendarTouch
+
+        if(maxi == 4){
+            touchEventRecyclerView.layoutManager = GridLayoutManager(holder.itemView.context, 7)
+            touchEventRecyclerView.addItemDecoration(TouchEventDecoration(5))
+
+            adapter = AdapterCalendarTouch(35, touchList)
+            touchEventRecyclerView.adapter = adapter
+        } else {
+            touchEventRecyclerView.layoutManager = GridLayoutManager(holder.itemView.context, 7)
+            touchEventRecyclerView.addItemDecoration(TouchEventDecoration(6))
+
+            adapter = AdapterCalendarTouch(42, touchList)
+            touchEventRecyclerView.adapter = adapter
+        }
+
+        var longPress = false
+        var startTime = System.currentTimeMillis()
+
+        var startColumn = -1
+        var startRow = -1
+
+        touchEventRecyclerView.setOnTouchListener{ v, event ->
+            Log.d("높이", parentConstraintLayout.height.toString())
+
+            val column = (event.x/(parentConstraintLayout.width/7)).toInt()
+            val row = (event.y/(parentConstraintLayout.height/(maxi+1))).toInt()
+
+            Log.d("column row", column.toString()+" "+row.toString())
+
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startTime = System.currentTimeMillis()
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if(!longPress && System.currentTimeMillis() - startTime > 1000){
+                        thisViewPager.setUserInputEnabled(false)
+                        longPress = true
+                        startColumn = column
+                        startRow = row
+                    }
+
+                    if(longPress && startColumn != -1 && startRow != -1){
+                        Log.d("long press", "%d %d to %d %d로 움직임".format(startColumn,startRow, column, row))
+
+                        var startPosition = startRow * 7 + startColumn
+                        var endPosition = row * 7 + column
+
+                        if(startPosition > endPosition){
+                            val tmp = startPosition
+                            startPosition = endPosition
+                            endPosition = tmp
+                        }
+
+                        for(i in startPosition..endPosition){
+                            if(!adapter.touchList[i]) {
+                                adapter.itemChange(i, true)
+                            }
+                        }
+                    }
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    if(longPress) {
+                        thisViewPager.setUserInputEnabled(true)
+                        longPress = false
+
+                        if(startColumn != -1 && startRow != -1){
+                            var startPosition = startRow * 7 + startColumn
+                            var endPosition = row * 7 + column
+
+                            if(startPosition > endPosition){
+                                val tmp = startPosition
+                                startPosition = endPosition
+                                endPosition = tmp
+                            }
+
+                            for(i in startPosition..endPosition){
+                                if(adapter.touchList[i]) {
+                                    adapter.itemChange(i, false)
+                                }
+                            }
+
+                            val scheduleInput = CalendarAddFragment(
+                                categories,
+                                this,
+                                dateArrayList[startPosition],
+                                dateArrayList[endPosition])
+
+                            scheduleInput.show(parentFragmentManager, scheduleInput.tag)
+                        }
+
+                        startColumn = -1
+                        startRow = -1
+                    } else {
+                        val detailDialog = CalendarDetailDialog(holder.itemView.context)
+                        detailDialog.show(parentConstraintLayout.height)
+                    }
+
+                    false
+                }
+                else -> false
+            }
         }
 
         viewModel.init_viewModel(startDate,endDate, maxi)
@@ -275,8 +400,8 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
 
         var size = init_date(holder, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendarviewModel)
 
-        calendarviewModel.liveTodoCalendarList.observe(lifecycle) { livetodo ->
-            calendarviewModel.liveScheduleCalendarList.observe(lifecycle) { liveschedule ->
+        calendarviewModel.liveTodoCalendarList.observe(lifecycleOwner) { livetodo ->
+            calendarviewModel.liveScheduleCalendarList.observe(lifecycleOwner) { liveschedule ->
                 var cloneLiveTodo = livetodo as ArrayList
                 var cloneLiveSchedule = liveschedule as ArrayList
 
@@ -402,6 +527,33 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
 
                     if(calendarMainData.scheduleApply) {
                         for (content in cloneLiveSchedule) {
+                            var interval = 0
+
+                            if(content.cnt != null){
+                                interval = content.cnt!!
+                            } else {
+                                val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+                                val repeatStart = format.parse(content.schedule.repeatStart)
+                                val calendar2 = Calendar.getInstance()
+                                Log.d("repeatStart", repeatStart.toString())
+                                calendar2.time = repeatStart
+                                calendar2.add(Calendar.MILLISECOND, content.timeInterval!!)
+                                Log.d("calendar2",calendar2.time.toString())
+
+
+                                repeatStart.hours = 0
+                                repeatStart.minutes = 0
+                                repeatStart.seconds = 0
+
+                                calendar2.time.hours = 0
+                                calendar2.time.minutes = 0
+                                calendar2.time.seconds = 0
+
+                                val dateminus = (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
+                                interval = dateminus.toInt()
+                                Log.d("interval",interval.toString())
+                            }
+
                             if(content.schedule.category != null) {
                                 if (content.schedule.category.isSelected) {
                                     if (content.position == contentPosition) {
@@ -416,15 +568,15 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
                                                 Color.parseColor(content.schedule.category!!.color)
                                         }
 
-                                        if ((contentPosition + content.cnt - 1) / 7 != contentPosition / 7) {
+                                        if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
                                             val overflowvalue =
-                                                contentPosition + content.cnt - (contentPosition + content.cnt) / 7 * 7
+                                                contentPosition + interval - (contentPosition + interval) / 7 * 7
                                             saveCntList.add(overflowvalue)
                                             saveScheduleList.add(content.schedule)
                                             saveLineList.add(contentLine)
 
-                                            positionplus += content.cnt - overflowvalue - 1
-                                            returnvalue = content.cnt - overflowvalue
+                                            positionplus += interval - overflowvalue - 1
+                                            returnvalue = interval - overflowvalue
                                             cntlist.add(returnvalue)
 
                                             if (size == 5) {
@@ -452,8 +604,8 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
                                             continue@loop
                                         }
 
-                                        positionplus += content.cnt - 1
-                                        returnvalue = content.cnt
+                                        positionplus += interval - 1
+                                        returnvalue = interval
                                         cntlist.add(returnvalue)
 
                                         if (size == 5) {
@@ -534,9 +686,35 @@ class AdapterMonth(lifecycleOwner: LifecycleOwner, view: View):
 
                 if(calendarMainData.scheduleApply) {
                     for (k in 0 until cloneLiveSchedule.size) {
+                        Log.d("cloneLiveSchedule",cloneLiveSchedule[k].toString())
                         if(cloneLiveSchedule[k].schedule.category != null) {
                             if (cloneLiveSchedule[k].schedule.category!!.isSelected) {
-                                for (j in cloneLiveSchedule[k].position until cloneLiveSchedule[k].position + cloneLiveSchedule[k].cnt) {
+                                var interval = 0
+
+                                if(cloneLiveSchedule[k].cnt != null){
+                                    interval = cloneLiveSchedule[k].cnt!!
+                                } else {
+                                    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+                                    val repeatStart = format.parse(cloneLiveSchedule[k].schedule.repeatStart)
+                                    val calendar2 = Calendar.getInstance()
+                                    calendar2.time = repeatStart
+                                    calendar2.add(Calendar.MILLISECOND, cloneLiveSchedule[k].timeInterval!!)
+
+                                    repeatStart.hours = 0
+                                    repeatStart.minutes = 0
+                                    repeatStart.seconds = 0
+
+                                    calendar2.time.hours = 0
+                                    calendar2.time.minutes = 0
+                                    calendar2.time.seconds = 0
+
+                                    val dateminus = (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
+                                    interval = dateminus.toInt()
+                                }
+
+                                for (j in cloneLiveSchedule[k].position until cloneLiveSchedule[k].position + interval) {
+                                    if(allCntList.size <= j) break
+
                                     allCntList[j]++
                                 }
                             }

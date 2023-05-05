@@ -294,12 +294,21 @@ class CalendarFragment : Fragment() {
         btnAddMainInCalendar.setOnClickListener {
             if (fabMain_status) {
 //                fab_main.setImageResource(R.drawable.ic_add);
+                val currentDegree = binding.btnAddMainIncalendar.rotation
+                ObjectAnimator.ofFloat(binding.btnAddMainIncalendar,View.ROTATION, currentDegree, currentDegree+45f)
+                    .setDuration(300)
+                    .start()
+
                 binding.btnAddTodoIncalendar.startAnimation(fab_close);
                 binding.btnAddScheduleIncalendar.startAnimation(fab_close);
                 binding.btnAddTodoIncalendar.setClickable(false);
                 binding.btnAddScheduleIncalendar.setClickable(false);
             } else {
-//                fab_main.setImageResource(R.drawable.ic_add);
+                val currentDegree = binding.btnAddMainIncalendar.rotation
+                ObjectAnimator.ofFloat(binding.btnAddMainIncalendar,View.ROTATION, currentDegree, currentDegree-45f)
+                    .setDuration(300)
+                    .start()
+
                 binding.btnAddTodoIncalendar.startAnimation(fab_open);
                 binding.btnAddScheduleIncalendar.startAnimation(fab_open);
                 binding.btnAddTodoIncalendar.setClickable(true);
@@ -324,7 +333,13 @@ class CalendarFragment : Fragment() {
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
 
-        adapterMonth = AdapterMonth(viewLifecycleOwner, view)
+        adapterMonth = AdapterMonth(
+            viewLifecycleOwner,
+            month_viewpager,
+            parentFragmentManager,
+            this
+        )
+
         month_viewpager.adapter = adapterMonth
 
         val callback: ViewPager2.OnPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -356,6 +371,8 @@ class CalendarFragment : Fragment() {
             }
 
             categoryRecyclerView.adapter = categoryAdapter
+
+            adapterMonth.setCategories(categoryAdapter.categoryList)
         }
     }
 }
