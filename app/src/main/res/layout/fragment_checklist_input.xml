@@ -145,6 +145,7 @@
 
 
                     <ImageView
+                        android:id="@+id/iv_tag_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/tag_icon" />

@@ -659,6 +659,30 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel) :
 
         })
 
+        binding.tagEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                binding.ivTagIcon.backgroundTintList = if (s.toString() == "")
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.icon_gray
+                        )
+                    )
+                else
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.todo_description
+                        )
+                    )
+            }
+
+        })
+
         binding.etMemo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
