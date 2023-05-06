@@ -47,6 +47,8 @@ class SnsPostAdapter(val context: Context,
         holder.picture.adapter = adapter
         holder.userid.text = itemList[position].user.name
         holder.content.text = itemList[position].content
+        holder.likedcount.text = itemList[position].likedCount.toString()
+        holder.commentcount.text = itemList[position].commentCount.toString()
 
         val pictureIndex = adapter.itemCount
         var text = ""
@@ -66,6 +68,10 @@ class SnsPostAdapter(val context: Context,
                 }
             }
         })
+
+        holder.setup.setOnClickListener {
+
+        }
 
         holder.comment.setOnClickListener {
             Log.d("Comment", "${itemList[position].id}")
@@ -89,9 +95,14 @@ class SnsPostAdapter(val context: Context,
             if(itemList[position].isLiked){
                 holder.likeBtn.setImageResource(R.drawable.likedyet)
                 itemList[position].isLiked = false
+                itemList[position].likedCount -= 1
+                holder.likedcount.text = itemList[position].likedCount.toString()
+
             }else{
                 holder.likeBtn.setImageResource(R.drawable.liked)
                 itemList[position].isLiked = true
+                itemList[position].likedCount += 1
+                holder.likedcount.text = itemList[position].likedCount.toString()
             }
             snsViewModel.likeAction(itemList[position].id)
 
@@ -118,7 +129,10 @@ class SnsPostAdapter(val context: Context,
         var picture = itemView.findViewById<ViewPager2>(R.id.post_picture)
         var content = itemView.findViewById<TextView>(R.id.post_contents)
         var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
+        var likedcount = itemView.findViewById<TextView>(R.id.liked_count)
+        var commentcount = itemView.findViewById<TextView>(R.id.post_comment_count)
         var index = itemView.findViewById<Button>(R.id.picture_index)
         var comment = itemView.findViewById<ImageView>(R.id.button_comment)
+        var setup = itemView.findViewById<ImageView>(R.id.post_setup)
     }
 }

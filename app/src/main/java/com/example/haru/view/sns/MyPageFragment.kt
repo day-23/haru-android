@@ -38,6 +38,10 @@ class MyPageFragment : Fragment(), OnPostClickListener{
         transaction.commit()
     }
 
+    override fun onSetupClick(postId: String) {
+        TODO("Not yet implemented")
+    }
+
     companion object{
         const val TAG : String = "로그"
 
