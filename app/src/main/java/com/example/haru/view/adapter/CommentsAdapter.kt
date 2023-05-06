@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Comments
 
@@ -22,6 +23,12 @@ class CommentsAdapter(val context: Context,
     }
 
     override fun onBindViewHolder(holder: CommentsAdapter.CommentsViewHolder, position: Int) {
+
+        if(itemList[position].user.profileImage != "https://harus3.s3.ap-northeast-2.amazonaws.com/null") {
+            Glide.with(holder.itemView.context)
+                .load(itemList[position].user.profileImage)
+                .into(holder.profile)
+        }
         holder.userid.text = itemList[position].user.name
         holder.content.text = itemList[position].content
     }

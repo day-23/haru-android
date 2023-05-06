@@ -58,10 +58,11 @@ class CommentsFragment : Fragment() {
 
         binding.commentBackbutton.setOnClickListener {
             val fragmentManager = parentFragmentManager
-            if (fragmentManager.backStackEntryCount > 0) {
-                // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-                fragmentManager.popBackStack()
-            }
+            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            val fragment = SnsFragment()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragments_frame, fragment)
+                .commit()
         }
 
         return binding.root
