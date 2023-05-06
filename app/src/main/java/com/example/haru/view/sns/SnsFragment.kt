@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,14 +27,22 @@ import com.example.haru.viewmodel.UserViewModel
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
-class SnsFragment : Fragment() {
+class SnsFragment : Fragment(), OnPostClickListener {
     private lateinit var userViewModel: UserViewModel
     private lateinit var snsViewModel: SnsViewModel
     private lateinit var binding: FragmentSnsBinding
     private var click = false
     private lateinit var snsPostAdapter: SnsPostAdapter
 
+    override fun onCommentClick(postId: String) {
+        val newFrag = CommentsFragment.newInstance()
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+        if(!isSnsMainInBackStack)
+            transaction.addToBackStack("snsmain")
+        transaction.commit()
+    }
     companion object{
         const val TAG : String = "로그"
 
@@ -41,7 +50,6 @@ class SnsFragment : Fragment() {
             return SnsFragment()
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "SnsFragment - onCreate() called")
@@ -58,7 +66,7 @@ class SnsFragment : Fragment() {
 
         binding = FragmentSnsBinding.inflate(inflater, container, false)
         val postRecycler = binding.postOfAll
-        snsPostAdapter = SnsPostAdapter(requireContext())
+        snsPostAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
 
         postRecycler.layoutManager = LinearLayoutManager(requireContext())
         postRecycler.adapter = snsPostAdapter
@@ -84,6 +92,17 @@ class SnsFragment : Fragment() {
             if(newPost.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
+        snsViewModel.CurrentPost.observe(viewLifecycleOwner){ current ->
+            Log.d("Comment", "observed : $current")
+            val newFrag = CommentsFragment.newInstance()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
+            transaction.commit()
+        }
+
         //하루 옆 메뉴 클릭
         binding.menuButton.setOnClickListener{
             if(click == false){
@@ -101,9 +120,20 @@ class SnsFragment : Fragment() {
             val newFrag = MyPageFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
-            transaction.addToBackStack(null)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
             transaction.commit()
-            true
+        }
+
+        binding.addPost.setOnClickListener {
+            val newFrag = AddPostFragment.newInstance()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
+            transaction.commit()
         }
 
         //둘러보기 클릭
@@ -129,6 +159,16 @@ class SnsFragment : Fragment() {
         userViewModel.fetchUser(userId)
 
         return binding.root
+    }
+
+    fun isFragmentInBackStack(fragmentManager: FragmentManager, tag: String): Boolean {
+        for (i in 0 until fragmentManager.backStackEntryCount) {
+            val backStackEntry = fragmentManager.getBackStackEntryAt(i)
+            if (backStackEntry.name == tag) {
+                return true
+            }
+        }
+        return false
     }
 
 }

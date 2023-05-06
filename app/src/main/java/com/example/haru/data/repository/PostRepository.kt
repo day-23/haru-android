@@ -1,16 +1,50 @@
 package com.example.haru.data.repository
 
+import android.text.TextUtils
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.haru.data.api.PostService
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.*
+import org.json.JSONArray
+import java.io.File
+import java.util.UUID
 
 class PostRepository() {
     private val postService = RetrofitClient.postService
+
+    //게시글 추가
+    suspend fun addPost(post: AddPost, callback: (postInfo: SendPost) -> Unit) = withContext(Dispatchers.IO) {
+        // Prepare the request data
+        val content = RequestBody.create(MediaType.parse("text/plain"), post.content)
+
+        val hashTags = post.hashtags.mapIndexed { index, hashtag ->
+            "hashTags[$index]" to RequestBody.create(MediaType.parse("text/plain"), hashtag)
+        }.toMap()
+
+        val images = post.images.map { imagePart ->
+            MultipartBody.Part.createFormData("images", imagePart.headers()?.get("Content-Disposition")?.substringAfter("filename=\"")?.substringBefore("\""), imagePart.body())
+        }
+
+        // Call the addPost function from the PostService
+        val call = postService.addPost("jts", images, content, hashTags)
+        val response = call.execute()
+
+        val postInfo = SendPost()
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to post")
+            // Deserialize the response body here to get the result (AddPostResponse)
+            // and then update postInfo
+        } else {
+            Log.d("TAG", "Fail to post")
+        }
+        callback(postInfo)
+    }
 
     //전체 게시글
     suspend fun getPost(page:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
@@ -72,5 +106,27 @@ class PostRepository() {
         }
         callback(posts)
     }
+
+    //전체 댓글
+    suspend fun getComment(postId: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
+        Dispatchers.IO){
+            val response = postService.getComments(
+                "jts",
+                "482051f1-b3be-477a-b81c-99640c8306ec" //postId
+            ).execute()
+
+            val comments: ArrayList<Comments>
+            val data: CommentsResponse
+
+            if(response.isSuccessful) {
+                Log.d("TAG","Success to get comments")
+                data = response.body()!!
+                comments = data.data
+            }else{
+                Log.d("TAG", "Fail to get comments")
+                comments = arrayListOf()
+            }
+            callback(comments)
+        }
 
 }

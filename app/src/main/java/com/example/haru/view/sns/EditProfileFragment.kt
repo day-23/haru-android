@@ -8,6 +8,7 @@ import android.content.ContentUris
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Rect
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -16,6 +17,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
@@ -30,6 +32,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
@@ -49,31 +52,7 @@ import java.util.jar.Manifest
 
 class EditProfileFragment: Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
-    private lateinit var imageUri: Uri
     private lateinit var profileViewModel: MyPageViewModel
-
-    // 이미지 선택 결과 MultipartBody.part로 바꾸기
-    private var getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val selectedImageUri: Uri? = data?.data
-            selectedImageUri?.let {
-                imageUri = it
-                val inputStream = requireActivity().contentResolver.openInputStream(imageUri)
-                val file = File(requireContext().cacheDir, "image.jpg")
-                inputStream?.let { input ->
-                    file.outputStream().use { output ->
-                        input.copyTo(output)
-                    }
-                }
-                val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
-                val requestFile: RequestBody = RequestBody.create(MediaType.parse(mimeType), file)
-                val body: MultipartBody.Part = MultipartBody.Part.createFormData("image", file.name, requestFile)
-                // body 객체를 사용하여 서버에 업로드
-                profileViewModel.updateProfile(body)
-            }
-        }
-    }
     companion object{
         const val TAG : String = "로그"
 
@@ -86,7 +65,6 @@ class EditProfileFragment: Fragment() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "SnsMypageFragment - onCreate() called")
         profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
-
     }
 
     override fun onCreateView(
@@ -99,38 +77,52 @@ class EditProfileFragment: Fragment() {
         binding = FragmentEditProfileBinding.inflate(inflater, container, false)
 
         binding.backButton.setOnClickListener {
-            val newFrag = MyPageFragment.newInstance()
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            transaction.addToBackStack(null)
-            transaction.commit()
-            true
+            val fragmentManager = parentFragmentManager
+            if (fragmentManager.backStackEntryCount > 0) {
+                // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+                fragmentManager.popBackStack()
+            }
         }
 
         // 이미지 선택 버튼에 클릭 이벤트 리스너 등록
         binding.editProfileImage.setOnClickListener {
-            // 내부 저장소에서 이미지 선택하는 창 열기
-//            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-//            intent.addCategory(Intent.CATEGORY_OPENABLE)
-//            intent.type = "image/*"
-//            getContent.launch(intent)
 
-            // TODO: 버전별로 나누어 처리해야함
             // TODO: 권한을 허락받자마자 코드가 계속 실행되면 좋을거 같음
             if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 // 권한이 없는 경우 권한 요청
                 Log.d("Image", "denied")
+
+                if (Build.VERSION.SDK_INT >= 33) {
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
                     101
                 )
+                } else {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                    101
+                )
+                }
+
             } else {
+                val projection: Array<String>
                 // 권한이 있는 경우
-                val projection = arrayOf(
-                    MediaStore.Images.Media._ID,
-                    MediaStore.Images.Media.DISPLAY_NAME,
-                    MediaStore.Images.Media.RELATIVE_PATH)
+                if(Build.VERSION.SDK_INT >= 33) {
+                    projection = arrayOf(
+                        MediaStore.Images.Media._ID,
+                        MediaStore.Images.Media.DISPLAY_NAME,
+                        MediaStore.Images.Media.RELATIVE_PATH
+                    )
+                }
+                else{
+                    projection = arrayOf(
+                        MediaStore.Images.Media._ID,
+                        MediaStore.Images.Media.DISPLAY_NAME,
+                        MediaStore.Images.Media.DATE_MODIFIED
+                    )
+                }
 
                 val path = Environment.getExternalStorageDirectory().absolutePath
                 val mimeType = "image/*"
@@ -146,7 +138,6 @@ class EditProfileFragment: Fragment() {
                         val name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
                         val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH))
                         val absuri: Uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                        Log.d("Image","${id}, ${name}, ${path} ${absuri}")
                         gallery.add(ExternalImages(id,name,path,absuri))
                     } while (cursor.moveToNext())
                 }
@@ -161,7 +152,6 @@ class EditProfileFragment: Fragment() {
                 transaction.commit()
             }
         }
-
         //프로필 사진 반영
         profileViewModel.Profile.observe(viewLifecycleOwner){profile ->
             Log.d("TAG", "profile update ${profile.url}")
@@ -188,10 +178,29 @@ class GalleryFragment : Fragment() {
         val recycler = binding.customGalleryImage
         profileViewModel.StoredImages.observe(viewLifecycleOwner){image ->
             galleryImages = image
-            galleryAdapter = GalleryAdapter(requireContext(), galleryImages)
+            galleryAdapter = GalleryAdapter(requireContext(), galleryImages, profileViewModel)
             recycler.adapter = galleryAdapter
             val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+            gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return 1 // 각 아이템의 너비를 1로 설정
+                }
+            }
             recycler.layoutManager = gridLayoutManager
+
+            recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val position = parent.getChildAdapterPosition(view) // item position
+                    val column = position % 3 // item column
+                    if(column == 3) outRect.set(0, 0, 0, 3)
+                    else outRect.set(0,0,3,3)
+                }
+            })
         }
         return binding.root
     }

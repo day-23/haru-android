@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +20,7 @@ import com.example.haru.view.adapter.MyFeedAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
-class MyPageFragment : Fragment() {
+class MyPageFragment : Fragment(), OnPostClickListener{
     private lateinit var binding: FragmentSnsMypageBinding
     private lateinit var FeedRecyclerView: RecyclerView
     private lateinit var feedAdapter: SnsPostAdapter
@@ -27,7 +28,15 @@ class MyPageFragment : Fragment() {
     private lateinit var mypageViewModel: MyPageViewModel
     private var click = false
 
-
+    override fun onCommentClick(postId: String) {
+        val newFrag = CommentsFragment.newInstance()
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
+        if(!isSnsMainInBackStack)
+            transaction.addToBackStack("snsmypage")
+        transaction.commit()
+    }
 
     companion object{
         const val TAG : String = "로그"
@@ -52,7 +61,7 @@ class MyPageFragment : Fragment() {
 
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
         FeedRecyclerView = binding.feedRecycler
-        feedAdapter = SnsPostAdapter(requireContext())
+        feedAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
         FeedRecyclerView.adapter = feedAdapter
         val layoutManager = LinearLayoutManager(context)
         FeedRecyclerView.layoutManager = layoutManager
@@ -102,20 +111,30 @@ class MyPageFragment : Fragment() {
             val newFrag = EditProfileFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
-            transaction.addToBackStack(null)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmypage")
             transaction.commit()
             true
         }
 
         binding.friendFeed.setOnClickListener {
-            val newFrag = SnsFragment.newInstance()
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            transaction.addToBackStack(null)
-            transaction.commit()
-            true
+            val fragmentManager = parentFragmentManager
+            if (fragmentManager.backStackEntryCount > 0) {
+                fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
         }
 
         return binding.root
+    }
+
+    fun isFragmentInBackStack(fragmentManager: FragmentManager, tag: String): Boolean {
+        for (i in 0 until fragmentManager.backStackEntryCount) {
+            val backStackEntry = fragmentManager.getBackStackEntryAt(i)
+            if (backStackEntry.name == tag) {
+                return true
+            }
+        }
+        return false
     }
 }
