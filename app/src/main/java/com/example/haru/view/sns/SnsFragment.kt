@@ -67,6 +67,11 @@ class SnsFragment : Fragment(), OnPostClickListener {
         binding = FragmentSnsBinding.inflate(inflater, container, false)
         val postRecycler = binding.postOfAll
         snsPostAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
+        val fragmentManager = parentFragmentManager
+        if (fragmentManager.backStackEntryCount > 0) {
+            // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+            fragmentManager.popBackStack()
+        }
 
         postRecycler.layoutManager = LinearLayoutManager(requireContext())
         postRecycler.adapter = snsPostAdapter

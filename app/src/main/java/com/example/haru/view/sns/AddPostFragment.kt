@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -111,14 +112,19 @@ class AddPostFragment : Fragment() {
                 val converedImage =  galleryViewmodel.convertMultiPart(requireContext())
                 val content = binding.addpostContent.text.toString()
                 val hashtag = arrayListOf("해시스완")
+                var updatedone = false
 
                 galleryViewmodel.postRequest(converedImage, content, hashtag)
                 galleryViewmodel.resetValue()
 
-                val newFrag = SnsFragment.newInstance()
-                val transaction = parentFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragments_frame, newFrag)
-                transaction.commit()
+                galleryViewmodel.PostDone.observe(viewLifecycleOwner){done ->
+                    val fragmentManager = parentFragmentManager
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    val fragment = SnsFragment()
+                    val transaction = parentFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragments_frame, fragment)
+                    transaction.commit()
+                }
             }
 
             binding.addpostCancel.setOnClickListener {

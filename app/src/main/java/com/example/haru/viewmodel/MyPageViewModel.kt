@@ -49,6 +49,10 @@ class MyPageViewModel(): ViewModel() {
     val SelectedPosition: LiveData<ArrayList<Int>>
         get() = _SelectedPosition
 
+    private val _PostDone = MutableLiveData<Boolean>()
+    val PostDone: LiveData<Boolean>
+        get() = _PostDone
+
     var profile_info = com.example.haru.data.model.Profile("", "", "", "")
 
     init {
@@ -151,7 +155,7 @@ class MyPageViewModel(): ViewModel() {
         return convertedImages
     }
 
-    fun postRequest(images: MutableList<MultipartBody.Part>, content: String, hashtags: List<String>) {
+    fun postRequest(images: MutableList<MultipartBody.Part>, content: String, hashtags: List<String>){
         val post = AddPost(images, content, hashtags)
 
         viewModelScope.launch {
@@ -160,6 +164,7 @@ class MyPageViewModel(): ViewModel() {
                     Log.d("TAG", "Success to Post!!")
                 }
             }
+            _PostDone.value = true
         }
     }
 
