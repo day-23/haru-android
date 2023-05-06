@@ -99,23 +99,16 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                         "매일" -> {
                             FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
                         }
-                        "매주" -> {
+                        "매주", "2주마다" -> {
+                            val repeatOption = if (todo.repeatOption == "매주") 1 else 2
                             FormatDate.nextEndDateEveryWeek(
                                 todo.repeatValue!!,
-                                1,
+                                repeatOption,
                                 todo.endDate,
                                 todo.repeatEnd
                             )
                         }
-                        "2주마다" -> {
-                            FormatDate.nextEndDateEveryWeek(
-                                todo.repeatValue!!,
-                                2,
-                                todo.endDate,
-                                todo.repeatEnd
-                            )
-                        }
-                        "매월" -> {
+                        "매달" -> {
                             FormatDate.nextEndDateEveryMonth(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
                         }
                         "매년" -> {

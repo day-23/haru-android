@@ -30,25 +30,26 @@
 
                         <FrameLayout
                             android:layout_width="0dp"
-                            android:layout_weight="7"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_weight="7">
+
                             <androidx.appcompat.widget.AppCompatButton
                                 android:id="@+id/item_month_btn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:background="#FFFFFF"
+                                android:drawableRight="@drawable/down_arrow"
                                 android:text="2023년 3월"
                                 android:textColor="@color/black"
                                 android:textSize="28sp"
-                                android:textStyle="bold"
-                                android:background="#FFFFFF"
-                                android:drawableRight="@drawable/down_arrow"/>
+                                android:textStyle="bold" />
                         </FrameLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="28sp"
                             android:layout_height="28sp"
-                            android:background="@drawable/calendar_today_background_image"
-                            android:layout_gravity="center">
+                            android:layout_gravity="center"
+                            android:background="@drawable/calendar_today_background_image">
 
                             <TextView
                                 android:id="@+id/calendar_today_tv"
@@ -66,14 +67,79 @@
 
                         <ImageView
                             android:id="@+id/category_button_imv"
-                            android:background="@drawable/calendar_category"
-                            android:backgroundTint="@color/black"
                             android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:layout_gravity="center"
                             android:layout_height="40sp"/>
-
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="일"
+                            android:textColor="#ff0000"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="월"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="화"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="수"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="목"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="금"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="토"
+                            android:textColor="#0000ff"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/month_viewpager"
@@ -88,8 +154,8 @@
             <LinearLayout
                 android:layout_width="373sp"
                 android:layout_height="600sp"
-                android:background="@color/white"
                 android:layout_gravity="right"
+                android:background="@color/white"
                 android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -126,6 +192,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -141,15 +208,17 @@
                                     android:id="@+id/schedule_apply_imv"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/calendar_schedule_image"/>
+                                    android:background="@drawable/calendar_schedule_image" />
+
                                 <TextView
                                     android:id="@+id/schedule_apply_tv"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="14sp"
                                     android:text="일정"
-                                    android:textColor="#1DAFFF"/>
+                                    android:textColor="#1DAFFF"
+                                    android:textSize="14sp" />
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -158,17 +227,17 @@
 
                                 <ImageView
                                     android:id="@+id/category_add_image"
-                                    android:foregroundGravity="right"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:src="@drawable/calendar_schedule_plus_image"/>
+                                    android:foregroundGravity="right"
+                                    android:src="@drawable/calendar_schedule_plus_image" />
                             </LinearLayout>
                         </LinearLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/category_recyclerView"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -201,20 +270,21 @@
                                 android:id="@+id/todo_apply_imv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/calendar_todo_image"/>
+                                android:background="@drawable/calendar_todo_image" />
+
                             <TextView
                                 android:id="@+id/todo_apply_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="할일"
-                                android:textColor="#1DAFFF"/>
+                                android:textColor="#1DAFFF" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="bottom">
+                            android:gravity="bottom"
+                            android:orientation="vertical">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -228,7 +298,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:text="모두 가리기"
-                                    android:textColor="#646464"/>
+                                    android:textColor="#646464" />
 
                                 <TextView
                                     android:id="@+id/category_ok_tv"
@@ -237,7 +307,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:text="완료"
-                                    android:textColor="#1DAFFF"/>
+                                    android:textColor="#1DAFFF" />
 
                             </LinearLayout>
 
@@ -250,10 +320,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1">
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/calendar_gardient_background"/>
+                        android:background="@drawable/calendar_gardient_background" />
                 </LinearLayout>
 
 
@@ -266,8 +337,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/btn_add_schedule_incalendar"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="15dp"
             android:layout_marginRight="20dp"
+            android:layout_marginBottom="15dp"
             android:visibility="invisible"
             app:borderWidth="0dp"
             app:elevation="0dp"
@@ -281,8 +352,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/btn_add_main_incalendar"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="15dp"
             android:layout_marginRight="20dp"
+            android:layout_marginBottom="15dp"
             android:visibility="invisible"
             app:borderWidth="0dp"
             app:elevation="0dp"
@@ -295,14 +366,14 @@
             android:id="@+id/btn_add_main_incalendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="20dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
             app:borderWidth="0dp"
             app:elevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:maxImageSize="56dp"
             app:srcCompat="@drawable/fab"
             app:tint="@null" />

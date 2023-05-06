@@ -63,14 +63,6 @@
                     android:layout_marginBottom="14dp"
                     android:paddingStart="24dp">
 
-                    <CheckBox
-                        android:id="@+id/cb_info_completed"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_marginEnd="14dp"
-                        android:background="@drawable/checklist_done_circle"
-                        android:button="@android:color/transparent" />
-
                     <EditText
                         android:id="@+id/et_info_content"
                         android:layout_width="0dp"
@@ -139,9 +131,10 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/iv_info_tag_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/baseline_tag_24" />
+                        android:background="@drawable/tag_icon" />
 
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -152,6 +145,7 @@
                         android:background="@android:color/transparent"
                         android:hint="@string/tag"
                         android:text="@={vm.tag}"
+                        android:textColor="@color/todo_description"
                         android:inputType="text"
                         android:singleLine="true"
                         android:textSize="14sp" />
@@ -685,7 +679,7 @@
                 android:textSize="20sp"
                 android:background="@android:color/transparent"
                 android:textColor="@color/delete_red"
-                android:text="@string/delete"
+                android:text="@string/todoDelete"
                 />
 
             <ImageView

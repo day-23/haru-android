@@ -1,11 +1,15 @@
 package com.example.haru.view
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.view.calendar.CalendarFragment
@@ -60,6 +64,18 @@ class MainActivity : AppCompatActivity() {
 
         calendarMainData.todoApply = sharedPreference.getBoolean("todoApply", false)
         calendarMainData.scheduleApply = sharedPreference.getBoolean("scheduleApply", false)
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+
+        if (currentFocus is EditText){
+            currentFocus!!.clearFocus()
+            return false
+        }
+
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun initFragments() {

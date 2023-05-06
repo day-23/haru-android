@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -11,6 +12,8 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/input_entire_layout"
+        android:background="@drawable/shape_rect_radius_top_40"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -144,6 +147,7 @@
 
 
                     <ImageView
+                        android:id="@+id/iv_tag_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/tag_icon" />
