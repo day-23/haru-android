@@ -88,6 +88,14 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             }
         }
 
+        binding.tagEtcLayout.etTagInput.setOnKeyListener { view, i, keyEvent ->
+            if (i == KeyEvent.KEYCODE_SPACE || i == KeyEvent.KEYCODE_ENTER){
+                binding.tagEtcLayout.ivTagAdd.performClick()
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
+
         binding.btnAddTodo.setOnClickListener {
             val text = binding.etSimpleAddTodo.text.toString()
 
