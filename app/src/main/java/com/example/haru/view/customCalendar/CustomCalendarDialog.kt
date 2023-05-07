@@ -34,9 +34,9 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     private var nowMonth: Int = -1
     private var nowDay: Int = -1
 
-    private var standardYear = -1
-    private var standardMonth = -1
-    private var standardDay = -1
+//    private var standardYear = -1
+//    private var standardMonth = -1
+//    private var standardDay = -1
 
     interface CalendarClickListener {
         fun onClick(view: View, year: Int, month: Int, day: Int)
@@ -47,9 +47,9 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     init {
         FormatDate.cal.time = Date()
 
-        standardYear = FormatDate.cal.get(Calendar.YEAR)
-        standardMonth = FormatDate.cal.get(Calendar.MONTH)
-        standardDay = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+//        standardYear = FormatDate.cal.get(Calendar.YEAR)
+//        standardMonth = FormatDate.cal.get(Calendar.MONTH)
+//        standardDay = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
 
         if (date != null)
             FormatDate.cal.time = date
@@ -92,9 +92,7 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
 
         initCalendar()
 
-        binding.ivDownArrow.setOnClickListener {
-
-        }
+        binding.ivDownArrow.visibility = View.INVISIBLE
 
         binding.ivLeftArrow.setOnClickListener {
             updateCalendar(-1)
@@ -143,8 +141,8 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     }
 
     private fun initCalendar() {
-        if (standardYear == changedYear && standardMonth == changedMonth)
-            binding.ivLeftArrow.visibility = View.GONE
+//        if (standardYear == changedYear && standardMonth == changedMonth)
+//            binding.ivLeftArrow.visibility = View.GONE
 
         FormatDate.cal.set(Calendar.DAY_OF_MONTH, 1)
 
@@ -267,9 +265,9 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
                 }
             }
         }
-        if (standardYear == changedYear && standardMonth == changedMonth)
-            binding.ivLeftArrow.visibility = View.GONE
-        else binding.ivLeftArrow.visibility = View.VISIBLE
+//        if (standardYear == changedYear && standardMonth == changedMonth)
+//            binding.ivLeftArrow.visibility = View.GONE
+//        else binding.ivLeftArrow.visibility = View.VISIBLE
     }
 
 
