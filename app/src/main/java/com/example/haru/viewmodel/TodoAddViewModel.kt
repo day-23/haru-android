@@ -93,10 +93,15 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     var clickedTodo: Todo? = null
 
+    var calculateDateFlag = true
+
     init {
         this.checklistViewModel = checkListViewModel
     }
 
+    fun getRepeatOptionStr(position : Int?) : String {
+        return if (position != null) repeatOptionList[position] else ""
+    }
     fun setSelectDate(date : Date) {
         selectDateFlag = true
         _selectedDate.value = date
@@ -108,6 +113,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
         if (clickedTodo == null)
             clickedTodo = checklistViewModel.todayTodo.value!!.find { it.id == id }!!
+        calculateDateFlag = false
 
         _completedTodo.value = clickedTodo!!.completed
         _flagTodo.value = clickedTodo!!.flag
@@ -342,7 +348,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             flag = flagTodo.value!!,
             isAllDay = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
-            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else null,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(repeatOption.value!!) else null,
             repeatValue = if (repeatSwitch.value == true) repeatValue.value else null,
             repeatEnd = repeatEndDateStr,
             tags = tagList,
@@ -366,7 +372,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             flag = flagTodo.value!!,
             isAllDay = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
-            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else null,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(repeatOption.value!!) else null,
             repeatValue = repeatValue.value,
             repeatEnd = repeatEndDateStr,
             tags = tagList,
@@ -424,6 +430,20 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             }
         } else
             checklistViewModel.deleteTodo(todoId = clickedTodo!!.id){ callback() }
+    }
+
+    fun checkChangeEndDate() : Boolean{ // 마감일의 년, 월, 일을 검사 -> 시간까지 확인하는 거면 시간과 분까지 확인
+//        if ()
+        return false
+    }
+
+    fun checkChangeRepeat() : Boolean {
+    // repeatOption이 바뀌었는지, repeatValue가 바뀌었는지, repeatEndDate가 변경되었는지 (년, 월, 일만 검사)
+        return false
+    }
+
+    fun checkChangeData() : Boolean { // 마감일, 반복옵션 외의 다른 것들이 변경되었는지를 확인한다.
+        return false
     }
 
 }

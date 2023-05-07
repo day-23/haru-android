@@ -347,8 +347,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                         )
                 }
             }
-
-            if (todoAddViewModel.repeatOption.value != null) {
+            if (!todoAddViewModel.calculateDateFlag){
+                todoAddViewModel.calculateDateFlag = true
+            }
+            else if (todoAddViewModel.repeatOption.value != null) {
                 val flagOne = todoAddViewModel.repeatValue.value!!.contains('1')
                 val flagTwo = todoAddViewModel.repeatValue.value!!.contains('2')
 
@@ -632,11 +634,18 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                     }
                 }
                 binding.btnInfoSave.id -> {
+                    todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-                        val option = OptionDialogFragment(todoAddViewModel)
-                        option.show(parentFragmentManager, option.tag)
+//                        // 마감일, 반복 옵션 수정시
+//                        if ((todoAddViewModel.clickedTodo!!.repeatOption != todoAddViewModel.getRepeatOptionStr(todoAddViewModel.repeatOption.value)) &&
+//                            (todoAddViewModel.clickedTodo!!.endDate != todoAddViewModel.endDateStr)){
+//                            Log.d("20191627", "마감일, 반복 둘다 수정")
+//                        }
+//
+//
+//                        val option = OptionDialogFragment(todoAddViewModel)
+//                        option.show(parentFragmentManager, option.tag)
                     } else {
-                        todoAddViewModel.readyToSubmit()
                         todoAddViewModel.updateTodo {
                             requireActivity().supportFragmentManager.popBackStack()
                         }
