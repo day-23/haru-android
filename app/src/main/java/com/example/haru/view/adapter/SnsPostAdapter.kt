@@ -54,6 +54,14 @@ class SnsPostAdapter(val context: Context,
         val text = "${position + 1}/${pictureIndex}"
         holder.index.text = text
 
+        holder.picture.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                val pictureIndex = adapter.itemCount
+                val text = "${position + 1}/${pictureIndex}"
+                holder.index.text = text
+            }
+        })
+
         holder.setup.setOnClickListener {
 
         }
