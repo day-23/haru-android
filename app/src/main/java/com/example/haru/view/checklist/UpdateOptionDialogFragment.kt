@@ -12,17 +12,20 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, count : Int = 2) : BottomSheetDialogFragment(){
+class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int = 2) : BottomSheetDialogFragment(){
     private lateinit var binding: FragmentOptionUpdateBinding
     private var ratio : Int = 30
+    private var type : Int = 2
     private var todoAddViewModel: TodoAddViewModel
 
 
     init{
-        ratio = when(count){
-            1 -> 23
-            2 -> 30
-            3 -> 38
+        this.type = type
+        ratio = when(type){
+            0 -> 23  // 이 후 이벤트 수정 만 표시  -> 반복 정보, 마감일 둘 다 수정 시
+            1 -> 23 // 이 이벤트 수정 만 표시   -> 반복 정보는 유지하고, 마감일만 수정시
+            2 -> 30  // 이후 이벤트 수정과 전체 이벤트 수정 -> 마감일은 유지하고, 반복 정보만 수정 시
+            3 -> 38 // 이 후 이벤트 수정과 전체 이벤트 수정, 이 이벤트 수정 표시 -> 마감일과 반복 정보 유지하고, 다른 정보 수정 시
             else -> 30
         }
         this.todoAddViewModel = todoAddViewModel
@@ -69,13 +72,19 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, count : Int
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        when(ratio){
-            23 -> {
+        when(type){
+            0 -> {
+                binding.btnOptionOneUpdate.visibility = View.GONE
+                binding.btnOptionAllUpdate.visibility = View.GONE
+            }
+            1 -> {
                 binding.btnOptionAllUpdate.visibility = View.GONE
                 binding.btnOptionAfterUpdate.visibility = View.GONE
             }
-            30 -> {}
-            38 -> {}
+            2 -> {
+                binding.btnOptionOneUpdate.visibility = View.GONE
+            }
+            3 -> {}
         }
 
         binding.btnOptionOneUpdate.setOnClickListener(ButtonClickListener())

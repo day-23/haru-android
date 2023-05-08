@@ -631,19 +631,12 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                     todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
                         val checkEndDate = todoAddViewModel.checkChangeEndDate()
-                        if (checkEndDate) {
-                            val option = UpdateOptionDialogFragment(todoAddViewModel, 1)
-                            option.show(parentFragmentManager, option.tag)
-                        } else {
+                        val checkRepeatData = todoAddViewModel.checkChangeRepeat()
+                        val type = if (checkEndDate && checkRepeatData) 0
+                        else if (checkEndDate) 1 else if (checkRepeatData) 2 else 3
 
-                            val option = UpdateOptionDialogFragment(todoAddViewModel)
-                            option.show(parentFragmentManager, option.tag)
-                        }
-                        // 마감일, 반복 옵션 수정시
-//                        if ((todoAddViewModel.clickedTodo!!.repeatOption != todoAddViewModel.getRepeatOptionStr(todoAddViewModel.repeatOption.value)) &&
-//                            (todoAddViewModel.clickedTodo!!.endDate != todoAddViewModel.endDateStr)){
-//                            Log.d("20191627", "마감일, 반복 둘다 수정")
-//                        }
+                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        option.show(parentFragmentManager, option.tag)
 
                     } else {
                         todoAddViewModel.updateTodo {
