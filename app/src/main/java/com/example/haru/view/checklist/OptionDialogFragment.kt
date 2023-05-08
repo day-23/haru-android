@@ -50,7 +50,7 @@ class OptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSheetDia
     }
 
     private fun getBottomSheetDialogDefaultHeight(): Int {
-        return getWindowHeight() * 23 / 100
+        return getWindowHeight() * 30 / 100
     }
 
     private fun getWindowHeight(): Int {

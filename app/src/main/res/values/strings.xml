@@ -62,11 +62,13 @@
     <string name="todoEmpty">모든 할 일을 마쳤습니다!</string>
     <string name="flagEmpty">중요한 할 일이 있나요?</string>
     <string name="completeEmpty">할일을 완료해 보세요!</string>
+    
+    <string name="deleteDescription">이 할일을 삭제할까요? 반복되는 할일입니다.</string>
 
     <string name="simpleAddTodo">간편 추가</string>
 
-    <string name="oneDelete">이 이벤트만 삭제</string>
-    <string name="allDelete">모든 이벤트 삭제</string>
-    <string name="cancel">Cancel</string>
+    <string name="oneDelete">이 할일만 삭제</string>
+    <string name="allDelete">모든 할일 삭제</string>
+    <string name="cancel">취소</string>
 
 </resources>
