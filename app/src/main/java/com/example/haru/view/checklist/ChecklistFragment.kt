@@ -130,7 +130,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                 set(Calendar.SECOND, 59) // 초를 59초로 설정
             }
-            val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+            val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
             checkListViewModel.getTodayTodo(todayEndDate) {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
@@ -293,7 +293,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     }
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
+                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr!!))
                     } else
                         checkListViewModel.updateNotRepeatTodo(completed, id)
                 }

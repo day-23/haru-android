@@ -67,7 +67,9 @@ object FormatDate {
     }
 
     // Date를 서버로 보낼 형식으로 변환하여 String으로 반환
-    fun dateToStr(date: Date): String {
+    fun dateToStr(date: Date?): String? {
+        if (date == null)
+            return null
         return dateFormatterToServer.format(date)
     }
 
@@ -90,14 +92,6 @@ object FormatDate {
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         val instant = date.atZone(ZoneId.systemDefault()).toInstant()
         return Date.from(instant)
-    }
-
-    fun compareStr(endDateStr : String, changeEndDateStr : String){
-
-//        val endDate = compareStrFormatter.parse(endDateStr)
-        val changeEndDate = compareStrFormatter.parse(changeEndDateStr)
-//        Log.d("20191627", endDate.toString())
-        Log.d("20191627", changeEndDate.toString())
     }
 
     fun nextEndDate(endDateStr: String?, repeatEndDateStr: String?): Date? {

@@ -351,7 +351,7 @@ class CheckListViewModel() :
                         set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                         set(Calendar.SECOND, 59) // 초를 59초로 설정
                     }
-                    val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                    val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
                     getTodayTodo(todayEndDate) {}
                 }
                 withTagUpdate()
@@ -374,7 +374,7 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
                         getTodayTodo(todayEndDate) {}
                     }
                     withTagUpdate()
@@ -399,7 +399,7 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
                         getTodayTodo(todayEndDate) {}
                     }
                     withTagUpdate()
@@ -420,7 +420,7 @@ class CheckListViewModel() :
                                 set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                                 set(Calendar.SECOND, 59) // 초를 59초로 설정
                             }
-                            val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                            val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
                             getTodayTodo(todayEndDate) {}
                         }
                         withTagUpdate()
@@ -442,7 +442,7 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
                         getTodayTodo(todayEndDate) {}
                     }
                     withTagUpdate()
@@ -461,7 +461,7 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
                         getTodayTodo(todayEndDate) {}
                     }
                     withTagUpdate()
@@ -483,7 +483,7 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
                         getTodayTodo(todayEndDate) {}
                     }
                     withTagUpdate()
@@ -506,7 +506,7 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
+                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
                         getTodayTodo(todayEndDate) {}
                     }
                     withTagUpdate()

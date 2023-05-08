@@ -118,7 +118,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     }
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
+                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr!!))
                     } else
                         checkListViewModel.updateNotRepeatTodo(completed, id)
                 }
