@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide.init
+import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.TagRepository
 import com.example.haru.data.repository.TodoRepository
@@ -163,7 +164,7 @@ class CheckListViewModel() :
                 else _flaggedTodos.postValue(
                     listOf(
                         Todo(type = 4, content = "중요"),
-                        Todo(type = 5), Todo(type = 3)
+                        Todo(type = 5,  content = "중요한 할 일이 있나요?"), Todo(type = 3)
                     )
                 )
 
@@ -178,7 +179,7 @@ class CheckListViewModel() :
                     ) else _taggedTodos.postValue(
                     listOf(
                         Todo(type = 4, content = "분류"),
-                        Todo(type = 5),
+                        Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
                         Todo(type = 3)
                     )
                 )
@@ -193,7 +194,7 @@ class CheckListViewModel() :
                     ) else _untaggedTodos.postValue(
                     listOf(
                         Todo(type = 4, content = "미분류"),
-                        Todo(type = 5),
+                        Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
                         Todo(type = 3)
                     )
                 )
@@ -208,7 +209,7 @@ class CheckListViewModel() :
                     ) else _completedTodos.postValue(
                     listOf(
                         Todo(type = 4, content = "완료"),
-                        Todo(type = 5),
+                        Todo(type = 5, content = "할일을 완료해 보세요!"),
                         Todo(type = 6)
                     )
                 )
@@ -228,24 +229,24 @@ class CheckListViewModel() :
                     this.add(Todo(type = 4, content = "중요"))
                     if (it.flaggedTodos.isNotEmpty())
                         this.addAll(it.flaggedTodos)
-                    else this.add(Todo(type = 5))
+                    else this.add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
 
                     this.add(Todo(type = 4, content = "오늘 할 일"))
                     if (it.todayTodos.isNotEmpty())
                         this.addAll(it.todayTodos)
-                    else this.add(Todo(type = 5))
+                    else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
 
                     this.add(Todo(type = 4, content = "오늘 마감"))
                     if (it.endDatedTodos.isNotEmpty())
                         this.addAll(it.endDatedTodos)
-                    else this.add(Todo(type = 5))
+                    else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
 
                     this.add(Todo(type = 3))
 
                     this.add(Todo(type = 4, content = "완료"))
                     if (it.completedTodos.isNotEmpty())
                         this.addAll(it.completedTodos)
-                    else this.add(Todo(type = 5))
+                    else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
                 }
                 _todayTodo.postValue(todayList)
                 callback()

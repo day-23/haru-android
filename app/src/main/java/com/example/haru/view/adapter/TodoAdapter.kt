@@ -175,6 +175,7 @@ class TodoAdapter(val context: Context) :
             is TodoViewHolder -> {
                 holder.bind(todo)
             }
+            is EmptyViewHolder -> holder.bind(todo.content)
             is BlankViewHolder -> {}
         }
     }
@@ -323,7 +324,11 @@ class TodoAdapter(val context: Context) :
     }
 
     inner class EmptyViewHolder(val binding: ChecklistEmptyBinding) :
-        RecyclerView.ViewHolder(binding.root) {}
+        RecyclerView.ViewHolder(binding.root) {
+            fun bind(item : String){
+                binding.tvTodoEmpty.text = item
+            }
+        }
 
     fun setDataList(dataList: List<Todo>) {
         data = dataList as MutableList<Todo>

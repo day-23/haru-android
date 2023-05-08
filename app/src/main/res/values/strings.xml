@@ -59,7 +59,9 @@
     
     <string name="change">수정</string>
 
-    <string name="everyThingDone">모든 할 일을 마쳤습니다!</string>
+    <string name="todoEmpty">모든 할 일을 마쳤습니다!</string>
+    <string name="flagEmpty">중요한 할 일이 있나요?</string>
+    <string name="completeEmpty">할일을 완료해 보세요!</string>
 
     <string name="simpleAddTodo">간편 추가</string>
 
