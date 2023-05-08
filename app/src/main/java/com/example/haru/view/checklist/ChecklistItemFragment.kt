@@ -630,7 +630,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                 binding.btnInfoSave.id -> {
                     todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-                        if (todoAddViewModel.checkChangeEndDate()) {
+                        val checkEndDate = todoAddViewModel.checkChangeEndDate()
+                        if (checkEndDate) {
                             val option = UpdateOptionDialogFragment(todoAddViewModel, 1)
                             option.show(parentFragmentManager, option.tag)
                         } else {

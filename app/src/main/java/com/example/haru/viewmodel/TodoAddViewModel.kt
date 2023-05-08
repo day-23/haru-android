@@ -456,12 +456,16 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
             if (changeHour != hour || changeMinute != minute)
                 return true
+        } else {
+            if (isSelectedEndDateTime.value == true)
+                return true
         }
         return false
     }
 
     fun checkChangeRepeat() : Boolean {
     // repeatOption이 바뀌었는지, repeatValue가 바뀌었는지, repeatEndDate가 변경되었는지 (년, 월, 일만 검사)
+
         return false
     }
 
