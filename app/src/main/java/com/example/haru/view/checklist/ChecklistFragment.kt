@@ -259,7 +259,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null) // 완료된 Todo이거나 repeatOption이 null
-                    checkListViewModel.updateNotRepeatTodo(completed, id)
+                    checkListViewModel.completeNotRepeatTodo(completed, id)
                 else {
                     val nextEndDate = when (todo.repeatOption) {
                         "매일" -> {
@@ -291,11 +291,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         }
                         else -> null
                     }
+                    Log.d("20191627", nextEndDate.toString())
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr!!))
+                        checkListViewModel.completeRepeatTodo(id, EndDate(nextEndDateStr!!))
                     } else
-                        checkListViewModel.updateNotRepeatTodo(completed, id)
+                        checkListViewModel.completeNotRepeatTodo(completed, id)
                 }
 
             }
@@ -311,7 +312,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     )
                     else Completed(true)
 
-                checkListViewModel.updateSubTodo(
+                checkListViewModel.completeSubTodo(
                     completed,
                     todoAdapter.subTodoClickId!!,
                     subTodo.id,

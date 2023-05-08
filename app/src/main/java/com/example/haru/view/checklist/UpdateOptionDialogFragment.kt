@@ -97,13 +97,13 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int 
         override fun onClick(v: View?) {
             when(v?.id){
                 binding.btnOptionOneUpdate.id -> {
-                    todoAddViewModel.deleteRepeatTodo {
+                    todoAddViewModel.updateRepeatTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
                 }
                 binding.btnOptionAllUpdate.id -> {
-                    todoAddViewModel.deleteTodo {
+                    todoAddViewModel.updateTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }

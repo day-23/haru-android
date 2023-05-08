@@ -27,7 +27,7 @@ interface TodoService {
     fun getTodoByUntag(@Path("userId") userId: String) : Call<GetTodoBy>
 
     @PUT("todo/{userId}/{todoId}")
-    fun putTodo(@Path("userId") userId: String, @Path("todoId") todoId : String, @Body todo : UpdateTodo) : Call<UpdateTodoResponse>
+    fun updateTodo(@Path("userId") userId: String, @Path("todoId") todoId : String, @Body todo : UpdateTodo) : Call<UpdateTodoResponse>
 
     @DELETE("todo/{userId}/{todoId}")
     fun deleteTodo(@Path("userId") userId: String, @Path("todoId") todoId : String) : Call<SuccessFail>
@@ -36,20 +36,23 @@ interface TodoService {
     fun updateFlag(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body flag: Flag) : Call<SuccessFail>
 
     @PATCH("todo/{userId}/complete/todo/{todoId}")
-    fun updateNotRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body completed: Completed) : Call<SuccessFail>
+    fun completeNotRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body completed: Completed) : Call<SuccessFail>
 
     @POST("todo/{userId}/todos/today")
     fun getTodayTodo(@Path("userId") userId: String, @Body endDate : EndDate) : Call<GetTodayTodo>
 
     @PATCH("todo/{userId}/complete/subtodo/{subTodoId}")
-    fun updateSubTodo(@Path("userId") userId: String, @Path("subTodoId") subTodoId : String, @Body completed: Completed) : Call<SuccessFail>
+    fun completeSubTodo(@Path("userId") userId: String, @Path("subTodoId") subTodoId : String, @Body completed: Completed) : Call<SuccessFail>
 
     @PATCH("todo/{userId}/folded/{todoId}")
     fun updateFolded(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body folded: Folded) : Call<SuccessFail>
 
     @PATCH("todo/{userId}/complete/todo/{todoId}/repeat/front")
-    fun updateRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body endDate: EndDate) : Call<SuccessFail>
+    fun completeRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body endDate: EndDate) : Call<SuccessFail>
 
     @HTTP(method = "DELETE", path = "todo/{userId}/todo/{todoId}/repeat/front", hasBody = true)
     fun deleteRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body endDate: EndDate) : Call<SuccessFail>
+
+    @PUT("todo/{userId}/todo/{todoId}/repeat/front")
+    fun updateRepeatTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body updateRepeatTodo: UpdateRepeatTodo) : Call<SuccessFail>
 }

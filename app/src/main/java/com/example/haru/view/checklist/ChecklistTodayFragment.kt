@@ -93,7 +93,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null)
-                    checkListViewModel.updateNotRepeatTodo(completed, id)
+                    checkListViewModel.completeNotRepeatTodo(completed, id)
                 else {
                     val nextEndDate = when (todo.repeatOption) {
                         "매일" -> {
@@ -118,9 +118,9 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     }
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr!!))
+                        checkListViewModel.completeRepeatTodo(id, EndDate(nextEndDateStr!!))
                     } else
-                        checkListViewModel.updateNotRepeatTodo(completed, id)
+                        checkListViewModel.completeNotRepeatTodo(completed, id)
                 }
             }
         }
@@ -134,7 +134,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     )
                     else Completed(true)
 
-                checkListViewModel.updateSubTodo(
+                checkListViewModel.completeSubTodo(
                     completed,
                     todoAdapter.subTodoClickId!!,
                     subTodo.id,

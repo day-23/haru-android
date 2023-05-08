@@ -211,10 +211,14 @@ object FormatDate {
                 if (repeatValue.substring(0, days - 1).contains('1')) {
                     days = repeatValue.indexOf('1') + 1
                 }
+            } else {
+                if (endDateStr != null)
+                    cal.add(Calendar.MONTH, 1)
             }
             cal.set(Calendar.DAY_OF_MONTH, days)
         }
         val nextEndDate = cal.time
+        Log.d("20191627", "nextEndDate : ${nextEndDate}")
 
         if (repeatEndDateStr != null) {
             cal.apply {
@@ -235,7 +239,7 @@ object FormatDate {
         repeatValue: String,
         endDateStr: String?,
         repeatEndDateStr: String?,    // endDateStr을 하면 현재 시간으로 값을 정하지만 만약 사용자가 직접 날짜를 설정한다면????? 방법 강구하기
-        day : Int? = null
+        day: Int? = null
     ): Date? {                       // todoAddViewModel에 사용자가 직접 endDate를 설정한 것을 표시할 수 있는 값 만들기???
         if (endDateStr == null)      // endDatePick의 클릭이벤트를 통해서 가능
             cal.time = Date()

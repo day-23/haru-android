@@ -341,9 +341,28 @@ class CheckListViewModel() :
         _completedTodos.value = emptyList()
     }
 
-    fun putTodo(todoId: String, todo: UpdateTodo, callback: () -> Unit) {
+    fun updateTodo(todoId: String, todo: UpdateTodo, callback: () -> Unit) {
         viewModelScope.launch {
-            val updateTodo = todoRepository.putTodo(todoId = todoId, todo = todo) {
+            val updateTodo = todoRepository.updateTodo(todoId = todoId, todo = todo) {
+                getTag()
+                if (todayList.isNotEmpty()) {
+                    val calendar = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                        set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                        set(Calendar.SECOND, 59) // 초를 59초로 설정
+                    }
+                    val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
+                    getTodayTodo(todayEndDate) {}
+                }
+                withTagUpdate()
+                callback()
+            }
+        }
+    }
+
+    fun updateRepeatTodo(todoId: String, updateRepeatTodo: UpdateRepeatTodo, callback: () -> Unit){
+        viewModelScope.launch {
+            val updateRepeatTodo = todoRepository.updateRepeatTodo(todoId = todoId, updateRepeatTodo = updateRepeatTodo){
                 getTag()
                 if (todayList.isNotEmpty()) {
                     val calendar = Calendar.getInstance().apply {
@@ -429,9 +448,9 @@ class CheckListViewModel() :
         }
     }
 
-    fun updateNotRepeatTodo(completed: Completed, id: String) {
+    fun completeNotRepeatTodo(completed: Completed, id: String) {
         viewModelScope.launch {
-            val successData = todoRepository.updateNotRepeatTodo(
+            val successData = todoRepository.completeNotRepeatTodo(
                 todoId = id,
                 completed = completed
             ) {
@@ -451,9 +470,9 @@ class CheckListViewModel() :
         }
     }
 
-    fun updateRepeatTodo(id: String, endDate: EndDate) {
+    fun completeRepeatTodo(id: String, endDate: EndDate) {
         viewModelScope.launch {
-            val successData = todoRepository.updateRepeatTodo(todoId = id, endDate = endDate) {
+            val successData = todoRepository.completeRepeatTodo(todoId = id, endDate = endDate) {
                 if (it.success) {
                     if (todayList.isNotEmpty()) {
                         val calendar = Calendar.getInstance().apply {
@@ -470,9 +489,9 @@ class CheckListViewModel() :
         }
     }
 
-    fun updateSubTodo(completed: Completed, id: String, subTodoId: String, subTodoPosition: Int) {
+    fun completeSubTodo(completed: Completed, id: String, subTodoId: String, subTodoPosition: Int) {
         viewModelScope.launch {
-            val successData = todoRepository.updateSubTodo(
+            val successData = todoRepository.completeSubTodo(
                 subTodoId = subTodoId,
                 completed = completed
             ) {
