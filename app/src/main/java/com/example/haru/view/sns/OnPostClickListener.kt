@@ -1,7 +1,9 @@
 package com.example.haru.view.sns
 
-interface OnPostClickListener {
-    fun onCommentClick(postId: String)
+import com.example.haru.R
 
-    fun onSetupClick(postId: String)
+interface OnPostClickListener {
+    fun onCommentClick(postitem: ArrayList<com.example.haru.data.model.Profile>)
+
+    fun onTotalCommentClick(postId: String)
 }

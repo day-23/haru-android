@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.api.UserService
+import com.example.haru.data.model.Post
+import com.example.haru.data.model.Profile
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.databinding.FragmentSnsBinding
@@ -34,8 +36,8 @@ class SnsFragment : Fragment(), OnPostClickListener {
     private var click = false
     private lateinit var snsPostAdapter: SnsPostAdapter
 
-    override fun onCommentClick(postId: String) {
-        val newFrag = CommentsFragment.newInstance()
+    override fun onCommentClick(postitem: ArrayList<Profile>) {
+        val newFrag = AddCommentFragment(postitem)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
@@ -44,8 +46,14 @@ class SnsFragment : Fragment(), OnPostClickListener {
         transaction.commit()
     }
 
-    override fun onSetupClick(postId: String) {
-        TODO("Not yet implemented")
+    override fun onTotalCommentClick(postId: String) {
+        val newFrag = CommentsFragment.newInstance()
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+        if(!isSnsMainInBackStack)
+            transaction.addToBackStack("snsmain")
+        transaction.commit()
 
     }
     companion object{

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
@@ -21,7 +22,6 @@ class PicturesPagerAdapter(private val context: Context, private val imageList: 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(imageList[position].url)
-
     }
 
     override fun getItemCount(): Int {

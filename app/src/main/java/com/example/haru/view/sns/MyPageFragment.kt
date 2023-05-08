@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
+import com.example.haru.data.model.Post
 import com.example.haru.data.model.Profile
 import com.example.haru.data.model.SnsPost
 import com.example.haru.databinding.FragmentSnsMypageBinding
@@ -28,8 +29,8 @@ class MyPageFragment : Fragment(), OnPostClickListener{
     private lateinit var mypageViewModel: MyPageViewModel
     private var click = false
 
-    override fun onCommentClick(postId: String) {
-        val newFrag = CommentsFragment.newInstance()
+    override fun onCommentClick(postitem: ArrayList<Profile>) {
+        val newFrag = AddCommentFragment(postitem)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
@@ -38,8 +39,14 @@ class MyPageFragment : Fragment(), OnPostClickListener{
         transaction.commit()
     }
 
-    override fun onSetupClick(postId: String) {
-        TODO("Not yet implemented")
+    override fun onTotalCommentClick(postId: String) {
+        val newFrag = CommentsFragment.newInstance()
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
+        if(!isSnsMainInBackStack)
+            transaction.addToBackStack("snsmypage")
+        transaction.commit()
     }
 
     companion object{

@@ -54,7 +54,6 @@ class SnsPostAdapter(val context: Context,
         var text = ""
         var delayJob: Job? = null // 코루틴 취소를 위한 Job 변수
         holder.picture.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-
             override fun onPageSelected(position: Int) {
                 delayJob?.cancel()
                 if(text != "" || position != 0) {
@@ -73,9 +72,14 @@ class SnsPostAdapter(val context: Context,
 
         }
 
+        holder.totalcomment.setOnClickListener {
+            Log.d("Comment", "${itemList[position].id}")
+            listener.onTotalCommentClick(itemList[position].id)
+        }
+
         holder.comment.setOnClickListener {
             Log.d("Comment", "${itemList[position].id}")
-            listener.onCommentClick(itemList[position].id)
+            listener.onCommentClick(itemList[position].images)
         }
 
         if(itemList[position].user.profileImage != null) {
@@ -134,5 +138,6 @@ class SnsPostAdapter(val context: Context,
         var index = itemView.findViewById<Button>(R.id.picture_index)
         var comment = itemView.findViewById<ImageView>(R.id.button_comment)
         var setup = itemView.findViewById<ImageView>(R.id.post_setup)
+        var totalcomment = itemView.findViewById<ImageView>(R.id.post_total_comment)
     }
 }
