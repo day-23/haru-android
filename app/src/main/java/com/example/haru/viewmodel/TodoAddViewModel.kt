@@ -494,8 +494,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun checkChangeRepeat() : Boolean {
     // repeatOption이 바뀌었는지, repeatValue가 바뀌었는지, repeatEndDate가 변경되었는지 (년, 월, 일만 검사)
-        Log.d("20191627", (clickedTodo!!.repeatOption != getRepeatOptionStr(repeatOption.value)).toString())
-        Log.d("20191627", (clickedTodo!!.repeatValue != repeatValue.value).toString())
         if (clickedTodo!!.repeatOption != getRepeatOptionStr(repeatOption.value)) // repeatOption의 변경 확인
             return true
         if (clickedTodo!!.repeatValue != repeatValue.value) // repeatValue 변경 확인
@@ -509,9 +507,6 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         val year = date?.substring(0,4)
         val month = date?.substring(5, 7)
         val day = date?.substring(8, 10)
-        Log.d("20191627", (changeYear != year).toString())
-        Log.d("20191627", (changeMonth != month).toString())
-        Log.d("20191627", (changeDay != day).toString())
         if (changeYear != year || changeMonth != month || changeDay != day)
             return true
 
