@@ -25,6 +25,8 @@ object FormatDate {
 
     private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
 
+    private val compareStrFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
     val cal = Calendar.getInstance()
 
 
@@ -82,10 +84,20 @@ object FormatDate {
     }
 
     // String으로 된 날짜 정보에 local Date와 그리니치 시간대의 차이를 더해서 Date 타입으로 반환
-    fun strToDate(str: String): Date {
+    fun strToDate(str: String?): Date? {
+        if (str == null)
+            return null
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         val instant = date.atZone(ZoneId.systemDefault()).toInstant()
         return Date.from(instant)
+    }
+
+    fun compareStr(endDateStr : String, changeEndDateStr : String){
+
+//        val endDate = compareStrFormatter.parse(endDateStr)
+        val changeEndDate = compareStrFormatter.parse(changeEndDateStr)
+//        Log.d("20191627", endDate.toString())
+        Log.d("20191627", changeEndDate.toString())
     }
 
     fun nextEndDate(endDateStr: String?, repeatEndDateStr: String?): Date? {

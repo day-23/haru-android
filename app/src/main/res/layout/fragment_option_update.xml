@@ -23,7 +23,7 @@
         android:background="@drawable/with_divider_btn"
         android:textSize="20sp"
         android:textColor="@color/highlight"
-        android:text="@string/oneDelete"/>
+        android:text="@string/oneUpdate"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_all_update"
@@ -34,7 +34,7 @@
         android:gravity="center"
         android:textColor="@color/delete_red"
         android:textSize="20sp"
-        android:text="@string/allDelete"/>
+        android:text="@string/allUpdate"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_after_update"
@@ -43,9 +43,9 @@
         android:layout_weight="1"
         android:background="@drawable/with_divider_btn"
         android:gravity="center"
-        android:textColor="@color/date_text"
+        android:textColor="@color/todo_description"
         android:textSize="20sp"
-        android:text="이후 할일 수정"/>
+        android:text="@string/afterUpdate"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_cancel"

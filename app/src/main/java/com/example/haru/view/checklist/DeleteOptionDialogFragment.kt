@@ -12,7 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class OptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSheetDialogFragment() {
+class DeleteOptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionDeleteBinding
     private var todoAddViewModel: TodoAddViewModel
 

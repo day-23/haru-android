@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.haru.data.model.*
 import com.example.haru.utils.FormatDate
 import java.util.*
+import kotlin.math.min
 
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val checklistViewModel: CheckListViewModel
@@ -433,7 +434,29 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun checkChangeEndDate() : Boolean{ // 마감일의 년, 월, 일을 검사 -> 시간까지 확인하는 거면 시간과 분까지 확인
-//        if ()
+        val changeYear = endDateStr?.substring(0,4)
+        val changeMonth = endDateStr?.substring(5, 7)
+        val changeDay = endDateStr?.substring(8, 10)
+
+        val date = clickedTodo!!.endDate
+        val year = date?.substring(0,4)
+        val month = date?.substring(5, 7)
+        val day = date?.substring(8, 10)
+
+        if (changeYear != year || changeMonth != month || changeDay != day){
+            return true
+        }
+        if (clickedTodo!!.isAllDay){
+            if (isSelectedEndDateTime.value != true)
+                return true
+            val changeHour = endDateStr?.substring(11, 13)
+            val changeMinute = endDateStr?.substring(14, 16)
+            val hour = date?.substring(11, 13)
+            val minute = date?.substring(14, 16)
+
+            if (changeHour != hour || changeMinute != minute)
+                return true
+        }
         return false
     }
 

@@ -1,6 +1,5 @@
 package com.example.haru.view.checklist
 
-import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.res.ColorStateList
@@ -13,14 +12,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
-import com.example.haru.data.model.Alarm
-import com.example.haru.data.model.Tag
-import com.example.haru.databinding.FragmentChecklistItemBinding
 import com.example.haru.databinding.FragmentChecklistItemInfoBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
@@ -347,10 +342,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                         )
                 }
             }
-            if (!todoAddViewModel.calculateDateFlag){
+            if (!todoAddViewModel.calculateDateFlag) {
                 todoAddViewModel.calculateDateFlag = true
-            }
-            else if (todoAddViewModel.repeatOption.value != null) {
+            } else if (todoAddViewModel.repeatOption.value != null) {
                 val flagOne = todoAddViewModel.repeatValue.value!!.contains('1')
                 val flagTwo = todoAddViewModel.repeatValue.value!!.contains('2')
 
@@ -627,7 +621,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
                 binding.btnInfoDelete.id -> {
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-                        val option = OptionDialogFragment(todoAddViewModel)
+                        val option = DeleteOptionDialogFragment(todoAddViewModel)
                         option.show(parentFragmentManager, option.tag)
                     } else todoAddViewModel.deleteTodo {
                         requireActivity().supportFragmentManager.popBackStack()
@@ -636,15 +630,20 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                 binding.btnInfoSave.id -> {
                     todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-//                        // 마감일, 반복 옵션 수정시
+                        if (todoAddViewModel.checkChangeEndDate()) {
+                            val option = UpdateOptionDialogFragment(todoAddViewModel, 1)
+                            option.show(parentFragmentManager, option.tag)
+                        } else {
+
+                            val option = UpdateOptionDialogFragment(todoAddViewModel)
+                            option.show(parentFragmentManager, option.tag)
+                        }
+                        // 마감일, 반복 옵션 수정시
 //                        if ((todoAddViewModel.clickedTodo!!.repeatOption != todoAddViewModel.getRepeatOptionStr(todoAddViewModel.repeatOption.value)) &&
 //                            (todoAddViewModel.clickedTodo!!.endDate != todoAddViewModel.endDateStr)){
 //                            Log.d("20191627", "마감일, 반복 둘다 수정")
 //                        }
-//
-//
-//                        val option = OptionDialogFragment(todoAddViewModel)
-//                        option.show(parentFragmentManager, option.tag)
+
                     } else {
                         todoAddViewModel.updateTodo {
                             requireActivity().supportFragmentManager.popBackStack()

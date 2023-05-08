@@ -6,17 +6,25 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.haru.databinding.FragmentOptionDeleteBinding
+import com.example.haru.databinding.FragmentOptionUpdateBinding
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel) : BottomSheetDialogFragment(){
-    private lateinit var binding: FragmentOptionDeleteBinding
+class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, count : Int = 2) : BottomSheetDialogFragment(){
+    private lateinit var binding: FragmentOptionUpdateBinding
+    private var ratio : Int = 30
     private var todoAddViewModel: TodoAddViewModel
 
+
     init{
+        ratio = when(count){
+            1 -> 23
+            2 -> 30
+            3 -> 38
+            else -> 30
+        }
         this.todoAddViewModel = todoAddViewModel
     }
     override fun onCreateView(
@@ -24,7 +32,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel) : BottomShe
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentOptionDeleteBinding.inflate(inflater)
+        binding = FragmentOptionUpdateBinding.inflate(inflater)
 
         return binding.root
     }
@@ -50,7 +58,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel) : BottomShe
     }
 
     private fun getBottomSheetDialogDefaultHeight(): Int {
-        return getWindowHeight() * 30 / 100
+        return getWindowHeight() * ratio / 100
     }
 
     private fun getWindowHeight(): Int {
@@ -61,27 +69,41 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel) : BottomShe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnOptionOneDelete.setOnClickListener(ButtonClickListener())
-        binding.btnOptionAllDelete.setOnClickListener(ButtonClickListener())
+        when(ratio){
+            23 -> {
+                binding.btnOptionAllUpdate.visibility = View.GONE
+                binding.btnOptionAfterUpdate.visibility = View.GONE
+            }
+            30 -> {}
+            38 -> {}
+        }
+
+        binding.btnOptionOneUpdate.setOnClickListener(ButtonClickListener())
+        binding.btnOptionAllUpdate.setOnClickListener(ButtonClickListener())
+        binding.btnOptionAfterUpdate.setOnClickListener(ButtonClickListener())
         binding.btnOptionCancel.setOnClickListener(ButtonClickListener())
     }
 
     inner class ButtonClickListener : View.OnClickListener{
         override fun onClick(v: View?) {
             when(v?.id){
-                binding.btnOptionOneDelete.id -> {
+                binding.btnOptionOneUpdate.id -> {
                     todoAddViewModel.deleteRepeatTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
                 }
-                binding.btnOptionAllDelete.id -> {
+                binding.btnOptionAllUpdate.id -> {
                     todoAddViewModel.deleteTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
 
                 }
+                binding.btnOptionAfterUpdate.id -> {
+
+                }
+
                 binding.btnOptionCancel.id -> {
                     dismiss()
                 }
