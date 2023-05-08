@@ -51,22 +51,8 @@ class SnsPostAdapter(val context: Context,
         holder.commentcount.text = itemList[position].commentCount.toString()
 
         val pictureIndex = adapter.itemCount
-        var text = ""
-        var delayJob: Job? = null // 코루틴 취소를 위한 Job 변수
-        holder.picture.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                delayJob?.cancel()
-                if(text != "" || position != 0) {
-                    holder.index.alpha = 1f
-                    text = "${position + 1}/${pictureIndex}"
-                    holder.index.text = text
-                    delayJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(2000L) // 2초 동안 코루틴을 멈춤
-                        holder.index.alpha = 0f
-                    }
-                }
-            }
-        })
+        val text = "${position + 1}/${pictureIndex}"
+        holder.index.text = text
 
         holder.setup.setOnClickListener {
 
@@ -109,7 +95,6 @@ class SnsPostAdapter(val context: Context,
                 holder.likedcount.text = itemList[position].likedCount.toString()
             }
             snsViewModel.likeAction(itemList[position].id)
-
         }
     }
 
