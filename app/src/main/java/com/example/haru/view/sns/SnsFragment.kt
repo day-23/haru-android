@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.ViewCompat.animate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -120,10 +121,12 @@ class SnsFragment : Fragment(), OnPostClickListener {
         binding.menuButton.setOnClickListener{
             if(click == false){
                 binding.snsButtons.visibility = View.VISIBLE
+                binding.menuButton.animate().rotation(0f)
                 click = true
             }
             else{
                 binding.snsButtons.visibility = View.GONE
+                binding.menuButton.animate().rotation(-90f)
                 click = false
             }
         }
