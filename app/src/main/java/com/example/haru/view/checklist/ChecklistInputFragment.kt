@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.FormatDate
-import com.example.haru.view.customCalendar.CustomCalendarDialog
+import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel

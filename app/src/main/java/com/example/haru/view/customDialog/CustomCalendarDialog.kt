@@ -1,4 +1,4 @@
-package com.example.haru.view.customCalendar
+package com.example.haru.view.customDialog
 
 
 import android.content.Context
@@ -7,7 +7,6 @@ import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,7 +17,6 @@ import com.example.haru.R
 import com.example.haru.databinding.CustomCalendarBinding
 import com.example.haru.utils.FormatDate
 import java.util.*
-import kotlin.properties.Delegates
 
 class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     private lateinit var binding: CustomCalendarBinding

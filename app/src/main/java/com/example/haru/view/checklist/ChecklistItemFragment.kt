@@ -19,7 +19,7 @@ import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistItemInfoBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
-import com.example.haru.view.customCalendar.CustomCalendarDialog
+import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import java.util.*

@@ -18,10 +18,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.haru.R
 import com.example.haru.data.model.*
+import com.example.haru.databinding.CustomTimePickerBinding
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
+import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import java.util.*
 
@@ -101,7 +103,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
             if (text.replace(" ", "") == "") {
                 val todoInput = ChecklistInputFragment(checkListViewModel)
-
                 todoInput.show(parentFragmentManager, todoInput.tag)
             } else {
                 val todo = TodoRequest(
