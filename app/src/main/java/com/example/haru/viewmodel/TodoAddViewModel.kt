@@ -101,7 +101,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         this.checklistViewModel = checkListViewModel
     }
 
-    fun getRepeatOptionStr(position : Int?) : String? {
+    private fun getRepeatOptionStr(position : Int?) : String? {
         return if (position != null) repeatOptionList[position] else null
     }
     fun setSelectDate(date : Date) {
@@ -392,7 +392,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             flag = flagTodo.value!!,
             isAllDay = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
-            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(repeatOption.value!!) else null,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(repeatOption.value) else null,
             repeatValue = repeatValue.value,
             repeatEnd = repeatEndDateStr,
             tags = tagList,
@@ -411,6 +411,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun updateRepeatTodo(callback: () -> Unit){
         val nextEndDate = findNextEndDate()
+        repeatValueStr = null
+        repeatEndDateStr = null
+        _repeatOption.value = null
+
         if (nextEndDate != null){
             val nextEndDateStr = FormatDate.dateToStr(nextEndDate)!!
             checklistViewModel.updateRepeatTodo(todoId = clickedTodo!!.id, updateRepeatTodo = createUpdateRepeatTodoData(nextEndDateStr)){

@@ -508,7 +508,6 @@ class CheckListViewModel() :
                     withTagUpdate()
                 }
             }
-
         }
     }
 
