@@ -36,7 +36,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
     private var click = false
     private lateinit var snsPostAdapter: SnsPostAdapter
 
-    override fun onCommentClick(postitem: ArrayList<Profile>) {
+    override fun onCommentClick(postitem: Post) {
         val newFrag = AddCommentFragment(postitem)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)

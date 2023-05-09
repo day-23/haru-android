@@ -73,7 +73,7 @@ class SnsPostAdapter(val context: Context,
 
         holder.comment.setOnClickListener {
             Log.d("Comment", "${itemList[position].id}")
-            listener.onCommentClick(itemList[position].images)
+            listener.onCommentClick(itemList[position])
         }
 
         if(itemList[position].user.profileImage != null) {

@@ -29,7 +29,7 @@ class MyPageFragment : Fragment(), OnPostClickListener{
     private lateinit var mypageViewModel: MyPageViewModel
     private var click = false
 
-    override fun onCommentClick(postitem: ArrayList<Profile>) {
+    override fun onCommentClick(postitem: Post) {
         val newFrag = AddCommentFragment(postitem)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
