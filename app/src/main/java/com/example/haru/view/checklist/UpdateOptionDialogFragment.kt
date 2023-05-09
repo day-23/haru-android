@@ -107,10 +107,12 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int 
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
-
                 }
                 binding.btnOptionAfterUpdate.id -> {
-
+                    todoAddViewModel.updateTodo {
+                        dismiss()
+                        requireActivity().supportFragmentManager.popBackStack()
+                    }
                 }
 
                 binding.btnOptionCancel.id -> {
