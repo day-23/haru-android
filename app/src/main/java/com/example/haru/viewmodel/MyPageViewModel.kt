@@ -9,13 +9,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.haru.data.model.AddPost
-import com.example.haru.data.model.ExternalImages
-import com.example.haru.data.model.Post
-import com.example.haru.data.model.User
+import com.example.haru.data.model.*
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.TodoRepository
+import com.example.haru.data.repository.UserRepository
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -25,6 +23,7 @@ import java.io.File
 class MyPageViewModel(): ViewModel() {
     private val ProfileRepository = ProfileRepository()
     private val PostRepository = PostRepository()
+    private val UserRepository = UserRepository()
 
     private val _Profile = MutableLiveData<com.example.haru.data.model.Profile>()
     val Profile: LiveData<com.example.haru.data.model.Profile>
@@ -187,5 +186,29 @@ class MyPageViewModel(): ViewModel() {
     fun resetValue(){
         _SelectedPosition.value = arrayListOf()
         _StoredImages.value = arrayListOf()
+    }
+
+    fun requestFollow(body: Followbody){
+        viewModelScope.launch {
+            UserRepository.requestFollowing(body){
+                if(it){
+                    Log.d("TAG","Success to follow")
+                }else{
+                    Log.d("TAG","Fail to follow")
+                }
+            }
+        }
+    }
+
+    fun requestUnFollow(body: UnFollowbody){
+        viewModelScope.launch {
+            UserRepository.requestunFollowing(body){
+                if(it){
+                    Log.d("TAG","Success to unfollow")
+                }else{
+                    Log.d("TAG","Fail to unfollow")
+                }
+            }
+        }
     }
 }

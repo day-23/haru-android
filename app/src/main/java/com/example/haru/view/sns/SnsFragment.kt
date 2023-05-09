@@ -158,7 +158,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
             .build()
 
         val userService = retrofit.create(UserService::class.java)
-        val userRepository = UserRepository(userService)
+        val userRepository = UserRepository()
 
         val viewModelFactory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, viewModelFactory).get(UserViewModel::class.java)

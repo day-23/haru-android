@@ -14,10 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
-import com.example.haru.data.model.Post
-import com.example.haru.data.model.Profile
-import com.example.haru.data.model.SnsPost
-import com.example.haru.data.model.Todo
+import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSnsMypageBinding
 import com.example.haru.view.adapter.MyFeedAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
@@ -78,9 +75,9 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             binding.editProfile.text = "프로필 편집"
             binding.profileShare.visibility = View.VISIBLE
         }else{
-            mypageViewModel.getUserInfo(userId)
             binding.editProfile.text = "팔로우"
             binding.profileShare.visibility = View.GONE
+            mypageViewModel.getUserInfo(userId)
         }
 
         mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
@@ -89,6 +86,10 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             binding.profilePostCount.text = user.postCount.toString()
             binding.profileFollowCount.text = user.followingCount.toString()
             binding.profileFollowerCount.text = user.followerCount.toString()
+
+            if(user.isFollowing){
+                binding.editProfile.text = "팔로우 취소"
+            }
 
             if(user.profileImage != "") {
                 Log.d("TAG", "${user.profileImage}")
@@ -138,14 +139,15 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         }
 
         binding.editProfile.setOnClickListener {
-            val newFrag = EditProfileFragment.newInstance()
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-            if(!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmypage")
-            transaction.commit()
-            true
+            if(binding.editProfile.text == "팔로우"){
+                requestFollow()
+                binding.editProfile.text = "팔로우 취소"
+            }else if(binding.editProfile.text == "팔로우 취소"){
+                requestUnFollow()
+                binding.editProfile.text = "팔로우"
+            }else{
+                moveEditprofile()
+            }
         }
 
         binding.friendFeed.setOnClickListener {
@@ -166,5 +168,24 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             }
         }
         return false
+    }
+
+    fun moveEditprofile(){
+        val newFrag = EditProfileFragment.newInstance()
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
+        if(!isSnsMainInBackStack)
+            transaction.addToBackStack("snsmypage")
+        transaction.commit()
+        true
+    }
+
+    fun requestFollow(){
+        mypageViewModel.requestFollow(Followbody(userId))
+    }
+
+    fun requestUnFollow(){
+        mypageViewModel.requestUnFollow(UnFollowbody(userId))
     }
 }
