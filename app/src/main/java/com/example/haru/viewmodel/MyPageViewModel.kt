@@ -97,11 +97,11 @@ class MyPageViewModel(): ViewModel() {
         _Page.value = _Page.value?.plus(1)
     }
 
-    fun getFeed(page: String) {
+    fun getFeed(page: String, targetId:String) {
         var newPost: ArrayList<Post> = arrayListOf()
         var allPost = _Feed.value ?: arrayListOf()
         viewModelScope.launch {
-            PostRepository.getMyFeed(page) {
+            PostRepository.getMyFeed(page, targetId) {
                 if (it.size > 0) { //get success
                     newPost = it
                     allPost.addAll(it)

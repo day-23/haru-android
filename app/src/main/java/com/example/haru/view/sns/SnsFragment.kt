@@ -2,6 +2,7 @@ package com.example.haru.view.sns
 
 import UserViewModelFactory
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -87,6 +88,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
         Log.d(TAG, "SnsFragment - onCreateView() called")
 
         binding = FragmentSnsBinding.inflate(inflater, container, false)
+        binding.friendFeed.setTextColor(0xFF1DAFFF.toInt())
         val postRecycler = binding.postOfAll
         snsPostAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
 

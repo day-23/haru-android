@@ -70,6 +70,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         Log.d("TAG", "MyPageFragment - onCreateView() called")
 
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
+        binding.myRecords.setTextColor(0xFF1DAFFF.toInt())
 
         //TODO("내 계정으로 접근할때 조건문 추가해야함")
         if(userId == "" || userId == "jts"){
@@ -102,11 +103,11 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         FeedRecyclerView.adapter = feedAdapter
         val layoutManager = LinearLayoutManager(context)
         FeedRecyclerView.layoutManager = layoutManager
-        
+
 
         mypageViewModel.Page.observe(viewLifecycleOwner){page ->
             val page = page.toString()
-            mypageViewModel.getFeed(page)
+            mypageViewModel.getFeed(page, userId)
         }
 
         mypageViewModel.NewFeed.observe(viewLifecycleOwner){feeds ->

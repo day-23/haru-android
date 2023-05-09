@@ -87,11 +87,11 @@ class PostRepository() {
     }
 
     //내 피드
-    suspend fun getMyFeed(page:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+    suspend fun getMyFeed(page:String, targetId:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getMyFeed(
             "jts",
-            "jts",
+            targetId,
             page
         ).execute()
         val posts: ArrayList<Post>
