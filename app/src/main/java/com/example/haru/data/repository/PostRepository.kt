@@ -110,9 +110,10 @@ class PostRepository() {
     //전체 댓글
     suspend fun getComment(postId: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
         Dispatchers.IO){
+            Log.d("TAG", "post id recieve-------------- $postId")
             val response = postService.getComments(
                 "jts",
-                "482051f1-b3be-477a-b81c-99640c8306ec" //postId
+                postId
             ).execute()
 
             val comments: ArrayList<Comments>

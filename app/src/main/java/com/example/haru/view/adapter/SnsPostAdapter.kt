@@ -62,17 +62,21 @@ class SnsPostAdapter(val context: Context,
             }
         })
 
+
         holder.setup.setOnClickListener {
 
         }
 
+        holder.profileImg.setOnClickListener {
+            listener.onProfileClick(itemList[position].user.id)
+        }
+
         holder.totalcomment.setOnClickListener {
-            Log.d("Comment", "${itemList[position].id}")
+            Log.d("TAG", "post id sended -------------${itemList[position].id}")
             listener.onTotalCommentClick(itemList[position].id)
         }
 
         holder.comment.setOnClickListener {
-            Log.d("Comment", "${itemList[position].id}")
             listener.onCommentClick(itemList[position])
         }
 

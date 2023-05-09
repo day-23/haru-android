@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.AddPost
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.data.model.Post
+import com.example.haru.data.model.User
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.TodoRepository
@@ -53,10 +54,13 @@ class MyPageViewModel(): ViewModel() {
     val PostDone: LiveData<Boolean>
         get() = _PostDone
 
+    private val _UserInfo = MutableLiveData<User>()
+    val UserInfo: LiveData<User>
+        get() = _UserInfo
+
     var profile_info = com.example.haru.data.model.Profile("", "", "", "")
 
     init {
-        getProfile()
         _Page.value = 1
     }
 
@@ -105,6 +109,18 @@ class MyPageViewModel(): ViewModel() {
             }
             _NewFeed.value = newPost
             _Feed.value = allPost
+        }
+    }
+
+    fun getUserInfo(targetId: String){
+        var user = User("","","","",false,0,0,0)
+        viewModelScope.launch {
+            ProfileRepository.getUserInfo(targetId){
+                if(it.id != ""){
+                    user = it
+                }
+            }
+            _UserInfo.value = user
         }
     }
 

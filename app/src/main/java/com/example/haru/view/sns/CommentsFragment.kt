@@ -17,22 +17,15 @@ import com.example.haru.view.adapter.CommentsAdapter
 import com.example.haru.viewmodel.SnsViewModel
 import org.w3c.dom.Comment
 
-class CommentsFragment : Fragment() {
+class CommentsFragment(postId:String) : Fragment() {
     lateinit var binding : FragmentCommentsBinding
     lateinit var commentsRecyclerView: RecyclerView
     lateinit var snsViewModel: SnsViewModel
-
-    companion object{
-        const val TAG : String = "로그"
-
-        fun newInstance() : CommentsFragment {
-            return CommentsFragment()
-        }
-    }
+    val postId = postId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(CommentsFragment.TAG, "CommentsFragment - onCreate() called")
+        Log.d("TAG", "CommentsFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
     }
 
@@ -43,11 +36,7 @@ class CommentsFragment : Fragment() {
     ): View? {
         binding = FragmentCommentsBinding.inflate(inflater, container, false)
         commentsRecyclerView = binding.commentRecycler
-
-        val comment = snsViewModel.getPostId()
-        snsViewModel.getComments(comment)
-
-
+        snsViewModel.getComments(postId)
 
         snsViewModel.Comments.observe(viewLifecycleOwner){comments ->
             val adapter = CommentsAdapter(requireContext(), comments)

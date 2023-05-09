@@ -47,14 +47,23 @@ class SnsFragment : Fragment(), OnPostClickListener {
     }
 
     override fun onTotalCommentClick(postId: String) {
-        val newFrag = CommentsFragment.newInstance()
+        val newFrag = CommentsFragment(postId)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
         if(!isSnsMainInBackStack)
             transaction.addToBackStack("snsmain")
         transaction.commit()
+    }
 
+    override fun onProfileClick(userId: String) {
+        val newFrag = MyPageFragment(userId)
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+        if(!isSnsMainInBackStack)
+            transaction.addToBackStack("snsmain")
+        transaction.commit()
     }
     companion object{
         const val TAG : String = "로그"
@@ -105,17 +114,6 @@ class SnsFragment : Fragment(), OnPostClickListener {
             if(newPost.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
-        snsViewModel.CurrentPost.observe(viewLifecycleOwner){ current ->
-            Log.d("Comment", "observed : $current")
-            val newFrag = CommentsFragment.newInstance()
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-            if(!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmain")
-            transaction.commit()
-        }
-
         //하루 옆 메뉴 클릭
         binding.menuButton.setOnClickListener{
             if(click == false){
@@ -130,13 +128,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
         //내 피드 보기 클릭
         binding.myRecords.setOnClickListener {
-            val newFrag = MyPageFragment.newInstance()
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-            if(!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmain")
-            transaction.commit()
+           onProfileClick("")
         }
 
         binding.addPost.setOnClickListener {

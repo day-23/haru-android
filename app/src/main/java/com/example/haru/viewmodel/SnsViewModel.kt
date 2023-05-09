@@ -82,11 +82,4 @@ class SnsViewModel: ViewModel() {
             _Comments.value = comments
         }
     }
-    fun setPostId(postId : String) {
-        _CurrentPost.value = postId
-    }
-
-    fun getPostId() : String {
-        return _CurrentPost.value ?: ""
-    }
 }

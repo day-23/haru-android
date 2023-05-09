@@ -56,4 +56,24 @@ class ProfileRepository() {
         }
         callback(profile)
     }
+
+    suspend fun getUserInfo(targetId: String, callback: (user:User) -> Unit) = withContext(
+        Dispatchers.IO){
+        Log.d("TAG", "-----------------$targetId")
+        val response = profileService.getUserInfo(
+            "jts",
+            targetId
+        ).execute()
+        val user: User
+        val data: UserResponse
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get User")
+            data = response.body()!!
+            user = data.data
+        } else{
+            Log.d("TAG", "Fail to get User")
+            user = User("","","","",false,0,0,0)
+        }
+        callback(user)
+    }
 }
