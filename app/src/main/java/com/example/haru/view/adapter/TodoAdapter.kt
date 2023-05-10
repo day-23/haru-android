@@ -260,9 +260,14 @@ class TodoAdapter(val context: Context) :
                     binding.tvTagDescription.text = tag
                 }
 
-                if (item.endDate != null) {
+                if (item.endDate != null && item.isAllDay) {
                     binding.tvEndDateDescription.text =
-                        FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
+                        FormatDate.todoTimeToStr(item.endDate!!)
+                    binding.tvEndDateDescription.visibility = View.VISIBLE
+                } else if (item.endDate != null){
+                    binding.tvEndDateDescription.text =
+                        FormatDate.todoDateToStr(item.endDate!!)
+//                        FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
                     binding.tvEndDateDescription.visibility = View.VISIBLE
                 } else {
                     binding.tvEndDateDescription.text = ""
