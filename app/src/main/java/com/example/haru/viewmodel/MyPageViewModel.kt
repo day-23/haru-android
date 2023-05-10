@@ -1,6 +1,7 @@
 package com.example.haru.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build.VERSION_CODES.P
 import android.provider.ContactsContract.Profile
 import android.provider.MediaStore
@@ -57,7 +58,13 @@ class MyPageViewModel(): ViewModel() {
     val UserInfo: LiveData<User>
         get() = _UserInfo
 
-    var profile_info = com.example.haru.data.model.Profile("", "", "", "")
+    private val _EditImage = MutableLiveData<MultipartBody.Part>()
+    val EditImage: LiveData<MultipartBody.Part>
+        get() = _EditImage
+
+    private val _EditUri = MutableLiveData<Uri>()
+    val EditUri: LiveData<Uri>
+        get() = _EditUri
 
     fun init_page(){
         _Page.value = 1
@@ -73,25 +80,6 @@ class MyPageViewModel(): ViewModel() {
         Log.d("Image", "download -------------------$images")
         return images
     }
-
-    fun updateProfile(image: MultipartBody.Part) {
-        viewModelScope.launch {
-            ProfileRepository.editProfile(image) {
-                if (it.id != "") profile_info = it
-            }
-            _Profile.value = profile_info
-        }
-    }
-
-    fun getProfile() {
-        viewModelScope.launch {
-            ProfileRepository.getProfile {
-                if (it.id != "") profile_info = it
-            }
-            _Profile.value = profile_info
-        }
-    }
-
     fun addPage() {
         _Page.value = _Page.value?.plus(1)
     }
@@ -183,6 +171,39 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
+    fun editProfile(image: MultipartBody.Part, name: String, introduction: String){
+        var user = User("","","","",false,0,0,0)
+        viewModelScope.launch {
+            ProfileRepository.editProfile(image, name, introduction){
+                if(it.id != "") {
+                    user = it
+                    Log.d("TAG", "Success to Edit!")
+                }
+            }
+            _UserInfo.value = user
+        }
+    }
+
+    fun editProfileName(name:String, introduction: String){
+        var user = User("","","","",false,0,0,0)
+        viewModelScope.launch {
+            ProfileRepository.editProfileName(name, introduction){
+                if(it.id != ""){
+                    user = it
+                    Log.d("TAG", "Success to EditName!")
+                }
+                else{
+                    Log.d("TAG", "Fail to Edit name")
+                }
+            }
+            _UserInfo.value = user
+        }
+    }
+
+    fun selectProfile(part: MultipartBody.Part, absuri: Uri){
+        _EditImage.value = part
+        _EditUri.value = absuri
+    }
     fun resetValue(){
         _SelectedPosition.value = arrayListOf()
         _StoredImages.value = arrayListOf()

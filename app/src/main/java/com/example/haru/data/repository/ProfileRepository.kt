@@ -12,49 +12,56 @@ import okhttp3.MultipartBody
 class ProfileRepository() {
     private val profileService = RetrofitClient.profileService
 
-    suspend fun editProfile(imageFile: MultipartBody.Part, callback:(profile : Profile) -> Unit) = withContext(
+    suspend fun editProfile(imageFile: MultipartBody.Part, name:String, introduction:String ,callback:(user : User) -> Unit) = withContext(
         Dispatchers.IO) {
-        Log.d("EDITTAG", "sended")
         try {
             val response = profileService.editProfile(
                 "jts",
                 imageFile,
+                name,
+                introduction
             ).execute()
-            Log.d("EDITTAG", "excuted")
-            val profile: Profile
+            val user: User
             val data: GetProfileResponse
             if (response.isSuccessful) {
                 Log.d("EDITTAG", "Success to update profile")
                 data = response.body()!!
-                profile = data.data
+                user = data.data
 
             } else {
                 Log.d("EDITTAG", "Fail to update Profile: $response")
-                profile = Profile("", "", "", "")
+                user = User("","","","", false,0,0,0)
             }
-            callback(profile)
+            callback(user)
         }
         catch (e: Exception) {
             Log.e("EDITTAG", "Error occurred while editing profile", e)
         }
     }
 
-    suspend fun getProfile(callback: (profile: Profile) -> Unit) = withContext(
-        Dispatchers.IO){
-        val response = profileService.getProfile(
-            "jts",
-        ).execute()
-        val profile: Profile
-        val data: ProfileListResponse
-        if (response.isSuccessful) {
-            Log.d("TAG", "Success to get profile")
-            data = response.body()!!
-            profile = data.data[0]
-        } else{
-            Log.d("TAG", "Fail to get Profile")
-            profile = Profile("","","","")
+    suspend fun editProfileName(name:String, introduction:String ,callback:(user : User) -> Unit) = withContext(
+        Dispatchers.IO) {
+        try {
+            val response = profileService.editProfileName(
+                "jts",
+                EditBody(name, introduction)
+            ).execute()
+            val user: User
+            val data: GetProfileResponse
+            if (response.isSuccessful) {
+                Log.d("EDITTAG", "Success to update profile")
+                data = response.body()!!
+                user = data.data
+
+            } else {
+                Log.d("EDITTAG", "Fail to update Profile: $response")
+                user = User("","","","", false,0,0,0)
+            }
+            callback(user)
         }
-        callback(profile)
+        catch (e: Exception) {
+            Log.e("EDITTAG", "Error occurred while editing profile", e)
+        }
     }
 
     suspend fun getUserInfo(targetId: String, callback: (user:User) -> Unit) = withContext(

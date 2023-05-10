@@ -149,7 +149,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
                 requestUnFollow()
                 binding.editProfile.text = "팔로우"
             }else{
-                moveEditprofile()
+                moveEditprofile(userId)
             }
         }
 
@@ -173,8 +173,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         return false
     }
 
-    fun moveEditprofile(){
-        val newFrag = EditProfileFragment.newInstance()
+    fun moveEditprofile(userId: String){
+        val newFrag = EditProfileFragment(userId)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
