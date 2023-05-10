@@ -37,7 +37,7 @@ class SnsViewModel: ViewModel() {
     val CurrentPost : LiveData<String>
         get() = _CurrentPost
 
-    init{
+    fun init_page(){
         _Page.value = 1
     }
 

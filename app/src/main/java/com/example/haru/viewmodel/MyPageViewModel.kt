@@ -59,7 +59,7 @@ class MyPageViewModel(): ViewModel() {
 
     var profile_info = com.example.haru.data.model.Profile("", "", "", "")
 
-    init {
+    fun init_page(){
         _Page.value = 1
     }
 
@@ -123,6 +123,7 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
+    //커스텀 갤러리 선택한 사진 인덱스 표시를 위한 함수들
     fun addSelected(i: Int) {
         var newlist = _SelectedPosition.value
         if (newlist != null)
@@ -130,7 +131,6 @@ class MyPageViewModel(): ViewModel() {
         else newlist = arrayListOf(i)
         _SelectedPosition.value = newlist!!
     }
-
     fun delSelected(i: Int) {
         var newlist = _SelectedPosition.value
         newlist?.remove(i)

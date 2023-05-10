@@ -68,6 +68,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
 
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
         binding.myRecords.setTextColor(0xFF1DAFFF.toInt())
+        mypageViewModel.init_page()
 
         //TODO("내 계정으로 접근할때 조건문 추가해야함")
         if(userId == "" || userId == "jts"){
@@ -108,7 +109,9 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
 
         mypageViewModel.Page.observe(viewLifecycleOwner){page ->
             val page = page.toString()
-            mypageViewModel.getFeed(page, userId)
+            //TODO("본인 계정 정보를 불러와 쓰도록 후속조치 필요함")
+            if(userId == "") mypageViewModel.getFeed(page,"jts")
+            else mypageViewModel.getFeed(page, userId)
         }
 
         mypageViewModel.NewFeed.observe(viewLifecycleOwner){feeds ->
