@@ -592,7 +592,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                                 set(Calendar.MINUTE, minute * 5)
                             }
                             val time = FormatDate.cal.time
-                            Log.d("20191627", "hour : $hour  minute : $minute")
                             when(v.id){
                                 binding.btnInfoEndTimePick.id ->
                                     todoAddViewModel.setTime(0, time)
@@ -602,31 +601,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                         }
                     }
                     timePicker.show(parentFragmentManager, null)
-//                    val calendar = Calendar.getInstance()
-//                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-//                    val minute = calendar.get(Calendar.MINUTE)
-//
-//                    val timePickerDialog = TimePickerDialog(
-//                        requireContext(),
-//                        MyTimeSetListener { view, hourOfDay, minute ->
-//                            val time = calendar.apply {
-//                                set(Calendar.HOUR_OF_DAY, hourOfDay)
-//                                set(Calendar.MINUTE, minute)
-//                            }.time
-//                            when (v.id) {
-//                                binding.btnInfoEndTimePick.id ->
-//                                    todoAddViewModel.setTime(0, time)
-//                                binding.btnInfoAlarmTimePick.id ->
-//                                    todoAddViewModel.setTime(1, time)
-//                            }
-//                            // timepicker 리스너 만들기 버튼을 없애고 시간을 선택하면 바로 적용되게끔
-//                        },
-//                        hour,
-//                        minute,
-//                        false
-//                    )
-//
-//                    timePickerDialog.show()
                 }
 
                 binding.infoRepeatSwitch.id -> todoAddViewModel.setRepeatSwitch()

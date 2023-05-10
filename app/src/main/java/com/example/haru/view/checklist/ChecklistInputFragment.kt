@@ -20,6 +20,7 @@ import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.view.adapter.AdapterMonth
+import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -27,7 +28,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
-class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter:AdapterMonth? = null) :
+class ChecklistInputFragment(
+    checkListViewModel: CheckListViewModel,
+    val adapter: AdapterMonth? = null
+) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
     private var todoAddViewModel: TodoAddViewModel
@@ -180,12 +184,13 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog: Dialog = object : BottomSheetDialog(requireContext()){
+        val dialog: Dialog = object : BottomSheetDialog(requireContext()) {
             override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-                val imm: InputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm: InputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 
-                if (currentFocus is EditText){
+                if (currentFocus is EditText) {
                     currentFocus!!.clearFocus()
                     return false
                 }
@@ -787,31 +792,32 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter
 
 
                 R.id.btn_alarmTime_pick, R.id.btn_endTime_pick -> {
-                    val calendar = Calendar.getInstance()
-                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                    val minute = calendar.get(Calendar.MINUTE)
-
-                    val timePickerDialog = TimePickerDialog(
-                        requireContext(),
-                        MyTimeSetListener { view, hourOfDay, minute ->
-                            val time = calendar.apply {
-                                set(Calendar.HOUR_OF_DAY, hourOfDay)
-                                set(Calendar.MINUTE, minute)
-                            }.time
-                            Log.d("20191627", time.toString())
-                            if (v.id == R.id.btn_endTime_pick)
-                                todoAddViewModel.setTime(0, time)
-                            else todoAddViewModel.setTime(1, time)
-
-                            // timepicker 리스너 만들기 버튼을 없애고 시간을 선택하면 바로 적용되게끔
-                        },
-                        hour,
-                        minute,
-                        false
-                    )
-
-                    timePickerDialog.show()
-
+                   val timePicker = when(v.id){
+                       binding.btnEndTimePick.id -> CustomTimeDialog(todoAddViewModel.endTime.value)
+                       binding.btnAlarmTimePick.id -> CustomTimeDialog(todoAddViewModel.alarmTime.value)
+                       else -> CustomTimeDialog()
+                   }
+                    timePicker.timePickerClick =
+                        object : CustomTimeDialog.TimePickerClickListener{
+                            override fun onClick(
+                                hourNumberPicker: NumberPicker,
+                                minuteNumberPicker: NumberPicker
+                            ) {
+                                val hour = hourNumberPicker.value
+                                val minute = minuteNumberPicker.value
+                                FormatDate.cal.apply {
+                                    set(Calendar.HOUR_OF_DAY, hour)
+                                    set(Calendar.MINUTE, minute * 5)
+                                }
+                                val time = FormatDate.cal.time
+                                when(v.id){
+                                    binding.btnEndTimePick.id ->
+                                        todoAddViewModel.setTime(0, time)
+                                    binding.btnAlarmTimePick.id ->
+                                        todoAddViewModel.setTime(1, time)
+                                }
+                            }
+                        }
                 }
 
                 R.id.btn_alarmDate_pick, R.id.btn_endDate_pick, R.id.btn_repeat_end_date -> {
@@ -849,7 +855,7 @@ class ChecklistInputFragment(checkListViewModel: CheckListViewModel, val adapter
                     else {
                         todoAddViewModel.readyToSubmit()
 
-                        if(adapter == null) {
+                        if (adapter == null) {
                             todoAddViewModel.addTodo {
                                 Log.d("20191627", "dismiss")
                                 dismiss()
