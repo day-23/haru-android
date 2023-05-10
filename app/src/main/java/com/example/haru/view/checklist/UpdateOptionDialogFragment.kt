@@ -12,20 +12,19 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int = 2) : BottomSheetDialogFragment(){
+class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int = 3) : BottomSheetDialogFragment(){
     private lateinit var binding: FragmentOptionUpdateBinding
     private var ratio : Int = 30
-    private var type : Int = 2
+    private var type : Int = 3
     private var todoAddViewModel: TodoAddViewModel
 
 
     init{
         this.type = type
         ratio = when(type){
-            0 -> 23  // 이 후 이벤트 수정 만 표시  -> 반복 정보, 마감일 둘 다 수정 시
-            1 -> 23 // 이 이벤트 수정 만 표시   -> 반복 정보는 유지하고, 마감일만 수정시
-            2 -> 30  // 이후 이벤트 수정과 전체 이벤트 수정 -> 마감일은 유지하고, 반복 정보만 수정 시
-            3 -> 38 // 이 후 이벤트 수정과 전체 이벤트 수정, 이 이벤트 수정 표시 -> 마감일과 반복 정보 유지하고, 다른 정보 수정 시
+            0, 1, 2 -> 23  // 취소 버튼 제외하고 선택지가 1개인 경우
+            3 -> 30 // 취소 버튼 제외하고 선택지가 2개인 경우
+            3 -> 38 // 취소 버튼 제외하고 선택지가 3개인 경우
             else -> 30
         }
         this.todoAddViewModel = todoAddViewModel
@@ -73,18 +72,21 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int 
         super.onViewCreated(view, savedInstanceState)
 
         when(type){
-            0 -> {
+            0 -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
                 binding.btnOptionOneUpdate.visibility = View.GONE
-                binding.btnOptionAllUpdate.visibility = View.GONE
+                binding.btnOptionAfterUpdate.visibility = View.GONE
             }
-            1 -> {
+            1 -> { // 이 할일만 수정 (마감일 수정, 반복 옵션 수정X)
                 binding.btnOptionAllUpdate.visibility = View.GONE
                 binding.btnOptionAfterUpdate.visibility = View.GONE
             }
-            2 -> {
+            2 -> { // 전체 할일 수정 (마감일 수정X, 반복 옵션 수정)
                 binding.btnOptionOneUpdate.visibility = View.GONE
+                binding.btnOptionAfterUpdate.visibility = View.GONE
             }
-            3 -> {}
+            3 -> { // default, 전체 할일 수정, 이 할일만 수정 (마감일 수정X, 반복 옵션 수정X)
+                binding.btnOptionAfterUpdate.visibility = View.GONE
+            }
         }
 
         binding.btnOptionOneUpdate.setOnClickListener(ButtonClickListener())
@@ -97,24 +99,27 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int 
         override fun onClick(v: View?) {
             when(v?.id){
                 binding.btnOptionOneUpdate.id -> {
+                    // front에서의 하나만 업데이트
                     todoAddViewModel.updateRepeatTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
+
+                    // middle, back에서의 하나만 업데이트
                 }
                 binding.btnOptionAllUpdate.id -> {
+                    // front에서의 전체 업데이트
                     todoAddViewModel.updateTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
-                }
-                binding.btnOptionAfterUpdate.id -> {
-                    todoAddViewModel.updateTodo {
-                        dismiss()
-                        requireActivity().supportFragmentManager.popBackStack()
-                    }
-                }
 
+                    // middle, back에서의 전체 업데이트
+                }
+//                binding.btnOptionAfterUpdate.id -> {
+//                    middle, back에서의 이 할일부터 업데이트
+//
+//                }
                 binding.btnOptionCancel.id -> {
                     dismiss()
                 }

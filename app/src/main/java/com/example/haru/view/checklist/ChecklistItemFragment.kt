@@ -632,10 +632,30 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                 binding.btnInfoSave.id -> {
                     todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
+                        // front, middle, back 구분할 수 있는 데이터로 분기 설정 front 면 아래 코드
                         val checkEndDate = todoAddViewModel.checkChangeEndDate()
                         val checkRepeatData = todoAddViewModel.checkChangeRepeat()
+//                        val type : Int
+                        // if (~~ front == true)
                         val type = if (checkEndDate && checkRepeatData) 0
                         else if (checkEndDate) 1 else if (checkRepeatData) 2 else 3
+
+                        // else 로 middle, back이면 아래 코드
+//                        else {
+//
+//                        }
+
+//                        Front
+//                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트만 수정”
+//                        * 반복 일정 수정 → “전체 이벤트 수정”
+//                        * 마감일 수정 → “이 이벤트만 수정”
+//                        * 둘다 수정시 → “전체 이벤트 수정”
+
+//                        Middle, Back
+//                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트부터 수정”, “이 이벤트만 수정”
+//                        * 반복 일정 수정 → “전체 이벤트 수정”, “이 이벤트부터 수정”
+//                        * 마감일 수정 → “이 이벤트만 수정”
+//                        * 둘다 수정시 → “전체 이벤트 수정”, “이 이벤트부터 수정”
 
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
                         option.show(parentFragmentManager, option.tag)
