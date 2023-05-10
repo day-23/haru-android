@@ -31,7 +31,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
     private var flag = 1   // 0이면 오전, 1이면 오후
 
     interface TimePickerClickListener {
-        fun onClick(hourNumberPicker: NumberPicker, minuteNumberPicker: NumberPicker)
+        fun onClick(timeDivider : NumberPicker, hourNumberPicker: NumberPicker, minuteNumberPicker: NumberPicker)
     }
 
     var timePickerClick: TimePickerClickListener? = null
@@ -148,7 +148,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
 
         binding.btnPositive.setOnClickListener {
             if (timePickerClick != null) {
-                timePickerClick?.onClick(binding.npHourPick, binding.npMinutePick)
+                timePickerClick?.onClick(binding.timeDivision, binding.npHourPick, binding.npMinutePick)
                 dismiss()
             }
         }

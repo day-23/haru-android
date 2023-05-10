@@ -800,11 +800,23 @@ class ChecklistInputFragment(
                     timePicker.timePickerClick =
                         object : CustomTimeDialog.TimePickerClickListener{
                             override fun onClick(
+                                timeDivider : NumberPicker,
                                 hourNumberPicker: NumberPicker,
                                 minuteNumberPicker: NumberPicker
                             ) {
-                                val hour = hourNumberPicker.value
+                                val timeDivision = timeDivider.value
+                                var hour = hourNumberPicker.value
                                 val minute = minuteNumberPicker.value
+                                if (timeDivision == 0){
+                                    if (hour == 11)
+                                        hour = 0
+                                    else hour++
+                                } else {
+                                    if (hour == 11)
+                                        hour++
+                                    else hour += 13
+                                }
+
                                 FormatDate.cal.apply {
                                     set(Calendar.HOUR_OF_DAY, hour)
                                     set(Calendar.MINUTE, minute * 5)
