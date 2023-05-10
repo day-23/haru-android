@@ -14,7 +14,7 @@ object FormatDate {
     private val diff = initDiff()
 
     // LocslDateTime을 String으로 변환할 formatter
-    private val localTimeFormatter = DateTimeFormatter.ofPattern("M월dd일 hh:mm까지", Locale.KOREA)
+    private val localTimeFormatter = DateTimeFormatter.ofPattern("hh:mm까지", Locale.KOREA)
     private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지", Locale.US)
 
 
@@ -49,6 +49,21 @@ object FormatDate {
 //    fun localDateToStr(date: LocalDateTime): String {
 //        return date.format(localDateFormatter)
 //    }
+
+    fun checkToday(date : Date?) : Boolean?{
+        if (date == null)
+            return null
+        val today = Date()
+        cal.time = today
+        val todayYear = cal.get(Calendar.YEAR)
+        val todayMonth = cal.get(Calendar.MONTH)
+        val todayDay = cal.get(Calendar.DAY_OF_MONTH)
+        cal.time = date
+        val dateYear = cal.get(Calendar.YEAR)
+        val dateMonth = cal.get(Calendar.MONTH)
+        val dateDay = cal.get(Calendar.DAY_OF_MONTH)
+        return (todayYear == dateYear && todayMonth == dateMonth && todayDay == dateDay)
+    }
 
     // 서버에서 받은 그리니치 시간대에 Local시간과의 차이를 더해서 String으로 반환
     fun todoDateToStr(str: String): String {

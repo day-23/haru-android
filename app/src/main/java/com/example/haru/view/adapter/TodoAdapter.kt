@@ -266,6 +266,7 @@ class TodoAdapter(val context: Context) :
                 }
                 if (count != 0)
                     tag += "+$count"
+
                 if (tag != "") {
                     binding.tvTagDescription.text = tag
                     binding.tvTagDescription.visibility = View.VISIBLE
@@ -274,14 +275,17 @@ class TodoAdapter(val context: Context) :
                     binding.tvTagDescription.text = tag
                 }
 
-                if (item.endDate != null && item.isAllDay) {
-                    binding.tvEndDateDescription.text =
+                val endDate = FormatDate.strToDate(item.endDate)
+                val checkToday = FormatDate.checkToday(endDate)
+                if (endDate != null && item.isAllDay) {
+                    binding.tvEndDateDescription.text = if (checkToday == true)
                         FormatDate.todoTimeToStr(item.endDate!!)
+                    else FormatDate.todoDateToStr(item.endDate!!)
                     binding.tvEndDateDescription.visibility = View.VISIBLE
-                } else if (item.endDate != null) {
-                    binding.tvEndDateDescription.text =
-                        FormatDate.todoDateToStr(item.endDate!!)
-//                        FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
+                } else if (endDate != null) {
+                    binding.tvEndDateDescription.text = if (checkToday == true)
+                        context.resources.getString(R.string.endDateToday)
+                    else FormatDate.todoDateToStr(item.endDate!!)
                     binding.tvEndDateDescription.visibility = View.VISIBLE
                 } else {
                     binding.tvEndDateDescription.text = ""

@@ -78,4 +78,6 @@
 
     <string name="cancel">취소</string>
 
+    <string name="endDateToday">오늘까지</string>
+
 </resources>
