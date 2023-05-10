@@ -266,7 +266,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         "매일" -> {
                             FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
                         }
-                        "매주", "2주마다" -> {
+                        "매주", "격주" -> {
                             val repeatOption = if (todo.repeatOption == "매주") 1 else 2
                             FormatDate.nextEndDateEveryWeek(
                                 todo.repeatValue!!,

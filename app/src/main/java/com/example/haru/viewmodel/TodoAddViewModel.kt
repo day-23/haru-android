@@ -12,7 +12,7 @@ import kotlin.math.min
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val checklistViewModel: CheckListViewModel
 
-    private val repeatOptionList = listOf("매일", "매주", "2주마다", "매달", "매년")
+    private val repeatOptionList = listOf("매일", "매주", "격주", "매달", "매년")
 
     private val _flagTodo = MutableLiveData<Boolean>(false)
     val flagTodo: LiveData<Boolean> = _flagTodo
@@ -442,7 +442,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
                     clickedTodo!!.repeatEnd
                 )
             }
-            "2주마다" -> {
+            "격주" -> {
                 FormatDate.nextEndDateEveryWeek(
                     clickedTodo!!.repeatValue!!,
                     2,

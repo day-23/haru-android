@@ -249,11 +249,25 @@ class TodoAdapter(val context: Context) :
                 binding.blankView.visibility = View.GONE
                 binding.iconLayout.visibility = View.VISIBLE
                 var tag = ""
+                var totalLen = 8
+                var count = item.tags.size
+
                 for (i in 0 until item.tags.size) {
-                    tag += "${item.tags[i].content} "
+                    val len = item.tags[i].content.length
+                    if (totalLen - len >= 3) { // 3은 " +${count}"자리이다.
+                        tag += "${item.tags[i].content} "
+                        count--
+                        totalLen -= (len + 1)
+                    } else if (count == 1 && totalLen - len == 0) {
+                        tag += item.tags[i].content
+                        count--
+                        break
+                    }
                 }
+                if (count != 0)
+                    tag += "+$count"
                 if (tag != "") {
-                    binding.tvTagDescription.text = tag.dropLast(1)
+                    binding.tvTagDescription.text = tag
                     binding.tvTagDescription.visibility = View.VISIBLE
                 } else {
                     binding.tvTagDescription.visibility = View.GONE
@@ -264,7 +278,7 @@ class TodoAdapter(val context: Context) :
                     binding.tvEndDateDescription.text =
                         FormatDate.todoTimeToStr(item.endDate!!)
                     binding.tvEndDateDescription.visibility = View.VISIBLE
-                } else if (item.endDate != null){
+                } else if (item.endDate != null) {
                     binding.tvEndDateDescription.text =
                         FormatDate.todoDateToStr(item.endDate!!)
 //                        FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
@@ -275,7 +289,8 @@ class TodoAdapter(val context: Context) :
                 }
             }
 
-            if (item.completed) binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
+            if (item.completed) binding.tvTitle.paintFlags =
+                Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
             else binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
 
             binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
@@ -310,7 +325,8 @@ class TodoAdapter(val context: Context) :
 
                 addView.findViewById<TextView>(R.id.tv_subTodo).apply {
                     text = item.subTodos[i].content
-                    paintFlags = if (item.subTodos[i].completed) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
+                    paintFlags =
+                        if (item.subTodos[i].completed) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
                     if (item.subTodos[i].completed)
                         setTextColor(ContextCompat.getColor(context, R.color.light_gray))
                 }
@@ -330,10 +346,10 @@ class TodoAdapter(val context: Context) :
 
     inner class EmptyViewHolder(val binding: ChecklistEmptyBinding) :
         RecyclerView.ViewHolder(binding.root) {
-            fun bind(item : String){
-                binding.tvTodoEmpty.text = item
-            }
+        fun bind(item: String) {
+            binding.tvTodoEmpty.text = item
         }
+    }
 
     fun setDataList(dataList: List<Todo>) {
         data = dataList as MutableList<Todo>
