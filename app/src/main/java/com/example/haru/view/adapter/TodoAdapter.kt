@@ -65,8 +65,8 @@ class TodoAdapter(val context: Context) :
     var subTodoCompleteClick: SubTodoCompleteClick? = null
     var toggleClick: ToggleClick? = null
 
-    val HeaderType1 = 0
-    val HeaderType2 = 1
+//    val HeaderType1 = 0   -> 디자인 시안 변경으로 인해 사용 X
+//    val HeaderType2 = 1
     val Item = 2
     val Divider = 3
     val HeaderType3 = 4
@@ -105,17 +105,17 @@ class TodoAdapter(val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            HeaderType1 -> HeaderTypeOneViewHolder(
-                ChecklistHeaderType1Binding.inflate(
-                    LayoutInflater.from(context), parent, false
-                )
-            )
-
-            HeaderType2 -> HeaderTypeTwoViewHolder(
-                ChecklistHeaderType2Binding.inflate(
-                    LayoutInflater.from(context), parent, false
-                )
-            )
+//            HeaderType1 -> HeaderTypeOneViewHolder(    // 디자인 시안 변경으로 인해 사용 X
+//                ChecklistHeaderType1Binding.inflate(
+//                    LayoutInflater.from(context), parent, false
+//                )
+//            )
+//
+//            HeaderType2 -> HeaderTypeTwoViewHolder(
+//                ChecklistHeaderType2Binding.inflate(
+//                    LayoutInflater.from(context), parent, false
+//                )
+//            )
 
             HeaderType3 -> HeaderTypeThreeViewHolder(
                 ChecklistHeaderType3Binding.inflate(
@@ -168,8 +168,8 @@ class TodoAdapter(val context: Context) :
     ) {
         val todo = diffUtil.currentList[position]
         when (holder) {
-            is HeaderTypeOneViewHolder -> {}
-            is HeaderTypeTwoViewHolder -> holder.bind(todo.content)
+//            is HeaderTypeOneViewHolder -> {}
+//            is HeaderTypeTwoViewHolder -> holder.bind(todo.content)
             is HeaderTypeThreeViewHolder -> holder.bind(todo.content)
             is DividerViewHolder -> {}
             is TodoViewHolder -> {
@@ -180,15 +180,15 @@ class TodoAdapter(val context: Context) :
         }
     }
 
-    inner class HeaderTypeOneViewHolder(val binding: ChecklistHeaderType1Binding) :
-        RecyclerView.ViewHolder(binding.root) {}
-
-    inner class HeaderTypeTwoViewHolder(val binding: ChecklistHeaderType2Binding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: String) {
-            binding.str = item
-        }
-    }
+//    inner class HeaderTypeOneViewHolder(val binding: ChecklistHeaderType1Binding) :
+//        RecyclerView.ViewHolder(binding.root) {}
+//
+//    inner class HeaderTypeTwoViewHolder(val binding: ChecklistHeaderType2Binding) :
+//        RecyclerView.ViewHolder(binding.root) {
+//        fun bind(item: String) {
+//            binding.str = item
+//        }
+//    }
 
     inner class HeaderTypeThreeViewHolder(val binding: ChecklistHeaderType3Binding) :
         RecyclerView.ViewHolder(binding.root) {

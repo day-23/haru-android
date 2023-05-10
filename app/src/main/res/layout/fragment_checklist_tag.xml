@@ -23,7 +23,7 @@
         android:paddingEnd="11dp"
         android:text="@{tag.content}"
         android:textColor="@color/todo_description"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
 

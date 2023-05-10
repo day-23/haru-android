@@ -156,6 +156,7 @@ class CheckListViewModel() :
                 todoList.clear()
                 _todoByTag.postValue(false)
                 todoByTagItem = null
+
                 if (it.flaggedTodos.isNotEmpty())
                     _flaggedTodos.postValue(
                         listOf(Todo(type = 4, content = "중요"))
@@ -226,6 +227,7 @@ class CheckListViewModel() :
             todoRepository.getTodayTodo(endDate = endDate) {
                 todayList.clear()
                 todayList.apply {
+
                     this.add(Todo(type = 4, content = "중요"))
                     if (it.flaggedTodos.isNotEmpty())
                         this.addAll(it.flaggedTodos)
@@ -300,19 +302,19 @@ class CheckListViewModel() :
                             this.add(Todo(type = 4, content = "중요"))
                             if (it.flaggedTodos.isNotEmpty())
                                 this.addAll(it.flaggedTodos)
-                            else this.add(Todo(type = 5))
+                            else this.add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
                             this.add(Todo(type = 3))
 
                             this.add(Todo(type = 4, content = todoByTagItem!!))
                             if (it.unFlaggedTodos.isNotEmpty())
                                 this.addAll(it.unFlaggedTodos)
-                            else this.add(Todo(type = 5))
+                            else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
                             this.add(Todo(type = 3))
 
                             this.add(Todo(type = 4, content = "완료"))
                             if (it.completedTodos.isNotEmpty())
                                 this.addAll(it.completedTodos)
-                            else this.add(Todo(type = 5))
+                            else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
                         }
                     }
                 }

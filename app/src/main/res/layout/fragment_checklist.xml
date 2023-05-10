@@ -71,6 +71,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="@string/today_todo"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 

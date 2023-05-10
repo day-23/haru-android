@@ -34,7 +34,7 @@
                 android:id="@+id/check_done"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_marginStart="13dp"
+                android:layout_marginStart="6dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/checklist_done_circle"
                 android:button="@android:color/transparent"
