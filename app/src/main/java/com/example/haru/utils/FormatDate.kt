@@ -14,15 +14,15 @@ object FormatDate {
     private val diff = initDiff()
 
     // LocslDateTime을 String으로 변환할 formatter
-    private val localTimeFormatter = DateTimeFormatter.ofPattern("hh:mm까지", Locale.KOREA)
-    private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지", Locale.US)
+    private val localTimeFormatter = DateTimeFormatter.ofPattern("H:mm까지")
+    private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지")
 
 
     //// DatePicker와 TimePicker로 받는 값들은 Date이므로 SimpleDateFormat으로 서버로 보낼 형식으로 변환하는 formatter
     private val dateFormatterToServer = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
 
-    private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd", Locale.US)
-    private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
+    private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd E", Locale.KOREA)
+    private val simpleFormatterTime = SimpleDateFormat("a HH:mm", Locale.KOREA)
 
     private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
 
