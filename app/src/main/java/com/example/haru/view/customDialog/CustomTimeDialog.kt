@@ -21,10 +21,11 @@ import java.util.*
 
 class CustomTimeDialog(date: Date? = null) : DialogFragment() {
     private lateinit var binding: CustomTimePickerBinding
-    private var hourList: Array<String> = Array(24) { "" }
+    private var hourList: Array<String> = Array(12) { "" }
     private var minuteList: Array<String> = Array(12) { "" }
-    private var startHour: Int = 12
+    private var startHour: Int = 11
     private var startMinute: Int = 0
+    private var flag = false   // false이면 오전, true이면 오후
 
     interface TimePickerClickListener {
         fun onClick(hourNumberPicker: NumberPicker, minuteNumberPicker: NumberPicker)
@@ -43,10 +44,30 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
                 startMinute -= remain
             else startMinute += (5 - remain)
             startMinute /= 5
+            if (startHour > 12){
+            // 오후로 설정 하고 index = startHour % 12 - 1
+                startHour = startHour % 12 -1
+                flag = true
+            }
+            else if (startHour == 12) {
+            // index = 11 오후로 설정
+                startHour = 11
+                flag = true
+            }
+            else if (startHour == 0) {
+                // 오전으로 설정하고 index = 11
+                startHour = 11
+                flag = false
+            }
+            else if (startHour < 12){
+            // indxe = startHour - 1 오전으로 설정
+                startHour -= 1
+                flag = false
+            }
         }
 
-        for (i in 0 until 24) {
-            val hour = i.toString()
+        for (i in 0 until 12) {
+            val hour = (i + 1).toString()
             hourList[i] = if (hour.length < 2) "0$hour" else hour
         }
 
@@ -81,7 +102,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
         binding.npHourPick.apply {
             descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
             minValue = 0
-            maxValue = 23
+            maxValue = 11
             value = startHour
             displayedValues = hourList
         }

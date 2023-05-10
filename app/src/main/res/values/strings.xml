@@ -79,7 +79,10 @@
     <string name="allUpdate">전체 할일 수정</string>
     <string name="afterUpdate">이 할일부터 수정</string>
 
-    <string name="cancel">취소</string>
+    <string name="cancel">취소</string>후
+
+    <string name="am">오전</string>
+    <string name="pm">오후</string>
 
     <string name="endDateToday">오늘까지</string>
 
