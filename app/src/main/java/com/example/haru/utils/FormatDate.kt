@@ -14,7 +14,7 @@ object FormatDate {
     private val diff = initDiff()
 
     // LocslDateTime을 String으로 변환할 formatter
-    private val localTimeFormatter = DateTimeFormatter.ofPattern("H:mm까지")
+    private val localTimeFormatter = DateTimeFormatter.ofPattern("H:mm까지")  //24시간으로 할지 아니면 오전, 오후로 12시간제로 하는지
     private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지")
 
 
@@ -22,7 +22,7 @@ object FormatDate {
     private val dateFormatterToServer = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
 
     private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd E", Locale.KOREA)
-    private val simpleFormatterTime = SimpleDateFormat("a HH:mm", Locale.KOREA)
+    private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
 
     private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
 

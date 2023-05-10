@@ -220,6 +220,14 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     private fun initTodoList() {
         val todoListView: RecyclerView = binding.recyclerTodos
         val todoAdapter = TodoAdapter(requireContext())
+
+        todoAdapter.sectionToggleClick = object  : TodoAdapter.SectionToggleClick {
+            override fun onClick(view: View, str: String) {
+                Log.d("20191627", "section Click")
+                checkListViewModel.setVisibility(str, 0)
+            }
+        }
+
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
             override fun onClick(view: View, id: String) {
                 if (checkListViewModel.todoDataList.value!!.find {

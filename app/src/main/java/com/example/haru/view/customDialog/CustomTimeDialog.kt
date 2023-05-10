@@ -84,7 +84,6 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             maxValue = 23
             value = startHour
             displayedValues = hourList
-            wrapSelectorWheel = false
         }
 
         binding.npMinutePick.apply {
@@ -93,7 +92,6 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             maxValue = 11
             value = startMinute
             displayedValues = minuteList
-            wrapSelectorWheel = false
         }
 
         binding.btnPositive.setOnClickListener {

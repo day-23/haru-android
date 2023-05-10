@@ -45,7 +45,6 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
     override fun onDestroy() {
         super.onDestroy()
         checkListViewModel.clearToday()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,6 +61,12 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
     private fun initToday(){
         val todayRecyclerView : RecyclerView = binding.todayRecyclerView
         val todoAdapter = TodoAdapter(requireContext())
+
+        todoAdapter.sectionToggleClick = object  : TodoAdapter.SectionToggleClick {
+            override fun onClick(view: View, str: String) {
+                checkListViewModel.setVisibility(str, 1)
+            }
+        }
 
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
             override fun onClick(view: View, id: String) {

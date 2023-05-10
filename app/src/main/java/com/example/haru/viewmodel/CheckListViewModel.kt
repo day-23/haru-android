@@ -64,6 +64,33 @@ class CheckListViewModel() :
         getTag()
     }
 
+    fun setVisibility(str : String, type : Int){
+        if (type == 0){
+            val index = todoList.indexOf(Todo(type = 4, content = str))
+            Log.d("20191627", str)
+            Log.d("20191627", index.toString())
+            for(i in index+1 until todoList.size){
+                if (todoList[i].type == 6)
+                    break
+                else if (todoList[i].type == 3)
+                    break
+                val todo = todoList[i].copy(visibility = !todoList[i].visibility)
+                todoList[i] = todo
+                Log.d("20191627", todoList[i].visibility.toString())
+            }
+            _todoDataList.value = todoList
+        } else {
+            val index = todayList.indexOf(Todo(type = 4, content = str))
+            for(i in index+1 until todayList.size){
+                if (todayList[i].type == 3)
+                    break
+                val todo = todayList[i].copy(visibility = !todayList[i].visibility)
+                todayList[i] = todo
+            }
+            _todayTodo.value = todayList
+        }
+    }
+
     fun clearToday() {
         todayList.clear()
     }
@@ -233,10 +260,14 @@ class CheckListViewModel() :
                         this.addAll(it.flaggedTodos)
                     else this.add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
 
+                    this.add(Todo(type = 3))
+
                     this.add(Todo(type = 4, content = "오늘 할 일"))
                     if (it.todayTodos.isNotEmpty())
                         this.addAll(it.todayTodos)
                     else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+
+                    this.add(Todo(type = 3))
 
                     this.add(Todo(type = 4, content = "오늘 마감"))
                     if (it.endDatedTodos.isNotEmpty())

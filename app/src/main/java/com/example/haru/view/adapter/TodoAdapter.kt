@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
@@ -39,6 +40,10 @@ import java.util.*
 class TodoAdapter(val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperListener {
 
+    interface SectionToggleClick {
+        fun onClick(view: View, str: String)
+    }
+
     interface TodoClick {
         fun onClick(view: View, id: String)
     }
@@ -59,13 +64,14 @@ class TodoAdapter(val context: Context) :
         fun onClick(view: View, id: String)
     }
 
+    var sectionToggleClick: SectionToggleClick? = null
     var todoClick: TodoClick? = null
     var completeClick: CompleteClick? = null
     var flagClick: FlagClick? = null
     var subTodoCompleteClick: SubTodoCompleteClick? = null
     var toggleClick: ToggleClick? = null
 
-//    val HeaderType1 = 0   -> 디자인 시안 변경으로 인해 사용 X
+    //    val HeaderType1 = 0   -> 디자인 시안 변경으로 인해 사용 X
 //    val HeaderType2 = 1
     val Item = 2
     val Divider = 3
@@ -95,6 +101,7 @@ class TodoAdapter(val context: Context) :
         }
 
         override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+            Log.d("20191627", "oldItem : ${oldItem.visibility}  newItem : ${newItem.visibility}")
             return oldItem == newItem
         }
     }
@@ -175,7 +182,7 @@ class TodoAdapter(val context: Context) :
             is TodoViewHolder -> {
                 holder.bind(todo)
             }
-            is EmptyViewHolder -> holder.bind(todo.content)
+            is EmptyViewHolder -> holder.bind(todo)
             is BlankViewHolder -> {}
         }
     }
@@ -194,6 +201,11 @@ class TodoAdapter(val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.str = item
+            if (sectionToggleClick != null)
+                binding.ivSectionArrow.setOnClickListener {
+                    binding.ivSectionArrow.isSelected = !it.isSelected
+                    sectionToggleClick?.onClick(it, item)
+                }
         }
     }
 
@@ -207,6 +219,15 @@ class TodoAdapter(val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Todo) {
+            Log.d("20191627", "bind 호출")
+            binding.checklistItem.layoutParams = if (item.visibility) LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ) else LinearLayout.LayoutParams(0, 0)
+            binding.checklistItem.visibility = if (item.visibility) View.VISIBLE else View.GONE
+            if (!item.visibility)
+                return
+
             binding.todo = item
             binding.tvTitle.text = item.content
             if (todoClick != null) {
@@ -262,7 +283,7 @@ class TodoAdapter(val context: Context) :
                         tag += item.tags[i].content
                         count--
                         break
-                    }
+                    } else break
                 }
                 if (count != 0)
                     tag += "+$count"
@@ -277,6 +298,7 @@ class TodoAdapter(val context: Context) :
 
                 val endDate = FormatDate.strToDate(item.endDate)
                 val checkToday = FormatDate.checkToday(endDate)
+
                 if (endDate != null && item.isAllDay) {
                     binding.tvEndDateDescription.text = if (checkToday == true)
                         FormatDate.todoTimeToStr(item.endDate!!)
@@ -350,8 +372,15 @@ class TodoAdapter(val context: Context) :
 
     inner class EmptyViewHolder(val binding: ChecklistEmptyBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: String) {
-            binding.tvTodoEmpty.text = item
+        fun bind(item: Todo) {
+            binding.tvTodoEmpty.text = item.content
+            binding.tvTodoEmpty.visibility = if (item.visibility) View.VISIBLE else View.GONE
+            binding.tvTodoEmpty.layoutParams = if (item.visibility) LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ) else LinearLayout.LayoutParams(0, 0)
+            if (!item.visibility)
+                return
         }
     }
 
