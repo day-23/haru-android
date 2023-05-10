@@ -20,6 +20,7 @@ import com.example.haru.databinding.FragmentChecklistItemInfoBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
 import com.example.haru.view.customDialog.CustomCalendarDialog
+import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import java.util.*
@@ -574,31 +575,58 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
                 binding.btnInfoEndTimePick.id,
                 binding.btnInfoAlarmTimePick.id -> {
-                    val calendar = Calendar.getInstance()
-                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                    val minute = calendar.get(Calendar.MINUTE)
-
-                    val timePickerDialog = TimePickerDialog(
-                        requireContext(),
-                        MyTimeSetListener { view, hourOfDay, minute ->
-                            val time = calendar.apply {
-                                set(Calendar.HOUR_OF_DAY, hourOfDay)
-                                set(Calendar.MINUTE, minute)
-                            }.time
-                            when (v.id) {
+                    val timePicker = when(v.id){
+                        binding.btnInfoEndTimePick.id -> {CustomTimeDialog(todoAddViewModel.endTime.value)}
+                        binding.btnInfoAlarmTimePick.id -> {CustomTimeDialog(todoAddViewModel.alarmTime.value)}
+                        else -> CustomTimeDialog()
+                    }
+                    timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener{
+                        override fun onClick(
+                            hourNumberPicker: NumberPicker,
+                            minuteNumberPicker: NumberPicker
+                        ) {
+                            val hour = hourNumberPicker.value
+                            val minute = minuteNumberPicker.value
+                            FormatDate.cal.apply {
+                                set(Calendar.HOUR_OF_DAY, hour)
+                                set(Calendar.MINUTE, minute * 5)
+                            }
+                            val time = FormatDate.cal.time
+                            Log.d("20191627", "hour : $hour  minute : $minute")
+                            when(v.id){
                                 binding.btnInfoEndTimePick.id ->
                                     todoAddViewModel.setTime(0, time)
                                 binding.btnInfoAlarmTimePick.id ->
                                     todoAddViewModel.setTime(1, time)
                             }
-                            // timepicker 리스너 만들기 버튼을 없애고 시간을 선택하면 바로 적용되게끔
-                        },
-                        hour,
-                        minute,
-                        false
-                    )
-
-                    timePickerDialog.show()
+                        }
+                    }
+                    timePicker.show(parentFragmentManager, null)
+//                    val calendar = Calendar.getInstance()
+//                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+//                    val minute = calendar.get(Calendar.MINUTE)
+//
+//                    val timePickerDialog = TimePickerDialog(
+//                        requireContext(),
+//                        MyTimeSetListener { view, hourOfDay, minute ->
+//                            val time = calendar.apply {
+//                                set(Calendar.HOUR_OF_DAY, hourOfDay)
+//                                set(Calendar.MINUTE, minute)
+//                            }.time
+//                            when (v.id) {
+//                                binding.btnInfoEndTimePick.id ->
+//                                    todoAddViewModel.setTime(0, time)
+//                                binding.btnInfoAlarmTimePick.id ->
+//                                    todoAddViewModel.setTime(1, time)
+//                            }
+//                            // timepicker 리스너 만들기 버튼을 없애고 시간을 선택하면 바로 적용되게끔
+//                        },
+//                        hour,
+//                        minute,
+//                        false
+//                    )
+//
+//                    timePickerDialog.show()
                 }
 
                 binding.infoRepeatSwitch.id -> todoAddViewModel.setRepeatSwitch()

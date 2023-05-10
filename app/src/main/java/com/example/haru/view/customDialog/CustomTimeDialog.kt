@@ -6,6 +6,7 @@ import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.text.format.Time
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,20 +16,41 @@ import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.haru.databinding.CustomTimePickerBinding
-import kotlin.math.min
+import com.example.haru.utils.FormatDate
+import java.util.*
 
-class CustomTimeDialog : DialogFragment() {
-    private lateinit var binding : CustomTimePickerBinding
-    private var hourList : Array<String> = Array(24){""}
-    private var minuteList : Array<String> = Array(12){""}
+class CustomTimeDialog(date: Date? = null) : DialogFragment() {
+    private lateinit var binding: CustomTimePickerBinding
+    private var hourList: Array<String> = Array(24) { "" }
+    private var minuteList: Array<String> = Array(12) { "" }
+    private var startHour: Int = 12
+    private var startMinute: Int = 0
+
+    interface TimePickerClickListener {
+        fun onClick(hourNumberPicker: NumberPicker, minuteNumberPicker: NumberPicker)
+    }
+
+    var timePickerClick: TimePickerClickListener? = null
 
     init {
-        for(i in 0 until 24){
+        if (date != null) {
+            FormatDate.cal.time = date
+            startHour = FormatDate.cal.get(Calendar.HOUR_OF_DAY) // 0 ~ 23
+            startMinute = FormatDate.cal.get(Calendar.MINUTE) // 0 ~ 59
+            Log.d("20191627", "startMinute : $startMinute")
+            val remain = startMinute % 5
+            if (remain < 3)
+                startMinute -= remain
+            else startMinute += (5 - remain)
+            startMinute /= 5
+        }
+
+        for (i in 0 until 24) {
             val hour = i.toString()
             hourList[i] = if (hour.length < 2) "0$hour" else hour
         }
 
-        for (i in 0 until 12){
+        for (i in 0 until 12) {
             val minute = (i * 5).toString()
             minuteList[i] = if (minute.length < 2) "0$minute" else minute
         }
@@ -56,14 +78,11 @@ class CustomTimeDialog : DialogFragment() {
 
         Toast.makeText(requireContext(), "Custom Time Picker", Toast.LENGTH_SHORT).show()
 
-        Log.d("20191627", hourList.toString())
-        Log.d("20191627", minuteList.toString())
-
         binding.npHourPick.apply {
             descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
             minValue = 0
             maxValue = 23
-            value = 12
+            value = startHour
             displayedValues = hourList
             wrapSelectorWheel = false
         }
@@ -72,8 +91,20 @@ class CustomTimeDialog : DialogFragment() {
             descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
             minValue = 0
             maxValue = 11
+            value = startMinute
             displayedValues = minuteList
             wrapSelectorWheel = false
+        }
+
+        binding.btnPositive.setOnClickListener {
+            if (timePickerClick != null) {
+                timePickerClick?.onClick(binding.npHourPick, binding.npMinutePick)
+                dismiss()
+            }
+        }
+
+        binding.btnNegative.setOnClickListener {
+            dismiss()
         }
     }
 
