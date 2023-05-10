@@ -2,11 +2,13 @@ package com.example.haru.view.customDialog
 
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,7 +20,7 @@ import com.example.haru.databinding.CustomCalendarBinding
 import com.example.haru.utils.FormatDate
 import java.util.*
 
-class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
+class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFragment() {
     private lateinit var binding: CustomCalendarBinding
 
     private var changedMonth: Int = -1
@@ -32,6 +34,10 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     private var nowMonth: Int = -1
     private var nowDay: Int = -1
 
+    private var endDateYear: Int = -1
+    private var endDateMonth: Int = -1
+    private var endDateDay: Int = -1
+
 //    private var standardYear = -1
 //    private var standardMonth = -1
 //    private var standardDay = -1
@@ -43,11 +49,14 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
     var calendarClick: CalendarClickListener? = null
 
     init {
-        FormatDate.cal.time = Date()
+        if (endDate != null) {
+            FormatDate.cal.time = endDate
+            endDateYear = FormatDate.cal.get(Calendar.YEAR)
+            endDateMonth = FormatDate.cal.get(Calendar.MONTH)
+            endDateDay = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+        }
 
-//        standardYear = FormatDate.cal.get(Calendar.YEAR)
-//        standardMonth = FormatDate.cal.get(Calendar.MONTH)
-//        standardDay = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+        FormatDate.cal.time = Date()
 
         if (date != null)
             FormatDate.cal.time = date
@@ -158,6 +167,9 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
         maxDay = FormatDate.cal.getActualMaximum(Calendar.DAY_OF_MONTH)
         FormatDate.cal.set(Calendar.DAY_OF_MONTH, maxDay)
 
+        // 달력을 생성할 때의 년과 달이 endDate의 년과 달과 동일한지 비교
+        val beforeFlag = nowYear == endDateYear && nowMonth == endDateMonth
+
         var days = 1
         var flag = false
         for (i in 0 until 6) {
@@ -170,8 +182,12 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
 
             for (k in 0 until addView.childCount) {
                 val view = addView.getChildAt(k) as TextView
-                view.setOnClickListener {
-                    if (it.visibility == View.VISIBLE) {
+                view.setOnClickListener { // 날짜가 눈에 보이고, 색깔이 date_text인 것만 클릭 기능 수행
+                    if (it.visibility == View.VISIBLE && view.currentTextColor == ContextCompat.getColor(
+                            requireContext(),
+                            R.color.date_text
+                        )
+                    ) {
                         calendarClick?.onClick(
                             it,
                             changedYear,
@@ -187,7 +203,13 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
                     view.text = days.toString()
                     if (nowDay == days) view.setTextColor(
                         ContextCompat.getColor(requireContext(), R.color.highlight)
-                    )
+                    ) else if (beforeFlag && days < endDateDay)
+                        view.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.light_gray
+                            )
+                        )
                     days++
                 }
                 if (maxDay + 1 == days)
@@ -248,6 +270,27 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
                                 R.color.highlight
                             )
                         )
+                    else if (endDateYear > changedYear) // 마감일의 년도가 변경해야하는 달력의 년도보다 클 때
+                        view.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.light_gray
+                            )
+                        )
+                    else if (endDateYear == changedYear && endDateMonth > changedMonth)
+                        view.setTextColor( // 마감일의 년도와 변경해야하는 달력의 년도가 같고, 마감일의 달이 더 클때
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.light_gray
+                            )
+                        )
+                    else if (endDateYear == changedYear && endDateMonth == changedMonth && days < endDateDay)
+                        view.setTextColor( // 마감일의 년도와 월이 변경해야하는 달력의 년도와 월과 같을 때
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.light_gray
+                            )
+                        )
                     else
                         view.setTextColor(
                             ContextCompat.getColor(
@@ -263,9 +306,6 @@ class CustomCalendarDialog(date: Date? = null) : DialogFragment() {
                 }
             }
         }
-//        if (standardYear == changedYear && standardMonth == changedMonth)
-//            binding.ivLeftArrow.visibility = View.GONE
-//        else binding.ivLeftArrow.visibility = View.VISIBLE
     }
 
 
