@@ -17,6 +17,7 @@
         android:paddingHorizontal="20dp">
 
         <ImageView
+            android:id="@+id/write_comment_cancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:src="@drawable/add_comment_cancel"
@@ -65,5 +66,23 @@
         android:layout_height="390dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <FrameLayout
+        android:id="@+id/move_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/comment_frame"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/write_comment_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cancel_write_default"
+        android:layout_marginBottom="46dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
