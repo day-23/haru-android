@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide.init
+import com.example.haru.data.model.Comments
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.Profile
 import com.example.haru.data.repository.PostRepository
@@ -26,6 +28,14 @@ class SnsViewModel: ViewModel() {
     private val _Page = MutableLiveData<Int>()
     val Page : LiveData<Int>
         get() = _Page
+
+    private val _Comments = MutableLiveData<ArrayList<Comments>>()
+    val Comments : LiveData<ArrayList<Comments>>
+        get() = _Comments
+
+    private val _CurrentPost = MutableLiveData<String>()
+    val CurrentPost : LiveData<String>
+        get() = _CurrentPost
 
     init{
         _Page.value = 1
@@ -59,5 +69,25 @@ class SnsViewModel: ViewModel() {
                 }
             }
         }
+    }
+
+    fun getComments(postId: String) {
+        var comments = ArrayList<Comments>()
+        viewModelScope.launch {
+            PostRepository.getComment(postId){
+                if(it.size > 0){
+                    comments = it
+                }
+            }
+            _Comments.value = comments
+        }
+    }
+
+    fun setPostId(postId : String) {
+        _CurrentPost.value = postId
+    }
+
+    fun getPostId() : String {
+        return _CurrentPost.value ?: ""
     }
 }

@@ -16,6 +16,10 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
+import com.example.haru.data.model.Alarm
+import com.example.haru.data.model.Tag
+import com.example.haru.data.model.Todo
+import com.example.haru.databinding.FragmentChecklistItemBinding
 import com.example.haru.databinding.FragmentChecklistItemInfoBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
@@ -25,7 +29,7 @@ import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import java.util.*
 
-class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) : Fragment() {
+class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, val todo: Todo?=null) : Fragment() {
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
@@ -40,9 +44,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
 
         fun newInstance(
             checkListViewModel: CheckListViewModel,
-            id: String
+            id: String,
+            todo: Todo
         ): ChecklistItemFragment {
-            return ChecklistItemFragment(checkListViewModel, id)
+            return ChecklistItemFragment(checkListViewModel, id, todo)
         }
     }
 
@@ -119,8 +124,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        todoAddViewModel.setClickTodo(id)
-        Log.d("20191627", todoAddViewModel.clickedTodo.toString())
+        todoAddViewModel.setClickTodo(id, todo)
         binding.vm = todoAddViewModel
 
         // flag 관련 UI Update

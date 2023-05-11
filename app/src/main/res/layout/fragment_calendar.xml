@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
+        android:id="@+id/calendar_fragment_parent_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -67,7 +68,8 @@
 
                         <ImageView
                             android:id="@+id/category_button_imv"
-                            android:layout_width="0dp"
+                            android:background="@drawable/calendar_category"
+                            android:layout_width="40sp"
                             android:layout_gravity="center"
                             android:layout_height="40sp"/>
                     </LinearLayout>
@@ -281,6 +283,46 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/todo_incomplete_layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/todo_incomplete_imv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/circle_uncheck" />
+
+                            <TextView
+                                android:id="@+id/todo_incomplete_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="미완료"
+                                android:textColor="#191919" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/todo_complete_layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/todo_complete_imv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/circle_check" />
+
+                            <TextView
+                                android:id="@+id/todo_complete_tv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="완료"
+                                android:textColor="#191919"/>
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="bottom"
@@ -335,21 +377,6 @@
             android:id="@+id/btn_add_todo_incalendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/btn_add_schedule_incalendar"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="15dp"
-            android:visibility="invisible"
-            app:borderWidth="0dp"
-            app:elevation="0dp"
-            app:maxImageSize="56dp"
-            app:srcCompat="@drawable/fab"
-            app:tint="@null" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btn_add_schedule_incalendar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_above="@+id/btn_add_main_incalendar"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
@@ -358,9 +385,8 @@
             app:borderWidth="0dp"
             app:elevation="0dp"
             app:maxImageSize="56dp"
-            app:srcCompat="@drawable/fab"
+            app:srcCompat="@drawable/calendar_todo_add_btn"
             app:tint="@null" />
-
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_add_main_incalendar"

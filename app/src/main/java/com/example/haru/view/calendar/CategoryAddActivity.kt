@@ -1,13 +1,17 @@
 package com.example.haru.view.calendar
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.VectorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +35,18 @@ class CategoryAddActivity : AppCompatActivity() {
         drawable.setColorFilter(Color.parseColor(color), PorterDuff.Mode.SRC_ATOP)
     }
 
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+
+        if (currentFocus is EditText){
+            currentFocus!!.clearFocus()
+            return false
+        }
+
+        return super.dispatchTouchEvent(ev)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_add)
@@ -50,6 +66,8 @@ class CategoryAddActivity : AppCompatActivity() {
         addCategoriesRecyclerview.adapter = CategoriesColorAdapter(null, this)
 
         addBackImageview.setOnClickListener {
+            intent.putExtra("status", "back")
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
 

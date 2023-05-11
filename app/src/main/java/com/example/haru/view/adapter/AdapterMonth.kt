@@ -1,8 +1,10 @@
 package com.example.haru.view.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.view.*
@@ -13,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,15 +35,17 @@ import kotlin.collections.ArrayList
 
 
 //월간 달력 어뎁터
-class AdapterMonth(val lifecycleOwner: LifecycleOwner,
+class AdapterMonth(val activity: Activity,
+                   val fragment: FragmentActivity,
+                   val lifecycleOwner: LifecycleOwner,
                    val thisViewPager: ViewPager2,
                    val parentFragmentManager: FragmentManager,
                    val parentFragment: CalendarFragment):
     RecyclerView.Adapter<AdapterMonth.MonthView>() {
 
-    private var categories: List<Category> = emptyList()
+    private var categories: List<Category?> = emptyList()
 
-    fun setCategories(new_categories:List<Category>){
+    fun setCategories(new_categories:List<Category?>){
         categories = new_categories
     }
 
@@ -253,12 +258,8 @@ class AdapterMonth(val lifecycleOwner: LifecycleOwner,
         var startRow = -1
 
         touchEventRecyclerView.setOnTouchListener{ v, event ->
-            Log.d("높이", parentConstraintLayout.height.toString())
-
             val column = (event.x/(parentConstraintLayout.width/7)).toInt()
             val row = (event.y/(parentConstraintLayout.height/(maxi+1))).toInt()
-
-            Log.d("column row", column.toString()+" "+row.toString())
 
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -315,6 +316,7 @@ class AdapterMonth(val lifecycleOwner: LifecycleOwner,
                             }
 
                             val scheduleInput = CalendarAddFragment(
+                                activity,
                                 categories,
                                 this,
                                 dateArrayList[startPosition],
@@ -326,7 +328,14 @@ class AdapterMonth(val lifecycleOwner: LifecycleOwner,
                         startColumn = -1
                         startRow = -1
                     } else {
-                        val detailDialog = CalendarDetailDialog(holder.itemView.context)
+                        val detailDialog = CalendarDetailDialog(
+                            holder.itemView.context,
+                            lifecycleOwner,
+                            dateArrayList[row*7 + column],
+                            this,
+                            fragment
+                        )
+
                         detailDialog.show(parentConstraintLayout.height)
                     }
 
@@ -348,10 +357,10 @@ class AdapterMonth(val lifecycleOwner: LifecycleOwner,
                         width:Int,
                         color:Int,
                         completed:Boolean){
-        Log.d("completed옵션", completed.toString())
         val parentConstraintLayout = holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
 
         val testView = TextView(holder.itemView.context)
+
         val layoutParams = ConstraintLayout.LayoutParams(
             parentConstraintLayout.width/7*width,
             parentConstraintLayout.height/30
@@ -366,7 +375,7 @@ class AdapterMonth(val lifecycleOwner: LifecycleOwner,
 
         testView.setBackgroundResource(R.drawable.calendar_border)
         val drawable = testView.background as GradientDrawable
-        drawable.setColor(color)
+        drawable.setColorFilter(color,PorterDuff.Mode.SRC_ATOP)
 
         testView.gravity = Gravity.CENTER
         testView.setText(textViewText)
@@ -416,6 +425,8 @@ class AdapterMonth(val lifecycleOwner: LifecycleOwner,
 
                 loop@for (position2 in 0 until 210) {
                     val newpostion = positionplus + position2
+
+                    if(newpostion >= 210) break
 
                     if(size == 4){
                         if(newpostion/7 in arrayOf(0,6,12,18,24,30)) continue
@@ -559,14 +570,79 @@ class AdapterMonth(val lifecycleOwner: LifecycleOwner,
                                     if (content.position == contentPosition) {
                                         cloneLiveSchedule.remove(content)
 
-                                        var color = Color.rgb(0xBB, 0xE7, 0xFF)
+                                        var color = Color.parseColor(content.schedule.category!!.color)
 
-                                        if (content.schedule.category != null &&
-                                            content.schedule.category!!.color != null
-                                        ) {
-                                            color =
-                                                Color.parseColor(content.schedule.category!!.color)
+                                        if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
+                                            val overflowvalue =
+                                                contentPosition + interval - (contentPosition + interval) / 7 * 7
+                                            saveCntList.add(overflowvalue)
+                                            saveScheduleList.add(content.schedule)
+                                            saveLineList.add(contentLine)
+
+                                            positionplus += interval - overflowvalue - 1
+                                            returnvalue = interval - overflowvalue
+                                            cntlist.add(returnvalue)
+
+                                            if (size == 5) {
+                                                addViewFunction(
+                                                    holder,
+                                                    content.schedule.content,
+                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                    (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                                    returnvalue,
+                                                    color,
+                                                    content.schedule.completed
+                                                )
+                                            } else {
+                                                addViewFunction(
+                                                    holder,
+                                                    content.schedule.content,
+                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                    (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                                    returnvalue,
+                                                    color,
+                                                    content.schedule.completed
+                                                )
+                                            }
+
+                                            continue@loop
                                         }
+
+                                        positionplus += interval - 1
+                                        returnvalue = interval
+                                        cntlist.add(returnvalue)
+
+                                        if (size == 5) {
+                                            addViewFunction(
+                                                holder,
+                                                content.schedule.content,
+                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                                returnvalue,
+                                                color,
+                                                content.schedule.completed
+                                            )
+                                        } else {
+                                            addViewFunction(
+                                                holder,
+                                                content.schedule.content,
+                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                                returnvalue,
+                                                color,
+                                                content.schedule.completed
+                                            )
+                                        }
+
+                                        continue@loop
+                                    }
+                                }
+                            } else {
+                                if(calendarMainData.unclassifiedCategory) {
+                                    if (content.position == contentPosition) {
+                                        cloneLiveSchedule.remove(content)
+
+                                        var color = Color.rgb(0x1D, 0xAF, 0xFF)
 
                                         if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
                                             val overflowvalue =
@@ -639,29 +715,34 @@ class AdapterMonth(val lifecycleOwner: LifecycleOwner,
 
                     if (calendarMainData.todoApply) {
                         if(cloneLiveTodo[contentPosition].todos.size > 0) {
-                            if (size == 5) {
-                                addViewFunction(
-                                    holder,
-                                    cloneLiveTodo[contentPosition].todos[0].content,
-                                    (contentPosition % 7) / 6f,
-                                    (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                    1,
-                                    Color.rgb(0xED, 0xED, 0xED),
-                                    cloneLiveTodo[contentPosition].todos[0].completed
-                                )
-                            } else {
-                                addViewFunction(
-                                    holder,
-                                    cloneLiveTodo[contentPosition].todos[0].content,
-                                    (contentPosition % 7) / 6f,
-                                    (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
-                                    1,
-                                    Color.rgb(0xED, 0xED, 0xED),
-                                    cloneLiveTodo[contentPosition].todos[0].completed
-                                )
-                            }
+                            if((cloneLiveTodo[contentPosition].todos[0].completed &&
+                                    calendarMainData.todoComplete)||
+                                (!cloneLiveTodo[contentPosition].todos[0].completed &&
+                                        calendarMainData.todoInComplete)) {
+                                if (size == 5) {
+                                    addViewFunction(
+                                        holder,
+                                        cloneLiveTodo[contentPosition].todos[0].content,
+                                        (contentPosition % 7) / 6f,
+                                        (5 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                        1,
+                                        Color.rgb(0xED, 0xED, 0xED),
+                                        cloneLiveTodo[contentPosition].todos[0].completed
+                                    )
+                                } else {
+                                    addViewFunction(
+                                        holder,
+                                        cloneLiveTodo[contentPosition].todos[0].content,
+                                        (contentPosition % 7) / 6f,
+                                        (6 * (contentPosition / 7) + (contentLine + 1)) / 29f,
+                                        1,
+                                        Color.rgb(0xED, 0xED, 0xED),
+                                        cloneLiveTodo[contentPosition].todos[0].completed
+                                    )
+                                }
 
-                            cloneLiveTodo[contentPosition].todos.removeAt(0)
+                                cloneLiveTodo[contentPosition].todos.removeAt(0)
+                            }
                         }
                     }
                 }
@@ -680,15 +761,53 @@ class AdapterMonth(val lifecycleOwner: LifecycleOwner,
 
                 if(calendarMainData.todoApply) {
                     for (i in 0 until cloneLiveTodo.size) {
-                        allCntList[i] += cloneLiveTodo[i].todos.size
+                        for(j in 0 until cloneLiveTodo[i].todos.size) {
+                            if ((cloneLiveTodo[i].todos[j].completed &&
+                                        calendarMainData.todoComplete) ||
+                                (!cloneLiveTodo[i].todos[j].completed &&
+                                        calendarMainData.todoInComplete)
+                            ) {
+                                allCntList[i] += 1
+                            }
+                        }
                     }
                 }
 
                 if(calendarMainData.scheduleApply) {
                     for (k in 0 until cloneLiveSchedule.size) {
-                        Log.d("cloneLiveSchedule",cloneLiveSchedule[k].toString())
                         if(cloneLiveSchedule[k].schedule.category != null) {
                             if (cloneLiveSchedule[k].schedule.category!!.isSelected) {
+                                var interval = 0
+
+                                if(cloneLiveSchedule[k].cnt != null){
+                                    interval = cloneLiveSchedule[k].cnt!!
+                                } else {
+                                    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+                                    val repeatStart = format.parse(cloneLiveSchedule[k].schedule.repeatStart)
+                                    val calendar2 = Calendar.getInstance()
+                                    calendar2.time = repeatStart
+                                    calendar2.add(Calendar.MILLISECOND, cloneLiveSchedule[k].timeInterval!!)
+
+                                    repeatStart.hours = 0
+                                    repeatStart.minutes = 0
+                                    repeatStart.seconds = 0
+
+                                    calendar2.time.hours = 0
+                                    calendar2.time.minutes = 0
+                                    calendar2.time.seconds = 0
+
+                                    val dateminus = (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
+                                    interval = dateminus.toInt()
+                                }
+
+                                for (j in cloneLiveSchedule[k].position until cloneLiveSchedule[k].position + interval) {
+                                    if(allCntList.size <= j) break
+
+                                    allCntList[j]++
+                                }
+                            }
+                        } else {
+                            if(calendarMainData.unclassifiedCategory){
                                 var interval = 0
 
                                 if(cloneLiveSchedule[k].cnt != null){

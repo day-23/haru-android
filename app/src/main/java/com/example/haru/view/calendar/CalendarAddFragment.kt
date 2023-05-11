@@ -1,9 +1,11 @@
 package com.example.haru.view.checklist
 
 import android.animation.ValueAnimator
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -16,6 +18,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.GridLayout
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -26,6 +29,7 @@ import com.example.haru.data.model.CalendarDate
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.PostSchedule
 import com.example.haru.databinding.FragmentCalendarInputBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import com.example.haru.view.calendar.CategoryChooseDialog
@@ -38,7 +42,8 @@ import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarAddFragment(private val categories: List<Category>,
+class CalendarAddFragment(private val activity: Activity,
+                          private val categories: List<Category?>,
                           private val adapter: AdapterMonth,
                           private val initStartDate: Date?=null,
                           private val initEndDate:Date?=null) :
@@ -74,8 +79,8 @@ class CalendarAddFragment(private val categories: List<Category>,
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(categories: List<Category>, adapter: AdapterMonth): CalendarAddFragment {
-            return CalendarAddFragment(categories, adapter)
+        fun newInstance(activity: Activity, categories: List<Category?>, adapter: AdapterMonth): CalendarAddFragment {
+            return CalendarAddFragment(activity, categories, adapter)
         }
     }
 
@@ -552,19 +557,41 @@ class CalendarAddFragment(private val categories: List<Category>,
             }
 
             val calendarViewModel = CalendarViewModel()
-            calendarViewModel.postSchedule(PostSchedule(
-                binding.scheduleContentEt.text.toString(),
-                binding.etMemoSchedule.text.toString(),
-                isAllday,
-                repeatStartDate,
-                repeatEndDate,
-                option,
-                repeatvalue,
-                category!!.id,
-                emptyList()
-            )){
-                adapter.notifyDataSetChanged()
-                dismiss()
+
+            if(category != null) {
+                calendarViewModel.postSchedule(
+                    PostSchedule(
+                        binding.scheduleContentEt.text.toString(),
+                        binding.etMemoSchedule.text.toString(),
+                        isAllday,
+                        repeatStartDate,
+                        repeatEndDate,
+                        option,
+                        repeatvalue,
+                        category!!.id,
+                        emptyList()
+                    )
+                ) {
+                    adapter.notifyDataSetChanged()
+                    dismiss()
+                }
+            } else {
+                calendarViewModel.postSchedule(
+                    PostSchedule(
+                        binding.scheduleContentEt.text.toString(),
+                        binding.etMemoSchedule.text.toString(),
+                        isAllday,
+                        repeatStartDate,
+                        repeatEndDate,
+                        option,
+                        repeatvalue,
+                        null,
+                        emptyList()
+                    )
+                ) {
+                    adapter.notifyDataSetChanged()
+                    dismiss()
+                }
             }
         }
 

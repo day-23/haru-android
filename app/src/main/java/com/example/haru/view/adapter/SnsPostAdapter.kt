@@ -2,6 +2,7 @@ package com.example.haru.view.adapter
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -21,12 +22,17 @@ import com.example.haru.R
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.model.timetable_data
+import com.example.haru.view.sns.CommentsFragment
+import com.example.haru.view.sns.MyPageFragment
+import com.example.haru.view.sns.OnPostClickListener
+import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.SnsViewModel
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.*
 
 class SnsPostAdapter(val context: Context,
-                     private var itemList: ArrayList<Post> = ArrayList()): RecyclerView.Adapter<SnsPostAdapter.SnsPostViewHolder>(){
+                     private var itemList: ArrayList<Post> = ArrayList(),
+                     private val listener: OnPostClickListener): RecyclerView.Adapter<SnsPostAdapter.SnsPostViewHolder>(){
 
     private lateinit var snsViewModel: SnsViewModel
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SnsPostViewHolder {
@@ -61,8 +67,12 @@ class SnsPostAdapter(val context: Context,
             }
         })
 
+        holder.comment.setOnClickListener {
+            Log.d("Comment", "${itemList[position].id}")
+            listener.onCommentClick(itemList[position].id)
+        }
+
         if(itemList[position].user.profileImage != null) {
-            Log.d("AAAAA", "${itemList[position].user.profileImage}")
             Glide.with(holder.itemView.context)
                 .load(itemList[position].user.profileImage)
                 .into(holder.profileImg)
@@ -109,5 +119,6 @@ class SnsPostAdapter(val context: Context,
         var content = itemView.findViewById<TextView>(R.id.post_contents)
         var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
         var index = itemView.findViewById<Button>(R.id.picture_index)
+        var comment = itemView.findViewById<ImageView>(R.id.button_comment)
     }
 }
