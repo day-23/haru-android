@@ -177,6 +177,18 @@ class CheckListViewModel() :
         }
     }
 
+    fun checkTodayMode() {
+        if (todayList.isNotEmpty()) {
+            val calendar = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                set(Calendar.SECOND, 59) // 초를 59초로 설정
+            }
+            val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+            getTodayTodo(todayFrontEndDate) {}
+        }
+    }
+
     fun getTodoMain(callback: () -> Unit) {  // 메인 화면에서 보여줄 TodoData를 가져오는 기능
         viewModelScope.launch {
             todoRepository.getTodoMain {
@@ -388,15 +400,7 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val updateTodo = todoRepository.updateTodo(todoId = todoId, todo = todo) {
                 getTag()
-                if (todayList.isNotEmpty()) {
-                    val calendar = Calendar.getInstance().apply {
-                        set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                        set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                        set(Calendar.SECOND, 59) // 초를 59초로 설정
-                    }
-                    val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                    getTodayTodo(todayFrontEndDate) {}
-                }
+                checkTodayMode()
                 withTagUpdate()
                 callback()
             }
@@ -415,15 +419,7 @@ class CheckListViewModel() :
                 updateRepeatFrontTodo = updateRepeatFrontTodo
             ) {
                 getTag()
-                if (todayList.isNotEmpty()) {
-                    val calendar = Calendar.getInstance().apply {
-                        set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                        set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                        set(Calendar.SECOND, 59) // 초를 59초로 설정
-                    }
-                    val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                    getTodayTodo(todayFrontEndDate) {}
-                }
+                checkTodayMode()
                 withTagUpdate()
                 callback()
             }
@@ -441,15 +437,7 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData = todoRepository.deleteTodo(userId = userId, todoId = todoId) {
                 if (it.success) {
-                    if (todayList.isNotEmpty()) {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                            set(Calendar.SECOND, 59) // 초를 59초로 설정
-                        }
-                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayFrontEndDate) {}
-                    }
+                    checkTodayMode()
                     withTagUpdate()
                 }
                 callback()
@@ -465,17 +453,43 @@ class CheckListViewModel() :
         callback: () -> Unit
     ) {
         viewModelScope.launch {
-            val successDate = todoRepository.deleteRepeatFrontTodo(userId, todoId, frontEndDate) {
+            val successData = todoRepository.deleteRepeatFrontTodo(userId, todoId, frontEndDate) {
                 if (it.success) {
-                    if (todayList.isNotEmpty()) {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                            set(Calendar.SECOND, 59) // 초를 59초로 설정
-                        }
-                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayFrontEndDate) {}
-                    }
+                    checkTodayMode()
+                    withTagUpdate()
+                }
+                callback()
+            }
+        }
+    }
+
+    fun deleteRepeatMiddleTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        middleEndDate: MiddleEndDate,
+        callback: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val successData = todoRepository.deleteRepeatMiddleTodo(userId, todoId, middleEndDate) {
+                if (it.success) {
+                    checkTodayMode()
+                    withTagUpdate()
+                }
+                callback()
+            }
+        }
+    }
+
+    fun deleteRepeatBackTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        backRepeatEnd: BackRepeatEnd,
+        callback: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val successData = todoRepository.deleteRepeatBackTodo(userId, todoId, backRepeatEnd) {
+                if (it.success) {
+                    checkTodayMode()
                     withTagUpdate()
                 }
                 callback()
@@ -496,15 +510,7 @@ class CheckListViewModel() :
                 completed = completed
             ) {
                 if (it.success) {
-                    if (todayList.isNotEmpty()) {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                            set(Calendar.SECOND, 59) // 초를 59초로 설정
-                        }
-                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayFrontEndDate) {}
-                    }
+                    checkTodayMode()
                     withTagUpdate()
                 }
             }
@@ -519,15 +525,7 @@ class CheckListViewModel() :
                 completed = completed
             ) {
                 if (it.success) {
-                    if (todayList.isNotEmpty()) {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                            set(Calendar.SECOND, 59) // 초를 59초로 설정
-                        }
-                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayFrontEndDate) {}
-                    }
+                    checkTodayMode()
                     withTagUpdate()
                 }
             }
@@ -540,16 +538,7 @@ class CheckListViewModel() :
             val successData =
                 todoRepository.completeRepeatFrontTodo(todoId = id, frontEndDate = frontEndDate) {
                     if (it.success) {
-                        if (todayList.isNotEmpty()) {
-                            val calendar = Calendar.getInstance().apply {
-                                set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                                set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                                set(Calendar.SECOND, 59) // 초를 59초로 설정
-                            }
-                            val todayFrontEndDate =
-                                FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                            getTodayTodo(todayFrontEndDate) {}
-                        }
+                        checkTodayMode()
                         withTagUpdate()
                     }
                 }
@@ -567,15 +556,7 @@ class CheckListViewModel() :
                 folded = folded
             ) {
                 if (it.success) {
-                    if (todayList.isNotEmpty()) {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                            set(Calendar.SECOND, 59) // 초를 59초로 설정
-                        }
-                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayFrontEndDate) {}
-                    }
+                    checkTodayMode()
                     withTagUpdate()
                 }
             }
@@ -588,16 +569,7 @@ class CheckListViewModel() :
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {
                     if (it.success) {
-                        if (todayList.isNotEmpty()) {
-                            val calendar = Calendar.getInstance().apply {
-                                set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                                set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                                set(Calendar.SECOND, 59) // 초를 59초로 설정
-                            }
-                            val todayFrontEndDate =
-                                FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                            getTodayTodo(todayFrontEndDate) {}
-                        }
+                        checkTodayMode()
                         withTagUpdate()
                     }
                 }
