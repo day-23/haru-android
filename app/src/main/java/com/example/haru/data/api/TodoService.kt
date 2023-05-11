@@ -67,4 +67,13 @@ interface TodoService {
 
     @PUT("todo/{userId}/todo/{todoId}/repeat/back") // back 수정
     fun updateRepeatBackTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body updateRepeatBackTodo: UpdateRepeatBackTodo) : Call<SuccessFail>
+
+    @PATCH("todo/{userId}/order/todos")
+    fun updateOrderMainTodo(@Path("userId") userId: String, @Body changeOrderTodo: ChangeOrderTodo) : Call<SuccessFail>
+
+    @PATCH("todo/{userId}/order/todos/today")
+    fun updateOrderTodayTodo(@Path("userId") userId: String, @Body changeOrderTodo: ChangeOrderTodo) : Call<SuccessFail>
+
+    @PATCH("todo/{userId}/order/todos/tag")
+    fun updateOrderTagTodo(@Path("userId") userId: String, @Body changeOrderTagTodo: ChangeOrderTagTodo) : Call<SuccessFail>
 }
