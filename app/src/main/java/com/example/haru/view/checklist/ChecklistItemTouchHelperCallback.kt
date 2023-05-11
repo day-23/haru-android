@@ -1,5 +1,6 @@
 package com.example.haru.view.checklist
 
+import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Todo
@@ -28,6 +29,13 @@ class ChecklistItemTouchHelperCallback(val listener: ItemTouchHelperListener) :
             target.adapterPosition
         )
         return true
+    }
+
+    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+        super.onSelectedChanged(viewHolder, actionState)
+        when(actionState){
+            ItemTouchHelper.ACTION_STATE_IDLE -> itemTouchHelperListener.onDropAdapter()
+        }
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {

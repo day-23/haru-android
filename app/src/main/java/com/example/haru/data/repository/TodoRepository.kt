@@ -424,4 +424,21 @@ class TodoRepository() {
         }
         callback(successData)
     }
+
+    suspend fun updateOrderMainTodo(
+        userId: String,
+        changeOrderTodo: ChangeOrderTodo
+    ) = withContext(Dispatchers.IO){
+        val response = todoService.updateOrderMainTodo(userId, changeOrderTodo).execute()
+        val data = response.body()!!
+
+        val successData : SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Update Order Main Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update Order Main Todo")
+            data
+        }
+        successData
+    }
 }

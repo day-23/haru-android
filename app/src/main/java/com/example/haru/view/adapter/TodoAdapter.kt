@@ -432,7 +432,10 @@ class TodoAdapter(val context: Context) :
             return true
         }
         return false
+    }
 
+    override fun onDropAdapter() {
+        TODO("Not yet implemented")
     }
 
 }
