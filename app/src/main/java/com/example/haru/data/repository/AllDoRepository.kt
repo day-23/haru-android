@@ -20,11 +20,11 @@ class AllDoRepository() {
         val alldoData: AlldoData?
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get todos")
+            Log.d("TAG", "Success to get all datas")
             data = response.body()!!
             alldoData = data.data
         } else {
-            Log.d("TAG", "Fail to get todos")
+            Log.d("TAG", "Fail to get all datas")
             alldoData = null
         }
         callback(alldoData)

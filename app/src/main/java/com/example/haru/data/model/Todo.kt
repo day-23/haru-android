@@ -19,5 +19,6 @@ data class Todo(
     var alarms: List<Alarm> = emptyList(),
     var repeatOption: String? = null,
     var repeatValue: String? = null,
-    var tags: List<Tag> = emptyList()
+    var tags: List<Tag> = emptyList(),
+    var location: Int? = null
 )

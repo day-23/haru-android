@@ -102,12 +102,17 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _selectedDate.value = date
     }
 
-    fun setClickTodo(id: String) {
-        clickedTodo = checklistViewModel.todoDataList.value!!.find {
-            it.id == id
+    fun setClickTodo(id: String, todo: Todo? = null) {
+
+        if(todo == null) {
+            clickedTodo = checklistViewModel.todoDataList.value!!.find {
+                it.id == id
+            }
+            if (clickedTodo == null)
+                clickedTodo = checklistViewModel.todayTodo.value!!.find { it.id == id }!!
+        } else {
+            clickedTodo = todo
         }
-        if (clickedTodo == null)
-            clickedTodo = checklistViewModel.todayTodo.value!!.find { it.id == id }!!
 
         _completedTodo.value = clickedTodo!!.completed
         _flagTodo.value = clickedTodo!!.flag
