@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Category
 
-class CategoriesAdapterInPost(val categories: List<Category>, val listener: (Category) -> Unit) : RecyclerView.Adapter<CategoriesAdapterInPost.CategoryView>() {
+class CategoriesAdapterInPost(val categories: List<Category?>, val listener: (Category) -> Unit) : RecyclerView.Adapter<CategoriesAdapterInPost.CategoryView>() {
 
     private var chooseIndex = -1
 
@@ -34,52 +34,66 @@ class CategoriesAdapterInPost(val categories: List<Category>, val listener: (Cat
     }
 
     override fun onBindViewHolder(holder: CategoriesAdapterInPost.CategoryView, @SuppressLint("RecyclerView") position: Int) {
-        val categoryColorPost = holder.itemView.findViewById<ImageView>(R.id.category_Color_post)
-        val categoryColorOutsidePost = holder.itemView.findViewById<ImageView>(R.id.category_Color_outside_post)
-        val categoryNamePost = holder.itemView.findViewById<TextView>(R.id.category_name_post)
+        if(categories[position] != null) {
+            val categoryColorPost =
+                holder.itemView.findViewById<ImageView>(R.id.category_Color_post)
+            val categoryColorOutsidePost =
+                holder.itemView.findViewById<ImageView>(R.id.category_Color_outside_post)
+            val categoryNamePost = holder.itemView.findViewById<TextView>(R.id.category_name_post)
 
-        categoryColorPost.setColorFilter(Color.parseColor(categories[position].color), PorterDuff.Mode.SRC_ATOP)
-
-        val drawable = categoryColorPost.background as VectorDrawable
-
-        if(chooseIndex == position) {
-            drawable.setColorFilter(
-                Color.parseColor(categories[position].color),
+            categoryColorPost.setColorFilter(
+                Color.parseColor(categories[position]!!.color),
                 PorterDuff.Mode.SRC_ATOP
             )
-        } else {
-            drawable.setColorFilter(
-                Color.WHITE,
-                PorterDuff.Mode.SRC_ATOP
-            )
-        }
 
-        categoryColorPost.setOnClickListener {
-            val lastIndex = chooseIndex
+            val drawable = categoryColorPost.background as VectorDrawable
 
-            chooseIndex = position
-
-            if(lastIndex != -1) {
-                notifyItemChanged(lastIndex)
+            if (chooseIndex == position) {
+                drawable.setColorFilter(
+                    Color.parseColor(categories[position]!!.color),
+                    PorterDuff.Mode.SRC_ATOP
+                )
+            } else {
+                drawable.setColorFilter(
+                    Color.WHITE,
+                    PorterDuff.Mode.SRC_ATOP
+                )
             }
 
-            notifyItemChanged(chooseIndex)
+            categoryColorPost.setOnClickListener {
+                val lastIndex = chooseIndex
 
-            listener(categories[position])
+                chooseIndex = position
+
+                if (lastIndex != -1) {
+                    notifyItemChanged(lastIndex)
+                }
+
+                notifyItemChanged(chooseIndex)
+
+                listener(categories[position]!!)
+            }
+
+            categoryColorOutsidePost.setColorFilter(
+                Color.parseColor(categories[position]!!.color),
+                PorterDuff.Mode.SRC_ATOP
+            )
+
+            val drawable2 = categoryColorOutsidePost.background as VectorDrawable
+            drawable2.setColorFilter(
+                Color.parseColor(categories[position]!!.color),
+                PorterDuff.Mode.SRC_ATOP
+            )
+
+            categoryNamePost.text = categories[position]!!.content
         }
-
-        categoryColorOutsidePost.setColorFilter(Color.parseColor(categories[position].color), PorterDuff.Mode.SRC_ATOP)
-
-        val drawable2 = categoryColorOutsidePost.background as VectorDrawable
-        drawable2.setColorFilter(
-            Color.parseColor(categories[position].color),
-            PorterDuff.Mode.SRC_ATOP
-        )
-
-        categoryNamePost.text = categories[position].content
     }
 
     override fun getItemCount(): Int {
-        return categories.size
+        var size = categories.size
+        if(categories.contains(null)){
+            size -= 1
+        }
+        return size
     }
 }

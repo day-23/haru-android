@@ -28,7 +28,7 @@ import com.example.haru.view.calendar.calendarMainData
 import com.example.haru.viewmodel.CalendarViewModel
 import java.util.Vector
 
-class CategoryAdapter(val categoryList: ArrayList<Category>, private val onItemClicked: (Category, Int) -> Unit) : RecyclerView.Adapter<CategoryAdapter.CategoryView>() {
+class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItemClicked: (Category, Int) -> Unit) : RecyclerView.Adapter<CategoryAdapter.CategoryView>() {
 
     inner class CategoryView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -74,58 +74,107 @@ class CategoryAdapter(val categoryList: ArrayList<Category>, private val onItemC
 
         val drawable = categoryColor.background as VectorDrawable
 
-        if(categoryList[position].isSelected) {
-            if(calendarMainData.scheduleApply) {
-                drawable.setColorFilter(
-                    Color.parseColor(categoryList[position].color),
-                    PorterDuff.Mode.SRC_ATOP
-                )
+        if (categoryList[position] != null) {
+            if (categoryList[position]!!.isSelected) {
+                if (calendarMainData.scheduleApply) {
+                    drawable.setColorFilter(
+                        Color.parseColor(categoryList[position]!!.color),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
+                } else {
+                    drawable.setColorFilter(
+                        Color.parseColor("#BABABA"),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
+                }
             } else {
                 drawable.setColorFilter(
+                    Color.parseColor("#FFFFFF"),
+                    PorterDuff.Mode.SRC_ATOP
+                )
+            }
+
+            categoryColor.setOnClickListener {
+                if (calendarMainData.scheduleApply) {
+                    val calendarViewModel = CalendarViewModel()
+
+                    categoryList[position]!!.isSelected = !categoryList[position]!!.isSelected
+                    calendarViewModel.updateCategory(categoryList[position]!!)
+
+                    notifyItemChanged(position)
+                }
+            }
+
+            val drawable2 = categoryColorOutside.background as VectorDrawable
+
+            if (!calendarMainData.scheduleApply) {
+                drawable2.setColorFilter(
                     Color.parseColor("#BABABA"),
                     PorterDuff.Mode.SRC_ATOP
                 )
+
+                cateogryName.setTextColor(Color.parseColor("#BABABA"))
+            } else {
+                drawable2.setColorFilter(
+                    Color.parseColor(categoryList[position]!!.color),
+                    PorterDuff.Mode.SRC_ATOP
+                )
+
+                cateogryName.setTextColor(Color.parseColor("#191919"))
+            }
+
+            cateogryName.text = categoryList[position]!!.content
+
+            cateogryCorrection.setOnClickListener {
+                onItemClicked(categoryList[position]!!, position)
             }
         } else {
-            drawable.setColorFilter(
-                Color.parseColor("#FFFFFF"),
-                PorterDuff.Mode.SRC_ATOP
-            )
-        }
-
-        categoryColor.setOnClickListener {
-            if(calendarMainData.scheduleApply) {
-                val calendarViewModel = CalendarViewModel()
-
-                categoryList[position].isSelected = !categoryList[position].isSelected
-                calendarViewModel.updateCategory(categoryList[position])
-
-                notifyItemChanged(position)
+            if (calendarMainData.unclassifiedCategory) {
+                if (calendarMainData.scheduleApply) {
+                    drawable.setColorFilter(
+                        Color.parseColor("#1DAFFF"),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
+                } else {
+                    drawable.setColorFilter(
+                        Color.parseColor("#BABABA"),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
+                }
+            } else {
+                drawable.setColorFilter(
+                    Color.parseColor("#FFFFFF"),
+                    PorterDuff.Mode.SRC_ATOP
+                )
             }
-        }
 
-        val drawable2 = categoryColorOutside.background as VectorDrawable
+            categoryColor.setOnClickListener {
+                if (calendarMainData.scheduleApply) {
+                    calendarMainData.unclassifiedCategory = !calendarMainData.unclassifiedCategory
 
-        if(!calendarMainData.scheduleApply){
-            drawable2.setColorFilter(
-                Color.parseColor("#BABABA"),
-                PorterDuff.Mode.SRC_ATOP
-            )
+                    notifyItemChanged(position)
+                }
+            }
 
-            cateogryName.setTextColor(Color.parseColor("#BABABA"))
-        } else {
-            drawable2.setColorFilter(
-                Color.parseColor(categoryList[position].color),
-                PorterDuff.Mode.SRC_ATOP
-            )
+            val drawable2 = categoryColorOutside.background as VectorDrawable
 
-            cateogryName.setTextColor(Color.parseColor("#191919"))
-        }
+            if (!calendarMainData.scheduleApply) {
+                drawable2.setColorFilter(
+                    Color.parseColor("#BABABA"),
+                    PorterDuff.Mode.SRC_ATOP
+                )
 
-        cateogryName.text = categoryList[position].content
+                cateogryName.setTextColor(Color.parseColor("#BABABA"))
+            } else {
+                drawable2.setColorFilter(
+                    Color.parseColor("#1DAFFF"),
+                    PorterDuff.Mode.SRC_ATOP
+                )
 
-        cateogryCorrection.setOnClickListener {
-            onItemClicked(categoryList[position], position)
+                cateogryName.setTextColor(Color.parseColor("#191919"))
+            }
+
+            cateogryName.text = "미분류"
         }
     }
 

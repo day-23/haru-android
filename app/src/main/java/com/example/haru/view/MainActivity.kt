@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -39,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     override fun onPause(){
         editor.putBoolean("todoApply", calendarMainData.todoApply)
         editor.putBoolean("scheduleApply", calendarMainData.scheduleApply)
+        editor.putBoolean("unclassifiedCategory", calendarMainData.unclassifiedCategory)
+        editor.putBoolean("todoComplete", calendarMainData.todoComplete)
+        editor.putBoolean("todoInComplete", calendarMainData.todoInComplete)
         editor.apply()
 
         super.onPause()
@@ -62,8 +66,11 @@ class MainActivity : AppCompatActivity() {
         sharedPreference = getSharedPreferences("ApplyData", 0)
         editor = sharedPreference.edit()
 
-        calendarMainData.todoApply = sharedPreference.getBoolean("todoApply", false)
-        calendarMainData.scheduleApply = sharedPreference.getBoolean("scheduleApply", false)
+        calendarMainData.todoApply = sharedPreference.getBoolean("todoApply", true)
+        calendarMainData.scheduleApply = sharedPreference.getBoolean("scheduleApply", true)
+        calendarMainData.unclassifiedCategory = sharedPreference.getBoolean("unclassifiedCategory", true)
+        calendarMainData.todoComplete = sharedPreference.getBoolean("todoComplete", true)
+        calendarMainData.todoInComplete = sharedPreference.getBoolean("todoInComplete", true)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -75,13 +82,17 @@ class MainActivity : AppCompatActivity() {
             return false
         }
 
+        val fragment = fragments[2] as CalendarFragment
+
+        fragment.closeAddBtn(ev)
+
         return super.dispatchTouchEvent(ev)
     }
 
     private fun initFragments() {
         fragments[0] = SnsFragment.newInstance()
         fragments[1] = ChecklistFragment.newInstance()
-        fragments[2] = CalendarFragment.newInstance()
+        fragments[2] = CalendarFragment.newInstance(this)
         fragments[3] = TimetableFragment.newInstance()
         fragments[4] = EtcFragment.newInstance()
     }
@@ -120,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         return when (index) {
             0 -> SnsFragment.newInstance()
             1 -> ChecklistFragment.newInstance()
-            2 -> CalendarFragment.newInstance()
+            2 -> CalendarFragment.newInstance(this)
             3 -> TimetableFragment.newInstance()
             4 -> EtcFragment.newInstance()
             else -> throw IllegalStateException("Unexpected fragment index $index")

@@ -1,19 +1,17 @@
 package com.example.haru.view.calendar
 
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Rect
+import android.graphics.drawable.VectorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
+import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -35,15 +33,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
 
-class CalendarFragment : Fragment() {
+class CalendarFragment(private val activity: Activity) : Fragment() {
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var adapterMonth: AdapterMonth
     private lateinit var categoryAdapter: CategoryAdapter
 
     private lateinit var checkListViewModel: CheckListViewModel
 
-    private lateinit var fab_open: Animation
-    private lateinit var fab_close:Animation
+    private var parentView: RelativeLayout? = null
 
     private var fabMain_status = false
 
@@ -70,8 +67,8 @@ class CalendarFragment : Fragment() {
     companion object{
         const val TAG : String = "로그"
 
-        fun newInstance() : CalendarFragment {
-            return CalendarFragment()
+        fun newInstance(activity: Activity) : CalendarFragment {
+            return CalendarFragment(activity)
         }
     }
 
@@ -80,9 +77,6 @@ class CalendarFragment : Fragment() {
         Log.d(TAG, "CalendarFragment - onCreate() called")
 
         checkListViewModel = CheckListViewModel()
-
-        fab_open = AnimationUtils.loadAnimation(context, R.anim.fab_open)
-        fab_close = AnimationUtils.loadAnimation(context, R.anim.fab_close)
     }
 
     override fun onCreateView(
@@ -96,9 +90,50 @@ class CalendarFragment : Fragment() {
         return binding.root
     }
 
+    fun closeAddBtn(ev: MotionEvent?){
+        if(ev != null && parentView != null) {
+            val x = ev.x
+            val y = ev.y
+
+            val touchedView = findTouchedView(x, y)
+
+            Log.d("touchedView", touchedView.toString())
+
+            Log.d("touchedView",fabMain_status.toString())
+            if (touchedView != null &&
+                touchedView.id != R.id.btn_add_main_incalendar &&
+                touchedView.id != R.id.btn_add_todo_incalendar &&
+                fabMain_status
+            ) {
+
+                Log.d("touchedView","정상 진입")
+                binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
+                binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
+                binding.btnAddTodoIncalendar.setClickable(false);
+
+                fabMain_status = false
+            }
+        }
+    }
+
+    private fun findTouchedView(x: Float, y: Float): View? {
+        // 자식 뷰들을 순회하며 터치된 뷰를 찾는 로직을 구현합니다.
+        for (i in 0 until parentView!!.childCount) {
+            val child: View = parentView!!.getChildAt(parentView!!.childCount-i-1)
+            val rect = Rect()
+            child.getHitRect(rect)
+            if (rect.contains(x.toInt(), y.toInt())) {
+                return child
+            }
+        }
+        return null
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        parentView = view.findViewById<RelativeLayout>(R.id.calendar_fragment_parent_layout)
 
         val calendarTodayTv = view.findViewById<TextView>(R.id.calendar_today_tv)
 
@@ -113,13 +148,20 @@ class CalendarFragment : Fragment() {
 
         val categoryRecyclerView = view.findViewById<RecyclerView>(R.id.category_recyclerView)
 
-        val btnAddScheduleInCalendar = view.findViewById<FloatingActionButton>(R.id.btn_add_schedule_incalendar)
         val btnAddTodoInCalendar = view.findViewById<FloatingActionButton>(R.id.btn_add_todo_incalendar)
         val btnAddMainInCalendar = view.findViewById<FloatingActionButton>(R.id.btn_add_main_incalendar)
 
         val todoApplyLayout = view.findViewById<LinearLayout>(R.id.todo_apply_layout)
         val todoApplyImv = view.findViewById<ImageView>(R.id.todo_apply_imv)
         val todoApplyTv = view.findViewById<TextView>(R.id.todo_apply_tv)
+
+        val todoIncompleteLayout = view.findViewById<LinearLayout>(R.id.todo_incomplete_layout)
+        val todoIncompleteImv = view.findViewById<ImageView>(R.id.todo_incomplete_imv)
+        val todoIncompleteTv = view.findViewById<TextView>(R.id.todo_incomplete_tv)
+
+        val todoCompleteLayout = view.findViewById<LinearLayout>(R.id.todo_complete_layout)
+        val todoCompleteImv = view.findViewById<ImageView>(R.id.todo_complete_imv)
+        val todoCompleteTv = view.findViewById<TextView>(R.id.todo_complete_tv)
 
         val scheduleApplyLayout = view.findViewById<LinearLayout>(R.id.schedule_apply_layout)
         val scheduleApplyImv = view.findViewById<ImageView>(R.id.schedule_apply_imv)
@@ -139,6 +181,32 @@ class CalendarFragment : Fragment() {
         if(calendarMainData.todoApply) {
             todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
 
+            if(!calendarMainData.todoComplete){
+                val drawable = todoCompleteImv.background as VectorDrawable
+
+                val matrix = ColorMatrix()
+
+                matrix.setSaturation(0f)
+
+                val filter = ColorMatrixColorFilter(matrix)
+                drawable.setColorFilter(filter)
+
+                todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+            }
+
+            if(!calendarMainData.todoInComplete){
+                val drawable = todoIncompleteImv.background as VectorDrawable
+
+                val matrix = ColorMatrix()
+
+                matrix.setSaturation(0f)
+
+                val filter = ColorMatrixColorFilter(matrix)
+                drawable.setColorFilter(filter)
+
+                todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+            }
+
             todoApplyTv.setTextColor(
                 Color.parseColor("#1DAFFF")
             )
@@ -148,6 +216,63 @@ class CalendarFragment : Fragment() {
             todoApplyTv.setTextColor(
                 Color.parseColor("#BABABA")
             )
+
+            val drawable = todoCompleteImv.background as VectorDrawable
+            val drawable2 = todoIncompleteImv.background as VectorDrawable
+
+            val matrix = ColorMatrix()
+
+            matrix.setSaturation(0f)
+
+            val filter = ColorMatrixColorFilter(matrix)
+
+            drawable.setColorFilter(filter)
+            drawable2.setColorFilter(filter)
+
+            todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+            todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+        }
+
+        todoCompleteLayout.setOnClickListener {
+            if(calendarMainData.todoApply) {
+                val drawable = todoCompleteImv.background as VectorDrawable
+                if (calendarMainData.todoComplete) {
+                    val matrix = ColorMatrix()
+                    matrix.setSaturation(0f)
+
+                    val filter = ColorMatrixColorFilter(matrix)
+                    drawable.setColorFilter(filter)
+
+                    todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                } else {
+                    drawable.setColorFilter(null)
+
+                    todoCompleteTv.setTextColor(Color.parseColor("#191919"))
+                }
+
+                calendarMainData.todoComplete = !calendarMainData.todoComplete
+            }
+        }
+
+        todoIncompleteLayout.setOnClickListener {
+            if(calendarMainData.todoApply) {
+                val drawable = todoIncompleteImv.background as VectorDrawable
+                if (calendarMainData.todoInComplete) {
+                    val matrix = ColorMatrix()
+                    matrix.setSaturation(0f)
+
+                    val filter = ColorMatrixColorFilter(matrix)
+                    drawable.setColorFilter(filter)
+
+                    todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                } else {
+                    drawable.setColorFilter(null)
+
+                    todoIncompleteTv.setTextColor(Color.parseColor("#191919"))
+                }
+
+                calendarMainData.todoInComplete = !calendarMainData.todoInComplete
+            }
         }
 
         todoApplyLayout.setOnClickListener{
@@ -159,6 +284,18 @@ class CalendarFragment : Fragment() {
                 todoApplyTv.setTextColor(
                     Color.parseColor("#BABABA")
                 )
+
+                val drawable = todoCompleteImv.background as VectorDrawable
+                val drawable2 = todoIncompleteImv.background as VectorDrawable
+                val matrix = ColorMatrix()
+                matrix.setSaturation(0f)
+
+                val filter = ColorMatrixColorFilter(matrix)
+                drawable.setColorFilter(filter)
+                drawable2.setColorFilter(filter)
+
+                todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
             } else {
                 calendarMainData.todoApply = true
 
@@ -167,6 +304,18 @@ class CalendarFragment : Fragment() {
                 todoApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
                 )
+
+                if(calendarMainData.todoComplete){
+                    val drawable = todoCompleteImv.background as VectorDrawable
+                    todoCompleteTv.setTextColor(Color.parseColor("#191919"))
+                    drawable.setColorFilter(null)
+                }
+
+                if(calendarMainData.todoInComplete){
+                    val drawable = todoIncompleteImv.background as VectorDrawable
+                    todoIncompleteTv.setTextColor(Color.parseColor("#191919"))
+                    drawable.setColorFilter(null)
+                }
             }
 
             categoryAdapter.dataAllChanged()
@@ -290,42 +439,23 @@ class CalendarFragment : Fragment() {
             resultLauncher.launch(intent)
         }
         
-        //추가 버튼 3개
+        //추가 버튼 2개
         btnAddMainInCalendar.setOnClickListener {
             if (fabMain_status) {
-//                fab_main.setImageResource(R.drawable.ic_add);
-                val currentDegree = binding.btnAddMainIncalendar.rotation
-                ObjectAnimator.ofFloat(binding.btnAddMainIncalendar,View.ROTATION, currentDegree, currentDegree+45f)
-                    .setDuration(300)
-                    .start()
-
-                binding.btnAddTodoIncalendar.startAnimation(fab_close);
-                binding.btnAddScheduleIncalendar.startAnimation(fab_close);
-                binding.btnAddTodoIncalendar.setClickable(false);
-                binding.btnAddScheduleIncalendar.setClickable(false);
+                val scheduleInput = CalendarAddFragment(activity, categoryAdapter.categoryList, adapterMonth)
+                scheduleInput.show(parentFragmentManager, scheduleInput.tag)
             } else {
-                val currentDegree = binding.btnAddMainIncalendar.rotation
-                ObjectAnimator.ofFloat(binding.btnAddMainIncalendar,View.ROTATION, currentDegree, currentDegree-45f)
-                    .setDuration(300)
-                    .start()
-
-                binding.btnAddTodoIncalendar.startAnimation(fab_open);
-                binding.btnAddScheduleIncalendar.startAnimation(fab_open);
-                binding.btnAddTodoIncalendar.setClickable(true);
-                binding.btnAddScheduleIncalendar.setClickable(true);
+                btnAddMainInCalendar.setImageResource(R.drawable.calendar_schedule_add_btn)
+                btnAddTodoInCalendar.visibility = View.VISIBLE
+                btnAddTodoInCalendar.setClickable(true)
             }
 
             fabMain_status = !fabMain_status
         }
         
-        btnAddTodoInCalendar.setOnClickListener {
-            val todoInput = ChecklistInputFragment(checkListViewModel)
+        btnAddTodoInCalendar.setOnClickListener{
+            val todoInput = ChecklistInputFragment(checkListViewModel, adapterMonth)
             todoInput.show(parentFragmentManager, todoInput.tag)
-        }
-
-        btnAddScheduleInCalendar.setOnClickListener {
-            val scheduleInput = CalendarAddFragment(categoryAdapter.categoryList, adapterMonth)
-            scheduleInput.show(parentFragmentManager, scheduleInput.tag)
         }
         
         month_viewpager.layoutParams = LinearLayout.LayoutParams(
@@ -334,6 +464,8 @@ class CalendarFragment : Fragment() {
                 )
 
         adapterMonth = AdapterMonth(
+            activity,
+            requireActivity(),
             viewLifecycleOwner,
             month_viewpager,
             parentFragmentManager,
@@ -362,8 +494,11 @@ class CalendarFragment : Fragment() {
         calendarViewModel.liveCategoryList.observe(viewLifecycleOwner){
             categoryRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
 
-            val toArrayListIt = it as ArrayList<Category>
-            categoryAdapter = CategoryAdapter(toArrayListIt){ category,index ->
+            var categoryArrayList = ArrayList<Category?>()
+            categoryArrayList.add(null)
+            categoryArrayList.addAll(it)
+
+            categoryAdapter = CategoryAdapter(categoryArrayList){ category,index ->
                 val intent = Intent(view.context, CategoryCorrectionActivity::class.java)
                 intent.putExtra("category", category)
                 intent.putExtra("index", index)

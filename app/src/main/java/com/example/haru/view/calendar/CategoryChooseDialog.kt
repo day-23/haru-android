@@ -12,7 +12,7 @@ class CategoryChooseDialog (private val context : CalendarAddFragment){
     private lateinit var binding : CategoryChooseDialogBinding
     private val dlg = Dialog(context.requireContext())   //부모 액티비티의 context 가 들어감
 
-    fun show(categories: List<Category>, listener: (Category) -> Unit) {
+    fun show(categories: List<Category?>, listener: (Category) -> Unit) {
         binding = CategoryChooseDialogBinding.inflate(context.layoutInflater)
 
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)

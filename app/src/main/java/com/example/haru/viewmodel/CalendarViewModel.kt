@@ -27,10 +27,14 @@ class CalendarViewModel : ViewModel() {
     val _liveTodoCalendarList = MutableLiveData<List<CalendarTodo>>()
     val liveTodoCalendarList: MutableLiveData<List<CalendarTodo>> get() = _liveTodoCalendarList
 
-    var scheduleCalendarList = mutableListOf<ScheduleCalendarData>()
+    val _liveTodoList = MutableLiveData<List<Todo>>()
+    val liveTodoList: MutableLiveData<List<Todo>> get() = _liveTodoList
 
     val _liveScheduleCalendarList = MutableLiveData<List<ScheduleCalendarData>>()
     val liveScheduleCalendarList: MutableLiveData<List<ScheduleCalendarData>> get() = _liveScheduleCalendarList
+
+    val _liveScheduleList = MutableLiveData<List<Schedule>>()
+    val liveScheduleList: MutableLiveData<List<Schedule>> get() = _liveScheduleList
 
     fun getCategories(){
         viewModelScope.launch {
@@ -98,11 +102,24 @@ class CalendarViewModel : ViewModel() {
         return first_date.compareTo(second_date)
     }
 
+    fun getAlldoDay(startDate: String, endDate:String){
+        viewModelScope.launch {
+            alldoRepository.getAllDoByDates(startDate, endDate){
+                if(it != null){
+                    val todoList = it.todos
+                    val scheduleList = it.schedules
+
+                    _liveTodoList.postValue(todoList)
+                    _liveScheduleList.postValue(scheduleList)
+                }
+            }
+        }
+    }
+
     fun getAlldo(startDate: String, endDate: String, maxi: Int){
         viewModelScope.launch {
             alldoRepository.getAllDoByDates(startDate, endDate){
                 if(it != null){
-                    Log.d("alldoit", it.toString())
                     val todoList = ArrayList<CalendarTodo>()
                     val scheduleList = ArrayList<ScheduleCalendarData>()
 
