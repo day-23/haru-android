@@ -152,7 +152,6 @@ class ChecklistInputFragment(
             override fun onGlobalLayout() {
                 todoAddViewModel.setMonthHeight(binding.gridMonth.height)
                 binding.gridMonth.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                Log.d("20191627", "grid Height : " + todoAddViewModel.gridMonthHeight.toString())
                 binding.gridMonth.visibility = View.GONE
             }
         })

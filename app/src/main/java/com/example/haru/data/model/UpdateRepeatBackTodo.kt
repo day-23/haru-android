@@ -1,6 +1,6 @@
 package com.example.haru.data.model
 
-data class UpdateRepeatTodo(
+data class UpdateRepeatBackTodo(
     val content: String = "",
     val memo: String? = "",
     val todayTodo: Boolean = false,
@@ -15,5 +15,5 @@ data class UpdateRepeatTodo(
     val repeatOption: String? = null,
     val repeatValue: String? = null,
     val tags: List<String> = emptyList(),
-    val nextEndDate : String
+    val preRepeatEnd : String
 )

@@ -101,7 +101,6 @@ class TodoAdapter(val context: Context) :
         }
 
         override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
-            Log.d("20191627", "oldItem : ${oldItem.visibility}  newItem : ${newItem.visibility}")
             return oldItem == newItem
         }
     }

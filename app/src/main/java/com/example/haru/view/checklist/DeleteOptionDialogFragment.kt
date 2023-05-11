@@ -70,7 +70,7 @@ class DeleteOptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSh
         override fun onClick(v: View?) {
             when(v?.id){
                 binding.btnOptionOneDelete.id -> {
-                    todoAddViewModel.deleteRepeatTodo {
+                    todoAddViewModel.deleteRepeatFrontTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }

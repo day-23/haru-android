@@ -100,12 +100,12 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int 
             when(v?.id){
                 binding.btnOptionOneUpdate.id -> {
                     // front에서의 하나만 업데이트
-                    todoAddViewModel.updateRepeatTodo {
+                    todoAddViewModel.updateRepeatFrontTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
-
                     // middle, back에서의 하나만 업데이트
+
                 }
                 binding.btnOptionAllUpdate.id -> {
                     // front에서의 전체 업데이트

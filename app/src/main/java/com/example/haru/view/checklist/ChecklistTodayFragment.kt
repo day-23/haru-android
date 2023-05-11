@@ -1,7 +1,6 @@
 package com.example.haru.view.checklist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -123,7 +122,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     }
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.completeRepeatTodo(id, EndDate(nextEndDateStr!!))
+                        checkListViewModel.completeRepeatFrontTodo(id, FrontEndDate(nextEndDateStr!!))
                     } else
                         checkListViewModel.completeNotRepeatTodo(completed, id)
                 }

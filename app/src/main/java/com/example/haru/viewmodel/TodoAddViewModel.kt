@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.example.haru.data.model.*
 import com.example.haru.utils.FormatDate
 import java.util.*
-import kotlin.math.min
 
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val checklistViewModel: CheckListViewModel
@@ -383,8 +382,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         )
     }
 
-    private fun createUpdateRepeatTodoData(nextEndDate : String) : UpdateRepeatTodo{
-        return UpdateRepeatTodo(
+    private fun createUpdateRepeatTodoData(nextEndDate : String) : UpdateRepeatFrontTodo{
+        return UpdateRepeatFrontTodo(
             content = content,
             memo = memo,
             completed = completedTodo.value!!,
@@ -409,7 +408,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-    fun updateRepeatTodo(callback: () -> Unit){
+    fun updateRepeatFrontTodo(callback: () -> Unit){
         val nextEndDate = findNextEndDate()
         repeatValueStr = null
         repeatEndDateStr = null
@@ -417,7 +416,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         if (nextEndDate != null){
             val nextEndDateStr = FormatDate.dateToStr(nextEndDate)!!
-            checklistViewModel.updateRepeatTodo(todoId = clickedTodo!!.id, updateRepeatTodo = createUpdateRepeatTodoData(nextEndDateStr)){
+            checklistViewModel.updateRepeatFrontTodo(todoId = clickedTodo!!.id, updateRepeatFrontTodo = createUpdateRepeatTodoData(nextEndDateStr)){
                 callback()
             }
         } else checklistViewModel.updateTodo(todoId = clickedTodo!!.id, todo = createUpdateTodoData()){ callback() }
@@ -461,12 +460,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         return nextEndDate
     }
 
-    fun deleteRepeatTodo(callback: () -> Unit){
+    fun deleteRepeatFrontTodo(callback: () -> Unit){
         val nextEndDate = findNextEndDate()
         Log.d("20191627", nextEndDate.toString())
         if (nextEndDate != null) {
             val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-            checklistViewModel.deleteRepeatTodo(todoId = clickedTodo!!.id, endDate = EndDate(nextEndDateStr!!)){
+            checklistViewModel.deleteRepeatFrontTodo(todoId = clickedTodo!!.id, frontEndDate = FrontEndDate(nextEndDateStr!!)){
                 callback()
             }
         } else

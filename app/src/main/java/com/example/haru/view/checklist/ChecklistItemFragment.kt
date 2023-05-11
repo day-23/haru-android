@@ -120,6 +120,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
         super.onViewCreated(view, savedInstanceState)
 
         todoAddViewModel.setClickTodo(id)
+        Log.d("20191627", todoAddViewModel.clickedTodo.toString())
         binding.vm = todoAddViewModel
 
         // flag 관련 UI Update
@@ -365,7 +366,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                     todoAddViewModel.setDate(0, FormatDate.cal.time)
                     return@Observer
                 } else {
-                    Log.d("20191627", "최적 날짜 찾기")
                     val date = when (todoAddViewModel.repeatValue.value?.length) {
                         7 -> FormatDate.nextEndDateEveryWeek(
                             todoAddViewModel.repeatValue.value,
@@ -551,7 +551,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String) 
                     datePicker.calendarClick =
                         object : CustomCalendarDialog.CalendarClickListener {
                             override fun onClick(view: View, year: Int, month: Int, day: Int) {
-                                Log.d("20191627", "클릭")
                                 FormatDate.cal.set(year, month, day)
                                 val date = FormatDate.cal.time
                                 when (v.id) {

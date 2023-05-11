@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -18,12 +17,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.haru.R
 import com.example.haru.data.model.*
-import com.example.haru.databinding.CustomTimePickerBinding
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
-import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import java.util.*
 
@@ -131,8 +128,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                 set(Calendar.SECOND, 59) // 초를 59초로 설정
             }
-            val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-            checkListViewModel.getTodayTodo(todayEndDate) {
+            val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+            checkListViewModel.getTodayTodo(todayFrontEndDate) {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
                     .addToBackStack(null)
@@ -303,7 +300,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     Log.d("20191627", nextEndDate.toString())
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.completeRepeatTodo(id, EndDate(nextEndDateStr!!))
+                        checkListViewModel.completeRepeatFrontTodo(id, FrontEndDate(nextEndDateStr!!))
                     } else
                         checkListViewModel.completeNotRepeatTodo(completed, id)
                 }

@@ -41,7 +41,6 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             FormatDate.cal.time = date
             startHour = FormatDate.cal.get(Calendar.HOUR_OF_DAY) // 0 ~ 23
             startMinute = FormatDate.cal.get(Calendar.MINUTE) // 0 ~ 59
-            Log.d("20191627", "startMinute : $startMinute")
             val remain = startMinute % 5
             if (remain < 3)
                 startMinute -= remain
@@ -133,7 +132,6 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
 //                        binding.timeDivision.value = 0
 //                    }
 //                    this.value = 1
-                    Log.d("20191627", "스크롤")
                 }
             }
         }

@@ -5,15 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide.init
-import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.TagRepository
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import java.util.*
 
 class CheckListViewModel() :
@@ -249,9 +245,9 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodayTodo(endDate: EndDate, callback: () -> Unit) {
+    fun getTodayTodo(frontEndDate: FrontEndDate, callback: () -> Unit) {
         viewModelScope.launch {
-            todoRepository.getTodayTodo(endDate = endDate) {
+            todoRepository.getTodayTodo(frontEndDate = frontEndDate) {
                 todayList.clear()
                 todayList.apply {
 
@@ -384,8 +380,8 @@ class CheckListViewModel() :
                         set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                         set(Calendar.SECOND, 59) // 초를 59초로 설정
                     }
-                    val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-                    getTodayTodo(todayEndDate) {}
+                    val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                    getTodayTodo(todayFrontEndDate) {}
                 }
                 withTagUpdate()
                 callback()
@@ -393,9 +389,9 @@ class CheckListViewModel() :
         }
     }
 
-    fun updateRepeatTodo(todoId: String, updateRepeatTodo: UpdateRepeatTodo, callback: () -> Unit){
+    fun updateRepeatFrontTodo(todoId: String, updateRepeatFrontTodo: UpdateRepeatFrontTodo, callback: () -> Unit){
         viewModelScope.launch {
-            val updateRepeatTodo = todoRepository.updateRepeatTodo(todoId = todoId, updateRepeatTodo = updateRepeatTodo){
+            val updateRepeatTodo = todoRepository.updateRepeatFrontTodo(todoId = todoId, updateRepeatFrontTodo = updateRepeatFrontTodo){
                 getTag()
                 if (todayList.isNotEmpty()) {
                     val calendar = Calendar.getInstance().apply {
@@ -403,8 +399,8 @@ class CheckListViewModel() :
                         set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                         set(Calendar.SECOND, 59) // 초를 59초로 설정
                     }
-                    val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-                    getTodayTodo(todayEndDate) {}
+                    val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                    getTodayTodo(todayFrontEndDate) {}
                 }
                 withTagUpdate()
                 callback()
@@ -426,8 +422,8 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayEndDate) {}
+                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                        getTodayTodo(todayFrontEndDate) {}
                     }
                     withTagUpdate()
                 }
@@ -436,14 +432,14 @@ class CheckListViewModel() :
         }
     }
 
-    fun deleteRepeatTodo(
+    fun deleteRepeatFrontTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
-        endDate: EndDate,
+        frontEndDate: FrontEndDate,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
-            val successDate = todoRepository.deleteRepeatTodo(userId, todoId, endDate) {
+            val successDate = todoRepository.deleteRepeatFrontTodo(userId, todoId, frontEndDate) {
                 if (it.success){
                     if (todayList.isNotEmpty()){
                         val calendar = Calendar.getInstance().apply {
@@ -451,8 +447,8 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayEndDate) {}
+                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                        getTodayTodo(todayFrontEndDate) {}
                     }
                     withTagUpdate()
                 }
@@ -472,8 +468,8 @@ class CheckListViewModel() :
                                 set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                                 set(Calendar.SECOND, 59) // 초를 59초로 설정
                             }
-                            val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-                            getTodayTodo(todayEndDate) {}
+                            val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                            getTodayTodo(todayFrontEndDate) {}
                         }
                         withTagUpdate()
                     }
@@ -494,8 +490,8 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayEndDate) {}
+                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                        getTodayTodo(todayFrontEndDate) {}
                     }
                     withTagUpdate()
                 }
@@ -503,9 +499,9 @@ class CheckListViewModel() :
         }
     }
 
-    fun completeRepeatTodo(id: String, endDate: EndDate) {
+    fun completeRepeatFrontTodo(id: String, frontEndDate: FrontEndDate) {
         viewModelScope.launch {
-            val successData = todoRepository.completeRepeatTodo(todoId = id, endDate = endDate) {
+            val successData = todoRepository.completeRepeatFrontTodo(todoId = id, frontEndDate = frontEndDate) {
                 if (it.success) {
                     if (todayList.isNotEmpty()) {
                         val calendar = Calendar.getInstance().apply {
@@ -513,8 +509,8 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayEndDate) {}
+                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                        getTodayTodo(todayFrontEndDate) {}
                     }
                     withTagUpdate()
                 }
@@ -535,8 +531,8 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayEndDate) {}
+                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                        getTodayTodo(todayFrontEndDate) {}
                     }
                     withTagUpdate()
                 }
@@ -557,8 +553,8 @@ class CheckListViewModel() :
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                             set(Calendar.SECOND, 59) // 초를 59초로 설정
                         }
-                        val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayEndDate) {}
+                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                        getTodayTodo(todayFrontEndDate) {}
                     }
                     withTagUpdate()
                 }

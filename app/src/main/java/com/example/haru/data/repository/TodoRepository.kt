@@ -3,7 +3,6 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
-import com.example.haru.data.retrofit.RetrofitClient.scheduleService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -180,13 +179,13 @@ class TodoRepository() {
         callback(todoData)
     }
 
-    suspend fun updateRepeatTodo(
+    suspend fun updateRepeatFrontTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
-        updateRepeatTodo: UpdateRepeatTodo,
+        updateRepeatFrontTodo: UpdateRepeatFrontTodo,
         callback: (successData: SuccessFail) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = todoService.updateRepeatTodo(userId, todoId, updateRepeatTodo).execute()
+        val response = todoService.updateRepeatFrontTodo(userId, todoId, updateRepeatFrontTodo).execute()
         val data = response.body()!!
 
         val successData: SuccessFail = if (response.isSuccessful) {
@@ -256,10 +255,10 @@ class TodoRepository() {
 
     suspend fun getTodayTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
-        endDate: EndDate,
+        frontEndDate: FrontEndDate,
         callback: (todoList: TodoList) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = todoService.getTodayTodo(userId, endDate).execute()
+        val response = todoService.getTodayTodo(userId, frontEndDate).execute()
         val data: GetTodayTodo
         val todoList: TodoList
 
@@ -312,13 +311,13 @@ class TodoRepository() {
         callback(successData)
     }
 
-    suspend fun completeRepeatTodo(
+    suspend fun completeRepeatFrontTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
-        endDate: EndDate,
+        frontEndDate: FrontEndDate,
         callback: (successData: SuccessFail) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = todoService.completeRepeatTodo(userId, todoId, endDate).execute()
+        val response = todoService.completeRepeatFrontTodo(userId, todoId, frontEndDate).execute()
         val data = response.body()!!
 
         val successData: SuccessFail = if (response.isSuccessful) {
@@ -331,13 +330,13 @@ class TodoRepository() {
         callback(successData)
     }
 
-    suspend fun deleteRepeatTodo(
+    suspend fun deleteRepeatFrontTodo(
         userId: String,
         todoId: String,
-        endDate: EndDate,
+        frontEndDate: FrontEndDate,
         callback: (successData: SuccessFail) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = todoService.deleteRepeatTodo(userId, todoId, endDate).execute()
+        val response = todoService.deleteRepeatFrontTodo(userId, todoId, frontEndDate).execute()
         val data = response.body()!!
 
         val successData: SuccessFail = if (response.isSuccessful) {
