@@ -47,7 +47,7 @@ class CheckListViewModel() :
 
     var todoByTagItem: String? = null
 
-    var tagInputString : String = ""
+    var tagInputString: String = ""
 
     init {
         getTodoMain {
@@ -60,12 +60,12 @@ class CheckListViewModel() :
         getTag()
     }
 
-    fun setVisibility(str : String, type : Int){
-        if (type == 0){
+    fun setVisibility(str: String, type: Int) { // Section Toggle 기능
+        if (type == 0) {
             val index = todoList.indexOf(Todo(type = 4, content = str))
             Log.d("20191627", str)
             Log.d("20191627", index.toString())
-            for(i in index+1 until todoList.size){
+            for (i in index + 1 until todoList.size) {
                 if (todoList[i].type == 6)
                     break
                 else if (todoList[i].type == 3)
@@ -77,7 +77,7 @@ class CheckListViewModel() :
             _todoDataList.value = todoList
         } else {
             val index = todayList.indexOf(Todo(type = 4, content = str))
-            for(i in index+1 until todayList.size){
+            for (i in index + 1 until todayList.size) {
                 if (todayList[i].type == 3)
                     break
                 val todo = todayList[i].copy(visibility = !todayList[i].visibility)
@@ -95,13 +95,15 @@ class CheckListViewModel() :
         return todoList
     }
 
-    fun getTag() {
+    /* -------------------------------------태그 관련 기능---------------------------------- */
+
+    fun getTag() { // Tag 받아오는 기능
         viewModelScope.launch {
             _tagDataList.value = basicTag + tagRepository.getTag()
         }
     }
 
-    fun readyCreateTag(string: String) : String? {
+    fun readyCreateTag(string: String): String? { // 태그 생성전 검사 기능
         tagInputString = string
         return if (tagInputString.contains(" "))
             null
@@ -110,16 +112,34 @@ class CheckListViewModel() :
 
     }
 
-    fun createTag(content: Content){
+    fun createTag(content: Content) {  // 태그 생성 기능
         viewModelScope.launch {
-            tagRepository.createTag(content = content){
+            tagRepository.createTag(content = content) {
                 getTag()
                 withTagUpdate()
             }
         }
     }
 
-//    fun createTagList(contents : ContentList){  태그 여러개 추가
+    fun deleteTagList(tagIdList: TagIdList) {  // 태그 삭제 기능
+        viewModelScope.launch {
+            tagRepository.deleteTagList(tagIdList = tagIdList) {
+                getTag()
+                withTagUpdate()
+            }
+        }
+    }
+
+    fun updateTag(tagId: String, updateContent: TagUpdate) {  // 태그 수정 기능
+        viewModelScope.launch {
+            tagRepository.updateTag(tagId = tagId, updateContent = updateContent) {
+                getTag()
+                withTagUpdate()
+            }
+        }
+    }
+
+    //    fun createTagList(contents : ContentList){  태그 여러개 추가
 //        viewModelScope.launch {
 //            tagRepository.createTagList(contents = contents){
 //                getTag()
@@ -128,25 +148,9 @@ class CheckListViewModel() :
 //        }
 //    }
 
-    fun deleteTagList(tagIdList: TagIdList){
-        viewModelScope.launch {
-            tagRepository.deleteTagList(tagIdList = tagIdList){
-                getTag()
-                withTagUpdate()
-            }
-        }
-    }
+    /* -------------------------------------------------------------------------- */
 
-    fun updateTag(tagId : String, updateContent : TagUpdate){
-        viewModelScope.launch {
-            tagRepository.updateTag(tagId = tagId, updateContent = updateContent){
-                getTag()
-                withTagUpdate()
-            }
-        }
-    }
-
-    fun withTagUpdate() {
+    fun withTagUpdate() {  // Todo에 변동을 주는 기능을 하면 TodoData를 업데이트 해주는 기능
         if (todoByTag.value == true) {
             when (todoByTagItem) {
                 null -> {}
@@ -173,7 +177,7 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodoMain(callback: () -> Unit) {
+    fun getTodoMain(callback: () -> Unit) {  // 메인 화면에서 보여줄 TodoData를 가져오는 기능
         viewModelScope.launch {
             todoRepository.getTodoMain {
                 todoList.clear()
@@ -188,7 +192,7 @@ class CheckListViewModel() :
                 else _flaggedTodos.postValue(
                     listOf(
                         Todo(type = 4, content = "중요"),
-                        Todo(type = 5,  content = "중요한 할 일이 있나요?"), Todo(type = 3)
+                        Todo(type = 5, content = "중요한 할 일이 있나요?"), Todo(type = 3)
                     )
                 )
 
@@ -245,7 +249,10 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodayTodo(frontEndDate: FrontEndDate, callback: () -> Unit) {
+    fun getTodayTodo(
+        frontEndDate: FrontEndDate,
+        callback: () -> Unit
+    ) { // Today 창에서 보여줄 Todo를 가져오는 기능
         viewModelScope.launch {
             todoRepository.getTodayTodo(frontEndDate = frontEndDate) {
                 todayList.clear()
@@ -284,9 +291,13 @@ class CheckListViewModel() :
     }
 
 
-    fun addTodo(todoRequest: TodoRequest, calendar: Boolean = false, callback: () -> Unit) {
+    fun addTodo(
+        todoRequest: TodoRequest,
+        calendar: Boolean = false,
+        callback: () -> Unit
+    ) { // Todo 추가 기능
         viewModelScope.launch {
-            todoRepository.createTodo(calendar ,todoRequest) {
+            todoRepository.createTodo(calendar, todoRequest) {
                 getTag()
                 getTodoMain {
                     flaggedTodos.value?.let { todoList.addAll(it) }
@@ -301,7 +312,7 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodoByTag(position: Int) { // 변경사항 적용하기!!!!!!!!!!!!!!!!!
+    fun getTodoByTag(position: Int) { // Tag 정렬 기능
         viewModelScope.launch {
             todoByTagItem = tagDataList.value!![position - 1].content
             _todoByTag.value = true
@@ -351,7 +362,7 @@ class CheckListViewModel() :
         }
     }
 
-    fun getTodoByFlag() {
+    fun getTodoByFlag() {  // 중요 표시된 Todo 가져오는 기능
         viewModelScope.launch {
             todoByTagItem = "중요"
             _todoByTag.value = true
@@ -370,6 +381,9 @@ class CheckListViewModel() :
         _completedTodos.value = emptyList()
     }
 
+    /* ------------------------------------할 일의 수정 기능--------------------------------- */
+
+    // 반복하지 않는 Todo를 수정하거나, 반복하는 Todo의 전체를 수정하는 기능
     fun updateTodo(todoId: String, todo: UpdateTodo, callback: () -> Unit) {
         viewModelScope.launch {
             val updateTodo = todoRepository.updateTodo(todoId = todoId, todo = todo) {
@@ -389,9 +403,17 @@ class CheckListViewModel() :
         }
     }
 
-    fun updateRepeatFrontTodo(todoId: String, updateRepeatFrontTodo: UpdateRepeatFrontTodo, callback: () -> Unit){
+    // 반복하는 할 일의 front부분을 수정 기능
+    fun updateRepeatFrontTodo(
+        todoId: String,
+        updateRepeatFrontTodo: UpdateRepeatFrontTodo,
+        callback: () -> Unit
+    ) {
         viewModelScope.launch {
-            val updateRepeatTodo = todoRepository.updateRepeatFrontTodo(todoId = todoId, updateRepeatFrontTodo = updateRepeatFrontTodo){
+            val updateRepeatTodo = todoRepository.updateRepeatFrontTodo(
+                todoId = todoId,
+                updateRepeatFrontTodo = updateRepeatFrontTodo
+            ) {
                 getTag()
                 if (todayList.isNotEmpty()) {
                     val calendar = Calendar.getInstance().apply {
@@ -407,7 +429,10 @@ class CheckListViewModel() :
             }
         }
     }
+    /* -------------------------------------------------------------------------------- */
 
+    /* ----------------------------------할 일 삭제 기능---------------------------------- */
+    // 반복하지 않는 Todo, 반복하는 Todo의 전체를 삭제하는 기능
     fun deleteTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
@@ -432,6 +457,7 @@ class CheckListViewModel() :
         }
     }
 
+    // 반복하는 할일의 front를 삭제하는 기능
     fun deleteRepeatFrontTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
@@ -440,8 +466,8 @@ class CheckListViewModel() :
     ) {
         viewModelScope.launch {
             val successDate = todoRepository.deleteRepeatFrontTodo(userId, todoId, frontEndDate) {
-                if (it.success){
-                    if (todayList.isNotEmpty()){
+                if (it.success) {
+                    if (todayList.isNotEmpty()) {
                         val calendar = Calendar.getInstance().apply {
                             set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
                             set(Calendar.MINUTE, 59) // 분을 59분으로 설정
@@ -457,67 +483,12 @@ class CheckListViewModel() :
         }
     }
 
-    fun updateFlag(flag: Flag, id: String) {
-        viewModelScope.launch {
-            val successData =
-                todoRepository.updateFlag(todoId = id, flag = flag) {
-                    if (it.success) {
-                        if (todayList.isNotEmpty()) {
-                            val calendar = Calendar.getInstance().apply {
-                                set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                                set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                                set(Calendar.SECOND, 59) // 초를 59초로 설정
-                            }
-                            val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                            getTodayTodo(todayFrontEndDate) {}
-                        }
-                        withTagUpdate()
-                    }
-                }
-        }
-    }
+    /* -------------------------------------------------------------------------------- */
 
-    fun completeNotRepeatTodo(completed: Completed, id: String) {
-        viewModelScope.launch {
-            val successData = todoRepository.completeNotRepeatTodo(
-                todoId = id,
-                completed = completed
-            ) {
-                if (it.success) {
-                    if (todayList.isNotEmpty()) {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                            set(Calendar.SECOND, 59) // 초를 59초로 설정
-                        }
-                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayFrontEndDate) {}
-                    }
-                    withTagUpdate()
-                }
-            }
-        }
-    }
 
-    fun completeRepeatFrontTodo(id: String, frontEndDate: FrontEndDate) {
-        viewModelScope.launch {
-            val successData = todoRepository.completeRepeatFrontTodo(todoId = id, frontEndDate = frontEndDate) {
-                if (it.success) {
-                    if (todayList.isNotEmpty()) {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
-                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
-                            set(Calendar.SECOND, 59) // 초를 59초로 설정
-                        }
-                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-                        getTodayTodo(todayFrontEndDate) {}
-                    }
-                    withTagUpdate()
-                }
-            }
-        }
-    }
+    /* ------------------------------------할 일의 완료 기능--------------------------------- */
 
+    // 하위 투두를 완료하는 기능
     fun completeSubTodo(completed: Completed, id: String, subTodoId: String, subTodoPosition: Int) {
         viewModelScope.launch {
             val successData = todoRepository.completeSubTodo(
@@ -540,6 +511,55 @@ class CheckListViewModel() :
         }
     }
 
+    // 반복하지 않는 할 일, 반복하는 할 일의 전체를 완료하는 기능
+    fun completeNotRepeatTodo(completed: Completed, id: String) {
+        viewModelScope.launch {
+            val successData = todoRepository.completeNotRepeatTodo(
+                todoId = id,
+                completed = completed
+            ) {
+                if (it.success) {
+                    if (todayList.isNotEmpty()) {
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                            set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                            set(Calendar.SECOND, 59) // 초를 59초로 설정
+                        }
+                        val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                        getTodayTodo(todayFrontEndDate) {}
+                    }
+                    withTagUpdate()
+                }
+            }
+        }
+    }
+
+    // 반복하는 할 일의 front를 완료하는 기능
+    fun completeRepeatFrontTodo(id: String, frontEndDate: FrontEndDate) {
+        viewModelScope.launch {
+            val successData =
+                todoRepository.completeRepeatFrontTodo(todoId = id, frontEndDate = frontEndDate) {
+                    if (it.success) {
+                        if (todayList.isNotEmpty()) {
+                            val calendar = Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                                set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                                set(Calendar.SECOND, 59) // 초를 59초로 설정
+                            }
+                            val todayFrontEndDate =
+                                FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                            getTodayTodo(todayFrontEndDate) {}
+                        }
+                        withTagUpdate()
+                    }
+                }
+        }
+    }
+
+    /* -------------------------------------------------------------------------------- */
+
+
+    // 하위 투두가 있는 할 일의 Toggle을 하는 기능
     fun updateFolded(folded: Folded, id: String) {
         viewModelScope.launch {
             val successData = todoRepository.updateFolded(
@@ -559,6 +579,28 @@ class CheckListViewModel() :
                     withTagUpdate()
                 }
             }
+        }
+    }
+
+    // Todo의 중요를 업데이트 하는 기능
+    fun updateFlag(flag: Flag, id: String) {
+        viewModelScope.launch {
+            val successData =
+                todoRepository.updateFlag(todoId = id, flag = flag) {
+                    if (it.success) {
+                        if (todayList.isNotEmpty()) {
+                            val calendar = Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY, 23) // 시간을 23시로 설정
+                                set(Calendar.MINUTE, 59) // 분을 59분으로 설정
+                                set(Calendar.SECOND, 59) // 초를 59초로 설정
+                            }
+                            val todayFrontEndDate =
+                                FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+                            getTodayTodo(todayFrontEndDate) {}
+                        }
+                        withTagUpdate()
+                    }
+                }
         }
     }
 }
