@@ -3,6 +3,8 @@ package com.example.haru.view.checklist
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -97,6 +99,25 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             }
             return@setOnKeyListener false
         }
+
+        binding.tagEtcLayout.etTagInput.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s == null)
+                    return
+
+                val str = s.toString()
+                if (str == "")
+                    return
+
+                if (str[str.length - 1] == ' '){
+                    binding.tagEtcLayout.ivTagAdd.performClick()
+                }
+            }
+
+        })
 
         binding.btnAddTodo.setOnClickListener {
             val text = binding.etSimpleAddTodo.text.toString()

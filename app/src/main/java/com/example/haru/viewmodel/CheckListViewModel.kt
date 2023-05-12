@@ -104,7 +104,7 @@ class CheckListViewModel() :
     }
 
     fun readyCreateTag(string: String): String? { // 태그 생성전 검사 기능
-        tagInputString = string
+        tagInputString = string.trim()
         return if (tagInputString.contains(" "))
             null
         else
