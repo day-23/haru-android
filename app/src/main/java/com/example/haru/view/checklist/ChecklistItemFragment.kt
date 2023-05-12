@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
@@ -355,7 +356,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         )
                 }
             }
-            Log.d("20191627", "몇본오나?")
+
             if (!todoAddViewModel.calculateDateFlag) {
                 todoAddViewModel.calculateDateFlag = true
             } else if (todoAddViewModel.repeatOption.value != null) {
@@ -434,32 +435,41 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
         // repeat EndDate 관련 UI Update
         todoAddViewModel.repeatEndDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.d("20191627", "repeatEndDate $it")
             binding.btnInfoRepeatEndDate.text = FormatDate.simpleDateToStr(it)
         })
 
-        binding.infoTagEt.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                binding.ivInfoTagIcon.backgroundTintList = if (s.toString() == "")
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.icon_gray
-                        )
+        todoAddViewModel.tagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.ivInfoTagIcon.backgroundTintList = if (it.isEmpty())
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.icon_gray))
+            else
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.todo_description
                     )
-                else
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.todo_description
-                        )
+                )
+
+            if (it.size < binding.infoTagContainerLayout.childCount - 2)
+                for (i in 1 until binding.infoTagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
+                    val chip = binding.infoTagContainerLayout.getChildAt(i) as LinearLayout
+                    if (!it.contains((chip.getChildAt(0) as AppCompatButton).text)) {
+                        binding.infoTagContainerLayout.removeViewAt(i)
+                        break
+                    }
+                }
+            else if (it.size > binding.infoTagContainerLayout.childCount - 2) {
+                val layoutInflater =
+                    context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val childCount = binding.infoTagContainerLayout.childCount
+                for (i in childCount - 2 until it.size) {
+                    val chip = layoutInflater.inflate(R.layout.custom_chip, null)
+                    chip.findViewById<AppCompatButton>(R.id.tag_chip).text = it[i]
+                    binding.infoTagContainerLayout.addView(
+                        chip,
+                        binding.infoTagContainerLayout.childCount - 1
                     )
+                }
             }
-
         })
 
         binding.etInfoMemo.addTextChangedListener(object : TextWatcher {

@@ -171,11 +171,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         content = clickedTodo!!.content
         memo = clickedTodo!!.memo
-        for (i in 0 until clickedTodo!!.tags.size) {
-            tag += "${clickedTodo!!.tags[i].content} "
-            if (i + 1 == clickedTodo!!.tags.size)
-                tag = tag.dropLast(1)
-        }
+        for (i in 0 until clickedTodo!!.tags.size)
+            tagList.add(clickedTodo!!.tags[i].content)
+        _tagLiveData.value = tagList
     }
 
     fun setFlagTodo() {
@@ -307,6 +305,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         subTodos.removeAll(listOf(""))
 
+
 //        tagList = if (tag == "" || tag.replace(" ", "") == "")
 //            mutableListOf()
 //        else {
@@ -376,7 +375,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             ) else null,
             repeatValue = if (repeatSwitch.value == true) repeatValueStr else null,
             repeatEnd = repeatEndDateStr,
-            tags = tagList,
+            tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
             subTodos = subTodos,
             alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!)
         )
@@ -402,7 +401,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             ) else null,
             repeatValue = repeatValueStr,
             repeatEnd = repeatEndDateStr,
-            tags = tagList,
+            tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
             subTodos = subTodos,
             subTodosCompleted = subTodoCompleted,
             alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!)
@@ -423,7 +422,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             ) else null,
             repeatValue = repeatValue.value,
             repeatEnd = repeatEndDateStr,
-            tags = tagList,
+            tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
             subTodos = subTodos,
             subTodosCompleted = subTodoCompleted,
             alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!),

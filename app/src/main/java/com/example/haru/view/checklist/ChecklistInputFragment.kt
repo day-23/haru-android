@@ -229,6 +229,8 @@ class ChecklistInputFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("20191627", todoAddViewModel.tagLiveData.value.toString())
+
         todoAddViewModel.flagTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.checkFlagTodo.isChecked = it
         })
@@ -320,11 +322,6 @@ class ChecklistInputFragment(
         todoAddViewModel.alarmSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 true -> {
-//                    val date = Date()
-//                    binding.btnAlarmDatePick.text = FormatDate.simpleDateToStr(date)
-//                    binding.btnAlarmTimePick.text = FormatDate.simpleTimeToStr(date)
-//                    todoAddViewModel.setDate(1, date)
-//                    todoAddViewModel.setTime(1, date)
                     binding.alarmSwitch.isChecked = it
                     binding.btnAlarmDatePick.visibility = View.VISIBLE
                     binding.btnAlarmTimePick.visibility = View.VISIBLE
@@ -401,9 +398,6 @@ class ChecklistInputFragment(
             androidx.lifecycle.Observer {
                 when (it) {
                     true -> {
-//                        val date = Date()
-//                        binding.btnRepeatEndDate.text = FormatDate.simpleDateToStr(date)
-//                        todoAddViewModel.setDate(2, date)
                         binding.tvRepeatEnd.setTextColor(ContextCompat.getColor(requireContext(), R.color.todo_description))
                         binding.btnRepeatEndDate.visibility = View.VISIBLE
                     }
@@ -706,16 +700,6 @@ class ChecklistInputFragment(
                 }
             }
         })
-
-//        binding.tagEt.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-//
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-//
-//            override fun afterTextChanged(s: Editable?) {
-//
-//            }
-//        })
 
         binding.etMemo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
