@@ -693,7 +693,7 @@ class ChecklistInputFragment(
                 for (i in childCount - 2 until it.size) {
                     val chip = layoutInflater.inflate(R.layout.custom_chip, null)
                     chip.findViewById<AppCompatButton>(R.id.tag_chip).text = it[i]
-                        binding.tagContainerLayout.addView(
+                    binding.tagContainerLayout.addView(
                         chip,
                         binding.tagContainerLayout.childCount - 1
                     )
@@ -731,6 +731,26 @@ class ChecklistInputFragment(
             }
             return@setOnKeyListener false
         }
+
+        binding.tagEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s == null)
+                    return
+
+                val str = s.toString()
+                if (str == "")
+                    return
+
+                if (str[str.length - 1] == ' '){
+                    todoAddViewModel.addTagList()
+                    binding.tagEt.setText("")
+                }
+            }
+
+        })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
         binding.todaySwitch.setOnClickListener(btnListener())

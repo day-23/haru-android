@@ -472,6 +472,26 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
             }
         })
 
+        binding.infoTagEt.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s == null)
+                    return
+
+                val str = s.toString()
+                if (str == "")
+                    return
+
+                if (str[str.length - 1] == ' '){
+                    todoAddViewModel.addTagList()
+                    binding.infoTagEt.setText("")
+                }
+            }
+
+        })
+
         binding.etInfoMemo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
