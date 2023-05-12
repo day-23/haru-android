@@ -61,7 +61,7 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:layout_marginBottom="14dp"
-                    android:paddingStart="24dp">
+                    android:paddingStart="34dp">
 
                     <EditText
                         android:id="@+id/et_info_content"
@@ -72,7 +72,8 @@
                         android:text="@={vm.content}"
                         android:textColor="@color/todo_description"
                         android:background="@android:color/transparent"
-                        android:textSize="24sp" />
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
 
                     <CheckBox
                         android:id="@+id/cb_info_flag"
@@ -103,12 +104,14 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
                             android:background="@drawable/calendar_schedule_plus_image"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="20sp"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="16sp"
                             android:text="하위 항목 추가"
                             android:textColor="@color/light_gray"/>
 

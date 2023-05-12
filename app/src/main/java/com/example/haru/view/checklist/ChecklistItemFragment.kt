@@ -127,6 +127,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         todoAddViewModel.setClickTodo(id, todo)
         binding.vm = todoAddViewModel
 
+        if (todoAddViewModel.clickedTodo!!.completed){
+            binding.infoSubTodoAddLayout.visibility = View.GONE
+        }
+
         Log.d("20191627", todoAddViewModel.clickedTodo.toString())
 
         // flag 관련 UI Update
