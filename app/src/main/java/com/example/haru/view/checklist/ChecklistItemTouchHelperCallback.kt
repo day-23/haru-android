@@ -43,8 +43,5 @@ class ChecklistItemTouchHelperCallback(val listener: ItemTouchHelperListener) :
     }
 
     override fun isLongPressDragEnabled(): Boolean = true
-
     override fun isItemViewSwipeEnabled(): Boolean = false
-
-
 }
