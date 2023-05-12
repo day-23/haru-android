@@ -692,7 +692,13 @@ class ChecklistInputFragment(
                 val childCount = binding.tagContainerLayout.childCount
                 for (i in childCount - 2 until it.size) {
                     val chip = layoutInflater.inflate(R.layout.custom_chip, null)
-                    chip.findViewById<AppCompatButton>(R.id.tag_chip).text = it[i]
+                    chip.findViewById<AppCompatButton>(R.id.tag_chip).apply {
+                        text = it[i]
+                        setOnClickListener {
+                            todoAddViewModel.subTagList(this.text.toString())
+                        }
+                    }
+
                     binding.tagContainerLayout.addView(
                         chip,
                         binding.tagContainerLayout.childCount - 1
@@ -723,7 +729,7 @@ class ChecklistInputFragment(
 
         })
 
-        binding.tagEt.setOnKeyListener { view, keyCode, keyEvent ->
+        binding.tagEt.setOnKeyListener { view, keyCode, keyEvent -> // 엔터키와 하드웨어 키보드의 스페이스바 입력 감지
             if (keyCode == KeyEvent.KEYCODE_SPACE && keyEvent.action == KeyEvent.ACTION_UP){
                 todoAddViewModel.addTagList()
                 (view as EditText).setText("")
@@ -732,7 +738,7 @@ class ChecklistInputFragment(
             return@setOnKeyListener false
         }
 
-        binding.tagEt.addTextChangedListener(object : TextWatcher {
+        binding.tagEt.addTextChangedListener(object : TextWatcher { // 소프트웨어 키보드의 스페이스바 감지
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 

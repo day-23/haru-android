@@ -463,7 +463,12 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 val childCount = binding.infoTagContainerLayout.childCount
                 for (i in childCount - 2 until it.size) {
                     val chip = layoutInflater.inflate(R.layout.custom_chip, null)
-                    chip.findViewById<AppCompatButton>(R.id.tag_chip).text = it[i]
+                    chip.findViewById<AppCompatButton>(R.id.tag_chip).apply {
+                        text = it[i]
+                        setOnClickListener {
+                            todoAddViewModel.subTagList(this.text.toString())
+                        }
+                    }
                     binding.infoTagContainerLayout.addView(
                         chip,
                         binding.infoTagContainerLayout.childCount - 1

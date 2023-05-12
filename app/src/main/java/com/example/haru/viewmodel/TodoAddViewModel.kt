@@ -265,8 +265,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         return true
     }
 
-    fun subTagList(){
-
+    fun subTagList(item : String){
+        tagList.remove(item)
+        _tagLiveData.value = tagList
     }
 
     fun setEndTimeHeight(h: Int) {
