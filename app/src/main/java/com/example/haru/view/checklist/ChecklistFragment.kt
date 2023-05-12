@@ -225,6 +225,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             }
         }
 
+        todoAdapter.dropListener = object : TodoAdapter.DropListener{
+            override fun onDropFragment(list: List<String>) {
+                checkListViewModel.updateOrderMainTodo(changeOrderTodo = ChangeOrderTodo(list))
+            }
+        }
+
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
             override fun onClick(view: View, id: String) {
                 if (checkListViewModel.todoDataList.value!!.find {
@@ -334,6 +340,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 checkListViewModel.updateFolded(folded, id)
             }
         }
+
+
 
         todoListView.adapter = todoAdapter
         todoListView.layoutManager =

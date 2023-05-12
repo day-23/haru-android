@@ -44,6 +44,10 @@ class TodoAdapter(val context: Context) :
         fun onClick(view: View, str: String)
     }
 
+    interface DropListener {
+        fun onDropFragment(list: List<String>)
+    }
+
     interface TodoClick {
         fun onClick(view: View, id: String)
     }
@@ -70,6 +74,7 @@ class TodoAdapter(val context: Context) :
     var flagClick: FlagClick? = null
     var subTodoCompleteClick: SubTodoCompleteClick? = null
     var toggleClick: ToggleClick? = null
+    var dropListener: DropListener? = null
 
     //    val HeaderType1 = 0   -> 디자인 시안 변경으로 인해 사용 X
 //    val HeaderType2 = 1
@@ -216,9 +221,9 @@ class TodoAdapter(val context: Context) :
 
     inner class TodoViewHolder(val binding: FragmentChecklistItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        var complete = false
 
         fun bind(item: Todo) {
-            Log.d("20191627", "bind 호출")
             binding.checklistItem.layoutParams = if (item.visibility) LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -314,9 +319,17 @@ class TodoAdapter(val context: Context) :
                 }
             }
 
-            if (item.completed) binding.tvTitle.paintFlags =
-                Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
-            else binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
+
+
+            if (item.completed){
+                complete = true
+                binding.tvTitle.paintFlags =
+                    Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
+            }
+            else{
+                complete = false
+                binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
+            }
 
             binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
             binding.tvTitle.text = item.content
@@ -413,13 +426,13 @@ class TodoAdapter(val context: Context) :
 
     override fun onItemMove(formPosition: Int, toPosition: Int): Boolean {
         for (i in formPosition downTo 0)
-            if (diffUtil.currentList[i].type in listOf(0, 1, 4)) {
+            if (diffUtil.currentList[i].type == 4) {
                 dragLimitTop = i
                 break
             }
 
         for (i in formPosition until diffUtil.currentList.size)
-            if (diffUtil.currentList[i].type == 3) {
+            if (diffUtil.currentList[i].type in listOf(3, 6)) {
                 dragLimitBottom = i
                 break
             }
@@ -435,7 +448,13 @@ class TodoAdapter(val context: Context) :
     }
 
     override fun onDropAdapter() {
-        TODO("Not yet implemented")
+        if (dropListener != null) {
+            val list = mutableListOf<String>()
+            for (i in dragLimitTop!! + 1 until dragLimitBottom!!)
+                list.add(diffUtil.currentList[i].id)
+
+            dropListener?.onDropFragment(list)
+        }
     }
 
 }

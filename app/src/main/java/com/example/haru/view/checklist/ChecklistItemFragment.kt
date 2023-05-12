@@ -127,6 +127,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         todoAddViewModel.setClickTodo(id, todo)
         binding.vm = todoAddViewModel
 
+        Log.d("20191627", todoAddViewModel.clickedTodo.toString())
+
         // flag 관련 UI Update
         todoAddViewModel.flagTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.cbInfoFlag.isChecked = it
@@ -224,6 +226,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
         // endDate Button UI Update
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.d("20191627", "endDAte $it")
             binding.btnInfoEndDatePick.text = FormatDate.simpleDateToStr(it)
         })
 
@@ -348,6 +351,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         )
                 }
             }
+            Log.d("20191627", "몇본오나?")
             if (!todoAddViewModel.calculateDateFlag) {
                 todoAddViewModel.calculateDateFlag = true
             } else if (todoAddViewModel.repeatOption.value != null) {
@@ -401,8 +405,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     }
                     if (date == null)
                         todoAddViewModel.setDate(0, Date())
+
                     else
                         todoAddViewModel.setDate(0, date)
+
                 }
             }
         })
@@ -424,6 +430,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
         // repeat EndDate 관련 UI Update
         todoAddViewModel.repeatEndDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.d("20191627", "repeatEndDate $it")
             binding.btnInfoRepeatEndDate.text = FormatDate.simpleDateToStr(it)
         })
 

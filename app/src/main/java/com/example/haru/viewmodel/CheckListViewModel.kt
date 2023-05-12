@@ -577,6 +577,7 @@ class CheckListViewModel() :
     }
 
     fun updateOrderMainTodo(userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5", changeOrderTodo: ChangeOrderTodo){
+        Log.d("20191627", changeOrderTodo.todoIds.toString())
         viewModelScope.launch {
             val successData = todoRepository.updateOrderMainTodo(userId, changeOrderTodo)
         }

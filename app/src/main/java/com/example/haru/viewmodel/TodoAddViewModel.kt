@@ -95,7 +95,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     var clickedTodo: Todo? = null
 
-    var calculateDateFlag = true
+    var calculateDateFlag = false
 
     init {
         this.checklistViewModel = checkListViewModel
@@ -140,6 +140,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         if (clickedTodo!!.endDate != null) {
             _endDate.value = FormatDate.strToDate(clickedTodo!!.endDate!!)
+            Log.d("20191627", endDate.value.toString())
             _endDateSwitch.value = true
         } else _endDateSwitch.value = false
 

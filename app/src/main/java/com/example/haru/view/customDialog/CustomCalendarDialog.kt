@@ -74,7 +74,6 @@ class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFr
         SUN, MON, TUES, WED, THUR, FRI, SAT
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = true

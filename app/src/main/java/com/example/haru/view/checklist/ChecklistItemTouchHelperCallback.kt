@@ -14,7 +14,7 @@ class ChecklistItemTouchHelperCallback(val listener: ItemTouchHelperListener) :
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        val dragFlags = if (viewHolder is TodoAdapter.TodoViewHolder) ItemTouchHelper.UP or ItemTouchHelper.DOWN else 0
+        val dragFlags = if (viewHolder is TodoAdapter.TodoViewHolder && !viewHolder.complete) ItemTouchHelper.UP or ItemTouchHelper.DOWN else 0
 //        val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
         return makeMovementFlags(dragFlags, 0)
     }
