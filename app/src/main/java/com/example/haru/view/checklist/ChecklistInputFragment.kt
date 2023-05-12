@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
@@ -68,7 +69,7 @@ class ChecklistInputFragment(
         for (i in 1..31) {
             val textView = TextView(requireContext())
             textView.text = getString(R.string.MonthDay, i)
-            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            textView.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.light_gray)))
             textView.gravity = Gravity.CENTER
             textView.setOnClickListener {
                 todoAddViewModel.setRepeatVal(i - 1)
@@ -85,7 +86,7 @@ class ChecklistInputFragment(
         for (i in 1..12) {
             val textView = TextView(requireContext())
             textView.text = getString(R.string.YearMonth, i)
-            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            textView.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.light_gray)))
             textView.gravity = Gravity.CENTER
             textView.setOnClickListener {
                 if ((it as TextView).textColors != ColorStateList.valueOf(
@@ -237,15 +238,15 @@ class ChecklistInputFragment(
             when (it) {
                 true -> {
                     binding.todaySwitch.isChecked = true
-                    binding.tvTodayTodo.setTextColor(resources.getColor(R.color.highlight))
+                    binding.tvTodayTodo.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                     binding.ivTodayIcon.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.highlight))
+                        ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.highlight))
                 }
                 else -> {
                     binding.todaySwitch.isChecked = false
-                    binding.tvTodayTodo.setTextColor(resources.getColor(R.color.light_gray))
+                    binding.tvTodayTodo.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
                     binding.ivTodayIcon.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.light_gray))
+                        ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.light_gray))
                 }
             }
         })
@@ -272,8 +273,8 @@ class ChecklistInputFragment(
 
                         binding.endDateTimeLayout.visibility = View.VISIBLE
                         binding.ivCalendarIcon.backgroundTintList =
-                            ColorStateList.valueOf(resources.getColor(R.color.todo_description))
-                        binding.tvEndDateSet.setTextColor(resources.getColor(R.color.todo_description))
+                            ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.todo_description))
+                        binding.tvEndDateSet.setTextColor(ContextCompat.getColor(requireContext(), R.color.todo_description))
                     }
                     else -> {
                         if (todoAddViewModel.repeatSwitch.value == true)
@@ -293,8 +294,8 @@ class ChecklistInputFragment(
                         valueAnimator.start()
                         binding.endDateTimeLayout.visibility = View.INVISIBLE
                         binding.ivCalendarIcon.backgroundTintList =
-                            ColorStateList.valueOf(resources.getColor(R.color.light_gray))
-                        binding.tvEndDateSet.setTextColor(resources.getColor(R.color.light_gray))
+                            ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        binding.tvEndDateSet.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
                     }
                 }
             })
@@ -306,12 +307,12 @@ class ChecklistInputFragment(
                     true -> {
                         binding.endDateTimeSwitch.isChecked = it
                         binding.btnEndTimePick.visibility = View.VISIBLE
-                        binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.todo_description))
+                        binding.tvEndTimeSet.setTextColor(ContextCompat.getColor(requireContext(), R.color.todo_description))
                     }
                     else -> {
                         binding.endDateTimeSwitch.isChecked = it
                         binding.btnEndTimePick.visibility = View.INVISIBLE
-                        binding.tvEndTimeSet.setTextColor(resources.getColor(R.color.light_gray))
+                        binding.tvEndTimeSet.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
                     }
                 }
             })
@@ -328,16 +329,16 @@ class ChecklistInputFragment(
                     binding.btnAlarmDatePick.visibility = View.VISIBLE
                     binding.btnAlarmTimePick.visibility = View.VISIBLE
                     binding.ivAlarmIcon.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.todo_description))
-                    binding.tvAlarmSet.setTextColor(resources.getColor(R.color.todo_description))
+                        ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.todo_description))
+                    binding.tvAlarmSet.setTextColor(ContextCompat.getColor(requireContext(), R.color.todo_description))
                 }
                 else -> {
                     binding.alarmSwitch.isChecked = it
                     binding.btnAlarmDatePick.visibility = View.INVISIBLE
                     binding.btnAlarmTimePick.visibility = View.INVISIBLE
                     binding.ivAlarmIcon.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.light_gray))
-                    binding.tvAlarmSet.setTextColor(resources.getColor(R.color.light_gray))
+                        ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                    binding.tvAlarmSet.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
                 }
             }
         })
@@ -351,8 +352,8 @@ class ChecklistInputFragment(
 
                     binding.repeatSwitch.isChecked = it
                     binding.ivRepeatIcon.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.todo_description))
-                    binding.tvRepeatSet.setTextColor(resources.getColor(R.color.todo_description))
+                        ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.todo_description))
+                    binding.tvRepeatSet.setTextColor(ContextCompat.getColor(requireContext(), R.color.todo_description))
                     todoAddViewModel.setRepeatSetLayoutH(binding.repeatSetLayout.height)
 
                     val valueAnimator = ValueAnimator.ofInt(
@@ -373,8 +374,8 @@ class ChecklistInputFragment(
                 false -> {
                     binding.repeatSwitch.isChecked = it
                     binding.ivRepeatIcon.backgroundTintList =
-                        ColorStateList.valueOf(resources.getColor(R.color.light_gray))
-                    binding.tvRepeatSet.setTextColor(resources.getColor(R.color.light_gray))
+                        ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                    binding.tvRepeatSet.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
 
                     val valueAnimator = ValueAnimator.ofInt(
                         binding.repeatSetLayout.height,
@@ -403,11 +404,11 @@ class ChecklistInputFragment(
 //                        val date = Date()
 //                        binding.btnRepeatEndDate.text = FormatDate.simpleDateToStr(date)
 //                        todoAddViewModel.setDate(2, date)
-                        binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.todo_description))
+                        binding.tvRepeatEnd.setTextColor(ContextCompat.getColor(requireContext(), R.color.todo_description))
                         binding.btnRepeatEndDate.visibility = View.VISIBLE
                     }
                     else -> {
-                        binding.tvRepeatEnd.setTextColor(resources.getColor(R.color.light_gray))
+                        binding.tvRepeatEnd.setTextColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
                         binding.btnRepeatEndDate.visibility = View.INVISIBLE
                     }
                 }
@@ -672,29 +673,49 @@ class ChecklistInputFragment(
 
         })
 
-        binding.tagEt.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                binding.ivTagIcon.backgroundTintList = if (s.toString() == "")
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.icon_gray
-                        )
+        todoAddViewModel.tagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.ivTagIcon.backgroundTintList = if (it.isEmpty())
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.icon_gray))
+            else
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.todo_description
                     )
-                else
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.todo_description
-                        )
+                )
+
+            if (it.size < binding.tagContainerLayout.childCount - 2)
+                for (i in 1 until binding.tagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
+                    val chip = binding.tagContainerLayout.getChildAt(i) as LinearLayout
+                    if (!it.contains((chip.getChildAt(0) as AppCompatButton).text)) {
+                        binding.tagContainerLayout.removeViewAt(i)
+                        break
+                    }
+                }
+            else if (it.size > binding.tagContainerLayout.childCount - 2) {
+                val layoutInflater =
+                    context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val childCount = binding.tagContainerLayout.childCount
+                for (i in childCount - 2 until it.size) {
+                    val chip = layoutInflater.inflate(R.layout.custom_chip, null)
+                    chip.findViewById<AppCompatButton>(R.id.tag_chip).text = it[i]
+                        binding.tagContainerLayout.addView(
+                        chip,
+                        binding.tagContainerLayout.childCount - 1
                     )
+                }
             }
-
         })
+
+//        binding.tagEt.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//
+//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//
+//            override fun afterTextChanged(s: Editable?) {
+//
+//            }
+//        })
 
         binding.etMemo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -717,6 +738,15 @@ class ChecklistInputFragment(
             }
 
         })
+
+        binding.tagEt.setOnKeyListener { view, keyCode, keyEvent ->
+            if (keyCode == KeyEvent.KEYCODE_SPACE && keyEvent.action == KeyEvent.ACTION_UP){
+                todoAddViewModel.addTagList()
+                (view as EditText).setText("")
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
         binding.todaySwitch.setOnClickListener(btnListener())
@@ -791,22 +821,22 @@ class ChecklistInputFragment(
 
 
                 R.id.btn_alarmTime_pick, R.id.btn_endTime_pick -> {
-                   val timePicker = when(v.id){
-                       binding.btnEndTimePick.id -> CustomTimeDialog(todoAddViewModel.endTime.value)
-                       binding.btnAlarmTimePick.id -> CustomTimeDialog(todoAddViewModel.alarmTime.value)
-                       else -> CustomTimeDialog()
-                   }
+                    val timePicker = when (v.id) {
+                        binding.btnEndTimePick.id -> CustomTimeDialog(todoAddViewModel.endTime.value)
+                        binding.btnAlarmTimePick.id -> CustomTimeDialog(todoAddViewModel.alarmTime.value)
+                        else -> CustomTimeDialog()
+                    }
                     timePicker.timePickerClick =
-                        object : CustomTimeDialog.TimePickerClickListener{
+                        object : CustomTimeDialog.TimePickerClickListener {
                             override fun onClick(
-                                timeDivider : NumberPicker,
+                                timeDivider: NumberPicker,
                                 hourNumberPicker: NumberPicker,
                                 minuteNumberPicker: NumberPicker
                             ) {
                                 val timeDivision = timeDivider.value
                                 var hour = hourNumberPicker.value
                                 val minute = minuteNumberPicker.value
-                                if (timeDivision == 0){
+                                if (timeDivision == 0) {
                                     if (hour == 11)
                                         hour = 0
                                     else hour++
@@ -821,7 +851,7 @@ class ChecklistInputFragment(
                                     set(Calendar.MINUTE, minute * 5)
                                 }
                                 val time = FormatDate.cal.time
-                                when(v.id){
+                                when (v.id) {
                                     binding.btnEndTimePick.id ->
                                         todoAddViewModel.setTime(0, time)
                                     binding.btnAlarmTimePick.id ->
@@ -835,7 +865,10 @@ class ChecklistInputFragment(
                 R.id.btn_alarmDate_pick, R.id.btn_endDate_pick, R.id.btn_repeat_end_date -> {
                     val datePicker = when (v.id) {
                         binding.btnEndDatePick.id -> CustomCalendarDialog(todoAddViewModel.endDate.value)
-                        binding.btnRepeatEndDate.id -> CustomCalendarDialog(todoAddViewModel.repeatEndDate.value, todoAddViewModel.endDate.value)
+                        binding.btnRepeatEndDate.id -> CustomCalendarDialog(
+                            todoAddViewModel.repeatEndDate.value,
+                            todoAddViewModel.endDate.value
+                        )
                         binding.btnAlarmDatePick.id -> CustomCalendarDialog(todoAddViewModel.alarmDate.value)
                         else -> CustomCalendarDialog()
                     }

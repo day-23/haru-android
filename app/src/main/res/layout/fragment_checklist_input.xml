@@ -142,6 +142,7 @@
                     android:background="@color/light_gray" />
 
                 <LinearLayout
+                    android:id="@+id/tag_container_layout"
                     style="@style/linearBorderLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -154,13 +155,13 @@
                         android:id="@+id/iv_tag_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/tag_icon" />
+                        android:background="@drawable/tag_icon"
+                        android:layout_marginEnd="10dp"/>
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tag_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:background="@android:color/transparent"
                         android:hint="@string/tag"
                         android:inputType="text"

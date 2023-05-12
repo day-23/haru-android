@@ -90,8 +90,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             }
         }
 
-        binding.tagEtcLayout.etTagInput.setOnKeyListener { view, i, keyEvent ->
-            if (i == KeyEvent.KEYCODE_SPACE || i == KeyEvent.KEYCODE_ENTER) {
+        binding.tagEtcLayout.etTagInput.setOnKeyListener { view, keyCode, keyEvent ->
+            if ((keyCode == KeyEvent.KEYCODE_SPACE || keyCode == KeyEvent.KEYCODE_ENTER) && keyEvent.action == KeyEvent.ACTION_UP) {
                 binding.tagEtcLayout.ivTagAdd.performClick()
                 return@setOnKeyListener true
             }
