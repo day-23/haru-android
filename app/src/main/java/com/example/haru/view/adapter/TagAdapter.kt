@@ -83,6 +83,9 @@ class TagAdapter(val context: Context) :
                 }
             }
             is TagItemViewHolder -> {
+                if (!data[position - 1].isSelected)
+                    return
+
                 holder.bind(data[position - 1])
                 if (tagClick != null) {
                     holder.binding.tagBtn.setOnClickListener {
@@ -117,6 +120,7 @@ class TagAdapter(val context: Context) :
             binding.tag = item
             val drawable: Drawable?
             val color: Int
+
             if (item.clicked) {
                 drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_clicked)
                 color = ContextCompat.getColor(context, R.color.white)

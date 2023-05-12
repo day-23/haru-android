@@ -130,11 +130,12 @@ class CheckListViewModel() :
         }
     }
 
-    fun updateTag(tagId: String, updateContent: TagUpdate) {  // 태그 수정 기능
+    fun updateTag(tagId: String, updateTag: TagUpdate, callback: () -> Unit) {  // 태그 수정 기능
         viewModelScope.launch {
-            tagRepository.updateTag(tagId = tagId, updateContent = updateContent) {
+            tagRepository.updateTag(tagId = tagId, updateTag = updateTag) {
                 getTag()
                 withTagUpdate()
+                callback()
             }
         }
     }

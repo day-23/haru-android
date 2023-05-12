@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -74,7 +76,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             val inputTag =
                 checkListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
             when (inputTag) {
-                null -> Toast.makeText(requireContext(), "태그에 공백이 포함될 수 없습니다..", Toast.LENGTH_SHORT).show()
+                null -> Toast.makeText(requireContext(), "태그에 공백이 포함될 수 없습니다..", Toast.LENGTH_SHORT)
+                    .show()
                 "" -> Toast.makeText(requireContext(), "추가 할 태그가 없습니다.", Toast.LENGTH_SHORT).show()
                 else -> {
                     checkListViewModel.createTag(Content(inputTag))
@@ -88,7 +91,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         binding.tagEtcLayout.etTagInput.setOnKeyListener { view, i, keyEvent ->
-            if (i == KeyEvent.KEYCODE_SPACE || i == KeyEvent.KEYCODE_ENTER){
+            if (i == KeyEvent.KEYCODE_SPACE || i == KeyEvent.KEYCODE_ENTER) {
                 binding.tagEtcLayout.ivTagAdd.performClick()
                 return@setOnKeyListener true
             }
@@ -165,6 +168,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         checkListViewModel.tagDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.d("20191627", "tagList : $it")
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
 
@@ -176,8 +180,32 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.tag_example_layout, null)
 
-                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text =
-                    checkListViewModel.tagDataList.value!![i].content
+                val tag = checkListViewModel.tagDataList.value!![i]
+
+                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).apply {
+                    text = tag.content
+                    setOnClickListener {
+                        checkListViewModel.updateTag(
+                            checkListViewModel.tagDataList.value!![i].id,
+                            TagUpdate(this.text.toString(), !tag.isSelected)
+                        ){
+                            // 클릭되었을때 텍스트 색깔과 background를 변경해야 한다.
+                            // tag.isSelected가 true이면 false로 변견되기 때문에 그에 맞춘다.
+                            val textColor : Int
+                            val drawable : Drawable?
+                            if (tag.isSelected) {
+                                textColor = ContextCompat.getColor(context, R.color.white)
+                                drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
+                            }
+                            else {
+                                textColor = ContextCompat.getColor(context, R.color.todo_description)
+                                drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
+                            }
+                            this.background = drawable
+                            this.setTextColor(textColor)
+                        }
+                    }
+                }
 
                 addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener { iv ->
                     val themeWrapper =
@@ -218,14 +246,14 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         val todoListView: RecyclerView = binding.recyclerTodos
         val todoAdapter = TodoAdapter(requireContext())
 
-        todoAdapter.sectionToggleClick = object  : TodoAdapter.SectionToggleClick {
+        todoAdapter.sectionToggleClick = object : TodoAdapter.SectionToggleClick {
             override fun onClick(view: View, str: String) {
                 Log.d("20191627", "section Click")
                 checkListViewModel.setVisibility(str, 0)
             }
         }
 
-        todoAdapter.dropListener = object : TodoAdapter.DropListener{
+        todoAdapter.dropListener = object : TodoAdapter.DropListener {
             override fun onDropFragment(list: List<String>) {
                 checkListViewModel.updateOrderMainTodo(changeOrderTodo = ChangeOrderTodo(list))
             }
@@ -306,7 +334,10 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     Log.d("20191627", nextEndDate.toString())
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.completeRepeatFrontTodo(id, FrontEndDate(nextEndDateStr!!))
+                        checkListViewModel.completeRepeatFrontTodo(
+                            id,
+                            FrontEndDate(nextEndDateStr!!)
+                        )
                     } else
                         checkListViewModel.completeNotRepeatTodo(completed, id)
                 }
