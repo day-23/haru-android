@@ -184,26 +184,26 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
                 addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).apply {
                     text = tag.content
+
+                    // tag.isSelected가 false이면 보여주는 태그가 아니므로 배경과 글자 색상을 그에 맞춘다.
+                    val textColor : Int
+                    val drawable : Drawable?
+                    if (!tag.isSelected) {
+                        textColor = ContextCompat.getColor(context, R.color.white)
+                        drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
+                    }
+                    else {
+                        textColor = ContextCompat.getColor(context, R.color.todo_description)
+                        drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_custom)
+                    }
+                    this.background = drawable
+                    this.setTextColor(textColor)
+
                     setOnClickListener {
                         checkListViewModel.updateTag(
                             checkListViewModel.tagDataList.value!![i].id,
                             TagUpdate(this.text.toString(), !tag.isSelected)
-                        ){
-                            // 클릭되었을때 텍스트 색깔과 background를 변경해야 한다.
-                            // tag.isSelected가 true이면 false로 변견되기 때문에 그에 맞춘다.
-                            val textColor : Int
-                            val drawable : Drawable?
-                            if (tag.isSelected) {
-                                textColor = ContextCompat.getColor(context, R.color.white)
-                                drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
-                            }
-                            else {
-                                textColor = ContextCompat.getColor(context, R.color.todo_description)
-                                drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
-                            }
-                            this.background = drawable
-                            this.setTextColor(textColor)
-                        }
+                        )
                     }
                 }
 

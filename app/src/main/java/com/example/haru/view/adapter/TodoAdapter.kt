@@ -84,7 +84,7 @@ class TodoAdapter(val context: Context) :
     val Empty = 5
     val Blank = 6
 
-    var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
+    var tags = mutableListOf(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
     var data = mutableListOf<Todo>()
 
