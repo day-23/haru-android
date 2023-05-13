@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Comments
 
-
 class CommentsAdapter(val context: Context,
                       private var itemList: ArrayList<Comments>): RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>() {
 

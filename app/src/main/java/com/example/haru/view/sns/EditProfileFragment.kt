@@ -50,20 +50,14 @@ import okhttp3.RequestBody
 import java.io.File
 import java.util.jar.Manifest
 
-class EditProfileFragment: Fragment() {
+class EditProfileFragment(userId: String): Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
     private lateinit var profileViewModel: MyPageViewModel
-    companion object{
-        const val TAG : String = "로그"
-
-        fun newInstance() : EditProfileFragment {
-            return EditProfileFragment()
-        }
-    }
+    val userId = userId
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "SnsMypageFragment - onCreate() called")
+        Log.d("TAG", "SnsMypageFragment - onCreate() called")
         profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
 
@@ -72,7 +66,7 @@ class EditProfileFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "SnsFragment - onCreateView() called")
+        Log.d("TAG", "SnsFragment - onCreateView() called")
 
         binding = FragmentEditProfileBinding.inflate(inflater, container, false)
 
@@ -82,6 +76,40 @@ class EditProfileFragment: Fragment() {
                 // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
                 fragmentManager.popBackStack()
             }
+        }
+
+        profileViewModel.getUserInfo(userId)
+
+        profileViewModel.UserInfo.observe(viewLifecycleOwner){profile ->
+            if(profile.profileImage != "") {
+                Glide.with(this)
+                    .load(profile.profileImage)
+                    .into(binding.editProfileImage)
+            }
+            binding.editName.setText(profile.name)
+            binding.editIntroduction.setText(profile.introduction)
+        }
+
+        profileViewModel.EditUri.observe(viewLifecycleOwner){absuri ->
+            Glide.with(requireContext())
+                .load(absuri)
+                .into(binding.editProfileImage)
+        }
+
+        binding.editProfileApply.setOnClickListener {
+            val multipart = profileViewModel.EditImage.value
+            val name = binding.editName.text.toString()
+            val introduction = binding.editIntroduction.text.toString()
+            if(multipart != null) {
+                profileViewModel.editProfile(multipart!!, name, introduction)
+            }else{
+                profileViewModel.editProfileName(name, introduction)
+            }
+
+            val newFrag = MyPageFragment(userId)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.commit()
         }
 
         // 이미지 선택 버튼에 클릭 이벤트 리스너 등록
@@ -142,7 +170,6 @@ class EditProfileFragment: Fragment() {
                     } while (cursor.moveToNext())
                 }
                 cursor?.close()
-                Log.d("Image", "${gallery}")
                 profileViewModel.loadGallery(gallery)
                 binding.popupGallery.visibility = View.VISIBLE
                 val fragment = GalleryFragment()
@@ -150,16 +177,6 @@ class EditProfileFragment: Fragment() {
                 val transaction = fragmentManager.beginTransaction()
                 transaction.add(R.id.popup_gallery, fragment)
                 transaction.commit()
-            }
-        }
-        //프로필 사진 반영
-        profileViewModel.Profile.observe(viewLifecycleOwner){profile ->
-            Log.d("TAG", "profile update ${profile.url}")
-            if(profile.url != "") {
-                Log.d("TAG", "${profile.url}")
-                Glide.with(this)
-                    .load(profile.url)
-                    .into(binding.editProfileImage)
             }
         }
 
@@ -176,6 +193,7 @@ class GalleryFragment : Fragment() {
         binding = CustomGalleryBinding.inflate(inflater, container, false)
         var galleryImages = profileViewModel.getGallery()
         val recycler = binding.customGalleryImage
+
         profileViewModel.StoredImages.observe(viewLifecycleOwner){image ->
             galleryImages = image
             galleryAdapter = GalleryAdapter(requireContext(), galleryImages, profileViewModel)

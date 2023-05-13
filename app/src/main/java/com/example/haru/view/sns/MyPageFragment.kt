@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -13,23 +14,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
-import com.example.haru.data.model.Profile
-import com.example.haru.data.model.SnsPost
+import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSnsMypageBinding
 import com.example.haru.view.adapter.MyFeedAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
-class MyPageFragment : Fragment(), OnPostClickListener{
+class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
     private lateinit var binding: FragmentSnsMypageBinding
     private lateinit var FeedRecyclerView: RecyclerView
     private lateinit var feedAdapter: SnsPostAdapter
     private lateinit var mediaAdapter: MyFeedAdapter
     private lateinit var mypageViewModel: MyPageViewModel
     private var click = false
+    val userId = userId
 
-    override fun onCommentClick(postId: String) {
-        val newFrag = CommentsFragment.newInstance()
+    override fun onCommentClick(postitem: Post) {
+        val newFrag = AddCommentFragment(postitem)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
@@ -38,17 +39,23 @@ class MyPageFragment : Fragment(), OnPostClickListener{
         transaction.commit()
     }
 
-    companion object{
-        const val TAG : String = "로그"
+    override fun onTotalCommentClick(postId: String) {
+        val newFrag = CommentsFragment(postId)
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
+        if(!isSnsMainInBackStack)
+            transaction.addToBackStack("snsmypage")
+        transaction.commit()
+    }
 
-        fun newInstance() : MyPageFragment {
-            return MyPageFragment()
-        }
+    override fun onProfileClick(userId: String) {
+        //Don't need to implement
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "SnsMypageFragment - onCreate() called")
+        Log.d("TAG", "MypageFragment - onCreate() called")
         mypageViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
 
@@ -57,27 +64,54 @@ class MyPageFragment : Fragment(), OnPostClickListener{
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "SnsFragment - onCreateView() called")
+        Log.d("TAG", "MyPageFragment - onCreateView() called")
 
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
+        binding.myRecords.setTextColor(0xFF1DAFFF.toInt())
+        mypageViewModel.init_page()
+
+        //TODO("내 계정으로 접근할때 조건문 추가해야함")
+        if(userId == "" || userId == "jts"){
+            mypageViewModel.getUserInfo("jts")
+            binding.editProfile.text = "프로필 편집"
+            binding.profileShare.visibility = View.VISIBLE
+        }else{
+            binding.editProfile.text = "팔로우"
+            binding.profileShare.visibility = View.GONE
+            mypageViewModel.getUserInfo(userId)
+        }
+
+        mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
+            binding.profileName.text = user.name
+            binding.profileIntroduction.text = user.introduction
+            binding.profilePostCount.text = user.postCount.toString()
+            binding.profileFollowCount.text = user.followingCount.toString()
+            binding.profileFollowerCount.text = user.followerCount.toString()
+
+            if(user.isFollowing){
+                binding.editProfile.text = "팔로우 취소"
+            }
+
+            if(user.profileImage != "") {
+                Log.d("TAG", "${user.profileImage}")
+                Glide.with(this)
+                    .load(user.profileImage)
+                    .into(binding.profileImage)
+            }
+        }
+
         FeedRecyclerView = binding.feedRecycler
         feedAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
         FeedRecyclerView.adapter = feedAdapter
         val layoutManager = LinearLayoutManager(context)
         FeedRecyclerView.layoutManager = layoutManager
 
-        mypageViewModel.Profile.observe(viewLifecycleOwner){profile ->
-            if(profile.url != "") {
-                Log.d("TAG", "${profile.url}")
-                Glide.with(this)
-                    .load(profile.url)
-                    .into(binding.profileImage)
-            }
-        }
 
         mypageViewModel.Page.observe(viewLifecycleOwner){page ->
             val page = page.toString()
-            mypageViewModel.getFeed(page)
+            //TODO("본인 계정 정보를 불러와 쓰도록 후속조치 필요함")
+            if(userId == "") mypageViewModel.getFeed(page,"jts")
+            else mypageViewModel.getFeed(page, userId)
         }
 
         mypageViewModel.NewFeed.observe(viewLifecycleOwner){feeds ->
@@ -108,14 +142,15 @@ class MyPageFragment : Fragment(), OnPostClickListener{
         }
 
         binding.editProfile.setOnClickListener {
-            val newFrag = EditProfileFragment.newInstance()
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-            if(!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmypage")
-            transaction.commit()
-            true
+            if(binding.editProfile.text == "팔로우"){
+                requestFollow()
+                binding.editProfile.text = "팔로우 취소"
+            }else if(binding.editProfile.text == "팔로우 취소"){
+                requestUnFollow()
+                binding.editProfile.text = "팔로우"
+            }else{
+                moveEditprofile(userId)
+            }
         }
 
         binding.friendFeed.setOnClickListener {
@@ -136,5 +171,24 @@ class MyPageFragment : Fragment(), OnPostClickListener{
             }
         }
         return false
+    }
+
+    fun moveEditprofile(userId: String){
+        val newFrag = EditProfileFragment(userId)
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
+        if(!isSnsMainInBackStack)
+            transaction.addToBackStack("snsmypage")
+        transaction.commit()
+        true
+    }
+
+    fun requestFollow(){
+        mypageViewModel.requestFollow(Followbody(userId))
+    }
+
+    fun requestUnFollow(){
+        mypageViewModel.requestUnFollow(UnFollowbody(userId))
     }
 }

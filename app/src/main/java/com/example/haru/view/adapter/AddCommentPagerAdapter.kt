@@ -5,15 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Profile
 
+interface ImageClickListener{
+    fun OnImageClick(position: Int)
+}
 
-class PicturesPagerAdapter(private val context: Context, private val imageList: ArrayList<Profile>) :
-    RecyclerView.Adapter<PicturesPagerAdapter.ViewHolder>(){
+class AddCommentPagerAdapter(private val context: Context, private val imageList: ArrayList<Profile>, listener: ImageClickListener) :
+    RecyclerView.Adapter<AddCommentPagerAdapter.ViewHolder>(){
+    val listener = listener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.pager_image_set, parent, false)
@@ -22,6 +25,9 @@ class PicturesPagerAdapter(private val context: Context, private val imageList: 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(imageList[position].url)
+        holder.imageView.setOnClickListener {
+            listener.OnImageClick(position)
+        }
     }
 
     override fun getItemCount(): Int {
