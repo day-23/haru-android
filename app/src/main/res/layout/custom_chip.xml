@@ -1,37 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingStart="41dp"
-    android:paddingEnd="30dp"
-    android:paddingBottom="9dp">
+    android:paddingEnd="4dp">
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_tag_etc"
+        android:id="@+id/tag_chip"
         style="@style/minSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/tag_btn_custom"
-        android:outlineProvider="none"
         android:paddingStart="11dp"
         android:paddingTop="5dp"
         android:paddingEnd="11dp"
         android:paddingBottom="5dp"
         android:textColor="@color/todo_description"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:textStyle="bold" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <ImageView
-        android:id="@+id/iv_set_tag_etc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/set_icon" />
 
 </LinearLayout>

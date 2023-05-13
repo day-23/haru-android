@@ -18,5 +18,5 @@ interface TagService {
     fun deleteTagList(@Path("userId") userId: String, @Body tagItList : TagIdList) : Call<SuccessFail>
 
     @PATCH("tag/{userId}/{tagId}")
-    fun updateTag(@Path("userId") userId: String, @Path("tagId") tagId: String, @Body updateContent: TagUpdate) : Call<SuccessFailTag>
+    fun updateTag(@Path("userId") userId: String, @Path("tagId") tagId: String, @Body updateTag: TagUpdate) : Call<SuccessFailTag>
 }

@@ -83,10 +83,10 @@ class TagRepository() {
     suspend fun updateTag(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         tagId: String,
-        updateContent: TagUpdate,
+        updateTag: TagUpdate,
         callback: (successData: SuccessFailTag) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = tagService.updateTag(userId, tagId, updateContent).execute()
+        val response = tagService.updateTag(userId, tagId, updateTag).execute()
         val data = response.body()!!
 
         val successData : SuccessFailTag = if (response.isSuccessful){

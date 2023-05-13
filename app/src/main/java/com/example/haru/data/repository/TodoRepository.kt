@@ -3,7 +3,6 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
-import com.example.haru.data.retrofit.RetrofitClient.scheduleService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -57,7 +56,11 @@ class TodoRepository() {
     }
 
 
-    suspend fun createTodo(calendar: Boolean, todoRequest: TodoRequest, callback: (todoData: Todo) -> Unit) {
+    suspend fun createTodo(
+        calendar: Boolean,
+        todoRequest: TodoRequest,
+        callback: (todoData: Todo) -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response =
                 todoService.createTodo("005224c0-eec1-4638-9143-58cbfc9688c5", todoRequest)
@@ -153,13 +156,13 @@ class TodoRepository() {
         todoData
     }
 
-    suspend fun putTodo(
+    suspend fun updateTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
         todo: UpdateTodo,
         callback: (todoData: Todo) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = todoService.putTodo(userId, todoId, todo).execute()
+        val response = todoService.updateTodo(userId, todoId, todo).execute()
         val data: UpdateTodoResponse
         val todoData: Todo
 
@@ -167,11 +170,11 @@ class TodoRepository() {
         // retrofit에서 null 값을 null값으로 보낼 수 있는 방법을 찾아 시발려낭!
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to put Todo")
+            Log.d("TAG", "Success to Update Todo")
             data = response.body()!!
             todoData = data.data
         } else {
-            Log.d("TAG", "Fail to Put Todo")
+            Log.d("TAG", "Fail to Update Todo")
             todoData = Todo()
         }
         callback(todoData)
@@ -213,20 +216,20 @@ class TodoRepository() {
         callback(successData)
     }
 
-    suspend fun updateNotRepeatTodo(
+    suspend fun completeNotRepeatTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
         completed: Completed,
         callback: (successData: SuccessFail) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = todoService.updateNotRepeatTodo(userId, todoId, completed).execute()
+        val response = todoService.completeNotRepeatTodo(userId, todoId, completed).execute()
         val data = response.body()!!
 
         val successData: SuccessFail = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update NotRepeatTodo Complete")
+            Log.d("TAG", "Success to Complete NotRepeatTodo Complete")
             data
         } else {
-            Log.d("TAG", "Fail to Update NotRepeatTodo Complete")
+            Log.d("TAG", "Fail to Complete NotRepeatTodo Complete")
             data
         }
         callback(successData)
@@ -234,10 +237,10 @@ class TodoRepository() {
 
     suspend fun getTodayTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
-        endDate: EndDate,
+        frontEndDate: FrontEndDate,
         callback: (todoList: TodoList) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = todoService.getTodayTodo(userId, endDate).execute()
+        val response = todoService.getTodayTodo(userId, frontEndDate).execute()
         val data: GetTodayTodo
         val todoList: TodoList
 
@@ -252,20 +255,20 @@ class TodoRepository() {
         callback(todoList)
     }
 
-    suspend fun updateSubTodo(
+    suspend fun completeSubTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         subTodoId: String,
         completed: Completed,
         callback: (successData: SuccessFail) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = todoService.updateSubTodo(userId, subTodoId, completed).execute()
+        val response = todoService.completeSubTodo(userId, subTodoId, completed).execute()
         val data = response.body()!!
 
         val successData: SuccessFail = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update SubTodo Complete")
+            Log.d("TAG", "Success to Complete SubTodo Complete")
             data
         } else {
-            Log.d("TAG", "Fail to Update SubTodo Complete")
+            Log.d("TAG", "Fail to Complete SubTodo Complete")
             data
         }
         callback(successData)
@@ -290,41 +293,153 @@ class TodoRepository() {
         callback(successData)
     }
 
-    suspend fun updateRepeatTodo(
+    suspend fun completeRepeatFrontTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
-        endDate: EndDate,
+        frontEndDate: FrontEndDate,
         callback: (successData: SuccessFail) -> Unit
     ) = withContext(Dispatchers.IO) {
-        val response = todoService.updateRepeatTodo(userId, todoId, endDate).execute()
+        val response = todoService.completeRepeatFrontTodo(userId, todoId, frontEndDate).execute()
         val data = response.body()!!
 
         val successData: SuccessFail = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update Repeat Todo")
+            Log.d("TAG", "Success to Complete Repeat Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Update Repeat Todo")
+            Log.d("TAG", "Fail to Complete Repeat Todo")
             data
         }
         callback(successData)
     }
 
-    suspend fun deleteRepeatTodo(
-        userId: String,
+    suspend fun updateRepeatFrontTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
-        endDate: EndDate,
+        updateRepeatFrontTodo: UpdateRepeatFrontTodo,
         callback: (successData: SuccessFail) -> Unit
-    ) = withContext(Dispatchers.IO){
-        val response = todoService.deleteRepeatTodo(userId, todoId, endDate).execute()
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.updateRepeatFrontTodo(userId, todoId, updateRepeatFrontTodo).execute()
         val data = response.body()!!
 
         val successData: SuccessFail = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Delete RepeatTodo")
+            Log.d("TAG", "Success to Update Repeat Front Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Delete RepeatTodo")
+            Log.d("TAG", "Fail to Update Repeat Front Todo")
             data
         }
         callback(successData)
+    }
+
+    suspend fun updateRepeatMiddleTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        updateRepeatMiddleTodo: UpdateRepeatMiddleTodo,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO){
+        val response = todoService.updateRepeatMiddleTodo(userId, todoId, updateRepeatMiddleTodo).execute()
+        val data = response.body()!!
+
+        val successData: SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Update Repeat Middle Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update Repeat Middle Todo")
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun updateRepeatBackTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        todoId: String,
+        updateRepeatBackTodo: UpdateRepeatBackTodo,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO){
+        val response = todoService.updateRepeatBackTodo(userId, todoId, updateRepeatBackTodo).execute()
+        val data = response.body()!!
+
+        val successData: SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Update Repeat Back Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update Repeat Back Todo")
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun deleteRepeatFrontTodo(
+        userId: String,
+        todoId: String,
+        frontEndDate: FrontEndDate,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.deleteRepeatFrontTodo(userId, todoId, frontEndDate).execute()
+        val data = response.body()!!
+
+        val successData: SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Delete Repeat Front Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Delete Repeat Front Todo")
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun deleteRepeatMiddleTodo(
+        userId: String,
+        todoId: String,
+        middleEndDate: MiddleEndDate,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.deleteRepeatMiddleTodo(userId, todoId, middleEndDate).execute()
+        val data = response.body()!!
+
+        val successData: SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Delete Repeat Middle Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Delete Repeat Middle Todo")
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun deleteRepeatBackTodo(
+        userId: String,
+        todoId: String,
+        backRepeatEnd: BackRepeatEnd,
+        callback: (successData: SuccessFail) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.deleteRepeatBackTodo(userId, todoId, backRepeatEnd).execute()
+        val data = response.body()!!
+
+        val successData: SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Delete Repeat Back Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Delete Repeat Back Todo")
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun updateOrderMainTodo(
+        userId: String,
+        changeOrderTodo: ChangeOrderTodo
+    ) = withContext(Dispatchers.IO){
+        val response = todoService.updateOrderMainTodo(userId, changeOrderTodo).execute()
+        val data = response.body()!!
+
+        val successData : SuccessFail = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Update Order Main Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Update Order Main Todo")
+            data
+        }
+        successData
     }
 }

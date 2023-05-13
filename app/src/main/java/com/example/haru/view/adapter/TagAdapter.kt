@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
@@ -115,8 +116,21 @@ class TagAdapter(val context: Context) :
 
         fun bind(item: Tag) {
             binding.tag = item
+
+            binding.tagLayout.layoutParams = if (item.isSelected) LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ) else LinearLayout.LayoutParams(0, 0)
+
+            binding.tagLayout.visibility = if (!item.isSelected) View.GONE else View.VISIBLE
+
+            if (!item.isSelected)
+                return
+
+
             val drawable: Drawable?
             val color: Int
+
             if (item.clicked) {
                 drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_clicked)
                 color = ContextCompat.getColor(context, R.color.white)

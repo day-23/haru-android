@@ -1,15 +1,18 @@
 package com.example.haru.view.checklist
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -67,15 +70,16 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 binding.drawableLayout.closeDrawer(Gravity.RIGHT)
         }
 
-        binding.tagEtcLayout.btnTagEtcDone.setOnClickListener {
-            binding.drawableLayout.closeDrawer(Gravity.RIGHT)
-        }
+//        binding.tagEtcLayout.btnTagEtcDone.setOnClickListener {
+//            binding.drawableLayout.closeDrawer(Gravity.RIGHT)
+//        }
 
         binding.tagEtcLayout.ivTagAdd.setOnClickListener {
             val inputTag =
                 checkListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
             when (inputTag) {
-                null -> Toast.makeText(requireContext(), "태그에 공백이 포함될 수 없습니다..", Toast.LENGTH_SHORT).show()
+                null -> Toast.makeText(requireContext(), "태그에 공백이 포함될 수 없습니다..", Toast.LENGTH_SHORT)
+                    .show()
                 "" -> Toast.makeText(requireContext(), "추가 할 태그가 없습니다.", Toast.LENGTH_SHORT).show()
                 else -> {
                     checkListViewModel.createTag(Content(inputTag))
@@ -88,12 +92,38 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             }
         }
 
+        binding.tagEtcLayout.etTagInput.setOnKeyListener { view, keyCode, keyEvent ->
+            if ((keyCode == KeyEvent.KEYCODE_SPACE || keyCode == KeyEvent.KEYCODE_ENTER) && keyEvent.action == KeyEvent.ACTION_UP) {
+                binding.tagEtcLayout.ivTagAdd.performClick()
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener false
+        }
+
+        binding.tagEtcLayout.etTagInput.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s == null)
+                    return
+
+                val str = s.toString()
+                if (str == "")
+                    return
+
+                if (str[str.length - 1] == ' '){
+                    binding.tagEtcLayout.ivTagAdd.performClick()
+                }
+            }
+
+        })
+
         binding.btnAddTodo.setOnClickListener {
             val text = binding.etSimpleAddTodo.text.toString()
 
             if (text.replace(" ", "") == "") {
                 val todoInput = ChecklistInputFragment(checkListViewModel)
-
                 todoInput.show(parentFragmentManager, todoInput.tag)
             } else {
                 val todo = TodoRequest(
@@ -122,8 +152,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 set(Calendar.MINUTE, 59) // 분을 59분으로 설정
                 set(Calendar.SECOND, 59) // 초를 59초로 설정
             }
-            val todayEndDate = EndDate(FormatDate.dateToStr(calendar.time))
-            checkListViewModel.getTodayTodo(todayEndDate) {
+            val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
+            checkListViewModel.getTodayTodo(todayFrontEndDate) {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
                     .addToBackStack(null)
@@ -159,6 +189,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         checkListViewModel.tagDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.d("20191627", "tagList : $it")
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
 
@@ -170,8 +201,32 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.tag_example_layout, null)
 
-                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).text =
-                    checkListViewModel.tagDataList.value!![i].content
+                val tag = checkListViewModel.tagDataList.value!![i]
+
+                addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).apply {
+                    text = tag.content
+
+                    // tag.isSelected가 false이면 보여주는 태그가 아니므로 배경과 글자 색상을 그에 맞춘다.
+                    val textColor : Int
+                    val drawable : Drawable?
+                    if (!tag.isSelected) {
+                        textColor = ContextCompat.getColor(context, R.color.white)
+                        drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
+                    }
+                    else {
+                        textColor = ContextCompat.getColor(context, R.color.todo_description)
+                        drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_custom)
+                    }
+                    this.background = drawable
+                    this.setTextColor(textColor)
+
+                    setOnClickListener {
+                        checkListViewModel.updateTag(
+                            checkListViewModel.tagDataList.value!![i].id,
+                            TagUpdate(this.text.toString(), !tag.isSelected)
+                        )
+                    }
+                }
 
                 addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener { iv ->
                     val themeWrapper =
@@ -211,6 +266,20 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     private fun initTodoList() {
         val todoListView: RecyclerView = binding.recyclerTodos
         val todoAdapter = TodoAdapter(requireContext())
+
+        todoAdapter.sectionToggleClick = object : TodoAdapter.SectionToggleClick {
+            override fun onClick(view: View, str: String) {
+                Log.d("20191627", "section Click")
+                checkListViewModel.setVisibility(str, 0)
+            }
+        }
+
+        todoAdapter.dropListener = object : TodoAdapter.DropListener {
+            override fun onDropFragment(list: List<String>) {
+                checkListViewModel.updateOrderMainTodo(changeOrderTodo = ChangeOrderTodo(list))
+            }
+        }
+
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
             override fun onClick(view: View, id: String) {
                 if (checkListViewModel.todoDataList.value!!.find {
@@ -251,13 +320,13 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null) // 완료된 Todo이거나 repeatOption이 null
-                    checkListViewModel.updateNotRepeatTodo(completed, id)
+                    checkListViewModel.completeNotRepeatTodo(completed, id)
                 else {
                     val nextEndDate = when (todo.repeatOption) {
                         "매일" -> {
                             FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
                         }
-                        "매주", "2주마다" -> {
+                        "매주", "격주" -> {
                             val repeatOption = if (todo.repeatOption == "매주") 1 else 2
                             FormatDate.nextEndDateEveryWeek(
                                 todo.repeatValue!!,
@@ -283,11 +352,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         }
                         else -> null
                     }
+                    Log.d("20191627", nextEndDate.toString())
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
+                        checkListViewModel.completeRepeatFrontTodo(
+                            id,
+                            FrontEndDate(nextEndDateStr!!)
+                        )
                     } else
-                        checkListViewModel.updateNotRepeatTodo(completed, id)
+                        checkListViewModel.completeNotRepeatTodo(completed, id)
                 }
 
             }
@@ -303,7 +376,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     )
                     else Completed(true)
 
-                checkListViewModel.updateSubTodo(
+                checkListViewModel.completeSubTodo(
                     completed,
                     todoAdapter.subTodoClickId!!,
                     subTodo.id,
@@ -319,6 +392,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 checkListViewModel.updateFolded(folded, id)
             }
         }
+
+
 
         todoListView.adapter = todoAdapter
         todoListView.layoutManager =
