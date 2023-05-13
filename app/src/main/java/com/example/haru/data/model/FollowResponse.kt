@@ -1,6 +1,6 @@
 package com.example.haru.data.model
 
-data class GetProfileResponse(
+data class FollowResponse(
     val success: String,
-    val data: User
+    val response: Boolean
 )

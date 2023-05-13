@@ -87,11 +87,11 @@ class PostRepository() {
     }
 
     //내 피드
-    suspend fun getMyFeed(page:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+    suspend fun getMyFeed(page:String, targetId:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getMyFeed(
             "jts",
-            "jts",
+            targetId,
             page
         ).execute()
         val posts: ArrayList<Post>
@@ -110,9 +110,10 @@ class PostRepository() {
     //전체 댓글
     suspend fun getComment(postId: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
         Dispatchers.IO){
+            Log.d("TAG", "post id recieve-------------- $postId")
             val response = postService.getComments(
                 "jts",
-                "482051f1-b3be-477a-b81c-99640c8306ec" //postId
+                postId
             ).execute()
 
             val comments: ArrayList<Comments>

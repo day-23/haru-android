@@ -47,29 +47,37 @@ class SnsPostAdapter(val context: Context,
         holder.picture.adapter = adapter
         holder.userid.text = itemList[position].user.name
         holder.content.text = itemList[position].content
+        holder.likedcount.text = itemList[position].likedCount.toString()
+        holder.commentcount.text = itemList[position].commentCount.toString()
 
         val pictureIndex = adapter.itemCount
-        var text = ""
-        var delayJob: Job? = null // 코루틴 취소를 위한 Job 변수
-        holder.picture.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        val text = "${position + 1}/${pictureIndex}"
+        holder.index.text = text
 
+        holder.picture.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                delayJob?.cancel()
-                if(text != "" || position != 0) {
-                    holder.index.alpha = 1f
-                    text = "${position + 1}/${pictureIndex}"
-                    holder.index.text = text
-                    delayJob = CoroutineScope(Dispatchers.Main).launch {
-                        delay(2000L) // 2초 동안 코루틴을 멈춤
-                        holder.index.alpha = 0f
-                    }
-                }
+                val pictureIndex = adapter.itemCount
+                val text = "${position + 1}/${pictureIndex}"
+                holder.index.text = text
             }
         })
 
+
+        holder.setup.setOnClickListener {
+
+        }
+
+        holder.profileImg.setOnClickListener {
+            listener.onProfileClick(itemList[position].user.id)
+        }
+
+        holder.totalcomment.setOnClickListener {
+            Log.d("TAG", "post id sended -------------${itemList[position].id}")
+            listener.onTotalCommentClick(itemList[position].id)
+        }
+
         holder.comment.setOnClickListener {
-            Log.d("Comment", "${itemList[position].id}")
-            listener.onCommentClick(itemList[position].id)
+            listener.onCommentClick(itemList[position])
         }
 
         if(itemList[position].user.profileImage != null) {
@@ -89,12 +97,16 @@ class SnsPostAdapter(val context: Context,
             if(itemList[position].isLiked){
                 holder.likeBtn.setImageResource(R.drawable.likedyet)
                 itemList[position].isLiked = false
+                itemList[position].likedCount -= 1
+                holder.likedcount.text = itemList[position].likedCount.toString()
+
             }else{
                 holder.likeBtn.setImageResource(R.drawable.liked)
                 itemList[position].isLiked = true
+                itemList[position].likedCount += 1
+                holder.likedcount.text = itemList[position].likedCount.toString()
             }
             snsViewModel.likeAction(itemList[position].id)
-
         }
     }
 
@@ -118,7 +130,11 @@ class SnsPostAdapter(val context: Context,
         var picture = itemView.findViewById<ViewPager2>(R.id.post_picture)
         var content = itemView.findViewById<TextView>(R.id.post_contents)
         var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
+        var likedcount = itemView.findViewById<TextView>(R.id.liked_count)
+        var commentcount = itemView.findViewById<TextView>(R.id.post_comment_count)
         var index = itemView.findViewById<Button>(R.id.picture_index)
         var comment = itemView.findViewById<ImageView>(R.id.button_comment)
+        var setup = itemView.findViewById<ImageView>(R.id.post_setup)
+        var totalcomment = itemView.findViewById<ImageView>(R.id.post_total_comment)
     }
 }
