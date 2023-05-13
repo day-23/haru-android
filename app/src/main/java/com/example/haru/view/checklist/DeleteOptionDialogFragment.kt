@@ -70,11 +70,24 @@ class DeleteOptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSh
         override fun onClick(v: View?) {
             when(v?.id){
                 binding.btnOptionOneDelete.id -> {
+                    // 반복 할 일의 front 삭제
                     todoAddViewModel.deleteRepeatFrontTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
+
+                    // 반복 할 일의 middle 삭제
+//                    todoAddViewModel.deleteRepeatMiddleTodo {
+//                        dismiss()
+//                        requireActivity().supportFragmentManager.popBackStack()
+//                    }
+
+                    // 반복 할 일의 back 삭제
+//                    todoAddViewModel.deleteRepeatBackTodo {
+//
+//                    }
                 }
+
                 binding.btnOptionAllDelete.id -> {
                     todoAddViewModel.deleteTodo {
                         dismiss()

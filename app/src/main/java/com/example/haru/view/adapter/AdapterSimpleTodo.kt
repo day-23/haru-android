@@ -126,6 +126,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                 calendar.add(Calendar.HOUR, 9)
                 val end = calendar.time
                 val today = todayDateFormat.parse(todayTodo)
+                Log.d("20191627", "today $today")
 
                 if(end.year == today.year && end.month == today.month && end.date == today.date){
                     Log.d("todoLocation", "front, today.date : ${today.date}")
@@ -151,8 +152,6 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
                 val end = calendar.time
                 val today = todayDateFormat.parse(todayTodo)
-                Log.d("20191627", "end " + end.toString())
-                Log.d("20191627", "today " + today.toString())
 
                 // 이거 이렇게 하면 안됌. back일때는 repeatEnd하고 오늘 날짜가 다를 수 있음
                 if(end.year == today.year && end.month == today.month && end.date == today.date){

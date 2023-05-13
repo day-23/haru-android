@@ -503,6 +503,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         return nextEndDate
     }
 
+    private fun findPreEndDate() : Date? {  // 프론트와 백이 같은 Todo에서는 예외를 처리해줘야한다.
+        return null
+    }
+
     fun deleteRepeatFrontTodo(callback: () -> Unit) {
         val nextEndDate = findNextEndDate()
         Log.d("20191627", nextEndDate.toString())
@@ -534,6 +538,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun deleteRepeatBackTodo(callback: () -> Unit) {
+
 
     }
 

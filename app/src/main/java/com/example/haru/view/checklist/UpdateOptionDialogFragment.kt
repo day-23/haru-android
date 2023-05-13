@@ -106,6 +106,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int 
                     }
                     // middle, back에서의 하나만 업데이트
 
+
                 }
                 binding.btnOptionAllUpdate.id -> {
                     // front에서의 전체 업데이트

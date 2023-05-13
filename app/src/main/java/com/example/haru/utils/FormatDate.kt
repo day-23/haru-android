@@ -2,6 +2,7 @@ package com.example.haru.utils
 
 import android.util.Log
 import androidx.core.util.rangeTo
+import com.example.haru.utils.FormatDate.cal
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -13,8 +14,9 @@ object FormatDate {
     // 그리니치 시간과 Local시간의 차이
     private val diff = initDiff()
 
-    // LocslDateTime을 String으로 변환할 formatter
-    private val localTimeFormatter = DateTimeFormatter.ofPattern("H:mm까지")  //24시간으로 할지 아니면 오전, 오후로 12시간제로 하는지
+    // LocalDateTime을 String으로 변환할 formatter
+    //24시간으로 할지 아니면 오전, 오후로 12시간제로 하는지
+    private val localTimeFormatter = DateTimeFormatter.ofPattern("H:mm까지")
     private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지")
 
 
@@ -25,8 +27,6 @@ object FormatDate {
     private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
 
     private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
-
-    private val compareStrFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     val cal = Calendar.getInstance()
 
@@ -110,19 +110,75 @@ object FormatDate {
         return Date.from(instant)
     }
 
+    fun preEndDate(endDateStr: String, repeatOption: Int, repeatValue: String): Date? {
+        val endDate = strToDate(endDateStr)
+        cal.time = endDate!!
+        val preEndDate = when (repeatOption) {
+            0 -> { // 매일
+                cal.add(Calendar.DATE, -1)
+                cal.time
+            }
+            1, 2 -> { // 매주
+                val nWeek = cal.get(Calendar.DAY_OF_WEEK) // endDate가 해당하는 주차의 요일
+                var idx = nWeek - 1 // nWeek는 일 ~ 토, 1 ~ 7 이므로 인덱스로 사용하기 위해서 -1
+
+                if (idx != 0) // 오늘이 포함되면 안되기 때문에 -1을 해준다
+                    idx--
+
+                else { // idx가 0일 때 -1을하면 에러이므로 직접 토요일로 지정
+                    idx = 6
+                }
+
+                cal.add(Calendar.DATE, -1) // 오늘을 포함하면 안되므로 -1
+
+                var flag = false
+
+                val plusValue = if (repeatOption == 1) 1 else 8
+
+                for(i in idx downTo 0){
+                    if (repeatValue[i] == '1'){
+                        cal.add(Calendar.DATE, i - idx)
+                        flag = true
+                        break
+                    }
+                }
+                if (!flag){
+                    for(i in 6 downTo idx + 1)
+                        if (repeatValue[i] == '1') {
+                            val value = -(idx + plusValue + (6 - i))
+                            cal.add(Calendar.DATE, value)
+                            break
+                        }
+                }
+                
+                cal.time
+            }
+            3 -> { // 매달
+                null
+
+            }
+            4 -> { // 매년
+                null
+
+            }
+            else -> { null }
+        }
+        return preEndDate
+    }
+
     fun nextEndDate(endDateStr: String?, repeatEndDateStr: String?): Date? {
         if (endDateStr == null)
             return null
         val endDate = strToDate(endDateStr)
         cal.apply {
-            time = endDate
+            time = endDate!!
             add(Calendar.DATE, 1)
         }
         val nextEndDate = cal.time
 
         if (repeatEndDateStr != null) {
             cal.apply {
-                time = strToDate(repeatEndDateStr)
+                time = strToDate(repeatEndDateStr)!!
                 set(Calendar.HOUR_OF_DAY, 23)
                 set(Calendar.MINUTE, 59)
                 set(Calendar.SECOND, 59)
@@ -310,4 +366,6 @@ object FormatDate {
         }
         return nextEndDate
     }
+
+
 }
