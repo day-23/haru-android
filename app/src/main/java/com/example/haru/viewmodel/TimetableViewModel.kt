@@ -214,7 +214,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 val TodoList = it
 
                 //내용 추출
-                for(data in TodoList){
+                for(data in TodoList.schedules){
                     val year_start = data.repeatStart?.slice(IntRange(0,3))
                     val month_start = data.repeatStart?.slice(IntRange(5,6))
                     val day_start = data.repeatStart?.slice(IntRange(8,9))
