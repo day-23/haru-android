@@ -119,6 +119,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     }
 
     fun writeComment(position : Int){
+
         val dragTouchListener = object : View.OnTouchListener {
             private var offsetX = 0f
             private var offsetY = 0f
@@ -149,8 +150,15 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                             isDragging = true
                         }
                         if (isDragging) {
-                            parentView.x = event.rawX + offsetX
-                            parentView.y = event.rawY + offsetY
+                            val x_start = event.rawX + offsetX
+                            val x_end = x_start + parentView.width
+                            val y_start = event.rawY + offsetY
+                            val y_end = y_start + parentView.height
+                            if(x_start > 0 && x_end < writeContainer.width)
+                                parentView.x = x_start
+                            if(y_start > 0 && y_end < writeContainer.height)
+                                parentView.y = event.rawY + offsetY
+                            Log.d("Comment" , "${parentView.width}, ${parentView.height}")
                         }
                     }
                     MotionEvent.ACTION_UP -> {
@@ -166,7 +174,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
 
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.item_write_comment_on_picture, null)
-
+        view.isFocusable = false
         // TextView를 찾아서 텍스트를 변경
         val editView = view.findViewById<EditText>(R.id.write_on_picture_)
 
