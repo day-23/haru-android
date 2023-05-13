@@ -31,9 +31,13 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     val postitem = postitem
     val postIndex = postitem.images
     private lateinit var snsViewModel: SnsViewModel
+    var onWrite = false
 
     override fun OnImageClick(position: Int) {
-        writeComment(position)
+        if(!onWrite) {
+            onWrite = true
+            writeComment(position)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +65,8 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
 
         viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                writeContainer.removeAllViews()
+                onWrite = false
                 imageIndex = position
                 binding.addcommentIndex.text = "${imageIndex + 1} / ${postitem.images.size}"
                 if (commentContainer.childCount != 0) {
@@ -73,8 +79,10 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         })
 
         binding.writeCommentCancel.setOnClickListener {
-            if(writeContainer.contains(writeBox))
+            if(writeContainer.contains(writeBox)) {
                 writeContainer.removeView(writeBox)
+                onWrite = false
+            }
         }
 
         viewpager.adapter = viewPagerAdapter
