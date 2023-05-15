@@ -25,6 +25,7 @@ import com.example.haru.data.model.EndDate
 import com.example.haru.data.model.Flag
 import com.example.haru.data.model.Schedule
 import com.example.haru.data.model.Todo
+import com.example.haru.utils.FormatDate
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CalendarViewModel
@@ -121,10 +122,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
             }
 
             if(todo.endDate != null && todo.repeatOption != null){
-                val calendar = Calendar.getInstance()
-                calendar.time = serverDateFormat.parse(todo.endDate)
-                calendar.add(Calendar.HOUR, 9)
-                val end = calendar.time
+                val end = serverDateFormat.parse(todo.endDate)
                 val today = todayDateFormat.parse(todayTodo)
 
                 if(end.year == today.year && end.month == today.month && end.date == today.date){
@@ -145,14 +143,36 @@ class AdapterSimpleTodo(val todos: List<Todo>,
             }
 
             if(todo.repeatEnd != null && todo.repeatOption != null){
-                val calendar = Calendar.getInstance()
-                calendar.time = serverDateFormat.parse(todo.repeatEnd)
-                calendar.add(Calendar.HOUR, 9)
-
-                val end = calendar.time
+//                val end = serverDateFormat.parse(todo.repeatEnd)
                 val today = todayDateFormat.parse(todayTodo)
+                val beforeFormatToday = FormatDate.calendarBackFormat(serverDateFormat.format(today))
+                val beforeFormatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
 
-                if(end.year == today.year && end.month == today.month && end.date == today.date){
+                var nextData: Date? = null
+
+                when(todo.repeatOption){
+                    "매일"->{
+                        nextData = FormatDate.nextEndDate(beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매주"->{
+                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue,1,beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "2주마다"->{
+                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue, 2, beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매달"->{
+                        nextData = FormatDate.nextEndDateEveryMonth(todo.repeatValue!!,beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매년"->{
+                        nextData = FormatDate.nextEndDateEveryYear(todo.repeatValue!!, beforeFormatToday, beforeFormatEnd)
+                    }
+                }
+
+                if(nextData == null){
                     todo.location = 2
 
                     Log.d("todoLocation", "end")
@@ -171,7 +191,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
             }
 
             if(todo.repeatOption != null){
-                todo.location = 2
+                todo.location = 1
 
                 Log.d("todoLocation", "middle")
 

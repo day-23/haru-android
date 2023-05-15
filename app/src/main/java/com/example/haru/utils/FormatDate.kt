@@ -17,6 +17,8 @@ object FormatDate {
     private val localTimeFormatter = DateTimeFormatter.ofPattern("a h:mm", Locale.KOREA)
     private val localDateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd", Locale.US)
 
+    private val calendarDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
+
     //// DatePicker와 TimePicker로 받는 값들은 Date이므로 SimpleDateFormat으로 서버로 보낼 형식으로 변환하는 formatter
     private val dateFormatterToServer = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
 
@@ -51,6 +53,17 @@ object FormatDate {
     fun todoDateToStr(str: String): String {
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         return date.format(localDateFormatter)
+    }
+
+    fun calendarFormat(str: String): String{
+        Log.d("diff", diff.toString())
+        val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
+        return date.format(calendarDateFormatter)
+    }
+
+    fun calendarBackFormat(str: String): String{
+        val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(-diff)
+        return date.format(calendarDateFormatter)
     }
 
     // 서버에서 받은 그리니치 시간대에 Local시간과의 차이를 더해서 String으로 반환

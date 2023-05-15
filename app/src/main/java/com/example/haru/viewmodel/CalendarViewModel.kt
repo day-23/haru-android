@@ -9,6 +9,7 @@ import com.example.haru.data.repository.AllDoRepository
 import com.example.haru.data.repository.CategoryRepository
 import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.data.repository.TodoRepository
+import com.example.haru.utils.FormatDate
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -109,6 +110,26 @@ class CalendarViewModel : ViewModel() {
                     val todoList = it.todos
                     val scheduleList = it.schedules
 
+                    for (i in 0 until todoList.size){
+                        if (todoList[i].endDate != null){
+                            todoList[i].endDate = FormatDate.calendarFormat(todoList[i].endDate!!)
+                        }
+
+                        if(todoList[i].repeatEnd != null){
+                            todoList[i].repeatEnd = FormatDate.calendarFormat(todoList[i].repeatEnd!!)
+                        }
+                    }
+
+                    for (i in 0 until scheduleList.size){
+                        if (scheduleList[i].repeatStart != null){
+                            scheduleList[i].repeatStart = FormatDate.calendarFormat(scheduleList[i].repeatStart!!)
+                        }
+
+                        if(scheduleList[i].repeatEnd != null){
+                            scheduleList[i].repeatEnd = FormatDate.calendarFormat(scheduleList[i].repeatEnd!!)
+                        }
+                    }
+
                     _liveTodoList.postValue(todoList)
                     _liveScheduleList.postValue(scheduleList)
                 }
@@ -131,6 +152,16 @@ class CalendarViewModel : ViewModel() {
                     }
 
                     for (todo in it.todos) {
+                        if (todo.endDate != null){
+                            Log.d("데이터 포맷", "날짜 바뀌기 전: "+todo.endDate!!)
+                            todo.endDate = FormatDate.calendarFormat(todo.endDate!!)
+                            Log.d("데이터 포맷", "날짜 바뀐 후: "+todo.endDate!!)
+                        }
+
+                        if(todo.repeatEnd != null){
+                            todo.repeatEnd = FormatDate.calendarFormat(todo.repeatEnd!!)
+                        }
+
                         val repeatDate = Array((maxi + 1) * 7) { false }
                         val createdAt = serverformat.parse(todo.createdAt)
 
@@ -142,6 +173,7 @@ class CalendarViewModel : ViewModel() {
 
                         if (todo.endDate != null) {
                             serverendDate = serverformat.parse(todo.endDate)
+                            Log.d("serverendDate", serverendDate.toString())
                         }
 
                         if (repeatOption != null) {
@@ -299,7 +331,6 @@ class CalendarViewModel : ViewModel() {
 
                             var cnt = 0
                             val tempStartDate = dateformat.parse(startDate)
-                            tempStartDate.date += 1
                             calendar.time = tempStartDate
 
                             while (date_comparison(
@@ -334,6 +365,14 @@ class CalendarViewModel : ViewModel() {
                     }
 
                     for (schedule in it.schedules) {
+                        if (schedule.repeatStart != null){
+                            schedule.repeatStart = FormatDate.calendarFormat(schedule.repeatStart!!)
+                        }
+
+                        if(schedule.repeatEnd != null){
+                            schedule.repeatEnd = FormatDate.calendarFormat(schedule.repeatEnd!!)
+                        }
+
                         var repeatStart: Date? = null
                         var repeateEnd: Date? = null
 
