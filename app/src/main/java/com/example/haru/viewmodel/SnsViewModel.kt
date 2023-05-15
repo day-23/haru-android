@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide.init
+import com.example.haru.data.model.CommentBody
 import com.example.haru.data.model.Comments
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.Profile
@@ -80,6 +81,14 @@ class SnsViewModel: ViewModel() {
                 }
             }
             _Comments.value = comments
+        }
+    }
+
+    fun writeComment(comment: CommentBody, postId: String, imageId:String){
+        viewModelScope.launch {
+            PostRepository.writeComment(comment, postId, imageId){
+
+            }
         }
     }
 }

@@ -32,4 +32,12 @@ interface PostService {
         @Path("userId") userId: String,
         @Path("postId") postId: String
     ): Call<CommentsResponse>
+
+    @POST("comment/{userId}/{postId}/{imageId}")
+    fun writeComments(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String,
+        @Path("imageId") imageId: String,
+        @Body comment: CommentBody
+    ): Call<WriteCommentResponse>
 }

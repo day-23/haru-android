@@ -10,14 +10,18 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.contains
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
+import com.example.haru.data.model.CommentBody
 import com.example.haru.data.model.Comments
 import com.example.haru.data.model.Post
+import com.example.haru.data.model.User
 import com.example.haru.databinding.FragmentAddCommentBinding
 import com.example.haru.view.adapter.AddCommentPagerAdapter
 import com.example.haru.view.adapter.ImageClickListener
@@ -31,7 +35,14 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     val postitem = postitem
     val postIndex = postitem.images
     private lateinit var snsViewModel: SnsViewModel
+
+    //사진위 댓글 값
     var onWrite = false
+    var ImageWidth = 0
+    var ImageHeight = 0
+    var AddContent = ""
+    var AddX = 35
+    var AddY = 45
 
     override fun OnImageClick(position: Int) {
         if(!onWrite) {
@@ -54,13 +65,14 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         Log.d("TAG", "SnsFragment - onCreateView() called")
         binding = FragmentAddCommentBinding.inflate(inflater, container, false)
         commentContainer = binding.commentFrame
+        commentContainer.post{
+            ImageWidth = commentContainer.width
+            ImageHeight = commentContainer.height
+        }
         writeContainer = binding.moveFrame
         val viewpager = binding.commentImage
         val viewPagerAdapter = AddCommentPagerAdapter(requireContext(), postitem.images, this)
 
-        for(comment in postIndex[0].comments) {
-            bindComment(comment)
-        }
         var imageIndex = 0
 
         viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -68,12 +80,15 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                 writeContainer.removeAllViews()
                 onWrite = false
                 imageIndex = position
-                binding.addcommentIndex.text = "${imageIndex + 1} / ${postitem.images.size}"
+                binding.addcommentIndex.text = "${position + 1} / ${postitem.images.size}"
                 if (commentContainer.childCount != 0) {
                     commentContainer.removeAllViews()
                 }
                 for(comment in postIndex[position].comments) {
-                    bindComment(comment)
+                    Log.d("20191668","내용:  ${comment.content}")
+                    commentContainer.post {
+                        bindComment(comment)
+                    }
                 }
             }
         })
@@ -82,6 +97,19 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             if(writeContainer.contains(writeBox)) {
                 writeContainer.removeView(writeBox)
                 onWrite = false
+            }
+        }
+
+        binding.writeCommentApply.setOnClickListener {
+            if(AddContent != ""){
+                snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
+                val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, "","")
+                postIndex[imageIndex].comments.add(addedComment)
+                bindComment(addedComment)
+                onWrite = false
+                writeContainer.removeAllViews()
+            }else{
+                Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -96,6 +124,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         // TextView를 찾아서 텍스트를 변경
         val textView = view.findViewById<TextView>(R.id.comment_on_picture_text)
         textView.text = comment.content
+        Log.d("20191668", "${comment.content}")
 
         val params = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -106,15 +135,9 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             Toast.makeText(requireContext(),"${comment.content}", Toast.LENGTH_SHORT).show()
         }
 
-        //프레임레이아웃 할당 대기 -> 0 리턴 방지
-        commentContainer.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                commentContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                params.leftMargin = commentContainer.width * comment.x / 100
-                params.topMargin =  commentContainer.height * comment.y / 100
-                view.layoutParams = params
-            }
-        })
+        params.leftMargin = commentContainer.width * comment.x / 100
+        params.topMargin =  commentContainer.height * comment.y / 100
+        view.layoutParams = params
         commentContainer.addView(view)
     }
 
@@ -126,6 +149,10 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             private var isDragging = false
             private var initialX = 0f
             private var initialY = 0f
+            private var x_start = 0f
+            private var x_end = 0f
+            private var y_start = 0f
+            private var y_end = 0f
 
             override fun onTouch(view: View, event: MotionEvent): Boolean {
                 var parentView = view
@@ -139,8 +166,8 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                     MotionEvent.ACTION_DOWN -> {
                         offsetX = parentView.x - event.rawX
                         offsetY = parentView.y - event.rawY
-                        initialX = event.rawX
-                        initialY = event.rawY
+                        initialX = parentView.x
+                        initialY = parentView.y
                         isDragging = false
                     }
                     MotionEvent.ACTION_MOVE -> {
@@ -150,19 +177,27 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                             isDragging = true
                         }
                         if (isDragging) {
-                            val x_start = event.rawX + offsetX
-                            val x_end = x_start + parentView.width
-                            val y_start = event.rawY + offsetY
-                            val y_end = y_start + parentView.height
+                            x_start = event.rawX + offsetX
+                            x_end = x_start + parentView.width
+                            y_start = event.rawY + offsetY
+                            y_end = y_start + parentView.height
                             if(x_start > 0 && x_end < writeContainer.width)
                                 parentView.x = x_start
                             if(y_start > 0 && y_end < writeContainer.height)
                                 parentView.y = event.rawY + offsetY
-                            Log.d("Comment" , "${parentView.width}, ${parentView.height}")
                         }
                     }
                     MotionEvent.ACTION_UP -> {
                         if (isDragging) {
+                            if(y_end > ImageHeight){
+                                parentView.x = initialX
+                                parentView.y = initialY
+                            }
+                            else{
+                                AddX = (parentView.x / ImageWidth * 100).toInt()
+                                AddY = (parentView.y / ImageHeight * 100).toInt()
+                                Log.d("20191668", "Percentage: $AddX $AddY")
+                            }
                             binding.writeCommentDelete.visibility = View.GONE
                         }
                         isDragging = false // Reset the dragging flag
@@ -177,6 +212,9 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         view.isFocusable = false
         // TextView를 찾아서 텍스트를 변경
         val editView = view.findViewById<EditText>(R.id.write_on_picture_)
+        editView.addTextChangedListener {
+            AddContent = editView.text.toString()
+        }
 
         view.setOnTouchListener(dragTouchListener)
         editView.setOnTouchListener(dragTouchListener)
@@ -195,6 +233,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                 view.layoutParams = params
             }
         })
+
         writeBox = view
         writeContainer.addView(view)
 
