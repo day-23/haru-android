@@ -1,6 +1,8 @@
 package com.example.haru.data.retrofit
 
+import com.example.haru.App
 import com.example.haru.data.api.*
+import com.example.haru.utils.SharedPrefsManager
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,12 +13,44 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 //    private const val BASE_URL = "http://127.0.0.1:8000/"
     private const val BASE_URL = "https://api.23haru.com/"
-//    private const val BASE_URL = "http://10.30.113.37:8000/"
+//    private const val BASE_URL = "http://192.168.0.42:3000/"
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
-        }).connectTimeout(100, TimeUnit.SECONDS)
+        })
+//        .addInterceptor { chain ->
+//            val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
+//            val accessToken = sharedPreferences.getString("accessToken", null)
+//
+//            val newRequest = chain.request().newBuilder()
+//                .addHeader("Authorization", "Bearer $accessToken")
+//                .build()
+//            chain.proceed(newRequest)
+//        }
+        .connectTimeout(100, TimeUnit.SECONDS)
+        .followRedirects(true)
+        .followSslRedirects(true)
+        .readTimeout(100,TimeUnit.SECONDS)
+        .writeTimeout(100,TimeUnit.SECONDS)
+        .build()
+
+    private val okHttpClientNotIncludeAccessToken = OkHttpClient.Builder()
+        .addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        })
+//        .addInterceptor { chain ->
+//            val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
+//            val accessToken = sharedPreferences.getString("accessToken", null)
+//
+//            val newRequest = chain.request().newBuilder()
+//                .addHeader("Authorization", "Bearer $accessToken")
+//                .build()
+//            chain.proceed(newRequest)
+//        }
+        .connectTimeout(100, TimeUnit.SECONDS)
+        .followRedirects(true)
+        .followSslRedirects(true)
         .readTimeout(100,TimeUnit.SECONDS)
         .writeTimeout(100,TimeUnit.SECONDS)
         .build()
@@ -57,5 +91,9 @@ object RetrofitClient {
 
     val userService: UserService by lazy {
         retrofit.create(UserService::class.java)
+    }
+
+    val apiService: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
     }
 }
