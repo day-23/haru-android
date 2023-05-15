@@ -103,6 +103,57 @@ class AdapterSimpleTodo(val todos: List<Todo>,
         todoCorrectionBtn.setOnClickListener {
             val checklistviewmodel = CheckListViewModel()
 
+            if(todo.endDate != null){
+                val enddate = serverDateFormat.parse(todo.endDate)
+
+                Log.d("todoenddate", "endDate:"+enddate)
+
+                val backendDate = serverDateFormat.parse(FormatDate.calendarBackFormat(todo.endDate!!))
+
+                Log.d("todoenddate", "back endDate:"+backendDate)
+
+                if(enddate.date != backendDate.date){
+                    val calendar = Calendar.getInstance()
+                    val today = todayDateFormat.parse(todayTodo)
+
+                    calendar.apply {
+                        time = backendDate
+                        set(Calendar.YEAR, today.year)
+                        set(Calendar.MONTH, today.month)
+                        set(Calendar.DAY_OF_MONTH, today.date)
+                        add(Calendar.DAY_OF_MONTH, -1)
+                    }
+
+                    val formatdate = calendar.time
+                    formatdate.year += 1900
+
+                    Log.d("todoenddate", "바뀌기 전:"+todo.endDate.toString())
+
+                    todo.endDate = serverDateFormat.format(formatdate)
+
+                    Log.d("todoenddate", "바뀐 후:"+todo.endDate.toString())
+                } else {
+                    val calendar = Calendar.getInstance()
+                    val today = todayDateFormat.parse(todayTodo)
+
+                    calendar.apply {
+                        time = backendDate
+                        set(Calendar.YEAR, today.year)
+                        set(Calendar.MONTH, today.month)
+                        set(Calendar.DAY_OF_MONTH, today.date)
+                    }
+
+                    val formatdate = calendar.time
+                    formatdate.year += 1900
+
+                    Log.d("todoenddate", "바뀌기 전:"+todo.endDate.toString())
+
+                    todo.endDate = serverDateFormat.format(formatdate)
+
+                    Log.d("todoenddate", "바뀐 후:"+todo.endDate.toString())
+                }
+            }
+
             if(todo.repeatEnd != null && todo.endDate != null){
                 if(todo.repeatEnd == todo.endDate ){
                     todo.repeatValue = null

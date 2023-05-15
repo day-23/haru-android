@@ -56,7 +56,6 @@ object FormatDate {
     }
 
     fun calendarFormat(str: String): String{
-        Log.d("diff", diff.toString())
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         return date.format(calendarDateFormatter)
     }
