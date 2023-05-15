@@ -174,13 +174,14 @@ object FormatDate {
                 cal.set(Calendar.DAY_OF_MONTH, 1)
 
                 if (flag) { // flag가 true이면 days가 idx + 1보다 작은 것이다.
-                    cal.set(Calendar.DAY_OF_MONTH, days)
+//                    cal.set(Calendar.DAY_OF_MONTH, days)
                 } else { // flag가 false라면 days가 idx + 1보다 크거나 같은 것이다.
                     cal.add(Calendar.MONTH, -1)
                     if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
                         cal.add(Calendar.MONTH, -1)
                 }
-                null
+                cal.set(Calendar.DAY_OF_MONTH, days)
+                cal.time
             }
             4 -> { // 매년
                 null
