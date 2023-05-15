@@ -210,7 +210,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     val textColor : Int
                     val drawable : Drawable?
                     if (!tag.isSelected) {
-                        textColor = ContextCompat.getColor(context, R.color.white)
+                        textColor = ContextCompat.getColor(context, R.color.light_gray)
                         drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
                     }
                     else {
