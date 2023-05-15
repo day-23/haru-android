@@ -184,8 +184,39 @@ object FormatDate {
                 cal.time
             }
             4 -> { // 매년
-                null
+                val idx = cal.get(Calendar.MONTH)
+                val days = cal.get(Calendar.DAY_OF_MONTH)
 
+                var flag = false
+                var month : Int
+                for(i in idx - 1 downTo 0){
+                    if (repeatValue[i] == '1'){
+                        month = i
+                        cal.set(Calendar.DAY_OF_MONTH, 1)
+                        cal.set(Calendar.MONTH, i)
+                        if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                            flag = true
+                            cal.set(Calendar.DAY_OF_MONTH, days)
+                            break
+                        }
+                    }
+                }
+                while (!flag) {
+                    cal.add(Calendar.YEAR, -1)
+                    for (i in 11 downTo  0) {
+                        if (repeatValue[i] == '1') {
+                            month = i
+                            cal.set(Calendar.DAY_OF_MONTH, 1)
+                            cal.set(Calendar.MONTH, month)
+                            if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                                flag = true
+                                cal.set(Calendar.DAY_OF_MONTH, days)
+                                break
+                            }
+                        }
+                    }
+                }
+                cal.time
             }
             else -> {
                 null
