@@ -104,7 +104,7 @@ class CalendarAddFragment(private val activity: Activity,
         repeatEndCalendar.set(Calendar.MINUTE, 0)
         repeatEndCalendar.set(Calendar.SECOND,0)
 
-        val dateParser = SimpleDateFormat("yyyy-MM-dd EE", Locale.KOREAN)
+        val dateParser = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
         val timeParser = SimpleDateFormat("aa hh:mm", Locale.KOREAN)
 
         if(initStartDate != null && initEndDate != null){
@@ -424,7 +424,7 @@ class CalendarAddFragment(private val activity: Activity,
             var repeatEndDate = ""
 
             if(!binding.alldaySwitch.isChecked) {
-                if(!binding.repeatSwitchSchedule.isChecked || !binding.repeatEndDateSwitchSchedule.isChecked) {
+                if(!binding.repeatSwitchSchedule.isChecked) {
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) +
                             "T" +
                             binding.repeatStartTimeBtn.text.toString().substring(3,5) +
@@ -449,10 +449,12 @@ class CalendarAddFragment(private val activity: Activity,
 
                     repeatEndDate = dateFormat.format(calendarClone.time) +
                             "T" +
-                            binding.repeatStartTimeBtn.text.toString().substring(3,5) +
+                            binding.repeatEndTimeBtn.text.toString().substring(3,5) +
                             ":" +
-                            binding.repeatStartTimeBtn.text.toString().substring(6,8) +
+                            binding.repeatEndTimeBtn.text.toString().substring(6,8) +
                             ":00+09:00"
+
+                    Log.d("20191630",repeatEndDate)
                 } else {
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) +
                             "T" +
@@ -465,25 +467,26 @@ class CalendarAddFragment(private val activity: Activity,
                         binding.btnRepeatEndDateSchedule.text.toString().length-2
                     ) +
                             "T" +
-                            binding.repeatStartTimeBtn.text.toString().substring(3,5) +
+                            binding.repeatEndTimeBtn.text.toString().substring(3,5) +
                             ":" +
-                            binding.repeatStartTimeBtn.text.toString().substring(6,8) +
+                            binding.repeatEndTimeBtn.text.toString().substring(6,8) +
                             ":00+09:00"
 
                     Log.d("반복 날짜", repeatEndDate)
                 }
             } else {
-                if(!binding.repeatSwitchSchedule.isChecked || !binding.repeatEndDateSwitchSchedule.isChecked) {
+                if(!binding.repeatSwitchSchedule.isChecked) {
                     repeatStartDate =
                         dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
                     repeatEndDate = dateFormat.format(repeatEndCalendar.time) + "T00:00:00+09:00"
                 } else if(!binding.repeatEndDateSwitchSchedule.isChecked){
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
 
-                    val calendarClone = repeatStartCalendar.clone() as Calendar
+                    val calendarClone = repeatEndCalendar.clone() as Calendar
                     calendarClone.add(Calendar.YEAR,100)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) + "T00:00:00+09:00"
+                    Log.d("20191630",repeatEndDate)
                 } else {
                     repeatStartDate =
                         dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
@@ -491,8 +494,6 @@ class CalendarAddFragment(private val activity: Activity,
                         0,
                         binding.btnRepeatEndDateSchedule.text.toString().length-2
                     ) + "T00:00:00+09:00"
-
-                    Log.d("repeatEndDate",repeatEndDate)
                 }
             }
 

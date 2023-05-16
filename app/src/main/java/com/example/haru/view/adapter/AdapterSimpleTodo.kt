@@ -32,17 +32,22 @@ import com.example.haru.viewmodel.CheckListViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AdapterSimpleTodo(val todos: List<Todo>,
-                        val activity: FragmentActivity,
-                        val todayTodo: String,
-                        val dialog: Dialog) : RecyclerView.Adapter<AdapterSimpleTodo.DetailView>(){
+class AdapterSimpleTodo(
+    val todos: List<Todo>,
+    val activity: FragmentActivity,
+    val todayTodo: String,
+    val dialog: Dialog
+) : RecyclerView.Adapter<AdapterSimpleTodo.DetailView>() {
     inner class DetailView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     val serverDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
     val todayDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
     val format = SimpleDateFormat("yyyy-MM-dd")
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterSimpleTodo.DetailView {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AdapterSimpleTodo.DetailView {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.list_item_simple_todo,
             parent,
@@ -60,12 +65,13 @@ class AdapterSimpleTodo(val todos: List<Todo>,
         val todo = todos[position]
 
         val detailTodoComplete = holder.itemView.findViewById<ImageView>(R.id.detail_todo_complete)
-        val detailTodoContentTv = holder.itemView.findViewById<TextView>(R.id.detail_todo_content_tv)
+        val detailTodoContentTv =
+            holder.itemView.findViewById<TextView>(R.id.detail_todo_content_tv)
         val detailTodoTagsTv = holder.itemView.findViewById<TextView>(R.id.detail_todo_tags_tv)
         val detailTodoFlagImv = holder.itemView.findViewById<ImageView>(R.id.detail_todo_flag_imv)
         val todoCorrectionBtn = holder.itemView.findViewById<LinearLayout>(R.id.todo_correction_btn)
 
-        if(todo.completed) {
+        if (todo.completed) {
             detailTodoComplete.setBackgroundResource(R.drawable.circle_check)
             detailTodoContentTv.setPaintFlags(detailTodoContentTv.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
 
@@ -77,13 +83,13 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
         var tag = ""
 
-        for(i in todo.tags){
-            tag += i.content+" "
+        for (i in todo.tags) {
+            tag += i.content + " "
         }
 
-        if(tag.length > 0) tag = tag.dropLast(0)
+        if (tag.length > 0) tag = tag.dropLast(0)
 
-        if(todo.flag){
+        if (todo.flag) {
             detailTodoFlagImv.setBackgroundResource(R.drawable.star_check)
         }
 
@@ -93,7 +99,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
         detailTodoFlagImv.setOnClickListener {
             val checkListViewModel = CheckListViewModel()
-            checkListViewModel.updateFlag(Flag(!todo.flag), todo.id){}
+            checkListViewModel.updateFlag(Flag(!todo.flag), todo.id) {}
 
             todos[position].flag = !todos[position].flag
 
@@ -103,11 +109,14 @@ class AdapterSimpleTodo(val todos: List<Todo>,
         todoCorrectionBtn.setOnClickListener {
             val checklistviewmodel = CheckListViewModel()
 
-            if(todo.endDate != null){
-                val enddate = serverDateFormat.parse(todo.endDate)
-                val backendDate = serverDateFormat.parse(FormatDate.calendarBackFormat(todo.endDate!!))
+            var todoendDate = ""
 
-                if(enddate.date != backendDate.date){
+            if (todo.endDate != null) {
+                val enddate = serverDateFormat.parse(todo.endDate)
+                val backendDate =
+                    serverDateFormat.parse(FormatDate.calendarBackFormat(todo.endDate!!))
+
+                if (enddate.date != backendDate.date) {
                     val calendar = Calendar.getInstance()
                     val today = todayDateFormat.parse(todayTodo)
 
@@ -122,9 +131,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                     val formatdate = calendar.time
                     formatdate.year += 1900
 
-                    todo.endDate = serverDateFormat.format(formatdate)
-
-                    Log.d("20191630", todo.endDate!!)
+                    todoendDate = serverDateFormat.format(formatdate)
                 } else {
                     val calendar = Calendar.getInstance()
                     val today = todayDateFormat.parse(todayTodo)
@@ -139,11 +146,11 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                     val formatdate = calendar.time
                     formatdate.year += 1900
 
-                    todo.endDate = serverDateFormat.format(formatdate)
+                    todoendDate = serverDateFormat.format(formatdate)
                 }
             }
 
-            if(todo.repeatEnd != null && todo.endDate != null){
+            if (todo.repeatEnd != null && todo.endDate != null) {
 //                if(todo.repeatEnd == todo.endDate ){
 //                    todo.repeatValue = null
 //                    todo.repeatOption = null
@@ -161,14 +168,14 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 //                }
             }
 
-            if(todo.endDate != null && todo.repeatOption != null){
+            if (todo.endDate != null && todo.repeatOption != null) {
                 val end = serverDateFormat.parse(todo.endDate)
                 val today = todayDateFormat.parse(todayTodo)
-                Log.d("20191627", "today $today")
 
-                if(end.year == today.year && end.month == today.month && end.date == today.date){
+                if (end.year == today.year && end.month == today.month && end.date == today.date) {
                     Log.d("todoLocation", "front")
                     todo.location = 0 // front
+                    todo.endDate = todoendDate
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
@@ -182,38 +189,59 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                 }
             }
 
-            if(todo.repeatEnd != null && todo.repeatOption != null){
+            if (todo.repeatEnd != null && todo.repeatOption != null) {
                 val today = todayDateFormat.parse(todayTodo)
-                val beforeFormatToday = FormatDate.calendarBackFormat(serverDateFormat.format(today))
+                val beforeFormatToday =
+                    FormatDate.calendarBackFormat(serverDateFormat.format(today))
                 val beforeFormatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
 
                 var nextData: Date? = null
 
-                when(todo.repeatOption){
-                    "매일"->{
+                when (todo.repeatOption) {
+                    "매일" -> {
                         nextData = FormatDate.nextEndDate(beforeFormatToday, beforeFormatEnd)
                     }
 
-                    "매주"->{
-                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue,1,beforeFormatToday, beforeFormatEnd)
+                    "매주" -> {
+                        nextData = FormatDate.nextEndDateEveryWeek(
+                            todo.repeatValue,
+                            1,
+                            beforeFormatToday,
+                            beforeFormatEnd
+                        )
                     }
 
-                    "격주"->{
-                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue, 2, beforeFormatToday, beforeFormatEnd)
+                    "격주" -> {
+                        nextData = FormatDate.nextEndDateEveryWeek(
+                            todo.repeatValue,
+                            2,
+                            beforeFormatToday,
+                            beforeFormatEnd
+                        )
                     }
 
-                    "매달"->{
-                        nextData = FormatDate.nextEndDateEveryMonth(todo.repeatValue!!,beforeFormatToday, beforeFormatEnd)
+                    "매달" -> {
+                        nextData = FormatDate.nextEndDateEveryMonth(
+                            todo.repeatValue!!,
+                            beforeFormatToday,
+                            beforeFormatEnd
+                        )
                     }
 
-                    "매년"->{
-                        nextData = FormatDate.nextEndDateEveryYear(todo.repeatValue!!, beforeFormatToday, beforeFormatEnd)
+                    "매년" -> {
+                        nextData = FormatDate.nextEndDateEveryYear(
+                            todo.repeatValue!!,
+                            beforeFormatToday,
+                            beforeFormatEnd
+                        )
                     }
                 }
 
-                if(nextData == null){
+                if (nextData == null) {
                     todo.location = 2
                     Log.d("todoLocation", "back")
+                    todo.endDate = todoendDate
+
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
@@ -227,10 +255,9 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                 }
             }
 
-            if(todo.repeatOption != null){
+            if (todo.repeatOption != null) {
                 todo.location = 1 // middle
-
-                Log.d("todoLocation", "middle")
+                todo.endDate = todoendDate
 
                 activity.supportFragmentManager.beginTransaction()
                     .replace(
@@ -243,8 +270,6 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                 dialog.dismiss()
                 return@setOnClickListener
             }
-
-            Log.d("todoLocation", "단일투두")
 
             activity.supportFragmentManager.beginTransaction()
                 .replace(
