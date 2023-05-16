@@ -105,12 +105,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
             if(todo.endDate != null){
                 val enddate = serverDateFormat.parse(todo.endDate)
-
-                Log.d("todoenddate", "endDate:"+enddate)
-
                 val backendDate = serverDateFormat.parse(FormatDate.calendarBackFormat(todo.endDate!!))
-
-                Log.d("todoenddate", "back endDate:"+backendDate)
 
                 if(enddate.date != backendDate.date){
                     val calendar = Calendar.getInstance()
@@ -127,11 +122,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                     val formatdate = calendar.time
                     formatdate.year += 1900
 
-                    Log.d("todoenddate", "바뀌기 전:"+todo.endDate.toString())
-
                     todo.endDate = serverDateFormat.format(formatdate)
-
-                    Log.d("todoenddate", "바뀐 후:"+todo.endDate.toString())
                 } else {
                     val calendar = Calendar.getInstance()
                     val today = todayDateFormat.parse(todayTodo)
@@ -146,11 +137,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                     val formatdate = calendar.time
                     formatdate.year += 1900
 
-                    Log.d("todoenddate", "바뀌기 전:"+todo.endDate.toString())
-
                     todo.endDate = serverDateFormat.format(formatdate)
-
-                    Log.d("todoenddate", "바뀐 후:"+todo.endDate.toString())
                 }
             }
 
@@ -177,7 +164,6 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                 val today = todayDateFormat.parse(todayTodo)
 
                 if(end.year == today.year && end.month == today.month && end.date == today.date){
-                    Log.d("todoLocation", "front")
                     todo.location = 0
 
                     activity.supportFragmentManager.beginTransaction()
@@ -194,7 +180,6 @@ class AdapterSimpleTodo(val todos: List<Todo>,
             }
 
             if(todo.repeatEnd != null && todo.repeatOption != null){
-//                val end = serverDateFormat.parse(todo.repeatEnd)
                 val today = todayDateFormat.parse(todayTodo)
                 val beforeFormatToday = FormatDate.calendarBackFormat(serverDateFormat.format(today))
                 val beforeFormatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
@@ -225,8 +210,6 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
                 if(nextData == null){
                     todo.location = 2
-
-                    Log.d("todoLocation", "end")
 
                     activity.supportFragmentManager.beginTransaction()
                         .replace(

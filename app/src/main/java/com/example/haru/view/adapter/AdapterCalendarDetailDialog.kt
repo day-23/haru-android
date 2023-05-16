@@ -136,7 +136,7 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
         calendarViewModel.liveTodoList.observe(lifecycleOwner) {livetodo->
             calendarViewModel.liveScheduleList.observe(lifecycleOwner){liveschedule->
                 detailScheduleRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-                detailScheduleRecyclerView.adapter = AdapterSimpleSchedule(liveschedule)
+                detailScheduleRecyclerView.adapter = AdapterSimpleSchedule(liveschedule,activity, startDate, dialog)
 
                 detailTodoRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
                 detailTodoRecyclerView.adapter = AdapterSimpleTodo(livetodo,activity, startDate, dialog)
