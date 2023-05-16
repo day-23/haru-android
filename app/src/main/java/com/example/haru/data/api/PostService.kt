@@ -40,4 +40,6 @@ interface PostService {
         @Path("imageId") imageId: String,
         @Body comment: CommentBody
     ): Call<WriteCommentResponse>
+
+
 }

@@ -1,7 +1,10 @@
 package com.example.haru.view.sns
 
 import android.content.Context
+import android.graphics.Paint
 import android.os.Bundle
+import android.text.StaticLayout
+import android.text.TextPaint
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -214,6 +217,26 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         val editView = view.findViewById<EditText>(R.id.write_on_picture_)
         editView.addTextChangedListener {
             AddContent = editView.text.toString()
+            val layoutParams = editView.layoutParams
+
+            if(AddContent == ""){
+                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }else {
+                val paint = Paint()
+                paint.textSize = editView.textSize
+                paint.typeface = editView.typeface
+                val textWidth = paint.measureText(AddContent).toInt()
+                val textPaint = TextPaint(editView.paint)
+                val staticLayout = StaticLayout.Builder
+                    .obtain(AddContent, 0, AddContent.length, textPaint, textWidth)
+                    .setLineSpacing(editView.lineSpacingExtra, editView.lineSpacingMultiplier)
+                    .build()
+
+                layoutParams.width = textWidth + 20
+                layoutParams.height = staticLayout.height
+            }
+            editView.layoutParams = layoutParams
         }
 
         view.setOnTouchListener(dragTouchListener)
