@@ -69,7 +69,6 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
 
-        val factorDate = calendar.time
         val startDate = format.format(calendar.time)+"T00:00:00+09:00"
 
         detailDayTv.text = calendar.time.date.toString()+"일 " +
@@ -116,9 +115,7 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
             }
         }
 
-       calendar.add(Calendar.DAY_OF_MONTH, 1)
-
-        val endDate = format.format(calendar.time)+"T00:00:00+09:00"
+        val endDate = format.format(calendar.time)+"T23:59:55+09:00"
 
         miniBackImv.setOnClickListener {
             thisViewpager.setCurrentItem(position-1, true)
