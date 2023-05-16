@@ -2,6 +2,7 @@ package com.example.haru.data.model
 
 data class Todo(
     var type: Int = 2,
+    var visibility : Boolean = true,
     var id: String = "",
     var content: String = "",
     var memo: String = "",

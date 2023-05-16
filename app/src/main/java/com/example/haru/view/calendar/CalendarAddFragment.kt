@@ -499,7 +499,7 @@ class CalendarAddFragment(private val activity: Activity,
             val option = when(repeatOption){
                 0->"매일"
                 1->"매주"
-                2->"2주마다"
+                2->"격주"
                 3->"매달"
                 4->"매년"
                 else -> null

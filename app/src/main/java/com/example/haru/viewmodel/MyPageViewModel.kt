@@ -1,6 +1,7 @@
 package com.example.haru.viewmodel
 
 import android.content.Context
+import android.net.Uri
 import android.os.Build.VERSION_CODES.P
 import android.provider.ContactsContract.Profile
 import android.provider.MediaStore
@@ -9,12 +10,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.haru.data.model.AddPost
-import com.example.haru.data.model.ExternalImages
-import com.example.haru.data.model.Post
+import com.example.haru.data.model.*
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.TodoRepository
+import com.example.haru.data.repository.UserRepository
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -24,6 +24,7 @@ import java.io.File
 class MyPageViewModel(): ViewModel() {
     private val ProfileRepository = ProfileRepository()
     private val PostRepository = PostRepository()
+    private val UserRepository = UserRepository()
 
     private val _Profile = MutableLiveData<com.example.haru.data.model.Profile>()
     val Profile: LiveData<com.example.haru.data.model.Profile>
@@ -53,10 +54,19 @@ class MyPageViewModel(): ViewModel() {
     val PostDone: LiveData<Boolean>
         get() = _PostDone
 
-    var profile_info = com.example.haru.data.model.Profile("", "", "", "")
+    private val _UserInfo = MutableLiveData<User>()
+    val UserInfo: LiveData<User>
+        get() = _UserInfo
 
-    init {
-        getProfile()
+    private val _EditImage = MutableLiveData<MultipartBody.Part>()
+    val EditImage: LiveData<MultipartBody.Part>
+        get() = _EditImage
+
+    private val _EditUri = MutableLiveData<Uri>()
+    val EditUri: LiveData<Uri>
+        get() = _EditUri
+
+    fun init_page(){
         _Page.value = 1
     }
 
@@ -70,34 +80,15 @@ class MyPageViewModel(): ViewModel() {
         Log.d("Image", "download -------------------$images")
         return images
     }
-
-    fun updateProfile(image: MultipartBody.Part) {
-        viewModelScope.launch {
-            ProfileRepository.editProfile(image) {
-                if (it.id != "") profile_info = it
-            }
-            _Profile.value = profile_info
-        }
-    }
-
-    fun getProfile() {
-        viewModelScope.launch {
-            ProfileRepository.getProfile {
-                if (it.id != "") profile_info = it
-            }
-            _Profile.value = profile_info
-        }
-    }
-
     fun addPage() {
         _Page.value = _Page.value?.plus(1)
     }
 
-    fun getFeed(page: String) {
+    fun getFeed(page: String, targetId:String) {
         var newPost: ArrayList<Post> = arrayListOf()
         var allPost = _Feed.value ?: arrayListOf()
         viewModelScope.launch {
-            PostRepository.getMyFeed(page) {
+            PostRepository.getMyFeed(page, targetId) {
                 if (it.size > 0) { //get success
                     newPost = it
                     allPost.addAll(it)
@@ -108,6 +99,19 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
+    fun getUserInfo(targetId: String){
+        var user = User("","","","",false,0,0,0)
+        viewModelScope.launch {
+            ProfileRepository.getUserInfo(targetId){
+                if(it.id != ""){
+                    user = it
+                }
+            }
+            _UserInfo.value = user
+        }
+    }
+
+    //커스텀 갤러리 선택한 사진 인덱스 표시를 위한 함수들
     fun addSelected(i: Int) {
         var newlist = _SelectedPosition.value
         if (newlist != null)
@@ -115,7 +119,6 @@ class MyPageViewModel(): ViewModel() {
         else newlist = arrayListOf(i)
         _SelectedPosition.value = newlist!!
     }
-
     fun delSelected(i: Int) {
         var newlist = _SelectedPosition.value
         newlist?.remove(i)
@@ -168,8 +171,65 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
+    fun editProfile(image: MultipartBody.Part, name: String, introduction: String){
+        var user = User("","","","",false,0,0,0)
+        viewModelScope.launch {
+            ProfileRepository.editProfile(image, name, introduction){
+                if(it.id != "") {
+                    user = it
+                    Log.d("TAG", "Success to Edit!")
+                }
+            }
+            _UserInfo.value = user
+        }
+    }
+
+    fun editProfileName(name:String, introduction: String){
+        var user = User("","","","",false,0,0,0)
+        viewModelScope.launch {
+            ProfileRepository.editProfileName(name, introduction){
+                if(it.id != ""){
+                    user = it
+                    Log.d("TAG", "Success to EditName!")
+                }
+                else{
+                    Log.d("TAG", "Fail to Edit name")
+                }
+            }
+            _UserInfo.value = user
+        }
+    }
+
+    fun selectProfile(part: MultipartBody.Part, absuri: Uri){
+        _EditImage.value = part
+        _EditUri.value = absuri
+    }
     fun resetValue(){
         _SelectedPosition.value = arrayListOf()
         _StoredImages.value = arrayListOf()
+    }
+
+    fun requestFollow(body: Followbody){
+        viewModelScope.launch {
+            UserRepository.requestFollowing(body){
+                if(it){
+                    Log.d("TAG","Success to follow")
+                }else{
+                    Log.d("TAG","Fail to follow")
+                }
+            }
+        }
+    }
+
+    fun requestUnFollow(body: UnFollowbody){
+        viewModelScope.launch {
+            UserRepository.requestunFollowing(body){
+                if(it){
+                    Log.d("TAG","Success to unfollow")
+                }else{
+                    Log.d("TAG","Fail to unfollow")
+                }
+            }
+        }
     }
 }

@@ -21,7 +21,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.EndDate
 import com.example.haru.data.model.Flag
 import com.example.haru.data.model.Schedule
 import com.example.haru.data.model.Todo
@@ -41,6 +40,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
     val serverDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
     val todayDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
+    val format = SimpleDateFormat("yyyy-MM-dd")
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterSimpleTodo.DetailView {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -144,30 +144,31 @@ class AdapterSimpleTodo(val todos: List<Todo>,
             }
 
             if(todo.repeatEnd != null && todo.endDate != null){
-                if(todo.repeatEnd == todo.endDate ){
-                    todo.repeatValue = null
-                    todo.repeatOption = null
-
-                    activity.supportFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.fragments_frame,
-                            ChecklistItemFragment(checklistviewmodel, todo.id, todo)
-                        )
-                        .addToBackStack(null)
-                        .commit()
-
-                    dialog.dismiss()
-                    return@setOnClickListener
-                }
+//                if(todo.repeatEnd == todo.endDate ){
+//                    todo.repeatValue = null
+//                    todo.repeatOption = null
+//
+//                    activity.supportFragmentManager.beginTransaction()
+//                        .replace(
+//                            R.id.fragments_frame,
+//                            ChecklistItemFragment(checklistviewmodel, todo.id, todo)
+//                        )
+//                        .addToBackStack(null)
+//                        .commit()
+//
+//                    dialog.dismiss()
+//                    return@setOnClickListener
+//                }
             }
 
             if(todo.endDate != null && todo.repeatOption != null){
                 val end = serverDateFormat.parse(todo.endDate)
                 val today = todayDateFormat.parse(todayTodo)
+                Log.d("20191627", "today $today")
 
                 if(end.year == today.year && end.month == today.month && end.date == today.date){
-                    todo.location = 0
-
+                    Log.d("todoLocation", "front, today.date : ${today.date}")
+                    todo.location = 0 // front
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
@@ -227,7 +228,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
             }
 
             if(todo.repeatOption != null){
-                todo.location = 1
+                todo.location = 1 // middle
 
                 Log.d("todoLocation", "middle")
 

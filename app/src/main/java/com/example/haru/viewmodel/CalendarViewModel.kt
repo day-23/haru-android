@@ -240,7 +240,7 @@ class CalendarViewModel : ViewModel() {
                                     }
                                 }
 
-                                "2주마다" -> {
+                                "격주" -> {
                                     var weeklycnt = 0
                                     var cnt = 0
                                     var twoweek = true
@@ -461,7 +461,7 @@ class CalendarViewModel : ViewModel() {
                                         }
                                     }
 
-                                    "2주마다" -> {
+                                    "격주" -> {
                                         var weeklycnt = 0
                                         var cnt = 0
                                         var twoweek = true
@@ -626,7 +626,7 @@ class CalendarViewModel : ViewModel() {
                                         }
                                     }
 
-                                    "2주마다"->{
+                                    "격주"->{
                                         var cnt = 0
                                         val tempStartDate = dateformat.parse(startDate)
                                         calendar.time = tempStartDate

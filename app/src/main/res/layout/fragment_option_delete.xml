@@ -2,9 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    android:padding="5dp"
+    android:background="@drawable/shape_rect_radius_top_40"
     android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/deleteDescription"
+        android:textColor="@color/todo_description"
+        android:textSize="14sp"
+        android:gravity="center" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_one_delete"
@@ -12,24 +20,18 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
+        android:background="@drawable/with_divider_btn"
         android:textSize="20sp"
-        android:background="@drawable/option_btn_one_delete"
         android:textColor="@color/highlight"
         android:text="@string/oneDelete"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_all_delete"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@drawable/with_divider_btn"
         android:gravity="center"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/option_btn_all_delete"
         android:textColor="@color/delete_red"
         android:textSize="20sp"
         android:text="@string/allDelete"/>
@@ -39,12 +41,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@drawable/with_divider_btn"
         android:gravity="center"
-        android:background="@drawable/option_btn_cancel"
-        android:textColor="@color/highlight"
-        android:textStyle="bold"
+        android:textColor="@color/date_text"
         android:textSize="20sp"
-        android:textAllCaps="false"
         android:text="@string/cancel"/>
 
 </LinearLayout>

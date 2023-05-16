@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_rect_radius_top_40"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/updateDescription"
+        android:textColor="@color/todo_description"
+        android:textSize="14sp"
+        android:gravity="center" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_option_one_update"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:background="@drawable/with_divider_btn"
+        android:textSize="20sp"
+        android:textColor="@color/highlight"
+        android:text="@string/oneUpdate"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_option_all_update"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/with_divider_btn"
+        android:gravity="center"
+        android:textColor="@color/delete_red"
+        android:textSize="20sp"
+        android:text="@string/allUpdate"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_option_after_update"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/with_divider_btn"
+        android:gravity="center"
+        android:textColor="@color/todo_description"
+        android:textSize="20sp"
+        android:text="@string/afterUpdate"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_option_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/with_divider_btn"
+        android:gravity="center"
+        android:textColor="@color/date_text"
+        android:textSize="20sp"
+        android:text="@string/cancel"/>
+
+
+
+</LinearLayout>

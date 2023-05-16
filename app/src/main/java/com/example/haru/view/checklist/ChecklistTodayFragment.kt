@@ -1,7 +1,6 @@
 package com.example.haru.view.checklist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +44,6 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
     override fun onDestroy() {
         super.onDestroy()
         checkListViewModel.clearToday()
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,6 +60,12 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
     private fun initToday(){
         val todayRecyclerView : RecyclerView = binding.todayRecyclerView
         val todoAdapter = TodoAdapter(requireContext())
+
+        todoAdapter.sectionToggleClick = object  : TodoAdapter.SectionToggleClick {
+            override fun onClick(view: View, str: String) {
+                checkListViewModel.setVisibility(str, 1)
+            }
+        }
 
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
             override fun onClick(view: View, id: String) {
@@ -93,13 +97,13 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null)
-                    checkListViewModel.updateNotRepeatTodo(completed, id)
+                    checkListViewModel.completeNotRepeatTodo(completed, id)
                 else {
                     val nextEndDate = when (todo.repeatOption) {
                         "매일" -> {
                             FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
                         }
-                        "매주", "2주마다" -> {
+                        "매주", "격주" -> {
                             val repeatOption = if (todo.repeatOption == "매주") 1 else 2
                             FormatDate.nextEndDateEveryWeek(
                                 todo.repeatValue!!,
@@ -118,9 +122,9 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     }
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.updateRepeatTodo(id, EndDate(nextEndDateStr))
+                        checkListViewModel.completeRepeatFrontTodo(id, FrontEndDate(nextEndDateStr!!))
                     } else
-                        checkListViewModel.updateNotRepeatTodo(completed, id)
+                        checkListViewModel.completeNotRepeatTodo(completed, id)
                 }
             }
         }
@@ -134,7 +138,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                     )
                     else Completed(true)
 
-                checkListViewModel.updateSubTodo(
+                checkListViewModel.completeSubTodo(
                     completed,
                     todoAdapter.subTodoClickId!!,
                     subTodo.id,

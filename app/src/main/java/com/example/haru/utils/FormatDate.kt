@@ -2,6 +2,7 @@ package com.example.haru.utils
 
 import android.util.Log
 import androidx.core.util.rangeTo
+import com.example.haru.utils.FormatDate.cal
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -13,16 +14,18 @@ object FormatDate {
     // 그리니치 시간과 Local시간의 차이
     private val diff = initDiff()
 
-    // LocslDateTime을 String으로 변환할 formatter
-    private val localTimeFormatter = DateTimeFormatter.ofPattern("a h:mm", Locale.KOREA)
-    private val localDateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd", Locale.US)
+    // LocalDateTime을 String으로 변환할 formatter
+    //24시간으로 할지 아니면 오전, 오후로 12시간제로 하는지
+    private val localTimeFormatter = DateTimeFormatter.ofPattern("H:mm까지")
+    private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지")
+
 
     private val calendarDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
 
     //// DatePicker와 TimePicker로 받는 값들은 Date이므로 SimpleDateFormat으로 서버로 보낼 형식으로 변환하는 formatter
     private val dateFormatterToServer = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
 
-    private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd", Locale.US)
+    private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd E", Locale.KOREA)
     private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
 
     private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
@@ -48,6 +51,21 @@ object FormatDate {
 //    fun localDateToStr(date: LocalDateTime): String {
 //        return date.format(localDateFormatter)
 //    }
+
+    fun checkToday(date : Date?) : Boolean?{
+        if (date == null)
+            return null
+        val today = Date()
+        cal.time = today
+        val todayYear = cal.get(Calendar.YEAR)
+        val todayMonth = cal.get(Calendar.MONTH)
+        val todayDay = cal.get(Calendar.DAY_OF_MONTH)
+        cal.time = date
+        val dateYear = cal.get(Calendar.YEAR)
+        val dateMonth = cal.get(Calendar.MONTH)
+        val dateDay = cal.get(Calendar.DAY_OF_MONTH)
+        return (todayYear == dateYear && todayMonth == dateMonth && todayDay == dateDay)
+    }
 
     // 서버에서 받은 그리니치 시간대에 Local시간과의 차이를 더해서 String으로 반환
     fun todoDateToStr(str: String): String {
@@ -77,7 +95,9 @@ object FormatDate {
     }
 
     // Date를 서버로 보낼 형식으로 변환하여 String으로 반환
-    fun dateToStr(date: Date): String {
+    fun dateToStr(date: Date?): String? {
+        if (date == null)
+            return null
         return dateFormatterToServer.format(date)
     }
 
@@ -94,10 +114,68 @@ object FormatDate {
     }
 
     // String으로 된 날짜 정보에 local Date와 그리니치 시간대의 차이를 더해서 Date 타입으로 반환
-    fun strToDate(str: String): Date {
+    fun strToDate(str: String?): Date? {
+        if (str == null)
+            return null
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         val instant = date.atZone(ZoneId.systemDefault()).toInstant()
         return Date.from(instant)
+    }
+
+    fun preEndDate(endDateStr: String, repeatOption: Int, repeatValue: String): Date? {
+        val endDate = strToDate(endDateStr)
+        cal.time = endDate!!
+        val preEndDate = when (repeatOption) {
+            0 -> { // 매일
+                cal.add(Calendar.DATE, -1)
+                cal.time
+            }
+            1, 2 -> { // 매주
+                val nWeek = cal.get(Calendar.DAY_OF_WEEK) // endDate가 해당하는 주차의 요일
+                var idx = nWeek - 1 // nWeek는 일 ~ 토, 1 ~ 7 이므로 인덱스로 사용하기 위해서 -1
+
+                if (idx != 0) // 오늘이 포함되면 안되기 때문에 -1을 해준다
+                    idx--
+
+                else { // idx가 0일 때 -1을하면 에러이므로 직접 토요일로 지정
+                    idx = 6
+                }
+
+                cal.add(Calendar.DATE, -1) // 오늘을 포함하면 안되므로 -1
+
+                var flag = false
+
+                val plusValue = if (repeatOption == 1) 1 else 8
+
+                for(i in idx downTo 0){
+                    if (repeatValue[i] == '1'){
+                        cal.add(Calendar.DATE, i - idx)
+                        flag = true
+                        break
+                    }
+                }
+                if (!flag){
+                    for(i in 6 downTo idx + 1)
+                        if (repeatValue[i] == '1') {
+                            val value = -(idx + plusValue + (6 - i))
+                            cal.add(Calendar.DATE, value)
+                            break
+                        }
+                }
+
+                cal.time
+            }
+            3 -> { // 매달
+                null
+
+            }
+            4 -> { // 매년
+                null
+
+            }
+            else -> { null }
+        }
+        return preEndDate
     }
 
     fun nextEndDate(endDateStr: String?, repeatEndDateStr: String?): Date? {
@@ -105,14 +183,14 @@ object FormatDate {
             return null
         val endDate = strToDate(endDateStr)
         cal.apply {
-            time = endDate
+            time = endDate!!
             add(Calendar.DATE, 1)
         }
         val nextEndDate = cal.time
 
         if (repeatEndDateStr != null) {
             cal.apply {
-                time = strToDate(repeatEndDateStr)
+                time = strToDate(repeatEndDateStr)!!
                 set(Calendar.HOUR_OF_DAY, 23)
                 set(Calendar.MINUTE, 59)
                 set(Calendar.SECOND, 59)
@@ -217,10 +295,14 @@ object FormatDate {
                 if (repeatValue.substring(0, days - 1).contains('1')) {
                     days = repeatValue.indexOf('1') + 1
                 }
+            } else {
+                if (endDateStr != null)
+                    cal.add(Calendar.MONTH, 1)
             }
             cal.set(Calendar.DAY_OF_MONTH, days)
         }
         val nextEndDate = cal.time
+        Log.d("20191627", "nextEndDate : ${nextEndDate}")
 
         if (repeatEndDateStr != null) {
             cal.apply {
@@ -241,7 +323,7 @@ object FormatDate {
         repeatValue: String,
         endDateStr: String?,
         repeatEndDateStr: String?,    // endDateStr을 하면 현재 시간으로 값을 정하지만 만약 사용자가 직접 날짜를 설정한다면????? 방법 강구하기
-        day : Int? = null
+        day: Int? = null
     ): Date? {                       // todoAddViewModel에 사용자가 직접 endDate를 설정한 것을 표시할 수 있는 값 만들기???
         if (endDateStr == null)      // endDatePick의 클릭이벤트를 통해서 가능
             cal.time = Date()
@@ -296,4 +378,6 @@ object FormatDate {
         }
         return nextEndDate
     }
+
+
 }

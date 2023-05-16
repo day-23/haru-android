@@ -69,7 +69,6 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
 
-
         val factorDate = calendar.time
         val startDate = format.format(calendar.time)+"T00:00:00+09:00"
 

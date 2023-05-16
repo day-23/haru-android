@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="MyDatePickerStyle" parent="Theme.AppCompat.Light.Dialog">
-        <!-- 상단 색 변경 -->
-        <item name="colorAccent">@color/light_gray</item>
-        <!-- 선택한 날짜를 표시할 색상 -->
-        <item name="background">@drawable/shape_rect_radius_10</item>
-        <item name="colorControlActivated">@color/light_gray</item>
-        <item name="colorControlHighlight">@color/light_gray</item>
-
-    </style>
-
-
-<!--    <style name="ButtonGroup">-->
+    <!--    <style name="ButtonGroup">-->
 <!--        <item name="android:background">@drawable/btn_group_custom</item>-->
 <!--    </style>-->
 

@@ -7,8 +7,8 @@ data class Post(
     val images: ArrayList<Profile>,
     val hashTags: ArrayList<String>,
     var isLiked: Boolean,
-    val likedCount: Int,
-    val commentCount: Int,
+    var likedCount: Int,
+    var commentCount: Int,
     val createdAt: String,
     val updatedAt: String
 )

@@ -1,6 +1,7 @@
 package com.example.haru.viewmodel
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +12,7 @@ import java.util.*
 class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     private val checklistViewModel: CheckListViewModel
 
-    private val repeatOptionList = listOf("매일", "매주", "2주마다", "매달", "매년")
+    private val repeatOptionList = listOf("매일", "매주", "격주", "매달", "매년")
 
     private val _flagTodo = MutableLiveData<Boolean>(false)
     val flagTodo: LiveData<Boolean> = _flagTodo
@@ -62,16 +63,19 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     val repeatEndDate: LiveData<Date> = _repeatEndDate
 
     private val _selectedDate = MutableLiveData<Date>()
-    val selectedDate : LiveData<Date> = _selectedDate
+    val selectedDate: LiveData<Date> = _selectedDate
 
-    var tagList: MutableList<String> = mutableListOf()
+    private val _tagLiveData = MutableLiveData<List<String>>()
+    val tagLiveData : LiveData<List<String>> = _tagLiveData
+
+    private val tagList: MutableList<String> = mutableListOf()
     var subTodos: MutableList<String> = mutableListOf()
     var subTodoCnt: Int = 0
     var subTodoClickPosition = -1
 
     var subTodoCompleted = mutableListOf<Boolean>()
 
-    var day : Int? = null
+    var day: Int? = null
     var selectDateFlag = false
 
     var tag: String = ""
@@ -82,6 +86,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     var endDateStr: String? = null
     var alarmDateTimeStr: String? = null
     var repeatEndDateStr: String? = null
+    var repeatValueStr: String? = null
 
     var endTimeLayoutHeight: Int = 0
     var repeatSetLayoutHeight: Int = 0
@@ -93,11 +98,17 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     var clickedTodo: Todo? = null
 
+    var calculateDateFlag = false
+
     init {
         this.checklistViewModel = checkListViewModel
     }
 
-    fun setSelectDate(date : Date) {
+    private fun getRepeatOptionStr(position: Int?): String? {
+        return if (position != null) repeatOptionList[position] else null
+    }
+
+    fun setSelectDate(date: Date) {
         selectDateFlag = true
         _selectedDate.value = date
     }
@@ -132,6 +143,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         if (clickedTodo!!.endDate != null) {
             _endDate.value = FormatDate.strToDate(clickedTodo!!.endDate!!)
+            Log.d("20191627", endDate.value.toString())
             _endDateSwitch.value = true
         } else _endDateSwitch.value = false
 
@@ -159,11 +171,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         content = clickedTodo!!.content
         memo = clickedTodo!!.memo
-        for (i in 0 until clickedTodo!!.tags.size) {
-            tag += "${clickedTodo!!.tags[i].content} "
-            if (i + 1 == clickedTodo!!.tags.size)
-                tag = tag.dropLast(1)
-        }
+        for (i in 0 until clickedTodo!!.tags.size)
+            tagList.add(clickedTodo!!.tags[i].content)
+        _tagLiveData.value = tagList
     }
 
     fun setFlagTodo() {
@@ -247,6 +257,19 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
+    fun addTagList() : Boolean{
+        if (tag == "" || tag.replace(" ", "") == "")
+            return false
+        tagList.add(tag.replace(" ", ""))
+        _tagLiveData.value = tagList
+        return true
+    }
+
+    fun subTagList(item : String){
+        tagList.remove(item)
+        _tagLiveData.value = tagList
+    }
+
     fun setEndTimeHeight(h: Int) {
         endTimeLayoutHeight = h
     }
@@ -283,20 +306,21 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         subTodos.removeAll(listOf(""))
 
-        tagList = if (tag == "" || tag.replace(" ", "") == "")
-            mutableListOf()
-        else{
-            tag = tag.replace("\\s+".toRegex(), " ")
-            tag.split(" ") as MutableList<String>
-        }
+
+//        tagList = if (tag == "" || tag.replace(" ", "") == "")
+//            mutableListOf()
+//        else {
+//            tag = tag.replace("\\s+".toRegex(), " ")
+//            tag.split(" ") as MutableList<String>
+//        }
 
         endDateStr = if (endDateSwitch.value == true) {
             if (!isSelectedEndDateTime.value!!) FormatDate.dateToStr(endDate.value!!)
             else {
-                FormatDate.dateToStr(endDate.value!!).substring(
+                FormatDate.dateToStr(endDate.value)!!.substring(
                     0,
                     10
-                ) + FormatDate.dateToStr(endTime.value!!).substring(10)
+                ) + FormatDate.dateToStr(endTime.value)!!.substring(10)
             }
         } else {
             null
@@ -304,10 +328,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
         alarmDateTimeStr =
             if (alarmSwitch.value == true && alarmDate.value != null && alarmTime.value != null)
-                FormatDate.dateToStr(alarmDate.value!!).substring(
+                FormatDate.dateToStr(alarmDate.value)!!.substring(
                     0,
                     10
-                ) + FormatDate.dateToStr(alarmTime.value!!).substring(10)
+                ) + FormatDate.dateToStr(alarmTime.value)!!.substring(10)
             else null
 
         repeatEndDateStr =
@@ -315,11 +339,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
                 FormatDate.dateToStr(repeatEndDate.value!!)
             else null
 
-        var repeat = repeatValue.value
-        if (repeat != null){
-            _repeatValue.value = repeat.replace('2', '0')
-            repeat = repeatValue.value
-            if (!repeat!!.contains('1')){
+        repeatValueStr = repeatValue.value
+        if (repeatValueStr != null) {
+            repeatValueStr = repeatValueStr!!.replace('2', '0')
+            if (!repeatValueStr!!.contains('1')) {
                 _repeatOption.value = null
                 _repeatValue.value = null
                 repeatEndDateStr = null
@@ -329,14 +352,15 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setRepeatVal(position: Int, value: Char? = null) {
         // value가 2이면 선택 불가, null이면 그냥 값보고 판단
-        val repeatValue : String = _repeatValue.value!!
+        val repeatValue: String = _repeatValue.value!!
         val changeValue =
             value ?: if (repeatValue[position] == '1' || repeatValue[position] == '2')
                 '0'
             else '1'
         if (value == null)
             selectDateFlag = false
-        _repeatValue.value = repeatValue.substring(0, position) + changeValue + repeatValue.substring(position + 1)
+        _repeatValue.value =
+            repeatValue.substring(0, position) + changeValue + repeatValue.substring(position + 1)
     }
 
     private fun createTodoData(): TodoRequest {
@@ -347,10 +371,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             flag = flagTodo.value!!,
             isAllDay = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
-            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else null,
-            repeatValue = if (repeatSwitch.value == true) repeatValue.value else null,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(
+                repeatOption.value!!
+            ) else null,
+            repeatValue = if (repeatSwitch.value == true) repeatValueStr else null,
             repeatEnd = repeatEndDateStr,
-            tags = tagList,
+            tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
             subTodos = subTodos,
             alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!)
         )
@@ -371,20 +397,64 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             flag = flagTodo.value!!,
             isAllDay = isSelectedEndDateTime.value ?: false,
             endDate = endDateStr,
-            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) repeatOptionList[repeatOption.value!!] else null,
-            repeatValue = repeatValue.value,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(
+                repeatOption.value!!
+            ) else null,
+            repeatValue = repeatValueStr,
             repeatEnd = repeatEndDateStr,
-            tags = tagList,
+            tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
             subTodos = subTodos,
             subTodosCompleted = subTodoCompleted,
             alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!)
         )
     }
 
+    private fun createUpdateRepeatTodoData(nextEndDate: String): UpdateRepeatFrontTodo {
+        return UpdateRepeatFrontTodo(
+            content = content,
+            memo = memo,
+            completed = completedTodo.value!!,
+            todayTodo = todayTodo.value!!,
+            flag = flagTodo.value!!,
+            isAllDay = isSelectedEndDateTime.value ?: false,
+            endDate = endDateStr,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(
+                repeatOption.value
+            ) else null,
+            repeatValue = repeatValue.value,
+            repeatEnd = repeatEndDateStr,
+            tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
+            subTodos = subTodos,
+            subTodosCompleted = subTodoCompleted,
+            alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!),
+            nextEndDate = nextEndDate
+        )
+    }
+
     fun updateTodo(callback: () -> Unit) {
-        checklistViewModel.putTodo(clickedTodo!!.id, createUpdateTodoData()) {
+        checklistViewModel.updateTodo(clickedTodo!!.id, createUpdateTodoData()) {
             callback()
         }
+    }
+
+    fun updateRepeatFrontTodo(callback: () -> Unit) {
+        val nextEndDate = findNextEndDate()
+        repeatValueStr = null
+        repeatEndDateStr = null
+        _repeatOption.value = null
+
+        if (nextEndDate != null) {
+            val nextEndDateStr = FormatDate.dateToStr(nextEndDate)!!
+            checklistViewModel.updateRepeatFrontTodo(
+                todoId = clickedTodo!!.id,
+                updateRepeatFrontTodo = createUpdateRepeatTodoData(nextEndDateStr)
+            ) {
+                callback()
+            }
+        } else checklistViewModel.updateTodo(
+            todoId = clickedTodo!!.id,
+            todo = createUpdateTodoData()
+        ) { callback() }
     }
 
     fun deleteTodo(callback: () -> Unit) {
@@ -393,7 +463,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-    fun deleteRepeatTodo(callback: () -> Unit){
+    private fun findNextEndDate(): Date? {
         val nextEndDate = when (clickedTodo!!.repeatOption) {
             "매일" -> {
                 FormatDate.nextEndDate(clickedTodo!!.endDate, clickedTodo!!.repeatEnd)
@@ -406,7 +476,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
                     clickedTodo!!.repeatEnd
                 )
             }
-            "2주마다" -> {
+            "격주" -> {
                 FormatDate.nextEndDateEveryWeek(
                     clickedTodo!!.repeatValue!!,
                     2,
@@ -415,20 +485,116 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
                 )
             }
             "매달" -> {
-                FormatDate.nextEndDateEveryMonth(clickedTodo!!.repeatValue!!, clickedTodo!!.endDate, clickedTodo!!.repeatEnd)
+                FormatDate.nextEndDateEveryMonth(
+                    clickedTodo!!.repeatValue!!,
+                    clickedTodo!!.endDate,
+                    clickedTodo!!.repeatEnd
+                )
             }
             "매년" -> {
-                FormatDate.nextEndDateEveryYear(clickedTodo!!.repeatValue!!, clickedTodo!!.endDate, clickedTodo!!.repeatEnd)
+                FormatDate.nextEndDateEveryYear(
+                    clickedTodo!!.repeatValue!!,
+                    clickedTodo!!.endDate,
+                    clickedTodo!!.repeatEnd
+                )
             }
             else -> null
         }
+        return nextEndDate
+    }
+
+    private fun findPreEndDate() : Date? {  // 프론트와 백이 같은 Todo에서는 예외를 처리해줘야한다.
+        return null
+    }
+
+    fun deleteRepeatFrontTodo(callback: () -> Unit) {
+        val nextEndDate = findNextEndDate()
+        Log.d("20191627", nextEndDate.toString())
         if (nextEndDate != null) {
             val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-            checklistViewModel.deleteRepeatTodo(todoId = clickedTodo!!.id, endDate = EndDate(nextEndDateStr)){
+            checklistViewModel.deleteRepeatFrontTodo(
+                todoId = clickedTodo!!.id,
+                frontEndDate = FrontEndDate(nextEndDateStr!!)
+            ) {
                 callback()
             }
         } else
-            checklistViewModel.deleteTodo(todoId = clickedTodo!!.id){ callback() }
+            checklistViewModel.deleteTodo(todoId = clickedTodo!!.id) { callback() }
+    }
+
+    fun deleteRepeatMiddleTodo(callback: () -> Unit) {
+        val nextEndDate = findNextEndDate()
+        val removedDate = clickedTodo!!.endDate
+
+        if (nextEndDate != null && removedDate != null) {
+            val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
+            checklistViewModel.deleteRepeatMiddleTodo(
+                todoId = clickedTodo!!.id,
+                middleEndDate = MiddleEndDate(removedDate, nextEndDateStr!!)
+            ){ callback() }
+        } else {
+            Log.d("20191627", "TodoAddViewModel -> deleteRepeatMiddleTodo에서 비상상황 발생!!")
+        }
+    }
+
+    fun deleteRepeatBackTodo(callback: () -> Unit) {
+
+
+    }
+
+    fun checkChangeEndDate(): Boolean { // 마감일의 년, 월, 일을 검사 -> 시간까지 확인하는 거면 시간과 분까지 확인
+        val changeYear = endDateStr?.substring(0, 4)
+        val changeMonth = endDateStr?.substring(5, 7)
+        val changeDay = endDateStr?.substring(8, 10)
+
+        val date = FormatDate.dateToStr(FormatDate.strToDate(clickedTodo!!.endDate))
+        val year = date?.substring(0, 4)
+        val month = date?.substring(5, 7)
+        val day = date?.substring(8, 10)
+
+        if (changeYear != year || changeMonth != month || changeDay != day) {
+            return true
+        }
+        if (clickedTodo!!.isAllDay) {
+            if (isSelectedEndDateTime.value != true)
+                return true
+            val changeHour = endDateStr?.substring(11, 13)
+            val changeMinute = endDateStr?.substring(14, 16)
+            val hour = date?.substring(11, 13)
+            val minute = date?.substring(14, 16)
+
+            if (changeHour != hour || changeMinute != minute)
+                return true
+        } else {
+            if (isSelectedEndDateTime.value == true)
+                return true
+        }
+        return false
+    }
+
+    fun checkChangeRepeat(): Boolean {
+        // repeatOption이 바뀌었는지, repeatValue가 바뀌었는지, repeatEndDate가 변경되었는지 (년, 월, 일만 검사)
+        if (clickedTodo!!.repeatOption != getRepeatOptionStr(repeatOption.value)) // repeatOption의 변경 확인
+            return true
+        if (clickedTodo!!.repeatValue != repeatValue.value) // repeatValue 변경 확인
+            return true
+
+        val changeYear = repeatEndDateStr?.substring(0, 4)
+        val changeMonth = repeatEndDateStr?.substring(5, 7)
+        val changeDay = repeatEndDateStr?.substring(8, 10)
+
+        val date = FormatDate.dateToStr(FormatDate.strToDate(clickedTodo!!.repeatEnd))
+        val year = date?.substring(0, 4)
+        val month = date?.substring(5, 7)
+        val day = date?.substring(8, 10)
+        if (changeYear != year || changeMonth != month || changeDay != day)
+            return true
+
+        return false
+    }
+
+    fun checkChangeData(): Boolean { // 마감일, 반복옵션 외의 다른 것들이 변경되었는지를 확인한다.
+        return false
     }
 
 }

@@ -113,6 +113,7 @@ class AddPostFragment : Fragment() {
                 val content = binding.addpostContent.text.toString()
                 val hashtag = arrayListOf("해시스완")
                 var updatedone = false
+                Toast.makeText(requireContext(),"게시글 작성중...", Toast.LENGTH_SHORT).show()
 
                 galleryViewmodel.postRequest(converedImage, content, hashtag)
                 galleryViewmodel.resetValue()

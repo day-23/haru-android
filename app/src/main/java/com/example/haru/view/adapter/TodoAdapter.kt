@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginBottom
@@ -39,6 +40,14 @@ import java.util.*
 class TodoAdapter(val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperListener {
 
+    interface SectionToggleClick {
+        fun onClick(view: View, str: String)
+    }
+
+    interface DropListener {
+        fun onDropFragment(list: List<String>)
+    }
+
     interface TodoClick {
         fun onClick(view: View, id: String)
     }
@@ -59,21 +68,23 @@ class TodoAdapter(val context: Context) :
         fun onClick(view: View, id: String)
     }
 
+    var sectionToggleClick: SectionToggleClick? = null
     var todoClick: TodoClick? = null
     var completeClick: CompleteClick? = null
     var flagClick: FlagClick? = null
     var subTodoCompleteClick: SubTodoCompleteClick? = null
     var toggleClick: ToggleClick? = null
+    var dropListener: DropListener? = null
 
-    val HeaderType1 = 0
-    val HeaderType2 = 1
+    //    val HeaderType1 = 0   -> 디자인 시안 변경으로 인해 사용 X
+//    val HeaderType2 = 1
     val Item = 2
     val Divider = 3
     val HeaderType3 = 4
     val Empty = 5
     val Blank = 6
 
-    var tags = mutableListOf<Tag>(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
+    var tags = mutableListOf(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
 
     var data = mutableListOf<Todo>()
 
@@ -105,17 +116,17 @@ class TodoAdapter(val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            HeaderType1 -> HeaderTypeOneViewHolder(
-                ChecklistHeaderType1Binding.inflate(
-                    LayoutInflater.from(context), parent, false
-                )
-            )
-
-            HeaderType2 -> HeaderTypeTwoViewHolder(
-                ChecklistHeaderType2Binding.inflate(
-                    LayoutInflater.from(context), parent, false
-                )
-            )
+//            HeaderType1 -> HeaderTypeOneViewHolder(    // 디자인 시안 변경으로 인해 사용 X
+//                ChecklistHeaderType1Binding.inflate(
+//                    LayoutInflater.from(context), parent, false
+//                )
+//            )
+//
+//            HeaderType2 -> HeaderTypeTwoViewHolder(
+//                ChecklistHeaderType2Binding.inflate(
+//                    LayoutInflater.from(context), parent, false
+//                )
+//            )
 
             HeaderType3 -> HeaderTypeThreeViewHolder(
                 ChecklistHeaderType3Binding.inflate(
@@ -168,31 +179,37 @@ class TodoAdapter(val context: Context) :
     ) {
         val todo = diffUtil.currentList[position]
         when (holder) {
-            is HeaderTypeOneViewHolder -> {}
-            is HeaderTypeTwoViewHolder -> holder.bind(todo.content)
+//            is HeaderTypeOneViewHolder -> {}
+//            is HeaderTypeTwoViewHolder -> holder.bind(todo.content)
             is HeaderTypeThreeViewHolder -> holder.bind(todo.content)
             is DividerViewHolder -> {}
             is TodoViewHolder -> {
                 holder.bind(todo)
             }
+            is EmptyViewHolder -> holder.bind(todo)
             is BlankViewHolder -> {}
         }
     }
 
-    inner class HeaderTypeOneViewHolder(val binding: ChecklistHeaderType1Binding) :
-        RecyclerView.ViewHolder(binding.root) {}
-
-    inner class HeaderTypeTwoViewHolder(val binding: ChecklistHeaderType2Binding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: String) {
-            binding.str = item
-        }
-    }
+//    inner class HeaderTypeOneViewHolder(val binding: ChecklistHeaderType1Binding) :
+//        RecyclerView.ViewHolder(binding.root) {}
+//
+//    inner class HeaderTypeTwoViewHolder(val binding: ChecklistHeaderType2Binding) :
+//        RecyclerView.ViewHolder(binding.root) {
+//        fun bind(item: String) {
+//            binding.str = item
+//        }
+//    }
 
     inner class HeaderTypeThreeViewHolder(val binding: ChecklistHeaderType3Binding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.str = item
+            if (sectionToggleClick != null)
+                binding.ivSectionArrow.setOnClickListener {
+                    binding.ivSectionArrow.isSelected = !it.isSelected
+                    sectionToggleClick?.onClick(it, item)
+                }
         }
     }
 
@@ -204,8 +221,17 @@ class TodoAdapter(val context: Context) :
 
     inner class TodoViewHolder(val binding: FragmentChecklistItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        var complete = false
 
         fun bind(item: Todo) {
+            binding.checklistItem.layoutParams = if (item.visibility) LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ) else LinearLayout.LayoutParams(0, 0)
+            binding.checklistItem.visibility = if (item.visibility) View.VISIBLE else View.GONE
+            if (!item.visibility)
+                return
+
             binding.todo = item
             binding.tvTitle.text = item.content
             if (todoClick != null) {
@@ -248,20 +274,44 @@ class TodoAdapter(val context: Context) :
                 binding.blankView.visibility = View.GONE
                 binding.iconLayout.visibility = View.VISIBLE
                 var tag = ""
+                var totalLen = 8
+                var count = item.tags.size
+
                 for (i in 0 until item.tags.size) {
-                    tag += "${item.tags[i].content} "
+                    val len = item.tags[i].content.length
+                    if (totalLen - len >= 3) { // 3은 " +${count}"자리이다.
+                        tag += "${item.tags[i].content} "
+                        count--
+                        totalLen -= (len + 1)
+                    } else if (totalLen - len >= 0) {
+                        tag += item.tags[i].content
+                        count--
+                        break
+                    } else break
                 }
+                if (count != 0)
+                    tag += "+$count"
+
                 if (tag != "") {
-                    binding.tvTagDescription.text = tag.dropLast(1)
+                    binding.tvTagDescription.text = tag
                     binding.tvTagDescription.visibility = View.VISIBLE
                 } else {
                     binding.tvTagDescription.visibility = View.GONE
                     binding.tvTagDescription.text = tag
                 }
 
-                if (item.endDate != null) {
-                    binding.tvEndDateDescription.text =
-                        FormatDate.todoDateToStr(item.endDate!!).substring(5, 10) + "까지"
+                val endDate = FormatDate.strToDate(item.endDate)
+                val checkToday = FormatDate.checkToday(endDate)
+
+                if (endDate != null && item.isAllDay) {
+                    binding.tvEndDateDescription.text = if (checkToday == true)
+                        FormatDate.todoTimeToStr(item.endDate!!)
+                    else FormatDate.todoDateToStr(item.endDate!!)
+                    binding.tvEndDateDescription.visibility = View.VISIBLE
+                } else if (endDate != null) {
+                    binding.tvEndDateDescription.text = if (checkToday == true)
+                        context.resources.getString(R.string.endDateToday)
+                    else FormatDate.todoDateToStr(item.endDate!!)
                     binding.tvEndDateDescription.visibility = View.VISIBLE
                 } else {
                     binding.tvEndDateDescription.text = ""
@@ -269,8 +319,17 @@ class TodoAdapter(val context: Context) :
                 }
             }
 
-            if (item.completed) binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
-            else binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
+
+
+            if (item.completed){
+                complete = true
+                binding.tvTitle.paintFlags =
+                    Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
+            }
+            else{
+                complete = false
+                binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
+            }
 
             binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
             binding.tvTitle.text = item.content
@@ -304,7 +363,8 @@ class TodoAdapter(val context: Context) :
 
                 addView.findViewById<TextView>(R.id.tv_subTodo).apply {
                     text = item.subTodos[i].content
-                    paintFlags = if (item.subTodos[i].completed) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
+                    paintFlags =
+                        if (item.subTodos[i].completed) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
                     if (item.subTodos[i].completed)
                         setTextColor(ContextCompat.getColor(context, R.color.light_gray))
                 }
@@ -323,7 +383,18 @@ class TodoAdapter(val context: Context) :
     }
 
     inner class EmptyViewHolder(val binding: ChecklistEmptyBinding) :
-        RecyclerView.ViewHolder(binding.root) {}
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Todo) {
+            binding.tvTodoEmpty.text = item.content
+            binding.tvTodoEmpty.visibility = if (item.visibility) View.VISIBLE else View.GONE
+            binding.tvTodoEmpty.layoutParams = if (item.visibility) LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ) else LinearLayout.LayoutParams(0, 0)
+            if (!item.visibility)
+                return
+        }
+    }
 
     fun setDataList(dataList: List<Todo>) {
         data = dataList as MutableList<Todo>
@@ -355,13 +426,13 @@ class TodoAdapter(val context: Context) :
 
     override fun onItemMove(formPosition: Int, toPosition: Int): Boolean {
         for (i in formPosition downTo 0)
-            if (diffUtil.currentList[i].type in listOf(0, 1, 4)) {
+            if (diffUtil.currentList[i].type == 4) {
                 dragLimitTop = i
                 break
             }
 
         for (i in formPosition until diffUtil.currentList.size)
-            if (diffUtil.currentList[i].type == 3) {
+            if (diffUtil.currentList[i].type in listOf(3, 6)) {
                 dragLimitBottom = i
                 break
             }
@@ -374,7 +445,16 @@ class TodoAdapter(val context: Context) :
             return true
         }
         return false
+    }
 
+    override fun onDropAdapter() {
+        if (dropListener != null) {
+            val list = mutableListOf<String>()
+            for (i in dragLimitTop!! + 1 until dragLimitBottom!!)
+                list.add(diffUtil.currentList[i].id)
+
+            dropListener?.onDropFragment(list)
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 package com.example.haru.view.checklist
 
-import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.res.ColorStateList
@@ -13,8 +12,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
@@ -25,7 +24,8 @@ import com.example.haru.databinding.FragmentChecklistItemBinding
 import com.example.haru.databinding.FragmentChecklistItemInfoBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
-import com.example.haru.view.customCalendar.CustomCalendarDialog
+import com.example.haru.view.customDialog.CustomCalendarDialog
+import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import java.util.*
@@ -128,6 +128,12 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         todoAddViewModel.setClickTodo(id, todo)
         binding.vm = todoAddViewModel
 
+        if (todoAddViewModel.clickedTodo!!.completed){
+            binding.infoSubTodoAddLayout.visibility = View.GONE
+        }
+
+        Log.d("20191627", todoAddViewModel.clickedTodo.toString())
+
         // flag 관련 UI Update
         todoAddViewModel.flagTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.cbInfoFlag.isChecked = it
@@ -225,6 +231,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
         // endDate Button UI Update
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.d("20191627", "endDAte $it")
             binding.btnInfoEndDatePick.text = FormatDate.simpleDateToStr(it)
         })
 
@@ -350,7 +357,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 }
             }
 
-            if (todoAddViewModel.repeatOption.value != null) {
+            if (!todoAddViewModel.calculateDateFlag) {
+                todoAddViewModel.calculateDateFlag = true
+            } else if (todoAddViewModel.repeatOption.value != null) {
                 val flagOne = todoAddViewModel.repeatValue.value!!.contains('1')
                 val flagTwo = todoAddViewModel.repeatValue.value!!.contains('2')
 
@@ -370,7 +379,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     todoAddViewModel.setDate(0, FormatDate.cal.time)
                     return@Observer
                 } else {
-                    Log.d("20191627", "최적 날짜 찾기")
                     val date = when (todoAddViewModel.repeatValue.value?.length) {
                         7 -> FormatDate.nextEndDateEveryWeek(
                             todoAddViewModel.repeatValue.value,
@@ -402,8 +410,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     }
                     if (date == null)
                         todoAddViewModel.setDate(0, Date())
+
                     else
                         todoAddViewModel.setDate(0, date)
+
                 }
             }
         })
@@ -428,26 +438,61 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
             binding.btnInfoRepeatEndDate.text = FormatDate.simpleDateToStr(it)
         })
 
-        binding.infoTagEt.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        todoAddViewModel.tagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.ivInfoTagIcon.backgroundTintList = if (it.isEmpty())
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.icon_gray))
+            else
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.todo_description
+                    )
+                )
 
+            if (it.size < binding.infoTagContainerLayout.childCount - 2)
+                for (i in 1 until binding.infoTagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
+                    val chip = binding.infoTagContainerLayout.getChildAt(i) as LinearLayout
+                    if (!it.contains((chip.getChildAt(0) as AppCompatButton).text)) {
+                        binding.infoTagContainerLayout.removeViewAt(i)
+                        break
+                    }
+                }
+            else if (it.size > binding.infoTagContainerLayout.childCount - 2) {
+                val layoutInflater =
+                    context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val childCount = binding.infoTagContainerLayout.childCount
+                for (i in childCount - 2 until it.size) {
+                    val chip = layoutInflater.inflate(R.layout.custom_chip, null)
+                    chip.findViewById<AppCompatButton>(R.id.tag_chip).apply {
+                        text = it[i]
+                        setOnClickListener {
+                            todoAddViewModel.subTagList(this.text.toString())
+                        }
+                    }
+                    binding.infoTagContainerLayout.addView(
+                        chip,
+                        binding.infoTagContainerLayout.childCount - 1
+                    )
+                }
+            }
+        })
+
+        binding.infoTagEt.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                binding.ivInfoTagIcon.backgroundTintList = if (s.toString() == "")
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.icon_gray
-                        )
-                    )
-                else
-                    ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.todo_description
-                        )
-                    )
+                if (s == null)
+                    return
+
+                val str = s.toString()
+                if (str == "")
+                    return
+
+                if (str[str.length - 1] == ' '){
+                    todoAddViewModel.addTagList()
+                    binding.infoTagEt.setText("")
+                }
             }
 
         })
@@ -549,14 +594,13 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 binding.btnInfoRepeatEndDate.id -> {
                     val datePicker = when (v.id) {
                         binding.btnInfoEndDatePick.id -> CustomCalendarDialog(todoAddViewModel.endDate.value)
-                        binding.btnInfoRepeatEndDate.id -> CustomCalendarDialog(todoAddViewModel.repeatEndDate.value)
+                        binding.btnInfoRepeatEndDate.id -> CustomCalendarDialog(todoAddViewModel.repeatEndDate.value, todoAddViewModel.endDate.value)
                         binding.btnInfoAlarmDatePick.id -> CustomCalendarDialog(todoAddViewModel.alarmDate.value)
                         else -> CustomCalendarDialog()
                     }
                     datePicker.calendarClick =
                         object : CustomCalendarDialog.CalendarClickListener {
                             override fun onClick(view: View, year: Int, month: Int, day: Int) {
-                                Log.d("20191627", "클릭")
                                 FormatDate.cal.set(year, month, day)
                                 val date = FormatDate.cal.time
                                 when (v.id) {
@@ -580,31 +624,44 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
                 binding.btnInfoEndTimePick.id,
                 binding.btnInfoAlarmTimePick.id -> {
-                    val calendar = Calendar.getInstance()
-                    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                    val minute = calendar.get(Calendar.MINUTE)
+                    val timePicker = when(v.id){
+                        binding.btnInfoEndTimePick.id -> {CustomTimeDialog(todoAddViewModel.endTime.value)}
+                        binding.btnInfoAlarmTimePick.id -> {CustomTimeDialog(todoAddViewModel.alarmTime.value)}
+                        else -> CustomTimeDialog()
+                    }
+                    timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener{
+                        override fun onClick(
+                            timeDivider : NumberPicker,
+                            hourNumberPicker: NumberPicker,
+                            minuteNumberPicker: NumberPicker
+                        ) {
+                            val timeDivision = timeDivider.value
+                            var hour = hourNumberPicker.value
+                            val minute = minuteNumberPicker.value
+                            if (timeDivision == 0){
+                                if (hour == 11)
+                                    hour = 0
+                                else hour++
+                            } else {
+                                if (hour == 11)
+                                    hour++
+                                else hour += 13
+                            }
 
-                    val timePickerDialog = TimePickerDialog(
-                        requireContext(),
-                        MyTimeSetListener { view, hourOfDay, minute ->
-                            val time = calendar.apply {
-                                set(Calendar.HOUR_OF_DAY, hourOfDay)
-                                set(Calendar.MINUTE, minute)
-                            }.time
-                            when (v.id) {
+                            FormatDate.cal.apply {
+                                set(Calendar.HOUR_OF_DAY, hour)
+                                set(Calendar.MINUTE, minute * 5)
+                            }
+                            val time = FormatDate.cal.time
+                            when(v.id){
                                 binding.btnInfoEndTimePick.id ->
                                     todoAddViewModel.setTime(0, time)
                                 binding.btnInfoAlarmTimePick.id ->
                                     todoAddViewModel.setTime(1, time)
                             }
-                            // timepicker 리스너 만들기 버튼을 없애고 시간을 선택하면 바로 적용되게끔
-                        },
-                        hour,
-                        minute,
-                        false
-                    )
-
-                    timePickerDialog.show()
+                        }
+                    }
+                    timePicker.show(parentFragmentManager, null)
                 }
 
                 binding.infoRepeatSwitch.id -> todoAddViewModel.setRepeatSwitch()
@@ -627,18 +684,44 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
                 binding.btnInfoDelete.id -> {
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-                        val option = OptionDialogFragment(todoAddViewModel)
+                        val option = DeleteOptionDialogFragment(todoAddViewModel)
                         option.show(parentFragmentManager, option.tag)
                     } else todoAddViewModel.deleteTodo {
                         requireActivity().supportFragmentManager.popBackStack()
                     }
                 }
                 binding.btnInfoSave.id -> {
+                    todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-                        val option = OptionDialogFragment(todoAddViewModel)
+                        // front, middle, back 구분할 수 있는 데이터로 분기 설정 front 면 아래 코드
+                        val checkEndDate = todoAddViewModel.checkChangeEndDate()
+                        val checkRepeatData = todoAddViewModel.checkChangeRepeat()
+//                        val type : Int
+                        // if (~~ front == true)
+                        val type = if (checkEndDate && checkRepeatData) 0
+                        else if (checkEndDate) 1 else if (checkRepeatData) 2 else 3
+
+                        // else 로 middle, back이면 아래 코드
+//                        else {
+//
+//                        }
+
+//                        Front
+//                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트만 수정”
+//                        * 반복 일정 수정 → “전체 이벤트 수정”
+//                        * 마감일 수정 → “이 이벤트만 수정”
+//                        * 둘다 수정시 → “전체 이벤트 수정”
+
+//                        Middle, Back
+//                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트부터 수정”, “이 이벤트만 수정”
+//                        * 반복 일정 수정 → “전체 이벤트 수정”, “이 이벤트부터 수정”
+//                        * 마감일 수정 → “이 이벤트만 수정”
+//                        * 둘다 수정시 → “전체 이벤트 수정”, “이 이벤트부터 수정”
+
+                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
                         option.show(parentFragmentManager, option.tag)
+
                     } else {
-                        todoAddViewModel.readyToSubmit()
                         todoAddViewModel.updateTodo {
                             requireActivity().supportFragmentManager.popBackStack()
                         }

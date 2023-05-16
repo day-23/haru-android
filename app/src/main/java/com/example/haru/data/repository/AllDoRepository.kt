@@ -6,13 +6,13 @@ import com.example.haru.data.retrofit.RetrofitClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AllDoRepository() {
+class AllDoRepository{
     private val allDoService = RetrofitClient.alldoService
 
     suspend fun getAllDoByDates(startDate:String, endDate:String, callback:(alldoData : AlldoData?) -> Unit) = withContext(Dispatchers.IO) {
         val response = allDoService.getAllDoDates(
-            "ysr",
-//            "005224c0-eec1-4638-9143-58cbfc9688c5",
+//            "ysr",
+            "005224c0-eec1-4638-9143-58cbfc9688c5",
             AlldoBodyCategory(startDate, endDate),
         ).execute()
 
