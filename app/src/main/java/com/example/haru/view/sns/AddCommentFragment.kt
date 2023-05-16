@@ -47,6 +47,8 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     var AddContent = ""
     var AddX = 35
     var AddY = 45
+    var lastX = 0f
+    var lastY = 0f
 
     override fun OnImageClick(position: Int) {
         if(!onWrite) {
@@ -199,9 +201,15 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                             y_end = y_start + parentView.height
                             if(x_start > 0 && x_end < writeContainer.width)
                                 parentView.x = x_start
+
                             if(y_start > 0 && y_end < writeContainer.height)
+                                if(y_end > commentContainer.height){
+                                    parentView.setBackgroundResource(R.color.light_gray)
+                                }else {
+                                    parentView.setBackgroundResource(R.drawable.comment_ballon)
+                                }
                                 parentView.y = event.rawY + offsetY
-                        }
+                            }
                     }
                     MotionEvent.ACTION_UP -> {
                         if (isDragging) {
@@ -225,9 +233,9 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
 
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.item_write_comment_on_picture, null)
-        view.isFocusable = false
         // TextView를 찾아서 텍스트를 변경
         val editView = view.findViewById<EditText>(R.id.write_on_picture_)
+
         editView.addTextChangedListener {
             AddContent = editView.text.toString()
             val layoutParams = editView.layoutParams
@@ -252,6 +260,22 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             editView.layoutParams = layoutParams
         }
 
+        editView.setOnFocusChangeListener { view, hasFocus ->
+            val parentView = view.parent as View
+            if (hasFocus) {
+                lastX = parentView.x
+                lastY = parentView.y
+                parentView.x = (commentContainer.width * 0.35).toFloat()
+                parentView.y = (commentContainer.height * 0.45).toFloat()
+                Log.d("20191668" , "write move to ${lastX} ${lastY}")
+            } else {
+                parentView.x = lastX
+                parentView.y = lastY
+                Log.d("20191668" , "move to ${parentView.x} ${parentView.y}")
+                view.focusable = View.NOT_FOCUSABLE
+            }
+        }
+        
         view.setOnTouchListener(dragTouchListener)
         editView.setOnTouchListener(dragTouchListener)
 
@@ -259,16 +283,10 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
+        view.layoutParams = params
 
-        //프레임레이아웃 할당 대기 -> 0 리턴 방지
-        commentContainer.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                commentContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                params.leftMargin = commentContainer.width * 35 / 100
-                params.topMargin =  commentContainer.height * 45 / 100
-                view.layoutParams = params
-            }
-        })
+        view.x = (commentContainer.width * 0.35).toFloat()
+        view.y = (commentContainer.height * 0.45).toFloat()
 
         writeBox = view
         writeContainer.addView(view)
