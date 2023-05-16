@@ -24,6 +24,7 @@ import com.example.haru.R
 import com.example.haru.data.model.Flag
 import com.example.haru.data.model.Schedule
 import com.example.haru.data.model.Todo
+import com.example.haru.utils.FormatDate
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CalendarViewModel
@@ -102,6 +103,46 @@ class AdapterSimpleTodo(val todos: List<Todo>,
         todoCorrectionBtn.setOnClickListener {
             val checklistviewmodel = CheckListViewModel()
 
+            if(todo.endDate != null){
+                val enddate = serverDateFormat.parse(todo.endDate)
+                val backendDate = serverDateFormat.parse(FormatDate.calendarBackFormat(todo.endDate!!))
+
+                if(enddate.date != backendDate.date){
+                    val calendar = Calendar.getInstance()
+                    val today = todayDateFormat.parse(todayTodo)
+
+                    calendar.apply {
+                        time = backendDate
+                        set(Calendar.YEAR, today.year)
+                        set(Calendar.MONTH, today.month)
+                        set(Calendar.DAY_OF_MONTH, today.date)
+                        add(Calendar.DAY_OF_MONTH, -1)
+                    }
+
+                    val formatdate = calendar.time
+                    formatdate.year += 1900
+
+                    todo.endDate = serverDateFormat.format(formatdate)
+
+                    Log.d("20191630", todo.endDate!!)
+                } else {
+                    val calendar = Calendar.getInstance()
+                    val today = todayDateFormat.parse(todayTodo)
+
+                    calendar.apply {
+                        time = backendDate
+                        set(Calendar.YEAR, today.year)
+                        set(Calendar.MONTH, today.month)
+                        set(Calendar.DAY_OF_MONTH, today.date)
+                    }
+
+                    val formatdate = calendar.time
+                    formatdate.year += 1900
+
+                    todo.endDate = serverDateFormat.format(formatdate)
+                }
+            }
+
             if(todo.repeatEnd != null && todo.endDate != null){
 //                if(todo.repeatEnd == todo.endDate ){
 //                    todo.repeatValue = null
@@ -121,17 +162,13 @@ class AdapterSimpleTodo(val todos: List<Todo>,
             }
 
             if(todo.endDate != null && todo.repeatOption != null){
-                val calendar = Calendar.getInstance()
-                calendar.time = serverDateFormat.parse(todo.endDate)
-                calendar.add(Calendar.HOUR, 9)
-                val end = calendar.time
+                val end = serverDateFormat.parse(todo.endDate)
                 val today = todayDateFormat.parse(todayTodo)
                 Log.d("20191627", "today $today")
 
                 if(end.year == today.year && end.month == today.month && end.date == today.date){
                     Log.d("todoLocation", "front, today.date : ${today.date}")
                     todo.location = 0 // front
-
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
@@ -146,22 +183,36 @@ class AdapterSimpleTodo(val todos: List<Todo>,
             }
 
             if(todo.repeatEnd != null && todo.repeatOption != null){
-                val calendar = Calendar.getInstance()
-                calendar.time = serverDateFormat.parse(todo.repeatEnd)
-                calendar.add(Calendar.HOUR, 9)
-
-                val end = calendar.time
                 val today = todayDateFormat.parse(todayTodo)
+                val beforeFormatToday = FormatDate.calendarBackFormat(serverDateFormat.format(today))
+                val beforeFormatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
 
-                // 이거 이렇게 하면 안됌. back일때는 repeatEnd하고 오늘 날짜가 다를 수 있음
-                if(end.year == today.year && end.month == today.month && end.date == today.date){
-                    todo.location = 2 // back
+                var nextData: Date? = null
 
-                    if (todo.endDate!!.substring(11,13).toInt() < 15)
-                        todo.endDate = format.format(today) + todo.endDate!!.substring(10)
+                when(todo.repeatOption){
+                    "매일"->{
+                        nextData = FormatDate.nextEndDate(beforeFormatToday, beforeFormatEnd)
+                    }
 
+                    "매주"->{
+                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue,1,beforeFormatToday, beforeFormatEnd)
+                    }
 
-                    Log.d("todoLocation", "end")
+                    "2주마다"->{
+                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue, 2, beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매달"->{
+                        nextData = FormatDate.nextEndDateEveryMonth(todo.repeatValue!!,beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매년"->{
+                        nextData = FormatDate.nextEndDateEveryYear(todo.repeatValue!!, beforeFormatToday, beforeFormatEnd)
+                    }
+                }
+
+                if(nextData == null){
+                    todo.location = 2
 
                     activity.supportFragmentManager.beginTransaction()
                         .replace(

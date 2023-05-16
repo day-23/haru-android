@@ -56,10 +56,8 @@
     <string name="save">저장</string>
 
     <string name="done">완료</string>
-    
     <string name="classified">분류</string>
     <string name="unClassified">미분류</string>
-    
     <string name="change">수정</string>
 
     <string name="todoEmpty">모든 할 일을 마쳤습니다!</string>
