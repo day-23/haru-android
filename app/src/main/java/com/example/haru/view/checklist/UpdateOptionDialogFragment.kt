@@ -3,6 +3,7 @@ package com.example.haru.view.checklist
 import android.app.Dialog
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -123,33 +124,42 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
         override fun onClick(v: View?) {
             when (v?.id) {
                 binding.btnOptionOneUpdate.id -> {
+                    binding.btnOptionOneUpdate.isClickable = false
                     if (type == UpdateType.FRONT_TWO)  // front에서의 하나만 업데이트
                         todoAddViewModel.updateRepeatFrontTodo {
+                            binding.btnOptionOneUpdate.isClickable = true
                             dismiss()
                             requireActivity().supportFragmentManager.popBackStack()
                         }
                     else {
+                        binding.btnOptionOneUpdate.isClickable = true
                         // middle, back에서의 하나만 업데이트
                     }
                 }
                 binding.btnOptionAllUpdate.id -> {
+                    binding.btnOptionAllUpdate.isClickable = false
                     todoAddViewModel.updateTodo {
+                        binding.btnOptionAllUpdate.isClickable = true
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
                 }
                 binding.btnOptionAfterUpdate.id -> {
+                    binding.btnOptionAfterUpdate.isClickable = false
+//                    binding.btnOptionAfterUpdate.isClickable = true
                     // middle, back의 이후부터 수정
 
                 }
 
                 binding.btnOptionSave.id -> {
+                    Log.d("20191627", "update")
+                    binding.btnOptionSave.isClickable = false
                     todoAddViewModel.updateTodo {
+                        binding.btnOptionSave.isClickable = true
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
                 }
-
 
                 binding.btnOptionUpdateCancel.id -> {
                     dismiss()

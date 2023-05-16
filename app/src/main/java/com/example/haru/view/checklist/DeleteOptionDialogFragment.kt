@@ -93,59 +93,47 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Dele
             when (v?.id) {
                 binding.btnOptionOneDelete.id -> {
                     // 반복 할 일의 front 삭제
+                    binding.btnOptionOneDelete.isClickable = false
                     when(type){
                         DeleteType.REPEAT_FRONT -> { // 반복 할 일의 front 삭제
                             todoAddViewModel.deleteRepeatFrontTodo {
+                                binding.btnOptionOneDelete.isClickable = true
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
                         }
                         DeleteType.REPEAT_MIDDLE -> { // 반복 할 일의 middle 삭제
                             todoAddViewModel.deleteRepeatMiddleTodo {
+                                binding.btnOptionOneDelete.isClickable = true
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
                         }
                         DeleteType.REPEAT_BACK -> { // 반복 할 일의 back 삭제
                             todoAddViewModel.deleteRepeatBackTodo {
+                                binding.btnOptionOneDelete.isClickable = true
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
                         }
-                        else -> {}
+                        else -> {
+                            binding.btnOptionOneDelete.isClickable = true
+                        }
                     }
                 }
 
-//                    when (todoAddViewModel.clickedTodo?.location) {
-//                        0 -> { //front
-//                            todoAddViewModel.deleteRepeatFrontTodo {
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//                        }
-//                        1 -> { // middle
-//                            todoAddViewModel.deleteRepeatMiddleTodo {
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//
-//                        }
-//                        2 -> { // back
-//                            todoAddViewModel.deleteRepeatBackTodo {
-//
-//                            }
-//                        }
-//                    }
-
-
                 binding.btnOptionAllDelete.id -> {
+                    binding.btnOptionAllDelete.isClickable = false
                     todoAddViewModel.deleteTodo {
+                        binding.btnOptionAllDelete.isClickable = true
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
                 }
                 binding.btnOptionDelete.id -> {
+                    binding.btnOptionDelete.isClickable = false
                     todoAddViewModel.deleteTodo {
+                        binding.btnOptionDelete.isClickable = true
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
