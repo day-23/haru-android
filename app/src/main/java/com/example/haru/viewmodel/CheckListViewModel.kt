@@ -99,7 +99,10 @@ class CheckListViewModel() :
 
     fun getTag() { // Tag 받아오는 기능
         viewModelScope.launch {
-            _tagDataList.value = basicTag + tagRepository.getTag()
+            tagRepository.getTag {
+                if (it != null)
+                    _tagDataList.value = basicTag + it
+            }
         }
     }
 
@@ -115,8 +118,10 @@ class CheckListViewModel() :
     fun createTag(content: Content) {  // 태그 생성 기능
         viewModelScope.launch {
             tagRepository.createTag(content = content) {
-                getTag()
-                withTagUpdate()
+                if (it != null) {
+                    getTag()
+                    withTagUpdate()
+                }
             }
         }
     }
@@ -124,8 +129,10 @@ class CheckListViewModel() :
     fun deleteTagList(tagIdList: TagIdList) {  // 태그 삭제 기능
         viewModelScope.launch {
             tagRepository.deleteTagList(tagIdList = tagIdList) {
-                getTag()
-                withTagUpdate()
+                if (it != null) {
+                    getTag()
+                    withTagUpdate()
+                }
             }
         }
     }
@@ -133,8 +140,10 @@ class CheckListViewModel() :
     fun updateTag(tagId: String, updateTag: TagUpdate) {  // 태그 수정 기능
         viewModelScope.launch {
             tagRepository.updateTag(tagId = tagId, updateTag = updateTag) {
-                getTag()
-                withTagUpdate()
+                if (it != null) {
+                    getTag()
+                    withTagUpdate()
+                }
             }
         }
     }
@@ -269,7 +278,7 @@ class CheckListViewModel() :
     ) { // Today 창에서 보여줄 Todo를 가져오는 기능
         viewModelScope.launch {
             todoRepository.getTodayTodo(frontEndDate = frontEndDate) {
-                if (it != null){
+                if (it != null) {
                     todayList.clear()
                     todayList.apply {
 
@@ -340,7 +349,7 @@ class CheckListViewModel() :
                 clear()
                 when (position) {
                     1 -> {
-                        todoRepository.getTodoByComplete{
+                        todoRepository.getTodoByComplete {
                             if (it != null)
                                 this.addAll(listOf(Todo(type = 4, content = todoByTagItem!!)) + it)
                         }
@@ -408,7 +417,7 @@ class CheckListViewModel() :
     fun updateTodo(todoId: String, todo: UpdateTodo, callback: () -> Unit) {
         viewModelScope.launch {
             val updateTodo = todoRepository.updateTodo(todoId = todoId, todo = todo) {
-                if (it != null){
+                if (it != null) {
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
@@ -429,7 +438,7 @@ class CheckListViewModel() :
                 todoId = todoId,
                 updateRepeatFrontTodo = updateRepeatFrontTodo
             ) {
-                if (it != null){
+                if (it != null) {
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
@@ -449,7 +458,7 @@ class CheckListViewModel() :
     ) {
         viewModelScope.launch {
             val successData = todoRepository.deleteTodo(userId = userId, todoId = todoId) {
-                if (it != null){
+                if (it != null) {
                     if (it.success) {
                         checkTodayMode()
                         withTagUpdate()
@@ -469,7 +478,7 @@ class CheckListViewModel() :
     ) {
         viewModelScope.launch {
             val successData = todoRepository.deleteRepeatFrontTodo(userId, todoId, frontEndDate) {
-                if (it != null){
+                if (it != null) {
                     if (it.success) {
                         checkTodayMode()
                         withTagUpdate()
@@ -488,7 +497,7 @@ class CheckListViewModel() :
     ) {
         viewModelScope.launch {
             val successData = todoRepository.deleteRepeatMiddleTodo(userId, todoId, middleEndDate) {
-                if (it != null){
+                if (it != null) {
                     if (it.success) {
                         checkTodayMode()
                         withTagUpdate()
@@ -507,7 +516,7 @@ class CheckListViewModel() :
     ) {
         viewModelScope.launch {
             val successData = todoRepository.deleteRepeatBackTodo(userId, todoId, backRepeatEnd) {
-                if (it != null){
+                if (it != null) {
                     if (it.success) {
                         checkTodayMode()
                         withTagUpdate()
@@ -530,7 +539,7 @@ class CheckListViewModel() :
                 subTodoId = subTodoId,
                 completed = completed
             ) {
-                if (it != null){
+                if (it != null) {
                     if (it.success) {
                         checkTodayMode()
                         withTagUpdate()
@@ -547,7 +556,7 @@ class CheckListViewModel() :
                 todoId = id,
                 completed = completed
             ) {
-                if (it != null){
+                if (it != null) {
                     if (it.success) {
                         checkTodayMode()
                         withTagUpdate()
@@ -562,7 +571,7 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData =
                 todoRepository.completeRepeatFrontTodo(todoId = id, frontEndDate = frontEndDate) {
-                    if (it != null){
+                    if (it != null) {
                         if (it.success) {
                             checkTodayMode()
                             withTagUpdate()
@@ -582,7 +591,7 @@ class CheckListViewModel() :
                 todoId = id,
                 folded = folded
             ) {
-                if (it != null){
+                if (it != null) {
                     if (it.success) {
                         checkTodayMode()
                         withTagUpdate()
@@ -597,7 +606,7 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {
-                    if (it != null){
+                    if (it != null) {
                         if (it.success) {
                             checkTodayMode()
                             withTagUpdate()

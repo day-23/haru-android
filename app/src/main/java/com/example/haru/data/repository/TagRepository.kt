@@ -9,32 +9,32 @@ import kotlinx.coroutines.withContext
 class TagRepository() {
     private val tagService = RetrofitClient.tagService
 
-    suspend fun getTag(): List<Tag> = withContext(Dispatchers.IO) {
+    suspend fun getTag(callback : (tagData : List<Tag>?) -> Unit) = withContext(Dispatchers.IO) {
         val response = tagService.getTag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
-        var data: TagResponse
-        var tagData: List<Tag>
+        var data: TagResponse?
+        var tagData: List<Tag>?
         Log.d("20191627", "여기는 getTag")
 
         if (response.isSuccessful) {
             Log.d("TAG", "Success to get tags")
-            data = response.body()!!
-            tagData = data.data
+            data = response.body()
+            tagData = data?.data
         } else {
             Log.d("TAG", "Fail to get tags")
-            tagData = emptyList()
+            tagData = response.body()?.data
         }
-        tagData
+        callback(tagData)
     }
 
     suspend fun createTag(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         content: Content,
-        callback: (successData: SuccessFailTag) -> Unit
+        callback: (successData: SuccessFailTag?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = tagService.createTag(userId, content).execute()
-        val data = response.body()!!
+        val data = response.body()
 
-        val successData: SuccessFailTag = if (response.isSuccessful) {
+        val successData: SuccessFailTag? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Create Tag")
             data
         } else {
@@ -65,12 +65,12 @@ class TagRepository() {
     suspend fun deleteTagList(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         tagIdList: TagIdList,
-        callback: (successData: SuccessFail) -> Unit
+        callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = tagService.deleteTagList(userId, tagIdList).execute()
-        val data = response.body()!!
+        val data = response.body()
 
-        val successData: SuccessFail = if (response.isSuccessful) {
+        val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Delete TagList")
             data
         } else {
@@ -84,12 +84,12 @@ class TagRepository() {
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         tagId: String,
         updateTag: TagUpdate,
-        callback: (successData: SuccessFailTag) -> Unit
+        callback: (successData: SuccessFailTag?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = tagService.updateTag(userId, tagId, updateTag).execute()
-        val data = response.body()!!
+        val data = response.body()
 
-        val successData : SuccessFailTag = if (response.isSuccessful){
+        val successData : SuccessFailTag? = if (response.isSuccessful){
             Log.d("TAG", "Success to Update Tag")
             data
         }else {
