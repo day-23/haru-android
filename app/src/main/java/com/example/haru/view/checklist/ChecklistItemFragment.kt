@@ -128,6 +128,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         todoAddViewModel.setClickTodo(id, todo)
         binding.vm = todoAddViewModel
 
+        if (todo != null)
+            Log.d("20191627", todo.endDate?: "null")
+
         if (todoAddViewModel.clickedTodo!!.completed){
             binding.infoSubTodoAddLayout.visibility = View.GONE
         }
@@ -698,14 +701,34 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         val checkRepeatData = todoAddViewModel.checkChangeRepeat()
 //                        val type : Int
                         // if (~~ front == true)
-                        val type = if (checkEndDate && checkRepeatData) 0
-                        else if (checkEndDate) 1 else if (checkRepeatData) 2 else 3
+//                        val type = if (checkEndDate && checkRepeatData) 0
+//                        else if (checkEndDate) 1 else if (checkRepeatData) 2 else 3
 
-                        // else 로 middle, back이면 아래 코드
-//                        else {
-//
-//                        }
+                        when(todoAddViewModel.clickedTodo?.location){
+                            0 -> { // front
+                                if (checkEndDate && checkRepeatData) {
+                                    // 전체 이벤트 수정
+                                } else if (checkEndDate){
+                                    // 이 이벤트만 수정
+                                } else if (checkRepeatData) {
+                                    // 전체 이벤트 수정
+                                } else {
+                                    // 전체 이벤트 수정, 이 이벤트만 수정
+                                }
+                            }
+                            1, 2 -> { // middle, back
+                                if (checkEndDate && checkRepeatData){
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                } else if(checkEndDate){
+                                    // 이 이벤트만 수정
+                                } else if (checkRepeatData) {
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                } else {
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
+                                }
+                            }
 
+                        }
 //                        Front
 //                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트만 수정”
 //                        * 반복 일정 수정 → “전체 이벤트 수정”
@@ -718,8 +741,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 //                        * 마감일 수정 → “이 이벤트만 수정”
 //                        * 둘다 수정시 → “전체 이벤트 수정”, “이 이벤트부터 수정”
 
-                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
-                        option.show(parentFragmentManager, option.tag)
+//                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+//                        option.show(parentFragmentManager, option.tag)
 
                     } else {
                         todoAddViewModel.updateTodo {
