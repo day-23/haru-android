@@ -94,7 +94,15 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
                 val repeatend = calendarDateFormatter.parse(schedule.repeatEnd!!)
 
                 binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
-                binding.repeatEndDateBtn.text = dateformat.format(repeatend)
+                binding.repeatEndDateBtn.text = dateformat.format(repeatstart)
+
+                if(repeatend.year < 2100) {
+                    binding.repeatEndDateSwitchSchedule.isChecked = true
+                    binding.repeatEndDateScheduleTv.setTextColor(Color.parseColor("#191919"))
+                    binding.btnRepeatEndDateSchedule.visibility = View.VISIBLE
+
+                    binding.btnRepeatEndDateSchedule.text = dateformat.format(repeatend)
+                }
             }
         } else {// 반복 일정이 아닐 때
             val repeatstart = calendarDateFormatter.parse(schedule.repeatStart!!)
