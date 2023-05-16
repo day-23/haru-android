@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.text.StaticLayout
@@ -51,6 +52,8 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         if(!onWrite) {
             onWrite = true
             writeComment(position)
+            val color = Color.argb(170, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
+            writeContainer.setBackgroundColor(color)
         }
     }
 
@@ -97,9 +100,13 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         })
 
         binding.writeCommentCancel.setOnClickListener {
-            if(writeContainer.contains(writeBox)) {
-                writeContainer.removeView(writeBox)
-                onWrite = false
+            if(onWrite) {
+                if (writeContainer.contains(writeBox)) {
+                    writeContainer.removeView(writeBox)
+                    onWrite = false
+                    val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
+                    writeContainer.setBackgroundColor(color)
+                }
             }
         }
 
@@ -111,6 +118,8 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                 bindComment(addedComment)
                 onWrite = false
                 writeContainer.removeAllViews()
+                val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
+                writeContainer.setBackgroundColor(color)
             }else{
                 Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
             }
@@ -123,7 +132,8 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     fun bindComment(comment : Comments){
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.item_comment_on_picture, null)
-
+        val viewHeight = commentContainer.height
+        Log.d("20191668" , "$viewHeight")
         // TextView를 찾아서 텍스트를 변경
         val textView = view.findViewById<TextView>(R.id.comment_on_picture_text)
         textView.text = comment.content
@@ -137,9 +147,12 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         view.setOnClickListener{
             Toast.makeText(requireContext(),"${comment.content}", Toast.LENGTH_SHORT).show()
         }
-
         params.leftMargin = commentContainer.width * comment.x / 100
         params.topMargin =  commentContainer.height * comment.y / 100
+        Log.d("20191668", "params : ${params.topMargin} ${textView.height} $viewHeight")
+        if(params.topMargin + textView.height > viewHeight){
+            params.topMargin -= (params.leftMargin + textView.height) - viewHeight
+        }
         view.layoutParams = params
         commentContainer.addView(view)
     }
