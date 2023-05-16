@@ -198,7 +198,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                         nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue,1,beforeFormatToday, beforeFormatEnd)
                     }
 
-                    "2주마다"->{
+                    "격주"->{
                         nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue, 2, beforeFormatToday, beforeFormatEnd)
                     }
 

@@ -192,70 +192,72 @@ class CheckListViewModel() :
     fun getTodoMain(callback: () -> Unit) {  // 메인 화면에서 보여줄 TodoData를 가져오는 기능
         viewModelScope.launch {
             todoRepository.getTodoMain {
-                todoList.clear()
-                _todoByTag.postValue(false)
-                todoByTagItem = null
+                if (it != null) {
+                    todoList.clear()
+                    _todoByTag.postValue(false)
+                    todoByTagItem = null
 
-                if (it.flaggedTodos.isNotEmpty())
-                    _flaggedTodos.postValue(
-                        listOf(Todo(type = 4, content = "중요"))
-                                + it.flaggedTodos + listOf(Todo(type = 3))
+                    if (it.flaggedTodos.isNotEmpty())
+                        _flaggedTodos.postValue(
+                            listOf(Todo(type = 4, content = "중요"))
+                                    + it.flaggedTodos + listOf(Todo(type = 3))
+                        )
+                    else _flaggedTodos.postValue(
+                        listOf(
+                            Todo(type = 4, content = "중요"),
+                            Todo(type = 5, content = "중요한 할 일이 있나요?"), Todo(type = 3)
+                        )
                     )
-                else _flaggedTodos.postValue(
-                    listOf(
-                        Todo(type = 4, content = "중요"),
-                        Todo(type = 5, content = "중요한 할 일이 있나요?"), Todo(type = 3)
-                    )
-                )
 
-                if (it.taggedTodos.isNotEmpty())
-                    _taggedTodos.postValue(
+                    if (it.taggedTodos.isNotEmpty())
+                        _taggedTodos.postValue(
+                            listOf(
+                                Todo(
+                                    type = 4,
+                                    content = "분류"
+                                )
+                            ) + it.taggedTodos + listOf(Todo(type = 3))
+                        ) else _taggedTodos.postValue(
                         listOf(
-                            Todo(
-                                type = 4,
-                                content = "분류"
-                            )
-                        ) + it.taggedTodos + listOf(Todo(type = 3))
-                    ) else _taggedTodos.postValue(
-                    listOf(
-                        Todo(type = 4, content = "분류"),
-                        Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
-                        Todo(type = 3)
+                            Todo(type = 4, content = "분류"),
+                            Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
+                            Todo(type = 3)
+                        )
                     )
-                )
-                if (it.untaggedTodos.isNotEmpty())
-                    _untaggedTodos.postValue(
+                    if (it.untaggedTodos.isNotEmpty())
+                        _untaggedTodos.postValue(
+                            listOf(
+                                Todo(
+                                    type = 4,
+                                    content = "미분류"
+                                )
+                            ) + it.untaggedTodos + listOf(Todo(type = 3))
+                        ) else _untaggedTodos.postValue(
                         listOf(
-                            Todo(
-                                type = 4,
-                                content = "미분류"
-                            )
-                        ) + it.untaggedTodos + listOf(Todo(type = 3))
-                    ) else _untaggedTodos.postValue(
-                    listOf(
-                        Todo(type = 4, content = "미분류"),
-                        Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
-                        Todo(type = 3)
+                            Todo(type = 4, content = "미분류"),
+                            Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
+                            Todo(type = 3)
+                        )
                     )
-                )
-                if (it.completedTodos.isNotEmpty())
-                    _completedTodos.postValue(
+                    if (it.completedTodos.isNotEmpty())
+                        _completedTodos.postValue(
+                            listOf(
+                                Todo(
+                                    type = 4,
+                                    content = "완료"
+                                )
+                            ) + it.completedTodos + listOf(Todo(type = 6))
+                        ) else _completedTodos.postValue(
                         listOf(
-                            Todo(
-                                type = 4,
-                                content = "완료"
-                            )
-                        ) + it.completedTodos + listOf(Todo(type = 6))
-                    ) else _completedTodos.postValue(
-                    listOf(
-                        Todo(type = 4, content = "완료"),
-                        Todo(type = 5, content = "할일을 완료해 보세요!"),
-                        Todo(type = 6)
+                            Todo(type = 4, content = "완료"),
+                            Todo(type = 5, content = "할일을 완료해 보세요!"),
+                            Todo(type = 6)
+                        )
                     )
-                )
 
-                _todoByTag.postValue(false)
-                todoByTagItem = null
+                    _todoByTag.postValue(false)
+                    todoByTagItem = null
+                }
             }
             callback()
         }
@@ -267,37 +269,39 @@ class CheckListViewModel() :
     ) { // Today 창에서 보여줄 Todo를 가져오는 기능
         viewModelScope.launch {
             todoRepository.getTodayTodo(frontEndDate = frontEndDate) {
-                todayList.clear()
-                todayList.apply {
+                if (it != null){
+                    todayList.clear()
+                    todayList.apply {
 
-                    this.add(Todo(type = 4, content = "중요"))
-                    if (it.flaggedTodos.isNotEmpty())
-                        this.addAll(it.flaggedTodos)
-                    else this.add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
+                        this.add(Todo(type = 4, content = "중요"))
+                        if (it.flaggedTodos.isNotEmpty())
+                            this.addAll(it.flaggedTodos)
+                        else this.add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
 
-                    this.add(Todo(type = 3))
+                        this.add(Todo(type = 3))
 
-                    this.add(Todo(type = 4, content = "오늘 할 일"))
-                    if (it.todayTodos.isNotEmpty())
-                        this.addAll(it.todayTodos)
-                    else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                        this.add(Todo(type = 4, content = "오늘 할 일"))
+                        if (it.todayTodos.isNotEmpty())
+                            this.addAll(it.todayTodos)
+                        else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
 
-                    this.add(Todo(type = 3))
+                        this.add(Todo(type = 3))
 
-                    this.add(Todo(type = 4, content = "오늘 마감"))
-                    if (it.endDatedTodos.isNotEmpty())
-                        this.addAll(it.endDatedTodos)
-                    else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                        this.add(Todo(type = 4, content = "오늘 마감"))
+                        if (it.endDatedTodos.isNotEmpty())
+                            this.addAll(it.endDatedTodos)
+                        else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
 
-                    this.add(Todo(type = 3))
+                        this.add(Todo(type = 3))
 
-                    this.add(Todo(type = 4, content = "완료"))
-                    if (it.completedTodos.isNotEmpty())
-                        this.addAll(it.completedTodos)
-                    else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
+                        this.add(Todo(type = 4, content = "완료"))
+                        if (it.completedTodos.isNotEmpty())
+                            this.addAll(it.completedTodos)
+                        else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
+                    }
+                    _todayTodo.postValue(todayList)
+                    callback()
                 }
-                _todayTodo.postValue(todayList)
-                callback()
             }
         }
     }
@@ -312,13 +316,17 @@ class CheckListViewModel() :
             todoRepository.createTodo(calendar, todoRequest) {
                 getTag()
                 getTodoMain {
-                    flaggedTodos.value?.let { todoList.addAll(it) }
-                    taggedTodos.value?.let { todoList.addAll(it) }
-                    untaggedTodos.value?.let { todoList.addAll(it) }
-                    completedTodos.value?.let { todoList.addAll(it) }
-                    _todoDataList.postValue(todoList)
-                    _addTodoId.postValue(it.id)
-                    callback()
+                    if (it == null)
+                        Log.d("20191627", "Todo 생성 실패")
+                    else {
+                        flaggedTodos.value?.let { todoList.addAll(it) }
+                        taggedTodos.value?.let { todoList.addAll(it) }
+                        untaggedTodos.value?.let { todoList.addAll(it) }
+                        completedTodos.value?.let { todoList.addAll(it) }
+                        _todoDataList.postValue(todoList)
+                        _addTodoId.postValue(it.id)
+                        callback()
+                    }
                 }
             }
         }
@@ -331,40 +339,38 @@ class CheckListViewModel() :
             todoList.apply {
                 clear()
                 when (position) {
-                    1 -> addAll(
-                        listOf(
-                            Todo(
-                                type = 4,
-                                content = todoByTagItem!!
-                            )
-                        ) + todoRepository.getTodoByComplete()
-                    )
-                    2 -> addAll(
-                        listOf(
-                            Todo(
-                                type = 4,
-                                content = todoByTagItem!!
-                            )
-                        ) + todoRepository.getTodoByUntag()
-                    )
+                    1 -> {
+                        todoRepository.getTodoByComplete{
+                            if (it != null)
+                                this.addAll(listOf(Todo(type = 4, content = todoByTagItem!!)) + it)
+                        }
+                    }
+                    2 -> {
+                        todoRepository.getTodoByUntag {
+                            if (it != null)
+                                this.addAll(listOf(Todo(type = 4, content = todoByTagItem!!)) + it)
+                        }
+                    }
                     else -> {
                         todoRepository.getTodoByTag(tagDataList.value!![position - 1].id) {
-                            this.add(Todo(type = 4, content = "중요"))
-                            if (it.flaggedTodos.isNotEmpty())
-                                this.addAll(it.flaggedTodos)
-                            else this.add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
-                            this.add(Todo(type = 3))
+                            if (it != null) {
+                                this.add(Todo(type = 4, content = "중요"))
+                                if (it.flaggedTodos.isNotEmpty())
+                                    this.addAll(it.flaggedTodos)
+                                else this.add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
+                                this.add(Todo(type = 3))
 
-                            this.add(Todo(type = 4, content = todoByTagItem!!))
-                            if (it.unFlaggedTodos.isNotEmpty())
-                                this.addAll(it.unFlaggedTodos)
-                            else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
-                            this.add(Todo(type = 3))
+                                this.add(Todo(type = 4, content = todoByTagItem!!))
+                                if (it.unFlaggedTodos.isNotEmpty())
+                                    this.addAll(it.unFlaggedTodos)
+                                else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                                this.add(Todo(type = 3))
 
-                            this.add(Todo(type = 4, content = "완료"))
-                            if (it.completedTodos.isNotEmpty())
-                                this.addAll(it.completedTodos)
-                            else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
+                                this.add(Todo(type = 4, content = "완료"))
+                                if (it.completedTodos.isNotEmpty())
+                                    this.addAll(it.completedTodos)
+                                else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
+                            }
                         }
                     }
                 }
@@ -380,7 +386,10 @@ class CheckListViewModel() :
             _todoByTag.value = true
             todoList.apply {
                 clear()
-                addAll(listOf(Todo(type = 4, content = "중요")) + todoRepository.getTodoByFlag())
+                todoRepository.getTodoByFlag {
+                    if (it != null)
+                        addAll(listOf(Todo(type = 4, content = "중요")) + it)
+                }
             }
             _todoDataList.value = todoList
         }
@@ -399,10 +408,12 @@ class CheckListViewModel() :
     fun updateTodo(todoId: String, todo: UpdateTodo, callback: () -> Unit) {
         viewModelScope.launch {
             val updateTodo = todoRepository.updateTodo(todoId = todoId, todo = todo) {
-                getTag()
-                checkTodayMode()
-                withTagUpdate()
-                callback()
+                if (it != null){
+                    getTag()
+                    checkTodayMode()
+                    withTagUpdate()
+                    callback()
+                }
             }
         }
     }
@@ -418,10 +429,12 @@ class CheckListViewModel() :
                 todoId = todoId,
                 updateRepeatFrontTodo = updateRepeatFrontTodo
             ) {
-                getTag()
-                checkTodayMode()
-                withTagUpdate()
-                callback()
+                if (it != null){
+                    getTag()
+                    checkTodayMode()
+                    withTagUpdate()
+                    callback()
+                }
             }
         }
     }
@@ -436,11 +449,13 @@ class CheckListViewModel() :
     ) {
         viewModelScope.launch {
             val successData = todoRepository.deleteTodo(userId = userId, todoId = todoId) {
-                if (it.success) {
-                    checkTodayMode()
-                    withTagUpdate()
+                if (it != null){
+                    if (it.success) {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
+                    callback()
                 }
-                callback()
             }
         }
     }
@@ -454,11 +469,13 @@ class CheckListViewModel() :
     ) {
         viewModelScope.launch {
             val successData = todoRepository.deleteRepeatFrontTodo(userId, todoId, frontEndDate) {
-                if (it.success) {
-                    checkTodayMode()
-                    withTagUpdate()
+                if (it != null){
+                    if (it.success) {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
+                    callback()
                 }
-                callback()
             }
         }
     }
@@ -471,11 +488,13 @@ class CheckListViewModel() :
     ) {
         viewModelScope.launch {
             val successData = todoRepository.deleteRepeatMiddleTodo(userId, todoId, middleEndDate) {
-                if (it.success) {
-                    checkTodayMode()
-                    withTagUpdate()
+                if (it != null){
+                    if (it.success) {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
+                    callback()
                 }
-                callback()
             }
         }
     }
@@ -488,11 +507,13 @@ class CheckListViewModel() :
     ) {
         viewModelScope.launch {
             val successData = todoRepository.deleteRepeatBackTodo(userId, todoId, backRepeatEnd) {
-                if (it.success) {
-                    checkTodayMode()
-                    withTagUpdate()
+                if (it != null){
+                    if (it.success) {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
+                    callback()
                 }
-                callback()
             }
         }
     }
@@ -509,9 +530,11 @@ class CheckListViewModel() :
                 subTodoId = subTodoId,
                 completed = completed
             ) {
-                if (it.success) {
-                    checkTodayMode()
-                    withTagUpdate()
+                if (it != null){
+                    if (it.success) {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
                 }
             }
         }
@@ -524,9 +547,11 @@ class CheckListViewModel() :
                 todoId = id,
                 completed = completed
             ) {
-                if (it.success) {
-                    checkTodayMode()
-                    withTagUpdate()
+                if (it != null){
+                    if (it.success) {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
                 }
             }
         }
@@ -537,9 +562,11 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData =
                 todoRepository.completeRepeatFrontTodo(todoId = id, frontEndDate = frontEndDate) {
-                    if (it.success) {
-                        checkTodayMode()
-                        withTagUpdate()
+                    if (it != null){
+                        if (it.success) {
+                            checkTodayMode()
+                            withTagUpdate()
+                        }
                     }
                 }
         }
@@ -555,9 +582,11 @@ class CheckListViewModel() :
                 todoId = id,
                 folded = folded
             ) {
-                if (it.success) {
-                    checkTodayMode()
-                    withTagUpdate()
+                if (it != null){
+                    if (it.success) {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
                 }
             }
         }
@@ -568,18 +597,24 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {
-                    if (it.success) {
-                        checkTodayMode()
-                        withTagUpdate()
+                    if (it != null){
+                        if (it.success) {
+                            checkTodayMode()
+                            withTagUpdate()
+                        }
                     }
                 }
         }
     }
 
-    fun updateOrderMainTodo(userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5", changeOrderTodo: ChangeOrderTodo){
+    fun updateOrderMainTodo(
+        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
+        changeOrderTodo: ChangeOrderTodo
+    ) {
         Log.d("20191627", changeOrderTodo.todoIds.toString())
         viewModelScope.launch {
             val successData = todoRepository.updateOrderMainTodo(userId, changeOrderTodo)
+            // successData가 null이면 실패임
         }
     }
 }

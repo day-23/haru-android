@@ -696,6 +696,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
                 binding.btnInfoDelete.id -> {
+                    Log.d("20191627", todoAddViewModel.clickedTodo.toString())
                     val type = when (todoAddViewModel.clickedTodo?.location) {
                         0 -> DeleteType.REPEAT_FRONT
                         1 -> DeleteType.REPEAT_MIDDLE

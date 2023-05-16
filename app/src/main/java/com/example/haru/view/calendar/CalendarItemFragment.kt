@@ -138,7 +138,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
 
                 }
 
-                "2주마다"->{
+                "격주"->{
 
                 }
 
