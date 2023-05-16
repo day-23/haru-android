@@ -7,16 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.haru.databinding.FragmentOptionDeleteBinding
+import com.example.haru.view.checklist.ChecklistItemFragment.*
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel) : BottomSheetDialogFragment() {
+class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : DeleteType) :
+    BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionDeleteBinding
+    private var ratio : Int = 30
+    private var type : DeleteType
     private var todoAddViewModel: TodoAddViewModel
 
     init {
+        this.type = type
+        ratio = when (type) {
+            DeleteType.REPEAT -> 30
+            DeleteType.NOT_REPEAT -> 23
+        }
         this.todoAddViewModel = todoAddViewModel
     }
 
@@ -103,6 +112,13 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel) : BottomShe
                     }
 
                 }
+                binding.btnOptionDelete.id -> {
+                    todoAddViewModel.deleteTodo {
+                        dismiss()
+                        requireActivity().supportFragmentManager.popBackStack()
+                    }
+                }
+
                 binding.btnOptionDeleteCancel.id -> {
                     dismiss()
                 }

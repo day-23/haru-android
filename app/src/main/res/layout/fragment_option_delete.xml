@@ -26,6 +26,17 @@
         android:text="@string/oneDelete"/>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_option_delete"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/with_divider_btn"
+        android:gravity="center"
+        android:textColor="@color/delete_red"
+        android:textSize="20sp"
+        android:text="@string/notRepeatTodoDelete"/>
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_all_delete"
         android:layout_width="match_parent"
         android:layout_height="0dp"

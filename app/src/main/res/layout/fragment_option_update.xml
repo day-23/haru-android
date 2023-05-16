@@ -24,7 +24,7 @@
         android:background="@drawable/with_divider_btn"
         android:textSize="20sp"
         android:textColor="@color/highlight"
-        android:text="@string/notReqpeatTodoSave"/>
+        android:text="@string/notRepeatTodoSave"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_one_update"

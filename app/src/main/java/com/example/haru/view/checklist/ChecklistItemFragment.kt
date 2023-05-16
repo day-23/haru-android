@@ -35,10 +35,14 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
 
-    enum class Type {
+    enum class UpdateType {
         FRONT_ONE, FRONT_TWO, FRONT_THREE,
         MID_BACK_ONE, MID_BACK_TWO, MID_BACK_THREE,
         NOT_REPEAT
+    }
+
+    enum class DeleteType {
+        REPEAT, NOT_REPEAT
     }
 
     init {
@@ -693,8 +697,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
                 binding.btnInfoDelete.id -> {
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-                        val option = DeleteOptionDialogFragment(todoAddViewModel)
-                        option.show(parentFragmentManager, option.tag)
+//                        val option = DeleteOptionDialogFragment(todoAddViewModel)
+//                        option.show(parentFragmentManager, option.tag)
                     } else todoAddViewModel.deleteTodo {
                         requireActivity().supportFragmentManager.popBackStack()
                     }
@@ -706,55 +710,49 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         val checkEndDate = todoAddViewModel.checkChangeEndDate()
                         val checkRepeatData = todoAddViewModel.checkChangeRepeat()
 
-//                        val type = if (checkEndDate && checkRepeatData) 0
-//                        else if (checkEndDate) 1 else if (checkRepeatData) 2 else 3
-
                         val type = when(todoAddViewModel.clickedTodo?.location){
                             0 -> { // front
                                 val type = if (checkEndDate && checkRepeatData) {
                                     // 전체 이벤트 수정 type = 0
-                                    Type.FRONT_ONE
+                                    UpdateType.FRONT_ONE
                                 } else if (checkEndDate){
                                     // 이 이벤트만 수정 type = 0
-                                    Type.FRONT_TWO
+                                    UpdateType.FRONT_TWO
                                 } else if (checkRepeatData) {
                                     // 전체 이벤트 수정 type = 0
-                                    Type.FRONT_ONE
+                                    UpdateType.FRONT_ONE
                                 } else {
                                     // 전체 이벤트 수정, 이 이벤트만 수정 type = 1
-                                    Type.FRONT_THREE
+                                    UpdateType.FRONT_THREE
                                 }
                                 type
                             }
                             1, 2 -> { // middle, back
                                 val type = if (checkEndDate && checkRepeatData){
                                     // 전체 이벤트 수정, 이 이벤트부터 수정 type = 1
-                                    Type.MID_BACK_ONE
+                                    UpdateType.MID_BACK_ONE
                                 } else if(checkEndDate){
                                     // 이 이벤트만 수정 type = 0
-                                    Type.MID_BACK_TWO
+                                    UpdateType.MID_BACK_TWO
                                 } else if (checkRepeatData) {
                                     // 전체 이벤트 수정, 이 이벤트부터 수정 type = 1
-                                    Type.MID_BACK_ONE
+                                    UpdateType.MID_BACK_ONE
                                 } else {
                                     // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정 type = 2
-                                    Type.MID_BACK_THREE
+                                    UpdateType.MID_BACK_THREE
                                 }
                                 type
                             }
-                            else -> { Type.NOT_REPEAT }
+                            else -> { UpdateType.NOT_REPEAT }
                         }
 
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
                         option.show(parentFragmentManager, option.tag)
 
                     } else {
-                        val type = Type.NOT_REPEAT
-//                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
-//                        option.show(parentFragmentManager, option.tag)
-                        todoAddViewModel.updateTodo {
-                            requireActivity().supportFragmentManager.popBackStack()
-                        }
+                        val type = UpdateType.NOT_REPEAT
+                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        option.show(parentFragmentManager, option.tag)
                     }
                 }
                 binding.ivBackIcon.id -> requireActivity().supportFragmentManager.popBackStack()
