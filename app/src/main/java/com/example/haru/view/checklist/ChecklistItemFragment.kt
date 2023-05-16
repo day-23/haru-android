@@ -37,7 +37,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
     enum class Type {
         FRONT_ONE, FRONT_TWO, FRONT_THREE,
-        MID_BACK_ONE, MID_BACK_TWO, MID_BACK_THREE
+        MID_BACK_ONE, MID_BACK_TWO, MID_BACK_THREE,
+        NOT_REPEAT
     }
 
     init {
@@ -741,24 +742,16 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 }
                                 type
                             }
-                            else -> { null }
+                            else -> { Type.NOT_REPEAT }
                         }
-//                        Front
-//                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트만 수정”
-//                        * 반복 일정 수정 → “전체 이벤트 수정”
-//                        * 마감일 수정 → “이 이벤트만 수정”
-//                        * 둘다 수정시 → “전체 이벤트 수정”
-
-//                        Middle, Back
-//                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트부터 수정”, “이 이벤트만 수정”
-//                        * 반복 일정 수정 → “전체 이벤트 수정”, “이 이벤트부터 수정”
-//                        * 마감일 수정 → “이 이벤트만 수정”
-//                        * 둘다 수정시 → “전체 이벤트 수정”, “이 이벤트부터 수정”
 
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
                         option.show(parentFragmentManager, option.tag)
 
                     } else {
+                        val type = Type.NOT_REPEAT
+//                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+//                        option.show(parentFragmentManager, option.tag)
                         todoAddViewModel.updateTodo {
                             requireActivity().supportFragmentManager.popBackStack()
                         }

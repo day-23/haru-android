@@ -10,7 +10,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="@string/deleteDescription"
-        android:textColor="@color/todo_description"
+        android:textColor="@color/date_text"
         android:textSize="14sp"
         android:gravity="center" />
 
@@ -37,7 +37,7 @@
         android:text="@string/allDelete"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_option_cancel"
+        android:id="@+id/btn_option_delete_cancel"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

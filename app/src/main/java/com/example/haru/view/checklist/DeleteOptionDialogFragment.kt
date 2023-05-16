@@ -64,7 +64,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel) : BottomShe
 
         binding.btnOptionOneDelete.setOnClickListener(ButtonClickListener())
         binding.btnOptionAllDelete.setOnClickListener(ButtonClickListener())
-        binding.btnOptionCancel.setOnClickListener(ButtonClickListener())
+        binding.btnOptionDeleteCancel.setOnClickListener(ButtonClickListener())
     }
 
     inner class ButtonClickListener : View.OnClickListener {
@@ -103,7 +103,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel) : BottomShe
                     }
 
                 }
-                binding.btnOptionCancel.id -> {
+                binding.btnOptionDeleteCancel.id -> {
                     dismiss()
                 }
             }

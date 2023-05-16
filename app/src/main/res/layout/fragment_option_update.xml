@@ -6,13 +6,25 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/textView_info"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="@string/updateDescription"
-        android:textColor="@color/todo_description"
+        android:textColor="@color/date_text"
         android:textSize="14sp"
         android:gravity="center" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_option_save"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:background="@drawable/with_divider_btn"
+        android:textSize="20sp"
+        android:textColor="@color/highlight"
+        android:text="@string/notReqpeatTodoSave"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_option_one_update"
@@ -48,7 +60,7 @@
         android:text="@string/afterUpdate"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_option_cancel"
+        android:id="@+id/btn_option_update_cancel"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
