@@ -83,20 +83,25 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
             UpdateType.FRONT_ONE -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
                 binding.btnOptionOneUpdate.visibility = View.GONE
                 binding.btnOptionAfterUpdate.visibility = View.GONE
+                binding.btnOptionSave.visibility = View.GONE
             }
             UpdateType.FRONT_TWO -> { // 이 할일만 수정 (마감일 수정, 반복 옵션 수정X)
                 binding.btnOptionAllUpdate.visibility = View.GONE
                 binding.btnOptionAfterUpdate.visibility = View.GONE
+                binding.btnOptionSave.visibility = View.GONE
             }
             UpdateType.FRONT_THREE -> { // 전체 할일 수정, 이 할일만 수정
-                binding.btnOptionOneUpdate.visibility = View.GONE
+                binding.btnOptionAfterUpdate.visibility = View.GONE
+                binding.btnOptionSave.visibility = View.GONE
             }
             UpdateType.MID_BACK_ONE -> { // 전체 할일 수정, 이 할일부터 수정
                 binding.btnOptionOneUpdate.visibility = View.GONE
+                binding.btnOptionSave.visibility = View.GONE
             }
             UpdateType.MID_BACK_TWO -> { // 이 할일만 수정
                 binding.btnOptionAllUpdate.visibility = View.GONE
                 binding.btnOptionAfterUpdate.visibility = View.GONE
+                binding.btnOptionSave.visibility = View.GONE
             }
             UpdateType.MID_BACK_THREE -> {} // 모든 옵션을 보여주는 상황
             UpdateType.NOT_REPEAT -> {

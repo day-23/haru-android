@@ -719,6 +719,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         // front, middle, back 구분할 수 있는 데이터로 분기 설정 front 면 아래 코드
                         val checkEndDate = todoAddViewModel.checkChangeEndDate()
                         val checkRepeatData = todoAddViewModel.checkChangeRepeat()
+                        Log.d("20191627", "checkEndDate : $checkEndDate")
+                        Log.d("20191627", "checkRepeatData : $checkRepeatData")
 
                         val type = when(todoAddViewModel.clickedTodo?.location){
                             0 -> { // front
@@ -755,7 +757,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                             }
                             else -> { UpdateType.NOT_REPEAT }
                         }
-
+                        Log.d("20191627", "type : $type")
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
                         option.show(parentFragmentManager, option.tag)
 

@@ -122,7 +122,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             if (clickedTodo == null)
                 clickedTodo = checklistViewModel.todayTodo.value!!.find { it.id == id }!!
             if (clickedTodo!!.repeatOption != null)
-                clickedTodo!!.location = 1
+                clickedTodo!!.location = 0
         } else {
             clickedTodo = todo
         }

@@ -167,7 +167,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                 Log.d("20191627", "today $today")
 
                 if(end.year == today.year && end.month == today.month && end.date == today.date){
-                    Log.d("todoLocation", "front, today.date : ${today.date}")
+                    Log.d("todoLocation", "front")
                     todo.location = 0 // front
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
@@ -213,7 +213,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
                 if(nextData == null){
                     todo.location = 2
-
+                    Log.d("todoLocation", "back")
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,

@@ -11,8 +11,8 @@ class TagRepository() {
 
     suspend fun getTag(callback : (tagData : List<Tag>?) -> Unit) = withContext(Dispatchers.IO) {
         val response = tagService.getTag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
-        var data: TagResponse?
-        var tagData: List<Tag>?
+        val data: TagResponse?
+        val tagData: List<Tag>?
         Log.d("20191627", "여기는 getTag")
 
         if (response.isSuccessful) {

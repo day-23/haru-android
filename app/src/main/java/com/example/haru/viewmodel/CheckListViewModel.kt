@@ -101,7 +101,7 @@ class CheckListViewModel() :
         viewModelScope.launch {
             tagRepository.getTag {
                 if (it != null)
-                    _tagDataList.value = basicTag + it
+                    _tagDataList.postValue(basicTag + it)
             }
         }
     }
