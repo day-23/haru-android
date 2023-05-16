@@ -35,6 +35,11 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
 
+    enum class Type {
+        FRONT_ONE, FRONT_TWO, FRONT_THREE,
+        MID_BACK_ONE, MID_BACK_TWO, MID_BACK_THREE
+    }
+
     init {
         this.todoAddViewModel = TodoAddViewModel(checkListViewModel)
         this.id = id
@@ -699,35 +704,44 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         // front, middle, back 구분할 수 있는 데이터로 분기 설정 front 면 아래 코드
                         val checkEndDate = todoAddViewModel.checkChangeEndDate()
                         val checkRepeatData = todoAddViewModel.checkChangeRepeat()
-//                        val type : Int
-                        // if (~~ front == true)
+
 //                        val type = if (checkEndDate && checkRepeatData) 0
 //                        else if (checkEndDate) 1 else if (checkRepeatData) 2 else 3
 
-                        when(todoAddViewModel.clickedTodo?.location){
+                        val type = when(todoAddViewModel.clickedTodo?.location){
                             0 -> { // front
-                                if (checkEndDate && checkRepeatData) {
-                                    // 전체 이벤트 수정
+                                val type = if (checkEndDate && checkRepeatData) {
+                                    // 전체 이벤트 수정 type = 0
+                                    Type.FRONT_ONE
                                 } else if (checkEndDate){
-                                    // 이 이벤트만 수정
+                                    // 이 이벤트만 수정 type = 0
+                                    Type.FRONT_TWO
                                 } else if (checkRepeatData) {
-                                    // 전체 이벤트 수정
+                                    // 전체 이벤트 수정 type = 0
+                                    Type.FRONT_ONE
                                 } else {
-                                    // 전체 이벤트 수정, 이 이벤트만 수정
+                                    // 전체 이벤트 수정, 이 이벤트만 수정 type = 1
+                                    Type.FRONT_THREE
                                 }
+                                type
                             }
                             1, 2 -> { // middle, back
-                                if (checkEndDate && checkRepeatData){
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                val type = if (checkEndDate && checkRepeatData){
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정 type = 1
+                                    Type.MID_BACK_ONE
                                 } else if(checkEndDate){
-                                    // 이 이벤트만 수정
+                                    // 이 이벤트만 수정 type = 0
+                                    Type.MID_BACK_TWO
                                 } else if (checkRepeatData) {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정 type = 1
+                                    Type.MID_BACK_ONE
                                 } else {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정 type = 2
+                                    Type.MID_BACK_THREE
                                 }
+                                type
                             }
-
+                            else -> { null }
                         }
 //                        Front
 //                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트만 수정”
@@ -741,8 +755,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 //                        * 마감일 수정 → “이 이벤트만 수정”
 //                        * 둘다 수정시 → “전체 이벤트 수정”, “이 이벤트부터 수정”
 
-//                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
-//                        option.show(parentFragmentManager, option.tag)
+                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        option.show(parentFragmentManager, option.tag)
 
                     } else {
                         todoAddViewModel.updateTodo {

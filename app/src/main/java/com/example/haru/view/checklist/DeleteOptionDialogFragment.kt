@@ -12,13 +12,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class DeleteOptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSheetDialogFragment() {
+class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel) : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionDeleteBinding
     private var todoAddViewModel: TodoAddViewModel
 
-    init{
+    init {
         this.todoAddViewModel = todoAddViewModel
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,7 +31,7 @@ class DeleteOptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSh
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog : Dialog = super.onCreateDialog(savedInstanceState)
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
 
         dialog.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
@@ -66,26 +67,33 @@ class DeleteOptionDialogFragment(todoAddViewModel : TodoAddViewModel) : BottomSh
         binding.btnOptionCancel.setOnClickListener(ButtonClickListener())
     }
 
-    inner class ButtonClickListener : View.OnClickListener{
+    inner class ButtonClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            when(v?.id){
+            when (v?.id) {
                 binding.btnOptionOneDelete.id -> {
                     // 반복 할 일의 front 삭제
-                    todoAddViewModel.deleteRepeatFrontTodo {
-                        dismiss()
-                        requireActivity().supportFragmentManager.popBackStack()
+
+                    when (todoAddViewModel.clickedTodo?.location) {
+                        0 -> { //front
+                            todoAddViewModel.deleteRepeatFrontTodo {
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        1 -> { // middle
+                            todoAddViewModel.deleteRepeatMiddleTodo {
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+
+                        }
+                        2 -> { // back
+                            todoAddViewModel.deleteRepeatBackTodo {
+
+                            }
+                        }
                     }
 
-                    // 반복 할 일의 middle 삭제
-//                    todoAddViewModel.deleteRepeatMiddleTodo {
-//                        dismiss()
-//                        requireActivity().supportFragmentManager.popBackStack()
-//                    }
-
-                    // 반복 할 일의 back 삭제
-//                    todoAddViewModel.deleteRepeatBackTodo {
-//
-//                    }
                 }
 
                 binding.btnOptionAllDelete.id -> {
