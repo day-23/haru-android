@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -34,7 +35,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
-
+    private var lastClickTime = SystemClock.elapsedRealtime()
     enum class UpdateType {
         FRONT_ONE, FRONT_TWO, FRONT_THREE,
         MID_BACK_ONE, MID_BACK_TWO, MID_BACK_THREE,
@@ -696,6 +697,12 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
                 binding.btnInfoDelete.id -> {
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 2000){
+                        Log.d("20191627", "삭제 옵션창 띄우기 중복 막기")
+                        return
+                    }
+                    lastClickTime = SystemClock.elapsedRealtime()
+
                     Log.d("20191627", todoAddViewModel.clickedTodo.toString())
                     val type = when (todoAddViewModel.clickedTodo?.location) {
                         0 -> DeleteType.REPEAT_FRONT
@@ -714,6 +721,12 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 //                    }
                 }
                 binding.btnInfoSave.id -> {
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                        Log.d("20191627", "저장 옵션창 띄우기 중복 막기")
+                        return
+                    }
+                    lastClickTime = SystemClock.elapsedRealtime()
+
                     todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
                         // front, middle, back 구분할 수 있는 데이터로 분기 설정 front 면 아래 코드

@@ -7,6 +7,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
@@ -38,6 +39,8 @@ class ChecklistInputFragment(
     private var todoAddViewModel: TodoAddViewModel
 
     private var onDismissListener: (() -> Unit)? = null
+
+    private var lastClickTime = SystemClock.elapsedRealtime()
 
     init {
         todoAddViewModel = TodoAddViewModel(checkListViewModel)
@@ -901,6 +904,12 @@ class ChecklistInputFragment(
                 }
 
                 R.id.btn_submit_todo -> {
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                        Log.d("20191627", "새로운 투두 추가 1초간 터치 금지")
+                        return
+                    }
+                    lastClickTime = SystemClock.elapsedRealtime()
+
                     if (todoAddViewModel.content == "" || todoAddViewModel.content.replace(
                             " ",
                             ""

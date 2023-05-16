@@ -3,6 +3,7 @@ package com.example.haru.view.checklist
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -297,7 +298,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         todoAdapter.flagClick = object : TodoAdapter.FlagClick {
-            override fun onClick(view: View, id: String) {
+            override fun onClick(view: View, id: String, callback : (flag : Flag) -> Unit) {
                 val flag =
                     if (checkListViewModel.todoDataList.value!!.find { it.id == id }!!.flag) Flag(
                         false
@@ -306,12 +307,14 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 checkListViewModel.updateFlag(
                     flag,
                     id
-                )
+                ){
+                    callback(it)
+                }
             }
         }
 
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
-            override fun onClick(view: View, id: String) {
+            override fun onClick(view: View, id: String, callback: (completed : Completed) -> Unit) {
                 val todo = checkListViewModel.todoDataList.value!!.find { it.id == id }!!
                 val completed =
                     if (todo.completed) Completed(
@@ -320,7 +323,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null) // 완료된 Todo이거나 repeatOption이 null
-                    checkListViewModel.completeNotRepeatTodo(completed, id)
+                    checkListViewModel.completeNotRepeatTodo(completed, id) {
+                        callback(it)
+                    }
                 else {
                     val nextEndDate = when (todo.repeatOption) {
                         "매일" -> {
@@ -358,9 +363,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         checkListViewModel.completeRepeatFrontTodo(
                             id,
                             FrontEndDate(nextEndDateStr!!)
-                        )
+                        ){ callback(Completed(true)) }
                     } else
-                        checkListViewModel.completeNotRepeatTodo(completed, id)
+                        checkListViewModel.completeNotRepeatTodo(completed, id){
+                            callback(it)
+                        }
                 }
 
             }

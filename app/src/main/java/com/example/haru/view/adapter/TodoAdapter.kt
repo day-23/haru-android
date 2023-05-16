@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Completed
+import com.example.haru.data.model.Flag
 import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.ChecklistBlankBinding
@@ -53,11 +55,11 @@ class TodoAdapter(val context: Context) :
     }
 
     interface CompleteClick {
-        fun onClick(view: View, id: String)
+        fun onClick(view: View, id: String, callback: (completed: Completed) -> Unit)
     }
 
     interface FlagClick {
-        fun onClick(view: View, id: String)
+        fun onClick(view: View, id: String, callback : (flag : Flag) -> Unit)
     }
 
     interface SubTodoCompleteClick {
@@ -242,13 +244,17 @@ class TodoAdapter(val context: Context) :
 
             if (flagClick != null) {
                 binding.checkFlag.setOnClickListener {
-                    flagClick?.onClick(it, item.id)
+                    flagClick?.onClick(it, item.id){
+                        binding.checkFlag.isChecked = !it.flag
+                    }
                 }
             }
 
             if (completeClick != null) {
                 binding.checkDone.setOnClickListener {
-                    completeClick?.onClick(it, item.id)
+                    completeClick?.onClick(it, item.id){
+                        binding.checkDone.isChecked = !it.completed
+                    }
                 }
             }
 

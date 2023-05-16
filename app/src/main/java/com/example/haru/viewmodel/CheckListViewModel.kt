@@ -1,5 +1,6 @@
 package com.example.haru.viewmodel
 
+import android.security.KeyChainAliasCallback
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -550,7 +551,7 @@ class CheckListViewModel() :
     }
 
     // 반복하지 않는 할 일, 반복하는 할 일의 전체를 완료하는 기능
-    fun completeNotRepeatTodo(completed: Completed, id: String) {
+    fun completeNotRepeatTodo(completed: Completed, id: String, callback: (completed : Completed) -> Unit) {
         viewModelScope.launch {
             val successData = todoRepository.completeNotRepeatTodo(
                 todoId = id,
@@ -560,14 +561,18 @@ class CheckListViewModel() :
                     if (it.success) {
                         checkTodayMode()
                         withTagUpdate()
+                    } else {
+                        callback(completed)
                     }
+                } else {
+                    callback(completed)
                 }
             }
         }
     }
 
     // 반복하는 할 일의 front를 완료하는 기능
-    fun completeRepeatFrontTodo(id: String, frontEndDate: FrontEndDate) {
+    fun completeRepeatFrontTodo(id: String, frontEndDate: FrontEndDate, callback: () -> Unit) {
         viewModelScope.launch {
             val successData =
                 todoRepository.completeRepeatFrontTodo(todoId = id, frontEndDate = frontEndDate) {
@@ -575,7 +580,11 @@ class CheckListViewModel() :
                         if (it.success) {
                             checkTodayMode()
                             withTagUpdate()
+                        } else {
+                            callback()
                         }
+                    } else {
+                        callback()
                     }
                 }
         }
@@ -602,7 +611,7 @@ class CheckListViewModel() :
     }
 
     // Todo의 중요를 업데이트 하는 기능
-    fun updateFlag(flag: Flag, id: String) {
+    fun updateFlag(flag: Flag, id: String, callback: (flag : Flag) -> Unit) {
         viewModelScope.launch {
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {
@@ -610,7 +619,11 @@ class CheckListViewModel() :
                         if (it.success) {
                             checkTodayMode()
                             withTagUpdate()
+                        } else {
+                            callback(flag)
                         }
+                    } else {
+                        callback(flag)
                     }
                 }
         }

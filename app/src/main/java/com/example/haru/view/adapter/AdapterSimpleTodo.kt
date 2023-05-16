@@ -93,7 +93,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
         detailTodoFlagImv.setOnClickListener {
             val checkListViewModel = CheckListViewModel()
-            checkListViewModel.updateFlag(Flag(!todo.flag), todo.id)
+            checkListViewModel.updateFlag(Flag(!todo.flag), todo.id){}
 
             todos[position].flag = !todos[position].flag
 

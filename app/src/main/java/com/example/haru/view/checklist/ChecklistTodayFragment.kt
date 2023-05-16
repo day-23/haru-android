@@ -16,8 +16,8 @@ import com.example.haru.viewmodel.CheckListViewModel
 import java.util.*
 
 class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment() {
-    private lateinit var binding : FragmentChecklistTodayBinding
-    private var checkListViewModel : CheckListViewModel
+    private lateinit var binding: FragmentChecklistTodayBinding
+    private var checkListViewModel: CheckListViewModel
 
     companion object {
         const val TAG: String = "로그"
@@ -27,7 +27,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         }
     }
 
-    init{
+    init {
         this.checkListViewModel = checkListVewModel
     }
 
@@ -52,16 +52,16 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
 
         binding.tvTodayDate.text = FormatDate.simpleTodayToStr(Date())
 
-        binding.ivTodayBackIcon.setOnClickListener{
+        binding.ivTodayBackIcon.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
     }
 
-    private fun initToday(){
-        val todayRecyclerView : RecyclerView = binding.todayRecyclerView
+    private fun initToday() {
+        val todayRecyclerView: RecyclerView = binding.todayRecyclerView
         val todoAdapter = TodoAdapter(requireContext())
 
-        todoAdapter.sectionToggleClick = object  : TodoAdapter.SectionToggleClick {
+        todoAdapter.sectionToggleClick = object : TodoAdapter.SectionToggleClick {
             override fun onClick(view: View, str: String) {
                 checkListViewModel.setVisibility(str, 1)
             }
@@ -69,9 +69,12 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
 
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
             override fun onClick(view: View, id: String) {
-                if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.type == 2){
+                if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.type == 2) {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, ChecklistItemFragment(checkListViewModel, id))
+                        .replace(
+                            R.id.fragments_frame,
+                            ChecklistItemFragment(checkListViewModel, id)
+                        )
                         .addToBackStack(null)
                         .commit()
                 }
@@ -79,25 +82,30 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         }
 
         todoAdapter.flagClick = object : TodoAdapter.FlagClick {
-            override fun onClick(view: View, id: String) {
-                val flag = if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.flag) Flag(false)
-                else Flag(true)
+            override fun onClick(view: View, id: String, callback: (flag: Flag) -> Unit) {
+                val flag =
+                    if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.flag) Flag(false)
+                    else Flag(true)
                 checkListViewModel.updateFlag(
                     flag,
                     id
-                )
+                ) {
+                    callback(it)
+                }
             }
         }
 
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
-            override fun onClick(view: View, id: String) {
-                val todo = checkListViewModel.todayTodo.value!!.find{ it.id == id}!!
+            override fun onClick(view: View, id: String, callback: (completed: Completed) -> Unit) {
+                val todo = checkListViewModel.todayTodo.value!!.find { it.id == id }!!
                 val completed =
                     if (todo.completed) Completed(false)
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null)
-                    checkListViewModel.completeNotRepeatTodo(completed, id)
+                    checkListViewModel.completeNotRepeatTodo(completed, id) {
+                        callback(it)
+                    }
                 else {
                     val nextEndDate = when (todo.repeatOption) {
                         "매일" -> {
@@ -113,25 +121,39 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                             )
                         }
                         "매달" -> {
-                            FormatDate.nextEndDateEveryMonth(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                            FormatDate.nextEndDateEveryMonth(
+                                todo.repeatValue!!,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
                         }
                         "매년" -> {
-                            FormatDate.nextEndDateEveryYear(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                            FormatDate.nextEndDateEveryYear(
+                                todo.repeatValue!!,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
                         }
                         else -> null
                     }
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.completeRepeatFrontTodo(id, FrontEndDate(nextEndDateStr!!))
+                        checkListViewModel.completeRepeatFrontTodo(
+                            id,
+                            FrontEndDate(nextEndDateStr!!)
+                        ) { callback(Completed(true)) }
                     } else
-                        checkListViewModel.completeNotRepeatTodo(completed, id)
+                        checkListViewModel.completeNotRepeatTodo(completed, id) {
+                            callback(it)
+                        }
                 }
             }
         }
 
         todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
             override fun onClick(view: View, subTodoPosition: Int) {
-                val subTodo = checkListViewModel.todayTodo.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
+                val subTodo =
+                    checkListViewModel.todayTodo.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
                 val completed =
                     if (subTodo.completed) Completed(
                         false
