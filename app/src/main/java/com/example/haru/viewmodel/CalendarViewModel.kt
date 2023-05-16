@@ -570,7 +570,25 @@ class CalendarViewModel : ViewModel() {
                                 }
                             } else {
                                 val newRepeatValue = repeatValue.replace("T","")
+                                val repeatstart = serverformat.parse(schedule.repeatStart)
                                 val calendar = Calendar.getInstance()
+
+                                calendar.time = repeatstart
+
+                                calendar.add(Calendar.MILLISECOND, newRepeatValue.toInt())
+
+                                fun getIgnoredTimeDays(time: Long): Long {
+                                    return Calendar.getInstance().apply {
+                                        timeInMillis = time
+
+                                        set(Calendar.HOUR_OF_DAY, 0)
+                                        set(Calendar.MINUTE, 0)
+                                        set(Calendar.SECOND, 0)
+                                        set(Calendar.MILLISECOND, 0)
+                                    }.timeInMillis
+                                }
+
+                                val intervaldate = (getIgnoredTimeDays(calendar.timeInMillis) - getIgnoredTimeDays(repeatstart.time))/(24*60*60*1000)
 
                                 when (repeatOption) {
                                     "매주"->{
@@ -599,7 +617,7 @@ class CalendarViewModel : ViewModel() {
                                                     schedule,
                                                     cnt,
                                                     null,
-                                                    newRepeatValue.toInt()
+                                                    intervaldate.toInt()
                                                 ))
                                             }
 
@@ -634,7 +652,7 @@ class CalendarViewModel : ViewModel() {
                                                     schedule,
                                                     cnt,
                                                     null,
-                                                    newRepeatValue.toInt()
+                                                    intervaldate.toInt()
                                                 ))
                                             }
 
@@ -669,7 +687,7 @@ class CalendarViewModel : ViewModel() {
                                                     schedule,
                                                     cnt,
                                                     null,
-                                                    newRepeatValue.toInt()
+                                                    intervaldate.toInt()
                                                 ))
                                             }
 
@@ -704,7 +722,7 @@ class CalendarViewModel : ViewModel() {
                                                     schedule,
                                                     cnt,
                                                     null,
-                                                    newRepeatValue.toInt()
+                                                    intervaldate.toInt()
                                                 ))
                                             }
 

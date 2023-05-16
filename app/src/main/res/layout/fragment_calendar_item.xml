@@ -494,6 +494,7 @@
                         android:paddingTop="14dp">
 
                         <TextView
+                            android:id="@+id/repeat_end_date_schedule_tv"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="38dp"

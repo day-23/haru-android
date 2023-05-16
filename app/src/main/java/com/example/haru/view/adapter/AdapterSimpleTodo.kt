@@ -123,6 +123,8 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                     formatdate.year += 1900
 
                     todo.endDate = serverDateFormat.format(formatdate)
+
+                    Log.d("20191630", todo.endDate!!)
                 } else {
                     val calendar = Calendar.getInstance()
                     val today = todayDateFormat.parse(todayTodo)

@@ -59,18 +59,49 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
 
             binding.repeatStartTimeBtn.visibility = View.GONE
             binding.repeatEndTimeBtn.visibility = View.GONE
+        }
 
-            //반복 설정이면서
-            if(schedule.repeatOption != null && schedule.repeatValue != null) {
-                //구간이 이틀 이상 연속이라 repeatValue에 인터벌 값으로 들어갔을 때
-                if(!schedule.repeatValue.contains("T")) {
-//                    binding.repeatStartDateBtn.text = dateformat.format()
-                } else { // 반복이지만 하루 일정일 때
+        //반복 설정이면서
+        if(schedule.repeatOption != null && schedule.repeatValue != null) {
+            binding.repeatSwitchSchedule.isChecked = true
+            binding.repeatEndLayout.visibility = View.VISIBLE
+            //구간이 이틀 이상 연속이라 repeatValue에 인터벌 값으로 들어갔을 때
+            if(!schedule.repeatValue.contains("T")) {
+                val calendar = Calendar.getInstance()
+                val repeatstart = calendarDateFormatter.parse(schedule.repeatStart)
+                calendar.time = repeatstart
 
+                calendar.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+
+                val repeatend = calendar.time
+                repeatend.year += 1900
+
+                val repeatendcontent = calendarDateFormatter.parse(schedule.repeatEnd)
+
+                if (repeatendcontent.year < 2100) {
+                    binding.repeatEndDateSwitchSchedule.isChecked = true
+                    binding.repeatEndDateScheduleTv.setTextColor(Color.parseColor("#191919"))
+                    binding.btnRepeatEndDateSchedule.visibility = View.VISIBLE
+
+                    val trulyRepeatEnd = calendarDateFormatter.parse(schedule.repeatEnd)
+                    binding.btnRepeatEndDateSchedule.text = dateformat.format(trulyRepeatEnd)
                 }
-            } else {// 반복 일정이 아닐 때
 
+                binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
+                binding.repeatEndDateBtn.text = dateformat.format(repeatend)
+            } else { // 반복이지만 하루 일정일 때
+                val repeatstart = calendarDateFormatter.parse(schedule.repeatStart!!)
+                val repeatend = calendarDateFormatter.parse(schedule.repeatEnd!!)
+
+                binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
+                binding.repeatEndDateBtn.text = dateformat.format(repeatend)
             }
+        } else {// 반복 일정이 아닐 때
+            val repeatstart = calendarDateFormatter.parse(schedule.repeatStart!!)
+            val repeatend = calendarDateFormatter.parse(schedule.repeatEnd!!)
+
+            binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
+            binding.repeatEndDateBtn.text = dateformat.format(repeatend)
         }
 
         //알람이 1개 이상 존재할 때
