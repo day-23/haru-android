@@ -13,8 +13,8 @@ class CategoryRepository {
     suspend fun getCategories(callback:(categoryData : List<Category>) -> Unit) = withContext(
         Dispatchers.IO) {
         val response = CategoryService.getCategories(
-//            "ysr",
-            "005224c0-eec1-4638-9143-58cbfc9688c5"
+            "ysr",
+//            "005224c0-eec1-4638-9143-58cbfc9688c5"
         ).execute()
 
         val data: CategoryResponse

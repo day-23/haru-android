@@ -51,4 +51,23 @@ class ScheduleRepository() {
             }
         }
     }
+
+    suspend fun deleteSchedule(scheduleId: String, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.deleteSchedule(
+                "ysr",
+                scheduleId
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to delete schedule")
+            } else {
+                Log.d("TAG", "Fail to delete schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
 }
