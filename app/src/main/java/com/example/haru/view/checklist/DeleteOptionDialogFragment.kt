@@ -6,6 +6,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.haru.R
 import com.example.haru.databinding.FragmentOptionDeleteBinding
 import com.example.haru.view.checklist.ChecklistItemFragment.*
 import com.example.haru.viewmodel.TodoAddViewModel
@@ -23,7 +24,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Dele
     init {
         this.type = type
         ratio = when (type) {
-            DeleteType.REPEAT -> 30
+            DeleteType.REPEAT_FRONT, DeleteType.REPEAT_MIDDLE, DeleteType.REPEAT_BACK -> 30
             DeleteType.NOT_REPEAT -> 23
         }
         this.todoAddViewModel = todoAddViewModel
@@ -60,7 +61,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Dele
     }
 
     private fun getBottomSheetDialogDefaultHeight(): Int {
-        return getWindowHeight() * 30 / 100
+        return getWindowHeight() * ratio / 100
     }
 
     private fun getWindowHeight(): Int {
@@ -70,6 +71,17 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Dele
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        when(type){
+            DeleteType.REPEAT_FRONT, DeleteType.REPEAT_MIDDLE, DeleteType.REPEAT_BACK -> {
+                binding.btnOptionDelete.visibility = View.GONE
+            }
+            DeleteType.NOT_REPEAT -> {
+                binding.btnOptionAllDelete.visibility = View.GONE
+                binding.btnOptionOneDelete.visibility = View.GONE
+                binding.textViewDeleteInfo.text = getString(R.string.deleteDescription).substring(0, 12)
+            }
+        }
 
         binding.btnOptionOneDelete.setOnClickListener(ButtonClickListener())
         binding.btnOptionAllDelete.setOnClickListener(ButtonClickListener())
@@ -81,36 +93,56 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Dele
             when (v?.id) {
                 binding.btnOptionOneDelete.id -> {
                     // 반복 할 일의 front 삭제
-
-                    when (todoAddViewModel.clickedTodo?.location) {
-                        0 -> { //front
+                    when(type){
+                        DeleteType.REPEAT_FRONT -> { // 반복 할 일의 front 삭제
                             todoAddViewModel.deleteRepeatFrontTodo {
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
                         }
-                        1 -> { // middle
+                        DeleteType.REPEAT_MIDDLE -> { // 반복 할 일의 middle 삭제
                             todoAddViewModel.deleteRepeatMiddleTodo {
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
-
                         }
-                        2 -> { // back
+                        DeleteType.REPEAT_BACK -> { // 반복 할 일의 back 삭제
                             todoAddViewModel.deleteRepeatBackTodo {
-
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
                             }
                         }
+                        else -> {}
                     }
-
                 }
+
+//                    when (todoAddViewModel.clickedTodo?.location) {
+//                        0 -> { //front
+//                            todoAddViewModel.deleteRepeatFrontTodo {
+//                                dismiss()
+//                                requireActivity().supportFragmentManager.popBackStack()
+//                            }
+//                        }
+//                        1 -> { // middle
+//                            todoAddViewModel.deleteRepeatMiddleTodo {
+//                                dismiss()
+//                                requireActivity().supportFragmentManager.popBackStack()
+//                            }
+//
+//                        }
+//                        2 -> { // back
+//                            todoAddViewModel.deleteRepeatBackTodo {
+//
+//                            }
+//                        }
+//                    }
+
 
                 binding.btnOptionAllDelete.id -> {
                     todoAddViewModel.deleteTodo {
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
-
                 }
                 binding.btnOptionDelete.id -> {
                     todoAddViewModel.deleteTodo {

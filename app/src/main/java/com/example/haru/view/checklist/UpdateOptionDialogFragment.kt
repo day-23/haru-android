@@ -100,7 +100,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
             }
             UpdateType.MID_BACK_THREE -> {} // 모든 옵션을 보여주는 상황
             UpdateType.NOT_REPEAT -> {
-                binding.textViewInfo.text = getString(R.string.updateDescription).substring(0, 12)
+                binding.textViewUpdateInfo.text = getString(R.string.updateDescription).substring(0, 12)
                 binding.btnOptionOneUpdate.visibility = View.GONE
                 binding.btnOptionAllUpdate.visibility = View.GONE
                 binding.btnOptionAfterUpdate.visibility = View.GONE

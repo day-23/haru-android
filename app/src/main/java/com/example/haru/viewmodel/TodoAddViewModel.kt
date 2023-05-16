@@ -66,7 +66,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     val selectedDate: LiveData<Date> = _selectedDate
 
     private val _tagLiveData = MutableLiveData<List<String>>()
-    val tagLiveData : LiveData<List<String>> = _tagLiveData
+    val tagLiveData: LiveData<List<String>> = _tagLiveData
 
     private val tagList: MutableList<String> = mutableListOf()
     var subTodos: MutableList<String> = mutableListOf()
@@ -115,7 +115,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     fun setClickTodo(id: String, todo: Todo? = null) {
 
-        if(todo == null) {
+        if (todo == null) {
             clickedTodo = checklistViewModel.todoDataList.value!!.find {
                 it.id == id
             }
@@ -257,7 +257,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-    fun addTagList() : Boolean{
+    fun addTagList(): Boolean {
         if (tag == "" || tag.replace(" ", "") == "")
             return false
         tagList.add(tag.replace(" ", ""))
@@ -265,7 +265,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         return true
     }
 
-    fun subTagList(item : String){
+    fun subTagList(item: String) {
         tagList.remove(item)
         _tagLiveData.value = tagList
     }
@@ -503,7 +503,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         return nextEndDate
     }
 
-    private fun findPreEndDate() : Date? {  // 프론트와 백이 같은 Todo에서는 예외를 처리해줘야한다.
+    private fun findPreEndDate(): Date? {  // 프론트와 백이 같은 Todo에서는 예외를 처리해줘야한다.
         return null
     }
 
@@ -531,14 +531,26 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             checklistViewModel.deleteRepeatMiddleTodo(
                 todoId = clickedTodo!!.id,
                 middleEndDate = MiddleEndDate(removedDate, nextEndDateStr!!)
-            ){ callback() }
+            ) { callback() }
         } else {
             Log.d("20191627", "TodoAddViewModel -> deleteRepeatMiddleTodo에서 비상상황 발생!!")
         }
     }
 
     fun deleteRepeatBackTodo(callback: () -> Unit) {
-
+        val backRepeatEnd = FormatDate.preEndDate(
+            clickedTodo!!.endDate!!,
+            clickedTodo!!.repeatOption!!,
+            clickedTodo!!.repeatValue!!
+        )
+        if (backRepeatEnd != null) {
+            checklistViewModel.deleteRepeatBackTodo(
+                todoId = clickedTodo!!.id,
+                backRepeatEnd = BackRepeatEnd(FormatDate.dateToStr(backRepeatEnd)!!)
+            ) {
+                callback()
+            }
+        }
 
     }
 

@@ -42,7 +42,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
     }
 
     enum class DeleteType {
-        REPEAT, NOT_REPEAT
+        REPEAT_FRONT, REPEAT_MIDDLE, REPEAT_BACK, NOT_REPEAT
     }
 
     init {
@@ -696,12 +696,21 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
                 binding.btnInfoDelete.id -> {
-                    if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-//                        val option = DeleteOptionDialogFragment(todoAddViewModel)
-//                        option.show(parentFragmentManager, option.tag)
-                    } else todoAddViewModel.deleteTodo {
-                        requireActivity().supportFragmentManager.popBackStack()
+                    val type = when (todoAddViewModel.clickedTodo?.location) {
+                        0 -> DeleteType.REPEAT_FRONT
+                        1 -> DeleteType.REPEAT_MIDDLE
+                        2 -> DeleteType.REPEAT_BACK
+                        else -> DeleteType.NOT_REPEAT
                     }
+                    val option = DeleteOptionDialogFragment(todoAddViewModel, type)
+                    option.show(parentFragmentManager, option.tag)
+//                    if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
+//                        val option = DeleteOptionDialogFragment(todoAddViewModel, type)
+//                        option.show(parentFragmentManager, option.tag)
+//                    } else {
+//                        val option = DeleteOptionDialogFragment(todoAddViewModel, type)
+//                        option.show(parentFragmentManager, option.tag)
+//                    }
                 }
                 binding.btnInfoSave.id -> {
                     todoAddViewModel.readyToSubmit()

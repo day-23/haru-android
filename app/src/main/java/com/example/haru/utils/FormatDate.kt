@@ -110,15 +110,15 @@ object FormatDate {
         return Date.from(instant)
     }
 
-    fun preEndDate(endDateStr: String, repeatOption: Int, repeatValue: String): Date? {
+    fun preEndDate(endDateStr: String, repeatOption: String, repeatValue: String): Date? {
         val endDate = strToDate(endDateStr)
         cal.time = endDate!!
         val preEndDate = when (repeatOption) {
-            0 -> { // 매일
+            "매일" -> { // 매일
                 cal.add(Calendar.DATE, -1)
                 cal.time
             }
-            1, 2 -> { // 매주
+            "매주", "격주" -> { // 매주
                 val nWeek = cal.get(Calendar.DAY_OF_WEEK) // endDate가 해당하는 주차의 요일
                 var idx = nWeek - 1 // nWeek는 일 ~ 토, 1 ~ 7 이므로 인덱스로 사용하기 위해서 -1
 
@@ -132,7 +132,7 @@ object FormatDate {
 
                 var flag = false
 
-                val plusValue = if (repeatOption == 1) 1 else 8
+                val plusValue = if (repeatOption == "매주") 1 else 8
 
                 for (i in idx downTo 0) {
                     if (repeatValue[i] == '1') {
@@ -151,7 +151,7 @@ object FormatDate {
                 }
                 cal.time
             }
-            3 -> { // 매달
+            "매달" -> { // 매달
                 // 0 ~ 30
                 val idx = cal.get(Calendar.DAY_OF_MONTH) - 1 // endDate가 해당하는 달의 날짜를 인덱스화
                 var flag = false
@@ -183,7 +183,7 @@ object FormatDate {
                 cal.set(Calendar.DAY_OF_MONTH, days)
                 cal.time
             }
-            4 -> { // 매년
+            "매년" -> { // 매년
                 val idx = cal.get(Calendar.MONTH)
                 val days = cal.get(Calendar.DAY_OF_MONTH)
 
