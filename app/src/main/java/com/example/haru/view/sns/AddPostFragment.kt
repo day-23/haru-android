@@ -1,5 +1,7 @@
 package com.example.haru.view.sns
 
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.pm.PackageManager
 import android.graphics.*
@@ -25,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.haru.R
@@ -42,7 +45,7 @@ class AddPostFragment : Fragment() {
     lateinit var galleryRecyclerView: RecyclerView
     lateinit var galleryViewmodel: MyPageViewModel
     lateinit var galleryAdapter: AddPostAdapter
-    var multiSelect = false
+    var toggle = false
 
         companion object{
             const val TAG : String = "로그"
@@ -58,6 +61,7 @@ class AddPostFragment : Fragment() {
             galleryViewmodel = ViewModelProvider(this).get(MyPageViewModel::class.java)
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -177,6 +181,36 @@ class AddPostFragment : Fragment() {
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragments_frame, fragment)
                     .commit()
+            }
+
+            binding.galleyToggle.setOnClickListener {
+                val layoutparam = binding.popupGallery.layoutParams
+                val startHeight = layoutparam.height
+                if (!toggle) {
+                    layoutparam.height = (binding.addpostRootView.measuredHeight * 0.8).toInt()
+                    toggle = true
+                    binding.galleyToggle.rotation = 270f
+                    binding.imageMultiSelect.isClickable = true
+                } else {
+                    layoutparam.height = 0
+                    toggle = false
+                    binding.galleyToggle.rotation = 90f
+                    binding.imageMultiSelect.isClickable = false
+                }
+                val targetHeight = layoutparam.height
+
+                val animator = ValueAnimator.ofInt(startHeight, targetHeight)
+                val duration = 200
+
+                animator.addUpdateListener { valueAnimator ->
+                    val animatedValue = valueAnimator.animatedValue as Int
+                    layoutparam.height = animatedValue
+                    binding.popupGallery.layoutParams = layoutparam
+                }
+
+                animator.duration = duration.toLong()
+                animator.start()
+                galleryAdapter.notifyDataSetChanged()
             }
 
             return binding.root
