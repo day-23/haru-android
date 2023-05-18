@@ -131,7 +131,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
 
             when(schedule.repeatOption){
                 "매일"->{
-
+                    
                 }
 
                 "매주"->{
