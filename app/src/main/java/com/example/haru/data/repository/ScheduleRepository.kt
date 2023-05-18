@@ -3,6 +3,7 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.userInformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -31,7 +32,7 @@ class ScheduleRepository() {
     suspend fun postSchedule(body: PostSchedule, callback: () -> Unit){
         withContext(Dispatchers.IO) {
             val response = scheduleService.createSchedule(
-                "ysr",
+                userInformation.userId,
                 body
             ).execute()
 
@@ -46,6 +47,45 @@ class ScheduleRepository() {
 
 //            val data: PostScheduleResponse
 //            val schedule: Schedule?
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    suspend fun deleteSchedule(scheduleId: String, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.deleteSchedule(
+                userInformation.userId,
+                scheduleId
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to delete schedule")
+            } else {
+                Log.d("TAG", "Fail to delete schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.submitSchedule(
+                userInformation.userId,
+                scheduleId,
+                postBody
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to submit schedule")
+            } else {
+                Log.d("TAG", "Fail to submit schedule")
+            }
+
             withContext(Dispatchers.Main) {
                 callback()
             }

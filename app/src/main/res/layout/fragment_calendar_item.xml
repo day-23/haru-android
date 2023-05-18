@@ -563,6 +563,7 @@
         </androidx.core.widget.NestedScrollView>
 
         <TextView
+            android:id="@+id/delete_schedule_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="일정 삭제하기"

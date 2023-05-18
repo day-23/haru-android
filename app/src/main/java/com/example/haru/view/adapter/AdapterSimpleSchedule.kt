@@ -19,7 +19,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Category
 import com.example.haru.data.model.Schedule
+import com.example.haru.utils.FormatDate
 import com.example.haru.view.calendar.CalendarItemFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CalendarViewModel
@@ -29,9 +31,13 @@ import java.util.*
 class AdapterSimpleSchedule(val schedules: List<Schedule>,
                             val activity: FragmentActivity,
                             val todayTodo: String,
-                            val dialog: Dialog
+                            val dialog: Dialog,
+                            val categories: List<Category?>
 ) : RecyclerView.Adapter<AdapterSimpleSchedule.DetailView>(){
     inner class DetailView(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    val serverDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+    val todayDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterSimpleSchedule.DetailView {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -67,16 +73,56 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
         }
 
         holder.itemView.setOnClickListener {
-            activity.supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragments_frame,
-                    CalendarItemFragment(schedule)
-                )
-                .addToBackStack(null)
-                .commit()
+            if (schedule.repeatOption == null) {
+                activity.supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.fragments_frame,
+                        CalendarItemFragment(schedule, categories)
+                    )
+                    .addToBackStack(null)
+                    .commit()
 
-            dialog.dismiss()
-            return@setOnClickListener
+                dialog.dismiss()
+                return@setOnClickListener
+            } else{
+                val startDate = serverDateFormat.parse(schedule.repeatStart)
+                val today = todayDateFormat.parse(todayTodo)
+
+                if (startDate.year == today.year &&
+                    startDate.month == today.month &&
+                    startDate.date == today.date
+                ) {
+                    schedule.location = 0
+                    Log.d("20191630", "스케줄 프론트")
+
+                    activity.supportFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragments_frame,
+                            CalendarItemFragment(schedule, categories)
+                        )
+                        .addToBackStack(null)
+                        .commit()
+
+                    dialog.dismiss()
+                    return@setOnClickListener
+                }
+
+//                if ()
+
+                schedule.location = 1
+                Log.d("20191630","스케줄 미들")
+
+                activity.supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.fragments_frame,
+                        CalendarItemFragment(schedule, categories)
+                    )
+                    .addToBackStack(null)
+                    .commit()
+
+                dialog.dismiss()
+                return@setOnClickListener
+            }
         }
 
         detailScheduleContentTv.text = schedule.content

@@ -15,5 +15,7 @@ data class Schedule(
     val category: Category? = null,
     val alarms: List<Alarm> = emptyList(),
     val repeatOption: String? = null,
-    val repeatValue: String? = null
+    val repeatValue: String? = null,
+    var location: Int? = null,
+    var todayDate: String? = null
 )

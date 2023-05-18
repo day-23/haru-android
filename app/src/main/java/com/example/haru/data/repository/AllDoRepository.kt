@@ -3,6 +3,7 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.userInformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -11,8 +12,8 @@ class AllDoRepository{
 
     suspend fun getAllDoByDates(startDate:String, endDate:String, callback:(alldoData : AlldoData?) -> Unit) = withContext(Dispatchers.IO) {
         val response = allDoService.getAllDoDates(
-//            "ysr",
-            "005224c0-eec1-4638-9143-58cbfc9688c5",
+            userInformation.userId,
+//            "005224c0-eec1-4638-9143-58cbfc9688c5",
             AlldoBodyCategory(startDate, endDate),
         ).execute()
 

@@ -53,21 +53,25 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
+    fun submitSchedule(schedule: String, postSchedule: PostSchedule, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.submitSchedule(schedule, postSchedule){
+                callback()
+            }
+        }
+    }
+
     fun postSchedule(body: PostSchedule, callback: () -> Unit){
         viewModelScope.launch {
             ScheduleRepository.postSchedule(body){
-//                if(it != null) {
-//                    scheduleCalendarList.add(
-//                        ScheduleCalendarData(
-//                            it,
-//                            28,
-//                            1
-//                        )
-//                    )
-//
-//                    _liveScheduleCalendarList.postValue(scheduleCalendarList)
-//                }
+                callback()
+            }
+        }
+    }
 
+    fun deleteSchedule(scheduleId: String, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.deleteSchedule(scheduleId){
                 callback()
             }
         }

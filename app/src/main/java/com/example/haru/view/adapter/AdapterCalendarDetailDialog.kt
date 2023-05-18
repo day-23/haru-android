@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
+import com.example.haru.data.model.Category
 import com.example.haru.data.model.PostSchedule
 import com.example.haru.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
@@ -33,7 +34,8 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
                                   val startDate:Date,
                                   val adapter:AdapterMonth,
                                   val activity: FragmentActivity,
-                                  val dialog: Dialog
+                                  val dialog: Dialog,
+                                  val categories: List<Category?>
                                   ) : RecyclerView.Adapter<AdapterCalendarDetailDialog.DetailView>(){
     inner class DetailView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -69,7 +71,6 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
 
-        val factorDate = calendar.time
         val startDate = format.format(calendar.time)+"T00:00:00+09:00"
 
         detailDayTv.text = calendar.time.date.toString()+"일 " +
@@ -116,9 +117,7 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
             }
         }
 
-       calendar.add(Calendar.DAY_OF_MONTH, 1)
-
-        val endDate = format.format(calendar.time)+"T00:00:00+09:00"
+        val endDate = format.format(calendar.time)+"T23:59:55+09:00"
 
         miniBackImv.setOnClickListener {
             thisViewpager.setCurrentItem(position-1, true)
@@ -135,7 +134,7 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
         calendarViewModel.liveTodoList.observe(lifecycleOwner) {livetodo->
             calendarViewModel.liveScheduleList.observe(lifecycleOwner){liveschedule->
                 detailScheduleRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-                detailScheduleRecyclerView.adapter = AdapterSimpleSchedule(liveschedule,activity, startDate, dialog)
+                detailScheduleRecyclerView.adapter = AdapterSimpleSchedule(liveschedule,activity, startDate, dialog, categories)
 
                 detailTodoRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
                 detailTodoRecyclerView.adapter = AdapterSimpleTodo(livetodo,activity, startDate, dialog)

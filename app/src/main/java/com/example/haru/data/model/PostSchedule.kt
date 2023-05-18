@@ -8,6 +8,6 @@ data class PostSchedule(
     val repeatEnd : String?,
     val repeatOption : String?,
     val repeatValue : String?,
-    val categoryId : String?,
+    val categoryId : String? = null,
     val alarms : List<String>
 )

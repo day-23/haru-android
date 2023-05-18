@@ -103,6 +103,8 @@ class AdapterSimpleTodo(val todos: List<Todo>,
         todoCorrectionBtn.setOnClickListener {
             val checklistviewmodel = CheckListViewModel()
 
+            var todoendDate = ""
+
             if(todo.endDate != null){
                 val enddate = serverDateFormat.parse(todo.endDate)
                 val backendDate = serverDateFormat.parse(FormatDate.calendarBackFormat(todo.endDate!!))
@@ -122,9 +124,7 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                     val formatdate = calendar.time
                     formatdate.year += 1900
 
-                    todo.endDate = serverDateFormat.format(formatdate)
-
-                    Log.d("20191630", todo.endDate!!)
+                    todoendDate = serverDateFormat.format(formatdate)
                 } else {
                     val calendar = Calendar.getInstance()
                     val today = todayDateFormat.parse(todayTodo)
@@ -139,36 +139,75 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                     val formatdate = calendar.time
                     formatdate.year += 1900
 
-                    todo.endDate = serverDateFormat.format(formatdate)
+                    todoendDate = serverDateFormat.format(formatdate)
                 }
-            }
-
-            if(todo.repeatEnd != null && todo.endDate != null){
-//                if(todo.repeatEnd == todo.endDate ){
-//                    todo.repeatValue = null
-//                    todo.repeatOption = null
-//
-//                    activity.supportFragmentManager.beginTransaction()
-//                        .replace(
-//                            R.id.fragments_frame,
-//                            ChecklistItemFragment(checklistviewmodel, todo.id, todo)
-//                        )
-//                        .addToBackStack(null)
-//                        .commit()
-//
-//                    dialog.dismiss()
-//                    return@setOnClickListener
-//                }
             }
 
             if(todo.endDate != null && todo.repeatOption != null){
                 val end = serverDateFormat.parse(todo.endDate)
                 val today = todayDateFormat.parse(todayTodo)
-                Log.d("20191627", "today $today")
 
                 if(end.year == today.year && end.month == today.month && end.date == today.date){
-                    Log.d("todoLocation", "front, today.date : ${today.date}")
                     todo.location = 0 // front
+                    Log.d("20191630", "front")
+                    Log.d("20191630", todo.endDate.toString())
+
+                    todo.endDate = todoendDate
+                    activity.supportFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragments_frame,
+                            ChecklistItemFragment(checklistviewmodel, todo.id, todo)
+                        )
+                        .addToBackStack(null)
+                        .commit()
+
+                    dialog.dismiss()
+                    return@setOnClickListener
+                }
+            }
+
+            if(todo.endDate != null &&
+                todo.repeatEnd != null &&
+                todo.repeatOption != null &&
+                todo.repeatValue != null) {
+
+                val today = todayDateFormat.parse(todayTodo)
+                val beforeFormatToday = FormatDate.calendarBackFormat(serverDateFormat.format(today))
+                val beforeFormatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
+
+                var preData: Date? = null
+                var nextData: Date? = null
+
+                when(todo.repeatOption){
+                    "매일"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,0, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDate(beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매주"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,1, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue,1,beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "2주마다"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,2, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue, 2, beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매달"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,3, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDateEveryMonth(todo.repeatValue!!,beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매년"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,4, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDateEveryYear(todo.repeatValue!!, beforeFormatToday, beforeFormatEnd)
+                    }
+                }
+
+                if(preData == null && nextData == null){
+                    Log.d("20191630", "location 예외처리 항목")
+
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
@@ -213,6 +252,9 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
                 if(nextData == null){
                     todo.location = 2
+                    todo.endDate = todoendDate
+                    Log.d("20191630", "back")
+                    Log.d("20191630", todo.endDate.toString())
 
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
@@ -229,8 +271,9 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
             if(todo.repeatOption != null){
                 todo.location = 1 // middle
-
-                Log.d("todoLocation", "middle")
+                todo.endDate = todoendDate
+                Log.d("20191630", "middle")
+                Log.d("20191630", todo.endDate.toString())
 
                 activity.supportFragmentManager.beginTransaction()
                     .replace(
@@ -243,8 +286,6 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                 dialog.dismiss()
                 return@setOnClickListener
             }
-
-            Log.d("todoLocation", "단일투두")
 
             activity.supportFragmentManager.beginTransaction()
                 .replace(

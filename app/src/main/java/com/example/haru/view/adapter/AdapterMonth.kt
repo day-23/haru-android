@@ -333,7 +333,8 @@ class AdapterMonth(val activity: Activity,
                             lifecycleOwner,
                             dateArrayList[row*7 + column],
                             this,
-                            fragment
+                            fragment,
+                            categories
                         )
 
                         detailDialog.show(parentConstraintLayout.height)
