@@ -2,6 +2,7 @@ package com.example.haru.viewmodel
 
 import android.security.KeyChainAliasCallback
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -121,9 +122,11 @@ class CheckListViewModel() :
     fun createTag(content: Content) {  // 태그 생성 기능
         viewModelScope.launch {
             tagRepository.createTag(content = content) {
-                if (it != null) {
+                if (it?.success == true) {
                     getTag()
                     withTagUpdate()
+                } else {
+                    Log.e("20191627", it?.error?.devMessage.toString())
                 }
             }
         }
