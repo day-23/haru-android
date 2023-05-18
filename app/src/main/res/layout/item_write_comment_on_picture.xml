@@ -18,7 +18,6 @@
         android:textStyle="bold"
         android:textIsSelectable="false"
         android:gravity="center"
-        android:focusable="false"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

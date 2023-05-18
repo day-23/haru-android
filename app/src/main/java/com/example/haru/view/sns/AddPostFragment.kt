@@ -2,7 +2,7 @@ package com.example.haru.view.sns
 
 import android.content.ContentUris
 import android.content.pm.PackageManager
-import android.graphics.Rect
+import android.graphics.*
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -40,6 +41,7 @@ class AddPostFragment : Fragment() {
     lateinit var binding : FragmentAddPostBinding
     lateinit var galleryRecyclerView: RecyclerView
     lateinit var galleryViewmodel: MyPageViewModel
+    var multiSelect = false
 
         companion object{
             const val TAG : String = "로그"
@@ -72,8 +74,24 @@ class AddPostFragment : Fragment() {
             {getpermission()}
             getimage()
 
+            galleryViewmodel.SelectedImage.observe(viewLifecycleOwner){ index->
+                val lastindex = galleryViewmodel.getLastImage()
+                val layoutManager = galleryRecyclerView.layoutManager
+                if(layoutManager != null){
+                    Log.d("20191668", "current :$index last :$lastindex")
+                    val targetView = layoutManager.findViewByPosition(index)
+                    val imageView = targetView!!.findViewById<ImageView>(R.id.image)
+                    imageView!!.setColorFilter(Color.argb(127, 0, 0, 0), PorterDuff.Mode.SRC_OVER)
+
+                    if(lastindex != -1){
+                        val LastTargetView = layoutManager.findViewByPosition(lastindex)
+                        val LastImageView = LastTargetView!!.findViewById<ImageView>(R.id.image)
+                        LastImageView!!.setColorFilter(null)
+                    }
+                }
+            }
+
             galleryViewmodel.StoredImages.observe(viewLifecycleOwner){images ->
-                val galleryAdapter = GalleryAdapter(requireContext(), images, galleryViewmodel)
                 galleryRecyclerView.adapter = AddPostAdapter(requireContext(), images, galleryViewmodel)
                 val gridLayoutManager = GridLayoutManager(requireContext(), 3)
                 gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -106,6 +124,10 @@ class AddPostFragment : Fragment() {
                         textView?.text = "${selected.indexOf(i) + 1}"
                     }
                 }
+            }
+
+            binding.imageMultiSelect.setOnClickListener {
+
             }
 
             binding.addpostApply.setOnClickListener{

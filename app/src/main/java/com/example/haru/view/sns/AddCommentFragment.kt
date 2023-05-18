@@ -161,6 +161,8 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
 
     fun writeComment(position : Int){
 
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
         val dragTouchListener = object : View.OnTouchListener {
             private var offsetX = 0f
             private var offsetY = 0f
@@ -189,6 +191,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                         isDragging = false
                     }
                     MotionEvent.ACTION_MOVE -> {
+
                         binding.writeCommentDelete.visibility = View.VISIBLE
                         if (!isDragging && (Math.abs(event.rawX - initialX) > ViewConfiguration.get(parentView.context).scaledTouchSlop ||
                                     Math.abs(event.rawY - initialY) > ViewConfiguration.get(parentView.context).scaledTouchSlop)) {
@@ -202,14 +205,15 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                             if(x_start > 0 && x_end < writeContainer.width)
                                 parentView.x = x_start
 
-                            if(y_start > 0 && y_end < writeContainer.height)
-                                if(y_end > commentContainer.height){
+                            if(y_start > 0 && y_end < writeContainer.height) {
+                                if (y_end > commentContainer.height) {
                                     parentView.setBackgroundResource(R.color.light_gray)
-                                }else {
+                                } else {
                                     parentView.setBackgroundResource(R.drawable.comment_ballon)
                                 }
                                 parentView.y = event.rawY + offsetY
                             }
+                        }
                     }
                     MotionEvent.ACTION_UP -> {
                         if (isDragging) {
@@ -265,19 +269,23 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             if (hasFocus) {
                 lastX = parentView.x
                 lastY = parentView.y
+                
                 parentView.x = (commentContainer.width * 0.35).toFloat()
                 parentView.y = (commentContainer.height * 0.45).toFloat()
-                Log.d("20191668" , "write move to ${lastX} ${lastY}")
             } else {
                 parentView.x = lastX
                 parentView.y = lastY
-                Log.d("20191668" , "move to ${parentView.x} ${parentView.y}")
-                view.focusable = View.NOT_FOCUSABLE
             }
         }
-        
+
+        editView.isFocusable = true
+
+        editView.setOnClickListener {
+
+        }
         view.setOnTouchListener(dragTouchListener)
         editView.setOnTouchListener(dragTouchListener)
+        editView.setTextIsSelectable(false)
 
         val params = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -292,7 +300,6 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         writeContainer.addView(view)
 
         editView.requestFocus() // EditText에 포커스를 설정합니다.
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(editView, InputMethodManager.SHOW_IMPLICIT) // 키보드를 활성화합니다.
     }
 }

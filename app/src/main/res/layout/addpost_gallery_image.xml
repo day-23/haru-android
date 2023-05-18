@@ -18,6 +18,7 @@
         android:layout_margin="12dp"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:visibility="invisible"
         android:src="@drawable/addpost_select_circle"/>
 
     <ImageView

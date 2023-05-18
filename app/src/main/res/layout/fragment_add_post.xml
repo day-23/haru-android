@@ -55,19 +55,20 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/popup_gallery"
         android:layout_width="match_parent"
-        android:layout_height="323dp"
+        android:layout_height="700dp"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="horizontal"
         android:background="@drawable/custom_gallery_background">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="71dp"
             android:orientation="horizontal"
             tools:ignore="MissingConstraints">
             <TextView
+                android:id="@+id/gallery_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="24dp"
@@ -75,8 +76,44 @@
                 android:textSize="20dp"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textColor="#191919"/>
-        </LinearLayout>
+                android:textColor="#191919"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+            <ImageView
+                android:id="@+id/galley_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/gallery_text"
+                android:src="@drawable/back_image"
+                android:layout_marginLeft="10dp"
+                android:rotation="270"/>
+
+
+            <ImageView
+                android:id="@+id/image_multi_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/multi_select_picture"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginRight="70dp"/>
+
+            <ImageView
+                android:id="@+id/use_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/use_camera"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginRight="24dp"/>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/addpost_gallery_image"
