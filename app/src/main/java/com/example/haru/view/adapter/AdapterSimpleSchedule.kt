@@ -107,7 +107,65 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                     return@setOnClickListener
                 }
 
-//                if ()
+                val repeatEndDate = serverDateFormat.parse(schedule.repeatEnd)
+
+                if(schedule.repeatOption != null && schedule.repeatValue != null && repeatEndDate.year < 200) {
+                    var nextData: Date? = null
+
+                    when (schedule.repeatOption) {
+                        "매일" -> {
+                            nextData = FormatDate.nextStartDate(todayTodo, schedule.repeatEnd!!)
+                        }
+
+                        "매주" -> {
+                            nextData = FormatDate.nextStartDateEveryWeek(
+                                schedule.repeatValue,
+                                1,
+                                todayTodo,
+                                schedule.repeatEnd!!)
+                        }
+
+                        "2주마다" -> {
+                            nextData = FormatDate.nextStartDateEveryWeek(
+                                schedule.repeatValue,
+                                2,
+                                todayTodo,
+                                schedule.repeatEnd!!)
+                        }
+
+                        "매달" -> {
+                            nextData = FormatDate.nextStartDateEveryMonth(
+                                schedule.repeatValue,
+                                todayTodo,
+                                schedule.repeatEnd!!)
+                        }
+
+                        "매년" -> {
+                            nextData = FormatDate.nextStartDateEveryYear(
+                                schedule.repeatValue,
+                                todayTodo,
+                                schedule.repeatEnd!!)
+                        }
+                    }
+
+                    Log.d("20191630", "nextData:"+nextData.toString())
+                    
+                    if(nextData == null){
+                        schedule.location = 2
+                        Log.d("20191630","스케줄 백")
+
+                        activity.supportFragmentManager.beginTransaction()
+                            .replace(
+                                R.id.fragments_frame,
+                                CalendarItemFragment(schedule, categories)
+                            )
+                            .addToBackStack(null)
+                            .commit()
+
+                        dialog.dismiss()
+                        return@setOnClickListener
+                    }
+                }
 
                 schedule.location = 1
                 Log.d("20191630","스케줄 미들")

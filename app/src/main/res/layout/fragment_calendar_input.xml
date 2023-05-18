@@ -412,6 +412,15 @@
                         android:paddingTop="8dp">
 
                         <TextView
+                            android:id="@+id/tv_sunday_schedule"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@string/Sunday"
+                            android:textColor="@color/light_gray" />
+
+                        <TextView
                             android:id="@+id/tv_monday_schedule"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -421,7 +430,7 @@
                             android:textColor="@color/light_gray" />
 
                         <TextView
-                            android:id="@+id/tv_tuesday_schedule"
+                            android:id="@+id/tv_tuseday_schedule"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -430,7 +439,7 @@
                             android:textColor="@color/light_gray" />
 
                         <TextView
-                            android:id="@+id/tv_wednesday_schedule"
+                            android:id="@+id/tv_wednsday_schedule"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -463,15 +472,6 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="@string/Saturday"
-                            android:textColor="@color/light_gray" />
-
-                        <TextView
-                            android:id="@+id/tv_sunday_schedule"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="@string/Sunday"
                             android:textColor="@color/light_gray" />
 
                     </LinearLayout>
