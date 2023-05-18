@@ -167,6 +167,9 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
                 if(end.year == today.year && end.month == today.month && end.date == today.date){
                     todo.location = 0 // front
+                    Log.d("20191630", "front")
+                    Log.d("20191630", todo.endDate.toString())
+
                     todo.endDate = todoendDate
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
@@ -213,6 +216,8 @@ class AdapterSimpleTodo(val todos: List<Todo>,
                 if(nextData == null){
                     todo.location = 2
                     todo.endDate = todoendDate
+                    Log.d("20191630", "back")
+                    Log.d("20191630", todo.endDate.toString())
 
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
@@ -230,6 +235,8 @@ class AdapterSimpleTodo(val todos: List<Todo>,
             if(todo.repeatOption != null){
                 todo.location = 1 // middle
                 todo.endDate = todoendDate
+                Log.d("20191630", "middle")
+                Log.d("20191630", todo.endDate.toString())
 
                 activity.supportFragmentManager.beginTransaction()
                     .replace(

@@ -19,6 +19,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Category
 import com.example.haru.data.model.Schedule
 import com.example.haru.view.calendar.CalendarItemFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
@@ -29,7 +30,8 @@ import java.util.*
 class AdapterSimpleSchedule(val schedules: List<Schedule>,
                             val activity: FragmentActivity,
                             val todayTodo: String,
-                            val dialog: Dialog
+                            val dialog: Dialog,
+                            val categories: List<Category?>
 ) : RecyclerView.Adapter<AdapterSimpleSchedule.DetailView>(){
     inner class DetailView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -70,7 +72,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
             activity.supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragments_frame,
-                    CalendarItemFragment(schedule)
+                    CalendarItemFragment(schedule, categories)
                 )
                 .addToBackStack(null)
                 .commit()

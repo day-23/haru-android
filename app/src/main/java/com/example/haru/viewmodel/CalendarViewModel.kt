@@ -53,6 +53,14 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
+    fun submitSchedule(schedule: String, postSchedule: PostSchedule, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.submitSchedule(schedule, postSchedule){
+                callback()
+            }
+        }
+    }
+
     fun postSchedule(body: PostSchedule, callback: () -> Unit){
         viewModelScope.launch {
             ScheduleRepository.postSchedule(body){

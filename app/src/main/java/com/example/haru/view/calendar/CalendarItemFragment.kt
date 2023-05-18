@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,13 +18,16 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.haru.R
 import com.example.haru.data.model.Category
+import com.example.haru.data.model.PostSchedule
 import com.example.haru.data.model.Schedule
 import com.example.haru.databinding.FragmentCalendarInputBinding
 import com.example.haru.databinding.FragmentCalendarItemBinding
+import com.example.haru.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarItemFragment(val schedule: Schedule) : Fragment() {
+class CalendarItemFragment(val schedule: Schedule,
+                           val categories: List<Category?>) : Fragment() {
     private lateinit var binding: FragmentCalendarItemBinding
 
     private val calendarDateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
@@ -379,18 +383,16 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
             }
         }
 
-//        binding.categoryChooseIv.setOnClickListener {
-//            val dlg = CategoryChooseDialog(this)
-//
-//            dlg.show(categories){
-//                category = it
-//
-//                val drawable = binding.categoryChooseIv.background as VectorDrawable
-//                drawable.setColorFilter(Color.parseColor(it.color),PorterDuff.Mode.SRC_ATOP)
-//
-//                binding.categoryEt.text = it.content
-//            }
-//        }
+        binding.categoryChooseIv.setOnClickListener {
+            val dlg = CategoryChooseDialog(null, this)
+
+            dlg.show(categories){
+                category = it
+
+                val drawable = binding.categoryChooseIv.background as VectorDrawable
+                drawable.setColorFilter(Color.parseColor(it.color),PorterDuff.Mode.SRC_ATOP)
+            }
+        }
 
         binding.btnRepeatEndDateSchedule.setOnClickListener {
             val repeatEndDateText = binding.btnRepeatEndDateSchedule.text.toString().substring(
@@ -438,6 +440,191 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
                 }
             }
         }
+
+        binding.deleteScheduleTv.setOnClickListener {
+            val calendarviewmodel = CalendarViewModel()
+
+            calendarviewmodel.deleteSchedule(schedule.id){
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+        }
+
+        binding.btnSubmitSchedule.setOnClickListener {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
+
+            var repeatStartDate = ""
+            var repeatEndDate = ""
+
+            if(!binding.alldaySwitch.isChecked) {
+                if(!binding.repeatSwitchSchedule.isChecked) {
+                    repeatStartDate = dateFormat.format(repeatStartCalendar.time) +
+                            "T" +
+                            binding.repeatStartTimeBtn.text.toString().substring(3,5) +
+                            ":" +
+                            binding.repeatStartTimeBtn.text.toString().substring(6,8) +
+                            ":00+09:00"
+                    repeatEndDate = dateFormat.format(repeatEndCalendar.time) +
+                            "T" +
+                            binding.repeatEndTimeBtn.text.toString().substring(3,5) +
+                            ":" +
+                            binding.repeatEndTimeBtn.text.toString().substring(6,8) +
+                            ":00+09:00"
+                } else if(!binding.repeatEndDateSwitchSchedule.isChecked){
+                    repeatStartDate = dateFormat.format(repeatStartCalendar.time) +
+                            "T" +
+                            binding.repeatStartTimeBtn.text.toString().substring(3,5) +
+                            ":" +
+                            binding.repeatStartTimeBtn.text.toString().substring(6,8) +
+                            ":00+09:00"
+                    val calendarClone = repeatStartCalendar.clone() as Calendar
+                    calendarClone.add(Calendar.YEAR,100)
+
+                    repeatEndDate = dateFormat.format(calendarClone.time) +
+                            "T" +
+                            binding.repeatEndTimeBtn.text.toString().substring(3,5) +
+                            ":" +
+                            binding.repeatEndTimeBtn.text.toString().substring(6,8) +
+                            ":00+09:00"
+
+                    Log.d("20191630",repeatEndDate)
+                } else {
+                    repeatStartDate = dateFormat.format(repeatStartCalendar.time) +
+                            "T" +
+                            binding.repeatStartTimeBtn.text.toString().substring(3,5) +
+                            ":" +
+                            binding.repeatStartTimeBtn.text.toString().substring(6,8) +
+                            ":00+09:00"
+                    repeatEndDate = binding.btnRepeatEndDateSchedule.text.toString().substring(
+                        0,
+                        binding.btnRepeatEndDateSchedule.text.toString().length-2
+                    ) +
+                            "T" +
+                            binding.repeatEndTimeBtn.text.toString().substring(3,5) +
+                            ":" +
+                            binding.repeatEndTimeBtn.text.toString().substring(6,8) +
+                            ":00+09:00"
+
+                    Log.d("반복 날짜", repeatEndDate)
+                }
+            } else {
+                if(!binding.repeatSwitchSchedule.isChecked) {
+                    repeatStartDate =
+                        dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
+                    repeatEndDate = dateFormat.format(repeatEndCalendar.time) + "T00:00:00+09:00"
+                } else if(!binding.repeatEndDateSwitchSchedule.isChecked){
+                    repeatStartDate = dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
+
+                    val calendarClone = repeatEndCalendar.clone() as Calendar
+                    calendarClone.add(Calendar.YEAR,100)
+
+                    repeatEndDate = dateFormat.format(calendarClone.time) + "T00:00:00+09:00"
+                    Log.d("20191630",repeatEndDate)
+                } else {
+                    repeatStartDate =
+                        dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
+                    repeatEndDate = binding.btnRepeatEndDateSchedule.text.toString().substring(
+                        0,
+                        binding.btnRepeatEndDateSchedule.text.toString().length-2
+                    ) + "T00:00:00+09:00"
+                }
+            }
+
+            val option = when(repeatOption){
+                0->"매일"
+                1->"매주"
+                2->"격주"
+                3->"매달"
+                4->"매년"
+                else -> null
+            }
+
+            var repeatvalue: String? = null
+
+            if(binding.repeatStartDateBtn.text.toString() == binding.repeatEndDateBtn.text.toString()) {
+                if (option != null) {
+                    repeatvalue = when (repeatOption) {
+                        0 -> "1"
+                        1, 2 -> weeksValue.map {
+                            if (it) 1
+                            else 0
+                        }.joinToString { it.toString() }
+
+                        3 -> monthsValue.map {
+                            if (it) 1
+                            else 0
+                        }.joinToString { it.toString() }
+
+                        4 -> yearsValue.map {
+                            if (it) 1
+                            else 0
+                        }.joinToString { it.toString() }
+                        else -> null
+                    }
+                }
+            } else {
+                if(binding.alldaySwitch.isChecked){
+                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toString()
+                } else {
+                    repeatStartCalendar.set(
+                        Calendar.HOUR_OF_DAY,
+                        binding.repeatStartTimeBtn.text.toString().substring(3,5).toInt()
+                    )
+
+                    repeatStartCalendar.set(
+                        Calendar.HOUR_OF_DAY,
+                        binding.repeatStartTimeBtn.text.toString().substring(6,8).toInt()
+                    )
+
+                    repeatEndCalendar.set(
+                        Calendar.HOUR_OF_DAY,
+                        binding.repeatStartTimeBtn.text.toString().substring(3,5).toInt()
+                    )
+
+                    repeatEndCalendar.set(
+                        Calendar.HOUR_OF_DAY,
+                        binding.repeatStartTimeBtn.text.toString().substring(6,8).toInt()
+                    )
+
+                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toString()
+                }
+            }
+
+            val calendarviewmodel = CalendarViewModel()
+
+            if(category != null) {
+                calendarviewmodel.submitSchedule(
+                    schedule.id, PostSchedule(
+                        binding.scheduleContentEt.text.toString(),
+                        binding.etMemoSchedule.text.toString(),
+                        isAllday,
+                        repeatStartDate,
+                        repeatEndDate,
+                        option,
+                        repeatvalue,
+                        category!!.id,
+                        emptyList()
+                    )
+                ) {
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+            } else {
+                calendarviewmodel.submitSchedule(
+                    schedule.id, PostSchedule(
+                        binding.scheduleContentEt.text.toString(),
+                        binding.etMemoSchedule.text.toString(),
+                        isAllday,
+                        repeatStartDate,
+                        repeatEndDate,
+                        option,
+                        repeatvalue,
+                        null,
+                        emptyList()
+                    )
+                ) {
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+            }
+        }
     }
 
     fun initView(){
@@ -463,6 +650,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
 
         //하루종일 확인 후 반복 구간 설정
         if(schedule.isAllDay){
+            isAllday = true
             binding.alldaySwitch.isChecked = true
 
             binding.alldayIv.backgroundTintList =
@@ -498,13 +686,19 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
                     binding.btnRepeatEndDateSchedule.text = dateformat.format(trulyRepeatEnd)
                 }
 
+                repeatStartCalendar.time = repeatstart
                 binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
+
+                repeatEndCalendar.time = repeatend
                 binding.repeatEndDateBtn.text = dateformat.format(repeatend)
             } else { // 반복이지만 하루 일정일 때
                 val repeatstart = calendarDateFormatter.parse(schedule.repeatStart!!)
                 val repeatend = calendarDateFormatter.parse(schedule.repeatEnd!!)
 
+                repeatStartCalendar.time = repeatstart
                 binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
+
+                repeatEndCalendar.time = repeatstart
                 binding.repeatEndDateBtn.text = dateformat.format(repeatstart)
 
                 if(repeatend.year < 2100) {
@@ -519,7 +713,10 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
             val repeatstart = calendarDateFormatter.parse(schedule.repeatStart!!)
             val repeatend = calendarDateFormatter.parse(schedule.repeatEnd!!)
 
+            repeatStartCalendar.time = repeatstart
             binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
+
+            repeatEndCalendar.time = repeatend
             binding.repeatEndDateBtn.text = dateformat.format(repeatend)
         }
 

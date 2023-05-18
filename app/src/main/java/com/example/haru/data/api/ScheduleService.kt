@@ -13,4 +13,7 @@ interface ScheduleService {
 
     @HTTP(method = "DELETE", path="schedule/{userId}/{scheduleId}")
     fun deleteSchedule(@Path("userId") userId: String, @Path("scheduleId") scheduleId: String) : Call<SuccessFail>
+
+    @PATCH("schedule/{userId}/{scheduleId}")
+    fun submitSchedule(@Path("userId") userId: String, @Path("scheduleId") scheduleId: String, @Body postSchedule: PostSchedule) : Call<SuccessFail>
 }

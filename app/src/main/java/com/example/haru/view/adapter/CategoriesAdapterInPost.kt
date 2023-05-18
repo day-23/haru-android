@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.VectorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.example.haru.data.model.Category
 
 class CategoriesAdapterInPost(val categories: List<Category?>, val listener: (Category) -> Unit) : RecyclerView.Adapter<CategoriesAdapterInPost.CategoryView>() {
 
+    private var plusIndex = 0
     private var chooseIndex = -1
 
     inner class CategoryView(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -34,7 +36,14 @@ class CategoriesAdapterInPost(val categories: List<Category?>, val listener: (Ca
     }
 
     override fun onBindViewHolder(holder: CategoriesAdapterInPost.CategoryView, @SuppressLint("RecyclerView") position: Int) {
-        if(categories[position] != null) {
+        while(categories[position+plusIndex] == null){
+            plusIndex++
+        }
+
+        if(categories[position+plusIndex] != null) {
+            val newposition = position + plusIndex
+            Log.d("20191630",categories[newposition]!!.color.toString())
+
             val categoryColorPost =
                 holder.itemView.findViewById<ImageView>(R.id.category_Color_post)
             val categoryColorOutsidePost =
@@ -42,7 +51,7 @@ class CategoriesAdapterInPost(val categories: List<Category?>, val listener: (Ca
             val categoryNamePost = holder.itemView.findViewById<TextView>(R.id.category_name_post)
 
             categoryColorPost.setColorFilter(
-                Color.parseColor(categories[position]!!.color),
+                Color.parseColor(categories[newposition]!!.color),
                 PorterDuff.Mode.SRC_ATOP
             )
 
@@ -50,7 +59,7 @@ class CategoriesAdapterInPost(val categories: List<Category?>, val listener: (Ca
 
             if (chooseIndex == position) {
                 drawable.setColorFilter(
-                    Color.parseColor(categories[position]!!.color),
+                    Color.parseColor(categories[newposition]!!.color),
                     PorterDuff.Mode.SRC_ATOP
                 )
             } else {
@@ -71,21 +80,21 @@ class CategoriesAdapterInPost(val categories: List<Category?>, val listener: (Ca
 
                 notifyItemChanged(chooseIndex)
 
-                listener(categories[position]!!)
+                listener(categories[newposition]!!)
             }
 
             categoryColorOutsidePost.setColorFilter(
-                Color.parseColor(categories[position]!!.color),
+                Color.parseColor(categories[newposition]!!.color),
                 PorterDuff.Mode.SRC_ATOP
             )
 
             val drawable2 = categoryColorOutsidePost.background as VectorDrawable
             drawable2.setColorFilter(
-                Color.parseColor(categories[position]!!.color),
+                Color.parseColor(categories[newposition]!!.color),
                 PorterDuff.Mode.SRC_ATOP
             )
 
-            categoryNamePost.text = categories[position]!!.content
+            categoryNamePost.text = categories[newposition]!!.content
         }
     }
 

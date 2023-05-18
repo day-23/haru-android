@@ -70,4 +70,24 @@ class ScheduleRepository() {
             }
         }
     }
+
+    suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.submitSchedule(
+                "ysr",
+                scheduleId,
+                postBody
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to submit schedule")
+            } else {
+                Log.d("TAG", "Fail to submit schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
 }

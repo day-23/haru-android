@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
+import com.example.haru.data.model.Category
 import com.example.haru.data.model.PostSchedule
 import com.example.haru.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
@@ -33,7 +34,8 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
                                   val startDate:Date,
                                   val adapter:AdapterMonth,
                                   val activity: FragmentActivity,
-                                  val dialog: Dialog
+                                  val dialog: Dialog,
+                                  val categories: List<Category?>
                                   ) : RecyclerView.Adapter<AdapterCalendarDetailDialog.DetailView>(){
     inner class DetailView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -132,7 +134,7 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
         calendarViewModel.liveTodoList.observe(lifecycleOwner) {livetodo->
             calendarViewModel.liveScheduleList.observe(lifecycleOwner){liveschedule->
                 detailScheduleRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-                detailScheduleRecyclerView.adapter = AdapterSimpleSchedule(liveschedule,activity, startDate, dialog)
+                detailScheduleRecyclerView.adapter = AdapterSimpleSchedule(liveschedule,activity, startDate, dialog, categories)
 
                 detailTodoRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
                 detailTodoRecyclerView.adapter = AdapterSimpleTodo(livetodo,activity, startDate, dialog)
