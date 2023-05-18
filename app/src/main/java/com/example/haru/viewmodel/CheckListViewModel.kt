@@ -10,7 +10,9 @@ import com.example.haru.data.model.*
 import com.example.haru.data.repository.TagRepository
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class CheckListViewModel() :
@@ -267,9 +269,11 @@ class CheckListViewModel() :
 
                     _todoByTag.postValue(false)
                     todoByTagItem = null
+                } else {
+                    Log.d("20191627", "CheckListViewModel -> GetTodoMain Fail")
                 }
+                callback()
             }
-            callback()
         }
     }
 
@@ -310,8 +314,10 @@ class CheckListViewModel() :
                         else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
                     }
                     _todayTodo.postValue(todayList)
-                    callback()
+                } else {
+                    Log.d("20191627", "CheckListViewModel -> GetTodayTdo Fail")
                 }
+                callback()
             }
         }
     }
@@ -335,8 +341,8 @@ class CheckListViewModel() :
                         completedTodos.value?.let { todoList.addAll(it) }
                         _todoDataList.postValue(todoList)
                         _addTodoId.postValue(it.id)
-                        callback()
                     }
+                    callback()
                 }
             }
         }
@@ -422,8 +428,10 @@ class CheckListViewModel() :
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
-                    callback()
+                } else {
+                    Log.d("20191627", "CheckListViewModel -> UpdateTodo Fail")
                 }
+                callback()
             }
         }
     }
@@ -443,8 +451,55 @@ class CheckListViewModel() :
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
-                    callback()
+                } else {
+                    Log.d("20191627", "CheckListViewModel -> UpdateRepeatFrontTodo Fail")
                 }
+                callback()
+            }
+        }
+    }
+
+    fun updateRepeatMiddleTodo(
+        todoId: String,
+        updateRepeatMiddleTodo: UpdateRepeatMiddleTodo,
+        callback: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val updateRepeatTodo = todoRepository.updateRepeatMiddleTodo(
+                todoId = todoId,
+                updateRepeatMiddleTodo = updateRepeatMiddleTodo
+            ) {
+                if (it != null) {
+                    getTag()
+                    checkTodayMode()
+                    withTagUpdate()
+                } else {
+                    Log.d("20191627", "CheckListViewModel -> UpdateRepeatMiddleTodo Fail")
+                }
+                callback()
+            }
+
+        }
+
+    }
+
+    fun updateRepeatBackTodo(
+        todoId: String,
+        updateRepeatBackTodo: UpdateRepeatBackTodo, callback: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val updateRepeatTodo = todoRepository.updateRepeatBackTodo(
+                todoId = todoId,
+                updateRepeatBackTodo = updateRepeatBackTodo
+            ) {
+                if (it != null) {
+                    getTag()
+                    checkTodayMode()
+                    withTagUpdate()
+                } else {
+                    Log.d("20191627", "CheckListViewModel -> UpdateRepeatBackTodo Fail")
+                }
+                callback()
             }
         }
     }
@@ -551,7 +606,11 @@ class CheckListViewModel() :
     }
 
     // 반복하지 않는 할 일, 반복하는 할 일의 전체를 완료하는 기능
-    fun completeNotRepeatTodo(completed: Completed, id: String, callback: (completed : Completed) -> Unit) {
+    fun completeNotRepeatTodo(
+        completed: Completed,
+        id: String,
+        callback: (completed: Completed) -> Unit
+    ) {
         viewModelScope.launch {
             val successData = todoRepository.completeNotRepeatTodo(
                 todoId = id,
@@ -611,7 +670,7 @@ class CheckListViewModel() :
     }
 
     // Todo의 중요를 업데이트 하는 기능
-    fun updateFlag(flag: Flag, id: String, callback: (flag : Flag) -> Unit) {
+    fun updateFlag(flag: Flag, id: String, callback: (flag: Flag) -> Unit) {
         viewModelScope.launch {
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {

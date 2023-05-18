@@ -365,7 +365,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             repeatValue.substring(0, position) + changeValue + repeatValue.substring(position + 1)
     }
 
-    private fun createTodoData(): TodoRequest {
+    private fun createTodo(): TodoRequest {
         return TodoRequest(
             content = content,
             memo = memo,
@@ -385,12 +385,12 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun addTodo(calendar: Boolean = false, callback: () -> Unit) {
-        checklistViewModel.addTodo(createTodoData(), calendar) {
+        checklistViewModel.addTodo(createTodo(), calendar) {
             callback()
         }
     }
 
-    private fun createUpdateTodoData(): UpdateTodo {
+    private fun createUpdateTodo(): UpdateTodo {
         return UpdateTodo(
             content = content,
             memo = memo,
@@ -411,7 +411,7 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         )
     }
 
-    private fun createUpdateRepeatTodoData(nextEndDate: String): UpdateRepeatFrontTodo {
+    private fun createUpdateRepeatFrontTodo(nextEndDate: String): UpdateRepeatFrontTodo {
         return UpdateRepeatFrontTodo(
             content = content,
             memo = memo,
@@ -432,9 +432,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             nextEndDate = nextEndDate
         )
     }
+    
 
     fun updateTodo(callback: () -> Unit) {
-        checklistViewModel.updateTodo(clickedTodo!!.id, createUpdateTodoData()) {
+        checklistViewModel.updateTodo(clickedTodo!!.id, createUpdateTodo()) {
             callback()
         }
     }
@@ -449,14 +450,18 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             val nextEndDateStr = FormatDate.dateToStr(nextEndDate)!!
             checklistViewModel.updateRepeatFrontTodo(
                 todoId = clickedTodo!!.id,
-                updateRepeatFrontTodo = createUpdateRepeatTodoData(nextEndDateStr)
+                updateRepeatFrontTodo = createUpdateRepeatFrontTodo(nextEndDateStr)
             ) {
                 callback()
             }
         } else checklistViewModel.updateTodo(
             todoId = clickedTodo!!.id,
-            todo = createUpdateTodoData()
+            todo = createUpdateTodo()
         ) { callback() }
+    }
+
+    fun updateRepeatMiddleTodo(callback: () -> Unit) {
+
     }
 
     fun deleteTodo(callback: () -> Unit) {
@@ -552,6 +557,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             ) {
                 callback()
             }
+        } else {
+            Log.d("20191627", "TodoAddViewModel -> deleteRepeatBackTodo에서 비상상황 발생!!")
         }
 
     }

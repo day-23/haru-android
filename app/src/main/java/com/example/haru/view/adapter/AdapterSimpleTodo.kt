@@ -256,6 +256,7 @@ class AdapterSimpleTodo(
             }
 
             if (todo.repeatOption != null) {
+                Log.d("todoLocation", "middle")
                 todo.location = 1 // middle
                 todo.endDate = todoendDate
 

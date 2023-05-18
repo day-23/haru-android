@@ -13,8 +13,8 @@ class CategoryRepository {
     suspend fun getCategories(callback:(categoryData : List<Category>) -> Unit) = withContext(
         Dispatchers.IO) {
         val response = CategoryService.getCategories(
-            "ysr",
-//            "005224c0-eec1-4638-9143-58cbfc9688c5"
+//            "ysr",
+            "005224c0-eec1-4638-9143-58cbfc9688c5"
         ).execute()
 
         val data: CategoryResponse
@@ -34,8 +34,8 @@ class CategoryRepository {
     suspend fun postCategory(content:String, color:String, callback:(category: Category?) -> Unit) = withContext(
         Dispatchers.IO) {
         val response = CategoryService.postCategory(
-            "ysr",
-//            "005224c0-eec1-4638-9143-58cbfc9688c5"
+//            "ysr",
+            "005224c0-eec1-4638-9143-58cbfc9688c5",
             PostCategory(content, color)
         ).execute()
 
@@ -56,8 +56,8 @@ class CategoryRepository {
     suspend fun deleteCategory(categoryId: String, callback:(Success: Boolean) -> Unit) = withContext(
         Dispatchers.IO) {
         val response = CategoryService.deleteCategory(
-            "ysr",
-//            "005224c0-eec1-4638-9143-58cbfc9688c5"
+//            "ysr",
+            "005224c0-eec1-4638-9143-58cbfc9688c5",
             CategoryDelete(listOf(categoryId))
         ).execute()
 
@@ -73,8 +73,8 @@ class CategoryRepository {
     suspend fun updateCategory(category:Category, callback:(Success: Boolean) -> Unit) = withContext(
         Dispatchers.IO) {
         val response = CategoryService.updateCategory(
-            "ysr",
-//            "005224c0-eec1-4638-9143-58cbfc9688c5"
+//            "ysr",
+            "005224c0-eec1-4638-9143-58cbfc9688c5",
             category.id,
             UpdateCategory(
                 category.content,
