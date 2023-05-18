@@ -376,7 +376,7 @@ class CalendarAddFragment(private val activity: Activity,
                 binding.btnRepeatEndDateSchedule.text.toString().length-2
             )
 
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            val dateFormat = SimpleDateFormat("yyyy.MM.dd")
             val repeatEndDateCalendar = Calendar.getInstance()
             repeatEndDateCalendar.time = dateFormat.parse(repeatEndDateText)
 
@@ -419,6 +419,7 @@ class CalendarAddFragment(private val activity: Activity,
 
         binding.btnSubmitSchedule.setOnClickListener {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
+            val repeatEndDateBtnFormat = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
 
             var repeatStartDate = ""
             var repeatEndDate = ""
@@ -453,8 +454,6 @@ class CalendarAddFragment(private val activity: Activity,
                             ":" +
                             binding.repeatEndTimeBtn.text.toString().substring(6,8) +
                             ":00+09:00"
-
-                    Log.d("20191630",repeatEndDate)
                 } else {
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) +
                             "T" +
@@ -462,17 +461,16 @@ class CalendarAddFragment(private val activity: Activity,
                             ":" +
                             binding.repeatStartTimeBtn.text.toString().substring(6,8) +
                             ":00+09:00"
-                    repeatEndDate = binding.btnRepeatEndDateSchedule.text.toString().substring(
-                        0,
-                        binding.btnRepeatEndDateSchedule.text.toString().length-2
+                    repeatEndDate = dateFormat.format(
+                        repeatEndDateBtnFormat.parse(
+                            binding.btnRepeatEndDateSchedule.text.toString()
+                        )
                     ) +
                             "T" +
                             binding.repeatEndTimeBtn.text.toString().substring(3,5) +
                             ":" +
                             binding.repeatEndTimeBtn.text.toString().substring(6,8) +
                             ":00+09:00"
-
-                    Log.d("반복 날짜", repeatEndDate)
                 }
             } else {
                 if(!binding.repeatSwitchSchedule.isChecked) {
@@ -486,14 +484,16 @@ class CalendarAddFragment(private val activity: Activity,
                     calendarClone.add(Calendar.YEAR,100)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) + "T00:00:00+09:00"
-                    Log.d("20191630",repeatEndDate)
                 } else {
                     repeatStartDate =
                         dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
-                    repeatEndDate = binding.btnRepeatEndDateSchedule.text.toString().substring(
-                        0,
-                        binding.btnRepeatEndDateSchedule.text.toString().length-2
-                    ) + "T00:00:00+09:00"
+                    repeatEndDate = dateFormat.format(
+                        repeatEndDateBtnFormat.parse(
+                            binding.btnRepeatEndDateSchedule.text.toString()
+                        )
+                    )+ "T00:00:00+09:00"
+
+                    Log.d("20191630",repeatEndDate)
                 }
             }
 
@@ -506,27 +506,38 @@ class CalendarAddFragment(private val activity: Activity,
                 else -> null
             }
 
-            var repeatvalue: String? = null
+            var repeatvalue: String? = ""
 
             if(binding.repeatStartDateBtn.text.toString() == binding.repeatEndDateBtn.text.toString()) {
                 if (option != null) {
-                    repeatvalue = when (repeatOption) {
-                        0 -> "1"
-                        1, 2 -> weeksValue.map {
-                            if (it) 1
-                            else 0
-                        }.joinToString { it.toString() }
+                    when (repeatOption) {
+                        0 -> {
+                            repeatvalue = "1"
+                        }
+                        1, 2 -> {
+                            for (i in 0..6) {
+                                if (weeksValue[i]) repeatvalue += "1"
+                                else repeatvalue += "0"
+                            }
+                        }
 
-                        3 -> monthsValue.map {
-                            if (it) 1
-                            else 0
-                        }.joinToString { it.toString() }
+                        3 -> {
+                            for (i in 0..30) {
+                                if (monthsValue[i]) repeatvalue += "1"
+                                else repeatvalue += "0"
+                            }
+                        }
 
-                        4 -> yearsValue.map {
-                            if (it) 1
-                            else 0
-                        }.joinToString { it.toString() }
-                        else -> null
+                        4 -> {
+                            for (i in 0..11) {
+                                if (yearsValue[i]) repeatvalue += "1"
+                                else repeatvalue += "0"
+                            }
+                        }
+
+                        else -> {
+                            repeatvalue = null
+                        }
                     }
                 }
             } else {
@@ -559,40 +570,24 @@ class CalendarAddFragment(private val activity: Activity,
 
             val calendarViewModel = CalendarViewModel()
 
-            if(category != null) {
-                calendarViewModel.postSchedule(
-                    PostSchedule(
-                        binding.scheduleContentEt.text.toString(),
-                        binding.etMemoSchedule.text.toString(),
-                        isAllday,
-                        repeatStartDate,
-                        repeatEndDate,
-                        option,
-                        repeatvalue,
-                        category!!.id,
-                        emptyList()
-                    )
-                ) {
-                    adapter.notifyDataSetChanged()
-                    dismiss()
-                }
-            } else {
-                calendarViewModel.postSchedule(
-                    PostSchedule(
-                        binding.scheduleContentEt.text.toString(),
-                        binding.etMemoSchedule.text.toString(),
-                        isAllday,
-                        repeatStartDate,
-                        repeatEndDate,
-                        option,
-                        repeatvalue,
-                        null,
-                        emptyList()
-                    )
-                ) {
-                    adapter.notifyDataSetChanged()
-                    dismiss()
-                }
+            Log.d("20191630", repeatStartDate)
+            Log.d("20191630", repeatEndDate)
+
+            calendarViewModel.postSchedule(
+                PostSchedule(
+                    binding.scheduleContentEt.text.toString(),
+                    binding.etMemoSchedule.text.toString(),
+                    isAllday,
+                    repeatStartDate,
+                    repeatEndDate,
+                    option,
+                    repeatvalue,
+                    category?.id,
+                    emptyList()
+                )
+            ) {
+                adapter.notifyDataSetChanged()
+                dismiss()
             }
         }
 

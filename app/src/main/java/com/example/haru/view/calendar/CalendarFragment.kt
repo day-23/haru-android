@@ -97,15 +97,11 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
 
             val touchedView = findTouchedView(x, y)
 
-            Log.d("touchedView", touchedView.toString())
-
-            Log.d("touchedView",fabMain_status.toString())
             if (touchedView != null &&
                 touchedView.id != R.id.btn_add_main_incalendar &&
                 touchedView.id != R.id.btn_add_todo_incalendar &&
                 fabMain_status
             ) {
-
                 Log.d("touchedView","정상 진입")
                 binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
                 binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
@@ -444,6 +440,10 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
             if (fabMain_status) {
                 val scheduleInput = CalendarAddFragment(activity, categoryAdapter.categoryList, adapterMonth)
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
+
+                binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
+                binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
+                binding.btnAddTodoIncalendar.setClickable(false);
             } else {
                 btnAddMainInCalendar.setImageResource(R.drawable.calendar_schedule_add_btn)
                 btnAddTodoInCalendar.visibility = View.VISIBLE
@@ -456,6 +456,11 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
         btnAddTodoInCalendar.setOnClickListener{
             val todoInput = ChecklistInputFragment(checkListViewModel, adapterMonth)
             todoInput.show(parentFragmentManager, todoInput.tag)
+
+            binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
+            binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
+            binding.btnAddTodoIncalendar.setClickable(false);
+            fabMain_status = !fabMain_status
         }
         
         month_viewpager.layoutParams = LinearLayout.LayoutParams(

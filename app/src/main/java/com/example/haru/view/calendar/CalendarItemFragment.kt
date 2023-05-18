@@ -42,6 +42,8 @@ class CalendarItemFragment(val schedule: Schedule,
 
     private var isAllday = false
 
+    private var initRepeatOption: String? = null
+
     private var repeatOption = -1
 
     private var weeksValue = arrayListOf(
@@ -146,6 +148,7 @@ class CalendarItemFragment(val schedule: Schedule,
         repeatOption = opt
     }
 
+    @SuppressLint("ResourceAsColor")
     fun touchEvent(){
         binding.repeatStartDateBtn.setOnClickListener {
             val year = repeatStartCalendar.get(Calendar.YEAR)
@@ -329,7 +332,7 @@ class CalendarItemFragment(val schedule: Schedule,
 
             textView.setOnClickListener {
                 if(!monthsValue[i-1]){
-                    textView.setTextColor(Color.CYAN)
+                    textView.setTextColor(R.color.highlight)
                     monthsValue[i-1] = true
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
@@ -355,7 +358,7 @@ class CalendarItemFragment(val schedule: Schedule,
 
             textView.setOnClickListener {
                 if(!yearsValue[i-1]){
-                    textView.setTextColor(Color.CYAN)
+                    textView.setTextColor(R.color.highlight)
                     yearsValue[i-1] = true
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
@@ -434,10 +437,10 @@ class CalendarItemFragment(val schedule: Schedule,
 
                 if(!weeksValue[i]){
                     weeksValue[i] = true
-                    view.setTextColor(Color.CYAN)
+                    view.setTextColor(R.color.highlight)
                 } else {
                     weeksValue[i] = false
-                    view.setTextColor(Color.LTGRAY)
+                    view.setTextColor(R.color.light_gray)
                 }
             }
         }
@@ -630,6 +633,9 @@ class CalendarItemFragment(val schedule: Schedule,
 
     @SuppressLint("ResourceAsColor")
     fun initView(){
+        //초기 반복 옵션 값 저장
+        initRepeatOption = schedule.repeatOption
+
         //내용 가져오기
         binding.scheduleContentEt.setText(schedule.content)
 
@@ -668,7 +674,7 @@ class CalendarItemFragment(val schedule: Schedule,
             binding.repeatSwitchSchedule.isChecked = true
             binding.repeatEndLayout.visibility = View.VISIBLE
             //구간이 이틀 이상 연속이라 repeatValue에 인터벌 값으로 들어갔을 때
-            if(!schedule.repeatValue.contains("T")) {
+            if(schedule.repeatValue.contains("T")) {
                 val calendar = Calendar.getInstance()
                 val repeatstart = calendarDateFormatter.parse(schedule.repeatStart)
                 calendar.time = repeatstart
@@ -679,7 +685,8 @@ class CalendarItemFragment(val schedule: Schedule,
 
                 val repeatendcontent = calendarDateFormatter.parse(schedule.repeatEnd)
 
-                if (repeatendcontent.year < 2100) {
+                //year을 가져오면 원래 년도에서 1900을 뺀 값이 나오기 때문에 2100 대신에 200을 넣어 계산
+                if (repeatendcontent.year < 200) {
                     binding.repeatEndDateSwitchSchedule.isChecked = true
                     binding.repeatEndDateScheduleTv.setTextColor(Color.parseColor("#191919"))
                     binding.btnRepeatEndDateSchedule.visibility = View.VISIBLE
@@ -703,7 +710,7 @@ class CalendarItemFragment(val schedule: Schedule,
                 repeatEndCalendar.time = repeatstart
                 binding.repeatEndDateBtn.text = dateformat.format(repeatstart)
 
-                if(repeatend.year < 2100) {
+                if(repeatend.year < 200) {
                     binding.repeatEndDateSwitchSchedule.isChecked = true
                     binding.repeatEndDateScheduleTv.setTextColor(Color.parseColor("#191919"))
                     binding.btnRepeatEndDateSchedule.visibility = View.VISIBLE
@@ -754,7 +761,15 @@ class CalendarItemFragment(val schedule: Schedule,
                     if(schedule.repeatValue != null && !schedule.repeatValue.contains("T")){
                         for (i in 0 until schedule.repeatValue.length){
                             weeksValue[i] = schedule.repeatValue[i] == '1'
-                            (binding.everyWeekLayout.getChildAt(i) as TextView).setTextColor(R.color.highlight)
+                            if(weeksValue[i]) {
+                                val childView = binding.everyWeekLayout.getChildAt(i) as TextView
+                                childView.setTextColor(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.highlight
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -765,7 +780,15 @@ class CalendarItemFragment(val schedule: Schedule,
                     if(schedule.repeatValue != null && !schedule.repeatValue.contains("T")){
                         for (i in 0 until schedule.repeatValue.length){
                             weeksValue[i] = schedule.repeatValue[i] == '1'
-                            (binding.everyWeekLayout.getChildAt(i) as TextView).setTextColor(R.color.highlight)
+                            if(weeksValue[i]) {
+                                val childView = binding.everyWeekLayout.getChildAt(i) as TextView
+                                childView.setTextColor(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.highlight
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -776,7 +799,16 @@ class CalendarItemFragment(val schedule: Schedule,
                     if(schedule.repeatValue != null && !schedule.repeatValue.contains("T")){
                         for (i in 0 until schedule.repeatValue.length){
                             monthsValue[i] = schedule.repeatValue[i] == '1'
-                            (binding.gridMonthSchedule.getChildAt(i) as TextView).setTextColor(R.color.highlight)
+
+                            if(monthsValue[i]) {
+                                val childeView = binding.gridMonthSchedule.getChildAt(i) as TextView
+                                childeView.setTextColor(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.highlight
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -787,7 +819,16 @@ class CalendarItemFragment(val schedule: Schedule,
                     if(schedule.repeatValue != null && !schedule.repeatValue.contains("T")){
                         for (i in 0 until schedule.repeatValue.length){
                             yearsValue[i] = schedule.repeatValue[i] == '1'
-                            (binding.gridYearSchedule.getChildAt(i) as TextView).setTextColor(R.color.highlight)
+
+                            if(yearsValue[i]) {
+                                val childView = binding.gridYearSchedule.getChildAt(i) as TextView
+                                childView.setTextColor(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.highlight
+                                    )
+                                )
+                            }
                         }
                     }
                 }

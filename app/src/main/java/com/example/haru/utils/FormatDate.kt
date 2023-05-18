@@ -378,6 +378,4 @@ object FormatDate {
         }
         return nextEndDate
     }
-
-
 }

@@ -83,6 +83,8 @@ class AdapterSimpleTodo(val todos: List<Todo>,
 
         if(tag.length > 0) tag = tag.dropLast(0)
 
+        detailTodoTagsTv.text = tag
+
         if(todo.flag){
             detailTodoFlagImv.setBackgroundResource(R.drawable.star_check)
         }
