@@ -3,6 +3,7 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -25,7 +26,6 @@ class TodoRepository() {
                 .execute()
         val data: GetTodoResponse
         val todoData: List<Todo>
-        Log.d("20191627", "여기는 getTodo")
 
         if (response.isSuccessful) {
             Log.d("TAG", "Success to get todos")
@@ -38,144 +38,149 @@ class TodoRepository() {
         callback(todoData)
     }
 
-    suspend fun getTodoMain(callback: (todoData: TodoList?) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun getTodoMain(callback: (getMainTodoResponse: GetMainTodoResponse?) -> Unit) = withContext(Dispatchers.IO) {
         val response = todoService.getTodoMain("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
-        val data: GetMainTodoResponse?
-        val todoData: TodoList?
-        Log.d("20191627", "여기는 getTodo")
+        var data = response.body()
 
-        if (response.isSuccessful) {
+        val getMainTodoResponse = if (response.isSuccessful) {
             Log.d("TAG", "Success to get todos")
-            data = response.body()
-            todoData = data?.data
+            data
         } else {
             Log.d("TAG", "Fail to get todos")
-            todoData = response.body()?.data
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, GetMainTodoResponse::class.java)
+            data
         }
-        callback(todoData)
+        callback(getMainTodoResponse)
     }
 
 
     suspend fun createTodo(
         calendar: Boolean,
         todoRequest: TodoRequest,
-        callback: (todoData: Todo?) -> Unit
+        callback: (postTodoResponse: PostTodoResponse?) -> Unit
     ) {
         withContext(Dispatchers.IO) {
             val response =
                 todoService.createTodo("005224c0-eec1-4638-9143-58cbfc9688c5", todoRequest)
                     .execute()
-            val data: PostTodoResponse?
-            val todoData: Todo?
+            var data = response.body()
 
-            if (response.isSuccessful) {
+            val postTodoResponse = if (response.isSuccessful) {
                 Log.d("TAG", "Success to create todo")
-                data = response.body()
-                todoData = data?.data
+                data
             } else {
                 Log.d("TAG", "Fail to create todo")
-                todoData = response.body()?.data
+                val error = response.errorBody()?.string()
+                val gson = Gson()
+                data = gson.fromJson(error, PostTodoResponse::class.java)
+                data
             }
 
             if (calendar) {
                 withContext(Dispatchers.Main) {
-                    callback(todoData)
+                    callback(postTodoResponse)
                 }
             } else {
-                callback(todoData)
+                callback(postTodoResponse)
             }
         }
     }
 
-    suspend fun getTodoByTag(tagId: String, callback: (todoData: GetTodoByTagData?) -> Unit) =
+    suspend fun getTodoByTag(tagId: String, callback: (getTodoByTag: GetTodoByTag?) -> Unit) =
         withContext(Dispatchers.IO) {
             val response =
                 todoService.getTodoByTag("005224c0-eec1-4638-9143-58cbfc9688c5", tagId).execute()
-            val data: GetTodoByTag?
-            val todoData: GetTodoByTagData?
-            Log.d("20191627", "여기는 getTodoByTag")
+            var data = response.body()
 
-            if (response.isSuccessful) {
+            val getTodoByTag = if (response.isSuccessful) {
                 Log.d("TAG", "Success to get Todo By Tag")
-                data = response.body()
-                todoData = data?.data
+                data
             } else {
                 Log.d("TAG", "Fail to get Todo By Tag")
-                todoData = response.body()?.data
+                val error = response.errorBody()?.string()
+                val gson = Gson()
+                data = gson.fromJson(error, GetTodoByTag::class.java)
+                data
             }
-            callback(todoData)
+            callback(getTodoByTag)
         }
 
-    suspend fun getTodoByFlag(callback: (todoData : List<Todo>?) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun getTodoByFlag(callback: (getTodoBy : GetTodoBy?) -> Unit) = withContext(Dispatchers.IO) {
         val response = todoService.getTodoByFlag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
-        val data: GetTodoBy?
-        val todoData: List<Todo>?
+        var data = response.body()
 
-        if (response.isSuccessful) {
+        val getTodoBy = if (response.isSuccessful) {
             Log.d("TAG", "Success to get Todo By Flag")
-            data = response.body()
-            todoData = data?.data
+            data
         } else {
             Log.d("TAG", "Fail to get Todo By Flag")
-            todoData = response.body()?.data
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, GetTodoBy::class.java)
+            data
         }
-        callback(todoData)
+        callback(getTodoBy)
     }
 
-    suspend fun getTodoByComplete(callback : (todoData : List<Todo>?) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun getTodoByComplete(callback : (getTodoBy: GetTodoBy?) -> Unit) = withContext(Dispatchers.IO) {
         val response =
             todoService.getTodoByCompleted("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
-        val data: GetTodoBy?
-        val todoData: List<Todo>?
+        var data = response.body()
 
-        if (response.isSuccessful) {
+        val getTodoBy = if (response.isSuccessful) {
             Log.d("TAG", "Success to get Todo By Completed")
-            data = response.body()
-            todoData = data?.data
+            data
         } else {
             Log.d("TAG", "Fail to get Todo By Completed")
-            todoData = response.body()?.data
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, GetTodoBy::class.java)
+            data
         }
-        callback(todoData)
+        callback(getTodoBy)
     }
 
-    suspend fun getTodoByUntag(callback : (todoData : List<Todo>?) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun getTodoByUntag(callback : (getTodoBy: GetTodoBy?) -> Unit) = withContext(Dispatchers.IO) {
         val response = todoService.getTodoByUntag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
-        val data: GetTodoBy?
-        val todoData: List<Todo>?
+        var data = response.body()
 
-        if (response.isSuccessful) {
+        val getTodoBy = if (response.isSuccessful) {
             Log.d("TAG", "Success to get Todo By Untag")
-            data = response.body()
-            todoData = data?.data
+            data
         } else {
             Log.d("TAG", "Fail to get Todo By Untag")
-            todoData = response.body()?.data
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, GetTodoBy::class.java)
+            data
         }
-        callback(todoData)
+        callback(getTodoBy)
     }
 
     suspend fun updateTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
         todo: UpdateTodo,
-        callback: (todoData: Todo?) -> Unit
+        callback: (updateTodoResponse: UpdateTodoResponse?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.updateTodo(userId, todoId, todo).execute()
-        val data: UpdateTodoResponse?
-        val todoData: Todo?
+        var data = response.body()
 
         // null 값이 json으로 parsing 할때 null 값으로 안들어감
 
-        if (response.isSuccessful) {
+        val updateTodoResponse = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update Todo")
-            data = response.body()
-            todoData = data?.data
+            data
         } else {
             Log.d("TAG", "Fail to Update Todo")
-            todoData = response.body()?.data
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, UpdateTodoResponse::class.java)
+            data
         }
-        callback(todoData)
+        callback(updateTodoResponse)
     }
 
     suspend fun deleteTodo(
@@ -184,13 +189,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.deleteTodo(userId, todoId).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Delete Todo")
             data
         } else {
             Log.d("TAG", "Fail to Delete Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -202,13 +210,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.updateFlag(userId, todoId, flag).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update Flag")
             data
         } else {
             Log.d("TAG", "Fail to Update Flag")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -221,13 +232,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.completeNotRepeatTodo(userId, todoId, completed).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Complete NotRepeatTodo Complete")
             data
         } else {
             Log.d("TAG", "Fail to Complete NotRepeatTodo Complete")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -236,21 +250,22 @@ class TodoRepository() {
     suspend fun getTodayTodo(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         frontEndDate: FrontEndDate,
-        callback: (todoList: TodoList?) -> Unit
+        callback: (getTodayTodo: GetTodayTodo?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.getTodayTodo(userId, frontEndDate).execute()
-        val data: GetTodayTodo?
-        val todoList: TodoList?
+        var data = response.body()
 
-        if (response.isSuccessful) {
+        val getTodayTodo = if (response.isSuccessful) {
             Log.d("TAG", "Success to Get Today Todo")
-            data = response.body()
-            todoList = data?.data
+            data
         } else {
             Log.d("TAG", "Fail to Get Today Todo")
-            todoList = response.body()?.data
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, GetTodayTodo::class.java)
+            data
         }
-        callback(todoList)
+        callback(getTodayTodo)
     }
 
     suspend fun completeSubTodo(
@@ -260,13 +275,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.completeSubTodo(userId, subTodoId, completed).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Complete SubTodo Complete")
             data
         } else {
             Log.d("TAG", "Fail to Complete SubTodo Complete")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -279,13 +297,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.updateFolded(userId, todoId, folded).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update Folded")
             data
         } else {
             Log.d("TAG", "Fail to Update Folded")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -298,13 +319,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.completeRepeatFrontTodo(userId, todoId, frontEndDate).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Complete Repeat Todo")
             data
         } else {
             Log.d("TAG", "Fail to Complete Repeat Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -317,13 +341,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.updateRepeatFrontTodo(userId, todoId, updateRepeatFrontTodo).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update Repeat Front Todo")
             data
         } else {
             Log.d("TAG", "Fail to Update Repeat Front Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -336,13 +363,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO){
         val response = todoService.updateRepeatMiddleTodo(userId, todoId, updateRepeatMiddleTodo).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update Repeat Middle Todo")
             data
         } else {
             Log.d("TAG", "Fail to Update Repeat Middle Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -355,13 +385,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO){
         val response = todoService.updateRepeatBackTodo(userId, todoId, updateRepeatBackTodo).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update Repeat Back Todo")
             data
         } else {
             Log.d("TAG", "Fail to Update Repeat Back Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -374,13 +407,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.deleteRepeatFrontTodo(userId, todoId, frontEndDate).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Delete Repeat Front Todo")
             data
         } else {
             Log.d("TAG", "Fail to Delete Repeat Front Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -393,13 +429,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.deleteRepeatMiddleTodo(userId, todoId, middleEndDate).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Delete Repeat Middle Todo")
             data
         } else {
             Log.d("TAG", "Fail to Delete Repeat Middle Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -412,13 +451,16 @@ class TodoRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = todoService.deleteRepeatBackTodo(userId, todoId, backRepeatEnd).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Delete Repeat Back Todo")
             data
         } else {
             Log.d("TAG", "Fail to Delete Repeat Back Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         callback(successData)
@@ -429,13 +471,16 @@ class TodoRepository() {
         changeOrderTodo: ChangeOrderTodo
     ) = withContext(Dispatchers.IO){
         val response = todoService.updateOrderMainTodo(userId, changeOrderTodo).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData : SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update Order Main Todo")
             data
         } else {
             Log.d("TAG", "Fail to Update Order Main Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
         successData
