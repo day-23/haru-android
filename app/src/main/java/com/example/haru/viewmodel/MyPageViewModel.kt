@@ -73,6 +73,11 @@ class MyPageViewModel(): ViewModel() {
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
 
+    init{
+        _SelectedImage.value = -1
+        _SelectedPosition.value = arrayListOf()
+    }
+
     fun init_page(){
         _Page.value = 1
     }
@@ -132,13 +137,19 @@ class MyPageViewModel(): ViewModel() {
         _SelectedPosition.value = newlist!!
     }
 
+    fun resetSelection(){
+        _SelectedImage.value = -1
+        _SelectedPosition.value = arrayListOf()
+        lastImageIndex = -1
+    }
+
     //커스텀 갤러리 단일 사진 선택을 위한 함수
     fun selectOnePicture(i : Int){
         lastImageIndex = SelectedImage.value ?: -1
         _SelectedImage. value = i
     }
 
-    fun getLastImage(): Int{
+    fun getLastImage(): Int {
         return lastImageIndex
     }
 
@@ -148,11 +159,11 @@ class MyPageViewModel(): ViewModel() {
         val indexSet = _SelectedPosition.value
         val indexOne = _SelectedImage.value
         val totalImage = _StoredImages.value
-        if(indexSet != null && totalImage != null) {
+        if(indexSet!!.size > 0 && totalImage != null) {
             for (i in indexSet) {
                 images.add(totalImage.get(i))
             }
-        }else if(indexOne != null && totalImage != null){
+        }else if(indexOne != null && indexOne != -1 && totalImage != null){
             images.add(totalImage.get(indexOne))
         }
 

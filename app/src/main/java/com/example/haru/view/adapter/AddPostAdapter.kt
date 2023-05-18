@@ -1,5 +1,6 @@
 package com.example.haru.view.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorMatrix
@@ -27,7 +28,6 @@ class AddPostAdapter (val context: Context,
                       private val myPageViewModel: MyPageViewModel): RecyclerView.Adapter<AddPostAdapter.AddPostViewHolder>(){
 
     var multiSelect = false
-    var clicked = false
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddPostAdapter.AddPostViewHolder{
         val view = LayoutInflater.from(context)
             .inflate(R.layout.addpost_gallery_image, parent, false)
@@ -36,12 +36,18 @@ class AddPostAdapter (val context: Context,
 
     override fun onBindViewHolder(holder: AddPostAdapter.AddPostViewHolder, position: Int) {
         Glide.with(context).load(itemList[position].absuri).into(holder.image)
+        var clicked = false
 
         if(multiSelect){
             holder.selectcircle.visibility = View.VISIBLE
+
         }else{
             holder.selectcircle.visibility = View.INVISIBLE
         }
+
+        holder.selected.visibility = View.INVISIBLE
+        holder.index.visibility = View.INVISIBLE
+        holder.image.setColorFilter(null)
 
         holder.image.setOnClickListener {
             if(multiSelect) {
@@ -66,9 +72,10 @@ class AddPostAdapter (val context: Context,
         return itemList.size
     }
 
-    fun setMultiSelect(){
+    fun setMultiSelect(): Boolean{
         if(multiSelect) multiSelect = false
         else multiSelect = true
+        return multiSelect
     }
 
     inner class AddPostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

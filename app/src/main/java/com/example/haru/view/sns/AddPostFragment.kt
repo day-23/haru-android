@@ -41,6 +41,7 @@ class AddPostFragment : Fragment() {
     lateinit var binding : FragmentAddPostBinding
     lateinit var galleryRecyclerView: RecyclerView
     lateinit var galleryViewmodel: MyPageViewModel
+    lateinit var galleryAdapter: AddPostAdapter
     var multiSelect = false
 
         companion object{
@@ -77,7 +78,7 @@ class AddPostFragment : Fragment() {
             galleryViewmodel.SelectedImage.observe(viewLifecycleOwner){ index->
                 val lastindex = galleryViewmodel.getLastImage()
                 val layoutManager = galleryRecyclerView.layoutManager
-                if(layoutManager != null){
+                if(layoutManager != null && index != -1){
                     Log.d("20191668", "current :$index last :$lastindex")
                     val targetView = layoutManager.findViewByPosition(index)
                     val imageView = targetView!!.findViewById<ImageView>(R.id.image)
@@ -87,12 +88,16 @@ class AddPostFragment : Fragment() {
                         val LastTargetView = layoutManager.findViewByPosition(lastindex)
                         val LastImageView = LastTargetView!!.findViewById<ImageView>(R.id.image)
                         LastImageView!!.setColorFilter(null)
+                        if(lastindex == index){
+                            galleryViewmodel.resetSelection()
+                        }
                     }
                 }
             }
 
             galleryViewmodel.StoredImages.observe(viewLifecycleOwner){images ->
-                galleryRecyclerView.adapter = AddPostAdapter(requireContext(), images, galleryViewmodel)
+                galleryAdapter = AddPostAdapter(requireContext(), images, galleryViewmodel)
+                galleryRecyclerView.adapter = galleryAdapter
                 val gridLayoutManager = GridLayoutManager(requireContext(), 3)
                 gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int {
@@ -116,37 +121,51 @@ class AddPostFragment : Fragment() {
             }
 
             galleryViewmodel.SelectedPosition.observe(viewLifecycleOwner){selected ->
-                for(i in selected){
-                    val layoutManager = galleryRecyclerView.layoutManager
-                    if(layoutManager != null){
-                        val targetView = layoutManager.findViewByPosition(i)
-                        val textView = targetView?.findViewById<TextView>(R.id.select_index)
-                        textView?.text = "${selected.indexOf(i) + 1}"
+                if(selected != null) {
+                    for (i in selected) {
+                        Log.d("20191668", "i : $i")
+                        val layoutManager = galleryRecyclerView.layoutManager
+                        if (layoutManager != null) {
+                            val targetView = layoutManager.findViewByPosition(i)
+                            val textView = targetView?.findViewById<TextView>(R.id.select_index)
+                            textView?.text = "${selected.indexOf(i) + 1}"
+                        }
                     }
                 }
             }
 
             binding.imageMultiSelect.setOnClickListener {
-
+                galleryViewmodel.resetSelection()
+                val result = galleryAdapter.setMultiSelect()
+                if (result){
+                    binding.imageMultiSelect.setImageResource(R.drawable.multi_select_on)
+                } else{
+                    binding.imageMultiSelect.setImageResource(R.drawable.multi_select_picture)
+                }
+                galleryAdapter.notifyDataSetChanged()
             }
 
             binding.addpostApply.setOnClickListener{
-                val converedImage =  galleryViewmodel.convertMultiPart(requireContext())
-                val content = binding.addpostContent.text.toString()
-                val hashtag = arrayListOf("해시스완")
-                var updatedone = false
-                Toast.makeText(requireContext(),"게시글 작성중...", Toast.LENGTH_SHORT).show()
+                if(galleryViewmodel.SelectedImage.value != -1 || galleryViewmodel.SelectedPosition.value!!.size > 0) {
+                    val converedImage = galleryViewmodel.convertMultiPart(requireContext())
+                    val content = binding.addpostContent.text.toString()
+                    val hashtag = arrayListOf("해시스완")
+                    Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
 
-                galleryViewmodel.postRequest(converedImage, content, hashtag)
-                galleryViewmodel.resetValue()
+                    galleryViewmodel.postRequest(converedImage, content, hashtag)
+                    galleryViewmodel.resetValue()
 
-                galleryViewmodel.PostDone.observe(viewLifecycleOwner){done ->
-                    val fragmentManager = parentFragmentManager
-                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    val fragment = SnsFragment()
-                    val transaction = parentFragmentManager.beginTransaction()
-                    transaction.replace(R.id.fragments_frame, fragment)
-                    transaction.commit()
+
+                    galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
+                        val fragmentManager = parentFragmentManager
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        val fragment = SnsFragment()
+                        val transaction = parentFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragments_frame, fragment)
+                        transaction.commit()
+                    }
+                }else{
+                    Toast.makeText(requireContext(), "사진을 선택해 주세요" ,Toast.LENGTH_SHORT).show()
                 }
             }
 
