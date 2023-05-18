@@ -91,4 +91,6 @@ class SnsViewModel: ViewModel() {
             }
         }
     }
+
+
 }

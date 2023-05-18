@@ -55,11 +55,13 @@ class AddPostAdapter (val context: Context,
                     holder.selected.visibility = View.INVISIBLE
                     holder.index.visibility = View.INVISIBLE
                     clicked = false
+                    holder.image.setColorFilter(null)
                     myPageViewModel.delSelected(position)
                 } else {
                     holder.selected.visibility = View.VISIBLE
                     holder.index.visibility = View.VISIBLE
                     clicked = true
+                    holder.image.setColorFilter(Color.argb(127, 0, 0, 0), PorterDuff.Mode.SRC_OVER)
                     myPageViewModel.addSelected(position)
                 }
             }else{

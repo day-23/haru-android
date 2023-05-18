@@ -52,6 +52,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/change_category"
             android:layout_gravity="right"/>
+
     </LinearLayout>
 
     <Button
