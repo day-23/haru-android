@@ -104,8 +104,9 @@ class CheckListViewModel() :
     fun getTag() { // Tag 받아오는 기능
         viewModelScope.launch {
             tagRepository.getTag {
-                if (it != null)
-                    _tagDataList.postValue(basicTag + it)
+                if (it?.success == true)
+                    _tagDataList.postValue(basicTag + it.data)
+                else Log.e("20191627", it.toString())
             }
         }
     }
@@ -126,7 +127,7 @@ class CheckListViewModel() :
                     getTag()
                     withTagUpdate()
                 } else {
-                    Log.e("20191627", it?.error?.devMessage.toString())
+                    Log.e("20191627", it.toString())
                 }
             }
         }
@@ -135,10 +136,10 @@ class CheckListViewModel() :
     fun deleteTagList(tagIdList: TagIdList) {  // 태그 삭제 기능
         viewModelScope.launch {
             tagRepository.deleteTagList(tagIdList = tagIdList) {
-                if (it != null) {
+                if (it?.success == true) {
                     getTag()
                     withTagUpdate()
-                }
+                } else Log.e("20191627", it.toString())
             }
         }
     }
@@ -146,10 +147,10 @@ class CheckListViewModel() :
     fun updateTag(tagId: String, updateTag: TagUpdate) {  // 태그 수정 기능
         viewModelScope.launch {
             tagRepository.updateTag(tagId = tagId, updateTag = updateTag) {
-                if (it != null) {
+                if (it?.success == true) {
                     getTag()
                     withTagUpdate()
-                }
+                } else Log.e("20191627", it.toString())
             }
         }
     }

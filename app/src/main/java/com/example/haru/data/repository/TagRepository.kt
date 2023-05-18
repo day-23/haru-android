@@ -11,21 +11,21 @@ import org.json.JSONObject
 class TagRepository() {
     private val tagService = RetrofitClient.tagService
 
-    suspend fun getTag(callback: (tagData: List<Tag>?) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun getTag(callback: (tagResponse : TagResponse?) -> Unit) = withContext(Dispatchers.IO) {
         val response = tagService.getTag("005224c0-eec1-4638-9143-58cbfc9688c5").execute()
-        val data: TagResponse?
-        val tagData: List<Tag>?
-        Log.d("20191627", "여기는 getTag")
+        var data = response.body()
 
-        if (response.isSuccessful) {
+        val tagResponse : TagResponse? = if (response.isSuccessful) {
             Log.d("TAG", "Success to get tags")
-            data = response.body()
-            tagData = data?.data
+            data
         } else {
             Log.d("TAG", "Fail to get tags")
-            tagData = response.body()?.data
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, TagResponse::class.java)
+            data
         }
-        callback(tagData)
+        callback(tagResponse)
     }
 
     suspend fun createTag(
@@ -40,33 +40,14 @@ class TagRepository() {
             Log.d("TAG", "Success to Create Tag")
             data
         } else {
+            Log.d("TAG", "Fail to Create Tag")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFailTag::class.java)
-            Log.d("TAG", "Fail to Create Tag")
-            Log.e("20191627", "error - body : $data")
             data
         }
         callback(successData)
     }
-
-//    suspend fun createTagList(
-//        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
-//        contents: ContentList,
-//        callback: (successData: SuccessFailTagList) -> Unit
-//    ) = withContext(Dispatchers.IO) {
-//        val response = tagService.createTagList(userId, contents).execute()
-//        val data = response.body()!!
-//
-//        val successData: SuccessFailTagList = if (response.isSuccessful) {
-//            Log.d("TAG", "Success to Create TagList")
-//            data
-//        } else {
-//            Log.d("TAG", "Fail to Create TagList")
-//            data
-//        }
-//        callback(successData)
-//    }
 
     suspend fun deleteTagList(
         userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
@@ -74,16 +55,19 @@ class TagRepository() {
         callback: (successData: SuccessFail?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = tagService.deleteTagList(userId, tagIdList).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Delete TagList")
             data
         } else {
             Log.d("TAG", "Fail to Delete TagList")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
-        callback(data)
+        callback(successData)
     }
 
     suspend fun updateTag(
@@ -93,15 +77,18 @@ class TagRepository() {
         callback: (successData: SuccessFailTag?) -> Unit
     ) = withContext(Dispatchers.IO) {
         val response = tagService.updateTag(userId, tagId, updateTag).execute()
-        val data = response.body()
+        var data = response.body()
 
         val successData: SuccessFailTag? = if (response.isSuccessful) {
             Log.d("TAG", "Success to Update Tag")
             data
         } else {
             Log.d("TAG", "Fail to Update Tag")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFailTag::class.java)
             data
         }
-        callback(data)
+        callback(successData)
     }
 }
