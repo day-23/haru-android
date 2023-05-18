@@ -111,6 +111,8 @@ class AdapterSimpleTodo(
 
             var todoendDate = ""
 
+            Log.d("todoLocation", todo.toString())
+
             if (todo.endDate != null) {
                 val enddate = serverDateFormat.parse(todo.endDate)
                 val backendDate =

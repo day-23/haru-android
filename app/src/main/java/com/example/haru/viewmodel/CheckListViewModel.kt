@@ -272,8 +272,8 @@ class CheckListViewModel() :
                 } else {
                     Log.d("20191627", "CheckListViewModel -> GetTodoMain Fail")
                 }
-                callback()
             }
+            callback()
         }
     }
 

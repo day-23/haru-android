@@ -27,13 +27,14 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
         this.type = type
         ratio = when (type) {
             // 취소 버튼 제외하고 선택지가 1개인 경우
-            UpdateType.FRONT_ONE, UpdateType.FRONT_TWO, UpdateType.MID_BACK_TWO, UpdateType.NOT_REPEAT -> 23
+            UpdateType.FRONT_ONE, UpdateType.FRONT_TWO,
+            UpdateType.BACK_TWO, UpdateType.NOT_REPEAT, UpdateType.MIDDLE_TWO -> 23
 
             // 취소 버튼 제외하고 선택지가 2개인 경우
-            UpdateType.FRONT_THREE, UpdateType.MID_BACK_ONE -> 30
+            UpdateType.FRONT_THREE, UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> 30
 
             // 취소 버튼 제외하고 선택지가 3개인 경우
-            UpdateType.MID_BACK_THREE -> 38
+            UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> 38
         }
         this.todoAddViewModel = todoAddViewModel
     }
@@ -95,18 +96,19 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
                 binding.btnOptionAfterUpdate.visibility = View.GONE
                 binding.btnOptionSave.visibility = View.GONE
             }
-            UpdateType.MID_BACK_ONE -> { // 전체 할일 수정, 이 할일부터 수정
+            UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> { // 전체 할일 수정, 이 할일부터 수정
                 binding.btnOptionOneUpdate.visibility = View.GONE
                 binding.btnOptionSave.visibility = View.GONE
             }
-            UpdateType.MID_BACK_TWO -> { // 이 할일만 수정
+            UpdateType.MIDDLE_TWO, UpdateType.BACK_TWO -> { // 이 할일만 수정
                 binding.btnOptionAllUpdate.visibility = View.GONE
                 binding.btnOptionAfterUpdate.visibility = View.GONE
                 binding.btnOptionSave.visibility = View.GONE
             }
-            UpdateType.MID_BACK_THREE -> {} // 모든 옵션을 보여주는 상황
+            UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> {} // 모든 옵션을 보여주는 상황
             UpdateType.NOT_REPEAT -> {
-                binding.textViewUpdateInfo.text = getString(R.string.updateDescription).substring(0, 12)
+                binding.textViewUpdateInfo.text =
+                    getString(R.string.updateDescription).substring(0, 12)
                 binding.btnOptionOneUpdate.visibility = View.GONE
                 binding.btnOptionAllUpdate.visibility = View.GONE
                 binding.btnOptionAfterUpdate.visibility = View.GONE
@@ -125,15 +127,31 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
             when (v?.id) {
                 binding.btnOptionOneUpdate.id -> {
                     binding.btnOptionOneUpdate.isClickable = false
-                    if (type == UpdateType.FRONT_TWO)  // front에서의 하나만 업데이트
-                        todoAddViewModel.updateRepeatFrontTodo {
-                            binding.btnOptionOneUpdate.isClickable = true
-                            dismiss()
-                            requireActivity().supportFragmentManager.popBackStack()
+                    when (type) {
+                        UpdateType.FRONT_TWO, UpdateType.FRONT_THREE -> { // front
+                            todoAddViewModel.updateRepeatFrontTodo {
+                                binding.btnOptionOneUpdate.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
                         }
-                    else {
-                        binding.btnOptionOneUpdate.isClickable = true
-                        // middle, back에서의 하나만 업데이트
+                        UpdateType.MIDDLE_TWO, UpdateType.MIDDLE_THREE -> { // middle
+                            todoAddViewModel.updateRepeatMiddleTodo {
+                                binding.btnOptionOneUpdate.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        UpdateType.BACK_TWO, UpdateType.BACK_THREE -> { // back
+                            todoAddViewModel.updateRepeatBackTodo {
+                                binding.btnOptionOneUpdate.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        else -> {
+                            Log.d("20191627", "UpdateOptionDialog -> OneUpdate 잘못된 Type")
+                        }
                     }
                 }
                 binding.btnOptionAllUpdate.id -> {
@@ -146,8 +164,18 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
                 }
                 binding.btnOptionAfterUpdate.id -> {
                     binding.btnOptionAfterUpdate.isClickable = false
-//                    binding.btnOptionAfterUpdate.isClickable = true
                     // middle, back의 이후부터 수정
+                    when (type) {
+                        UpdateType.MIDDLE_ONE, UpdateType.MIDDLE_THREE,
+                        UpdateType.BACK_ONE, UpdateType.BACK_THREE -> {
+                            todoAddViewModel.updateRepeatBackTodo {
+                                binding.btnOptionAfterUpdate.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        else -> {}
+                    }
 
                 }
 

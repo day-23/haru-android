@@ -432,7 +432,54 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             nextEndDate = nextEndDate
         )
     }
-    
+
+    private fun createUpdateRepeatMiddleTodo(
+        changedDate: String,
+        nextEndDate: String
+    ): UpdateRepeatMiddleTodo {
+        return UpdateRepeatMiddleTodo(
+            content = content,
+            memo = memo,
+            completed = completedTodo.value!!,
+            todayTodo = todayTodo.value!!,
+            flag = flagTodo.value!!,
+            isAllDay = isSelectedEndDateTime.value ?: false,
+            endDate = endDateStr,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(
+                repeatOption.value
+            ) else null,
+            repeatValue = repeatValue.value,
+            repeatEnd = repeatEndDateStr,
+            tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
+            subTodos = subTodos,
+            subTodosCompleted = subTodoCompleted,
+            alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!),
+            changedDate = changedDate,
+            nextEndDate = nextEndDate
+        )
+    }
+
+    private fun createUpdateRepeatBackTodo(preEndDate: String): UpdateRepeatBackTodo {
+        return UpdateRepeatBackTodo(
+            content = content,
+            memo = memo,
+            completed = completedTodo.value!!,
+            todayTodo = todayTodo.value!!,
+            flag = flagTodo.value!!,
+            isAllDay = isSelectedEndDateTime.value ?: false,
+            endDate = endDateStr,
+            repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(
+                repeatOption.value
+            ) else null,
+            repeatValue = repeatValue.value,
+            repeatEnd = repeatEndDateStr,
+            tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
+            subTodos = subTodos,
+            subTodosCompleted = subTodoCompleted,
+            alarms = if (alarmDateTimeStr == null) emptyList() else listOf(alarmDateTimeStr!!),
+            preRepeatEnd = preEndDate
+        )
+    }
 
     fun updateTodo(callback: () -> Unit) {
         checklistViewModel.updateTodo(clickedTodo!!.id, createUpdateTodo()) {
@@ -461,6 +508,47 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun updateRepeatMiddleTodo(callback: () -> Unit) {
+        val nextEndDate = findNextEndDate()
+        val changedDate = clickedTodo?.endDate
+        repeatValueStr = null
+        repeatEndDateStr = null
+        _repeatOption.value = null
+
+        if (nextEndDate != null && changedDate != null) {
+            val nextEndDateStr = FormatDate.dateToStr(nextEndDate)!!
+            checklistViewModel.updateRepeatMiddleTodo(
+                todoId = clickedTodo!!.id,
+                updateRepeatMiddleTodo = createUpdateRepeatMiddleTodo(changedDate, nextEndDateStr)
+            ) {
+                callback()
+            }
+        } else {
+            checklistViewModel.updateTodo(
+                todoId = clickedTodo!!.id,
+                todo = createUpdateTodo()
+            ) { callback() }
+        }
+    }
+
+    fun updateRepeatBackTodo(callback: () -> Unit) {
+        val preEndDate = FormatDate.preEndDate(
+            clickedTodo?.endDate,
+            clickedTodo?.repeatOption,
+            clickedTodo?.repeatValue
+        )
+        if (preEndDate == null) {
+            Log.d("20191627", "TodoAddViewModel -> UpdateRepeatBackTodo에서 preEndDate가 null")
+            checklistViewModel.updateTodo(
+                todoId = clickedTodo!!.id,
+                todo = createUpdateTodo()
+            ) { callback() }
+        } else {
+            val preEndDateStr = FormatDate.dateToStr(preEndDate)!!
+            checklistViewModel.updateRepeatBackTodo(
+                todoId = clickedTodo!!.id,
+                updateRepeatBackTodo = createUpdateRepeatBackTodo(preEndDateStr)
+            ) { callback() }
+        }
 
     }
 

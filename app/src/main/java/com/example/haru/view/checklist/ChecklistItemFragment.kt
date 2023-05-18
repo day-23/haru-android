@@ -38,7 +38,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
     private var lastClickTime = SystemClock.elapsedRealtime()
     enum class UpdateType {
         FRONT_ONE, FRONT_TWO, FRONT_THREE,
-        MID_BACK_ONE, MID_BACK_TWO, MID_BACK_THREE,
+        MIDDLE_ONE, MIDDLE_TWO, MIDDLE_THREE,
+        BACK_ONE, BACK_TWO, BACK_THREE,
         NOT_REPEAT
     }
 
@@ -738,33 +739,49 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         val type = when(todoAddViewModel.clickedTodo?.location){
                             0 -> { // front
                                 val type = if (checkEndDate && checkRepeatData) {
-                                    // 전체 이벤트 수정 type = 0
+                                    // 전체 이벤트 수정
                                     UpdateType.FRONT_ONE
                                 } else if (checkEndDate){
-                                    // 이 이벤트만 수정 type = 0
+                                    // 이 이벤트만 수정
                                     UpdateType.FRONT_TWO
                                 } else if (checkRepeatData) {
-                                    // 전체 이벤트 수정 type = 0
+                                    // 전체 이벤트 수정
                                     UpdateType.FRONT_ONE
                                 } else {
-                                    // 전체 이벤트 수정, 이 이벤트만 수정 type = 1
+                                    // 전체 이벤트 수정, 이 이벤트만 수정
                                     UpdateType.FRONT_THREE
                                 }
                                 type
                             }
-                            1, 2 -> { // middle, back
+                            1 -> { // middle
                                 val type = if (checkEndDate && checkRepeatData){
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정 type = 1
-                                    UpdateType.MID_BACK_ONE
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                    UpdateType.MIDDLE_ONE
                                 } else if(checkEndDate){
-                                    // 이 이벤트만 수정 type = 0
-                                    UpdateType.MID_BACK_TWO
+                                    // 이 이벤트만 수정
+                                    UpdateType.MIDDLE_TWO
                                 } else if (checkRepeatData) {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정 type = 1
-                                    UpdateType.MID_BACK_ONE
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                    UpdateType.MIDDLE_ONE
                                 } else {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정 type = 2
-                                    UpdateType.MID_BACK_THREE
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
+                                    UpdateType.MIDDLE_THREE
+                                }
+                                type
+                            }
+                            2 -> { // back
+                                val type = if (checkEndDate && checkRepeatData){
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                    UpdateType.BACK_ONE
+                                } else if(checkEndDate){
+                                    // 이 이벤트만 수정
+                                    UpdateType.BACK_TWO
+                                } else if (checkRepeatData) {
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                    UpdateType.BACK_ONE
+                                } else {
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
+                                    UpdateType.BACK_THREE
                                 }
                                 type
                             }

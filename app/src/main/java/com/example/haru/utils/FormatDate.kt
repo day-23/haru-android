@@ -122,7 +122,9 @@ object FormatDate {
         return Date.from(instant)
     }
 
-    fun preEndDate(endDateStr: String, repeatOption: String, repeatValue: String): Date? {
+    fun preEndDate(endDateStr: String?, repeatOption: String?, repeatValue: String?): Date? {
+        if (endDateStr == null || repeatOption == null || repeatValue == null)
+            return null
         val endDate = strToDate(endDateStr)
         cal.time = endDate!!
         val preEndDate = when (repeatOption) {
