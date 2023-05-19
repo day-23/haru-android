@@ -87,4 +87,8 @@
 
     <string name="endDateToday">오늘까지</string>
 
+    <string name="todoAlarmText">할일 알림</string>
+    <string name="relatedTodoText">연관된 할일</string>
+    <string name="TopTagFerment">상단에 태그 띄우기</string>
+
 </resources>

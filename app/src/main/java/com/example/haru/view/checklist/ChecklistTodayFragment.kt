@@ -62,7 +62,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
             val text = binding.etSimpleAddTodoToday.text.toString()
 
             if (text.replace(" ", "") == "") {
-                val todoInput = ChecklistInputFragment(checkListViewModel)
+                val todoInput = ChecklistInputFragment(checkListViewModel, today = true)
                 todoInput.show(parentFragmentManager, todoInput.tag)
             } else {
                 val todo = TodoRequest(

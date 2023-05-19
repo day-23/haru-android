@@ -113,7 +113,14 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _selectedDate.value = date
     }
 
-    fun setClickTodo(id: String, todo: Todo? = null) {
+    fun setToday(today : Boolean?) {
+        if (today == true){
+            _endDateSwitch.value = true
+            _todayTodo.value = true
+        }
+    }
+
+    fun setClickTodo(id: String? = null, todo: Todo? = null) {
 
         if (todo == null) {
             clickedTodo = checklistViewModel.todoDataList.value!!.find {
