@@ -302,8 +302,8 @@ class CheckListViewModel() :
 
                         this.add(Todo(type = 4, content = "완료"))
                         if (it.data.completedTodos.isNotEmpty())
-                            this.addAll(it.data.completedTodos)
-                        else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
+                            this.addAll(it.data.completedTodos + Todo(type = 6))
+                        else this.addAll(listOf(Todo(type = 5, content = "할일을 완료해 보세요!"), Todo(type = 6)))
                     }
                     _todayTodo.postValue(todayList)
                 } else {
