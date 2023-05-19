@@ -97,7 +97,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             return@setOnKeyListener false
         }
 
-        binding.tagEtcLayout.etTagInput.addTextChangedListener(object : TextWatcher{
+        binding.tagEtcLayout.etTagInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -109,7 +109,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 if (str == "")
                     return
 
-                if (str[str.length - 1] == ' '){
+                if (str[str.length - 1] == ' ') {
                     binding.tagEtcLayout.ivTagAdd.performClick()
                 }
             }
@@ -204,13 +204,13 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     text = tag.content
 
                     // tag.isSelected가 false이면 보여주는 태그가 아니므로 배경과 글자 색상을 그에 맞춘다.
-                    val textColor : Int
-                    val drawable : Drawable?
+                    val textColor: Int
+                    val drawable: Drawable?
                     if (!tag.isSelected) {
                         textColor = ContextCompat.getColor(context, R.color.light_gray)
-                        drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
-                    }
-                    else {
+                        drawable =
+                            ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
+                    } else {
                         textColor = ContextCompat.getColor(context, R.color.todo_description)
                         drawable = ContextCompat.getDrawable(context, R.drawable.tag_btn_custom)
                     }
@@ -227,7 +227,10 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
                 addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, TagManagementFragment(checkListViewModel, tag))
+                        .replace(
+                            R.id.fragments_frame,
+                            TagManagementFragment(checkListViewModel, tag)
+                        )
                         .addToBackStack(null)
                         .commit()
                 }
@@ -271,7 +274,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         todoAdapter.flagClick = object : TodoAdapter.FlagClick {
-            override fun onClick(view: View, id: String, callback : (flag : Flag) -> Unit) {
+            override fun onClick(
+                view: View,
+                id: String,
+                callback: (flag: Flag, successData: SuccessFail?) -> Unit
+            ) {
                 val flag =
                     if (checkListViewModel.todoDataList.value!!.find { it.id == id }!!.flag) Flag(
                         false
@@ -280,14 +287,18 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 checkListViewModel.updateFlag(
                     flag,
                     id
-                ){
-                    callback(it)
+                ) { flag, successData ->
+                    callback(flag, successData)
                 }
             }
         }
 
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
-            override fun onClick(view: View, id: String, callback: (completed : Completed) -> Unit) {
+            override fun onClick(
+                view: View,
+                id: String,
+                callback: (completed: Completed, successData: SuccessFail?) -> Unit
+            ) {
                 val todo = checkListViewModel.todoDataList.value!!.find { it.id == id }!!
                 val completed =
                     if (todo.completed) Completed(
@@ -296,8 +307,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null) // 완료된 Todo이거나 repeatOption이 null
-                    checkListViewModel.completeNotRepeatTodo(completed, id) {
-                        callback(it)
+                    checkListViewModel.completeNotRepeatTodo(
+                        completed,
+                        id
+                    ) { completed, successData ->
+                        callback(completed, successData)
                     }
                 else {
                     val nextEndDate = when (todo.repeatOption) {
@@ -336,10 +350,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         checkListViewModel.completeRepeatFrontTodo(
                             id,
                             FrontEndDate(nextEndDateStr!!)
-                        ){ callback(Completed(true)) }
+                        ) { 
+                            callback(Completed(true), it)
+                        }
                     } else
-                        checkListViewModel.completeNotRepeatTodo(completed, id){
-                            callback(it)
+                        checkListViewModel.completeNotRepeatTodo(
+                            completed,
+                            id
+                        ) { completed, successData ->
+                            callback(completed, successData)
                         }
                 }
 

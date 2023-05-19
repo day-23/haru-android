@@ -111,29 +111,40 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         }
 
         todoAdapter.flagClick = object : TodoAdapter.FlagClick {
-            override fun onClick(view: View, id: String, callback: (flag: Flag) -> Unit) {
+            override fun onClick(
+                view: View,
+                id: String,
+                callback: (flag: Flag, successData: SuccessFail?) -> Unit
+            ) {
                 val flag =
                     if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.flag) Flag(false)
                     else Flag(true)
                 checkListViewModel.updateFlag(
                     flag,
                     id
-                ) {
-                    callback(it)
+                ) { flag, successData ->
+                    callback(flag, successData)
                 }
             }
         }
 
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
-            override fun onClick(view: View, id: String, callback: (completed: Completed) -> Unit) {
+            override fun onClick(
+                view: View,
+                id: String,
+                callback: (completed: Completed, successData: SuccessFail?) -> Unit
+            ) {
                 val todo = checkListViewModel.todayTodo.value!!.find { it.id == id }!!
                 val completed =
                     if (todo.completed) Completed(false)
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null)
-                    checkListViewModel.completeNotRepeatTodo(completed, id) {
-                        callback(it)
+                    checkListViewModel.completeNotRepeatTodo(
+                        completed,
+                        id
+                    ) { completed, successData ->
+                        callback(completed, successData)
                     }
                 else {
                     val nextEndDate = when (todo.repeatOption) {
@@ -170,10 +181,15 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                         checkListViewModel.completeRepeatFrontTodo(
                             id,
                             FrontEndDate(nextEndDateStr!!)
-                        ) { callback(Completed(true)) }
+                        ) {
+                            callback(Completed(true), it)
+                        }
                     } else
-                        checkListViewModel.completeNotRepeatTodo(completed, id) {
-                            callback(it)
+                        checkListViewModel.completeNotRepeatTodo(
+                            completed,
+                            id
+                        ) { completed, successData ->
+                            callback(completed, successData)
                         }
                 }
             }

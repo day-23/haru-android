@@ -616,24 +616,25 @@ class CheckListViewModel() :
     fun completeNotRepeatTodo(
         completed: Completed,
         id: String,
-        callback: (completed: Completed) -> Unit
+        callback: (completed: Completed, successData : SuccessFail?) -> Unit
     ) {
         viewModelScope.launch {
             val successData = todoRepository.completeNotRepeatTodo(
                 todoId = id,
                 completed = completed
             ) {
+                Log.e("20191627", it.toString())
                 if (it?.success == true) {
                     checkTodayMode()
                     withTagUpdate()
                 }
-                callback(completed)
+                callback(completed, it)
             }
         }
     }
 
     // 반복하는 할 일의 front를 완료하는 기능
-    fun completeRepeatFrontTodo(id: String, frontEndDate: FrontEndDate, callback: () -> Unit) {
+    fun completeRepeatFrontTodo(id: String, frontEndDate: FrontEndDate, callback: (successData : SuccessFail?) -> Unit) {
         viewModelScope.launch {
             val successData =
                 todoRepository.completeRepeatFrontTodo(todoId = id, frontEndDate = frontEndDate) {
@@ -644,7 +645,7 @@ class CheckListViewModel() :
                         Log.e("20191627", "CheckListViewModel -> CompleteRepeatFrontTodo Fail")
                         Log.e("20191627", it.toString())
                     }
-                    callback()
+                    callback(it)
                 }
         }
     }
@@ -671,7 +672,7 @@ class CheckListViewModel() :
     }
 
     // Todo의 중요를 업데이트 하는 기능
-    fun updateFlag(flag: Flag, id: String, callback: (flag: Flag) -> Unit) {
+    fun updateFlag(flag: Flag, id: String, callback: (flag: Flag, successData : SuccessFail?) -> Unit) {
         viewModelScope.launch {
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {
@@ -679,7 +680,7 @@ class CheckListViewModel() :
                         checkTodayMode()
                         withTagUpdate()
                     }
-                    callback(flag)
+                    callback(flag, it)
                 }
         }
     }

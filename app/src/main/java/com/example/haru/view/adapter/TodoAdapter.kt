@@ -21,10 +21,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Completed
-import com.example.haru.data.model.Flag
-import com.example.haru.data.model.Tag
-import com.example.haru.data.model.Todo
+import com.example.haru.data.model.*
 import com.example.haru.databinding.ChecklistBlankBinding
 import com.example.haru.databinding.ChecklistEmptyBinding
 import com.example.haru.databinding.ChecklistHeaderType1Binding
@@ -55,11 +52,11 @@ class TodoAdapter(val context: Context) :
     }
 
     interface CompleteClick {
-        fun onClick(view: View, id: String, callback: (completed: Completed) -> Unit)
+        fun onClick(view: View, id: String, callback: (completed: Completed, successData : SuccessFail?) -> Unit)
     }
 
     interface FlagClick {
-        fun onClick(view: View, id: String, callback : (flag : Flag) -> Unit)
+        fun onClick(view: View, id: String, callback : (flag : Flag, successData : SuccessFail?) -> Unit)
     }
 
     interface SubTodoCompleteClick {
@@ -220,16 +217,22 @@ class TodoAdapter(val context: Context) :
 
             if (flagClick != null) {
                 binding.checkFlag.setOnClickListener {
-                    flagClick?.onClick(it, item.id){
-                        binding.checkFlag.isChecked = !it.flag
+                    flagClick?.onClick(it, item.id){ flag, successData ->
+                        if (successData == null)
+                            binding.checkFlag.isChecked = !flag.flag
+                        else if (!successData.success)
+                            binding.checkFlag.isChecked = !flag.flag
                     }
                 }
             }
 
             if (completeClick != null) {
                 binding.checkDone.setOnClickListener {
-                    completeClick?.onClick(it, item.id){
-                        binding.checkDone.isChecked = !it.completed
+                    completeClick?.onClick(it, item.id){ completed, successData ->
+                        if (successData == null)
+                            binding.checkDone.isChecked = !completed.completed
+                        else if (!successData.success)
+                            binding.checkDone.isChecked = !completed.completed
                     }
                 }
             }
