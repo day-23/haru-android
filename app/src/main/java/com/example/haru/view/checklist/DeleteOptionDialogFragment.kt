@@ -6,6 +6,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.example.haru.R
 import com.example.haru.databinding.FragmentOptionDeleteBinding
 import com.example.haru.view.checklist.ChecklistItemFragment.*
@@ -14,11 +15,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : DeleteType) :
+class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: DeleteType) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionDeleteBinding
-    private var ratio : Int = 30
-    private var type : DeleteType
+    private var ratio: Int = 30
+    private var type: DeleteType
     private var todoAddViewModel: TodoAddViewModel
 
     init {
@@ -72,16 +73,23 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Dele
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        when(type){
+        val params: LinearLayout.LayoutParams =
+            binding.layoutParentBtnDelete.layoutParams as LinearLayout.LayoutParams
+
+        params.weight = when (type) {
             DeleteType.REPEAT_FRONT, DeleteType.REPEAT_MIDDLE, DeleteType.REPEAT_BACK -> {
                 binding.btnOptionDelete.visibility = View.GONE
+                3f
             }
             DeleteType.NOT_REPEAT -> {
                 binding.btnOptionAllDelete.visibility = View.GONE
                 binding.btnOptionOneDelete.visibility = View.GONE
-                binding.textViewDeleteInfo.text = getString(R.string.deleteDescription).substring(0, 12)
+                binding.textViewDeleteInfo.text =
+                    getString(R.string.deleteDescription).substring(0, 12)
+                2f
             }
         }
+        binding.layoutParentBtnDelete.layoutParams = params
 
         binding.btnOptionOneDelete.setOnClickListener(ButtonClickListener())
         binding.btnOptionAllDelete.setOnClickListener(ButtonClickListener())
@@ -94,7 +102,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Dele
                 binding.btnOptionOneDelete.id -> {
                     // 반복 할 일의 front 삭제
                     binding.btnOptionOneDelete.isClickable = false
-                    when(type){
+                    when (type) {
                         DeleteType.REPEAT_FRONT -> { // 반복 할 일의 front 삭제
                             todoAddViewModel.deleteRepeatFrontTodo {
                                 binding.btnOptionOneDelete.isClickable = true

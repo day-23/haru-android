@@ -258,7 +258,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     }
                     popUp.show()
                 }
-
                 binding.tagEtcLayout.tagLayout.addView(addView)
             }
         })
