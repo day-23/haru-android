@@ -158,11 +158,11 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         todoAddViewModel.completedTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val color = if (it) R.color.light_gray else R.color.todo_description
             binding.btnInfoSave.visibility = if (it) View.GONE else View.VISIBLE
-//            binding.cbInfoCompleted.isChecked = it
-            binding.etInfoContent.paintFlags =
-                if (it)
-                    Paint.STRIKE_THRU_TEXT_FLAG
-                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+
+//            binding.etInfoContent.paintFlags =
+//                if (it)
+//                    Paint.STRIKE_THRU_TEXT_FLAG
+//                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             binding.etInfoContent.setTextColor(ContextCompat.getColor(requireContext(), color))
         })
 
@@ -186,10 +186,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     if (todoAddViewModel.subTodoCompleted.isNotEmpty() && i < todoAddViewModel.subTodoCompleted.size)
                         addView.findViewById<EditText>(R.id.et_subTodo).apply {
                             setText(todoAddViewModel.subTodos[i])
-                            paintFlags =
-                                if (todoAddViewModel.subTodoCompleted[i])
-                                    Paint.STRIKE_THRU_TEXT_FLAG
-                                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+//                            paintFlags =
+//                                if (todoAddViewModel.subTodoCompleted[i])
+//                                    Paint.STRIKE_THRU_TEXT_FLAG
+//                                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                             if (todoAddViewModel.subTodoCompleted[i]) setTextColor(
                                 ContextCompat.getColor(
                                     requireContext(),

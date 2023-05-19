@@ -50,13 +50,14 @@ class TagManagementFragment(checkListViewModel: CheckListViewModel, val tag: Tag
             val flag = binding.switchTagVisibility.isChecked
             if (content == null)
                 Toast.makeText(requireContext(), "태그에 공백이 포함될 수 없습니다.", Toast.LENGTH_SHORT).show()
-            else
+            else{
                 checkListViewModel.updateTag(
                     tag.id,
                     TagUpdate(content = content, isSelected = flag)
                 ) {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
+            }
         }
 
         binding.layoutTagDelete.setOnClickListener {
