@@ -130,13 +130,14 @@ class CheckListViewModel() :
         }
     }
 
-    fun deleteTagList(tagIdList: TagIdList) {  // 태그 삭제 기능
+    fun deleteTagList(tagIdList: TagIdList, callback: () -> Unit) {  // 태그 삭제 기능
         viewModelScope.launch {
             tagRepository.deleteTagList(tagIdList = tagIdList) {
                 if (it?.success == true) {
                     getTag()
                     withTagUpdate()
                 } else Log.e("20191627", it.toString())
+                callback()
             }
         }
     }

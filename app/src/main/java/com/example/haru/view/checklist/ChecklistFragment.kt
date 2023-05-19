@@ -232,35 +232,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         .commit()
                 }
 
-//                addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener { iv ->
-//                    val themeWrapper =
-//                        ContextThemeWrapper(context, R.style.MyPopupMenu) // tag popup menu 스타일 지정
-//                    val popUp = PopupMenu(
-//                        themeWrapper,
-//                        iv,
-//                        Gravity.END,
-//                        0,
-//                        R.style.MyPopupMenu
-//                    ) // 스타일 한 번 더  명시해줘야함.
-//                    popUp.menuInflater.inflate(R.menu.tag_popup_menu, popUp.menu)
-//                    popUp.setOnMenuItemClickListener { menuItem ->
-//                        when (menuItem.itemId) {
-//                            R.id.tag_delete -> {
-//                                Toast.makeText(requireContext(), "Delete", Toast.LENGTH_SHORT)
-//                                    .show()
-//                                checkListViewModel.deleteTagList(TagIdList(listOf(checkListViewModel.tagDataList.value!![i].id)))
-//                            }
-//                            R.id.tag_update -> {
-//                                Toast.makeText(requireContext(), "Update", Toast.LENGTH_SHORT)
-//                                    .show()
-////                                checkListViewModel.updateTag(checkListViewModel.tagDataList.value!![i].id, TagUpdate(content = ""))
-//                            }
-//                            else -> {}
-//                        }
-//                        return@setOnMenuItemClickListener true
-//                    }
-//                    popUp.show()
-//                }
                 binding.tagEtcLayout.tagLayout.addView(addView)
             }
         })
