@@ -325,15 +325,9 @@ class CheckListViewModel() :
             todoRepository.createTodo(calendar, todoRequest) {
                 if (it?.success == true) {
                     getTag()
-                    getTodoMain {
-                        flaggedTodos.value?.let { todoList.addAll(it) }
-                        taggedTodos.value?.let { todoList.addAll(it) }
-                        untaggedTodos.value?.let { todoList.addAll(it) }
-                        completedTodos.value?.let { todoList.addAll(it) }
-                        _todoDataList.postValue(todoList)
-                        _addTodoId.postValue(it.data!!.id)
-                        callback()
-                    }
+                    checkTodayMode()
+                    withTagUpdate()
+                    callback()
                 } else {
                     Log.e("20191627", "CheckListViewModel -> AddTodo Fail")
                     Log.e("20191627", it.toString())

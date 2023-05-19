@@ -71,10 +71,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 binding.drawableLayout.closeDrawer(Gravity.RIGHT)
         }
 
-//        binding.tagEtcLayout.btnTagEtcDone.setOnClickListener {
-//            binding.drawableLayout.closeDrawer(Gravity.RIGHT)
-//        }
-
         binding.tagEtcLayout.ivTagAdd.setOnClickListener {
             val inputTag =
                 checkListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
