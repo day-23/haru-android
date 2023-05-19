@@ -98,6 +98,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
         binding.btnOptionOneDelete.setOnClickListener(ButtonClickListener())
         binding.btnOptionAllDelete.setOnClickListener(ButtonClickListener())
         binding.btnOptionDeleteCancel.setOnClickListener(ButtonClickListener())
+        binding.btnOptionDelete.setOnClickListener(ButtonClickListener())
     }
 
     inner class ButtonClickListener : View.OnClickListener {

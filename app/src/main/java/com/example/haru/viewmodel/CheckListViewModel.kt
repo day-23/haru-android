@@ -327,13 +327,12 @@ class CheckListViewModel() :
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
-                    callback()
                 } else {
                     Log.e("20191627", "CheckListViewModel -> AddTodo Fail")
                     Log.e("20191627", it.toString())
-                    callback()
                 }
             }
+            callback()
         }
     }
 
