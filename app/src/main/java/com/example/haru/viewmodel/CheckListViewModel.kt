@@ -515,12 +515,11 @@ class CheckListViewModel() :
     /* ----------------------------------할 일 삭제 기능---------------------------------- */
     // 반복하지 않는 Todo, 반복하는 Todo의 전체를 삭제하는 기능
     fun deleteTodo(
-        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
-            val successData = todoRepository.deleteTodo(userId = userId, todoId = todoId) {
+            val successData = todoRepository.deleteTodo(todoId = todoId) {
                 if (it?.success == true) {
                     checkTodayMode()
                     withTagUpdate()
@@ -532,13 +531,12 @@ class CheckListViewModel() :
 
     // 반복하는 할일의 front를 삭제하는 기능
     fun deleteRepeatFrontTodo(
-        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
         frontEndDate: FrontEndDate,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
-            val successData = todoRepository.deleteRepeatFrontTodo(userId, todoId, frontEndDate) {
+            val successData = todoRepository.deleteRepeatFrontTodo(todoId, frontEndDate) {
                 if (it?.success == true) {
                     checkTodayMode()
                     withTagUpdate()
@@ -552,13 +550,12 @@ class CheckListViewModel() :
     }
 
     fun deleteRepeatMiddleTodo(
-        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
         middleEndDate: MiddleEndDate,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
-            val successData = todoRepository.deleteRepeatMiddleTodo(userId, todoId, middleEndDate) {
+            val successData = todoRepository.deleteRepeatMiddleTodo(todoId, middleEndDate) {
                 if (it?.success == true) {
                     checkTodayMode()
                     withTagUpdate()
@@ -572,13 +569,12 @@ class CheckListViewModel() :
     }
 
     fun deleteRepeatBackTodo(
-        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         todoId: String,
         backRepeatEnd: BackRepeatEnd,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
-            val successData = todoRepository.deleteRepeatBackTodo(userId, todoId, backRepeatEnd) {
+            val successData = todoRepository.deleteRepeatBackTodo(todoId, backRepeatEnd) {
                 if (it?.success == true) {
                     checkTodayMode()
                     withTagUpdate()
@@ -687,11 +683,10 @@ class CheckListViewModel() :
     }
 
     fun updateOrderMainTodo(
-        userId: String = "005224c0-eec1-4638-9143-58cbfc9688c5",
         changeOrderTodo: ChangeOrderTodo
     ) {
         viewModelScope.launch {
-            val successData = todoRepository.updateOrderMainTodo(userId, changeOrderTodo)
+            val successData = todoRepository.updateOrderMainTodo(changeOrderTodo)
             // successData가 null이면 실패임
             if (successData?.success != true) {
                 Log.e("20191627", "CheckListViewModel -> UpdateOrderMainTodo Fail")
