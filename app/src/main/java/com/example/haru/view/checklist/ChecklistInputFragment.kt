@@ -904,7 +904,7 @@ class ChecklistInputFragment(
                 }
 
                 R.id.btn_submit_todo -> {
-                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 500){
                         Log.d("20191627", "새로운 투두 추가 1초간 터치 금지")
                         return
                     }

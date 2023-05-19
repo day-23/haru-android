@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatButton
 import com.example.haru.R
 import com.example.haru.databinding.FragmentOptionUpdateBinding
 import com.example.haru.view.checklist.ChecklistItemFragment.UpdateType
@@ -31,17 +32,17 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
             // 취소 버튼 제외하고 선택지가 1개인 경우
             UpdateType.FRONT_ONE, UpdateType.FRONT_TWO,
             UpdateType.BACK_TWO, UpdateType.NOT_REPEAT, UpdateType.MIDDLE_TWO -> {
-                23
+                27
             }
 
             // 취소 버튼 제외하고 선택지가 2개인 경우
             UpdateType.FRONT_THREE, UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> {
-                30
+                35
             }
 
             // 취소 버튼 제외하고 선택지가 3개인 경우
             UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> {
-                38
+                43
             }
         }
 
@@ -95,47 +96,64 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
 
         params.weight = when (type) {
             UpdateType.FRONT_ONE -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
-                binding.btnOptionOneUpdate.visibility = View.GONE
-                binding.btnOptionAfterUpdate.visibility = View.GONE
-                binding.btnOptionSave.visibility = View.GONE
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
                 2f
             }
             UpdateType.FRONT_TWO -> { // 이 할일만 수정 (마감일 수정, 반복 옵션 수정X)
-                binding.btnOptionAllUpdate.visibility = View.GONE
-                binding.btnOptionAfterUpdate.visibility = View.GONE
-                binding.btnOptionSave.visibility = View.GONE
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAllUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
                 2f
             }
             UpdateType.FRONT_THREE -> { // 전체 할일 수정, 이 할일만 수정
-                binding.btnOptionAfterUpdate.visibility = View.GONE
-                binding.btnOptionSave.visibility = View.GONE
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
                 3f
             }
             UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> { // 전체 할일 수정, 이 할일부터 수정
-                binding.btnOptionOneUpdate.visibility = View.GONE
-                binding.btnOptionSave.visibility = View.GONE
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionSave)
+                }
                 3f
             }
             UpdateType.MIDDLE_TWO, UpdateType.BACK_TWO -> { // 이 할일만 수정
-                binding.btnOptionAllUpdate.visibility = View.GONE
-                binding.btnOptionAfterUpdate.visibility = View.GONE
-                binding.btnOptionSave.visibility = View.GONE
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAllUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
                 2f
             }
             UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> { // 모든 옵션을 보여주는 상황
-                binding.btnOptionSave.visibility = View.GONE
+                binding.layoutParentBtnUpdate.removeView(binding.btnOptionSave)
                 4f
             }
             UpdateType.NOT_REPEAT -> {
                 binding.textViewUpdateInfo.text =
                     getString(R.string.updateDescription).substring(0, 12)
-                binding.btnOptionOneUpdate.visibility = View.GONE
-                binding.btnOptionAllUpdate.visibility = View.GONE
-                binding.btnOptionAfterUpdate.visibility = View.GONE
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionAllUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                }
                 2f
             }
         }
-        binding.layoutParentBtnUpdate.layoutParams = params
+        binding.layoutParentBtnUpdate.apply {
+            layoutParams = params
+            (getChildAt(childCount - 1) as AppCompatButton).setBackgroundResource(R.drawable.option_last_view_bg)
+        }
+
+
 
         binding.btnOptionOneUpdate.setOnClickListener(ButtonClickListener())
         binding.btnOptionAllUpdate.setOnClickListener(ButtonClickListener())

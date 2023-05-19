@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatButton
 import com.example.haru.R
 import com.example.haru.databinding.FragmentOptionDeleteBinding
 import com.example.haru.view.checklist.ChecklistItemFragment.*
@@ -25,8 +26,8 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
     init {
         this.type = type
         ratio = when (type) {
-            DeleteType.REPEAT_FRONT, DeleteType.REPEAT_MIDDLE, DeleteType.REPEAT_BACK -> 30
-            DeleteType.NOT_REPEAT -> 23
+            DeleteType.REPEAT_FRONT, DeleteType.REPEAT_MIDDLE, DeleteType.REPEAT_BACK -> 35
+            DeleteType.NOT_REPEAT -> 27
         }
         this.todoAddViewModel = todoAddViewModel
     }
@@ -78,18 +79,21 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
 
         params.weight = when (type) {
             DeleteType.REPEAT_FRONT, DeleteType.REPEAT_MIDDLE, DeleteType.REPEAT_BACK -> {
-                binding.btnOptionDelete.visibility = View.GONE
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
                 3f
             }
             DeleteType.NOT_REPEAT -> {
-                binding.btnOptionAllDelete.visibility = View.GONE
-                binding.btnOptionOneDelete.visibility = View.GONE
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionAllDelete)
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionOneDelete)
                 binding.textViewDeleteInfo.text =
                     getString(R.string.deleteDescription).substring(0, 12)
                 2f
             }
         }
-        binding.layoutParentBtnDelete.layoutParams = params
+        binding.layoutParentBtnDelete.apply {
+            layoutParams = params
+            (getChildAt(childCount - 1) as AppCompatButton).setBackgroundResource(R.drawable.option_last_view_bg)
+        }
 
         binding.btnOptionOneDelete.setOnClickListener(ButtonClickListener())
         binding.btnOptionAllDelete.setOnClickListener(ButtonClickListener())
