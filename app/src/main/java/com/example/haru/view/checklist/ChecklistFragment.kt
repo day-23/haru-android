@@ -219,15 +219,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
                     setOnClickListener {
                         checkListViewModel.updateTag(
-                            checkListViewModel.tagDataList.value!![i].id,
+                            tag.id,
                             TagUpdate(this.text.toString(), !tag.isSelected)
-                        )
+                        ) {}
                     }
                 }
 
                 addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, TagManagementFragment(checkListViewModel))
+                        .replace(R.id.fragments_frame, TagManagementFragment(checkListViewModel, tag))
                         .addToBackStack(null)
                         .commit()
                 }
