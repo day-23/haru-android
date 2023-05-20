@@ -1,5 +1,7 @@
 package com.example.haru.data.model
 
 data class Error(
-    val error : DevMessage?
+    val code : String,
+    val message : String,
+    val devMessage : String
 )

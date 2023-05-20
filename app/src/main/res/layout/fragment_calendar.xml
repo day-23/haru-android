@@ -17,7 +17,7 @@
                 android:layout_height="match_parent"
                 app:cardElevation="0dp"
                 app:cardUseCompatPadding="true"
-                app:contentPadding="23dp">
+                app:contentPadding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"

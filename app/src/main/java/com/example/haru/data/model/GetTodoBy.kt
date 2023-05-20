@@ -1,6 +1,7 @@
 package com.example.haru.data.model
 
 data class GetTodoBy(
-    val success: String,
-    val data : List<Todo>
+    val success: Boolean,
+    val data : List<Todo>? = null,
+    val error: Error? = null
 )

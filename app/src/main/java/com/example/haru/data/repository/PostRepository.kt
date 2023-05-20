@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONArray
 import java.io.File
 import java.util.UUID
@@ -21,14 +22,16 @@ class PostRepository() {
     //게시글 추가
     suspend fun addPost(post: AddPost, callback: (postInfo: SendPost) -> Unit) = withContext(Dispatchers.IO) {
         // Prepare the request data
-        val content = RequestBody.create(MediaType.parse("text/plain"), post.content)
+        val content = RequestBody.create("text/plain".toMediaTypeOrNull(), post.content)
 
         val hashTags = post.hashtags.mapIndexed { index, hashtag ->
-            "hashTags[$index]" to RequestBody.create(MediaType.parse("text/plain"), hashtag)
+            "hashTags[$index]" to RequestBody.create("text/plain".toMediaTypeOrNull(), hashtag)
         }.toMap()
 
         val images = post.images.map { imagePart ->
-            MultipartBody.Part.createFormData("images", imagePart.headers()?.get("Content-Disposition")?.substringAfter("filename=\"")?.substringBefore("\""), imagePart.body())
+            MultipartBody.Part.createFormData("images", imagePart.headers?.get("Content-Disposition")?.substringAfter("filename=\"")?.substringBefore("\""),
+                imagePart.body
+            )
         }
 
         // Call the addPost function from the PostService
@@ -129,5 +132,30 @@ class PostRepository() {
             }
             callback(comments)
         }
+
+    //전체 댓글
+    suspend fun writeComment(comment: CommentBody, postId: String, imageId:String, callback: (comments: Comments) -> Unit) = withContext(
+        Dispatchers.IO){
+        Log.d("TAG", "post id recieve-------------- $postId")
+        val response = postService.writeComments(
+            "jts",
+            postId,
+            imageId,
+            comment
+        ).execute()
+
+        val comments: Comments
+        val data: WriteCommentResponse
+
+        if(response.isSuccessful) {
+            Log.d("TAG","Success to write comments")
+            data = response.body()!!
+            comments = data.data
+        }else{
+            Log.d("TAG", "Fail to write comments")
+            comments = Comments("",User("","","","",false,0,0,0),"",-1,-1,"","")
+        }
+        callback(comments)
+    }
 
 }

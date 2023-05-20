@@ -1,9 +1,11 @@
 package com.example.haru.view.checklist
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +18,8 @@ import com.example.haru.viewmodel.CheckListViewModel
 import java.util.*
 
 class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment() {
-    private lateinit var binding : FragmentChecklistTodayBinding
-    private var checkListViewModel : CheckListViewModel
+    private lateinit var binding: FragmentChecklistTodayBinding
+    private var checkListViewModel: CheckListViewModel
 
     companion object {
         const val TAG: String = "로그"
@@ -27,7 +29,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         }
     }
 
-    init{
+    init {
         this.checkListViewModel = checkListVewModel
     }
 
@@ -52,16 +54,43 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
 
         binding.tvTodayDate.text = FormatDate.simpleTodayToStr(Date())
 
-        binding.ivTodayBackIcon.setOnClickListener{
+        binding.ivTodayBackIcon.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
+        }
+
+        binding.btnAddTodoToday.setOnClickListener {
+            val text = binding.etSimpleAddTodoToday.text.toString()
+
+            if (text.replace(" ", "") == "") {
+                val todoInput = ChecklistInputFragment(checkListViewModel, today = true)
+                todoInput.show(parentFragmentManager, todoInput.tag)
+            } else {
+                val todo = TodoRequest(
+                    content = text,
+                    memo = "",
+                    todayTodo = true,
+                    flag = false,
+                    isAllDay = false,
+                    tags = emptyList(),
+                    subTodos = emptyList(),
+                    alarms = emptyList()
+                )
+                checkListViewModel.addTodo(todo) {
+                    binding.etSimpleAddTodoToday.setText("")
+                    binding.etSimpleAddTodoToday.clearFocus()
+                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.etSimpleAddTodoToday.windowToken, 0)
+                }
+            }
         }
     }
 
-    private fun initToday(){
-        val todayRecyclerView : RecyclerView = binding.todayRecyclerView
+    private fun initToday() {
+        val todayRecyclerView: RecyclerView = binding.todayRecyclerView
         val todoAdapter = TodoAdapter(requireContext())
 
-        todoAdapter.sectionToggleClick = object  : TodoAdapter.SectionToggleClick {
+        todoAdapter.sectionToggleClick = object : TodoAdapter.SectionToggleClick {
             override fun onClick(view: View, str: String) {
                 checkListViewModel.setVisibility(str, 1)
             }
@@ -69,9 +98,12 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
 
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
             override fun onClick(view: View, id: String) {
-                if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.type == 2){
+                if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.type == 2) {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, ChecklistItemFragment(checkListViewModel, id))
+                        .replace(
+                            R.id.fragments_frame,
+                            ChecklistItemFragment(checkListViewModel, id)
+                        )
                         .addToBackStack(null)
                         .commit()
                 }
@@ -79,25 +111,41 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         }
 
         todoAdapter.flagClick = object : TodoAdapter.FlagClick {
-            override fun onClick(view: View, id: String) {
-                val flag = if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.flag) Flag(false)
-                else Flag(true)
+            override fun onClick(
+                view: View,
+                id: String,
+                callback: (flag: Flag, successData: SuccessFail?) -> Unit
+            ) {
+                val flag =
+                    if (checkListViewModel.todayTodo.value!!.find { it.id == id }!!.flag) Flag(false)
+                    else Flag(true)
                 checkListViewModel.updateFlag(
                     flag,
                     id
-                )
+                ) { flag, successData ->
+                    callback(flag, successData)
+                }
             }
         }
 
         todoAdapter.completeClick = object : TodoAdapter.CompleteClick {
-            override fun onClick(view: View, id: String) {
-                val todo = checkListViewModel.todayTodo.value!!.find{ it.id == id}!!
+            override fun onClick(
+                view: View,
+                id: String,
+                callback: (completed: Completed, successData: SuccessFail?) -> Unit
+            ) {
+                val todo = checkListViewModel.todayTodo.value!!.find { it.id == id }!!
                 val completed =
                     if (todo.completed) Completed(false)
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null)
-                    checkListViewModel.completeNotRepeatTodo(completed, id)
+                    checkListViewModel.completeNotRepeatTodo(
+                        completed,
+                        id
+                    ) { completed, successData ->
+                        callback(completed, successData)
+                    }
                 else {
                     val nextEndDate = when (todo.repeatOption) {
                         "매일" -> {
@@ -113,25 +161,44 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
                             )
                         }
                         "매달" -> {
-                            FormatDate.nextEndDateEveryMonth(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                            FormatDate.nextEndDateEveryMonth(
+                                todo.repeatValue!!,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
                         }
                         "매년" -> {
-                            FormatDate.nextEndDateEveryYear(todo.repeatValue!!, todo.endDate, todo.repeatEnd)
+                            FormatDate.nextEndDateEveryYear(
+                                todo.repeatValue!!,
+                                todo.endDate,
+                                todo.repeatEnd
+                            )
                         }
                         else -> null
                     }
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.completeRepeatFrontTodo(id, FrontEndDate(nextEndDateStr!!))
+                        checkListViewModel.completeRepeatFrontTodo(
+                            id,
+                            FrontEndDate(nextEndDateStr!!)
+                        ) {
+                            callback(Completed(true), it)
+                        }
                     } else
-                        checkListViewModel.completeNotRepeatTodo(completed, id)
+                        checkListViewModel.completeNotRepeatTodo(
+                            completed,
+                            id
+                        ) { completed, successData ->
+                            callback(completed, successData)
+                        }
                 }
             }
         }
 
         todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
             override fun onClick(view: View, subTodoPosition: Int) {
-                val subTodo = checkListViewModel.todayTodo.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
+                val subTodo =
+                    checkListViewModel.todayTodo.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
                 val completed =
                     if (subTodo.completed) Completed(
                         false
@@ -158,6 +225,15 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         todayRecyclerView.adapter = todoAdapter
         todayRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+
+        todayRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    binding.simpleAddFabLayoutToday.visibility = View.VISIBLE
+                else binding.simpleAddFabLayoutToday.visibility = View.GONE
+            }
+        })
 
         checkListViewModel.todayTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val todayTodo = it.filterIsInstance<Todo>()

@@ -3,7 +3,6 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
-import com.example.haru.utils.userInformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,7 +31,7 @@ class ScheduleRepository() {
     suspend fun postSchedule(body: PostSchedule, callback: () -> Unit){
         withContext(Dispatchers.IO) {
             val response = scheduleService.createSchedule(
-                userInformation.userId,
+                    com.example.haru.utils.User.id,
                 body
             ).execute()
 
@@ -56,7 +55,7 @@ class ScheduleRepository() {
     suspend fun deleteSchedule(scheduleId: String, callback: () -> Unit){
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteSchedule(
-                userInformation.userId,
+                    com.example.haru.utils.User.id,
                 scheduleId
             ).execute()
 
@@ -75,7 +74,7 @@ class ScheduleRepository() {
     suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit){
         withContext(Dispatchers.IO) {
             val response = scheduleService.submitSchedule(
-                userInformation.userId,
+                com.example.haru.utils.User.id,
                 scheduleId,
                 postBody
             ).execute()
