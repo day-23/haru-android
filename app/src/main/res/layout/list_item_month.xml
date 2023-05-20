@@ -14,16 +14,17 @@
         <View
             android:id="@+id/date_layout_start"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="5dp"
             android:background="@color/light_gray"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/date_layout_one"/>
 
         <LinearLayout
             android:id="@+id/date_layout_one"
             android:layout_width="match_parent"
-            android:layout_height="18sp"
+            android:layout_height="18dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/date_layout_start"
@@ -33,7 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -51,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -69,7 +70,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -87,7 +88,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -106,7 +107,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -125,7 +126,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -144,7 +145,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -172,7 +173,7 @@
         <LinearLayout
             android:id="@+id/date_layout_two"
             android:layout_width="match_parent"
-            android:layout_height="18sp"
+            android:layout_height="18dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -184,7 +185,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -203,7 +204,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -222,7 +223,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -241,7 +242,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -260,7 +261,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -279,7 +280,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -298,7 +299,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -326,7 +327,7 @@
         <LinearLayout
             android:id="@+id/date_layout_three"
             android:layout_width="match_parent"
-            android:layout_height="18sp"
+            android:layout_height="18dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -338,7 +339,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -357,7 +358,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -376,7 +377,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:padding="2sp">
+                android:padding="2dp">
 
                 <FrameLayout
                     android:layout_width="wrap_content"

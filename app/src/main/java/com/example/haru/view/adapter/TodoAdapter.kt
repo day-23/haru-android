@@ -21,8 +21,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Tag
-import com.example.haru.data.model.Todo
+import com.example.haru.data.model.*
 import com.example.haru.databinding.ChecklistBlankBinding
 import com.example.haru.databinding.ChecklistEmptyBinding
 import com.example.haru.databinding.ChecklistHeaderType1Binding
@@ -53,11 +52,11 @@ class TodoAdapter(val context: Context) :
     }
 
     interface CompleteClick {
-        fun onClick(view: View, id: String)
+        fun onClick(view: View, id: String, callback: (completed: Completed, successData : SuccessFail?) -> Unit)
     }
 
     interface FlagClick {
-        fun onClick(view: View, id: String)
+        fun onClick(view: View, id: String, callback : (flag : Flag, successData : SuccessFail?) -> Unit)
     }
 
     interface SubTodoCompleteClick {
@@ -116,18 +115,6 @@ class TodoAdapter(val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-//            HeaderType1 -> HeaderTypeOneViewHolder(    // 디자인 시안 변경으로 인해 사용 X
-//                ChecklistHeaderType1Binding.inflate(
-//                    LayoutInflater.from(context), parent, false
-//                )
-//            )
-//
-//            HeaderType2 -> HeaderTypeTwoViewHolder(
-//                ChecklistHeaderType2Binding.inflate(
-//                    LayoutInflater.from(context), parent, false
-//                )
-//            )
-
             HeaderType3 -> HeaderTypeThreeViewHolder(
                 ChecklistHeaderType3Binding.inflate(
                     LayoutInflater.from(context), parent, false
@@ -179,8 +166,6 @@ class TodoAdapter(val context: Context) :
     ) {
         val todo = diffUtil.currentList[position]
         when (holder) {
-//            is HeaderTypeOneViewHolder -> {}
-//            is HeaderTypeTwoViewHolder -> holder.bind(todo.content)
             is HeaderTypeThreeViewHolder -> holder.bind(todo.content)
             is DividerViewHolder -> {}
             is TodoViewHolder -> {
@@ -190,16 +175,6 @@ class TodoAdapter(val context: Context) :
             is BlankViewHolder -> {}
         }
     }
-
-//    inner class HeaderTypeOneViewHolder(val binding: ChecklistHeaderType1Binding) :
-//        RecyclerView.ViewHolder(binding.root) {}
-//
-//    inner class HeaderTypeTwoViewHolder(val binding: ChecklistHeaderType2Binding) :
-//        RecyclerView.ViewHolder(binding.root) {
-//        fun bind(item: String) {
-//            binding.str = item
-//        }
-//    }
 
     inner class HeaderTypeThreeViewHolder(val binding: ChecklistHeaderType3Binding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -242,13 +217,23 @@ class TodoAdapter(val context: Context) :
 
             if (flagClick != null) {
                 binding.checkFlag.setOnClickListener {
-                    flagClick?.onClick(it, item.id)
+                    flagClick?.onClick(it, item.id){ flag, successData ->
+                        if (successData == null)
+                            binding.checkFlag.isChecked = !flag.flag
+                        else if (!successData.success)
+                            binding.checkFlag.isChecked = !flag.flag
+                    }
                 }
             }
 
             if (completeClick != null) {
                 binding.checkDone.setOnClickListener {
-                    completeClick?.onClick(it, item.id)
+                    completeClick?.onClick(it, item.id){ completed, successData ->
+                        if (successData == null)
+                            binding.checkDone.isChecked = !completed.completed
+                        else if (!successData.success)
+                            binding.checkDone.isChecked = !completed.completed
+                    }
                 }
             }
 
@@ -320,16 +305,16 @@ class TodoAdapter(val context: Context) :
             }
 
 
-
-            if (item.completed){
-                complete = true
-                binding.tvTitle.paintFlags =
-                    Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
-            }
-            else{
-                complete = false
-                binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
-            }
+            complete = item.completed
+//            if (item.completed){
+//                complete = true
+////                binding.tvTitle.paintFlags =
+////                    Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
+//            }
+//            else{
+//                complete = false
+////                binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
+//            }
 
             binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
             binding.tvTitle.text = item.content
@@ -363,8 +348,8 @@ class TodoAdapter(val context: Context) :
 
                 addView.findViewById<TextView>(R.id.tv_subTodo).apply {
                     text = item.subTodos[i].content
-                    paintFlags =
-                        if (item.subTodos[i].completed) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
+//                    paintFlags =
+//                        if (item.subTodos[i].completed) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
                     if (item.subTodos[i].completed)
                         setTextColor(ContextCompat.getColor(context, R.color.light_gray))
                 }

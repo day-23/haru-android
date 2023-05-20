@@ -17,6 +17,7 @@ import com.example.haru.data.repository.TodoRepository
 import com.example.haru.data.repository.UserRepository
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
@@ -176,12 +177,12 @@ class MyPageViewModel(): ViewModel() {
                 val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
                 val imagePath = it.getString(columnIndex)
                 val fileName = data.name.substringAfterLast('.')
-                val fileExtension = "image/" + fileName
+                val fileExtension = "image/$fileName"
 
                 val file = File(imagePath)
                 Log.d("Image", "4 $file")
 
-                val requestFile = RequestBody.create(MediaType.parse(fileExtension), file)
+                val requestFile = RequestBody.create(fileExtension.toMediaTypeOrNull(), file)
                 val part = MultipartBody.Part.createFormData("image", fileName, requestFile)
                 convertedImages.add(part)
             }

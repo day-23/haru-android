@@ -52,7 +52,7 @@ object FormatDate {
 //        return date.format(localDateFormatter)
 //    }
 
-    fun checkToday(date : Date?) : Boolean?{
+    fun checkToday(date: Date?): Boolean? {
         if (date == null)
             return null
         val today = Date()
@@ -122,21 +122,22 @@ object FormatDate {
         return Date.from(instant)
     }
 
-    fun preEndDate(endDateStr: String, repeatOption: Int, repeatValue: String): Date? {
+    fun preEndDate(endDateStr: String?, repeatOption: String?, repeatValue: String?): Date? {
+        if (endDateStr == null || repeatOption == null || repeatValue == null)
+            return null
         val endDate = strToDate(endDateStr)
         cal.time = endDate!!
         val preEndDate = when (repeatOption) {
-            0 -> { // 매일
+            "매일" -> { // 매일
                 cal.add(Calendar.DATE, -1)
                 cal.time
             }
-            1, 2 -> { // 매주
+            "매주", "격주" -> { // 매주
                 val nWeek = cal.get(Calendar.DAY_OF_WEEK) // endDate가 해당하는 주차의 요일
                 var idx = nWeek - 1 // nWeek는 일 ~ 토, 1 ~ 7 이므로 인덱스로 사용하기 위해서 -1
 
                 if (idx != 0) // 오늘이 포함되면 안되기 때문에 -1을 해준다
                     idx--
-
                 else { // idx가 0일 때 -1을하면 에러이므로 직접 토요일로 지정
                     idx = 6
                 }
@@ -145,35 +146,95 @@ object FormatDate {
 
                 var flag = false
 
-                val plusValue = if (repeatOption == 1) 1 else 8
+                val plusValue = if (repeatOption == "매주") 1 else 8
 
-                for(i in idx downTo 0){
-                    if (repeatValue[i] == '1'){
+                for (i in idx downTo 0) {
+                    if (repeatValue[i] == '1') {
                         cal.add(Calendar.DATE, i - idx)
                         flag = true
                         break
                     }
                 }
-                if (!flag){
-                    for(i in 6 downTo idx + 1)
+                if (!flag) {
+                    for (i in 6 downTo idx + 1)
                         if (repeatValue[i] == '1') {
                             val value = -(idx + plusValue + (6 - i))
                             cal.add(Calendar.DATE, value)
                             break
                         }
                 }
-
                 cal.time
             }
-            3 -> { // 매달
-                null
+            "매달" -> { // 매달
+                // 0 ~ 30
+                val idx = cal.get(Calendar.DAY_OF_MONTH) - 1 // endDate가 해당하는 달의 날짜를 인덱스화
+                var flag = false
+                var days = 32
+                for (i in idx - 1 downTo 0) // endDate 해당 날은 포함 X이므로 -1
+                    if (repeatValue[i] == '1') {
+                        days = i + 1
+                        flag = true
+                        break
+                    }
 
-            }
-            4 -> { // 매년
-                null
+                if (!flag)
+                    for (i in 30 downTo idx)
+                        if (repeatValue[i] == '1') {
+                            days = i + 1
+                            break
+                        }
 
+                // 만약 31일인 상태에서 3월에서 + 1하면 5월 1일로 간다. 그렇기 때문에 날짜를 1로 설정해줌
+                cal.set(Calendar.DAY_OF_MONTH, 1)
+
+                if (flag) { // flag가 true이면 days가 idx + 1보다 작은 것이다.
+//                    cal.set(Calendar.DAY_OF_MONTH, days)
+                } else { // flag가 false라면 days가 idx + 1보다 크거나 같은 것이다.
+                    cal.add(Calendar.MONTH, -1)
+                    if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
+                        cal.add(Calendar.MONTH, -1)
+                }
+                cal.set(Calendar.DAY_OF_MONTH, days)
+                cal.time
             }
-            else -> { null }
+            "매년" -> { // 매년
+                val idx = cal.get(Calendar.MONTH)
+                val days = cal.get(Calendar.DAY_OF_MONTH)
+
+                var flag = false
+                var month : Int
+                for(i in idx - 1 downTo 0){
+                    if (repeatValue[i] == '1'){
+                        month = i
+                        cal.set(Calendar.DAY_OF_MONTH, 1)
+                        cal.set(Calendar.MONTH, i)
+                        if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                            flag = true
+                            cal.set(Calendar.DAY_OF_MONTH, days)
+                            break
+                        }
+                    }
+                }
+                while (!flag) {
+                    cal.add(Calendar.YEAR, -1)
+                    for (i in 11 downTo  0) {
+                        if (repeatValue[i] == '1') {
+                            month = i
+                            cal.set(Calendar.DAY_OF_MONTH, 1)
+                            cal.set(Calendar.MONTH, month)
+                            if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                                flag = true
+                                cal.set(Calendar.DAY_OF_MONTH, days)
+                                break
+                            }
+                        }
+                    }
+                }
+                cal.time
+            }
+            else -> {
+                null
+            }
         }
         return preEndDate
     }
@@ -289,16 +350,25 @@ object FormatDate {
             if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
                 cal.add(Calendar.MONTH, 1)
             cal.set(Calendar.DAY_OF_MONTH, days)
-        } else {
-            if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days) {
-                cal.add(Calendar.MONTH, 1)
-                if (repeatValue.substring(0, days - 1).contains('1')) {
-                    days = repeatValue.indexOf('1') + 1
-                }
-            } else {
-                if (endDateStr != null)
+        } else { // days >= idx + 1 -> 해당 달에 있을 수 있다.
+            if (endDateStr != null){ // endDate 당일을 포함하면 안되는 조건
+                if (days == idx + 1){ // 같은 일이면 무조건 +1달
                     cal.add(Calendar.MONTH, 1)
+                }
+
+                if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days){
+                    cal.add(Calendar.MONTH, 1)
+                    if (repeatValue.substring(0, days - 1).contains('1'))
+                        days = repeatValue.indexOf('1') + 1
+                }
+            } else { // 추가할 때라서 endDate 당일이 포함되도 상관없음.
+                if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days) { // 해당 달의 최대 일보다 days가 크다.
+                    cal.add(Calendar.MONTH, 1)
+                    if (repeatValue.substring(0, days - 1).contains('1'))
+                        days = repeatValue.indexOf('1') + 1
+                }
             }
+
             cal.set(Calendar.DAY_OF_MONTH, days)
         }
         val nextEndDate = cal.time

@@ -98,8 +98,6 @@ class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFr
 
         initCalendar()
 
-        binding.ivDownArrow.visibility = View.INVISIBLE
-
         binding.ivLeftArrow.setOnClickListener {
             updateCalendar(-1)
             binding.tvDate.text = "${changedYear}년 ${changedMonth + 1}월"

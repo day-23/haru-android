@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -34,6 +35,17 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
+    private var lastClickTime = SystemClock.elapsedRealtime()
+    enum class UpdateType {
+        FRONT_ONE, FRONT_TWO, FRONT_THREE,
+        MIDDLE_ONE, MIDDLE_TWO, MIDDLE_THREE,
+        BACK_ONE, BACK_TWO, BACK_THREE,
+        NOT_REPEAT
+    }
+
+    enum class DeleteType {
+        REPEAT_FRONT, REPEAT_MIDDLE, REPEAT_BACK, NOT_REPEAT
+    }
 
     init {
         this.todoAddViewModel = TodoAddViewModel(checkListViewModel)
@@ -128,6 +140,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         todoAddViewModel.setClickTodo(id, todo)
         binding.vm = todoAddViewModel
 
+        if (todo != null)
+            Log.d("20191627", todo.endDate?: "null")
+
         if (todoAddViewModel.clickedTodo!!.completed){
             binding.infoSubTodoAddLayout.visibility = View.GONE
         }
@@ -143,11 +158,11 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         todoAddViewModel.completedTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val color = if (it) R.color.light_gray else R.color.todo_description
             binding.btnInfoSave.visibility = if (it) View.GONE else View.VISIBLE
-//            binding.cbInfoCompleted.isChecked = it
-            binding.etInfoContent.paintFlags =
-                if (it)
-                    Paint.STRIKE_THRU_TEXT_FLAG
-                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+
+//            binding.etInfoContent.paintFlags =
+//                if (it)
+//                    Paint.STRIKE_THRU_TEXT_FLAG
+//                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             binding.etInfoContent.setTextColor(ContextCompat.getColor(requireContext(), color))
         })
 
@@ -171,10 +186,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     if (todoAddViewModel.subTodoCompleted.isNotEmpty() && i < todoAddViewModel.subTodoCompleted.size)
                         addView.findViewById<EditText>(R.id.et_subTodo).apply {
                             setText(todoAddViewModel.subTodos[i])
-                            paintFlags =
-                                if (todoAddViewModel.subTodoCompleted[i])
-                                    Paint.STRIKE_THRU_TEXT_FLAG
-                                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+//                            paintFlags =
+//                                if (todoAddViewModel.subTodoCompleted[i])
+//                                    Paint.STRIKE_THRU_TEXT_FLAG
+//                                else binding.etInfoContent.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
                             if (todoAddViewModel.subTodoCompleted[i]) setTextColor(
                                 ContextCompat.getColor(
                                     requireContext(),
@@ -683,48 +698,103 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
                 binding.btnInfoDelete.id -> {
-                    if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-                        val option = DeleteOptionDialogFragment(todoAddViewModel)
-                        option.show(parentFragmentManager, option.tag)
-                    } else todoAddViewModel.deleteTodo {
-                        requireActivity().supportFragmentManager.popBackStack()
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 2000){
+                        Log.d("20191627", "삭제 옵션창 띄우기 중복 막기")
+                        return
                     }
+                    lastClickTime = SystemClock.elapsedRealtime()
+
+                    Log.d("20191627", todoAddViewModel.clickedTodo.toString())
+                    val type = when (todoAddViewModel.clickedTodo?.location) {
+                        0 -> DeleteType.REPEAT_FRONT
+                        1 -> DeleteType.REPEAT_MIDDLE
+                        2 -> DeleteType.REPEAT_BACK
+                        else -> DeleteType.NOT_REPEAT
+                    }
+                    val option = DeleteOptionDialogFragment(todoAddViewModel, type)
+                    option.show(parentFragmentManager, option.tag)
+//                    if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
+//                        val option = DeleteOptionDialogFragment(todoAddViewModel, type)
+//                        option.show(parentFragmentManager, option.tag)
+//                    } else {
+//                        val option = DeleteOptionDialogFragment(todoAddViewModel, type)
+//                        option.show(parentFragmentManager, option.tag)
+//                    }
                 }
                 binding.btnInfoSave.id -> {
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                        Log.d("20191627", "저장 옵션창 띄우기 중복 막기")
+                        return
+                    }
+                    lastClickTime = SystemClock.elapsedRealtime()
+
                     todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
                         // front, middle, back 구분할 수 있는 데이터로 분기 설정 front 면 아래 코드
                         val checkEndDate = todoAddViewModel.checkChangeEndDate()
                         val checkRepeatData = todoAddViewModel.checkChangeRepeat()
-//                        val type : Int
-                        // if (~~ front == true)
-                        val type = if (checkEndDate && checkRepeatData) 0
-                        else if (checkEndDate) 1 else if (checkRepeatData) 2 else 3
+                        Log.d("20191627", "checkEndDate : $checkEndDate")
+                        Log.d("20191627", "checkRepeatData : $checkRepeatData")
 
-                        // else 로 middle, back이면 아래 코드
-//                        else {
-//
-//                        }
-
-//                        Front
-//                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트만 수정”
-//                        * 반복 일정 수정 → “전체 이벤트 수정”
-//                        * 마감일 수정 → “이 이벤트만 수정”
-//                        * 둘다 수정시 → “전체 이벤트 수정”
-
-//                        Middle, Back
-//                        * 디폴트 → “전체 이벤트 수정”, “이 이벤트부터 수정”, “이 이벤트만 수정”
-//                        * 반복 일정 수정 → “전체 이벤트 수정”, “이 이벤트부터 수정”
-//                        * 마감일 수정 → “이 이벤트만 수정”
-//                        * 둘다 수정시 → “전체 이벤트 수정”, “이 이벤트부터 수정”
-
+                        val type = when(todoAddViewModel.clickedTodo?.location){
+                            0 -> { // front
+                                val type = if (checkEndDate && checkRepeatData) {
+                                    // 전체 이벤트 수정
+                                    UpdateType.FRONT_ONE
+                                } else if (checkEndDate){
+                                    // 이 이벤트만 수정
+                                    UpdateType.FRONT_TWO
+                                } else if (checkRepeatData) {
+                                    // 전체 이벤트 수정
+                                    UpdateType.FRONT_ONE
+                                } else {
+                                    // 전체 이벤트 수정, 이 이벤트만 수정
+                                    UpdateType.FRONT_THREE
+                                }
+                                type
+                            }
+                            1 -> { // middle
+                                val type = if (checkEndDate && checkRepeatData){
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                    UpdateType.MIDDLE_ONE
+                                } else if(checkEndDate){
+                                    // 이 이벤트만 수정
+                                    UpdateType.MIDDLE_TWO
+                                } else if (checkRepeatData) {
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                    UpdateType.MIDDLE_ONE
+                                } else {
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
+                                    UpdateType.MIDDLE_THREE
+                                }
+                                type
+                            }
+                            2 -> { // back
+                                val type = if (checkEndDate && checkRepeatData){
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                    UpdateType.BACK_ONE
+                                } else if(checkEndDate){
+                                    // 이 이벤트만 수정
+                                    UpdateType.BACK_TWO
+                                } else if (checkRepeatData) {
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+                                    UpdateType.BACK_ONE
+                                } else {
+                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
+                                    UpdateType.BACK_THREE
+                                }
+                                type
+                            }
+                            else -> { UpdateType.NOT_REPEAT }
+                        }
+                        Log.d("20191627", "type : $type")
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
                         option.show(parentFragmentManager, option.tag)
 
                     } else {
-                        todoAddViewModel.updateTodo {
-                            requireActivity().supportFragmentManager.popBackStack()
-                        }
+                        val type = UpdateType.NOT_REPEAT
+                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        option.show(parentFragmentManager, option.tag)
                     }
                 }
                 binding.ivBackIcon.id -> requireActivity().supportFragmentManager.popBackStack()

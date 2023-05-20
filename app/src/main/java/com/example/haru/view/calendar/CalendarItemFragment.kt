@@ -26,7 +26,8 @@ import java.util.*
 class CalendarItemFragment(val schedule: Schedule) : Fragment() {
     private lateinit var binding: FragmentCalendarItemBinding
 
-    private val calendarDateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
+    private val calendarDateFormatter =
+        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
     private val dateformat = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
     val timeParser = SimpleDateFormat("aa hh:mm", Locale.KOREAN)
 
@@ -40,20 +41,20 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
     private var repeatOption = -1
 
     private var weeksValue = arrayListOf(
-        false,false,false,false,false,false,false
+        false, false, false, false, false, false, false
     )
 
     private var monthsValue = arrayListOf(
-        false,false,false,false,false,false,false,
-        false,false,false,false,false,false,false,
-        false,false,false,false,false,false,false,
-        false,false,false,false,false,false,false,
-        false,false,false
+        false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false,
+        false, false, false, false, false, false, false,
+        false, false, false
     )
 
     private var yearsValue = arrayListOf(
-        false,false,false,false,false,false,false,
-        false,false,false,false,false
+        false, false, false, false, false, false, false,
+        false, false, false, false, false
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,18 +74,18 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         return binding.root
     }
 
-    fun optionChange(){
+    fun optionChange() {
         binding.btnEveryDaySchedule.visibility = View.VISIBLE
 
-        if(repeatOption == 1 || repeatOption == 2){
+        if (repeatOption == 1 || repeatOption == 2) {
             binding.everyWeekLayout.visibility = View.VISIBLE
             binding.gridMonthSchedule.visibility = View.GONE
             binding.gridYearSchedule.visibility = View.GONE
-        } else if(repeatOption == 3) {
+        } else if (repeatOption == 3) {
             binding.everyWeekLayout.visibility = View.GONE
             binding.gridMonthSchedule.visibility = View.VISIBLE
             binding.gridYearSchedule.visibility = View.GONE
-        } else if(repeatOption == 4){
+        } else if (repeatOption == 4) {
             binding.everyWeekLayout.visibility = View.GONE
             binding.gridMonthSchedule.visibility = View.GONE
             binding.gridYearSchedule.visibility = View.VISIBLE
@@ -95,7 +96,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         }
     }
 
-    fun onOptionClick(opt:Int){
+    fun onOptionClick(opt: Int) {
         for (i in 0 until binding.repeatOptionSelectSchedule.childCount) {
             if (i == opt)
                 binding.repeatOptionSelectSchedule.getChildAt(i).backgroundTintList = null
@@ -109,27 +110,28 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
                     )
         }
 
-        if(opt == 1 || opt == 2){
-            if(binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text) {
+        if (opt == 1 || opt == 2) {
+            if (binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text) {
                 binding.everyWeekLayout.visibility = View.VISIBLE
             }
 
             binding.gridMonthSchedule.visibility = View.GONE
             binding.gridYearSchedule.visibility = View.GONE
-        } else if(opt == 3) {
+        } else if (opt == 3) {
             binding.everyWeekLayout.visibility = View.GONE
 
-            if(binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text) {
+            if (binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text) {
                 binding.gridMonthSchedule.visibility = View.VISIBLE
             }
 
             binding.gridYearSchedule.visibility = View.GONE
-        } else if(opt == 4){
+        } else if (opt == 4) {
             binding.everyWeekLayout.visibility = View.GONE
             binding.gridMonthSchedule.visibility = View.GONE
 
-            if(binding.repeatStartDateBtn.text.substring(5,7) ==
-                binding.repeatEndDateBtn.text.substring(5,7)) {
+            if (binding.repeatStartDateBtn.text.substring(5, 7) ==
+                binding.repeatEndDateBtn.text.substring(5, 7)
+            ) {
                 binding.gridYearSchedule.visibility = View.VISIBLE
             }
         } else {
@@ -141,7 +143,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         repeatOption = opt
     }
 
-    fun touchEvent(){
+    fun touchEvent() {
         binding.repeatStartDateBtn.setOnClickListener {
             val year = repeatStartCalendar.get(Calendar.YEAR)
             val month = repeatStartCalendar.get(Calendar.MONTH)
@@ -156,17 +158,18 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
 
                     binding.repeatStartDateBtn.text = dateformat.format(repeatStartCalendar.time)
 
-                    if(binding.repeatStartDateBtn.text.toString() != binding.repeatEndDateBtn.text.toString()){
-                        if(repeatOption == 0) repeatOption = -1
+                    if (binding.repeatStartDateBtn.text.toString() != binding.repeatEndDateBtn.text.toString()) {
+                        if (repeatOption == 0) repeatOption = -1
 
                         binding.btnEveryDaySchedule.visibility = View.GONE
                         binding.everyWeekLayout.visibility = View.GONE
                         binding.gridMonthSchedule.visibility = View.GONE
 
-                        if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
-                            binding.repeatEndDateBtn.text.toString().substring(5,7)) {
+                        if (binding.repeatStartDateBtn.text.toString().substring(5, 7) !=
+                            binding.repeatEndDateBtn.text.toString().substring(5, 7)
+                        ) {
                             binding.gridYearSchedule.visibility = View.GONE
-                        } else if(repeatOption == 4){
+                        } else if (repeatOption == 4) {
                             binding.gridYearSchedule.visibility = View.VISIBLE
                         }
                     } else {
@@ -215,16 +218,17 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
 
                     binding.repeatEndDateBtn.text = dateformat.format(repeatEndCalendar.time)
 
-                    if(binding.repeatStartDateBtn.text.toString() != binding.repeatEndDateBtn.text.toString()){
-                        if(repeatOption == 0) repeatOption = -1
+                    if (binding.repeatStartDateBtn.text.toString() != binding.repeatEndDateBtn.text.toString()) {
+                        if (repeatOption == 0) repeatOption = -1
                         binding.btnEveryDaySchedule.visibility = View.GONE
                         binding.everyWeekLayout.visibility = View.GONE
                         binding.gridMonthSchedule.visibility = View.GONE
 
-                        if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
-                            binding.repeatEndDateBtn.text.toString().substring(5,7)) {
+                        if (binding.repeatStartDateBtn.text.toString().substring(5, 7) !=
+                            binding.repeatEndDateBtn.text.toString().substring(5, 7)
+                        ) {
                             binding.gridYearSchedule.visibility = View.GONE
-                        } else if(repeatOption == 4){
+                        } else if (repeatOption == 4) {
                             binding.gridYearSchedule.visibility = View.VISIBLE
                         }
                     } else {
@@ -262,7 +266,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         binding.btnCloseSchedule.setOnClickListener { requireActivity().supportFragmentManager.popBackStack() }
 
         binding.alldaySwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked){
+            if (isChecked) {
                 isAllday = true
                 binding.alldayIv.backgroundTintList =
                     ColorStateList.valueOf(Color.parseColor("#191919"))
@@ -282,7 +286,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         }
 
         binding.repeatSwitchSchedule.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked){
+            if (isChecked) {
                 binding.repeatTvSchedule.setTextColor(Color.parseColor("#191919"))
                 binding.repeatIvSchedule.backgroundTintList =
                     ColorStateList.valueOf(Color.parseColor("#191919"))
@@ -290,11 +294,11 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
                 binding.repeatOptionSelectSchedule.visibility = View.VISIBLE
                 binding.repeatEndLayout.visibility = View.VISIBLE
 
-                if(repeatOption == 1 || repeatOption == 2){
+                if (repeatOption == 1 || repeatOption == 2) {
                     binding.everyWeekLayout.visibility = View.VISIBLE
-                } else if(repeatOption == 3){
+                } else if (repeatOption == 3) {
                     binding.gridMonthSchedule.visibility = View.VISIBLE
-                } else if(repeatOption == 4){
+                } else if (repeatOption == 4) {
                     binding.gridYearSchedule.visibility = View.VISIBLE
                 }
             } else {
@@ -310,11 +314,11 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
             }
         }
 
-        binding.btnEveryDaySchedule.setOnClickListener{onOptionClick(0)}
-        binding.btnEveryWeekSchedule.setOnClickListener{onOptionClick(1)}
-        binding.btnEvery2WeekSchedule.setOnClickListener{onOptionClick(2)}
-        binding.btnEveryMonthSchedule.setOnClickListener{onOptionClick(3)}
-        binding.btnEveryYearSchedule.setOnClickListener{onOptionClick(4)}
+        binding.btnEveryDaySchedule.setOnClickListener { onOptionClick(0) }
+        binding.btnEveryWeekSchedule.setOnClickListener { onOptionClick(1) }
+        binding.btnEvery2WeekSchedule.setOnClickListener { onOptionClick(2) }
+        binding.btnEveryMonthSchedule.setOnClickListener { onOptionClick(3) }
+        binding.btnEveryYearSchedule.setOnClickListener { onOptionClick(4) }
 
         for (i in 1..31) {
             val textView = TextView(requireContext())
@@ -323,12 +327,12 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
             textView.gravity = Gravity.CENTER
 
             textView.setOnClickListener {
-                if(!monthsValue[i-1]){
+                if (!monthsValue[i - 1]) {
                     textView.setTextColor(Color.CYAN)
-                    monthsValue[i-1] = true
+                    monthsValue[i - 1] = true
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-                    monthsValue[i-1] = false
+                    monthsValue[i - 1] = false
                 }
             }
 
@@ -349,12 +353,12 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
             textView.gravity = Gravity.CENTER
 
             textView.setOnClickListener {
-                if(!yearsValue[i-1]){
+                if (!yearsValue[i - 1]) {
                     textView.setTextColor(Color.CYAN)
-                    yearsValue[i-1] = true
+                    yearsValue[i - 1] = true
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-                    yearsValue[i-1] = false
+                    yearsValue[i - 1] = false
                 }
             }
 
@@ -369,7 +373,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         binding.gridYearSchedule.visibility = View.GONE
 
         binding.repeatEndDateSwitchSchedule.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(isChecked){
+            if (isChecked) {
                 binding.repeatEndDateScheduleTv.setTextColor(Color.parseColor("#191919"))
                 binding.btnRepeatEndDateSchedule.visibility = View.VISIBLE
                 binding.btnRepeatEndDateSchedule.text = dateformat.format(repeatEndCalendar.time)
@@ -395,7 +399,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         binding.btnRepeatEndDateSchedule.setOnClickListener {
             val repeatEndDateText = binding.btnRepeatEndDateSchedule.text.toString().substring(
                 0,
-                binding.btnRepeatEndDateSchedule.text.toString().length-2
+                binding.btnRepeatEndDateSchedule.text.toString().length - 2
             )
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd")
@@ -425,11 +429,11 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
             datePickerDialog.show()
         }
 
-        for(i in 0..6){
+        for (i in 0..6) {
             binding.everyWeekLayout.getChildAt(i).setOnClickListener {
                 val view = it as TextView
 
-                if(!weeksValue[i]){
+                if (!weeksValue[i]) {
                     weeksValue[i] = true
                     view.setTextColor(Color.CYAN)
                 } else {
@@ -440,21 +444,24 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         }
     }
 
-    fun initView(){
+    fun initView() {
         //내용 가져오기
         binding.scheduleContentEt.setText(schedule.content)
 
         //카테고리 가져오기
         val drawable = binding.categoryChooseIv.background as VectorDrawable
 
-        if(schedule.category == null){
+        if (schedule.category == null) {
             drawable.setColorFilter(Color.parseColor("#1DAFFF"), PorterDuff.Mode.SRC_ATOP)
         } else {
-            drawable.setColorFilter(Color.parseColor(schedule.category.color), PorterDuff.Mode.SRC_ATOP)
+            drawable.setColorFilter(
+                Color.parseColor(schedule.category.color),
+                PorterDuff.Mode.SRC_ATOP
+            )
         }
 
         //메모 가져오기
-        if(schedule.memo != null && schedule.memo != ""){
+        if (schedule.memo != null && schedule.memo != "") {
             binding.ivMemoIcon.backgroundTintList =
                 ColorStateList.valueOf(Color.parseColor("#191919"))
 
@@ -462,7 +469,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         }
 
         //하루종일 확인 후 반복 구간 설정
-        if(schedule.isAllDay){
+        if (schedule.isAllDay) {
             binding.alldaySwitch.isChecked = true
 
             binding.alldayIv.backgroundTintList =
@@ -474,16 +481,16 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         }
 
         //반복 설정이면서
-        if(schedule.repeatOption != null && schedule.repeatValue != null) {
+        if (schedule.repeatOption != null && schedule.repeatValue != null) {
             binding.repeatSwitchSchedule.isChecked = true
             binding.repeatEndLayout.visibility = View.VISIBLE
             //구간이 이틀 이상 연속이라 repeatValue에 인터벌 값으로 들어갔을 때
-            if(!schedule.repeatValue.contains("T")) {
+            if (!schedule.repeatValue.contains("T")) {
                 val calendar = Calendar.getInstance()
                 val repeatstart = calendarDateFormatter.parse(schedule.repeatStart)
                 calendar.time = repeatstart
 
-                calendar.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                calendar.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T", "").toInt())
 
                 val repeatend = calendar.time
 
@@ -507,7 +514,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
                 binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
                 binding.repeatEndDateBtn.text = dateformat.format(repeatstart)
 
-                if(repeatend.year < 2100) {
+                if (repeatend.year < 2100) {
                     binding.repeatEndDateSwitchSchedule.isChecked = true
                     binding.repeatEndDateScheduleTv.setTextColor(Color.parseColor("#191919"))
                     binding.btnRepeatEndDateSchedule.visibility = View.VISIBLE
@@ -524,7 +531,7 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
         }
 
         //알람이 1개 이상 존재할 때
-        if(schedule.alarms.size > 0){
+        if (schedule.alarms.size > 0) {
             binding.alarmSwitchSchedule.isChecked = true
 
             binding.alarmIv.backgroundTintList =
@@ -532,36 +539,36 @@ class CalendarItemFragment(val schedule: Schedule) : Fragment() {
             binding.alarmTv.setTextColor(Color.parseColor("#191919"))
         }
 
-        if(binding.repeatStartDateBtn.text != binding.repeatEndDateBtn.text){
+        if (binding.repeatStartDateBtn.text != binding.repeatEndDateBtn.text) {
             binding.btnEveryDaySchedule.visibility = View.GONE
         }
 
         //반복이 설정되어 있을 때
-        if(schedule.repeatOption != null){
+        if (schedule.repeatOption != null) {
             binding.repeatSwitchSchedule.isChecked = true
 
             binding.repeatIvSchedule.backgroundTintList =
                 ColorStateList.valueOf(Color.parseColor("#191919"))
             binding.repeatTvSchedule.setTextColor(Color.parseColor("#191919"))
 
-            when(schedule.repeatOption){
-                "매일"->{
+            when (schedule.repeatOption) {
+                "매일" -> {
                     onOptionClick(0)
                 }
 
-                "매주"->{
+                "매주" -> {
                     onOptionClick(1)
                 }
 
-                "2주마다"->{
+                "격주" -> {
                     onOptionClick(2)
                 }
 
-                "매달"->{
+                "매달" -> {
                     onOptionClick(3)
                 }
 
-                "매년"->{
+                "매년" -> {
                     onOptionClick(4)
                 }
             }

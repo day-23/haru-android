@@ -3,32 +3,53 @@ package com.example.haru.view.checklist
 import android.app.Dialog
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatButton
+import com.example.haru.R
 import com.example.haru.databinding.FragmentOptionUpdateBinding
+import com.example.haru.view.checklist.ChecklistItemFragment.UpdateType
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int = 3) : BottomSheetDialogFragment(){
+class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: UpdateType) :
+    BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionUpdateBinding
-    private var ratio : Int = 30
-    private var type : Int = 3
+    private var ratio: Int = 30
+    private var type: UpdateType
     private var todoAddViewModel: TodoAddViewModel
 
 
-    init{
+    init {
         this.type = type
-        ratio = when(type){
-            0, 1, 2 -> 23  // 취소 버튼 제외하고 선택지가 1개인 경우
-            3 -> 30 // 취소 버튼 제외하고 선택지가 2개인 경우
-            3 -> 38 // 취소 버튼 제외하고 선택지가 3개인 경우
-            else -> 30
+
+        ratio = when (type) {
+            // 취소 버튼 제외하고 선택지가 1개인 경우
+            UpdateType.FRONT_ONE, UpdateType.FRONT_TWO,
+            UpdateType.BACK_TWO, UpdateType.NOT_REPEAT, UpdateType.MIDDLE_TWO -> {
+                27
+            }
+
+            // 취소 버튼 제외하고 선택지가 2개인 경우
+            UpdateType.FRONT_THREE, UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> {
+                35
+            }
+
+            // 취소 버튼 제외하고 선택지가 3개인 경우
+            UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> {
+                43
+            }
         }
+
+
         this.todoAddViewModel = todoAddViewModel
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,7 +61,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int 
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog : Dialog = super.onCreateDialog(savedInstanceState)
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
 
         dialog.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
@@ -70,58 +91,145 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type : Int 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val params: LinearLayout.LayoutParams =
+            binding.layoutParentBtnUpdate.layoutParams as LinearLayout.LayoutParams
 
-        when(type){
-            0 -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
-                binding.btnOptionOneUpdate.visibility = View.GONE
-                binding.btnOptionAfterUpdate.visibility = View.GONE
+        params.weight = when (type) {
+            UpdateType.FRONT_ONE -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                2f
             }
-            1 -> { // 이 할일만 수정 (마감일 수정, 반복 옵션 수정X)
-                binding.btnOptionAllUpdate.visibility = View.GONE
-                binding.btnOptionAfterUpdate.visibility = View.GONE
+            UpdateType.FRONT_TWO -> { // 이 할일만 수정 (마감일 수정, 반복 옵션 수정X)
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAllUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                2f
             }
-            2 -> { // 전체 할일 수정 (마감일 수정X, 반복 옵션 수정)
-                binding.btnOptionOneUpdate.visibility = View.GONE
-                binding.btnOptionAfterUpdate.visibility = View.GONE
+            UpdateType.FRONT_THREE -> { // 전체 할일 수정, 이 할일만 수정
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                3f
             }
-            3 -> { // default, 전체 할일 수정, 이 할일만 수정 (마감일 수정X, 반복 옵션 수정X)
-                binding.btnOptionAfterUpdate.visibility = View.GONE
+            UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> { // 전체 할일 수정, 이 할일부터 수정
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                3f
+            }
+            UpdateType.MIDDLE_TWO, UpdateType.BACK_TWO -> { // 이 할일만 수정
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAllUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                2f
+            }
+            UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> { // 모든 옵션을 보여주는 상황
+                binding.layoutParentBtnUpdate.removeView(binding.btnOptionSave)
+                4f
+            }
+            UpdateType.NOT_REPEAT -> {
+                binding.textViewUpdateInfo.text =
+                    getString(R.string.updateDescription).substring(0, 12)
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionAllUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                }
+                2f
             }
         }
+        binding.layoutParentBtnUpdate.apply {
+            layoutParams = params
+            (getChildAt(childCount - 1) as AppCompatButton).setBackgroundResource(R.drawable.option_last_view_bg)
+        }
+
+
 
         binding.btnOptionOneUpdate.setOnClickListener(ButtonClickListener())
         binding.btnOptionAllUpdate.setOnClickListener(ButtonClickListener())
         binding.btnOptionAfterUpdate.setOnClickListener(ButtonClickListener())
-        binding.btnOptionCancel.setOnClickListener(ButtonClickListener())
+        binding.btnOptionSave.setOnClickListener(ButtonClickListener())
+        binding.btnOptionUpdateCancel.setOnClickListener(ButtonClickListener())
     }
 
-    inner class ButtonClickListener : View.OnClickListener{
+    inner class ButtonClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            when(v?.id){
+            when (v?.id) {
                 binding.btnOptionOneUpdate.id -> {
-                    // front에서의 하나만 업데이트
-                    todoAddViewModel.updateRepeatFrontTodo {
-                        dismiss()
-                        requireActivity().supportFragmentManager.popBackStack()
+                    binding.btnOptionOneUpdate.isClickable = false
+                    when (type) {
+                        UpdateType.FRONT_TWO, UpdateType.FRONT_THREE -> { // front
+                            todoAddViewModel.updateRepeatFrontTodo {
+                                binding.btnOptionOneUpdate.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        UpdateType.MIDDLE_TWO, UpdateType.MIDDLE_THREE -> { // middle
+                            todoAddViewModel.updateRepeatMiddleTodo {
+                                binding.btnOptionOneUpdate.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        UpdateType.BACK_TWO, UpdateType.BACK_THREE -> { // back
+                            todoAddViewModel.updateRepeatBackTodo {
+                                binding.btnOptionOneUpdate.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        else -> {
+                            Log.d("20191627", "UpdateOptionDialog -> OneUpdate 잘못된 Type")
+                        }
                     }
-                    // middle, back에서의 하나만 업데이트
-
-
                 }
                 binding.btnOptionAllUpdate.id -> {
-                    // front에서의 전체 업데이트
+                    binding.btnOptionAllUpdate.isClickable = false
                     todoAddViewModel.updateTodo {
+                        binding.btnOptionAllUpdate.isClickable = true
                         dismiss()
                         requireActivity().supportFragmentManager.popBackStack()
                     }
-
-                    // middle, back에서의 전체 업데이트
                 }
-//                binding.btnOptionAfterUpdate.id -> {
-//                    middle, back에서의 이 할일부터 업데이트
-//
-//                }
-                binding.btnOptionCancel.id -> {
+                binding.btnOptionAfterUpdate.id -> {
+                    binding.btnOptionAfterUpdate.isClickable = false
+                    // middle, back의 이후부터 수정
+                    when (type) {
+                        UpdateType.MIDDLE_ONE, UpdateType.MIDDLE_THREE,
+                        UpdateType.BACK_ONE, UpdateType.BACK_THREE -> {
+                            todoAddViewModel.updateRepeatBackTodo {
+                                binding.btnOptionAfterUpdate.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        else -> {}
+                    }
+
+                }
+
+                binding.btnOptionSave.id -> {
+                    Log.d("20191627", "update")
+                    binding.btnOptionSave.isClickable = false
+                    todoAddViewModel.updateTodo {
+                        binding.btnOptionSave.isClickable = true
+                        dismiss()
+                        requireActivity().supportFragmentManager.popBackStack()
+                    }
+                }
+
+                binding.btnOptionUpdateCancel.id -> {
                     dismiss()
                 }
             }

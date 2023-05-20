@@ -16,6 +16,7 @@ import com.example.haru.data.model.ExternalImages
 import com.example.haru.data.model.SnsPost
 import com.example.haru.viewmodel.MyPageViewModel
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
@@ -39,10 +40,10 @@ class GalleryAdapter (val context: Context,
                 val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
                 val imagePath = it.getString(columnIndex)
                 val fileName = data.name.substringAfterLast('.')
-                val fileExtension = "image/" + fileName
+                val fileExtension = "image/$fileName"
 
                 val file = File(imagePath)
-                val requestFile = RequestBody.create(MediaType.parse(fileExtension), file)
+                val requestFile = RequestBody.create(fileExtension.toMediaTypeOrNull(), file)
                 val part = MultipartBody.Part.createFormData("image", data.name, requestFile)
                 myPageViewModel.selectProfile(part, data.absuri)
             }

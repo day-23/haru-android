@@ -31,7 +31,8 @@ class ScheduleRepository() {
     suspend fun postSchedule(body: PostSchedule, callback: () -> Unit){
         withContext(Dispatchers.IO) {
             val response = scheduleService.createSchedule(
-                "ysr",
+//                "ysr",
+                "005224c0-eec1-4638-9143-58cbfc9688c5",
                 body
             ).execute()
 
@@ -55,7 +56,8 @@ class ScheduleRepository() {
     suspend fun deleteSchedule(scheduleId: String, callback: () -> Unit){
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteSchedule(
-                "ysr",
+//                "ysr",
+                "005224c0-eec1-4638-9143-58cbfc9688c5",
                 scheduleId
             ).execute()
 

@@ -31,8 +31,8 @@ object RetrofitClient {
         .connectTimeout(100, TimeUnit.SECONDS)
         .followRedirects(true)
         .followSslRedirects(true)
-        .readTimeout(100,TimeUnit.SECONDS)
-        .writeTimeout(100,TimeUnit.SECONDS)
+        .readTimeout(100, TimeUnit.SECONDS)
+        .writeTimeout(100, TimeUnit.SECONDS)
         .build()
 
     private val okHttpClientNotIncludeAccessToken = OkHttpClient.Builder()
@@ -51,8 +51,8 @@ object RetrofitClient {
         .connectTimeout(100, TimeUnit.SECONDS)
         .followRedirects(true)
         .followSslRedirects(true)
-        .readTimeout(100,TimeUnit.SECONDS)
-        .writeTimeout(100,TimeUnit.SECONDS)
+        .readTimeout(100, TimeUnit.SECONDS)
+        .writeTimeout(100, TimeUnit.SECONDS)
         .build()
 
     private val retrofit = Retrofit.Builder()
@@ -61,7 +61,7 @@ object RetrofitClient {
         .client(okHttpClient)
         .build()
 
-    val alldoService: AllDoService by lazy{
+    val alldoService: AllDoService by lazy {
         retrofit.create(AllDoService::class.java)
     }
 
@@ -72,7 +72,7 @@ object RetrofitClient {
     val scheduleService: ScheduleService by lazy {
         retrofit.create(ScheduleService::class.java)
     }
-    
+
     val tagService: TagService by lazy {
         retrofit.create(TagService::class.java)
     }

@@ -8,6 +8,7 @@ import com.example.haru.data.retrofit.RetrofitClient.postService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
@@ -17,8 +18,8 @@ class ProfileRepository() {
     suspend fun editProfile(imageFile: MultipartBody.Part, name:String, introduction:String ,callback:(user : User) -> Unit) = withContext(
         Dispatchers.IO) {
         try {
-            val name = RequestBody.create(MediaType.parse("text/plain"), name)
-            val introduction = RequestBody.create(MediaType.parse("text/plain"), introduction)
+            val name = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
+            val introduction = RequestBody.create("text/plain".toMediaTypeOrNull(), introduction)
             val response = profileService.editProfile(
                 "jts",
                 imageFile,
