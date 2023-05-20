@@ -243,7 +243,7 @@ class CalendarViewModel : ViewModel() {
                                     }
                                 }
 
-                                "격주" -> {
+                                "2주마다" -> {
                                     var weeklycnt = 0
                                     var cnt = 0
                                     var twoweek = true
@@ -464,7 +464,7 @@ class CalendarViewModel : ViewModel() {
                                         }
                                     }
 
-                                    "격주" -> {
+                                    "2주마다" -> {
                                         var weeklycnt = 0
                                         var cnt = 0
                                         var twoweek = true
@@ -591,7 +591,7 @@ class CalendarViewModel : ViewModel() {
                                     }.timeInMillis
                                 }
 
-                                val intervaldate = (getIgnoredTimeDays(calendar.timeInMillis) - getIgnoredTimeDays(repeatstart.time))/(24*60*60*1000)
+                                val intervaldate = calendar.timeInMillis - repeatstart.time
 
                                 when (repeatOption) {
                                     "매주"->{
@@ -629,7 +629,7 @@ class CalendarViewModel : ViewModel() {
                                         }
                                     }
 
-                                    "격주"->{
+                                    "2주마다"->{
                                         var cnt = 0
                                         val tempStartDate = dateformat.parse(startDate)
                                         calendar.time = tempStartDate

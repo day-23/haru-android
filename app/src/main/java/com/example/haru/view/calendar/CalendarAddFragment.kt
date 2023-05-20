@@ -564,7 +564,7 @@ class CalendarAddFragment(private val activity: Activity,
                         binding.repeatStartTimeBtn.text.toString().substring(6,8).toInt()
                     )
 
-                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toString()
+                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt().toString()
                 }
             }
 

@@ -703,6 +703,7 @@ class AdapterMonth(val activity: Activity,
                                 Log.d("repeatStart", repeatStart.toString())
                                 calendar2.time = repeatStart
                                 calendar2.add(Calendar.MILLISECOND, content.timeInterval!!)
+                                Log.d("interval2", content.timeInterval.toString())
                                 Log.d("calendar2",calendar2.time.toString())
 
 
@@ -715,6 +716,8 @@ class AdapterMonth(val activity: Activity,
                                 calendar2.time.seconds = 0
 
                                 val dateminus = (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
+                                Log.d("20191630", calendar2.time.time.toString())
+                                Log.d("20191630", repeatStart.time.toString())
                                 interval = dateminus.toInt()
                                 Log.d("interval",interval.toString())
                             }
