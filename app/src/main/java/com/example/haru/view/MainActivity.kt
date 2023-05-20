@@ -28,16 +28,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreference: SharedPreferences
     private lateinit var editor: Editor
 
-    companion object{
+    companion object {
         private lateinit var binding: ActivityMainBinding
-        fun hideNavi(state: Boolean){
+        fun hideNavi(state: Boolean) {
             if (state)
                 binding.bottomNav.visibility = View.GONE
             else binding.bottomNav.visibility = View.VISIBLE
         }
     }
 
-    override fun onPause(){
+    override fun onPause() {
         editor.putBoolean("todoApply", calendarMainData.todoApply)
         editor.putBoolean("scheduleApply", calendarMainData.scheduleApply)
         editor.putBoolean("unclassifiedCategory", calendarMainData.unclassifiedCategory)
@@ -68,16 +68,18 @@ class MainActivity : AppCompatActivity() {
 
         calendarMainData.todoApply = sharedPreference.getBoolean("todoApply", true)
         calendarMainData.scheduleApply = sharedPreference.getBoolean("scheduleApply", true)
-        calendarMainData.unclassifiedCategory = sharedPreference.getBoolean("unclassifiedCategory", true)
+        calendarMainData.unclassifiedCategory =
+            sharedPreference.getBoolean("unclassifiedCategory", true)
         calendarMainData.todoComplete = sharedPreference.getBoolean("todoComplete", true)
         calendarMainData.todoInComplete = sharedPreference.getBoolean("todoInComplete", true)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm: InputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 
-        if (currentFocus is EditText){
+        if (currentFocus is EditText) {
             currentFocus!!.clearFocus()
             return false
         }
