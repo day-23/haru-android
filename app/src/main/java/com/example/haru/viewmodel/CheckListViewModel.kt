@@ -347,7 +347,7 @@ class CheckListViewModel() :
                 when (position) {
                     1 -> {
                         todoRepository.getTodoByComplete {
-                            if (it?.success == true)
+                            if (it?.success == true){
                                 this.addAll(
                                     listOf(
                                         Todo(
@@ -356,19 +356,19 @@ class CheckListViewModel() :
                                         )
                                     ) + it.data!!
                                 )
+                                if (it.data.isEmpty())
+                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                            }
                         }
                     }
                     2 -> {
                         todoRepository.getTodoByUntag {
-                            if (it?.success == true)
-                                this.addAll(
-                                    listOf(
-                                        Todo(
-                                            type = 4,
-                                            content = todoByTagItem!!
-                                        )
-                                    ) + it.data!!
-                                )
+                            if (it?.success == true){
+                                this.addAll(listOf(Todo(type = 4,content = todoByTagItem!!))
+                                        + it.data!!)
+                                if (it.data.isEmpty())
+                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                            }
                         }
                     }
                     else -> {
@@ -407,8 +407,11 @@ class CheckListViewModel() :
             todoList.apply {
                 clear()
                 todoRepository.getTodoByFlag {
-                    if (it?.success == true)
+                    if (it?.success == true){
                         addAll(listOf(Todo(type = 4, content = "중요")) + it.data!!)
+                        if (it.data.isEmpty())
+                            add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
+                    }
                     else Log.e("20191627", it.toString())
                 }
             }
