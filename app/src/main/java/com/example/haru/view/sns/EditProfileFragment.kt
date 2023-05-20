@@ -53,7 +53,8 @@ import java.util.jar.Manifest
 class EditProfileFragment(userId: String): Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
     private lateinit var profileViewModel: MyPageViewModel
-    val userId = userId
+    var userId = userId
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +78,7 @@ class EditProfileFragment(userId: String): Fragment() {
                 fragmentManager.popBackStack()
             }
         }
-
+        if(userId == "") userId = "jts" //TODO:나중에는 동적으로 할당해야함
         profileViewModel.getUserInfo(userId)
 
         profileViewModel.UserInfo.observe(viewLifecycleOwner){profile ->

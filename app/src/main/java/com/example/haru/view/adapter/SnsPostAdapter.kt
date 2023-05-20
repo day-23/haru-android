@@ -50,6 +50,15 @@ class SnsPostAdapter(val context: Context,
         holder.likedcount.text = itemList[position].likedCount.toString()
         holder.commentcount.text = itemList[position].commentCount.toString()
 
+        //TODO:(sns삭제버튼)나중에 계정정보 동적으로 변경해야함
+        if(itemList[position].user.id != "jts"){
+            holder.setup.visibility = View.GONE
+        }
+        //TODO:(sns삭제버튼)계정정보 동적할당 필요
+        holder.setup.setOnClickListener {
+            listener.onSetupClick("jts", itemList[position].id)
+        }
+
         val pictureIndex = adapter.itemCount
         val text = "${position + 1}/${pictureIndex}"
         holder.index.text = text

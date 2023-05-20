@@ -67,6 +67,10 @@ class SnsFragment : Fragment(), OnPostClickListener {
             transaction.addToBackStack("snsmain")
         transaction.commit()
     }
+
+    override fun onSetupClick(userId: String, postId: String) {
+        Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+    }
     companion object{
         const val TAG : String = "로그"
 
