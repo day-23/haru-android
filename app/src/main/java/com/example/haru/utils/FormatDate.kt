@@ -32,7 +32,6 @@ object FormatDate {
 
     val cal = Calendar.getInstance()
 
-
     private fun initDiff(): Long {
         val gmtZoneId = ZoneId.of("GMT")
         val gmtDateTime = LocalDateTime.now(gmtZoneId)
@@ -121,6 +120,8 @@ object FormatDate {
         val instant = date.atZone(ZoneId.systemDefault()).toInstant()
         return Date.from(instant)
     }
+
+
 
     fun preEndDate(endDateStr: String, repeatOption: Int, repeatValue: String): Date? {
         val endDate = strToDate(endDateStr)
@@ -411,10 +412,12 @@ object FormatDate {
 
             cal.time =
                 strToDate(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
+            Log.d("20191630", "endDate:"+endDateStr)
 
             val nWeek = cal.get(Calendar.DAY_OF_WEEK)
 
             val idx = nWeek - 1
+            Log.d("20191630", "idx:"+idx.toString())
             val idxPlus = 1  // Todo를 완료하기 위해서 다음 endDate를 구할때는 해당 날이 포함되서는 안된다.
             var flag = false
 

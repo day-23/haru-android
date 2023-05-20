@@ -542,7 +542,7 @@ class CalendarAddFragment(private val activity: Activity,
                 }
             } else {
                 if(binding.alldaySwitch.isChecked){
-                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toString()
+                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt().toString()
                 } else {
                     repeatStartCalendar.set(
                         Calendar.HOUR_OF_DAY,

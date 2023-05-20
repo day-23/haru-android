@@ -110,6 +110,9 @@ class CalendarViewModel : ViewModel() {
     fun getAlldoDay(startDate: String, endDate:String){
         viewModelScope.launch {
             alldoRepository.getAllDoByDates(startDate, endDate){
+                val todayDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
+                val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+
                 if(it != null){
                     val todoList = it.todos
                     val scheduleList = it.schedules
@@ -117,10 +120,6 @@ class CalendarViewModel : ViewModel() {
                     for (i in 0 until todoList.size){
                         if (todoList[i].endDate != null){
                             todoList[i].endDate = FormatDate.calendarFormat(todoList[i].endDate!!)
-                        }
-
-                        if(todoList[i].repeatEnd != null){
-                            todoList[i].repeatEnd = FormatDate.calendarFormat(todoList[i].repeatEnd!!)
                         }
                     }
 

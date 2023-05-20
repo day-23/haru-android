@@ -17,7 +17,7 @@
                 android:layout_height="match_parent"
                 app:cardElevation="0dp"
                 app:cardUseCompatPadding="true"
-                app:contentPadding="20sp">
+                app:contentPadding="23dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -41,14 +41,14 @@
                                 android:background="#FFFFFF"
                                 android:drawableRight="@drawable/down_arrow"
                                 android:text="2023년 3월"
-                                android:textColor="@color/black"
+                                android:textColor="#191919"
                                 android:textSize="28sp"
                                 android:textStyle="bold" />
                         </FrameLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="28sp"
-                            android:layout_height="28sp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
                             android:layout_gravity="center"
                             android:background="@drawable/calendar_today_background_image">
 
@@ -69,9 +69,9 @@
                         <ImageView
                             android:id="@+id/category_button_imv"
                             android:background="@drawable/calendar_category"
-                            android:layout_width="40sp"
+                            android:layout_width="40dp"
                             android:layout_gravity="center"
-                            android:layout_height="40sp"/>
+                            android:layout_height="40dp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -84,8 +84,8 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="일"
-                            android:textColor="#ff0000"
-                            android:textSize="18sp" />
+                            android:textColor="#ACACAC"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -93,8 +93,8 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="월"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            android:textColor="#ACACAC"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -102,8 +102,8 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="화"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            android:textColor="#ACACAC"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -111,8 +111,8 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="수"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            android:textColor="#ACACAC"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -120,8 +120,8 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="목"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            android:textColor="#ACACAC"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -129,8 +129,8 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="금"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            android:textColor="#ACACAC"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -138,8 +138,8 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:text="토"
-                            android:textColor="#0000ff"
-                            android:textSize="18sp" />
+                            android:textColor="#ACACAC"
+                            android:textSize="14sp" />
                     </LinearLayout>
 
 
@@ -147,6 +147,7 @@
                         android:id="@+id/month_viewpager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="2dp"
                         android:background="#00000000"
                         android:orientation="horizontal" />
 
@@ -154,8 +155,8 @@
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:layout_width="373sp"
-                android:layout_height="600sp"
+                android:layout_width="373dp"
+                android:layout_height="600dp"
                 android:layout_gravity="right"
                 android:background="@color/white"
                 android:orientation="vertical">
@@ -188,7 +189,7 @@
                     android:layout_weight="8"
                     app:cardElevation="0dp"
                     app:cardUseCompatPadding="true"
-                    app:contentPadding="20sp">
+                    app:contentPadding="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -217,6 +218,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="일정"
+                                    android:layout_gravity="center"
                                     android:textColor="#1DAFFF"
                                     android:textSize="14sp" />
                             </LinearLayout>
@@ -255,7 +257,7 @@
                     android:layout_weight="8"
                     app:cardElevation="0dp"
                     app:cardUseCompatPadding="true"
-                    app:contentPadding="20sp">
+                    app:contentPadding="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -278,6 +280,7 @@
                                 android:id="@+id/todo_apply_tv"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:text="할일"
                                 android:textColor="#1DAFFF" />
                         </LinearLayout>
