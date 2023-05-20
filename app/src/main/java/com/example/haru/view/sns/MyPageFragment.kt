@@ -53,6 +53,10 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         //Don't need to implement
     }
 
+    override fun onSetupClick(userId: String, postId: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "MypageFragment - onCreate() called")

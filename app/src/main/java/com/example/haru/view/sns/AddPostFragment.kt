@@ -1,8 +1,10 @@
 package com.example.haru.view.sns
 
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.pm.PackageManager
-import android.graphics.Rect
+import android.graphics.*
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -13,6 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -24,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.haru.R
@@ -40,6 +44,8 @@ class AddPostFragment : Fragment() {
     lateinit var binding : FragmentAddPostBinding
     lateinit var galleryRecyclerView: RecyclerView
     lateinit var galleryViewmodel: MyPageViewModel
+    lateinit var galleryAdapter: AddPostAdapter
+    var toggle = false
 
         companion object{
             const val TAG : String = "로그"
@@ -55,6 +61,7 @@ class AddPostFragment : Fragment() {
             galleryViewmodel = ViewModelProvider(this).get(MyPageViewModel::class.java)
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -72,9 +79,29 @@ class AddPostFragment : Fragment() {
             {getpermission()}
             getimage()
 
+            galleryViewmodel.SelectedImage.observe(viewLifecycleOwner){ index->
+                val lastindex = galleryViewmodel.getLastImage()
+                val layoutManager = galleryRecyclerView.layoutManager
+                if(layoutManager != null && index != -1){
+                    Log.d("20191668", "current :$index last :$lastindex")
+                    val targetView = layoutManager.findViewByPosition(index)
+                    val imageView = targetView!!.findViewById<ImageView>(R.id.image)
+                    imageView!!.setColorFilter(Color.argb(127, 0, 0, 0), PorterDuff.Mode.SRC_OVER)
+
+                    if(lastindex != -1){
+                        val LastTargetView = layoutManager.findViewByPosition(lastindex)
+                        val LastImageView = LastTargetView!!.findViewById<ImageView>(R.id.image)
+                        LastImageView!!.setColorFilter(null)
+                        if(lastindex == index){
+                            galleryViewmodel.resetSelection()
+                        }
+                    }
+                }
+            }
+
             galleryViewmodel.StoredImages.observe(viewLifecycleOwner){images ->
-                val galleryAdapter = GalleryAdapter(requireContext(), images, galleryViewmodel)
-                galleryRecyclerView.adapter = AddPostAdapter(requireContext(), images, galleryViewmodel)
+                galleryAdapter = AddPostAdapter(requireContext(), images, galleryViewmodel)
+                galleryRecyclerView.adapter = galleryAdapter
                 val gridLayoutManager = GridLayoutManager(requireContext(), 3)
                 gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int {
@@ -98,33 +125,51 @@ class AddPostFragment : Fragment() {
             }
 
             galleryViewmodel.SelectedPosition.observe(viewLifecycleOwner){selected ->
-                for(i in selected){
-                    val layoutManager = galleryRecyclerView.layoutManager
-                    if(layoutManager != null){
-                        val targetView = layoutManager.findViewByPosition(i)
-                        val textView = targetView?.findViewById<TextView>(R.id.select_index)
-                        textView?.text = "${selected.indexOf(i) + 1}"
+                if(selected != null) {
+                    for (i in selected) {
+                        Log.d("20191668", "i : $i")
+                        val layoutManager = galleryRecyclerView.layoutManager
+                        if (layoutManager != null) {
+                            val targetView = layoutManager.findViewByPosition(i)
+                            val textView = targetView?.findViewById<TextView>(R.id.select_index)
+                            textView?.text = "${selected.indexOf(i) + 1}"
+                        }
                     }
                 }
             }
 
+            binding.imageMultiSelect.setOnClickListener {
+                galleryViewmodel.resetSelection()
+                val result = galleryAdapter.setMultiSelect()
+                if (result){
+                    binding.imageMultiSelect.setImageResource(R.drawable.multi_select_on)
+                } else{
+                    binding.imageMultiSelect.setImageResource(R.drawable.multi_select_picture)
+                }
+                galleryAdapter.notifyDataSetChanged()
+            }
+
             binding.addpostApply.setOnClickListener{
-                val converedImage =  galleryViewmodel.convertMultiPart(requireContext())
-                val content = binding.addpostContent.text.toString()
-                val hashtag = arrayListOf("해시스완")
-                var updatedone = false
-                Toast.makeText(requireContext(),"게시글 작성중...", Toast.LENGTH_SHORT).show()
+                if(galleryViewmodel.SelectedImage.value != -1 || galleryViewmodel.SelectedPosition.value!!.size > 0) {
+                    val converedImage = galleryViewmodel.convertMultiPart(requireContext())
+                    val content = binding.addpostContent.text.toString()
+                    val hashtag = arrayListOf("해시스완")
+                    Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
 
-                galleryViewmodel.postRequest(converedImage, content, hashtag)
-                galleryViewmodel.resetValue()
+                    galleryViewmodel.postRequest(converedImage, content, hashtag)
+                    galleryViewmodel.resetValue()
 
-                galleryViewmodel.PostDone.observe(viewLifecycleOwner){done ->
-                    val fragmentManager = parentFragmentManager
-                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    val fragment = SnsFragment()
-                    val transaction = parentFragmentManager.beginTransaction()
-                    transaction.replace(R.id.fragments_frame, fragment)
-                    transaction.commit()
+
+                    galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
+                        val fragmentManager = parentFragmentManager
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        val fragment = SnsFragment()
+                        val transaction = parentFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragments_frame, fragment)
+                        transaction.commit()
+                    }
+                }else{
+                    Toast.makeText(requireContext(), "사진을 선택해 주세요" ,Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -136,6 +181,36 @@ class AddPostFragment : Fragment() {
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragments_frame, fragment)
                     .commit()
+            }
+
+            binding.galleyToggle.setOnClickListener {
+                val layoutparam = binding.popupGallery.layoutParams
+                val startHeight = layoutparam.height
+                if (!toggle) {
+                    layoutparam.height = (binding.addpostRootView.measuredHeight * 0.8).toInt()
+                    toggle = true
+                    binding.galleyToggle.rotation = 270f
+                    binding.imageMultiSelect.isClickable = true
+                } else {
+                    layoutparam.height = 0
+                    toggle = false
+                    binding.galleyToggle.rotation = 90f
+                    binding.imageMultiSelect.isClickable = false
+                }
+                val targetHeight = layoutparam.height
+
+                val animator = ValueAnimator.ofInt(startHeight, targetHeight)
+                val duration = 200
+
+                animator.addUpdateListener { valueAnimator ->
+                    val animatedValue = valueAnimator.animatedValue as Int
+                    layoutparam.height = animatedValue
+                    binding.popupGallery.layoutParams = layoutparam
+                }
+
+                animator.duration = duration.toLong()
+                animator.start()
+                galleryAdapter.notifyDataSetChanged()
             }
 
             return binding.root

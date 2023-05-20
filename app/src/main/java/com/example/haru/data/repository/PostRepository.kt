@@ -130,4 +130,29 @@ class PostRepository() {
             callback(comments)
         }
 
+    //전체 댓글
+    suspend fun writeComment(comment: CommentBody, postId: String, imageId:String, callback: (comments: Comments) -> Unit) = withContext(
+        Dispatchers.IO){
+        Log.d("TAG", "post id recieve-------------- $postId")
+        val response = postService.writeComments(
+            "jts",
+            postId,
+            imageId,
+            comment
+        ).execute()
+
+        val comments: Comments
+        val data: WriteCommentResponse
+
+        if(response.isSuccessful) {
+            Log.d("TAG","Success to write comments")
+            data = response.body()!!
+            comments = data.data
+        }else{
+            Log.d("TAG", "Fail to write comments")
+            comments = Comments("",User("","","","",false,0,0,0),"",-1,-1,"","")
+        }
+        callback(comments)
+    }
+
 }

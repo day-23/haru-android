@@ -1,6 +1,8 @@
 package com.example.haru.utils
 
+//모든 User Id값은 여기 있는 값을 사용
+//이 값은 사용자가 로그인할 때 서버에서 받아온다.
 object User {
-    var id: String = "005224c0-eec1-4638-9143-58cbfc9688c5"
-    var name: String = "오홍석"
+    lateinit var id: String
+    lateinit var name: String
 }

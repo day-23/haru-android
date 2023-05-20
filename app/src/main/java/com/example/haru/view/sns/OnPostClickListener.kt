@@ -9,4 +9,6 @@ interface OnPostClickListener {
     fun onTotalCommentClick(postId: String)
 
     fun onProfileClick(userId:String)
+
+    fun onSetupClick(userId: String, postId: String)
 }
