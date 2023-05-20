@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setDefaultFragment() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragments_frame, fragments[2]!!)
+            .replace(R.id.fragments_frame, fragments[0]!!)
             .commit()
 
         binding.bottomNav.selectedItemId = R.id.menu_calendar;

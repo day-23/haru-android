@@ -187,7 +187,7 @@ class AddPostFragment : Fragment() {
                 val layoutparam = binding.popupGallery.layoutParams
                 val startHeight = layoutparam.height
                 if (!toggle) {
-                    layoutparam.height = (binding.addpostRootView.measuredHeight * 0.8).toInt()
+                    layoutparam.height = (binding.addpostRootView.measuredHeight - binding.addpostTitle.measuredHeight).toInt()
                     toggle = true
                     binding.galleyToggle.rotation = 270f
                     binding.imageMultiSelect.isClickable = true

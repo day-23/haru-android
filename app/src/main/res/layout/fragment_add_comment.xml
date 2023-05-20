@@ -9,11 +9,10 @@
     <LinearLayout
         android:id="@+id/add_comment_title"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
+        android:layout_height="48dp"
         android:orientation="horizontal"
         tools:ignore="MissingConstraints"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="9dp"
         android:paddingHorizontal="20dp">
 
         <ImageView
@@ -40,19 +39,44 @@
             android:layout_weight="1"
             android:src="@drawable/add_comment_apply"/>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/addcomment_index"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1 / 4"
-        android:textSize="20dp"
-        android:layout_marginTop="20dp"
-        android:textStyle="bold"
-        android:textColor="#F8F8FA"
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        tools:ignore="MissingConstraints"
         app:layout_constraintTop_toBottomOf="@id/add_comment_title"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        android:layout_marginTop="88dp">
+
+        <ImageView
+            android:id="@+id/last_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toLeftOf="@+id/addcomment_index"
+            android:src="@drawable/___20513"
+            android:layout_marginRight="20dp"
+            android:rotation="90"/>
+
+        <ImageView
+            android:id="@+id/next_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@+id/addcomment_index"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/___20513"
+            android:rotation="-90"/>
+
+        <TextView
+            android:id="@+id/addcomment_index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1 / 4"
+            android:textSize="12dp"
+            android:layout_marginTop="20dp"
+            android:textStyle="bold"
+            android:textColor="#FDFDFD"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/comment_image"
