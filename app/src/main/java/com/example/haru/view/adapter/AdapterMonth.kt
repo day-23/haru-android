@@ -2,12 +2,13 @@ package com.example.haru.view.adapter
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
@@ -34,7 +35,6 @@ import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.viewmodel.CalendarViewModel
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 //월간 달력 어뎁터
@@ -197,7 +197,7 @@ class AdapterMonth(val activity: Activity,
             for(k in 0..6) {
                 calendar.add(Calendar.DAY_OF_MONTH, (1-calendar.get(Calendar.DAY_OF_WEEK)) + k)
 
-                if(i == 5 && k == 0 && calendar.get(Calendar.MONTH) != month){
+                if(i >= 4 && k == 0 && calendar.get(Calendar.MONTH) != month){
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
                     endDate = format.format(calendar.time)+"T00:00:00+09:00"
                     maxi = 4
@@ -226,6 +226,30 @@ class AdapterMonth(val activity: Activity,
                     dateTextViews[i*7 + k].setTextColor(Color.parseColor("#646464"))
                 }
 
+                when(k % 7) {
+                    0 -> {
+                        if(calendar.get(Calendar.MONTH) != month) {
+                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xFD,0xBB,0xCD))
+                        } else {
+                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xF7,0x1E,0x58))
+                        }
+                    }
+                    6 -> {
+                        if(calendar.get(Calendar.MONTH) != month) {
+                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xBB,0xE7,0xFF))
+                        } else {
+                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0x1D,0xAF,0xFF))
+                        }
+                    }
+                    else -> {
+                        if(calendar.get(Calendar.MONTH) != month) {
+                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xBA,0xBA,0xBA))
+                        } else {
+                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0x70,0x70,0x70))
+                        }
+                    }
+                }
+
                 if(calendar.time.year == Date().year &&
                     calendar.time.month == Date().month &&
                     calendar.time.date == Date().date){
@@ -235,30 +259,6 @@ class AdapterMonth(val activity: Activity,
                 } else {
                     dateLayoutViews[i*7 + k].background = ContextCompat.getDrawable(parentFragment.requireContext(),R.color.white)
                 }
-
-//                when(k % 7) {
-//                    0 -> {
-//                        if(calendar.get(Calendar.MONTH) != month) {
-//                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xFD,0xBB,0xCD))
-//                        } else {
-//                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xF7,0x1E,0x58))
-//                        }
-//                    }
-//                    6 -> {
-//                        if(calendar.get(Calendar.MONTH) != month) {
-//                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xBB,0xE7,0xFF))
-//                        } else {
-//                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0x1D,0xAF,0xFF))
-//                        }
-//                    }
-//                    else -> {
-//                        if(calendar.get(Calendar.MONTH) != month) {
-//                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xBA,0xBA,0xBA))
-//                        } else {
-//                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0x70,0x70,0x70))
-//                        }
-//                    }
-//                }
             }
 
             calendar.add(Calendar.WEEK_OF_MONTH, 1)
@@ -419,6 +419,8 @@ class AdapterMonth(val activity: Activity,
                         color:Int,
                         completed:Boolean,
                         size: Int,
+                        layoutInterval: Int,
+                        maxTextCount: Int,
                         thisMonth:Boolean = true){
         val parentConstraintLayout = holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
 
@@ -469,37 +471,40 @@ class AdapterMonth(val activity: Activity,
 
         layoutParams.topToBottom = layoutList[line].id
 
-        if(line == 5) {
+        if(line == size) {
             layoutParams.bottomToTop = lastView.id
         } else {
             layoutParams.bottomToTop = layoutList[line+1].id
         }
 
-        if(size == 4) {
-            if(line == 4) {
-                layoutParams.bottomToTop = lastView.id
-            } else {
-                layoutParams.bottomToTop = layoutList[line+1].id
-            }
+        val vertical = (count*15).toFloat()/(layoutInterval-15).toFloat()
 
-            if(count == 4){
-                layoutParams.verticalBias = 0.95f
-            } else {
-                layoutParams.verticalBias = count / 3f
-            }
-        } else {
-            if(line == 5) {
-                layoutParams.bottomToTop = lastView.id
-            } else {
-                layoutParams.bottomToTop = layoutList[line+1].id
-            }
+        layoutParams.verticalBias = vertical
 
-            if(count == 3){
-                layoutParams.verticalBias = 0.95f
-            } else {
-                layoutParams.verticalBias = count / 4f
-            }
-        }
+//        if(size == 4) {
+//            if(line == 4) {
+//                layoutParams.bottomToTop = lastView.id
+//            } else {
+//                layoutParams.bottomToTop = layoutList[line+1].id
+//            }
+//            if(count == 4){
+//                layoutParams.verticalBias = 0.95f
+//            } else {
+//                layoutParams.verticalBias = count / 3f
+//            }
+//        } else {
+//            if(line == 5) {
+//                layoutParams.bottomToTop = lastView.id
+//            } else {
+//                layoutParams.bottomToTop = layoutList[line+1].id
+//            }
+//
+//            if(count == 3){
+//                layoutParams.verticalBias = 0.95f
+//            } else {
+//                layoutParams.verticalBias = count / 4f
+//            }
+//        }
 
         testView.setBackgroundResource(R.drawable.calendar_border)
         val drawable = testView.background as GradientDrawable
@@ -535,6 +540,12 @@ class AdapterMonth(val activity: Activity,
         parentConstraintLayout.addView(testView, parentConstraintLayout.childCount-1)
     }
 
+    fun pxToDp(px: Float): Int {
+        val resources: Resources = Resources.getSystem()
+        val metrics: DisplayMetrics = resources.getDisplayMetrics()
+        return (px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+    }
+
     fun setView(holder:MonthView, position: Int){
         val calendar = Calendar.getInstance()
 
@@ -554,6 +565,13 @@ class AdapterMonth(val activity: Activity,
 
         calendarviewModel.liveTodoCalendarList.observe(lifecycleOwner) { livetodo ->
             calendarviewModel.liveScheduleCalendarList.observe(lifecycleOwner) { liveschedule ->
+                val dateLayoutOne = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_one)
+                val dateLayoutTwo = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_two)
+
+                //레이아웃 사이 거리 변수 /15 할 시 몇 개의 TextView가 들어갈 수 있는지 구할 수 있음
+                val locationInterval =  pxToDp(dateLayoutTwo.y - dateLayoutOne.y) - 28
+                val maxTextCount = locationInterval / 15
+
                 var cloneLiveTodo = livetodo as ArrayList
                 var cloneLiveSchedule = liveschedule as ArrayList
 
@@ -569,31 +587,42 @@ class AdapterMonth(val activity: Activity,
                 loop@for (position2 in 0 until 175) {
                     val newpostion = positionplus + position2
 
-                    if(size == 4 && newpostion >= 175) break
-                    if(size == 5 && newpostion >= 168) break
+                    if(newpostion >= (maxTextCount+1) * (size+1) * 7) break
 
-                    if(size == 4){
-                        if(newpostion/7 in arrayOf(0,5,10,15,20,25)) continue
-                    } else if(size == 5){
-                        if(newpostion/7 in arrayOf(0,4,8,12,16,20,24)) continue
-                    }
+                    if((newpostion/7)%(maxTextCount+1) == 0) continue
 
-                    var contentPosition = 0
-                    var contentLine = 0
+                    val cyclevalue = newpostion / ((maxTextCount+1)*7) * 7
 
-                    if(size == 5) {
-                        val cyclevalue = newpostion / 28 * 7
-                        contentPosition = cyclevalue + newpostion % 7
-                        contentLine = (newpostion / 7) % 4 - 1
+                    var contentPosition = cyclevalue + newpostion % 7
+                    var contentLine = (newpostion / 7) % (maxTextCount+1) - 1
 
-                        if(contentLine >= 2) continue
-                    } else {
-                        val cyclevalue = newpostion / 35 * 7
-                        contentPosition = cyclevalue + newpostion % 7
-                        contentLine = (newpostion / 7) % 5 - 1
+                    if(contentLine >= maxTextCount-1) continue
 
-                        if(contentLine >= 3) continue
-                    }
+//                    if(size == 4 && newpostion >= 175) break
+//                    if(size == 5 && newpostion >= 168) break
+//
+//                    if(size == 4){
+//                        if(newpostion/7 in arrayOf(0,5,10,15,20,25)) continue
+//                    } else if(size == 5){
+//                        if(newpostion/7 in arrayOf(0,4,8,12,16,20,24)) continue
+//                    }
+//
+//                    var contentPosition = 0
+//                    var contentLine = 0
+//
+//                    if(size == 5) {
+//                        val cyclevalue = newpostion / 28 * 7
+//                        contentPosition = cyclevalue + newpostion % 7
+//                        contentLine = (newpostion / 7) % 4 - 1
+//
+//                        if(contentLine >= 2) continue
+//                    } else {
+//                        val cyclevalue = newpostion / 35 * 7
+//                        contentPosition = cyclevalue + newpostion % 7
+//                        contentLine = (newpostion / 7) % 5 - 1
+//
+//                        if(contentLine >= 3) continue
+//                    }
 
                     if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
                         val index = saveLineList.indexOf(contentLine)
@@ -622,7 +651,9 @@ class AdapterMonth(val activity: Activity,
                                     7,
                                     color,
                                     saveScheduleList[index].completed,
-                                    size
+                                    size,
+                                    locationInterval,
+                                    maxTextCount
                                 )
                             } else {
                                 addViewFunction(
@@ -634,7 +665,9 @@ class AdapterMonth(val activity: Activity,
                                     7,
                                     color,
                                     saveScheduleList[index].completed,
-                                    size
+                                    size,
+                                    locationInterval,
+                                    maxTextCount
                                 )
                             }
 
@@ -668,7 +701,9 @@ class AdapterMonth(val activity: Activity,
                                     returncnt,
                                     color,
                                     completed,
-                                    size
+                                    size,
+                                    locationInterval,
+                                    maxTextCount
                                 )
                             } else {
                                 addViewFunction(
@@ -680,7 +715,9 @@ class AdapterMonth(val activity: Activity,
                                     returncnt,
                                     color,
                                     completed,
-                                    size
+                                    size,
+                                    locationInterval,
+                                    maxTextCount
                                 )
                             }
 
@@ -700,11 +737,8 @@ class AdapterMonth(val activity: Activity,
                                 val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
                                 val repeatStart = format.parse(content.schedule.repeatStart)
                                 val calendar2 = Calendar.getInstance()
-                                Log.d("repeatStart", repeatStart.toString())
                                 calendar2.time = repeatStart
                                 calendar2.add(Calendar.MILLISECOND, content.timeInterval!!)
-                                Log.d("interval2", content.timeInterval.toString())
-                                Log.d("calendar2",calendar2.time.toString())
 
 
                                 repeatStart.hours = 0
@@ -716,10 +750,7 @@ class AdapterMonth(val activity: Activity,
                                 calendar2.time.seconds = 0
 
                                 val dateminus = (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
-                                Log.d("20191630", calendar2.time.time.toString())
-                                Log.d("20191630", repeatStart.time.toString())
                                 interval = dateminus.toInt()
-                                Log.d("interval",interval.toString())
                             }
 
                             if(content.schedule.category != null) {
@@ -750,7 +781,9 @@ class AdapterMonth(val activity: Activity,
                                                     returnvalue,
                                                     color,
                                                     content.schedule.completed,
-                                                    size
+                                                    size,
+                                                    locationInterval,
+                                                    maxTextCount
                                                 )
                                             } else {
                                                 addViewFunction(
@@ -762,7 +795,9 @@ class AdapterMonth(val activity: Activity,
                                                     returnvalue,
                                                     color,
                                                     content.schedule.completed,
-                                                    size
+                                                    size,
+                                                    locationInterval,
+                                                    maxTextCount
                                                 )
                                             }
 
@@ -783,7 +818,9 @@ class AdapterMonth(val activity: Activity,
                                                 returnvalue,
                                                 color,
                                                 content.schedule.completed,
-                                                size
+                                                size,
+                                                locationInterval,
+                                                maxTextCount
                                             )
                                         } else {
                                             addViewFunction(
@@ -795,7 +832,9 @@ class AdapterMonth(val activity: Activity,
                                                 returnvalue,
                                                 color,
                                                 content.schedule.completed,
-                                                size
+                                                size,
+                                                locationInterval,
+                                                maxTextCount
                                             )
                                         }
 
@@ -830,7 +869,9 @@ class AdapterMonth(val activity: Activity,
                                                     returnvalue,
                                                     color,
                                                     content.schedule.completed,
-                                                    size
+                                                    size,
+                                                    locationInterval,
+                                                    maxTextCount
                                                 )
                                             } else {
                                                 addViewFunction(
@@ -842,7 +883,9 @@ class AdapterMonth(val activity: Activity,
                                                     returnvalue,
                                                     color,
                                                     content.schedule.completed,
-                                                    size
+                                                    size,
+                                                    locationInterval,
+                                                    maxTextCount
                                                 )
                                             }
 
@@ -863,7 +906,9 @@ class AdapterMonth(val activity: Activity,
                                                 returnvalue,
                                                 color,
                                                 content.schedule.completed,
-                                                size
+                                                size,
+                                                locationInterval,
+                                                maxTextCount
                                             )
                                         } else {
                                             addViewFunction(
@@ -875,7 +920,9 @@ class AdapterMonth(val activity: Activity,
                                                 returnvalue,
                                                 color,
                                                 content.schedule.completed,
-                                                size
+                                                size,
+                                                locationInterval,
+                                                maxTextCount
                                             )
                                         }
 
@@ -902,7 +949,9 @@ class AdapterMonth(val activity: Activity,
                                         1,
                                         Color.rgb(0xED, 0xED, 0xED),
                                         cloneLiveTodo[contentPosition].todos[0].completed,
-                                        size
+                                        size,
+                                        locationInterval,
+                                        maxTextCount
                                     )
                                 } else {
                                     addViewFunction(
@@ -914,7 +963,9 @@ class AdapterMonth(val activity: Activity,
                                         1,
                                         Color.rgb(0xED, 0xED, 0xED),
                                         cloneLiveTodo[contentPosition].todos[0].completed,
-                                        size
+                                        size,
+                                        locationInterval,
+                                        maxTextCount
                                     )
                                 }
 
@@ -1026,11 +1077,14 @@ class AdapterMonth(val activity: Activity,
                                 "+" + allCntList[i].toString(),
                                 (i % 7) / 6f,
                                 i/7,
-                                3,
+                                maxTextCount-1,
+//                                3,
                                 1,
                                 Color.rgb(0xED, 0xED, 0xED),
                                 false,
-                                size
+                                size,
+                                locationInterval,
+                                maxTextCount
                             )
                         } else if (size == 4) {
                             addViewFunction(
@@ -1038,11 +1092,14 @@ class AdapterMonth(val activity: Activity,
                                 "+" + allCntList[i].toString(),
                                 (i % 7) / 6f,
                                 i/7,
-                                4,
+                                maxTextCount-1,
+//                                4,
                                 1,
                                 Color.rgb(0xED, 0xED, 0xED),
                                 false,
-                                size
+                                size,
+                                locationInterval,
+                                maxTextCount
                             )
                         }
                     }
