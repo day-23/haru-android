@@ -29,6 +29,7 @@ import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.SnsViewModel
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.*
+import org.w3c.dom.Text
 
 class SnsPostAdapter(val context: Context,
                      private var itemList: ArrayList<Post> = ArrayList(),
@@ -77,6 +78,10 @@ class SnsPostAdapter(val context: Context,
         }
 
         holder.profileImg.setOnClickListener {
+            listener.onProfileClick(itemList[position].user.id)
+        }
+
+        holder.userid.setOnClickListener{
             listener.onProfileClick(itemList[position].user.id)
         }
 
@@ -141,7 +146,7 @@ class SnsPostAdapter(val context: Context,
         var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
         var likedcount = itemView.findViewById<TextView>(R.id.liked_count)
         var commentcount = itemView.findViewById<TextView>(R.id.post_comment_count)
-        var index = itemView.findViewById<Button>(R.id.picture_index)
+        var index = itemView.findViewById<TextView>(R.id.picture_index)
         var comment = itemView.findViewById<ImageView>(R.id.button_comment)
         var setup = itemView.findViewById<ImageView>(R.id.post_setup)
         var totalcomment = itemView.findViewById<ImageView>(R.id.post_total_comment)
