@@ -169,8 +169,13 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     checkListViewModel.getTodoByFlag()
                 else if (position > 0) {
                     checkListViewModel.clear()
-                    checkListViewModel.getTodoByTag(position)
-                    checkListViewModel.clickedTag = position  // 이전 Tag 클릭 값 기억
+                    if (checkListViewModel.clickedTag == position) {
+                        checkListViewModel.tagDataClear()
+                        checkListViewModel.withTagUpdate()
+                    } else {
+                        checkListViewModel.getTodoByTag(position)
+                        checkListViewModel.clickedTag = position  // 이전 Tag 클릭 값 기억
+                    }
                 }
             }
         }
@@ -350,7 +355,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         checkListViewModel.completeRepeatFrontTodo(
                             id,
                             FrontEndDate(nextEndDateStr!!)
-                        ) { 
+                        ) {
                             callback(Completed(true), it)
                         }
                     } else

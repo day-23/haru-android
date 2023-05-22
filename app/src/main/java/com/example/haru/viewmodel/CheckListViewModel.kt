@@ -156,6 +156,10 @@ class CheckListViewModel() :
 
     /* -------------------------------------------------------------------------- */
 
+    fun tagDataClear(){
+        _todoByTag.value = false
+        todoByTagItem = null
+    }
     fun withTagUpdate() {  // Todo에 변동을 주는 기능을 하면 TodoData를 업데이트 해주는 기능
         if (todoByTag.value == true) {
             when (todoByTagItem) {
@@ -201,6 +205,7 @@ class CheckListViewModel() :
                 if (it?.success == true) {
                     todoList.clear()
                     _todoByTag.postValue(false)
+                    clickedTag = null
                     todoByTagItem = null
 
                     if (it.data.flaggedTodos.isNotEmpty())
@@ -260,9 +265,8 @@ class CheckListViewModel() :
                             Todo(type = 6)
                         )
                     )
-
-                    _todoByTag.postValue(false)
-                    todoByTagItem = null
+//                    _todoByTag.postValue(false)
+//                    todoByTagItem = null
                 } else {
                     Log.e("20191627", "CheckListViewModel -> GetTodoMain Fail")
                     Log.e("20191627", it.toString())
@@ -316,7 +320,6 @@ class CheckListViewModel() :
             }
         }
     }
-
 
     fun addTodo(
         todoRequest: TodoRequest,
