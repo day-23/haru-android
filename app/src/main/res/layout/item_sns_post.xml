@@ -20,8 +20,7 @@
             android:layout_height="30dp"
             android:layout_marginRight="16dp"
             android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            android:src="@drawable/drawofmomo"/>
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/user_id"

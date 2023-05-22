@@ -3,16 +3,15 @@ package com.example.haru.view.sns
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.getSystemService
@@ -20,15 +19,22 @@ import androidx.core.view.contains
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.data.model.CommentBody
 import com.example.haru.data.model.Comments
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.User
+import com.example.haru.databinding.CustomGalleryBinding
 import com.example.haru.databinding.FragmentAddCommentBinding
+import com.example.haru.databinding.PopupSnsCommentCancelBinding
 import com.example.haru.view.adapter.AddCommentPagerAdapter
+import com.example.haru.view.adapter.GalleryAdapter
 import com.example.haru.view.adapter.ImageClickListener
+import com.example.haru.view.checklist.ChecklistInputFragment
+import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
 class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
@@ -39,6 +45,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     val postitem = postitem
     val postIndex = postitem.images
     private lateinit var snsViewModel: SnsViewModel
+    var imageIndex = 0
 
     //사진위 댓글 값
     var onWrite = false
@@ -58,6 +65,38 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             writeContainer.setBackgroundColor(color)
         }
     }
+
+    override fun OnPopupClick(position: Int) {
+        Log.d("20191668", "click")
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comment)
+
+        if(fragment != null) {
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+        }
+
+       if(position == 0){
+           if(onWrite) {
+               if (writeContainer.contains(writeBox)) {
+                   writeContainer.removeView(writeBox)
+                   onWrite = false
+                   val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
+                   writeContainer.setBackgroundColor(color)
+               }
+           }
+       }else if(position == 1){
+           snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
+           val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, "","")
+           postIndex[imageIndex].comments.add(addedComment)
+           bindComment(addedComment)
+           onWrite = false
+           writeContainer.removeAllViews()
+           val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
+       }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,8 +120,6 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         val viewpager = binding.commentImage
         val viewPagerAdapter = AddCommentPagerAdapter(requireContext(), postitem.images, this)
 
-        var imageIndex = 0
-
         viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 writeContainer.removeAllViews()
@@ -102,13 +139,13 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         })
 
         binding.writeCommentCancel.setOnClickListener {
-            if(onWrite) {
-                if (writeContainer.contains(writeBox)) {
-                    writeContainer.removeView(writeBox)
-                    onWrite = false
-                    val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-                    writeContainer.setBackgroundColor(color)
-                }
+
+            if(onWrite && AddContent != "") {
+                val fragment = PopupComment(this)
+                val fragmentManager = childFragmentManager
+                val transaction = fragmentManager.beginTransaction()
+                transaction.add(R.id.anchor_popup_comment, fragment)
+                transaction.commit()
             }
         }
 
@@ -302,4 +339,32 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         editView.requestFocus() // EditText에 포커스를 설정합니다.
         imm.showSoftInput(editView, InputMethodManager.SHOW_IMPLICIT) // 키보드를 활성화합니다.
     }
+}
+
+class PopupComment(listener: ImageClickListener) : Fragment() {
+
+    lateinit var popupbinding : PopupSnsCommentCancelBinding
+    val listener = listener
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        popupbinding = PopupSnsCommentCancelBinding.inflate(inflater, container, false)
+
+        popupbinding.snsAddCommentUnsave.setOnClickListener {
+            listener.OnPopupClick(0)
+        }
+
+        popupbinding.snsAddCommentSave.setOnClickListener {
+            listener.OnPopupClick(1)
+        }
+
+        popupbinding.snsAddCommentCancel.setOnClickListener {
+            listener.OnPopupClick(2)
+        }
+
+        popupbinding.popupCommentContainer.setOnClickListener {
+
+        }
+
+        return popupbinding.root
+    }
+
 }

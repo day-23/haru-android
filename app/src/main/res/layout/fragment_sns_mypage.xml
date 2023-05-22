@@ -88,7 +88,6 @@
                 android:id="@+id/profile_image"
                 android:layout_width="62dp"
                 android:layout_height="62dp"
-                android:src="@drawable/drawofmomo"
                 android:layout_marginRight="20dp"/>
 
             <LinearLayout
@@ -100,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="momo"
+                    android:text="이름"
                     android:textColor="#191919"
                     android:textStyle="bold"
                     android:textSize="20dp"/>
@@ -109,7 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="야옹"/>
+                    android:text="자기소개"/>
             </LinearLayout>
 
             <LinearLayout

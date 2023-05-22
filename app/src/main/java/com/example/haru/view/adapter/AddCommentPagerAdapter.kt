@@ -12,6 +12,8 @@ import com.example.haru.data.model.Profile
 
 interface ImageClickListener{
     fun OnImageClick(position: Int)
+
+    fun OnPopupClick(position: Int)
 }
 
 class AddCommentPagerAdapter(private val context: Context, private val imageList: ArrayList<Profile>, listener: ImageClickListener) :
