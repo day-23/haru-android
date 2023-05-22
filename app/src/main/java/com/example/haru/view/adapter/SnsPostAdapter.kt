@@ -54,10 +54,12 @@ class SnsPostAdapter(val context: Context,
         //TODO:(sns삭제버튼)나중에 계정정보 동적으로 변경해야함
         if(itemList[position].user.id != "jts"){
             holder.setup.visibility = View.GONE
-        }
+        }else
+            holder.setup.visibility = View.VISIBLE
         //TODO:(sns삭제버튼)계정정보 동적할당 필요
         holder.setup.setOnClickListener {
-            listener.onSetupClick("jts", itemList[position].id)
+            Log.d("20191668", "set up")
+            listener.onSetupClick("jts", itemList[position].id, position)
         }
 
         val pictureIndex = adapter.itemCount
@@ -71,11 +73,6 @@ class SnsPostAdapter(val context: Context,
                 holder.index.text = text
             }
         })
-
-
-        holder.setup.setOnClickListener {
-
-        }
 
         holder.profileImg.setOnClickListener {
             listener.onProfileClick(itemList[position].user.id)
@@ -135,6 +132,11 @@ class SnsPostAdapter(val context: Context,
 
     fun newPage(post: ArrayList<Post>){
         itemList.addAll(post)
+        notifyDataSetChanged()
+    }
+
+    fun deletePost(position: Int){
+        itemList.removeAt(position)
         notifyDataSetChanged()
     }
 

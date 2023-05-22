@@ -68,8 +68,18 @@ class SnsFragment : Fragment(), OnPostClickListener {
         transaction.commit()
     }
 
-    override fun onSetupClick(userId: String, postId: String) {
+    override fun onSetupClick(userId: String, postId: String, position: Int) {
         Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+
+        Log.d("20191668", "${snsPostAdapter.itemCount} : $position")
+        snsViewModel.deletePost(postId)
+
+        snsViewModel.DeleteResult.observe(viewLifecycleOwner){ result ->
+            if(result)
+                snsPostAdapter.deletePost(position)
+            else
+                Toast.makeText(requireContext(), "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
     companion object{
         const val TAG : String = "로그"
@@ -110,6 +120,11 @@ class SnsFragment : Fragment(), OnPostClickListener {
             }
         }
         postRecycler.addOnScrollListener(scrollListener)
+
+        val refresher = binding.refreshPost
+        refresher.setOnRefreshListener {
+            snsViewModel.init_page()
+        }
 
         snsViewModel.Page.observe(viewLifecycleOwner){page ->
             val pagestr = page.toString()

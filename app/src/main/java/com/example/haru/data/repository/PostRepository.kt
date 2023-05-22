@@ -49,6 +49,22 @@ class PostRepository() {
         callback(postInfo)
     }
 
+    //게시글 삭제
+    suspend fun deletePost(postId: String, callback: (delete: Boolean) -> Unit) = withContext(Dispatchers.IO) {
+        val call = postService.deletePost("jts", postId)
+        val response = call.execute()
+        var delete = false
+        val data = response.body()
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to delete post")
+            delete = true
+        } else {
+            Log.d("TAG", "Fail to delete post")
+        }
+        callback(delete)
+    }
+
+
     //전체 게시글
     suspend fun getPost(page:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){

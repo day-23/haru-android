@@ -10,5 +10,5 @@ interface OnPostClickListener {
 
     fun onProfileClick(userId:String)
 
-    fun onSetupClick(userId: String, postId: String)
+    fun onSetupClick(userId: String, postId: String, position: Int)
 }

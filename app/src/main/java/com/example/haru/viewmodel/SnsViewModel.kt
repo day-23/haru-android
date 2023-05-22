@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide.init
-import com.example.haru.data.model.CommentBody
-import com.example.haru.data.model.Comments
-import com.example.haru.data.model.Post
-import com.example.haru.data.model.Profile
+import com.example.haru.data.model.*
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import kotlinx.coroutines.launch
@@ -37,6 +34,10 @@ class SnsViewModel: ViewModel() {
     private val _CurrentPost = MutableLiveData<String>()
     val CurrentPost : LiveData<String>
         get() = _CurrentPost
+
+    private val _DeleteResult = MutableLiveData<Boolean>()
+    val DeleteResult : LiveData<Boolean>
+        get() = _DeleteResult
 
     fun init_page(){
         _Page.value = 1
@@ -89,6 +90,16 @@ class SnsViewModel: ViewModel() {
             PostRepository.writeComment(comment, postId, imageId){
 
             }
+        }
+    }
+
+    fun deletePost(postId: String){
+        var result = false
+        viewModelScope.launch {
+            PostRepository.deletePost(postId){
+                result = it
+            }
+            _DeleteResult.value = result
         }
     }
 

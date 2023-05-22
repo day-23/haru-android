@@ -27,6 +27,12 @@ interface PostService {
         @PartMap hashTags: Map<String, @JvmSuppressWildcards RequestBody>
     ): Call<AddPostResponse>
 
+    @DELETE("post/{userId}/{postId}")
+    fun deletePost(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String
+    ): Call<LikeResponse>
+
     @GET("comment/{userId}/{postId}/comments/all")
     fun getComments(
         @Path("userId") userId: String,
