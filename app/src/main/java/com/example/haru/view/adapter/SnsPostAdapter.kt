@@ -131,7 +131,11 @@ class SnsPostAdapter(val context: Context,
     }
 
     fun newPage(post: ArrayList<Post>){
-        itemList.addAll(post)
+
+        for(p in post) {
+            if (!itemList.contains(p))
+                itemList.add(p)
+        }
         notifyDataSetChanged()
     }
 

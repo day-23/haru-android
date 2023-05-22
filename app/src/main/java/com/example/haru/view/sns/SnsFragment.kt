@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import UserViewModelFactory
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
@@ -136,6 +137,11 @@ class SnsFragment : Fragment(), OnPostClickListener {
         snsViewModel.newPost.observe(viewLifecycleOwner){newPost ->
             snsPostAdapter.newPage(newPost)
             if(newPost.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        snsViewModel.Posts.observe(viewLifecycleOwner){post ->
+            snsPostAdapter.initList(post)
+            if(post.size == 0) Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
         }
 
         //하루 옆 메뉴 클릭

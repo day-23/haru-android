@@ -61,11 +61,9 @@ class SnsViewModel: ViewModel() {
                 }
             }
             if(page.toInt() > 1) {
-                _newPost.value = newPost
-                _Posts.value = allPost
+                _newPost.value = newPost // 두번째 페이지일 경우
             }else{
-                _newPost.value = newPost
-                _Posts.value = newPost
+                _Posts.value = newPost // 첫페이지일경우
             }
         }
     }
