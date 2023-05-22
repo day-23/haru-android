@@ -123,7 +123,9 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
         val refresher = binding.refreshPost
         refresher.setOnRefreshListener {
+            refresher.isRefreshing = true
             snsViewModel.init_page()
+            refresher.isRefreshing = false
         }
 
         snsViewModel.Page.observe(viewLifecycleOwner){page ->

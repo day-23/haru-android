@@ -40,12 +40,19 @@ class SnsViewModel: ViewModel() {
         get() = _DeleteResult
 
     fun init_page(){
-        _Page.value = 1
+        val currentPage = _Page.value
+        if(currentPage == 1){
+            getPosts("1")
+            Log.d("20191668", "new page")
+        }else{
+            _Page.value = 1
+        }
     }
 
     fun getPosts(page: String){
         var newPost: ArrayList<Post> = arrayListOf()
         var allPost = _Posts.value ?: arrayListOf()
+        val page = page
         viewModelScope.launch{
             PostRepository.getPost(page) {
                 if(it.size > 0){ //get success
@@ -53,8 +60,13 @@ class SnsViewModel: ViewModel() {
                     allPost.addAll(it)
                 }
             }
-            _newPost.value = newPost
-            _Posts.value = allPost
+            if(page.toInt() > 1) {
+                _newPost.value = newPost
+                _Posts.value = allPost
+            }else{
+                _newPost.value = newPost
+                _Posts.value = newPost
+            }
         }
     }
 
@@ -102,6 +114,4 @@ class SnsViewModel: ViewModel() {
             _DeleteResult.value = result
         }
     }
-
-
 }
