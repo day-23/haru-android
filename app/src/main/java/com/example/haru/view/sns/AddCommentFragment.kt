@@ -56,7 +56,6 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     var AddY = 45
     var lastX = 0f
     var lastY = 0f
-
     override fun OnImageClick(position: Int) {
         if(!onWrite) {
             onWrite = true
@@ -116,6 +115,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             ImageWidth = commentContainer.width
             ImageHeight = commentContainer.height
         }
+
         writeContainer = binding.moveFrame
         val viewpager = binding.commentImage
         val viewPagerAdapter = AddCommentPagerAdapter(requireContext(), postitem.images, this)
@@ -210,6 +210,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             private var x_end = 0f
             private var y_start = 0f
             private var y_end = 0f
+            var onDelete = false
 
             override fun onTouch(view: View, event: MotionEvent): Boolean {
                 var parentView = view
@@ -228,8 +229,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                         isDragging = false
                     }
                     MotionEvent.ACTION_MOVE -> {
-
-                        binding.writeCommentDelete.visibility = View.VISIBLE
+                        //사진 밖으로 댓글을 드래그 하지 않았는지 검사
                         if (!isDragging && (Math.abs(event.rawX - initialX) > ViewConfiguration.get(parentView.context).scaledTouchSlop ||
                                     Math.abs(event.rawY - initialY) > ViewConfiguration.get(parentView.context).scaledTouchSlop)) {
                             isDragging = true
@@ -239,6 +239,8 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                             x_end = x_start + parentView.width
                             y_start = event.rawY + offsetY
                             y_end = y_start + parentView.height
+
+
                             if(x_start > 0 && x_end < writeContainer.width)
                                 parentView.x = x_start
 
@@ -249,6 +251,25 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                                     parentView.setBackgroundResource(R.drawable.comment_ballon)
                                 }
                                 parentView.y = event.rawY + offsetY
+                            }
+
+                            binding.writeCommentDelete.visibility = View.VISIBLE
+                            val deletex = binding.writeCommentDelete.x
+                            val deletexEnd = deletex + binding.writeCommentDelete.width
+                            val deletey = binding.writeCommentDelete.y
+                            val deleteyEnd = deletey + binding.writeCommentDelete.height
+                            Log.d("20191668","${parentView.x}, ${parentView.y} , ${binding.writeCommentDelete.x}, ${binding.writeCommentDelete.y}")
+                            //삭제 칸에 드래그 되었는지
+                            if (x_start > deletexEnd || x_end < deletex) {
+                                binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_default)
+                                onDelete = false
+                            }else if(y_start > deleteyEnd || y_end < deletey){
+                                binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_default)
+                                onDelete = false
+                            }
+                            else {
+                                binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_ondrag)
+                                onDelete = true
                             }
                         }
                     }
@@ -264,6 +285,17 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                                 Log.d("20191668", "Percentage: $AddX $AddY")
                             }
                             binding.writeCommentDelete.visibility = View.GONE
+                            binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_default)
+                            parentView.setBackgroundResource(R.drawable.comment_ballon)
+
+                            if(onDelete){
+                                writeContainer.removeView(writeBox)
+                                onWrite = false
+                                val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
+                                writeContainer.setBackgroundColor(color)
+                                onDelete = false
+                            }
+
                         }
                         isDragging = false // Reset the dragging flag
                     }
