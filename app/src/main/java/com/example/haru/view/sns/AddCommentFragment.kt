@@ -200,6 +200,8 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                 val transaction = fragmentManager.beginTransaction()
                 transaction.add(R.id.anchor_popup_comment, fragment)
                 transaction.commit()
+            }else{
+                this.OnPopupClick(0)
             }
         }
 

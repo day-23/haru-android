@@ -14,7 +14,7 @@ import com.example.haru.data.model.Comments
 
 class CommentsAdapter(val context: Context,
                       private var itemList: ArrayList<Comments>): RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>() {
-
+    var disclosure = true
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsAdapter.CommentsViewHolder {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.item_comment_list, parent, false)
@@ -30,6 +30,16 @@ class CommentsAdapter(val context: Context,
         }
         holder.userid.text = itemList[position].user.name
         holder.content.text = itemList[position].content
+
+        holder.disclosure.setOnClickListener {
+            if(disclosure){
+                holder.disclosure.setImageResource(R.drawable.comment_not_public)
+                disclosure = false
+            }else{
+                holder.disclosure.setImageResource(R.drawable.on_write_comment)
+                disclosure = true
+            }
+        }
     }
 
     override fun getItemCount(): Int {
