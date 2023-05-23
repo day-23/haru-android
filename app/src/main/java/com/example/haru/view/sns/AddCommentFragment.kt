@@ -74,6 +74,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             binding.writeCommentCancel.visibility = View.VISIBLE
             binding.commentOnWrite.visibility = View.VISIBLE
             writeContainer.isClickable = true
+            binding.writeCommentTitle.text = "코멘트 작성"
         }
     }
     override fun OnPopupClick(position: Int) {
@@ -99,6 +100,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                    binding.writeCommentApply.isGone = true
                    binding.commentOnWrite.isGone = true
                    writeContainer.isClickable = false
+                   binding.writeCommentTitle.text = "코멘트 남기기"
                }
            }
        }else if(position == 1){
@@ -116,6 +118,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
            binding.writeCommentApply.isGone = true
            binding.commentOnWrite.isGone = true
            writeContainer.isClickable = false
+           binding.writeCommentTitle.text = "코멘트 남기기"
        }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -159,10 +162,6 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         binding.writeCommentBack.setOnClickListener {
             val backManager = parentFragmentManager
             backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            val fragment = SnsFragment()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragments_frame, fragment)
-                .commit()
         }
 
         viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -220,6 +219,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                 binding.writeCommentApply.isGone = true
                 binding.commentOnWrite.isGone = true
                 writeContainer.isClickable = false
+                binding.writeCommentTitle.text = "코멘트 남기기"
             }else{
                 Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
             }

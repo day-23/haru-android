@@ -1,18 +1,22 @@
 package com.example.haru.view.sns
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddpostAddtagBinding
 import com.example.haru.view.adapter.AddTagPagerAdapter
 import com.example.haru.viewmodel.MyPageViewModel
+import kakao.k.p
 import okhttp3.MultipartBody
 
 class AddTagFragment(images: MutableList<MultipartBody.Part>, content: String, select: ArrayList<ExternalImages>) : Fragment(){
@@ -55,7 +59,14 @@ class AddTagFragment(images: MutableList<MultipartBody.Part>, content: String, s
                     transaction.commit()
                 }
             }
+            binding.addTagPictureIndex.text = "1/${Uris.size}"
+            binding.addtagImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    binding.addTagPictureIndex.text = "${position + 1} / ${Uris.size}"
+                }
+            })
 
             return binding.root
-        }
+    }
 }
+
