@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -56,11 +57,12 @@
             android:textColor="@color/todo_description"
             android:textSize="14sp" />
 
-        <ImageView
+        <androidx.appcompat.widget.SwitchCompat
+            style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/arrow" />
+            android:thumb="@drawable/custom_switch_thumb"
+            app:track="@drawable/custom_switch" />
 
     </LinearLayout>
 
@@ -84,19 +86,12 @@
             android:textColor="@color/todo_description"
             android:textSize="14sp" />
 
-        <TextView
+        <androidx.appcompat.widget.SwitchCompat
+            style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:textSize="14sp"
-            android:textColor="@color/date_text"
-            android:text="panda2211"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/arrow" />
+            android:thumb="@drawable/custom_switch_thumb"
+            app:track="@drawable/custom_switch" />
 
     </LinearLayout>
 
@@ -124,9 +119,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:textSize="14sp"
+            android:text="라이트"
             android:textColor="@color/date_text"
-            android:text="라이트"/>
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -160,9 +155,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:textSize="14sp"
+            android:text="한국어"
             android:textColor="@color/date_text"
-            android:text="한국어"/>
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="wrap_content"
