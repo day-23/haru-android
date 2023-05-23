@@ -71,6 +71,10 @@ class MyPageViewModel(): ViewModel() {
     val EditUri: LiveData<Uri>
         get() = _EditUri
 
+    private val _SelectedUri = MutableLiveData<ArrayList<ExternalImages>>()
+    val SelectedUri: LiveData<ArrayList<ExternalImages>>
+        get() = _SelectedUri
+
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
 
@@ -187,7 +191,14 @@ class MyPageViewModel(): ViewModel() {
                 convertedImages.add(part)
             }
         }
+
+        _SelectedUri.value = images
         return convertedImages
+    }
+
+    //선택한 사진들의 내부저장소 정보를 얻어옴
+    fun getSelectImages() : ArrayList<ExternalImages>{
+        return _SelectedUri.value ?: arrayListOf()
     }
 
     fun postRequest(images: MutableList<MultipartBody.Part>, content: String, hashtags: List<String>){
@@ -239,6 +250,8 @@ class MyPageViewModel(): ViewModel() {
     fun resetValue(){
         _SelectedPosition.value = arrayListOf()
         _StoredImages.value = arrayListOf()
+        _SelectedUri.value = arrayListOf()
+        _SelectedImage.value = -1
     }
 
     fun requestFollow(body: Followbody){

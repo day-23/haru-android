@@ -181,21 +181,22 @@ class AddPostFragment : Fragment(), PostInterface{
                 if(galleryViewmodel.SelectedImage.value != -1 || galleryViewmodel.SelectedPosition.value!!.size > 0) {
                     val converedImage = galleryViewmodel.convertMultiPart(requireContext())
                     val content = binding.addpostContent.text.toString()
-                    val hashtag = arrayListOf("해시스완")
-                    Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
-
-                    galleryViewmodel.postRequest(converedImage, content, hashtag)
+                    val selecteduri = galleryViewmodel.getSelectImages()
                     galleryViewmodel.resetValue()
 
+                    val newFrag = AddTagFragment(converedImage, content, selecteduri)
+                    val transaction = parentFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragments_frame, newFrag)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
 
-                    galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
-                        val fragmentManager = parentFragmentManager
-                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                        val fragment = SnsFragment()
-                        val transaction = parentFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragments_frame, fragment)
-                        transaction.commit()
-                    }
+                    //val hashtag = arrayListOf("해시스완")
+                    //Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
+
+//                    galleryViewmodel.postRequest(converedImage, content, hashtag)
+//                    galleryViewmodel.resetValue()
+//
+//
                 }else{
                     Toast.makeText(requireContext(), "사진을 선택해 주세요" ,Toast.LENGTH_SHORT).show()
                 }
