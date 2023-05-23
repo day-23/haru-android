@@ -50,7 +50,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingStart="10dp"
+            android:paddingStart="14dp"
             android:paddingTop="21dp"
             android:paddingBottom="14dp"
             android:text="시간 24시간제 표시"
