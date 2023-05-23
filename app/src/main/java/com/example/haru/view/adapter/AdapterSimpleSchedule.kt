@@ -39,6 +39,18 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
     val serverDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
     val todayDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
 
+    fun date_comparison(first_date: Date, second_date: Date): Int{
+        first_date.hours = 0
+        first_date.minutes = 0
+        first_date.seconds = 0
+
+        second_date.hours = 0
+        second_date.minutes = 0
+        second_date.seconds = 0
+
+        return first_date.compareTo(second_date)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterSimpleSchedule.DetailView {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.list_item_simple_schedule,
@@ -85,26 +97,56 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                 dialog.dismiss()
                 return@setOnClickListener
             } else{
-                val startDate = serverDateFormat.parse(schedule.repeatStart)
-                val today = todayDateFormat.parse(todayTodo)
+                if(schedule.repeatValue != null && schedule.repeatValue.contains("T")){
+                    val startDate = serverDateFormat.parse(schedule.repeatStart)
+                    val scheduleCalendar = Calendar.getInstance()
+                    scheduleCalendar.time = startDate
 
-                if (startDate.year == today.year &&
-                    startDate.month == today.month &&
-                    startDate.date == today.date
-                ) {
-                    schedule.location = 0
-                    Log.d("20191630", "스케줄 프론트")
+                    scheduleCalendar.add(
+                        Calendar.MILLISECOND,
+                        schedule.repeatValue.replace("T","").toInt()
+                    )
 
-                    activity.supportFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.fragments_frame,
-                            CalendarItemFragment(schedule, categories)
-                        )
-                        .addToBackStack(null)
-                        .commit()
+                    val today = todayDateFormat.parse(todayTodo)
 
-                    dialog.dismiss()
-                    return@setOnClickListener
+                    if(date_comparison(startDate, today)<=0 &&
+                            date_comparison(scheduleCalendar.time, today) >= 0){
+                        schedule.location = 0
+                        Log.d("20191630", "스케줄 프론트")
+
+                        activity.supportFragmentManager.beginTransaction()
+                            .replace(
+                                R.id.fragments_frame,
+                                CalendarItemFragment(schedule, categories)
+                            )
+                            .addToBackStack(null)
+                            .commit()
+
+                        dialog.dismiss()
+                        return@setOnClickListener
+                    }
+                } else {
+                    val startDate = serverDateFormat.parse(schedule.repeatStart)
+                    val today = todayDateFormat.parse(todayTodo)
+
+                    if (startDate.year == today.year &&
+                        startDate.month == today.month &&
+                        startDate.date == today.date
+                    ) {
+                        schedule.location = 0
+                        Log.d("20191630", "스케줄 프론트")
+
+                        activity.supportFragmentManager.beginTransaction()
+                            .replace(
+                                R.id.fragments_frame,
+                                CalendarItemFragment(schedule, categories)
+                            )
+                            .addToBackStack(null)
+                            .commit()
+
+                        dialog.dismiss()
+                        return@setOnClickListener
+                    }
                 }
 
                 val repeatEndDate = serverDateFormat.parse(schedule.repeatEnd)
