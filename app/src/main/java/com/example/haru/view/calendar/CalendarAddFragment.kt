@@ -365,8 +365,6 @@ class CalendarAddFragment(private val activity: Activity,
 
                 val drawable = binding.categoryChooseIv.background as VectorDrawable
                 drawable.setColorFilter(Color.parseColor(it.color),PorterDuff.Mode.SRC_ATOP)
-
-                binding.categoryEt.text = it.content
             }
         }
 

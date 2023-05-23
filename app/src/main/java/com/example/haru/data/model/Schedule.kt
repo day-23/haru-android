@@ -9,7 +9,6 @@ data class Schedule(
     val timeOption: String? = null,
     var repeatStart: String? = null,
     var repeatEnd: String? = null,
-    var completed: Boolean = false,
     val createdAt: String = "",
     val updateAt: String = "",
     val category: Category? = null,

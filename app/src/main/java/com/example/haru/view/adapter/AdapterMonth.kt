@@ -641,35 +641,19 @@ class AdapterMonth(val activity: Activity,
 
 //                            (4 * (contentPosition / 7) + (contentLine + 2)) / 29f,
 
-                            if(size == 5) {
-                                addViewFunction(
-                                    holder,
-                                    "",
-                                    0f,
-                                    contentPosition/7,
-                                    contentLine,
-                                    7,
-                                    color,
-                                    saveScheduleList[index].completed,
-                                    size,
-                                    locationInterval,
-                                    maxTextCount
-                                )
-                            } else {
-                                addViewFunction(
-                                    holder,
-                                    "",
-                                    0f,
-                                    contentPosition/7,
-                                    contentLine,
-                                    7,
-                                    color,
-                                    saveScheduleList[index].completed,
-                                    size,
-                                    locationInterval,
-                                    maxTextCount
-                                )
-                            }
+                            addViewFunction(
+                                holder,
+                                "",
+                                0f,
+                                contentPosition/7,
+                                contentLine,
+                                7,
+                                color,
+                                false,
+                                size,
+                                locationInterval,
+                                maxTextCount
+                            )
 
                             continue
                         } else {
@@ -682,8 +666,6 @@ class AdapterMonth(val activity: Activity,
                                 color = Color.parseColor(saveScheduleList[index].category!!.color)
                             }
 
-                            val completed = saveScheduleList[index].completed
-
                             saveCntList.removeAt(index)
                             saveScheduleList.removeAt(index)
                             saveLineList.removeAt(index)
@@ -691,35 +673,19 @@ class AdapterMonth(val activity: Activity,
                             positionplus += returncnt - 1
                             spanList.add(returncnt)
 
-                            if(size == 5) {
-                                addViewFunction(
-                                    holder,
-                                    "",
-                                    0f,
-                                    contentPosition/7,
-                                    contentLine,
-                                    returncnt,
-                                    color,
-                                    completed,
-                                    size,
-                                    locationInterval,
-                                    maxTextCount
-                                )
-                            } else {
-                                addViewFunction(
-                                    holder,
-                                    "",
-                                    0f,
-                                    contentPosition/7,
-                                    contentLine,
-                                    returncnt,
-                                    color,
-                                    completed,
-                                    size,
-                                    locationInterval,
-                                    maxTextCount
-                                )
-                            }
+                            addViewFunction(
+                                holder,
+                                "",
+                                0f,
+                                contentPosition/7,
+                                contentLine,
+                                returncnt,
+                                color,
+                                false,
+                                size,
+                                locationInterval,
+                                maxTextCount
+                            )
 
                             continue
                         }
@@ -771,35 +737,19 @@ class AdapterMonth(val activity: Activity,
                                             returnvalue = interval - overflowvalue
                                             cntlist.add(returnvalue)
 
-                                            if (size == 5) {
-                                                addViewFunction(
-                                                    holder,
-                                                    content.schedule.content,
-                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                    contentPosition/7,
-                                                    contentLine,
-                                                    returnvalue,
-                                                    color,
-                                                    content.schedule.completed,
-                                                    size,
-                                                    locationInterval,
-                                                    maxTextCount
-                                                )
-                                            } else {
-                                                addViewFunction(
-                                                    holder,
-                                                    content.schedule.content,
-                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                    contentPosition/7,
-                                                    contentLine,
-                                                    returnvalue,
-                                                    color,
-                                                    content.schedule.completed,
-                                                    size,
-                                                    locationInterval,
-                                                    maxTextCount
-                                                )
-                                            }
+                                            addViewFunction(
+                                                holder,
+                                                content.schedule.content,
+                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                contentPosition/7,
+                                                contentLine,
+                                                returnvalue,
+                                                color,
+                                                false,
+                                                size,
+                                                locationInterval,
+                                                maxTextCount
+                                            )
 
                                             continue@loop
                                         }
@@ -808,35 +758,19 @@ class AdapterMonth(val activity: Activity,
                                         returnvalue = interval
                                         cntlist.add(returnvalue)
 
-                                        if (size == 5) {
-                                            addViewFunction(
-                                                holder,
-                                                content.schedule.content,
-                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                contentPosition/7,
-                                                contentLine,
-                                                returnvalue,
-                                                color,
-                                                content.schedule.completed,
-                                                size,
-                                                locationInterval,
-                                                maxTextCount
-                                            )
-                                        } else {
-                                            addViewFunction(
-                                                holder,
-                                                content.schedule.content,
-                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                contentPosition/7,
-                                                contentLine,
-                                                returnvalue,
-                                                color,
-                                                content.schedule.completed,
-                                                size,
-                                                locationInterval,
-                                                maxTextCount
-                                            )
-                                        }
+                                        addViewFunction(
+                                            holder,
+                                            content.schedule.content,
+                                            (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                            contentPosition/7,
+                                            contentLine,
+                                            returnvalue,
+                                            color,
+                                            false,
+                                            size,
+                                            locationInterval,
+                                            maxTextCount
+                                        )
 
                                         continue@loop
                                     }
@@ -859,35 +793,19 @@ class AdapterMonth(val activity: Activity,
                                             returnvalue = interval - overflowvalue
                                             cntlist.add(returnvalue)
 
-                                            if (size == 5) {
-                                                addViewFunction(
-                                                    holder,
-                                                    content.schedule.content,
-                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                    contentPosition/7,
-                                                    contentLine,
-                                                    returnvalue,
-                                                    color,
-                                                    content.schedule.completed,
-                                                    size,
-                                                    locationInterval,
-                                                    maxTextCount
-                                                )
-                                            } else {
-                                                addViewFunction(
-                                                    holder,
-                                                    content.schedule.content,
-                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                    contentPosition/7,
-                                                    contentLine,
-                                                    returnvalue,
-                                                    color,
-                                                    content.schedule.completed,
-                                                    size,
-                                                    locationInterval,
-                                                    maxTextCount
-                                                )
-                                            }
+                                            addViewFunction(
+                                                holder,
+                                                content.schedule.content,
+                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                contentPosition/7,
+                                                contentLine,
+                                                returnvalue,
+                                                color,
+                                                false,
+                                                size,
+                                                locationInterval,
+                                                maxTextCount
+                                            )
 
                                             continue@loop
                                         }
@@ -896,35 +814,19 @@ class AdapterMonth(val activity: Activity,
                                         returnvalue = interval
                                         cntlist.add(returnvalue)
 
-                                        if (size == 5) {
-                                            addViewFunction(
-                                                holder,
-                                                content.schedule.content,
-                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                contentPosition/7,
-                                                contentLine,
-                                                returnvalue,
-                                                color,
-                                                content.schedule.completed,
-                                                size,
-                                                locationInterval,
-                                                maxTextCount
-                                            )
-                                        } else {
-                                            addViewFunction(
-                                                holder,
-                                                content.schedule.content,
-                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                contentPosition/7,
-                                                contentLine,
-                                                returnvalue,
-                                                color,
-                                                content.schedule.completed,
-                                                size,
-                                                locationInterval,
-                                                maxTextCount
-                                            )
-                                        }
+                                        addViewFunction(
+                                            holder,
+                                            content.schedule.content,
+                                            (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                            contentPosition/7,
+                                            contentLine,
+                                            returnvalue,
+                                            color,
+                                            false,
+                                            size,
+                                            locationInterval,
+                                            maxTextCount
+                                        )
 
                                         continue@loop
                                     }
@@ -939,35 +841,19 @@ class AdapterMonth(val activity: Activity,
                                     calendarMainData.todoComplete)||
                                 (!cloneLiveTodo[contentPosition].todos[0].completed &&
                                         calendarMainData.todoInComplete)) {
-                                if (size == 5) {
-                                    addViewFunction(
-                                        holder,
-                                        cloneLiveTodo[contentPosition].todos[0].content,
-                                        (contentPosition % 7) / 6f,
-                                        contentPosition/7,
-                                        contentLine,
-                                        1,
-                                        Color.rgb(0xED, 0xED, 0xED),
-                                        cloneLiveTodo[contentPosition].todos[0].completed,
-                                        size,
-                                        locationInterval,
-                                        maxTextCount
-                                    )
-                                } else {
-                                    addViewFunction(
-                                        holder,
-                                        cloneLiveTodo[contentPosition].todos[0].content,
-                                        (contentPosition % 7) / 6f,
-                                        contentPosition/7,
-                                        contentLine,
-                                        1,
-                                        Color.rgb(0xED, 0xED, 0xED),
-                                        cloneLiveTodo[contentPosition].todos[0].completed,
-                                        size,
-                                        locationInterval,
-                                        maxTextCount
-                                    )
-                                }
+                                addViewFunction(
+                                    holder,
+                                    cloneLiveTodo[contentPosition].todos[0].content,
+                                    (contentPosition % 7) / 6f,
+                                    contentPosition/7,
+                                    contentLine,
+                                    1,
+                                    Color.rgb(0xED, 0xED, 0xED),
+                                    cloneLiveTodo[contentPosition].todos[0].completed,
+                                    size,
+                                    locationInterval,
+                                    maxTextCount
+                                )
 
                                 cloneLiveTodo[contentPosition].todos.removeAt(0)
                             }
