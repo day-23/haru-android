@@ -47,7 +47,6 @@ class EtcFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnLogout.setOnClickListener(ClickListener())
         binding.settingIcon.setOnClickListener(ClickListener())
     }
 
@@ -59,26 +58,6 @@ class EtcFragment : Fragment() {
                         .replace(R.id.fragments_frame, SettingFragment())
                         .addToBackStack(null)
                         .commit()
-                }
-
-                binding.btnLogout.id -> {
-                    Log.d(TAG, "onCreateView: 로그아웃 버튼 클릭")
-
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("Logout")
-                        .setMessage("Are you sure you want to log out?")
-                        .setPositiveButton("Yes") { dialog, which ->
-                            // User confirmed logout, perform the logout operation
-                            SharedPrefsManager.clear(App.instance)
-                            val intent = Intent(activity, LoginActivity::class.java)
-                            startActivity(intent)
-                            activity?.finish()
-                        }
-                        .setNegativeButton("No") { dialog, which ->
-                            // User cancelled logout, just close the dialog
-                            dialog.dismiss()
-                        }
-                        .show()
                 }
             }
         }
