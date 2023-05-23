@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/linear_border_up_bottom"
-        android:paddingBottom="20dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="20dp">
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/arrow"
                 android:backgroundTint="@color/todo_description"
-                android:rotation="180"/>
+                android:rotation="180" />
 
         </FrameLayout>
 
@@ -30,217 +30,230 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="설정"
-            android:textStyle="bold"
+            android:textColor="@color/todo_description"
             android:textSize="20sp"
-            android:textColor="@color/todo_description"/>
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="7dp"
-        android:background="@drawable/linear_border_up_bottom">
+        android:background="@drawable/linear_border_up_bottom"
+        android:orientation="horizontal"
+        android:paddingBottom="7dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/user_icon"/>
+            android:layout_marginTop="17dp"
+            android:background="@drawable/user_icon" />
 
+        <!--        TextView하고 ImageView의 높이 차이 텍스트뷰는 14dp, 이미지 뷰는 10dp-->
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingStart="10dp"
-            android:textSize="14sp"
+            android:paddingTop="21dp"
+            android:text="계정"
             android:textColor="@color/todo_description"
-            android:text="계정"/>
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/arrow"/>
+            android:layout_marginTop="15dp"
+            android:background="@drawable/arrow" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="7dp"
-        android:background="@drawable/linear_border_up_bottom">
+        android:background="@drawable/linear_border_up_bottom"
+        android:orientation="horizontal"
+        android:paddingBottom="7dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/protect_icon"/>
+            android:layout_marginTop="10dp"
+            android:background="@drawable/protect_icon" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingStart="10dp"
-            android:textSize="14sp"
+            android:paddingTop="14dp"
+            android:text="개인정보 보호"
             android:textColor="@color/todo_description"
-            android:text="개인정보 보호"/>
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/arrow"/>
+            android:layout_marginTop="8dp"
+            android:background="@drawable/arrow" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="7dp"
-        android:background="@drawable/linear_border_up_bottom">
+        android:background="@drawable/linear_border_up_bottom"
+        android:orientation="horizontal"
+        android:paddingBottom="7dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/display_icon"/>
+            android:layout_marginTop="10dp"
+            android:background="@drawable/display_icon" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingStart="10dp"
-            android:textSize="14sp"
+            android:paddingTop="14dp"
+            android:text="화면"
             android:textColor="@color/todo_description"
-            android:text="화면"/>
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/arrow"/>
+            android:layout_marginTop="8dp"
+            android:background="@drawable/arrow" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="7dp"
-        android:background="@drawable/linear_border_up_bottom">
+        android:background="@drawable/linear_border_up_bottom"
+        android:orientation="horizontal"
+        android:paddingBottom="7dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="@drawable/big_alarm_icon"
-            android:backgroundTint="@color/date_text"/>
+            android:backgroundTint="@color/date_text" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingStart="10dp"
-            android:textSize="14sp"
+            android:paddingTop="14dp"
+            android:text="알림"
             android:textColor="@color/todo_description"
-            android:text="알림"/>
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/arrow"/>
+            android:layout_marginTop="8dp"
+            android:background="@drawable/arrow" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="7dp"
-        android:background="@drawable/linear_border_up_bottom">
+        android:background="@drawable/linear_border_up_bottom"
+        android:orientation="horizontal"
+        android:paddingBottom="7dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/information_icon"/>
+            android:layout_marginTop="10dp"
+            android:background="@drawable/information_icon" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingStart="10dp"
-            android:textSize="14sp"
+            android:paddingTop="14dp"
+            android:text="정보"
             android:textColor="@color/todo_description"
-            android:text="정보"/>
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/arrow"/>
+            android:layout_marginTop="8dp"
+            android:background="@drawable/arrow" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="7dp"
-        android:background="@drawable/linear_border_up_bottom">
+        android:background="@drawable/linear_border_up_bottom"
+        android:orientation="horizontal"
+        android:paddingBottom="7dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/plus_friend_icon"/>
+            android:layout_marginTop="10dp"
+            android:background="@drawable/plus_friend_icon" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingStart="10dp"
-            android:textSize="14sp"
+            android:paddingTop="14dp"
+            android:text="친구 초대"
             android:textColor="@color/todo_description"
-            android:text="친구 초대"/>
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/arrow"/>
+            android:layout_marginTop="8dp"
+            android:background="@drawable/arrow" />
 
     </LinearLayout>
 
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="34dp"
         android:paddingBottom="14dp"
-        android:textSize="14sp"
+        android:text="Version"
         android:textColor="@color/date_text"
-        android:text="Version"/>
+        android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider"/>
+        android:background="@color/divider" />
 
     <TextView
         android:layout_width="match_parent"
@@ -248,16 +261,15 @@
         android:paddingStart="34dp"
         android:paddingTop="14dp"
         android:paddingBottom="14dp"
-        android:textSize="14sp"
+        android:text="로그아웃"
         android:textColor="@color/date_text"
-        android:text="로그아웃"/>
+        android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="64dp"
-        android:background="@color/divider"/>
-
+        android:background="@color/divider" />
 
 
 </LinearLayout>
