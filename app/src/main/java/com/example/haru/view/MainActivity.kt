@@ -5,8 +5,6 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -17,12 +15,11 @@ import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.databinding.ActivityMainBinding
 import com.example.haru.view.calendar.calendarMainData
-import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.view.timetable.TimetableFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
     private val fragments = arrayOfNulls<Fragment>(5)
 
     private lateinit var sharedPreference: SharedPreferences

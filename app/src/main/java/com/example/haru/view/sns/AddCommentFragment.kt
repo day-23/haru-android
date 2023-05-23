@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.getSystemService
@@ -30,6 +32,7 @@ import com.example.haru.data.model.User
 import com.example.haru.databinding.CustomGalleryBinding
 import com.example.haru.databinding.FragmentAddCommentBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AddCommentPagerAdapter
 import com.example.haru.view.adapter.GalleryAdapter
 import com.example.haru.view.adapter.ImageClickListener
@@ -64,9 +67,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             writeContainer.setBackgroundColor(color)
         }
     }
-
     override fun OnPopupClick(position: Int) {
-        Log.d("20191668", "click")
         val fragmentManager = childFragmentManager
         val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comment)
 
@@ -95,8 +96,6 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
            val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
        }
     }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "SnsMypageFragment - onCreate() called")

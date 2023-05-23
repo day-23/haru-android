@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.view.contains
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -31,21 +32,48 @@ import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.haru.R
+import com.example.haru.data.model.CommentBody
+import com.example.haru.data.model.Comments
 import com.example.haru.data.model.ExternalImages
+import com.example.haru.data.model.User
 import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.FragmentSnsMypageBinding
-import com.example.haru.view.adapter.AddPostAdapter
-import com.example.haru.view.adapter.GalleryAdapter
-import com.example.haru.view.adapter.MyFeedAdapter
-import com.example.haru.view.adapter.SnsPostAdapter
+import com.example.haru.databinding.PopupSnsCommentCancelBinding
+import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.view.adapter.*
 import com.example.haru.viewmodel.MyPageViewModel
 
-class AddPostFragment : Fragment() {
+interface PostInterface{
+    fun Postpopup(position: Int)
+}
+
+class AddPostFragment : Fragment(), PostInterface{
     lateinit var binding : FragmentAddPostBinding
     lateinit var galleryRecyclerView: RecyclerView
     lateinit var galleryViewmodel: MyPageViewModel
     lateinit var galleryAdapter: AddPostAdapter
     var toggle = false
+
+    override fun Postpopup(position: Int) {
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.add_post_anchor)
+
+        if(fragment != null) {
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+
+            if(position == 0){
+                val backManager = parentFragmentManager
+                backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                val fragment = SnsFragment()
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragments_frame, fragment)
+                    .commit()
+            }
+        }
+
+    }
 
         companion object{
             const val TAG : String = "로그"
@@ -175,12 +203,14 @@ class AddPostFragment : Fragment() {
 
             binding.addpostCancel.setOnClickListener {
                 galleryViewmodel.resetValue()
-                val fragmentManager = parentFragmentManager
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                val fragment = SnsFragment()
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragments_frame, fragment)
-                    .commit()
+
+                val fragment = PopupPost(this)
+                val fragmentManager = childFragmentManager
+                val transaction = fragmentManager.beginTransaction()
+                transaction.add(R.id.add_post_anchor, fragment)
+                transaction.commit()
+
+
             }
 
             binding.galleyToggle.setOnClickListener {
@@ -282,4 +312,24 @@ class AddPostFragment : Fragment() {
                 cursor?.close()
                 galleryViewmodel.loadGallery(gallery)
         }
+}
+
+class PopupPost(listener: PostInterface) : Fragment() {
+
+    lateinit var popupbinding : PopupSnsPostCancelBinding
+    val listener = listener
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        popupbinding = PopupSnsPostCancelBinding.inflate(inflater, container, false)
+
+        popupbinding.snsAddPostUnsave.setOnClickListener {
+            listener.Postpopup(0)
+        }
+
+        popupbinding.snsAddPostCancel.setOnClickListener {
+            listener.Postpopup(1)
+        }
+
+        return popupbinding.root
+    }
+
 }
