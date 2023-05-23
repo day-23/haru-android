@@ -38,6 +38,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/layout_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -71,6 +72,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_protect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -104,6 +106,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_display"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -137,6 +140,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_alarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -171,6 +175,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -204,6 +209,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_plus_friend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
