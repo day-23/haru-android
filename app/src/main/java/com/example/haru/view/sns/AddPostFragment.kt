@@ -190,13 +190,6 @@ class AddPostFragment : Fragment(), PostInterface{
                     transaction.addToBackStack(null)
                     transaction.commit()
 
-                    //val hashtag = arrayListOf("해시스완")
-                    //Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
-
-//                    galleryViewmodel.postRequest(converedImage, content, hashtag)
-//                    galleryViewmodel.resetValue()
-//
-//
                 }else{
                     Toast.makeText(requireContext(), "사진을 선택해 주세요" ,Toast.LENGTH_SHORT).show()
                 }

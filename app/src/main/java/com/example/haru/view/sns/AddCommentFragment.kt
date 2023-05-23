@@ -18,8 +18,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.contains
+import androidx.core.view.isGone
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,6 +51,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     val postIndex = postitem.images
     private lateinit var snsViewModel: SnsViewModel
     var imageIndex = 0
+    var CommentIsVisible = true
 
     //사진위 댓글 값
     var onWrite = false
@@ -65,6 +68,12 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             writeComment(position)
             val color = Color.argb(170, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
             writeContainer.setBackgroundColor(color)
+            binding.writeCommentBack.isGone = true
+            binding.commentVisibility.isGone = true
+            binding.writeCommentApply.visibility = View.VISIBLE
+            binding.writeCommentCancel.visibility = View.VISIBLE
+            binding.commentOnWrite.visibility = View.VISIBLE
+            writeContainer.isClickable = true
         }
     }
     override fun OnPopupClick(position: Int) {
@@ -84,16 +93,29 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                    onWrite = false
                    val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
                    writeContainer.setBackgroundColor(color)
+                   binding.writeCommentBack.visibility = View.VISIBLE
+                   binding.commentVisibility.visibility = View.VISIBLE
+                   binding.writeCommentCancel.isGone = true
+                   binding.writeCommentApply.isGone = true
+                   binding.commentOnWrite.isGone = true
+                   writeContainer.isClickable = false
                }
            }
        }else if(position == 1){
            snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
-           val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, "","")
+           val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, true,"","")
            postIndex[imageIndex].comments.add(addedComment)
            bindComment(addedComment)
            onWrite = false
            writeContainer.removeAllViews()
            val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
+           writeContainer.setBackgroundColor(color)
+           binding.writeCommentBack.visibility = View.VISIBLE
+           binding.commentVisibility.visibility = View.VISIBLE
+           binding.writeCommentCancel.isGone = true
+           binding.writeCommentApply.isGone = true
+           binding.commentOnWrite.isGone = true
+           writeContainer.isClickable = false
        }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +132,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         Log.d("TAG", "SnsFragment - onCreateView() called")
         binding = FragmentAddCommentBinding.inflate(inflater, container, false)
         commentContainer = binding.commentFrame
+
         commentContainer.post{
             ImageWidth = commentContainer.width
             ImageHeight = commentContainer.height
@@ -119,11 +142,44 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         val viewpager = binding.commentImage
         val viewPagerAdapter = AddCommentPagerAdapter(requireContext(), postitem.images, this)
 
+        binding.lastPicture.setOnClickListener {
+            val currentItem = viewpager.currentItem
+            if (currentItem > 0) {
+                viewpager.setCurrentItem(currentItem - 1, true)
+            }
+        }
+
+        binding.nextPicture.setOnClickListener {
+            val currentItem = viewpager.currentItem
+            if (currentItem < viewpager.adapter?.itemCount ?: 0 - 1) {
+                viewpager.setCurrentItem(currentItem + 1, true)
+            }
+        }
+
+        binding.writeCommentBack.setOnClickListener {
+            val backManager = parentFragmentManager
+            backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            val fragment = SnsFragment()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragments_frame, fragment)
+                .commit()
+        }
+
         viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 writeContainer.removeAllViews()
                 onWrite = false
                 imageIndex = position
+                binding.lastPicture.visibility = View.VISIBLE
+                binding.nextPicture.visibility = View.VISIBLE
+
+                if(position == 0){
+                    binding.lastPicture.isGone = true
+                }
+                if(position == postitem.images.size - 1){
+                    binding.nextPicture.isGone = true
+                }
+
                 binding.addcommentIndex.text = "${position + 1} / ${postitem.images.size}"
                 if (commentContainer.childCount != 0) {
                     commentContainer.removeAllViews()
@@ -151,15 +207,34 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         binding.writeCommentApply.setOnClickListener {
             if(AddContent != ""){
                 snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
-                val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, "","")
+                val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, true,"","")
                 postIndex[imageIndex].comments.add(addedComment)
                 bindComment(addedComment)
                 onWrite = false
                 writeContainer.removeAllViews()
                 val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
                 writeContainer.setBackgroundColor(color)
+                binding.writeCommentBack.visibility = View.VISIBLE
+                binding.commentVisibility.visibility = View.VISIBLE
+                binding.writeCommentCancel.isGone = true
+                binding.writeCommentApply.isGone = true
+                binding.commentOnWrite.isGone = true
+                writeContainer.isClickable = false
             }else{
                 Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.commentVisibility.setOnClickListener {
+            if(CommentIsVisible){
+                CommentIsVisible = false
+                commentContainer.visibility = View.INVISIBLE
+                binding.commentVisibility.setImageResource(R.drawable.comment_invisible)
+            }
+            else{
+                CommentIsVisible = true
+                commentContainer.visibility = View.VISIBLE
+                binding.commentVisibility.setImageResource(R.drawable.comment)
             }
         }
 
