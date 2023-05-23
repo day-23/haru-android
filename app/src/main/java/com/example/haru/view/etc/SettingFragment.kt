@@ -27,6 +27,7 @@ class SettingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(EtcFragment.TAG, "SettingFragment - onCreate() called")
+
     }
 
     override fun onCreateView(

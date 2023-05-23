@@ -16,7 +16,7 @@
             android:paddingStart="20dp">
 
             <ImageView
-                android:id="@+id/iv_back_icon_setting"
+                android:id="@+id/iv_back_icon_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/arrow"
