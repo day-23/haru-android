@@ -154,6 +154,18 @@ class CheckListViewModel() :
         }
     }
 
+    fun getRelatedTodoCount(tagId: String, callback: (data : Int?) -> Unit){
+        viewModelScope.launch {
+            tagRepository.getRelatedTodoCount(tagId){
+                val data = it?.data
+                if (it?.success == true){
+                    Log.d("20191627", "$data")
+                }else Log.e("20191627", it.toString())
+                callback(data)
+            }
+        }
+    }
+
     /* -------------------------------------------------------------------------- */
 
     fun tagDataClear(){
