@@ -174,4 +174,43 @@ class PostRepository() {
         callback(comments)
     }
 
+    suspend fun deleteComment(writerId : String, commentId : String, callback: (deleted: Boolean) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.deleteComment(
+            writerId,
+            commentId,
+        ).execute()
+
+        val data: LikeResponse
+        val deleted: Boolean
+
+        if(response.isSuccessful){
+            data = response.body()!!
+            deleted = data.response
+        }else{
+            deleted = false
+        }
+        callback(deleted)
+    }
+
+    suspend fun chageComment(writerId: String, commentId: String, body: PatchCommentBody, callback: (changed: Boolean) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.changeComment(
+            writerId,
+            commentId,
+            body
+        ).execute()
+
+        val data: LikeResponse
+        val changed: Boolean
+
+        if(response.isSuccessful){
+            data = response.body()!!
+            changed = data.response
+        }else{
+            changed = false
+        }
+        callback(changed)
+    }
+
 }

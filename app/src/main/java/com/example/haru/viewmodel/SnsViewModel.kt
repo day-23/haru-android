@@ -39,6 +39,10 @@ class SnsViewModel: ViewModel() {
     val DeleteResult : LiveData<Boolean>
         get() = _DeleteResult
 
+    private val _ChangeResult = MutableLiveData<Boolean>()
+    val ChangeResult : LiveData<Boolean>
+        get() = _ChangeResult
+
     fun init_page(){
         val currentPage = _Page.value
         if(currentPage == 1){
@@ -110,6 +114,26 @@ class SnsViewModel: ViewModel() {
                 result = it
             }
             _DeleteResult.value = result
+        }
+    }
+
+    fun deleteComment(writerId: String, commentId:String){
+        var result = false
+        viewModelScope.launch {
+            PostRepository.deleteComment(writerId, commentId){
+                result = it
+            }
+            _DeleteResult.value = result
+        }
+    }
+
+    fun patchComment(writerId: String, commentId: String, body: PatchCommentBody){
+        var result = false
+        viewModelScope.launch {
+            PostRepository.chageComment(writerId, commentId, body){
+                result = it
+            }
+            _ChangeResult.value = result
         }
     }
 }

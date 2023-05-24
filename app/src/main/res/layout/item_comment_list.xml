@@ -63,6 +63,7 @@
         tools:ignore="MissingConstraints" />
     
     <ImageView
+        android:id="@+id/comment_setup"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:src="@drawable/change_category"

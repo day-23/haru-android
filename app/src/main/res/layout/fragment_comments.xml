@@ -51,7 +51,8 @@
             android:layout_height="32dp"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginRight="61dp"
-            android:src="@drawable/comment_filled"/>
+            android:src="@drawable/comment_filled"
+            tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/comment_count"
@@ -63,7 +64,6 @@
             android:textColor="#646464"
             android:layout_marginHorizontal="39dp"
             app:layout_constraintRight_toRightOf="parent"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView

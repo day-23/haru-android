@@ -184,7 +184,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
                     commentContainer.removeAllViews()
                 }
                 for(comment in postIndex[position].comments) {
-                    Log.d("20191668","내용:  ${comment.content}")
+                    Log.d("20191668","내용:  ${comment}")
                     commentContainer.post {
                         bindComment(comment)
                     }
