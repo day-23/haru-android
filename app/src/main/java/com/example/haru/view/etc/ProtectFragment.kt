@@ -36,15 +36,15 @@ class ProtectFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        binding.ivBackIconProtect.setOnClickListener(ClickListener())
+        binding.ivBackIconProtect.setOnClickListener(ClickListener())
     }
 
     inner class ClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
-//                binding.ivBackIconProtect.id -> {
-//                    requireActivity().supportFragmentManager.popBackStack()
-//                }
+                binding.ivBackIconProtect.id -> {
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
             }
         }
     }
