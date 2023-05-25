@@ -10,15 +10,15 @@ import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentTagManagementBinding
 import com.example.haru.viewmodel.CheckListViewModel
 
-class TagManagementFragment(checkListViewModel: CheckListViewModel, val tag: Tag) : Fragment() {
+class TagManagementFragment(checkListViewModel: CheckListViewModel, val tag: Tag, val cnt : Int?) : Fragment() {
     private lateinit var binding: FragmentTagManagementBinding
     private val checkListViewModel: CheckListViewModel
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(checkListViewModel: CheckListViewModel, tag: Tag): TagManagementFragment {
-            return TagManagementFragment(checkListViewModel, tag)
+        fun newInstance(checkListViewModel: CheckListViewModel, tag: Tag, cnt: Int?): TagManagementFragment {
+            return TagManagementFragment(checkListViewModel, tag, cnt)
         }
     }
 
@@ -39,6 +39,9 @@ class TagManagementFragment(checkListViewModel: CheckListViewModel, val tag: Tag
         super.onViewCreated(view, savedInstanceState)
 
         binding.etTagContent.setText(tag.content)
+
+        binding.tvRelatedTodoCount.text = if (cnt == null) "0개" else "${cnt}개"
+
         binding.switchTagVisibility.isChecked = tag.isSelected
 
         binding.ivBackIconTag.setOnClickListener {

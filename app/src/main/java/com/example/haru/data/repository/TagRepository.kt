@@ -90,4 +90,24 @@ class TagRepository() {
         }
         callback(successData)
     }
+
+    suspend fun getRelatedTodoCount(
+        tagId: String,
+        callback: (successData : SuccessFailCount?) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = tagService.getRelatedTodoCount(User.id, tagId).execute()
+        var data = response.body()
+
+        val successData : SuccessFailCount? = if (response.isSuccessful){
+            Log.d("TAG", "Success to Get RelatedTodo Count")
+            data
+        } else {
+            Log.d("TAG", "Fail to Get RelatedTodo Count")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFailCount::class.java)
+            data
+        }
+        callback(successData)
+    }
 }

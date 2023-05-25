@@ -19,4 +19,7 @@ interface TagService {
 
     @PATCH("tag/{userId}/{tagId}")
     fun updateTag(@Path("userId") userId: String, @Path("tagId") tagId: String, @Body updateTag: TagUpdate) : Call<SuccessFailTag>
+
+    @GET("tag/{userId}/{tagId}/todoCnt")
+    fun getRelatedTodoCount(@Path("userId") userId: String, @Path("tagId") tagId: String) : Call<SuccessFailCount>
 }
