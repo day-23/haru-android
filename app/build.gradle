@@ -98,4 +98,7 @@ dependencies {
 
     /* EncryptedSharedPreferences */
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+
+    /* sns 당겨서 새로고침 */
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }

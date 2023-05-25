@@ -6,6 +6,7 @@ data class Comments(
     val content: String,
     val x : Int,
     val y: Int,
+    var isPublic : Boolean,
     val createdAt: String,
     val updatedAt: String
 )
