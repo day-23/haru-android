@@ -16,9 +16,8 @@ object FormatDate {
 
     // LocalDateTime을 String으로 변환할 formatter
     //24시간으로 할지 아니면 오전, 오후로 12시간제로 하는지
-    private val localTimeFormatter = DateTimeFormatter.ofPattern("H:mm까지")
+    private val localTimeFormatter = DateTimeFormatter.ofPattern("a h:mm까지")
     private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지")
-
 
     private val calendarDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
 
@@ -28,7 +27,7 @@ object FormatDate {
     private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd E", Locale.KOREA)
     private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
 
-    private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
+    private val simpleFormatterKorea = SimpleDateFormat("M월 dd일 E요일", Locale.KOREA)
 
     val cal = Calendar.getInstance()
 

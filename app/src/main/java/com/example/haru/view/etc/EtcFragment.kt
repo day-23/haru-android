@@ -16,6 +16,7 @@ import com.example.haru.databinding.FragmentEtcBinding
 import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.view.auth.LoginActivity
+import com.example.haru.view.checklist.ChecklistTodayFragment
 
 class EtcFragment : Fragment() {
     private lateinit var binding: FragmentEtcBinding
@@ -40,26 +41,27 @@ class EtcFragment : Fragment() {
     ): View? {
         binding = FragmentEtcBinding.inflate(inflater, container, false)
 
-        binding.btnLogout.setOnClickListener {
-            Log.d(TAG, "onCreateView: 로그아웃 버튼 클릭")
+        return binding.root
+    }
 
-            AlertDialog.Builder(requireContext())
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to log out?")
-                .setPositiveButton("Yes") { dialog, which ->
-                    // User confirmed logout, perform the logout operation
-                    SharedPrefsManager.clear(App.instance)
-                    val intent = Intent(activity, LoginActivity::class.java)
-                    startActivity(intent)
-                    activity?.finish()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.settingIcon.setOnClickListener(ClickListener())
+    }
+
+    inner class ClickListener : View.OnClickListener{
+        override fun onClick(v: View?) {
+            when(v?.id){
+                binding.settingIcon.id -> {
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragments_frame, SettingFragment())
+                        .addToBackStack(null)
+                        .commit()
                 }
-                .setNegativeButton("No") { dialog, which ->
-                    // User cancelled logout, just close the dialog
-                    dialog.dismiss()
-                }
-                .show()
+            }
         }
 
-        return binding.root
+
     }
 }

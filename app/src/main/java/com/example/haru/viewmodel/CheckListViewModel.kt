@@ -26,10 +26,10 @@ class CheckListViewModel() :
 
     private val _todoDataList = MutableLiveData<List<Todo>>()
     private val _tagDataList = MutableLiveData<List<Tag>>()
-    private val _flaggedTodos = MutableLiveData<List<Todo>>()
-    private val _taggedTodos = MutableLiveData<List<Todo>>()
-    private val _untaggedTodos = MutableLiveData<List<Todo>>()
-    private val _completedTodos = MutableLiveData<List<Todo>>()
+//    private val _flaggedTodos = MutableLiveData<List<Todo>>()
+//    private val _taggedTodos = MutableLiveData<List<Todo>>()
+//    private val _untaggedTodos = MutableLiveData<List<Todo>>()
+//    private val _completedTodos = MutableLiveData<List<Todo>>()
 
     private val _todoByTag = MutableLiveData<Boolean>()
     val todoByTag: LiveData<Boolean> = _todoByTag
@@ -44,10 +44,10 @@ class CheckListViewModel() :
     private val todoList = mutableListOf<Todo>()
     val todoDataList: LiveData<List<Todo>> get() = _todoDataList
     val tagDataList: LiveData<List<Tag>> get() = _tagDataList
-    val flaggedTodos: LiveData<List<Todo>> get() = _flaggedTodos
-    val taggedTodos: LiveData<List<Todo>> get() = _taggedTodos
-    val untaggedTodos: LiveData<List<Todo>> get() = _untaggedTodos
-    val completedTodos: LiveData<List<Todo>> get() = _completedTodos
+//    val flaggedTodos: LiveData<List<Todo>> get() = _flaggedTodos
+//    val taggedTodos: LiveData<List<Todo>> get() = _taggedTodos
+//    val untaggedTodos: LiveData<List<Todo>> get() = _untaggedTodos
+//    val completedTodos: LiveData<List<Todo>> get() = _completedTodos
 
     var todoByTagItem: String? = null
 
@@ -55,10 +55,10 @@ class CheckListViewModel() :
 
     init {
         getTodoMain {
-            flaggedTodos.value?.let { todoList.addAll(it) }
-            taggedTodos.value?.let { todoList.addAll(it) }
-            untaggedTodos.value?.let { todoList.addAll(it) }
-            completedTodos.value?.let { todoList.addAll(it) }
+//            flaggedTodos.value?.let { todoList.addAll(it) }
+//            taggedTodos.value?.let { todoList.addAll(it) }
+//            untaggedTodos.value?.let { todoList.addAll(it) }
+//            completedTodos.value?.let { todoList.addAll(it) }
             _todoDataList.postValue(todoList)
         }
         getTag()
@@ -154,8 +154,24 @@ class CheckListViewModel() :
         }
     }
 
+    fun getRelatedTodoCount(tagId: String, callback: (data : Int?) -> Unit){
+        viewModelScope.launch {
+            tagRepository.getRelatedTodoCount(tagId){
+                val data = it?.data
+                if (it?.success == true){
+                    Log.d("20191627", "$data")
+                }else Log.e("20191627", it.toString())
+                callback(data)
+            }
+        }
+    }
+
     /* -------------------------------------------------------------------------- */
 
+    fun tagDataClear(){
+        _todoByTag.value = false
+        todoByTagItem = null
+    }
     fun withTagUpdate() {  // Todo에 변동을 주는 기능을 하면 TodoData를 업데이트 해주는 기능
         if (todoByTag.value == true) {
             when (todoByTagItem) {
@@ -174,11 +190,11 @@ class CheckListViewModel() :
         getTodoMain {
             _todoByTag.postValue(false)
             todoByTagItem = null
-            todoList.clear()
-            flaggedTodos.value?.let { todoList.addAll(it) }
-            taggedTodos.value?.let { todoList.addAll(it) }
-            untaggedTodos.value?.let { todoList.addAll(it) }
-            completedTodos.value?.let { todoList.addAll(it) }
+//            todoList.clear()
+//            flaggedTodos.value?.let { todoList.addAll(it) }
+//            taggedTodos.value?.let { todoList.addAll(it) }
+//            untaggedTodos.value?.let { todoList.addAll(it) }
+//            completedTodos.value?.let { todoList.addAll(it) }
             _todoDataList.postValue(todoList)
         }
     }
@@ -201,14 +217,15 @@ class CheckListViewModel() :
                 if (it?.success == true) {
                     todoList.clear()
                     _todoByTag.postValue(false)
+                    clickedTag = null
                     todoByTagItem = null
 
                     if (it.data.flaggedTodos.isNotEmpty())
-                        _flaggedTodos.postValue(
+                        todoList.addAll(
                             listOf(Todo(type = 4, content = "중요"))
                                     + it.data.flaggedTodos + listOf(Todo(type = 3))
                         )
-                    else _flaggedTodos.postValue(
+                    else todoList.addAll(
                         listOf(
                             Todo(type = 4, content = "중요"),
                             Todo(type = 5, content = "중요한 할 일이 있나요?"), Todo(type = 3)
@@ -216,14 +233,14 @@ class CheckListViewModel() :
                     )
 
                     if (it.data.taggedTodos.isNotEmpty())
-                        _taggedTodos.postValue(
+                        todoList.addAll(
                             listOf(
                                 Todo(
                                     type = 4,
                                     content = "분류"
                                 )
                             ) + it.data.taggedTodos + listOf(Todo(type = 3))
-                        ) else _taggedTodos.postValue(
+                        ) else todoList.addAll(
                         listOf(
                             Todo(type = 4, content = "분류"),
                             Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
@@ -231,14 +248,14 @@ class CheckListViewModel() :
                         )
                     )
                     if (it.data.untaggedTodos.isNotEmpty())
-                        _untaggedTodos.postValue(
+                        todoList.addAll(
                             listOf(
                                 Todo(
                                     type = 4,
                                     content = "미분류"
                                 )
                             ) + it.data.untaggedTodos + listOf(Todo(type = 3))
-                        ) else _untaggedTodos.postValue(
+                        ) else todoList.addAll(
                         listOf(
                             Todo(type = 4, content = "미분류"),
                             Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
@@ -246,23 +263,22 @@ class CheckListViewModel() :
                         )
                     )
                     if (it.data.completedTodos.isNotEmpty())
-                        _completedTodos.postValue(
+                        todoList.addAll(
                             listOf(
                                 Todo(
                                     type = 4,
                                     content = "완료"
                                 )
                             ) + it.data.completedTodos + listOf(Todo(type = 6))
-                        ) else _completedTodos.postValue(
+                        ) else todoList.addAll(
                         listOf(
                             Todo(type = 4, content = "완료"),
                             Todo(type = 5, content = "할일을 완료해 보세요!"),
                             Todo(type = 6)
                         )
                     )
-
-                    _todoByTag.postValue(false)
-                    todoByTagItem = null
+//                    _todoByTag.postValue(false)
+//                    todoByTagItem = null
                 } else {
                     Log.e("20191627", "CheckListViewModel -> GetTodoMain Fail")
                     Log.e("20191627", it.toString())
@@ -317,7 +333,6 @@ class CheckListViewModel() :
         }
     }
 
-
     fun addTodo(
         todoRequest: TodoRequest,
         calendar: Boolean = false,
@@ -347,7 +362,7 @@ class CheckListViewModel() :
                 when (position) {
                     1 -> {
                         todoRepository.getTodoByComplete {
-                            if (it?.success == true)
+                            if (it?.success == true){
                                 this.addAll(
                                     listOf(
                                         Todo(
@@ -356,19 +371,19 @@ class CheckListViewModel() :
                                         )
                                     ) + it.data!!
                                 )
+                                if (it.data.isEmpty())
+                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                            }
                         }
                     }
                     2 -> {
                         todoRepository.getTodoByUntag {
-                            if (it?.success == true)
-                                this.addAll(
-                                    listOf(
-                                        Todo(
-                                            type = 4,
-                                            content = todoByTagItem!!
-                                        )
-                                    ) + it.data!!
-                                )
+                            if (it?.success == true){
+                                this.addAll(listOf(Todo(type = 4,content = todoByTagItem!!))
+                                        + it.data!!)
+                                if (it.data.isEmpty())
+                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                            }
                         }
                     }
                     else -> {
@@ -407,8 +422,11 @@ class CheckListViewModel() :
             todoList.apply {
                 clear()
                 todoRepository.getTodoByFlag {
-                    if (it?.success == true)
+                    if (it?.success == true){
                         addAll(listOf(Todo(type = 4, content = "중요")) + it.data!!)
+                        if (it.data.isEmpty())
+                            add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
+                    }
                     else Log.e("20191627", it.toString())
                 }
             }
@@ -417,10 +435,10 @@ class CheckListViewModel() :
     }
 
     fun clear() {
-        _flaggedTodos.value = emptyList()
-        _taggedTodos.value = emptyList()
-        _untaggedTodos.value = emptyList()
-        _completedTodos.value = emptyList()
+//        _flaggedTodos.value = emptyList()
+//        _taggedTodos.value = emptyList()
+//        _untaggedTodos.value = emptyList()
+//        _completedTodos.value = emptyList()
     }
 
     /* ------------------------------------할 일의 수정 기능--------------------------------- */

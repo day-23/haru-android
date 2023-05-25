@@ -94,6 +94,11 @@ class TagAdapter(val context: Context) :
                             notifyItemChanged(clickedPosition!!)
                         }
 
+                        if (clickedPosition == position){
+                            setTagPosition(null)
+                            return@setOnClickListener
+                        }
+
                         setTagPosition(position)
                         data[position - 1].clicked = true
                         holder.binding.tagBtn.background =
@@ -126,7 +131,6 @@ class TagAdapter(val context: Context) :
 
             if (!item.isSelected)
                 return
-
 
             val drawable: Drawable?
             val color: Int
