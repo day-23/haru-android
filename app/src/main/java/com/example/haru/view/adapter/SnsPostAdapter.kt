@@ -1,6 +1,7 @@
 package com.example.haru.view.adapter
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.util.Log
@@ -29,6 +30,7 @@ import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.SnsViewModel
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.*
+import org.w3c.dom.Text
 
 class SnsPostAdapter(val context: Context,
                      private var itemList: ArrayList<Post> = ArrayList(),
@@ -53,10 +55,14 @@ class SnsPostAdapter(val context: Context,
         //TODO:(sns삭제버튼)나중에 계정정보 동적으로 변경해야함
         if(itemList[position].user.id != "jts"){
             holder.setup.visibility = View.GONE
-        }
+        }else
+            holder.setup.visibility = View.VISIBLE
+
         //TODO:(sns삭제버튼)계정정보 동적할당 필요
+        //TODO:(sns삭제버튼)삭제시 position 사용하지 않도록 수정해야함
         holder.setup.setOnClickListener {
-            listener.onSetupClick("jts", itemList[position].id)
+            Log.d("20191668", "set up")
+            listener.onSetupClick("jts", itemList[position].id, itemList[position])
         }
 
         val pictureIndex = adapter.itemCount
@@ -71,18 +77,17 @@ class SnsPostAdapter(val context: Context,
             }
         })
 
-
-        holder.setup.setOnClickListener {
-
+        holder.profileImg.setOnClickListener {
+            listener.onProfileClick(itemList[position].user.id)
         }
 
-        holder.profileImg.setOnClickListener {
+        holder.userid.setOnClickListener{
             listener.onProfileClick(itemList[position].user.id)
         }
 
         holder.totalcomment.setOnClickListener {
             Log.d("TAG", "post id sended -------------${itemList[position].id}")
-            listener.onTotalCommentClick(itemList[position].id)
+            listener.onTotalCommentClick(itemList[position])
         }
 
         holder.comment.setOnClickListener {
@@ -96,7 +101,7 @@ class SnsPostAdapter(val context: Context,
         }
 
         if(itemList[position].isLiked){
-            holder.likeBtn.setImageResource(R.drawable.liked)
+            holder.likeBtn.setImageResource(R.drawable.sns_liked)
         }
         else{
             holder.likeBtn.setImageResource(R.drawable.likedyet)
@@ -110,7 +115,7 @@ class SnsPostAdapter(val context: Context,
                 holder.likedcount.text = itemList[position].likedCount.toString()
 
             }else{
-                holder.likeBtn.setImageResource(R.drawable.liked)
+                holder.likeBtn.setImageResource(R.drawable.sns_liked)
                 itemList[position].isLiked = true
                 itemList[position].likedCount += 1
                 holder.likedcount.text = itemList[position].likedCount.toString()
@@ -123,13 +128,24 @@ class SnsPostAdapter(val context: Context,
         return itemList.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun initList(post : ArrayList<Post>){
         itemList = post
         notifyDataSetChanged()
     }
 
     fun newPage(post: ArrayList<Post>){
-        itemList.addAll(post)
+
+        for(p in post) {
+            if (!itemList.contains(p))
+                itemList.add(p)
+        }
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun deletePost(item: Post){
+        itemList.remove(item)
         notifyDataSetChanged()
     }
 
@@ -141,7 +157,7 @@ class SnsPostAdapter(val context: Context,
         var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
         var likedcount = itemView.findViewById<TextView>(R.id.liked_count)
         var commentcount = itemView.findViewById<TextView>(R.id.post_comment_count)
-        var index = itemView.findViewById<Button>(R.id.picture_index)
+        var index = itemView.findViewById<TextView>(R.id.picture_index)
         var comment = itemView.findViewById<ImageView>(R.id.button_comment)
         var setup = itemView.findViewById<ImageView>(R.id.post_setup)
         var totalcomment = itemView.findViewById<ImageView>(R.id.post_total_comment)

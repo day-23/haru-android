@@ -39,8 +39,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         transaction.commit()
     }
 
-    override fun onTotalCommentClick(postId: String) {
-        val newFrag = CommentsFragment(postId)
+    override fun onTotalCommentClick(post: Post) {
+        val newFrag = CommentsFragment(post)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
@@ -53,7 +53,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         //Don't need to implement
     }
 
-    override fun onSetupClick(userId: String, postId: String) {
+    override fun onSetupClick(userId: String, postId: String, item: Post) {
         TODO("Not yet implemented")
     }
 
