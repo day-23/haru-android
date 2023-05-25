@@ -16,9 +16,8 @@ object FormatDate {
 
     // LocalDateTime을 String으로 변환할 formatter
     //24시간으로 할지 아니면 오전, 오후로 12시간제로 하는지
-    private val localTimeFormatter = DateTimeFormatter.ofPattern("H:mm까지")
+    private val localTimeFormatter = DateTimeFormatter.ofPattern("a h:mm까지")
     private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지")
-
 
     private val calendarDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
 
@@ -28,10 +27,9 @@ object FormatDate {
     private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd E", Locale.KOREA)
     private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
 
-    private val simpleFormatterKorea = SimpleDateFormat("MM월 dd일 E요일", Locale.KOREA)
+    private val simpleFormatterKorea = SimpleDateFormat("M월 dd일 E요일", Locale.KOREA)
 
     val cal = Calendar.getInstance()
-
 
     private fun initDiff(): Long {
         val gmtZoneId = ZoneId.of("GMT")
@@ -77,6 +75,7 @@ object FormatDate {
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         return date.format(calendarDateFormatter)
     }
+
 
     fun calendarBackFormat(str: String): String{
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(-diff)
@@ -449,5 +448,254 @@ object FormatDate {
         return nextEndDate
     }
 
+    //이 다음 4개의 next 함수는 스케줄 용입니다.
+    fun nextStartDate(endDateStr: String, repeatEndDateStr: String): Date? {
+        val endDate = strToDate(endDateStr)
+        cal.apply {
+            time = endDate!!
+            add(Calendar.DATE, 1)
+        }
+        val nextEndDate = cal.time
 
+        cal.apply {
+            time = strToDate(repeatEndDateStr)!!
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+        }
+        val repeatEndDate = cal.time
+        return if (nextEndDate.after(repeatEndDate))
+            null
+        else nextEndDate
+    }
+
+    fun nextStartDateEveryWeek(
+        repeatValue: String,
+        repeatOption: Int,
+        endDateStr: String,
+        repeatEndDateStr: String
+    ): Date? {
+        if(!repeatValue.contains("T")) {
+            val plusValue = if (repeatOption == 2) 8 else 1
+
+            cal.time =
+                strToDate(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
+            Log.d("20191630", "endDate:"+endDateStr)
+
+            val nWeek = cal.get(Calendar.DAY_OF_WEEK)
+
+            val idx = nWeek - 1
+            Log.d("20191630", "idx:"+idx.toString())
+            val idxPlus = 1  // Todo를 완료하기 위해서 다음 endDate를 구할때는 해당 날이 포함되서는 안된다.
+            var flag = false
+
+            for (i in idx + idxPlus until 7)
+                if (repeatValue[i] == '1') {
+                    cal.add(Calendar.DATE, i - idx)
+                    flag = true
+                    break
+                }
+            if (!flag) {
+                for (i in 0 until idx + idxPlus)
+                    if (repeatValue[i] == '1') {
+                        val value = 6 - idx + i + plusValue
+                        cal.add(Calendar.DATE, value)
+                        break
+                    }
+            }
+            val nextEndDate = cal.time
+
+            cal.apply {
+                time = strToDate(repeatEndDateStr)
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+            }
+            val repeatEndDate = cal.time
+            return if (nextEndDate.after(repeatEndDate)) // 반복 마감일보다 다음 마감일이 더 뒤라면 반복 종료
+                null
+            else nextEndDate
+        } else {
+            cal.time =
+                strToDate(endDateStr)
+
+            if(repeatOption == 1){
+                cal.add(Calendar.DAY_OF_MONTH, 7)
+            } else {
+                cal.add(Calendar.DAY_OF_MONTH, 14)
+            }
+
+            val nextStartDate = cal.time
+
+            cal.apply {
+                time = strToDate(repeatEndDateStr)
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+            }
+            val repeatStartDate = cal.time
+
+            return if(nextStartDate.after(repeatStartDate))
+                null
+            else nextStartDate
+        }
+    }
+
+    fun nextStartDateEveryMonth(
+        repeatValue: String, endDateStr: String,
+        repeatEndDateStr: String
+    ): Date? {
+        if(!repeatValue.contains("T")) {
+            cal.time = strToDate(endDateStr)
+
+            val idx = cal.get(Calendar.DAY_OF_MONTH) - 1
+            val idxPlus = 1
+            var flag = false
+            var days = 32
+            for (i in idx + idxPlus until 31)
+                if (repeatValue[i] == '1') {
+                    days = i + 1
+                    flag = true
+                    break
+                }
+            if (!flag) {
+                for (i in 0 until idx + idxPlus)
+                    if (repeatValue[i] == '1') {
+                        days = i + 1
+                        break
+                    }
+            }
+            cal.set(
+                Calendar.DAY_OF_MONTH,
+                1
+            )  // 만약 31일인 상태에서 3월에서 + 1하면 5월 1일로 간다. 그렇기 때문에 날짜를 1로 설정해줌
+
+            if (days < idx + 1) {
+                cal.add(Calendar.MONTH, 1)
+                if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
+                    cal.add(Calendar.MONTH, 1)
+                cal.set(Calendar.DAY_OF_MONTH, days)
+            } else {
+                if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days) {
+                    cal.add(Calendar.MONTH, 1)
+                    if (repeatValue.substring(0, days - 1).contains('1')) {
+                        days = repeatValue.indexOf('1') + 1
+                    }
+                } else {
+                    cal.add(Calendar.MONTH, 1)
+                }
+                cal.set(Calendar.DAY_OF_MONTH, days)
+            }
+            val nextEndDate = cal.time
+            Log.d("20191627", "nextEndDate : ${nextEndDate}")
+
+            cal.apply {
+                time = strToDate(repeatEndDateStr)
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+            }
+            
+            val repeatEndDate = cal.time
+            return if (nextEndDate.after(repeatEndDate)) // 반복 마감일보다 다음 마감일이 더 뒤라면 반복 종료
+                null
+            else nextEndDate
+        } else {
+            cal.time =
+                strToDate(endDateStr)
+
+            cal.add(Calendar.MONTH, 1)
+
+            val nextStartDate = cal.time
+
+            cal.apply {
+                time = strToDate(repeatEndDateStr)
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+            }
+            val repeatStartDate = cal.time
+
+            return if(nextStartDate.after(repeatStartDate))
+                null
+            else nextStartDate
+        }
+    }
+
+    fun nextStartDateEveryYear(
+        repeatValue: String,
+        endDateStr: String,
+        repeatEndDateStr: String,    // endDateStr을 하면 현재 시간으로 값을 정하지만 만약 사용자가 직접 날짜를 설정한다면????? 방법 강구하기
+        day: Int? = null
+    ): Date? {                       // todoAddViewModel에 사용자가 직접 endDate를 설정한 것을 표시할 수 있는 값 만들기???
+        if(!repeatValue.contains("T")) {
+            cal.time = strToDate(endDateStr)
+
+            Log.d("20191627", "day : $day")
+            val idx = cal.get(Calendar.MONTH)
+            val idxPlus = 1
+            val days = day ?: cal.get(Calendar.DAY_OF_MONTH)
+
+            var month: Int
+            var flag = false
+            for (i in idx + idxPlus until 12)
+                if (repeatValue[i] == '1') {
+                    month = i
+                    cal.set(Calendar.DAY_OF_MONTH, 1)
+                    cal.set(Calendar.MONTH, month)
+                    if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                        flag = true
+                        cal.set(Calendar.DAY_OF_MONTH, days)
+                        break
+                    }
+                }
+            while (!flag) {
+                cal.add(Calendar.YEAR, 1)
+                for (i in 0 until 12) {
+                    if (repeatValue[i] == '1') {
+                        month = i
+                        cal.set(Calendar.DAY_OF_MONTH, 1)
+                        cal.set(Calendar.MONTH, month)
+                        if (days <= cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                            flag = true
+                            cal.set(Calendar.DAY_OF_MONTH, days)
+                            break
+                        }
+                    }
+                }
+            }
+            val nextEndDate = cal.time
+
+            cal.apply {
+                time = strToDate(repeatEndDateStr)
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+            }
+            val repeatEndDate = cal.time
+            return if (nextEndDate.after(repeatEndDate)) // 반복 마감일보다 다음 마감일이 더 뒤라면 반복 종료
+                null
+            else nextEndDate
+
+        } else {
+            cal.time =
+                strToDate(endDateStr)
+
+            cal.add(Calendar.YEAR, 1)
+
+            val nextStartDate = cal.time
+
+            cal.apply {
+                time = strToDate(repeatEndDateStr)
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+            }
+            val repeatStartDate = cal.time
+
+            return if(nextStartDate.after(repeatStartDate))
+                null
+            else nextStartDate
+        }
+    }
 }

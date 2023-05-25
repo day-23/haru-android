@@ -89,7 +89,9 @@ class AdapterSimpleTodo(
 
         if (tag.length > 0) tag = tag.dropLast(0)
 
-        if (todo.flag) {
+        detailTodoTagsTv.text = tag
+
+        if(todo.flag){
             detailTodoFlagImv.setBackgroundResource(R.drawable.star_check)
         }
 
@@ -152,24 +154,6 @@ class AdapterSimpleTodo(
                 }
             }
 
-            if (todo.repeatEnd != null && todo.endDate != null) {
-//                if(todo.repeatEnd == todo.endDate ){
-//                    todo.repeatValue = null
-//                    todo.repeatOption = null
-//
-//                    activity.supportFragmentManager.beginTransaction()
-//                        .replace(
-//                            R.id.fragments_frame,
-//                            ChecklistItemFragment(checklistviewmodel, todo.id, todo)
-//                        )
-//                        .addToBackStack(null)
-//                        .commit()
-//
-//                    dialog.dismiss()
-//                    return@setOnClickListener
-//                }
-            }
-
             if (todo.endDate != null && todo.repeatOption != null) {
                 val end = serverDateFormat.parse(todo.endDate)
                 val today = todayDateFormat.parse(todayTodo)
@@ -177,6 +161,9 @@ class AdapterSimpleTodo(
                 if (end.year == today.year && end.month == today.month && end.date == today.date) {
                     Log.d("todoLocation", "front")
                     todo.location = 0 // front
+                    Log.d("20191630", "front")
+                    Log.d("20191630", todo.endDate.toString())
+
                     todo.endDate = todoendDate
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
@@ -191,7 +178,62 @@ class AdapterSimpleTodo(
                 }
             }
 
-            if (todo.repeatEnd != null && todo.repeatOption != null) {
+            if(todo.endDate != null &&
+                todo.repeatEnd != null &&
+                todo.repeatOption != null &&
+                todo.repeatValue != null) {
+
+                val today = todayDateFormat.parse(todayTodo)
+                val beforeFormatToday = FormatDate.calendarBackFormat(serverDateFormat.format(today))
+                val beforeFormatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
+
+                var preData: Date? = null
+                var nextData: Date? = null
+
+                when(todo.repeatOption){
+                    "매일"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,todo.repeatOption, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDate(beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매주"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,todo.repeatOption, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue,1,beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "2주마다"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,todo.repeatOption, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue, 2, beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매달"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,todo.repeatOption, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDateEveryMonth(todo.repeatValue!!,beforeFormatToday, beforeFormatEnd)
+                    }
+
+                    "매년"->{
+                        preData = FormatDate.preEndDate(beforeFormatToday,todo.repeatOption, todo.repeatValue!!)
+                        nextData = FormatDate.nextEndDateEveryYear(todo.repeatValue!!, beforeFormatToday, beforeFormatEnd)
+                    }
+                }
+
+                if(preData == null && nextData == null){
+                    Log.d("20191630", "location 예외처리 항목")
+
+                    activity.supportFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.fragments_frame,
+                            ChecklistItemFragment(checklistviewmodel, todo.id, todo)
+                        )
+                        .addToBackStack(null)
+                        .commit()
+
+                    dialog.dismiss()
+                    return@setOnClickListener
+                }
+            }
+
+            if(todo.repeatEnd != null && todo.repeatOption != null){
                 val today = todayDateFormat.parse(todayTodo)
                 val beforeFormatToday =
                     FormatDate.calendarBackFormat(serverDateFormat.format(today))
@@ -243,6 +285,8 @@ class AdapterSimpleTodo(
                     todo.location = 2
                     Log.d("todoLocation", "back")
                     todo.endDate = todoendDate
+                    Log.d("20191630", "back")
+                    Log.d("20191630", todo.endDate.toString())
 
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
@@ -261,6 +305,8 @@ class AdapterSimpleTodo(
                 Log.d("todoLocation", "middle")
                 todo.location = 1 // middle
                 todo.endDate = todoendDate
+                Log.d("20191630", "middle")
+                Log.d("20191630", todo.endDate.toString())
 
                 activity.supportFragmentManager.beginTransaction()
                     .replace(
