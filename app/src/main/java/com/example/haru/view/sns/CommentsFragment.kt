@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Comments
 import com.example.haru.data.model.PatchCommentBody
 import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.FragmentCommentsBinding
@@ -21,7 +22,7 @@ import org.w3c.dom.Comment
 
 interface onCommentClick{
 
-    fun onDeleteClick(writerId: String, commentId: String, position: Int)
+    fun onDeleteClick(writerId: String, commentId: String, item: Comments)
 
     fun onPublicClick(writerId: String, commentId: String, body: PatchCommentBody)
 }
@@ -32,30 +33,15 @@ class CommentsFragment(postId:String) : Fragment(), onCommentClick{
     lateinit var snsViewModel: SnsViewModel
     private lateinit var adapter:  CommentsAdapter
     val postId = postId
+    lateinit var comment: Comments
 
-    override fun onDeleteClick(writerId: String, commentId: String, position: Int) {
+    override fun onDeleteClick(writerId: String, commentId: String, item: Comments) {
         snsViewModel.deleteComment(writerId, commentId)
-
-        snsViewModel.DeleteResult.observe(viewLifecycleOwner){result ->
-            if(result){
-                adapter.deleteItem(position)
-            }
-            else{
-                Toast.makeText(requireContext(), "삭제 실패", Toast.LENGTH_SHORT).show()
-            }
-        }
+        comment = item
     }
 
     override fun onPublicClick(writerId: String, commentId: String, body: PatchCommentBody) {
         snsViewModel.patchComment(writerId, commentId, body)
-
-        snsViewModel.ChangeResult.observe(viewLifecycleOwner){result ->
-            if(result){
-               Toast.makeText(requireContext(),"변경 성공", Toast.LENGTH_SHORT).show()
-            }else{
-                Toast.makeText(requireContext(),"변경 실패", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +73,24 @@ class CommentsFragment(postId:String) : Fragment(), onCommentClick{
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragments_frame, fragment)
                 .commit()
+        }
+
+        snsViewModel.ChangeResult.observe(viewLifecycleOwner){result ->
+            if(result){
+                Toast.makeText(requireContext(),"변경 성공", Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(requireContext(),"변경 실패", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        snsViewModel.DeleteResult.observe(viewLifecycleOwner){result ->
+            if(result){
+                adapter.deleteItem(comment)
+                binding.commentCount.text = adapter.itemCount.toString()
+            }
+            else{
+                Toast.makeText(requireContext(), "삭제 실패", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return binding.root

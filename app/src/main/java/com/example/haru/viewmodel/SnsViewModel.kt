@@ -133,6 +133,7 @@ class SnsViewModel: ViewModel() {
             PostRepository.chageComment(writerId, commentId, body){
                 result = it
             }
+            Log.d("20191668", "값변경 완료 : $result")
             _ChangeResult.value = result
         }
     }

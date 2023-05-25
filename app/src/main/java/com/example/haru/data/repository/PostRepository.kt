@@ -181,12 +181,12 @@ class PostRepository() {
             commentId,
         ).execute()
 
-        val data: LikeResponse
+        val data: EditCommentResponse
         val deleted: Boolean
 
         if(response.isSuccessful){
             data = response.body()!!
-            deleted = data.response
+            deleted = data.success
         }else{
             deleted = false
         }
@@ -200,13 +200,11 @@ class PostRepository() {
             commentId,
             body
         ).execute()
-
-        val data: LikeResponse
-        val changed: Boolean
-
+        val data: EditCommentResponse
+        var changed = false
         if(response.isSuccessful){
             data = response.body()!!
-            changed = data.response
+            changed = data.success
         }else{
             changed = false
         }

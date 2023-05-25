@@ -17,12 +17,12 @@ import com.example.haru.data.model.Comments
 import com.example.haru.data.model.PatchCommentBody
 import com.example.haru.view.sns.onCommentClick
 import com.example.haru.viewmodel.SnsViewModel
+import org.w3c.dom.Comment
 
 class CommentsAdapter(val context: Context,
                       private var itemList: ArrayList<Comments>,
                       val listener: onCommentClick): RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>(){
 
-    var disclosure = true
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsAdapter.CommentsViewHolder {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.item_comment_list, parent, false)
@@ -30,7 +30,10 @@ class CommentsAdapter(val context: Context,
     }
 
     override fun onBindViewHolder(holder: CommentsAdapter.CommentsViewHolder, position: Int) {
+        val item = itemList[position]
+        var disclosure = item.isPublic
 
+        Log.d("20191668", "${item.content} : ${item.isPublic}")
         if(itemList[position].user.profileImage != "https://harus3.s3.ap-northeast-2.amazonaws.com/null") {
             Glide.with(holder.itemView.context)
                 .load(itemList[position].user.profileImage)
@@ -40,14 +43,13 @@ class CommentsAdapter(val context: Context,
         holder.content.text = itemList[position].content
 
         holder.setup.setOnClickListener {
-            listener.onDeleteClick(itemList[position].user.id, itemList[position].id, position)
+            listener.onDeleteClick(itemList[position].user.id, itemList[position].id, item)
         }
 
-        if(!itemList[position].isPublic){
-            holder.disclosure.setImageResource(R.drawable.comment_not_public)
-            disclosure = false
-        }else{
+        if(disclosure){
             holder.disclosure.setImageResource(R.drawable.on_write_comment)
+        }else{
+            holder.disclosure.setImageResource(R.drawable.comment_not_public)
         }
 
         holder.disclosure.setOnClickListener {
@@ -58,8 +60,8 @@ class CommentsAdapter(val context: Context,
                 holder.disclosure.setImageResource(R.drawable.on_write_comment)
                 disclosure = true
             }
-            val body = PatchCommentBody(itemList[position].x, itemList[position].y, disclosure)
-            listener.onPublicClick(itemList[position].user.id, itemList[position].id, body)
+            val body = PatchCommentBody(item.x, item.y, disclosure)
+            listener.onPublicClick(item.user.id, item.id, body)
         }
     }
 
@@ -68,8 +70,8 @@ class CommentsAdapter(val context: Context,
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun deleteItem(position: Int){
-        itemList.removeAt(position)
+    fun deleteItem(item: Comments){
+        itemList.remove(item)
         notifyDataSetChanged()
     }
 

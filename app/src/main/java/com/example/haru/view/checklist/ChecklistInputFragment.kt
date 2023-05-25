@@ -791,7 +791,7 @@ class ChecklistInputFragment(
             } else binding.subTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
 
         })
-
+//------------------------------
         todoAddViewModel.tagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.ivTagIcon.backgroundTintList = if (it.isEmpty())
                 ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.icon_gray))
@@ -832,6 +832,26 @@ class ChecklistInputFragment(
             }
         })
 
+        binding.tagEt.addTextChangedListener(object : TextWatcher { // 소프트웨어 키보드의 스페이스바 감지
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s == null)
+                    return
+
+                val str = s.toString()
+                if (str == "")
+                    return
+
+                if (str[str.length - 1] == ' ') {
+                    todoAddViewModel.addTagList()
+                    binding.tagEt.setText("")
+                }
+            }
+
+        })
+// -------------------------------------------
         binding.etMemo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -862,26 +882,6 @@ class ChecklistInputFragment(
             }
             return@setOnKeyListener false
         }
-
-        binding.tagEt.addTextChangedListener(object : TextWatcher { // 소프트웨어 키보드의 스페이스바 감지
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s == null)
-                    return
-
-                val str = s.toString()
-                if (str == "")
-                    return
-
-                if (str[str.length - 1] == ' ') {
-                    todoAddViewModel.addTagList()
-                    binding.tagEt.setText("")
-                }
-            }
-
-        })
 
         binding.checkFlagTodo.setOnClickListener(btnListener())
         binding.todaySwitch.setOnClickListener(btnListener())

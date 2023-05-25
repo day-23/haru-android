@@ -49,14 +49,14 @@ interface PostService {
     fun deleteComment(
         @Path("writerId") writerId: String,
         @Path("commentId") commentId: String,
-    ): Call<LikeResponse>
+    ): Call<EditCommentResponse>
 
     @PATCH("comment/{writerId}/{commentId}")
     fun changeComment(
         @Path("writerId") writerId: String,
         @Path("commentId") commentId: String,
         @Body body: PatchCommentBody
-    ): Call<LikeResponse>
+    ): Call<EditCommentResponse>
 
 
 
