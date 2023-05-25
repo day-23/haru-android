@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.haru.data.api.PostService
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.data.retrofit.RetrofitClient.postService
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,12 +67,32 @@ class PostRepository() {
 
 
     //전체 게시글
-    suspend fun getPost(page:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+    suspend fun getPost(lastCreatedAt:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getPosts(
             "jts",
-            page
+            lastCreatedAt
         ).execute()
+
+        val posts: ArrayList<Post>
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get posts")
+            data = response.body()!!
+            posts = data.data!!
+        } else{
+            Log.d("TAG", "Fail to get posts")
+            posts = arrayListOf()
+        }
+        callback(posts)
+    }
+
+    suspend fun getFirstPost(callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstPosts(
+            "jts",
+        ).execute()
+
         val posts: ArrayList<Post>
         val data: PostResponse
         if (response.isSuccessful) {

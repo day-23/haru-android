@@ -8,7 +8,10 @@ import retrofit2.http.*
 
 interface PostService {
     @GET("post/{userId}/posts/all")
-    fun getPosts(@Path("userId") userId: String, @Query("page") page:String) : Call<PostResponse>
+    fun getPosts(@Path("userId") userId: String, @Query("lastCreatedAt") lastCreatedAt:String) : Call<PostResponse>
+
+    @GET("post/{userId}/posts/all?page=1&limit=5")
+    fun getFirstPosts(@Path("userId") userId: String) : Call<PostResponse>
 
     @GET("post/{userId}/posts/user/{targetId}/feed")
     fun getMyFeed(@Path("userId") userId: String,

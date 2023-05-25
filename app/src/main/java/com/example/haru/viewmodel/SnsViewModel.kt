@@ -43,32 +43,32 @@ class SnsViewModel: ViewModel() {
     val ChangeResult : LiveData<Boolean>
         get() = _ChangeResult
 
-    fun init_page(){
-        val currentPage = _Page.value
-        if(currentPage == 1){
-            getPosts("1")
-            Log.d("20191668", "new page")
-        }else{
-            _Page.value = 1
-        }
-    }
-
-    fun getPosts(page: String){
+    fun getPosts(){
         var newPost: ArrayList<Post> = arrayListOf()
-        var allPost = _Posts.value ?: arrayListOf()
-        val page = page
-        viewModelScope.launch{
-            PostRepository.getPost(page) {
-                if(it.size > 0){ //get success
-                    newPost = it
-                    allPost.addAll(it)
+        val posts = _Posts.value
+        if(posts != null)
+            if(posts.size > 0) {
+                val lastCreatedAt = posts[posts.size-1].createdAt
+                viewModelScope.launch {
+                    PostRepository.getPost(lastCreatedAt) {
+                        if (it.size > 0) { //get success
+                            newPost = it
+                        }
+                    }
+                    _newPost.value = newPost // 두번째 페이지일 경우
                 }
             }
-            if(page.toInt() > 1) {
-                _newPost.value = newPost // 두번째 페이지일 경우
-            }else{
-                _Posts.value = newPost // 첫페이지일경우
+    }
+    fun getFirstPosts(){
+        var newPost: ArrayList<Post> = arrayListOf()
+        var allPost = _Posts.value ?: arrayListOf()
+        viewModelScope.launch{
+            PostRepository.getFirstPost() {
+                if(it.size > 0){ //get success
+                    newPost = it
+                }
             }
+            _Posts.value = newPost // 첫번째 페이지일 경우
         }
     }
 

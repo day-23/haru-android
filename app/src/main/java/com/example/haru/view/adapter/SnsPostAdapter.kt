@@ -1,6 +1,7 @@
 package com.example.haru.view.adapter
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.util.Log
@@ -56,10 +57,12 @@ class SnsPostAdapter(val context: Context,
             holder.setup.visibility = View.GONE
         }else
             holder.setup.visibility = View.VISIBLE
+
         //TODO:(sns삭제버튼)계정정보 동적할당 필요
+        //TODO:(sns삭제버튼)삭제시 position 사용하지 않도록 수정해야함
         holder.setup.setOnClickListener {
             Log.d("20191668", "set up")
-            listener.onSetupClick("jts", itemList[position].id, position)
+            listener.onSetupClick("jts", itemList[position].id, itemList[position])
         }
 
         val pictureIndex = adapter.itemCount
@@ -125,6 +128,7 @@ class SnsPostAdapter(val context: Context,
         return itemList.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun initList(post : ArrayList<Post>){
         itemList = post
         notifyDataSetChanged()
@@ -139,8 +143,9 @@ class SnsPostAdapter(val context: Context,
         notifyDataSetChanged()
     }
 
-    fun deletePost(position: Int){
-        itemList.removeAt(position)
+    @SuppressLint("NotifyDataSetChanged")
+    fun deletePost(item: Post){
+        itemList.remove(item)
         notifyDataSetChanged()
     }
 

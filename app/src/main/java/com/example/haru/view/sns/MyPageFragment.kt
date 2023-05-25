@@ -53,7 +53,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         //Don't need to implement
     }
 
-    override fun onSetupClick(userId: String, postId: String, position: Int) {
+    override fun onSetupClick(userId: String, postId: String, item: Post) {
         TODO("Not yet implemented")
     }
 
