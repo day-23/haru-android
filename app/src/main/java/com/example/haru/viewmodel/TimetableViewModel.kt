@@ -205,7 +205,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     //스케줄 쿼리문 전송
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
-            val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", false,"" , "", Category("","","",false), emptyList(), null, null,)
+            val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", "" , "", Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
             val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
             val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"

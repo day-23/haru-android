@@ -31,8 +31,7 @@ class ScheduleRepository() {
     suspend fun postSchedule(body: PostSchedule, callback: () -> Unit){
         withContext(Dispatchers.IO) {
             val response = scheduleService.createSchedule(
-//                "ysr",
-                "005224c0-eec1-4638-9143-58cbfc9688c5",
+                    com.example.haru.utils.User.id,
                 body
             ).execute()
 
@@ -56,8 +55,7 @@ class ScheduleRepository() {
     suspend fun deleteSchedule(scheduleId: String, callback: () -> Unit){
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteSchedule(
-//                "ysr",
-                "005224c0-eec1-4638-9143-58cbfc9688c5",
+                    com.example.haru.utils.User.id,
                 scheduleId
             ).execute()
 
@@ -65,6 +63,146 @@ class ScheduleRepository() {
                 Log.d("TAG", "Success to delete schedule")
             } else {
                 Log.d("TAG", "Fail to delete schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    suspend fun frontDeleteSchedule(scheduleId: String, frontDelete: ScheduleFrontDelete, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.deleteScheduleFront(
+                com.example.haru.utils.User.id,
+                scheduleId,
+                frontDelete
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to delete schedule")
+            } else {
+                Log.d("TAG", "Fail to delete schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    suspend fun middleDeleteSchedule(scheduleId: String, middleDelete: ScheduleMiddleDelete, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.deleteScheduleMiddle(
+                com.example.haru.utils.User.id,
+                scheduleId,
+                middleDelete
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to delete schedule")
+            } else {
+                Log.d("TAG", "Fail to delete schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    suspend fun backDeleteSchedule(scheduleId: String, backDelete: ScheduleBackDelete, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.deleteScheduleBack(
+                com.example.haru.utils.User.id,
+                scheduleId,
+                backDelete
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to delete schedule")
+            } else {
+                Log.d("TAG", "Fail to delete schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.submitSchedule(
+                com.example.haru.utils.User.id,
+                scheduleId,
+                postBody
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to submit schedule")
+            } else {
+                Log.d("TAG", "Fail to submit schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    suspend fun submitScheduleFront(scheduleId: String, postBodyFront: PostScheduleFront, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.submitScheduleFront(
+                com.example.haru.utils.User.id,
+                scheduleId,
+                postBodyFront
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to submit schedule")
+            } else {
+                Log.d("TAG", "Fail to submit schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    suspend fun submitScheduleMiddle(scheduleId: String, postBodyMiddle: PostScheduleMiddle, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.submitScheduleMiddle(
+                com.example.haru.utils.User.id,
+                scheduleId,
+                postBodyMiddle
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to submit schedule")
+            } else {
+                Log.d("TAG", "Fail to submit schedule")
+            }
+
+            withContext(Dispatchers.Main) {
+                callback()
+            }
+        }
+    }
+
+    suspend fun submitScheduleBack(scheduleId: String, postBodyBack: PostScheduleBack, callback: () -> Unit){
+        withContext(Dispatchers.IO) {
+            val response = scheduleService.submitScheduleBack(
+                com.example.haru.utils.User.id,
+                scheduleId,
+                postBodyBack
+            ).execute()
+
+            if (response.isSuccessful) {
+                Log.d("TAG", "Success to submit schedule")
+            } else {
+                Log.d("TAG", "Fail to submit schedule")
             }
 
             withContext(Dispatchers.Main) {
