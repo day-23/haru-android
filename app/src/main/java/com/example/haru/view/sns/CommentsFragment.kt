@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Comments
 import com.example.haru.data.model.PatchCommentBody
+import com.example.haru.data.model.Post
 import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.FragmentCommentsBinding
 import com.example.haru.view.adapter.CommentsAdapter
@@ -27,13 +28,14 @@ interface onCommentClick{
     fun onPublicClick(writerId: String, commentId: String, body: PatchCommentBody)
 }
 
-class CommentsFragment(postId:String) : Fragment(), onCommentClick{
+class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
     lateinit var binding : FragmentCommentsBinding
     lateinit var commentsRecyclerView: RecyclerView
     lateinit var snsViewModel: SnsViewModel
     private lateinit var adapter:  CommentsAdapter
-    val postId = postId
+    val post = postitem
     lateinit var comment: Comments
+    var newComment = true
 
     override fun onDeleteClick(writerId: String, commentId: String, item: Comments) {
         snsViewModel.deleteComment(writerId, commentId)
@@ -57,22 +59,41 @@ class CommentsFragment(postId:String) : Fragment(), onCommentClick{
     ): View? {
         binding = FragmentCommentsBinding.inflate(inflater, container, false)
         commentsRecyclerView = binding.commentRecycler
-        snsViewModel.getComments(postId)
+        adapter = CommentsAdapter(requireContext(), arrayListOf(), this)
+        commentsRecyclerView.adapter = adapter
+        commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        snsViewModel.getFirstComments(post.id, post.images[0].id)
+        var index = 0
+
+        val scrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!commentsRecyclerView.canScrollVertically(1) && newComment) {
+                    val lastday = adapter.getLastComment()
+                    snsViewModel.getComments(post.id, post.images[index].id, lastday)
+                    Toast.makeText(context, "새 코멘트 불러오는 중....", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
+        commentsRecyclerView.addOnScrollListener(scrollListener)
 
         snsViewModel.Comments.observe(viewLifecycleOwner){comments ->
-            adapter = CommentsAdapter(requireContext(), comments, this)
-            commentsRecyclerView.adapter = adapter
-            commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            binding.commentCount.text = adapter.itemCount.toString()
+            if(comments.size > 0) {
+                adapter.newComment(comments)
+                binding.commentCount.text = adapter.itemCount.toString()
+            }else{
+                newComment = false
+            }
         }
 
         binding.commentBackbutton.setOnClickListener {
             val fragmentManager = parentFragmentManager
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            val fragment = SnsFragment()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragments_frame, fragment)
-                .commit()
+//            val fragment = SnsFragment()
+//            parentFragmentManager.beginTransaction()
+//                .replace(R.id.fragments_frame, fragment)
+//                .commit()
         }
 
         snsViewModel.ChangeResult.observe(viewLifecycleOwner){result ->

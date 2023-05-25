@@ -148,12 +148,14 @@ class PostRepository() {
     }
 
     //전체 댓글
-    suspend fun getComment(postId: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
+    suspend fun getComment(postId: String, imageId: String, lastCreatedAt: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
         Dispatchers.IO){
             Log.d("TAG", "post id recieve-------------- $postId")
             val response = postService.getComments(
                 "jts",
-                postId
+                postId,
+                imageId,
+                lastCreatedAt
             ).execute()
 
             val comments: ArrayList<Comments>
@@ -170,7 +172,29 @@ class PostRepository() {
             callback(comments)
         }
 
-    //전체 댓글
+    suspend fun getFirstComment(postId: String, imageId: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
+        Dispatchers.IO){
+        Log.d("TAG", "post id recieve-------------- $postId")
+        val response = postService.getFirstComments(
+            "jts",
+            postId,
+            imageId,
+        ).execute()
+
+        val comments: ArrayList<Comments>
+        val data: CommentsResponse
+
+        if(response.isSuccessful) {
+            Log.d("TAG","Success to get comments")
+            data = response.body()!!
+            comments = data.data
+        }else{
+            Log.d("TAG", "Fail to get comments")
+            comments = arrayListOf()
+        }
+        callback(comments)
+    }
+
     suspend fun writeComment(comment: CommentBody, postId: String, imageId:String, callback: (comments: Comments) -> Unit) = withContext(
         Dispatchers.IO){
         Log.d("TAG", "post id recieve-------------- $postId")

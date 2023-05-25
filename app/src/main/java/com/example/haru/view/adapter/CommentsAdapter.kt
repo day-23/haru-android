@@ -20,7 +20,7 @@ import com.example.haru.viewmodel.SnsViewModel
 import org.w3c.dom.Comment
 
 class CommentsAdapter(val context: Context,
-                      private var itemList: ArrayList<Comments>,
+                      private var itemList: ArrayList<Comments> = arrayListOf(),
                       val listener: onCommentClick): RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsAdapter.CommentsViewHolder {
@@ -67,6 +67,16 @@ class CommentsAdapter(val context: Context,
 
     override fun getItemCount(): Int {
         return itemList.size
+    }
+
+    fun getLastComment(): String {
+        return itemList[itemCount - 1].createdAt
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun newComment(items: ArrayList<Comments>){
+        itemList.addAll(items)
+        notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")

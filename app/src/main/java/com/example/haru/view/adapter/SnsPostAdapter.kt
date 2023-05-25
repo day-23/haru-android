@@ -87,7 +87,7 @@ class SnsPostAdapter(val context: Context,
 
         holder.totalcomment.setOnClickListener {
             Log.d("TAG", "post id sended -------------${itemList[position].id}")
-            listener.onTotalCommentClick(itemList[position].id)
+            listener.onTotalCommentClick(itemList[position])
         }
 
         holder.comment.setOnClickListener {

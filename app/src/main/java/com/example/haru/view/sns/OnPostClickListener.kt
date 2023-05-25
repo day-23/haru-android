@@ -6,7 +6,7 @@ import com.example.haru.data.model.Post
 interface OnPostClickListener {
     fun onCommentClick(postitem: Post)
 
-    fun onTotalCommentClick(postId: String)
+    fun onTotalCommentClick(post: Post)
 
     fun onProfileClick(userId:String)
 

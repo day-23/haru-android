@@ -51,8 +51,8 @@ class SnsFragment : Fragment(), OnPostClickListener {
             transaction.addToBackStack("snsmain")
         transaction.commit()
     }
-    override fun onTotalCommentClick(postId: String) {
-        val newFrag = CommentsFragment(postId)
+    override fun onTotalCommentClick(post : Post) {
+        val newFrag = CommentsFragment(post)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")

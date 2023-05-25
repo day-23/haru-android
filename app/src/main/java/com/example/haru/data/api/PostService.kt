@@ -17,10 +17,19 @@ interface PostService {
     fun getMyFeed(@Path("userId") userId: String,
                   @Path("targetId") targetId : String,
                   @Query("page") page:String) : Call<PostResponse>
-    @GET("comment/{userId}/{postId}/comments/all")
+    @GET("comment/{userId}/{postId}/{imageId}/comments/all")
     fun getComments(
         @Path("userId") userId: String,
-        @Path("postId") postId: String
+        @Path("postId") postId: String,
+        @Path("imageId") imageId: String,
+        @Query("lastCreatedAt") lastCreatedAt: String
+    ): Call<CommentsResponse>
+
+    @GET("comment/{userId}/{postId}/{imageId}/comments/all?page=1")
+    fun getFirstComments(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String,
+        @Path("imageId") imageId: String,
     ): Call<CommentsResponse>
 
     @POST("post/{userId}/{postId}/like")

@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -38,6 +39,7 @@ class AddTagFragment(images: MutableList<MultipartBody.Part>, content: String, s
             galleryViewmodel = ViewModelProvider(this).get(MyPageViewModel::class.java)
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -69,8 +71,9 @@ class AddTagFragment(images: MutableList<MultipartBody.Part>, content: String, s
             }
             binding.addTagPictureIndex.text = "1/${Uris.size}"
             binding.addtagImages.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                @SuppressLint("SetTextI18n")
                 override fun onPageSelected(position: Int) {
-                    binding.addTagPictureIndex.text = "${position + 1} / ${Uris.size}"
+                    binding.addTagPictureIndex.text = "${position + 1}/${Uris.size}"
                 }
             })
 

@@ -72,11 +72,6 @@ class SnsViewModel: ViewModel() {
         }
     }
 
-    fun addPage(){
-        var current = _Page.value ?: 1
-        _Page.value = current.plus(1)
-    }
-
     fun likeAction(id: String){
         viewModelScope.launch {
             PostRepository.postLike(id) {
@@ -87,10 +82,22 @@ class SnsViewModel: ViewModel() {
         }
     }
 
-    fun getComments(postId: String) {
+    fun getComments(postId: String, imageId: String, lastCreatedAt:String) {
         var comments = ArrayList<Comments>()
         viewModelScope.launch {
-            PostRepository.getComment(postId){
+            PostRepository.getComment(postId, imageId, lastCreatedAt){
+                if(it.size > 0){
+                    comments = it
+                }
+            }
+            _Comments.value = comments
+        }
+    }
+
+    fun getFirstComments(postId: String, imageId: String) {
+        var comments = ArrayList<Comments>()
+        viewModelScope.launch {
+            PostRepository.getFirstComment(postId, imageId){
                 if(it.size > 0){
                     comments = it
                 }
