@@ -14,6 +14,7 @@ import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
 import com.example.haru.view.auth.LoginActivity
+import com.example.haru.view.auth.SignUpActivity
 import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,6 +55,7 @@ class SplashActivity : AppCompatActivity() {
                         Log.d(TAG, "splash onResponse: ${response.body()}")
 
                         //user 정보 저장
+
                         User.id = response.body()?.data?.user?.id.toString()
                         User.name = response.body()?.data?.user?.name.toString()
                         User.isPublicAccount = response.body()?.data?.user?.isPublicAccount!!
@@ -73,9 +75,15 @@ class SplashActivity : AppCompatActivity() {
                             commit()
                         }
 
-                        val intent = Intent(this@SplashActivity, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        if(User.name== "" || User.haruId == "" ){
+                            val intent = Intent(this@SplashActivity, SignUpActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }else{
+                            val intent = Intent(this@SplashActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
                     } else {
                         Log.d(TAG, "onResponse Fail: ${response.errorBody()}")
 

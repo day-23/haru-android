@@ -19,6 +19,10 @@ interface ProfileService {
     fun editProfileName(@Path("userId") userId: String,
                         @Body body: EditBody) : Call<GetProfileResponse>
 
+    @PATCH("post/{userId}/profile/init")
+    fun editProfileInit(@Path("userId") userId: String,
+                        @Body body: ProfileInitBody) : Call<UserVerifyResponse>
+
     @GET("post/{userId}/info/images")
     fun getProfile(@Path("userId") userId: String) : Call<ProfileListResponse>
 
