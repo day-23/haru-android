@@ -17,7 +17,7 @@ data class UserVerify(
     val isAllowFeedComment: Int,
     val isAllowSearch: Boolean,
     val createdAt: String,
-    val accessToken: String
+    val accessToken: String?
 )
 
 data class UserRelatedWithSnsData(

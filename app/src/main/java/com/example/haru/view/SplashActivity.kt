@@ -55,6 +55,7 @@ class SplashActivity : AppCompatActivity() {
                         Log.d(TAG, "splash onResponse: ${response.body()}")
 
                         //user 정보 저장
+
                         User.id = response.body()?.data?.user?.id.toString()
                         User.name = response.body()?.data?.user?.name.toString()
                         User.isPublicAccount = response.body()?.data?.user?.isPublicAccount!!
