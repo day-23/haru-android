@@ -90,11 +90,6 @@ class TodoAdapter(val context: Context) :
     var subTodoClickId: String? = null
 
     private var todoByTag = false
-    private var todoByFlag = false
-    private var flagCount = 0
-    private var tagCount = 0
-    private var untagCount = 0
-    private var completeCount = 0
 
     private var dragLimitTop: Int? = null
     private var dragLimitBottom: Int? = null
@@ -384,22 +379,6 @@ class TodoAdapter(val context: Context) :
     fun setDataList(dataList: List<Todo>) {
         data = dataList as MutableList<Todo>
         diffUtil.submitList(dataList)
-    }
-
-    fun setFlagCount(count: Int?) {
-        flagCount = count ?: 0
-    }
-
-    fun setTagCount(count: Int?) {
-        tagCount = count ?: 0
-    }
-
-    fun setUnTagCount(count: Int?) {
-        untagCount = count ?: 0
-    }
-
-    fun setCompleteCount(count: Int?) {
-        completeCount = count ?: 0
     }
 
     fun setTodoByTag(content: String?) {
