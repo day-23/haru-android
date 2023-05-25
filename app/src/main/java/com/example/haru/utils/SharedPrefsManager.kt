@@ -16,7 +16,7 @@ object SharedPrefsManager {
 
             sharedPreferences = EncryptedSharedPreferences.create(
                 context,
-                "MyApp",
+                "HaruSharedPrefs",
                 masterKey,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM

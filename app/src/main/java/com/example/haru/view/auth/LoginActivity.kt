@@ -4,15 +4,19 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.haru.App
 import com.example.haru.data.model.UserKakaoAuthResponse
+import com.example.haru.data.model.UserVerifyResponse
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.view.MainActivity
 import com.example.haru.databinding.ActivityLoginBinding
 import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
+import com.example.haru.utils.User.accessToken
 import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -110,15 +114,78 @@ class LoginActivity : AppCompatActivity() {
                             User.id = response.body()?.data?.id.toString()
                             User.name = response.body()?.data?.name.toString()
 
+                            Log.d(TAG, "onResponse: UserApiClient ${User.id}")
+
                             // Save JWT and user's email
                             val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
+
+                            val accessToken = response.body()?.data?.accessToken.toString()
+                            val refreshToken = response.body()?.data?.refreshToken.toString()
+
                             with (sharedPreferences.edit()) {
-                                putString("accessToken", response.body()?.data?.accessToken)
-                                putString("refreshToken", response.body()?.data?.refreshToken)
+                                putString("accessToken", accessToken)
+                                putString("refreshToken", refreshToken)
                                 commit()
                             }
 
                             Log.d(TAG, "onResponse username: ${User.name}")
+
+                            val _call = RetrofitClient.apiService.validateUser(
+                                mapOf(
+                                    "accessToken" to accessToken,
+                                    "refreshToken" to refreshToken
+                                )
+                            )
+
+
+                            // 서버에 유저정보 데이터 요청
+                            _call.enqueue(object : Callback<UserVerifyResponse> {
+                                override fun onResponse(
+                                    call: Call<UserVerifyResponse>,
+                                    response: Response<UserVerifyResponse>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        Log.d(TAG, "splash onResponse: ${response.body()}")
+
+                                        //user 정보 저장
+                                        User.id = response.body()?.data?.user?.id.toString()
+                                        User.name = response.body()?.data?.user?.name.toString()
+                                        User.isPublicAccount =
+                                            response.body()?.data?.user?.isPublicAccount!!
+                                        User.haruId = response.body()?.data?.haruId.toString()
+                                        User.email = response.body()?.data?.email.toString()
+                                        User.socialAccountType =
+                                            response.body()?.data?.socialAccountType.toString()
+                                        User.isPostBrowsingEnabled =
+                                            response.body()?.data?.isPostBrowsingEnabled!!
+                                        User.isAllowFeedLike =
+                                            response.body()?.data?.isAllowFeedLike!!
+                                        User.isAllowFeedComment =
+                                            response.body()?.data?.isAllowFeedComment!!
+                                        User.isAllowSearch = response.body()?.data?.isAllowSearch!!
+                                        User.createdAt = response.body()?.data?.createdAt.toString()
+                                        User.accessToken =
+                                            response.body()?.data?.accessToken.toString()
+
+                                        //새로운 accessToken을 저장한다.
+                                        with(sharedPreferences.edit()) {
+                                            putString(
+                                                "accessToken",
+                                                response.body()?.data?.accessToken
+                                            )
+                                            commit()
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<UserVerifyResponse>, t: Throwable) {
+                                    Log.d(TAG, "onFailure: ${t.message}")
+                                }
+                            })
+
+                            // If user is not registered, go to sign up page
+                            Log.d(TAG, "자동로그인 onResponse: ${User.name} ${User.email} ${User.id}")
+
                             if(User.name == ""){
                                 val intent = Intent(this@LoginActivity, SignUpActivity::class.java)
                                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
