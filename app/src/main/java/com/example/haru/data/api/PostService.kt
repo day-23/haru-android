@@ -10,7 +10,7 @@ interface PostService {
     @GET("post/{userId}/posts/all")
     fun getPosts(@Path("userId") userId: String, @Query("lastCreatedAt") lastCreatedAt:String) : Call<PostResponse>
 
-    @GET("post/{userId}/posts/all?page=1&limit=5")
+    @GET("post/{userId}/posts/all?page=1")
     fun getFirstPosts(@Path("userId") userId: String) : Call<PostResponse>
 
     @GET("post/{userId}/posts/user/{targetId}/feed")
