@@ -27,13 +27,13 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        // Check for JWT and email in Shared Preferences
+//        // Check for JWT and email in Shared Preferences
         val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
         val accessToken = sharedPreferences.getString("accessToken", null)
         val refreshToken = sharedPreferences.getString("refreshToken", null)
 
 
-        Log.d(TAG, "splasy onCreate: accessToken: $accessToken")
+//        Log.d(TAG, "splasy onCreate: accessToken: $accessToken")
 
         // If JWT and email exist, validate with server
         if (accessToken != null && refreshToken != null) {
@@ -51,10 +51,21 @@ class SplashActivity : AppCompatActivity() {
                     response: Response<UserVerifyResponse>
                 ) {
                     if (response.isSuccessful) {
-                        Log.d(TAG, "onResponse: ${response.body()}")
+                        Log.d(TAG, "splash onResponse: ${response.body()}")
 
-                        //user의 id를 저장한다
-                        User.id = response.body()?.data?.id.toString()
+                        //user 정보 저장
+                        User.id = response.body()?.data?.user?.id.toString()
+                        User.name = response.body()?.data?.user?.name.toString()
+                        User.isPublicAccount = response.body()?.data?.user?.isPublicAccount!!
+                        User.haruId = response.body()?.data?.haruId.toString()
+                        User.email = response.body()?.data?.email.toString()
+                        User.socialAccountType = response.body()?.data?.socialAccountType.toString()
+                        User.isPostBrowsingEnabled = response.body()?.data?.isPostBrowsingEnabled!!
+                        User.isAllowFeedLike = response.body()?.data?.isAllowFeedLike!!
+                        User.isAllowFeedComment = response.body()?.data?.isAllowFeedComment!!
+                        User.isAllowSearch = response.body()?.data?.isAllowSearch!!
+                        User.createdAt = response.body()?.data?.createdAt.toString()
+                        User.accessToken = response.body()?.data?.accessToken.toString()
 
                         //새로운 accessToken을 저장한다.
                         with (sharedPreferences.edit()) {
