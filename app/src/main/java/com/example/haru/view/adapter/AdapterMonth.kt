@@ -716,7 +716,7 @@ class AdapterMonth(val activity: Activity,
                                 calendar2.time.seconds = 0
 
                                 val dateminus = (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
-                                interval = dateminus.toInt()
+                                interval = dateminus.toInt() + 1
                             }
 
                             if(content.schedule.category != null) {
@@ -911,7 +911,7 @@ class AdapterMonth(val activity: Activity,
                                     calendar2.time.seconds = 0
 
                                     val dateminus = (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
-                                    interval = dateminus.toInt()
+                                    interval = dateminus.toInt()+1
                                 }
 
                                 for (j in cloneLiveSchedule[k].position until cloneLiveSchedule[k].position + interval) {

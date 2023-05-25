@@ -37,10 +37,11 @@
             <ImageView
                 android:id="@+id/mini_next_imv"
                 android:layout_marginRight="20dp"
-                android:background="@drawable/mini_calendar_next_btn"
+                android:background="@drawable/mini_calendar_back_btn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:rotation="180"/>
         </LinearLayout>
     </LinearLayout>
 

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="30dp">
+
+    <LinearLayout
+        android:id="@+id/layout_parent_btn_delete"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:background="@drawable/layout_radius_20_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_delete_info"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/text_radius"
+            android:gravity="center"
+            android:text="이 일정을 삭제할까요? 반복되는 일정입니다."
+            android:textColor="@color/date_text"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_option_one_delete"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/with_divider_btn"
+            android:gravity="center"
+            android:text="이 일정만 삭제"
+            android:textColor="@color/highlight"
+            android:textSize="20sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_option_delete"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/with_divider_btn"
+            android:gravity="center"
+            android:text="@string/notRepeatTodoDelete"
+            android:textColor="@color/delete_red"
+            android:textSize="20sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_option_all_delete"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/with_divider_btn"
+            android:gravity="center"
+            android:text="모든 일정 삭제"
+            android:textColor="@color/delete_red"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_option_delete_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/cancel_button_bg"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/date_text"
+        android:textSize="20sp" />
+
+</LinearLayout>

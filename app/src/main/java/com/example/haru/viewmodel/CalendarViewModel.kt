@@ -61,6 +61,30 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
+    fun submitScheduleFront(schedule: String, postScheduleFront: PostScheduleFront, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.submitScheduleFront(schedule, postScheduleFront){
+                callback()
+            }
+        }
+    }
+
+    fun submitScheduleMiddle(schedule: String, postScheduleMiddle: PostScheduleMiddle, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.submitScheduleMiddle(schedule, postScheduleMiddle){
+                callback()
+            }
+        }
+    }
+
+    fun submitScheduleBack(schedule: String, postScheduleBack: PostScheduleBack, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.submitScheduleBack(schedule, postScheduleBack){
+                callback()
+            }
+        }
+    }
+
     fun postSchedule(body: PostSchedule, callback: () -> Unit){
         viewModelScope.launch {
             ScheduleRepository.postSchedule(body){
@@ -72,6 +96,30 @@ class CalendarViewModel : ViewModel() {
     fun deleteSchedule(scheduleId: String, callback: () -> Unit){
         viewModelScope.launch {
             ScheduleRepository.deleteSchedule(scheduleId){
+                callback()
+            }
+        }
+    }
+
+    fun deleteFrontSchedule(scheduleId: String, frontDelete: ScheduleFrontDelete, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.frontDeleteSchedule(scheduleId, frontDelete){
+                callback()
+            }
+        }
+    }
+
+    fun deleteMiddleSchedule(scheduleId: String, middleDelete: ScheduleMiddleDelete, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.middleDeleteSchedule(scheduleId, middleDelete){
+                callback()
+            }
+        }
+    }
+
+    fun deleteBackSchedule(scheduleId: String, backDelete: ScheduleBackDelete, callback: () -> Unit){
+        viewModelScope.launch {
+            ScheduleRepository.backDeleteSchedule(scheduleId, backDelete){
                 callback()
             }
         }
@@ -120,14 +168,19 @@ class CalendarViewModel : ViewModel() {
                     val startdateFormat = todayDateFormat.parse(startDate)
 
                     for(i in 0 until it.todos.size){
+                        it.todos[i].endDate = FormatDate.calendarFormat(it.todos[i].endDate!!)
+
+                        if(it.todos[i].repeatEnd != null){
+                            it.todos[i].repeatEnd = FormatDate.calendarFormat(it.todos[i].repeatEnd!!)
+                        }
+
                         if (it.todos[i].endDate != null){
-                            var today: String = FormatDate.calendarBackFormatToday(it.todos[i].endDate!!)
-                            var todayDate = todayDateFormat.parse(today)
+                            var today: String = it.todos[i].endDate!!
+                            var todayDate = serverformat.parse(today)
 
                             if(it.todos[i].repeatOption == null ||
                                 it.todos[i].repeatValue == null ||
                                 it.todos[i].repeatOption == "매일" ){
-                                it.todos[i].endDate = FormatDate.calendarFormat(it.todos[i].endDate!!)
                                 todoList.add(it.todos[i])
                             } else {
                                 while (todayDate != null && date_comparison(todayDate, startdateFormat) < 0) {
@@ -182,6 +235,12 @@ class CalendarViewModel : ViewModel() {
                                             today = serverformat.format(todayDate)
                                         }
                                     }
+                                }
+
+                                today = FormatDate.calendarFormat(today)
+
+                                if(todayDate == null){
+                                    todayDate = serverformat.parse(today)
                                 }
 
                                 if(todayDate != null && date_comparison(todayDate, startdateFormat) == 0){
@@ -270,10 +329,6 @@ class CalendarViewModel : ViewModel() {
                                             scheduleT.time = todayDate
                                             scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
 
-                                            Log.d("dailyLog",startdateFormat.toString())
-                                            Log.d("dailyLog", todayDate.toString())
-                                            Log.d("dailyLog", scheduleT.time.toString())
-
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) > 0){
                                                 scheduleList.add(schedule)
@@ -352,8 +407,10 @@ class CalendarViewModel : ViewModel() {
 //                                    }
 //                                }
                             } else {
-                                today = FormatDate.calendarBackFormatToday(schedule.repeatStart!!)
-                                todayDate = todayDateFormat.parse(today)
+                                today = schedule.repeatStart!!
+                                todayDate = serverformat.parse(today)
+
+                                Log.d("20191630", todayDate.toString())
 
                                 while (todayDate != null && date_comparison(
                                         todayDate,
@@ -412,6 +469,15 @@ class CalendarViewModel : ViewModel() {
                                         }
                                     }
                                 }
+
+                                today = FormatDate.calendarFormat(today)
+
+                                if(todayDate == null){
+                                    todayDate = serverformat.parse(today)
+                                }
+
+                                Log.d("dailyLog", schedule.content)
+                                Log.d("dailyLog", startdateFormat.toString()+"\n"+ todayDate.toString())
 
                                 if (todayDate != null && date_comparison(
                                         todayDate,

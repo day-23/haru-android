@@ -493,7 +493,7 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
         month_viewpager.registerOnPageChangeCallback(callback)
 
         month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
-        month_viewpager.offscreenPageLimit = 2
+        month_viewpager.offscreenPageLimit = 1
 
         calendarViewModel.getCategories()
         calendarViewModel.liveCategoryList.observe(viewLifecycleOwner){

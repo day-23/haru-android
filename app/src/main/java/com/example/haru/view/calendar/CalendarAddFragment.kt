@@ -474,14 +474,14 @@ class CalendarAddFragment(private val activity: Activity,
                 if(!binding.repeatSwitchSchedule.isChecked) {
                     repeatStartDate =
                         dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
-                    repeatEndDate = dateFormat.format(repeatEndCalendar.time) + "T00:00:00+09:00"
+                    repeatEndDate = dateFormat.format(repeatEndCalendar.time) + "T23:59:55+09:00"
                 } else if(!binding.repeatEndDateSwitchSchedule.isChecked){
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
 
                     val calendarClone = repeatEndCalendar.clone() as Calendar
                     calendarClone.add(Calendar.YEAR,100)
 
-                    repeatEndDate = dateFormat.format(calendarClone.time) + "T00:00:00+09:00"
+                    repeatEndDate = dateFormat.format(calendarClone.time) + "T23:59:55+09:00"
                 } else {
                     repeatStartDate =
                         dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
@@ -489,7 +489,7 @@ class CalendarAddFragment(private val activity: Activity,
                         repeatEndDateBtnFormat.parse(
                             binding.btnRepeatEndDateSchedule.text.toString()
                         )
-                    )+ "T00:00:00+09:00"
+                    )+ "T23:59:55+09:00"
 
                     Log.d("20191630",repeatEndDate)
                 }
@@ -540,6 +540,11 @@ class CalendarAddFragment(private val activity: Activity,
                 }
             } else {
                 if(binding.alldaySwitch.isChecked){
+                    repeatEndCalendar.apply {
+                        set(Calendar.HOUR_OF_DAY, 23)
+                        set(Calendar.MINUTE, 59)
+                        set(Calendar.SECOND, 55)
+                    }
                     repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt().toString()
                 } else {
                     repeatStartCalendar.set(
@@ -548,7 +553,7 @@ class CalendarAddFragment(private val activity: Activity,
                     )
 
                     repeatStartCalendar.set(
-                        Calendar.HOUR_OF_DAY,
+                        Calendar.MINUTE,
                         binding.repeatStartTimeBtn.text.toString().substring(6,8).toInt()
                     )
 
@@ -558,7 +563,7 @@ class CalendarAddFragment(private val activity: Activity,
                     )
 
                     repeatEndCalendar.set(
-                        Calendar.HOUR_OF_DAY,
+                        Calendar.MINUTE,
                         binding.repeatStartTimeBtn.text.toString().substring(6,8).toInt()
                     )
 
