@@ -42,6 +42,39 @@
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <LinearLayout
+        android:id="@+id/post_tag_container_layout"
+        style="@style/linearBorderLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints"
+        android:layout_marginTop="14dp"
+        app:layout_constraintTop_toBottomOf="@id/addtag_title">
+
+
+        <ImageView
+            android:id="@+id/post_iv_tag_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tag_icon"
+            android:layout_marginEnd="10dp"/>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/post_tag_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:textColorHint="#ACACAC"
+            android:hint="태그 추가"
+            android:inputType="text"
+            android:singleLine="true"
+            android:maxLength="10"
+            android:text=""
+            android:textSize="14sp" />
+    </LinearLayout>
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/addtag_images"
         android:layout_width="match_parent"

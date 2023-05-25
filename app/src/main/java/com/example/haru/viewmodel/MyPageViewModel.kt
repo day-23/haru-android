@@ -26,6 +26,8 @@ class MyPageViewModel(): ViewModel() {
     private val ProfileRepository = ProfileRepository()
     private val PostRepository = PostRepository()
     private val UserRepository = UserRepository()
+    private val tagList: MutableList<String> = mutableListOf()
+    var tag: String = ""
 
     private val _Profile = MutableLiveData<com.example.haru.data.model.Profile>()
     val Profile: LiveData<com.example.haru.data.model.Profile>
@@ -74,6 +76,9 @@ class MyPageViewModel(): ViewModel() {
     private val _SelectedUri = MutableLiveData<ArrayList<ExternalImages>>()
     val SelectedUri: LiveData<ArrayList<ExternalImages>>
         get() = _SelectedUri
+
+    private val _PostTagLiveData = MutableLiveData<List<String>>()
+    val PostTagLiveData: LiveData<List<String>> = _PostTagLiveData
 
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
@@ -252,6 +257,7 @@ class MyPageViewModel(): ViewModel() {
         _StoredImages.value = arrayListOf()
         _SelectedUri.value = arrayListOf()
         _SelectedImage.value = -1
+        _PostTagLiveData.value = arrayListOf()
     }
 
     fun requestFollow(body: Followbody){
@@ -276,5 +282,29 @@ class MyPageViewModel(): ViewModel() {
                 }
             }
         }
+    }
+
+    fun subTagList(item: String) {
+        tagList.remove(item)
+        _PostTagLiveData.value = tagList
+    }
+
+    fun addTagList(str: String): Boolean {
+        tag = str
+        if (tag == "" || tag.replace(" ", "") == "")
+            return false
+        tagList.add(tag.replace(" ", ""))
+        _PostTagLiveData.value = tagList
+        return true
+    }
+
+    fun getTagList(): List<String>{
+        val tags = _PostTagLiveData.value
+        if(tags != null){
+            if(tags.size > 0)
+                return tags
+        }
+
+        return arrayListOf()
     }
 }
