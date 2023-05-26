@@ -370,55 +370,7 @@ class CalendarItemFragment(val schedule: Schedule,
         binding.btnEveryMonthSchedule.setOnClickListener { onOptionClick(3) }
         binding.btnEveryYearSchedule.setOnClickListener { onOptionClick(4) }
 
-        for (i in 1..31) {
-            val textView = TextView(requireContext())
-            textView.text = getString(R.string.MonthDay, i)
-            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-            textView.gravity = Gravity.CENTER
-
-            textView.setOnClickListener {
-                if (!monthsValue[i - 1]) {
-                    textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
-                    monthsValue[i - 1] = true
-                } else {
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-                    monthsValue[i - 1] = false
-                }
-            }
-
-            val params = GridLayout.LayoutParams().apply {
-                width = 0
-                height = GridLayout.LayoutParams.WRAP_CONTENT
-                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f)
-            }
-            binding.gridMonthSchedule.addView(textView, params)
-        }
-
         binding.gridMonthSchedule.visibility = View.GONE
-
-        for (i in 1..12) {
-            val textView = TextView(requireContext())
-            textView.text = getString(R.string.YearMonth, i)
-            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-            textView.gravity = Gravity.CENTER
-
-            textView.setOnClickListener {
-                if (!yearsValue[i - 1]) {
-                    textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
-                    yearsValue[i - 1] = true
-                } else {
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-                    yearsValue[i - 1] = false
-                }
-            }
-
-            val params = GridLayout.LayoutParams().apply {
-                width = 0
-                height = GridLayout.LayoutParams.WRAP_CONTENT
-                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f)
-            }
-            binding.gridYearSchedule.addView(textView, params)
-        }
 
         binding.gridYearSchedule.visibility = View.GONE
 
@@ -475,20 +427,6 @@ class CalendarItemFragment(val schedule: Schedule,
             )
 
             datePickerDialog.show()
-        }
-
-        for (i in 0..6) {
-            binding.everyWeekLayout.getChildAt(i).setOnClickListener {
-                val view = it as TextView
-
-                if (!weeksValue[i]) {
-                    weeksValue[i] = true
-                    view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
-                } else {
-                    weeksValue[i] = false
-                    view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
-                }
-            }
         }
 
         binding.deleteScheduleTv.setOnClickListener {
@@ -1670,6 +1608,68 @@ class CalendarItemFragment(val schedule: Schedule,
                             yearsValue[i] = schedule.repeatValue[i] == '1'
                         }
                     }
+                }
+            }
+        }
+
+        for (i in 1..31) {
+            val textView = TextView(requireContext())
+            textView.text = getString(R.string.MonthDay, i)
+            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            textView.gravity = Gravity.CENTER
+
+            textView.setOnClickListener {
+                if (!monthsValue[i - 1]) {
+                    textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                    monthsValue[i - 1] = true
+                } else {
+                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                    monthsValue[i - 1] = false
+                }
+            }
+
+            val params = GridLayout.LayoutParams().apply {
+                width = 0
+                height = GridLayout.LayoutParams.WRAP_CONTENT
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f)
+            }
+            binding.gridMonthSchedule.addView(textView, params)
+        }
+
+        for (i in 1..12) {
+            val textView = TextView(requireContext())
+            textView.text = getString(R.string.YearMonth, i)
+            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            textView.gravity = Gravity.CENTER
+
+            textView.setOnClickListener {
+                if (!yearsValue[i - 1]) {
+                    textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                    yearsValue[i - 1] = true
+                } else {
+                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                    yearsValue[i - 1] = false
+                }
+            }
+
+            val params = GridLayout.LayoutParams().apply {
+                width = 0
+                height = GridLayout.LayoutParams.WRAP_CONTENT
+                columnSpec = GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL, 1f)
+            }
+            binding.gridYearSchedule.addView(textView, params)
+        }
+
+        for (i in 0..6) {
+            binding.everyWeekLayout.getChildAt(i).setOnClickListener {
+                val view = it as TextView
+
+                if (!weeksValue[i]) {
+                    weeksValue[i] = true
+                    view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                } else {
+                    weeksValue[i] = false
+                    view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
                 }
             }
         }
