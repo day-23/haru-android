@@ -124,9 +124,9 @@ class ChecklistInputFragment(
             binding.gridYear.addView(textView, params)
         }
 
-        binding.endDateSetLayout.layoutTransition.apply {
-            setAnimateParentHierarchy(false)
-        }
+//        binding.endDateSetLayout.layoutTransition.apply {
+//            setAnimateParentHierarchy(false)
+//        }
 
         // 마감일 레이아웃 크기 계산
         binding.endDateTimeLayout.viewTreeObserver.addOnGlobalLayoutListener(object :

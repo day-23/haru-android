@@ -138,8 +138,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginHorizontal="12dp"
-                    android:background="@color/light_gray" />
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:id="@+id/tag_container_layout"
@@ -167,6 +166,7 @@
                         android:inputType="text"
                         android:singleLine="true"
                         android:maxLength="10"
+                        android:textColorHint="@color/light_gray"
                         android:text="@={viewModel.tag}"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -207,15 +207,17 @@
 
                 </LinearLayout>
 
+<!--android:animateLayoutChanges="true"-->
                 <LinearLayout
                     android:id="@+id/endDateSetLayout"
                     style="@style/linearBorderLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
                     android:background="@drawable/linear_border_up_bottom"
                     android:orientation="vertical">
 
+
+<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -261,6 +263,7 @@
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
 
+<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:id="@+id/endDateTime_layout"
                         android:layout_width="match_parent"
@@ -304,12 +307,14 @@
 
                 </LinearLayout>
 
+
+<!--                android:animateLayoutChanges="true"-->
                 <LinearLayout
                     style="@style/linearBorderLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
                     android:background="@drawable/linear_border_up_bottom"
+                    android:animateLayoutChanges="true"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -365,12 +370,13 @@
 
                 </LinearLayout>
 
+
+<!--                android:animateLayoutChanges="true"-->
                 <LinearLayout
                     android:id="@+id/repeatSetLayout"
                     style="@style/linearBorderLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
                     android:background="@drawable/linear_border_up_bottom"
                     android:orientation="vertical">
 
@@ -407,20 +413,23 @@
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
 
+
+<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:id="@+id/repeatOptionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:animateLayoutChanges="true"
                         android:paddingTop="8dp">
 
+
+<!--                        android:animateLayoutChanges="true"-->
                         <LinearLayout
                             android:id="@+id/repeatOptionSelect"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:animateLayoutChanges="true"
                             android:layout_marginStart="35dp"
                             android:layout_marginEnd="55dp"
-                            android:animateLayoutChanges="true"
                             android:background="@drawable/btn_group_custom"
                             android:orientation="horizontal">
 
@@ -494,13 +503,14 @@
 
                     </LinearLayout>
 
+
+<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:id="@+id/everyWeekSelectLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="35dp"
                         android:layout_marginEnd="55dp"
-                        android:animateLayoutChanges="true"
                         android:orientation="horizontal"
                         android:paddingTop="8dp">
 
@@ -596,11 +606,13 @@
                         android:rowCount="2"
                         android:useDefaultMargins="true" />
 
+
+<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:id="@+id/repeatEndDateLayout"
+                        android:animateLayoutChanges="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:animateLayoutChanges="true"
                         android:paddingTop="14dp">
 
                         <TextView
