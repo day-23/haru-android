@@ -506,7 +506,7 @@ class AdapterMonth(val activity: Activity,
 //            }
 //        }
 
-        testView.setBackgroundResource(R.drawable.calendar_border)
+        testView.setBackgroundResource(R.drawable.calendar_textview_border)
         val drawable = testView.background as GradientDrawable
         drawable.setColorFilter(color,PorterDuff.Mode.SRC_ATOP)
 

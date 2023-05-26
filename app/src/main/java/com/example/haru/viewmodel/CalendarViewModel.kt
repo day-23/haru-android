@@ -186,11 +186,11 @@ class CalendarViewModel : ViewModel() {
                                 while (todayDate != null && date_comparison(todayDate, startdateFormat) < 0) {
                                     when (it.todos[i].repeatOption) {
                                         "매주" -> {
-                                            todayDate = FormatDate.nextEndDateEveryWeek(
-                                                it.todos[i].repeatValue,
+                                            todayDate = FormatDate.nextStartDateEveryWeek(
+                                                it.todos[i].repeatValue!!,
                                                 1,
                                                 today,
-                                                it.todos[i].repeatEnd
+                                                it.todos[i].repeatEnd!!
                                             )
 
                                             if(todayDate == null) break
@@ -198,12 +198,12 @@ class CalendarViewModel : ViewModel() {
                                             today = serverformat.format(todayDate)
                                         }
 
-                                        "2주마다" -> {
-                                            todayDate = FormatDate.nextEndDateEveryWeek(
-                                                it.todos[i].repeatValue,
+                                        "격주" -> {
+                                            todayDate = FormatDate.nextStartDateEveryWeek(
+                                                it.todos[i].repeatValue!!,
                                                 2,
                                                 today,
-                                                it.todos[i].repeatEnd
+                                                it.todos[i].repeatEnd!!
                                             )
 
                                             if(todayDate == null) break
@@ -212,10 +212,10 @@ class CalendarViewModel : ViewModel() {
                                         }
 
                                         "매달" -> {
-                                            todayDate = FormatDate.nextEndDateEveryMonth(
+                                            todayDate = FormatDate.nextStartDateEveryMonth(
                                                 it.todos[i].repeatValue!!,
                                                 today,
-                                                it.todos[i].repeatEnd
+                                                it.todos[i].repeatEnd!!
                                             )
 
                                             if(todayDate == null) break
@@ -224,10 +224,10 @@ class CalendarViewModel : ViewModel() {
                                         }
 
                                         "매년" -> {
-                                            todayDate = FormatDate.nextEndDateEveryYear(
+                                            todayDate = FormatDate.nextStartDateEveryMonth(
                                                 it.todos[i].repeatValue!!,
                                                 today,
-                                                it.todos[i].repeatEnd
+                                                it.todos[i].repeatEnd!!
                                             )
 
                                             if(todayDate == null) break
@@ -270,6 +270,27 @@ class CalendarViewModel : ViewModel() {
                         if(schedule.repeatOption == null ||
                                 schedule.repeatValue == null ||
                                 schedule.repeatOption == "매일"){
+                            if(schedule.repeatOption == null){
+                                val endtime = serverformat.parse(schedule.repeatEnd!!)
+
+                                today = schedule.repeatStart!!
+                                todayDate = serverformat.parse(today)
+
+                                schedule.startTime = todayDate
+                                schedule.endTime = endtime
+                            } else if(schedule.repeatOption == "매일"){
+                                val endtime = serverformat.parse(schedule.repeatEnd!!)
+
+                                today = schedule.repeatStart!!
+                                todayDate = serverformat.parse(today)
+
+                                schedule.startTime = todayDate
+                                todayDate.hours = endtime.hours
+                                todayDate.minutes = endtime.minutes
+                                todayDate.seconds = endtime.seconds
+                                schedule.endTime = todayDate
+                            }
+
                             scheduleList.add(schedule)
                         } else {
                             if(schedule.repeatValue.contains("T")){
@@ -284,7 +305,9 @@ class CalendarViewModel : ViewModel() {
                                             scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
-                                                date_comparison(scheduleT.time, startdateFormat) > 0){
+                                                date_comparison(scheduleT.time, startdateFormat) >= 0){
+                                                schedule.startTime = todayDate
+                                                schedule.endTime = scheduleT.time
                                                 scheduleList.add(schedule)
                                                 break
                                             }
@@ -301,13 +324,15 @@ class CalendarViewModel : ViewModel() {
                                             today = serverformat.format(todayDate)
                                         }
 
-                                        "2주마다" -> {
+                                        "격주" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
                                             scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
-                                                date_comparison(scheduleT.time, startdateFormat) > 0){
+                                                date_comparison(scheduleT.time, startdateFormat) >= 0){
+                                                schedule.startTime = todayDate
+                                                schedule.endTime = scheduleT.time
                                                 scheduleList.add(schedule)
                                                 break
                                             }
@@ -330,7 +355,9 @@ class CalendarViewModel : ViewModel() {
                                             scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
-                                                date_comparison(scheduleT.time, startdateFormat) > 0){
+                                                date_comparison(scheduleT.time, startdateFormat) >= 0){
+                                                schedule.startTime = todayDate
+                                                schedule.endTime = scheduleT.time
                                                 scheduleList.add(schedule)
                                                 break
                                             }
@@ -352,7 +379,9 @@ class CalendarViewModel : ViewModel() {
                                             scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
-                                                date_comparison(scheduleT.time, startdateFormat) > 0){
+                                                date_comparison(scheduleT.time, startdateFormat) >= 0){
+                                                schedule.startTime = todayDate
+                                                schedule.endTime = scheduleT.time
                                                 scheduleList.add(schedule)
                                                 break
                                             }
@@ -382,7 +411,7 @@ class CalendarViewModel : ViewModel() {
 //                                        "매주"->{
 //                                            scheduleT.add(Calendar.DAY_OF_MONTH,-7)
 //                                        }
-//                                        "2주마다"->{
+//                                        "격주"->{
 //                                            scheduleT.add(Calendar.DAY_OF_MONTH,-14)
 //                                        }
 //                                        "매달"->{
@@ -408,9 +437,8 @@ class CalendarViewModel : ViewModel() {
 //                                }
                             } else {
                                 today = schedule.repeatStart!!
+                                val endtime = serverformat.parse(schedule.repeatEnd!!)
                                 todayDate = serverformat.parse(today)
-
-                                Log.d("20191630", todayDate.toString())
 
                                 while (todayDate != null && date_comparison(
                                         todayDate,
@@ -431,7 +459,7 @@ class CalendarViewModel : ViewModel() {
                                             today = serverformat.format(todayDate)
                                         }
 
-                                        "2주마다" -> {
+                                        "격주" -> {
                                             todayDate = FormatDate.nextStartDateEveryWeek(
                                                 schedule.repeatValue,
                                                 2,
@@ -476,14 +504,16 @@ class CalendarViewModel : ViewModel() {
                                     todayDate = serverformat.parse(today)
                                 }
 
-                                Log.d("dailyLog", schedule.content)
-                                Log.d("dailyLog", startdateFormat.toString()+"\n"+ todayDate.toString())
-
                                 if (todayDate != null && date_comparison(
                                         todayDate,
                                         startdateFormat
                                     ) == 0
                                 ) {
+                                    schedule.startTime = todayDate
+                                    todayDate.hours = endtime.hours
+                                    todayDate.minutes = endtime.minutes
+                                    todayDate.seconds = endtime.seconds
+                                    schedule.endTime = todayDate
                                     scheduleList.add(schedule)
                                 }
                             }
@@ -610,7 +640,7 @@ class CalendarViewModel : ViewModel() {
                                     }
                                 }
 
-                                "2주마다" -> {
+                                "격주" -> {
                                     var weeklycnt = 0
                                     var cnt = 0
                                     var twoweek = true
@@ -834,7 +864,7 @@ class CalendarViewModel : ViewModel() {
                                         }
                                     }
 
-                                    "2주마다" -> {
+                                    "격주" -> {
                                         var weeklycnt = 0
                                         var cnt = 0
                                         var twoweek = true
@@ -990,7 +1020,7 @@ class CalendarViewModel : ViewModel() {
                                         }
                                     }
 
-                                    "2주마다"->{
+                                    "격주"->{
                                         var cnt = 0
                                         val tempStartDate = dateformat.parse(startDate)
                                         calendar.time = tempStartDate
