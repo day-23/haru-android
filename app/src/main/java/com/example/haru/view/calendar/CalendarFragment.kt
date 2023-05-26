@@ -142,7 +142,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         val month_viewpager = view.findViewById<ViewPager2>(R.id.month_viewpager)
 
-        val item_month_btn = view.findViewById<Button>(R.id.item_month_btn)
+        val item_month_btn = view.findViewById<TextView>(R.id.item_month_btn)
 
         val categoryRecyclerView = view.findViewById<RecyclerView>(R.id.category_recyclerView)
 
