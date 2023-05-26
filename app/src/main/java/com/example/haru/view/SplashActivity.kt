@@ -1,5 +1,6 @@
 package com.example.haru.view
 
+import BaseActivity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil.setContentView
 import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.data.model.UserVerifyResponse
@@ -21,7 +23,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
     private val SPLASH_DURATION = 2200L
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import BaseActivity
 import UserViewModelFactory
 import android.content.Intent
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
@@ -97,13 +98,19 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
     }
 
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "sns onViewCreated: ")
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "SnsFragment - onCreateView() called")
-
         binding = FragmentSnsBinding.inflate(inflater, container, false)
         binding.friendFeed.setTextColor(0xFF1DAFFF.toInt())
         val postRecycler = binding.postOfAll

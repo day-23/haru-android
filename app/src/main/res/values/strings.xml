@@ -64,7 +64,7 @@
     <string name="todoEmpty">모든 할 일을 마쳤습니다!</string>
     <string name="flagEmpty">중요한 할 일이 있나요?</string>
     <string name="completeEmpty">할일을 완료해 보세요!</string>
-    
+
     <string name="deleteDescription">이 할일을 삭제할까요? 반복되는 할일입니다.</string>
 
     <string name="updateDescription">수정사항을 저장할까요? 반복되는 할일입니다.</string>

@@ -5,57 +5,61 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/sns_menu"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="72dp"
         android:paddingHorizontal="20dp"
         tools:ignore="MissingConstraints"
         android:background="@drawable/todo_table_selected">
 
-        <ImageView
-            android:id="@+id/haru_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:src="@drawable/haru_logo"
-            android:textStyle="bold"
-            android:textColor="#191919"
-            android:textSize="18dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginRight="8dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:paddingLeft="5dp"
+            >
+            <ImageView
+                android:id="@+id/haru_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/haru_logo"
+                android:textStyle="bold"
+                android:textColor="#191919"
+                />
+            <ImageView
+                android:id="@+id/menu_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/___20513"
+                android:layout_toEndOf="@id/haru_title"
+                android:layout_alignTop="@id/haru_title"
+                android:layout_alignBottom="@id/haru_title"
+                android:layout_marginHorizontal="8dp"
+                android:rotation="-90"/>
 
-        <ImageView
-            android:id="@+id/menu_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/___20513"
-            app:layout_constraintLeft_toRightOf="@+id/haru_title"
-            android:layout_marginHorizontal="8dp"
-            android:rotation="-90"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/search_icon"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginHorizontal="8dp"/>
-        
-        <TextView
-            android:layout_width="68dp"
-            android:layout_height="29dp"
-            android:background="@drawable/todotable_item_border"
-            android:textSize="16sp"
-            android:text="내 기록"
-            android:gravity="center"
-            android:textColor="#191919"
-            android:textStyle="bold"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginRight="45dp"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:paddingHorizontal="11dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/todotable_item_border"
+                android:textSize="16sp"
+                android:text="내 기록"
+                android:gravity="center"
+                android:textColor="#191919"
+                android:layout_toStartOf="@id/search_button"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:textStyle="bold"
+                />
+            <ImageView
+                android:id="@+id/search_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/search_icon"
+                android:layout_marginHorizontal="8dp"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+    </LinearLayout>
     
     <LinearLayout
         android:id="@+id/sns_buttons"
