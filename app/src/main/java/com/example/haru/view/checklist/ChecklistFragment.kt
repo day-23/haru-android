@@ -167,7 +167,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 if (position == 0)
                     checkListViewModel.getTodoByFlag()
                 else if (position > 0) {
-                    checkListViewModel.clear()
                     if (checkListViewModel.clickedTag == position) {
                         checkListViewModel.tagDataClear()
                         checkListViewModel.withTagUpdate()

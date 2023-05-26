@@ -1,7 +1,6 @@
 package com.example.haru.view.checklist
 
 
-import android.animation.ValueAnimator
 import android.app.Dialog
 import android.content.Context
 import android.content.res.ColorStateList
@@ -261,11 +260,11 @@ class ChecklistInputFragment(
         todoAddViewModel.endDateSwitch.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer {
-                val color = if (it) R.color.highlight else R.color.light_gray
-                binding.todaySwitch.isChecked = it
-                binding.ivTodayIcon.backgroundTintList =
+                val color = if (it) R.color.todo_description else R.color.light_gray
+                binding.endDateSwitch.isChecked = it
+                binding.ivCalendarIcon.backgroundTintList =
                     ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
-                binding.tvTodayTodo.setTextColor(ContextCompat.getColor(requireContext(), color))
+                binding.tvEndDateSet.setTextColor(ContextCompat.getColor(requireContext(), color))
                 binding.endDateTimeLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
                 binding.btnEndDatePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
                 when (it) {
