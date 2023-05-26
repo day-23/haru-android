@@ -31,6 +31,10 @@ class SnsViewModel: ViewModel() {
     val Comments : LiveData<ArrayList<Comments>>
         get() = _Comments
 
+    private val _FirstComments = MutableLiveData<ArrayList<Comments>>()
+    val FirstComments : LiveData<ArrayList<Comments>>
+        get() = _FirstComments
+
     private val _CurrentPost = MutableLiveData<String>()
     val CurrentPost : LiveData<String>
         get() = _CurrentPost
@@ -102,7 +106,7 @@ class SnsViewModel: ViewModel() {
                     comments = it
                 }
             }
-            _Comments.value = comments
+            _FirstComments.value = comments
         }
     }
 

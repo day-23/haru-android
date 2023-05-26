@@ -90,12 +90,14 @@
 
         <TextView
             android:id="@+id/addcomment_index"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="26dp"
             android:text="1 / 4"
-            android:textSize="12dp"
+            android:textSize="12sp"
+            android:background="@drawable/comment_index"
+            android:gravity="center"
             android:layout_marginTop="20dp"
-            android:textStyle="bold"
+
             android:textColor="#FDFDFD"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
