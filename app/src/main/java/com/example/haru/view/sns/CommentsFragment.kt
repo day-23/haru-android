@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import android.annotation.SuppressLint
+import android.icu.text.Transliterator.Position
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,8 @@ import com.example.haru.data.model.PatchCommentBody
 import com.example.haru.data.model.Post
 import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.FragmentCommentsBinding
+import com.example.haru.databinding.PopupSnsCommentCancelBinding
+import com.example.haru.databinding.PopupSnsCommentDeleteBinding
 import com.example.haru.view.adapter.CommentsAdapter
 import com.example.haru.viewmodel.SnsViewModel
 import org.w3c.dom.Comment
@@ -27,6 +30,8 @@ interface onCommentClick{
     fun onDeleteClick(writerId: String, commentId: String, item: Comments)
 
     fun onPublicClick(writerId: String, commentId: String, body: PatchCommentBody)
+
+    fun onPopupSelect(position: Int)
 }
 
 class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
@@ -38,13 +43,28 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
     lateinit var comment: Comments
     var newComment = true
 
+    var writerId = ""
+    var commentId = ""
+
+
     override fun onDeleteClick(writerId: String, commentId: String, item: Comments) {
-        snsViewModel.deleteComment(writerId, commentId)
+        this.writerId = writerId
+        this.commentId = commentId
         comment = item
+        addPopup()
     }
 
     override fun onPublicClick(writerId: String, commentId: String, body: PatchCommentBody) {
         snsViewModel.patchComment(writerId, commentId, body)
+    }
+
+    override fun onPopupSelect(position: Int) {
+       deletePopup()
+        if(position == 0){
+            snsViewModel.deleteComment(writerId, commentId)
+        }else if(position == 1){
+            //TODO:신고창 만들기
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -162,5 +182,50 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
         }
 
         return binding.root
+    }
+
+    fun addPopup(){
+        val fragment = PopupDeleteComment(this)
+        val fragmentManager = childFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        transaction.add(R.id.anchor_popup_comments, fragment)
+        transaction.commit()
+    }
+
+    fun deletePopup(){
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comments)
+
+        if(fragment != null) {
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+        }
+    }
+}
+
+class PopupDeleteComment(listener: onCommentClick): Fragment(){
+    lateinit var popupbinding : PopupSnsCommentDeleteBinding
+    val listener = listener
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        popupbinding = PopupSnsCommentDeleteBinding.inflate(inflater, container, false)
+
+        popupbinding.commentsDelete.setOnClickListener {
+            listener.onPopupSelect(0)
+        }
+
+        popupbinding.commentsReport.setOnClickListener {
+            listener.onPopupSelect(1)
+        }
+
+        popupbinding.commentsCancel.setOnClickListener {
+            listener.onPopupSelect(2)
+        }
+
+        popupbinding.popupTotalCommentsContainer.setOnClickListener {
+
+        }
+
+        return popupbinding.root
     }
 }

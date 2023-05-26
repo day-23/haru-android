@@ -137,4 +137,9 @@
         android:layout_marginTop="16dp"
         tools:listitem="@layout/item_comment_list"/>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/anchor_popup_comments"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
