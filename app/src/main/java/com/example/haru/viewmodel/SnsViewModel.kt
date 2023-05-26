@@ -69,7 +69,6 @@ class SnsViewModel: ViewModel() {
     }
     fun getFirstPosts(){
         var newPost: ArrayList<Post> = arrayListOf()
-        var allPost = _Posts.value ?: arrayListOf()
         viewModelScope.launch{
             PostRepository.getFirstPost() {
                 if(it.size > 0){ //get success

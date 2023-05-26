@@ -109,7 +109,8 @@ class SnsFragment : Fragment(), OnPostClickListener {
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "SnsFragment - onCreateView() called")
-
+        val manager = parentFragmentManager
+        manager.clearBackStack("snsmain")
         binding = FragmentSnsBinding.inflate(inflater, container, false)
         binding.friendFeed.setTextColor(0xFF1DAFFF.toInt())
         val postRecycler = binding.postOfAll
