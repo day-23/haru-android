@@ -31,6 +31,10 @@ class SnsViewModel: ViewModel() {
     val Comments : LiveData<ArrayList<Comments>>
         get() = _Comments
 
+    private val _TotalComments = MutableLiveData<Int>()
+    val TotalComments: LiveData<Int>
+        get() = _TotalComments
+
     private val _FirstComments = MutableLiveData<ArrayList<Comments>>()
     val FirstComments : LiveData<ArrayList<Comments>>
         get() = _FirstComments
@@ -88,6 +92,7 @@ class SnsViewModel: ViewModel() {
 
     fun getComments(postId: String, imageId: String, lastCreatedAt:String) {
         var comments = ArrayList<Comments>()
+        var total = 0
         viewModelScope.launch {
             PostRepository.getComment(postId, imageId, lastCreatedAt){
                 if(it.size > 0){
@@ -100,13 +105,16 @@ class SnsViewModel: ViewModel() {
 
     fun getFirstComments(postId: String, imageId: String) {
         var comments = ArrayList<Comments>()
+        var total = 0
         viewModelScope.launch {
             PostRepository.getFirstComment(postId, imageId){
-                if(it.size > 0){
-                    comments = it
+                if(it.data.size > 0){
+                    comments = it.data
+                    total = it.pagination.totalItems
                 }
             }
             _FirstComments.value = comments
+            _TotalComments.value = total
         }
     }
 

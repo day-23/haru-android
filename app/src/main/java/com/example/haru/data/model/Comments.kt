@@ -10,3 +10,10 @@ data class Comments(
     val createdAt: String,
     val updatedAt: String
 )
+
+data class pagination(
+    val totalItems: Int,
+    val itemsPerPage: Int,
+    val currentPage: Int,
+    val totalPages: Int
+)
