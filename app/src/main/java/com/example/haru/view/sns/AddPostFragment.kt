@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import BaseActivity
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.ContentUris
@@ -53,6 +54,17 @@ class AddPostFragment : Fragment(), PostInterface{
     lateinit var galleryViewmodel: MyPageViewModel
     lateinit var galleryAdapter: AddPostAdapter
     var toggle = false
+
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.addpostRootView.id)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.addpostRootView.id)
+    }
 
     override fun Postpopup(position: Int) {
         val fragmentManager = childFragmentManager
@@ -211,7 +223,7 @@ class AddPostFragment : Fragment(), PostInterface{
                 val layoutparam = binding.popupGallery.layoutParams
                 val startHeight = layoutparam.height
                 if (!toggle) {
-                    layoutparam.height = (binding.addpostRootView.measuredHeight - binding.addpostTitle.measuredHeight).toInt()
+                    layoutparam.height = ((binding.addpostRootView.measuredHeight - binding.addpostTitle.measuredHeight)*0.85).toInt()
                     toggle = true
                     binding.galleyToggle.rotation = 270f
                     binding.imageMultiSelect.isClickable = true
