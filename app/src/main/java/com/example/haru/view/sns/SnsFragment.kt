@@ -1,6 +1,8 @@
 package com.example.haru.view.sns
 
 import UserViewModelFactory
+import android.content.Intent
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
@@ -8,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat.animate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -22,6 +25,7 @@ import com.example.haru.data.model.Profile
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.databinding.FragmentSnsBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.view.timetable.TodotableFragment
@@ -47,9 +51,8 @@ class SnsFragment : Fragment(), OnPostClickListener {
             transaction.addToBackStack("snsmain")
         transaction.commit()
     }
-
-    override fun onTotalCommentClick(postId: String) {
-        val newFrag = CommentsFragment(postId)
+    override fun onTotalCommentClick(post : Post) {
+        val newFrag = CommentsFragment(post)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
@@ -68,8 +71,17 @@ class SnsFragment : Fragment(), OnPostClickListener {
         transaction.commit()
     }
 
-    override fun onSetupClick(userId: String, postId: String) {
+    override fun onSetupClick(userId: String, postId: String, item: Post) {
         Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+
+        snsViewModel.deletePost(postId)
+
+        snsViewModel.DeleteResult.observe(viewLifecycleOwner){ result ->
+            if(result)
+                snsPostAdapter.deletePost(item)
+            else
+                Toast.makeText(requireContext(), "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
     companion object{
         const val TAG : String = "로그"
@@ -96,7 +108,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
         binding.friendFeed.setTextColor(0xFF1DAFFF.toInt())
         val postRecycler = binding.postOfAll
         snsPostAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
-        snsViewModel.init_page()
+        snsViewModel.getFirstPosts()
         postRecycler.layoutManager = LinearLayoutManager(requireContext())
         postRecycler.adapter = snsPostAdapter
 
@@ -104,21 +116,28 @@ class SnsFragment : Fragment(), OnPostClickListener {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!postRecycler.canScrollVertically(1)) {
-                    snsViewModel.addPage()
+                    snsViewModel.getPosts()
                     Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT).show()
                 }
             }
         }
         postRecycler.addOnScrollListener(scrollListener)
 
-        snsViewModel.Page.observe(viewLifecycleOwner){page ->
-            val pagestr = page.toString()
-            snsViewModel.getPosts(pagestr)
+        val refresher = binding.refreshPost
+        refresher.setOnRefreshListener {
+            refresher.isRefreshing = true
+            snsViewModel.getFirstPosts()
+            refresher.isRefreshing = false
         }
 
         snsViewModel.newPost.observe(viewLifecycleOwner){newPost ->
             snsPostAdapter.newPage(newPost)
             if(newPost.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        snsViewModel.Posts.observe(viewLifecycleOwner){post ->
+            snsPostAdapter.initList(post)
+            if(post.size == 0) Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
         }
 
         //하루 옆 메뉴 클릭

@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.view.contains
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -31,21 +32,48 @@ import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.haru.R
+import com.example.haru.data.model.CommentBody
+import com.example.haru.data.model.Comments
 import com.example.haru.data.model.ExternalImages
+import com.example.haru.data.model.User
 import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.FragmentSnsMypageBinding
-import com.example.haru.view.adapter.AddPostAdapter
-import com.example.haru.view.adapter.GalleryAdapter
-import com.example.haru.view.adapter.MyFeedAdapter
-import com.example.haru.view.adapter.SnsPostAdapter
+import com.example.haru.databinding.PopupSnsCommentCancelBinding
+import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.view.adapter.*
 import com.example.haru.viewmodel.MyPageViewModel
 
-class AddPostFragment : Fragment() {
+interface PostInterface{
+    fun Postpopup(position: Int)
+}
+
+class AddPostFragment : Fragment(), PostInterface{
     lateinit var binding : FragmentAddPostBinding
     lateinit var galleryRecyclerView: RecyclerView
     lateinit var galleryViewmodel: MyPageViewModel
     lateinit var galleryAdapter: AddPostAdapter
     var toggle = false
+
+    override fun Postpopup(position: Int) {
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.add_post_anchor)
+
+        if(fragment != null) {
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+
+            if(position == 0){
+                val backManager = parentFragmentManager
+                backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                val fragment = SnsFragment()
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragments_frame, fragment)
+                    .commit()
+            }
+        }
+
+    }
 
         companion object{
             const val TAG : String = "로그"
@@ -153,21 +181,15 @@ class AddPostFragment : Fragment() {
                 if(galleryViewmodel.SelectedImage.value != -1 || galleryViewmodel.SelectedPosition.value!!.size > 0) {
                     val converedImage = galleryViewmodel.convertMultiPart(requireContext())
                     val content = binding.addpostContent.text.toString()
-                    val hashtag = arrayListOf("해시스완")
-                    Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
-
-                    galleryViewmodel.postRequest(converedImage, content, hashtag)
+                    val selecteduri = galleryViewmodel.getSelectImages()
                     galleryViewmodel.resetValue()
 
+                    val newFrag = AddTagFragment(converedImage, content, selecteduri)
+                    val transaction = parentFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragments_frame, newFrag)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
 
-                    galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
-                        val fragmentManager = parentFragmentManager
-                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                        val fragment = SnsFragment()
-                        val transaction = parentFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragments_frame, fragment)
-                        transaction.commit()
-                    }
                 }else{
                     Toast.makeText(requireContext(), "사진을 선택해 주세요" ,Toast.LENGTH_SHORT).show()
                 }
@@ -175,19 +197,21 @@ class AddPostFragment : Fragment() {
 
             binding.addpostCancel.setOnClickListener {
                 galleryViewmodel.resetValue()
-                val fragmentManager = parentFragmentManager
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                val fragment = SnsFragment()
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragments_frame, fragment)
-                    .commit()
+
+                val fragment = PopupPost(this)
+                val fragmentManager = childFragmentManager
+                val transaction = fragmentManager.beginTransaction()
+                transaction.add(R.id.add_post_anchor, fragment)
+                transaction.commit()
+
+
             }
 
             binding.galleyToggle.setOnClickListener {
                 val layoutparam = binding.popupGallery.layoutParams
                 val startHeight = layoutparam.height
                 if (!toggle) {
-                    layoutparam.height = (binding.addpostRootView.measuredHeight * 0.8).toInt()
+                    layoutparam.height = (binding.addpostRootView.measuredHeight - binding.addpostTitle.measuredHeight).toInt()
                     toggle = true
                     binding.galleyToggle.rotation = 270f
                     binding.imageMultiSelect.isClickable = true
@@ -282,4 +306,24 @@ class AddPostFragment : Fragment() {
                 cursor?.close()
                 galleryViewmodel.loadGallery(gallery)
         }
+}
+
+class PopupPost(listener: PostInterface) : Fragment() {
+
+    lateinit var popupbinding : PopupSnsPostCancelBinding
+    val listener = listener
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        popupbinding = PopupSnsPostCancelBinding.inflate(inflater, container, false)
+
+        popupbinding.snsAddPostUnsave.setOnClickListener {
+            listener.Postpopup(0)
+        }
+
+        popupbinding.snsAddPostCancel.setOnClickListener {
+            listener.Postpopup(1)
+        }
+
+        return popupbinding.root
+    }
+
 }

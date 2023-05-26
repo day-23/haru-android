@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.haru.data.api.PostService
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.data.retrofit.RetrofitClient.postService
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,13 +50,49 @@ class PostRepository() {
         callback(postInfo)
     }
 
+    //게시글 삭제
+    suspend fun deletePost(postId: String, callback: (delete: Boolean) -> Unit) = withContext(Dispatchers.IO) {
+        val call = postService.deletePost("jts", postId)
+        val response = call.execute()
+        var delete = false
+        val data = response.body()
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to delete post")
+            delete = true
+        } else {
+            Log.d("TAG", "Fail to delete post")
+        }
+        callback(delete)
+    }
+
+
     //전체 게시글
-    suspend fun getPost(page:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+    suspend fun getPost(lastCreatedAt:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getPosts(
             "jts",
-            page
+            lastCreatedAt
         ).execute()
+
+        val posts: ArrayList<Post>
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get posts")
+            data = response.body()!!
+            posts = data.data!!
+        } else{
+            Log.d("TAG", "Fail to get posts")
+            posts = arrayListOf()
+        }
+        callback(posts)
+    }
+
+    suspend fun getFirstPost(callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstPosts(
+            "jts",
+        ).execute()
+
         val posts: ArrayList<Post>
         val data: PostResponse
         if (response.isSuccessful) {
@@ -111,12 +148,14 @@ class PostRepository() {
     }
 
     //전체 댓글
-    suspend fun getComment(postId: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
+    suspend fun getComment(postId: String, imageId: String, lastCreatedAt: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
         Dispatchers.IO){
             Log.d("TAG", "post id recieve-------------- $postId")
             val response = postService.getComments(
                 "jts",
-                postId
+                postId,
+                imageId,
+                lastCreatedAt
             ).execute()
 
             val comments: ArrayList<Comments>
@@ -133,7 +172,29 @@ class PostRepository() {
             callback(comments)
         }
 
-    //전체 댓글
+    suspend fun getFirstComment(postId: String, imageId: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
+        Dispatchers.IO){
+        Log.d("TAG", "post id recieve-------------- $postId")
+        val response = postService.getFirstComments(
+            "jts",
+            postId,
+            imageId,
+        ).execute()
+
+        val comments: ArrayList<Comments>
+        val data: CommentsResponse
+
+        if(response.isSuccessful) {
+            Log.d("TAG","Success to get comments")
+            data = response.body()!!
+            comments = data.data
+        }else{
+            Log.d("TAG", "Fail to get comments")
+            comments = arrayListOf()
+        }
+        callback(comments)
+    }
+
     suspend fun writeComment(comment: CommentBody, postId: String, imageId:String, callback: (comments: Comments) -> Unit) = withContext(
         Dispatchers.IO){
         Log.d("TAG", "post id recieve-------------- $postId")
@@ -153,9 +214,46 @@ class PostRepository() {
             comments = data.data
         }else{
             Log.d("TAG", "Fail to write comments")
-            comments = Comments("",User("","","","",false,0,0,0),"",-1,-1,"","")
+            comments = Comments("",User("","","","",false,0,0,0),"",-1,-1,true,"","")
         }
         callback(comments)
+    }
+
+    suspend fun deleteComment(writerId : String, commentId : String, callback: (deleted: Boolean) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.deleteComment(
+            writerId,
+            commentId,
+        ).execute()
+
+        val data: EditCommentResponse
+        val deleted: Boolean
+
+        if(response.isSuccessful){
+            data = response.body()!!
+            deleted = data.success
+        }else{
+            deleted = false
+        }
+        callback(deleted)
+    }
+
+    suspend fun chageComment(writerId: String, commentId: String, body: PatchCommentBody, callback: (changed: Boolean) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.changeComment(
+            writerId,
+            commentId,
+            body
+        ).execute()
+        val data: EditCommentResponse
+        var changed = false
+        if(response.isSuccessful){
+            data = response.body()!!
+            changed = data.success
+        }else{
+            changed = false
+        }
+        callback(changed)
     }
 
 }

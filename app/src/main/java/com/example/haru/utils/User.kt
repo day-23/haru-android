@@ -1,8 +1,20 @@
 package com.example.haru.utils
 
+import com.example.haru.data.model.UserRelatedWithSnsData
+
 //모든 User Id값은 여기 있는 값을 사용
 //이 값은 사용자가 로그인할 때 서버에서 받아온다.
 object User {
-    lateinit var id: String
-    lateinit var name: String
+    var id : String = ""
+    var name : String = ""
+    var isPublicAccount : Boolean = true
+    var haruId: String = ""
+    var email: String = ""
+    var socialAccountType: String = ""
+    var isPostBrowsingEnabled: Boolean = true
+    var isAllowFeedLike: Int = 0
+    var isAllowFeedComment: Int = 0
+    var isAllowSearch: Boolean = true
+    var createdAt: String = ""
+    var accessToken: String = ""
 }
