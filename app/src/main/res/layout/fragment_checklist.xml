@@ -3,32 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawable_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
+    android:layout_height="match_parent"
+    android:background="#FDFDFD"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
+        android:background="#FDFDFD"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#FDFDFD"
             android:orientation="vertical">
             <LinearLayout
                 android:id="@+id/checklist_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="10dp"
-                android:background="@color/white">
+                android:background="#FDFDFD"
+                android:paddingStart="10dp"
+                android:paddingEnd="20dp"
+                >
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
+                    android:background="#FDFDFD"
                     >
                     <ImageView
-                        android:id="@+id/haru_title"
+                        android:id="@+id/checklist_haru_title"
                         android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:src="@drawable/haru_logo"
@@ -61,6 +66,7 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
+                    android:background="#FDFDFD"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

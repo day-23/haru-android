@@ -1,5 +1,6 @@
 package com.example.haru.view.etc
 
+import BaseActivity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -46,6 +47,8 @@ class EtcFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // status bar height 조정
+        (activity as BaseActivity).adjustTopMargin(binding.etcHeader.id)
 
         binding.settingIcon.setOnClickListener(ClickListener())
     }

@@ -6,42 +6,37 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/etc_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/today_layout_gradient"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/haru_logo"
-            android:layout_marginStart="29dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="20dp"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/___20513"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginStart="30dp"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <ImageView
-            android:id="@+id/setting_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/setting_icon"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="17dp"/>
+        android:paddingStart="25dp"
+        android:paddingEnd="20dp"
+        tools:ignore="MissingConstraints"
+        android:background="@drawable/todo_table_selected">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            >
+            <ImageView
+                android:id="@+id/etc_haru_title"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:src="@drawable/haru_logo"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"
+                android:textColor="#191919"
+                android:layout_alignParentTop="true"
+                />
+            <ImageView
+                android:id="@+id/setting_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="3dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/setting_icon"
+                />
+        </RelativeLayout>
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
