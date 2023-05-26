@@ -50,7 +50,7 @@ open class BaseActivity : AppCompatActivity() {
                 val paddingBottom = view.paddingBottom
 
                 // Set the padding, preserving the current left, right and bottom padding values
-                view.setPadding(paddingLeft, statusBarHeight, paddingRight, paddingBottom)
+                view.setPadding(paddingLeft, (statusBarHeight * 1.4).toInt(), paddingRight, paddingBottom)
                 insets
             }
         }
