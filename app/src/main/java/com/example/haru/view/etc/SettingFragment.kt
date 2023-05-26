@@ -1,5 +1,6 @@
 package com.example.haru.view.etc
 
+import BaseActivity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -25,6 +26,8 @@ class SettingFragment : Fragment() {
         }
     }
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(EtcFragment.TAG, "SettingFragment - onCreate() called")
@@ -40,8 +43,15 @@ class SettingFragment : Fragment() {
         return binding.root
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
 
         binding.ivBackIconSetting.setOnClickListener(ClickListener())
 

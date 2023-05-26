@@ -18,6 +18,7 @@
         <item name="android:paddingBottom">10dp</item>
     </style>
 
+
     <style name="minSize">
         <item name="android:stateListAnimator">@null</item>
         <item name="android:minWidth">0dp</item>

@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import BaseActivity
 import UserViewModelFactory
 import android.content.Intent
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
@@ -103,6 +104,18 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
     }
 
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "sns onViewCreated: ")
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -192,7 +205,6 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
         val viewModelFactory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, viewModelFactory).get(UserViewModel::class.java)
-
 
 
         val userId = 1// Replace with actual user ID

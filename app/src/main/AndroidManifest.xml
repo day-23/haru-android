@@ -14,14 +14,13 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:label="@string/app_name"
         android:icon="@mipmap/app_icon"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Haru"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
         <activity
             android:name=".view.calendar.CategoryAddActivity"
             android:exported="false" />
@@ -70,7 +69,8 @@
                     android:scheme="@string/KAKAO_OAUTH_HOST" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.auth.SignUpActivity"
+        <activity
+            android:name=".view.auth.SignUpActivity"
             android:exported="false"
             android:theme="@style/Theme.Haru.NoActionBar">
             <meta-data
@@ -78,4 +78,5 @@
                 android:value="" />
         </activity>
     </application>
+
 </manifest>

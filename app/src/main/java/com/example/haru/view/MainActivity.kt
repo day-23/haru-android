@@ -1,5 +1,6 @@
 package com.example.haru.view
 
+import BaseActivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
@@ -19,7 +20,7 @@ import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.view.timetable.TimetableFragment
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : BaseActivity(){
     private val fragments = arrayOfNulls<Fragment>(5)
 
     private lateinit var sharedPreference: SharedPreferences

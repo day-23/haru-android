@@ -4,32 +4,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <LinearLayout
         android:id="@+id/sns_menu"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:paddingHorizontal="20dp"
-        android:background="@drawable/todo_table_selected"
-        tools:ignore="MissingConstraints">
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="20dp"
+        tools:ignore="MissingConstraints"
+        android:background="@drawable/todo_table_selected">
 
-        <TextView
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            >
+            <ImageView
+                android:id="@+id/sns_haru_title"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:src="@drawable/haru_logo"
+                android:layout_marginTop="2dp"
+                android:textStyle="bold"
+                android:textColor="#191919"
+                android:layout_alignParentTop="true"
+                />
+            <ImageView
+                android:id="@+id/menu_button"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/___20513"
+                android:layout_toEndOf="@id/sns_haru_title"
+                android:layout_alignTop="@id/sns_haru_title"
+                android:layout_alignBottom="@id/sns_haru_title"
+                android:rotation="-90"/>
 
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="HARU"
-            android:textColor="#191919"
-            android:textStyle="bold"
-            android:textSize="18dp"
-            android:layout_marginRight="8dp">
-        </TextView>
-
-        <ImageView
-            android:id="@+id/menu_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/___20513"/>
+            <TextView
+                android:layout_toStartOf="@id/search_button"
+                android:layout_width="70dp"
+                android:layout_height="32dp"
+                android:paddingHorizontal="11dp"
+                android:layout_marginHorizontal="11dp"
+                android:paddingVertical="5dp"
+                android:text="내 기록"
+                android:textSize="16sp"
+                android:textColor="#FDFDFD"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/sns_my_record_selected"
+                />
+            <ImageView
+                android:id="@+id/search_button"
+                android:layout_marginTop="3dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/search_icon"/>
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
