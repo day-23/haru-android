@@ -102,7 +102,13 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
                     Toast.makeText(context, "새 코멘트 불러오는 중....", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
 
+        val refresher = binding.refreshComment
+        refresher.setOnRefreshListener {
+            refresher.isRefreshing = true
+            snsViewModel.getFirstComments(post.id, post.images[index].id)
+            refresher.isRefreshing = false
         }
 
         binding.commentsLastPicture.setOnClickListener {
