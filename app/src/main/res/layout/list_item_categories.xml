@@ -24,9 +24,10 @@
     <TextView
         android:textColor="#191919"
         android:id="@+id/category_name"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="14dp"
         android:text="test"
-        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textSize="16dp"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -39,7 +40,7 @@
 
         <ImageView
             android:id="@+id/category_correction"
-            android:background="@drawable/category_correction"
+            android:background="@drawable/category_correction_image"
             android:layout_marginTop="6dp"
             android:layout_width="28dp"
             android:layout_height="28dp"/>

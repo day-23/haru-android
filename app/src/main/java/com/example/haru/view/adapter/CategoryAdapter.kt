@@ -130,6 +130,7 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
                 onItemClicked(categoryList[position]!!, position)
             }
         } else {
+            cateogryCorrection.visibility = View.INVISIBLE
             if (calendarMainData.unclassifiedCategory) {
                 if (calendarMainData.scheduleApply) {
                     drawable.setColorFilter(

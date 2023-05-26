@@ -3,13 +3,18 @@ package com.example.haru.view.calendar
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.VectorDrawable
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,7 +82,12 @@ class CalendarDetailDialog (val context : Context,
         }
 
         var transform = CompositePageTransformer()
-        transform.addTransformer(MarginPageTransformer(30))
+        transform.addTransformer(MarginPageTransformer(50))
+
+        transform.addTransformer { page, position ->
+            val darkenLayout = page.findViewById<View>(R.id.darken_layout)
+            darkenLayout.alpha = abs(position)
+        }
 
         transform.addTransformer(ViewPager2.PageTransformer{ view: View, fl: Float ->
             var v = 1-Math.abs(fl)
@@ -86,7 +96,7 @@ class CalendarDetailDialog (val context : Context,
 
         datailViewPager.setPageTransformer(transform)
 
-        datailViewPager.setPadding(100,0,100,0)
+        datailViewPager.setPadding(130,0,130,0)
 
         datailViewPager.setCurrentItem(Int.MAX_VALUE / 2, false)
 
