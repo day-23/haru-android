@@ -304,7 +304,7 @@ class CalendarAddFragment(private val activity: Activity,
 
             textView.setOnClickListener {
                 if(!monthsValue[i-1]){
-                    textView.setTextColor(Color.CYAN)
+                    textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                     monthsValue[i-1] = true
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
@@ -330,7 +330,7 @@ class CalendarAddFragment(private val activity: Activity,
 
             textView.setOnClickListener {
                 if(!yearsValue[i-1]){
-                    textView.setTextColor(Color.CYAN)
+                    textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                     yearsValue[i-1] = true
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
@@ -407,7 +407,7 @@ class CalendarAddFragment(private val activity: Activity,
 
                 if(!weeksValue[i]){
                     weeksValue[i] = true
-                    view.setTextColor(Color.CYAN)
+                    view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                 } else {
                     weeksValue[i] = false
                     view.setTextColor(Color.LTGRAY)

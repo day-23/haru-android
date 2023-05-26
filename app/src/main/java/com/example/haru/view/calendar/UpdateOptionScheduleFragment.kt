@@ -18,30 +18,29 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class UpdateOptionScheduleFragment(val callback: (Int) -> Unit) :
+class UpdateOptionScheduleFragment(val sizeOption: Int, val callback: (Int) -> Unit) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionUpdateScheduleBinding
     private var ratio: Int = 43
 
 
     init {
-//        ratio = when (type) {
-//            // 취소 버튼 제외하고 선택지가 1개인 경우
-//            UpdateType.FRONT_ONE, UpdateType.FRONT_TWO,
-//            UpdateType.BACK_TWO, UpdateType.NOT_REPEAT, UpdateType.MIDDLE_TWO -> {
-//                27
-//            }
-//
-//            // 취소 버튼 제외하고 선택지가 2개인 경우
-//            UpdateType.FRONT_THREE, UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> {
-//                35
-//            }
-//
-//            // 취소 버튼 제외하고 선택지가 3개인 경우
-//            UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> {
-//                43
-//            }
-//        }
+        ratio = when (sizeOption) {
+            // 취소 버튼 제외하고 선택지가 1개인 경우
+            0,1,2,3 -> {
+                27
+            }
+
+            // 취소 버튼 제외하고 선택지가 2개인 경우
+            4,5 -> {
+                35
+            }
+
+            // 취소 버튼 제외하고 선택지가 3개인 경우
+            else -> {
+                43
+            }
+        }
     }
 
     override fun onCreateView(
@@ -88,62 +87,60 @@ class UpdateOptionScheduleFragment(val callback: (Int) -> Unit) :
         val params: LinearLayout.LayoutParams =
             binding.layoutParentBtnUpdate.layoutParams as LinearLayout.LayoutParams
 
-        params.weight = 4f
-
-//        params.weight = when (type) {
-//            UpdateType.FRONT_ONE -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionOneUpdate)
-//                    removeView(binding.btnOptionAfterUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                2f
-//            }
-//            UpdateType.FRONT_TWO -> { // 이 할일만 수정 (마감일 수정, 반복 옵션 수정X)
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionAllUpdate)
-//                    removeView(binding.btnOptionAfterUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                2f
-//            }
-//            UpdateType.FRONT_THREE -> { // 전체 할일 수정, 이 할일만 수정
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionAfterUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                3f
-//            }
-//            UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> { // 전체 할일 수정, 이 할일부터 수정
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionOneUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                3f
-//            }
-//            UpdateType.MIDDLE_TWO, UpdateType.BACK_TWO -> { // 이 할일만 수정
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionAllUpdate)
-//                    removeView(binding.btnOptionAfterUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                2f
-//            }
-//            UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> { // 모든 옵션을 보여주는 상황
-//                binding.layoutParentBtnUpdate.removeView(binding.btnOptionSave)
-//                4f
-//            }
-//            UpdateType.NOT_REPEAT -> {
-//                binding.textViewUpdateInfo.text =
-//                    getString(R.string.updateDescription).substring(0, 12)
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionOneUpdate)
-//                    removeView(binding.btnOptionAllUpdate)
-//                    removeView(binding.btnOptionAfterUpdate)
-//                }
-//                2f
-//            }
-//        }
+        params.weight = when (sizeOption) {
+            0 -> {
+                binding.textViewUpdateInfo.text =
+                    getString(R.string.updateDescription).substring(0, 12)
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionAllUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                }
+                2f
+            }
+            1 -> { // 이 할일만 수정 (마감일 수정, 반복 옵션 수정X)
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAllUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                2f
+            }
+            2 -> { // 이 할일만 수정
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAllUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                2f
+            }
+            3 -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                2f
+            }
+            4 -> { // 전체 할일 수정, 이 할일부터 수정
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                3f
+            }
+            5 -> { // 전체 할일 수정, 이 할일만 수정
+                binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionSave)
+                }
+                3f
+            }
+            else -> { // 모든 옵션을 보여주는 상황
+                binding.layoutParentBtnUpdate.removeView(binding.btnOptionSave)
+                4f
+            }
+        }
 
         binding.layoutParentBtnUpdate.apply {
             layoutParams = params

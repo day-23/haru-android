@@ -77,6 +77,7 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
         if (categoryList[position] != null) {
             if (categoryList[position]!!.isSelected) {
                 if (calendarMainData.scheduleApply) {
+                    Log.d("카테고리 확인", categoryList[position].toString())
                     drawable.setColorFilter(
                         Color.parseColor(categoryList[position]!!.color),
                         PorterDuff.Mode.SRC_ATOP
@@ -179,6 +180,7 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
     }
 
     override fun getItemCount(): Int {
+        Log.d("카테고리", categoryList.toString())
         return categoryList.size
     }
 }
