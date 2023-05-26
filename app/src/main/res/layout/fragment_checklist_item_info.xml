@@ -253,7 +253,7 @@
                         android:layout_height="wrap_content"
                         android:animateLayoutChanges="true"
                         android:paddingTop="12dp"
-                        android:visibility="gone">
+                        >
 
                         <TextView
                             android:id="@+id/tv_info_endTime_set"
@@ -399,7 +399,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="8dp"
-                        android:visibility="gone">
+                        >
 
                         <LinearLayout
                             android:id="@+id/info_repeatOptionSelect"
@@ -489,7 +489,7 @@
                         android:layout_marginEnd="55dp"
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
-                        android:visibility="gone">
+                        >
 
                         <TextView
                             android:id="@+id/tv_info_sunday"
@@ -569,7 +569,7 @@
                         android:paddingTop="8dp"
                         android:rowCount="5"
                         android:useDefaultMargins="true"
-                        android:visibility="gone" />
+                         />
 
                     <GridLayout
                         android:id="@+id/info_gridYear"
@@ -583,7 +583,7 @@
                         android:paddingTop="8dp"
                         android:rowCount="2"
                         android:useDefaultMargins="true"
-                        android:visibility="gone" />
+                         />
 
                     <LinearLayout
                         android:id="@+id/info_repeatEndDateLayout"
@@ -591,7 +591,7 @@
                         android:layout_height="wrap_content"
                         android:animateLayoutChanges="true"
                         android:paddingTop="14dp"
-                        android:visibility="gone">
+                        >
 
                         <TextView
                             android:id="@+id/tv_info_repeat_end"

@@ -9,10 +9,7 @@ import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -31,11 +28,16 @@ import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import java.util.*
 
-class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, val todo: Todo?=null) : Fragment() {
+class ChecklistItemFragment(
+    checkListViewModel: CheckListViewModel,
+    id: String,
+    val todo: Todo? = null
+) : Fragment() {
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
     private var lastClickTime = SystemClock.elapsedRealtime()
+
     enum class UpdateType {
         FRONT_ONE, FRONT_TWO, FRONT_THREE,
         MIDDLE_ONE, MIDDLE_TWO, MIDDLE_THREE,
@@ -131,6 +133,75 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
             binding.infoGridYear.addView(textView, params)
         }
 
+        // 마감일 레이아웃 크기 계산
+        binding.infoEndDateTimeLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setEndTimeHeight(binding.infoEndDateTimeLayout.height)
+                binding.infoEndDateTimeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                Log.d("20191627", todoAddViewModel.endTimeLayoutHeight.toString())
+                binding.infoEndDateTimeLayout.visibility = View.GONE
+            }
+        })
+
+        // repeatOption 선택 레이아웃 높이 계산
+        binding.infoRepeatOptionLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setRepeatOptionH(binding.infoRepeatOptionLayout.height)
+                binding.infoRepeatOptionLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                Log.d(
+                    "20191627",
+                    "infoRepeatOptionLayout : " + todoAddViewModel.repeatOptionHeight.toString()
+                )
+                binding.infoRepeatOptionLayout.visibility = View.GONE
+            }
+        })
+
+        // repeatWeek 높이 계산
+        binding.infoEveryWeekSelectLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setWeekHeight(binding.infoEveryWeekSelectLayout.height)
+                Log.d("20191627", "WeekSelect Height : ${todoAddViewModel.repeatWeekHeight}")
+                binding.infoEveryWeekSelectLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding.infoEveryWeekSelectLayout.visibility = View.GONE
+            }
+        })
+
+        // repeatMonth 높이 계산
+        binding.infoGridMonth.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setMonthHeight(binding.infoGridMonth.height)
+                binding.infoGridMonth.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding.infoGridMonth.visibility = View.GONE
+            }
+        })
+
+        binding.infoGridYear.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setYearHeight(binding.infoGridYear.height)
+                binding.infoGridYear.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding.infoGridYear.visibility = View.GONE
+            }
+        })
+
+        // 반복 마감 날짜 높이 계산
+        binding.infoRepeatEndDateLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                todoAddViewModel.setRepeatEndDateH(binding.infoRepeatEndDateLayout.height)
+                binding.infoRepeatEndDateLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                Log.d(
+                    "20191627",
+                    "infoRepeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString()
+                )
+                binding.infoRepeatEndDateLayout.visibility = View.GONE
+            }
+        })
+
         return binding.root
     }
 
@@ -141,9 +212,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         binding.vm = todoAddViewModel
 
         if (todo != null)
-            Log.d("20191627", todo.endDate?: "null")
+            Log.d("20191627", todo.endDate ?: "null")
 
-        if (todoAddViewModel.clickedTodo!!.completed){
+        if (todoAddViewModel.clickedTodo!!.completed) {
             binding.infoSubTodoAddLayout.visibility = View.GONE
         }
 
@@ -416,7 +487,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     }
                     if (date == null)
                         todoAddViewModel.setDate(0, Date())
-
                     else
                         todoAddViewModel.setDate(0, date)
 
@@ -483,7 +553,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
             }
         })
 
-        binding.infoTagEt.addTextChangedListener(object : TextWatcher{
+        binding.infoTagEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -495,7 +565,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 if (str == "")
                     return
 
-                if (str[str.length - 1] == ' '){
+                if (str[str.length - 1] == ' ') {
                     todoAddViewModel.addTagList()
                     binding.infoTagEt.setText("")
                 }
@@ -594,7 +664,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 binding.btnInfoRepeatEndDate.id -> {
                     val datePicker = when (v.id) {
                         binding.btnInfoEndDatePick.id -> CustomCalendarDialog(todoAddViewModel.endDate.value)
-                        binding.btnInfoRepeatEndDate.id -> CustomCalendarDialog(todoAddViewModel.repeatEndDate.value, todoAddViewModel.endDate.value)
+                        binding.btnInfoRepeatEndDate.id -> CustomCalendarDialog(
+                            todoAddViewModel.repeatEndDate.value,
+                            todoAddViewModel.endDate.value
+                        )
                         binding.btnInfoAlarmDatePick.id -> CustomCalendarDialog(todoAddViewModel.alarmDate.value)
                         else -> CustomCalendarDialog()
                     }
@@ -624,21 +697,25 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
                 binding.btnInfoEndTimePick.id,
                 binding.btnInfoAlarmTimePick.id -> {
-                    val timePicker = when(v.id){
-                        binding.btnInfoEndTimePick.id -> {CustomTimeDialog(todoAddViewModel.endTime.value)}
-                        binding.btnInfoAlarmTimePick.id -> {CustomTimeDialog(todoAddViewModel.alarmTime.value)}
+                    val timePicker = when (v.id) {
+                        binding.btnInfoEndTimePick.id -> {
+                            CustomTimeDialog(todoAddViewModel.endTime.value)
+                        }
+                        binding.btnInfoAlarmTimePick.id -> {
+                            CustomTimeDialog(todoAddViewModel.alarmTime.value)
+                        }
                         else -> CustomTimeDialog()
                     }
-                    timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener{
+                    timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener {
                         override fun onClick(
-                            timeDivider : NumberPicker,
+                            timeDivider: NumberPicker,
                             hourNumberPicker: NumberPicker,
                             minuteNumberPicker: NumberPicker
                         ) {
                             val timeDivision = timeDivider.value
                             var hour = hourNumberPicker.value
                             val minute = minuteNumberPicker.value
-                            if (timeDivision == 0){
+                            if (timeDivision == 0) {
                                 if (hour == 11)
                                     hour = 0
                                 else hour++
@@ -653,7 +730,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 set(Calendar.MINUTE, minute * 5)
                             }
                             val time = FormatDate.cal.time
-                            when(v.id){
+                            when (v.id) {
                                 binding.btnInfoEndTimePick.id ->
                                     todoAddViewModel.setTime(0, time)
                                 binding.btnInfoAlarmTimePick.id ->
@@ -683,7 +760,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
                 binding.btnInfoDelete.id -> {
-                    if (SystemClock.elapsedRealtime() - lastClickTime < 2000){
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 2000) {
                         Log.d("20191627", "삭제 옵션창 띄우기 중복 막기")
                         return
                     }
@@ -707,7 +784,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 //                    }
                 }
                 binding.btnInfoSave.id -> {
-                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
                         Log.d("20191627", "저장 옵션창 띄우기 중복 막기")
                         return
                     }
@@ -721,12 +798,12 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         Log.d("20191627", "checkEndDate : $checkEndDate")
                         Log.d("20191627", "checkRepeatData : $checkRepeatData")
 
-                        val type = when(todoAddViewModel.clickedTodo?.location){
+                        val type = when (todoAddViewModel.clickedTodo?.location) {
                             0 -> { // front
                                 val type = if (checkEndDate && checkRepeatData) {
                                     // 전체 이벤트 수정
                                     UpdateType.FRONT_ONE
-                                } else if (checkEndDate){
+                                } else if (checkEndDate) {
                                     // 이 이벤트만 수정
                                     UpdateType.FRONT_TWO
                                 } else if (checkRepeatData) {
@@ -739,10 +816,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 type
                             }
                             1 -> { // middle
-                                val type = if (checkEndDate && checkRepeatData){
+                                val type = if (checkEndDate && checkRepeatData) {
                                     // 전체 이벤트 수정, 이 이벤트부터 수정
                                     UpdateType.MIDDLE_ONE
-                                } else if(checkEndDate){
+                                } else if (checkEndDate) {
                                     // 이 이벤트만 수정
                                     UpdateType.MIDDLE_TWO
                                 } else if (checkRepeatData) {
@@ -755,10 +832,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 type
                             }
                             2 -> { // back
-                                val type = if (checkEndDate && checkRepeatData){
+                                val type = if (checkEndDate && checkRepeatData) {
                                     // 전체 이벤트 수정, 이 이벤트부터 수정
                                     UpdateType.BACK_ONE
-                                } else if(checkEndDate){
+                                } else if (checkEndDate) {
                                     // 이 이벤트만 수정
                                     UpdateType.BACK_TWO
                                 } else if (checkRepeatData) {
@@ -770,7 +847,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 }
                                 type
                             }
-                            else -> { UpdateType.NOT_REPEAT }
+                            else -> {
+                                UpdateType.NOT_REPEAT
+                            }
                         }
                         Log.d("20191627", "type : $type")
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
