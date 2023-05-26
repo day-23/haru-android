@@ -301,23 +301,6 @@ class ChecklistInputFragment(
                             binding.endDateSetLayout.height,
                             binding.endDateSetLayout.height + todoAddViewModel.endTimeLayoutHeight
                         )
-//
-//                        val valueAnimator = ValueAnimator.ofInt(
-//                            binding.endDateSetLayout.height,
-//                            binding.endDateSetLayout.height + todoAddViewModel.endTimeLayoutHeight
-//                        )
-//
-//                        Log.e(
-//                            "20191627",
-//                            "endTimeLayoutHeight -> ${todoAddViewModel.endTimeLayoutHeight}"
-//                        )
-//                        valueAnimator.addUpdateListener { animator ->
-//                            val layoutParams = binding.endDateSetLayout.layoutParams
-//                            layoutParams.height = animator.animatedValue as Int
-//                            binding.endDateSetLayout.layoutParams = layoutParams
-//                        }
-//                        valueAnimator.duration = 400
-//                        valueAnimator.start()
 
                         binding.endDateTimeLayout.visibility = View.VISIBLE
                         binding.ivCalendarIcon.backgroundTintList =
@@ -344,17 +327,6 @@ class ChecklistInputFragment(
                             400, binding.endDateSetLayout.height,
                             binding.endDateSetLayout.height - todoAddViewModel.endTimeLayoutHeight
                         )
-//                        val valueAnimator = ValueAnimator.ofInt(
-//                            binding.endDateSetLayout.height,
-//                            binding.endDateSetLayout.height - todoAddViewModel.endTimeLayoutHeight
-//                        )
-//                        valueAnimator.addUpdateListener { animator ->
-//                            val layoutParams = binding.endDateSetLayout.layoutParams
-//                            layoutParams.height = animator.animatedValue as Int
-//                            binding.endDateSetLayout.layoutParams = layoutParams
-//                        }
-//                        valueAnimator.duration = 400
-//                        valueAnimator.start()
 
                         binding.endDateTimeLayout.visibility = View.INVISIBLE
                         binding.ivCalendarIcon.backgroundTintList =
@@ -471,17 +443,6 @@ class ChecklistInputFragment(
                                 todoAddViewModel.repeatOptionHeight +
                                 todoAddViewModel.repeatEndDateHeight
                     )
-//                    val valueAnimator = ValueAnimator.ofInt(
-//                        binding.repeatSetLayout.height,
-//                        binding.repeatSetLayout.height + todoAddViewModel.repeatOptionHeight + todoAddViewModel.repeatEndDateHeight
-//                    )
-//                    valueAnimator.addUpdateListener { animator ->
-//                        val layoutParams = binding.repeatSetLayout.layoutParams
-//                        layoutParams.height = animator.animatedValue as Int
-//                        binding.repeatSetLayout.layoutParams = layoutParams
-//                    }
-//                    valueAnimator.duration = 400
-//                    valueAnimator.start()
 
                     binding.repeatOptionLayout.visibility = View.VISIBLE
                     binding.repeatEndDateLayout.visibility = View.VISIBLE
@@ -506,17 +467,6 @@ class ChecklistInputFragment(
                         400, binding.repeatSetLayout.height,
                         todoAddViewModel.repeatSetLayoutHeight
                     )
-//                    val valueAnimator = ValueAnimator.ofInt(
-//                        binding.repeatSetLayout.height,
-//                        todoAddViewModel.repeatSetLayoutHeight
-//                    )
-//                    valueAnimator.addUpdateListener { animator ->
-//                        val layoutParams = binding.repeatSetLayout.layoutParams
-//                        layoutParams.height = animator.animatedValue as Int
-//                        binding.repeatSetLayout.layoutParams = layoutParams
-//                    }
-//                    valueAnimator.duration = 400
-//                    valueAnimator.start()
 
                     binding.repeatOptionLayout.visibility = View.INVISIBLE
                     binding.repeatEndDateLayout.visibility = View.INVISIBLE
@@ -571,17 +521,6 @@ class ChecklistInputFragment(
                                 todoAddViewModel.repeatOptionHeight +
                                 todoAddViewModel.repeatEndDateHeight
                     )
-//                    val valueAnimator = ValueAnimator.ofInt(
-//                        binding.repeatSetLayout.height,
-//                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight + todoAddViewModel.repeatEndDateHeight
-//                    )
-//                    valueAnimator.addUpdateListener { animator ->
-//                        val layoutParams = binding.repeatSetLayout.layoutParams
-//                        layoutParams.height = animator.animatedValue as Int
-//                        binding.repeatSetLayout.layoutParams = layoutParams
-//                    }
-//                    valueAnimator.duration = 400
-//                    valueAnimator.start()
 
                     binding.everyWeekSelectLayout.visibility = View.GONE
                     binding.gridMonth.visibility = View.GONE
@@ -593,18 +532,6 @@ class ChecklistInputFragment(
                         todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
                                 + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.repeatWeekHeight
                     )
-//                    val valueAnimator = ValueAnimator.ofInt(
-//                        binding.repeatSetLayout.height,
-//                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
-//                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.repeatWeekHeight
-//                    )
-//                    valueAnimator.addUpdateListener { animator ->
-//                        val layoutParams = binding.repeatSetLayout.layoutParams
-//                        layoutParams.height = animator.animatedValue as Int
-//                        binding.repeatSetLayout.layoutParams = layoutParams
-//                    }
-//                    valueAnimator.duration = 400
-//                    valueAnimator.start()
 
                     binding.everyWeekSelectLayout.visibility = View.VISIBLE
                     binding.gridMonth.visibility = View.GONE
@@ -617,18 +544,6 @@ class ChecklistInputFragment(
                         todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
                                 + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridMonthHeight
                     )
-//                    val valueAnimator = ValueAnimator.ofInt(
-//                        binding.repeatSetLayout.height,
-//                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
-//                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridMonthHeight
-//                    )
-//                    valueAnimator.addUpdateListener { animator ->
-//                        val layoutParams = binding.repeatSetLayout.layoutParams
-//                        layoutParams.height = animator.animatedValue as Int
-//                        binding.repeatSetLayout.layoutParams = layoutParams
-//                    }
-//                    valueAnimator.duration = 400
-//                    valueAnimator.start()
 
                     binding.gridMonth.visibility = View.VISIBLE
                     binding.everyWeekSelectLayout.visibility = View.GONE
@@ -641,18 +556,6 @@ class ChecklistInputFragment(
                         todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
                                 + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridYearHeight
                     )
-//                    val valueAnimator = ValueAnimator.ofInt(
-//                        binding.repeatSetLayout.height,
-//                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
-//                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridYearHeight
-//                    )
-//                    valueAnimator.addUpdateListener { animator ->
-//                        val layoutParams = binding.repeatSetLayout.layoutParams
-//                        layoutParams.height = animator.animatedValue as Int
-//                        binding.repeatSetLayout.layoutParams = layoutParams
-//                    }
-//                    valueAnimator.duration = 400
-//                    valueAnimator.start()
 
                     binding.gridMonth.visibility = View.GONE
                     binding.everyWeekSelectLayout.visibility = View.GONE
@@ -955,11 +858,6 @@ class ChecklistInputFragment(
         binding.btnClose.setOnClickListener(btnListener())
 
         binding.subTodoAddLayout.setOnClickListener(btnListener())
-
-//        if (today == true) {
-//            todoAddViewModel.setTodayTodo()
-//            todoAddViewModel.setEndDateSwitch()
-//        }
     }
 
     override fun onStart() {
