@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -52,6 +53,7 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,6 +66,12 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
         commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         snsViewModel.getFirstComments(post.id, post.images[0].id)
         var index = 0
+        binding.commentCommentsIndex.text = "1/${post.images.size}"
+
+        if(post.images.size == 1){
+            binding.commentsNextPicture.visibility = View.GONE
+            binding.commentsLastPicture.visibility = View.GONE
+        }
 
         val scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -76,6 +84,38 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
             }
 
         }
+
+        binding.commentsLastPicture.setOnClickListener {
+            index -= 1
+            snsViewModel.getFirstComments(post.id, post.images[index].id)
+            binding.commentCommentsIndex.text = "${index + 1}/${post.images.size}"
+
+            if(index == 0){
+                binding.commentsLastPicture.visibility = View.GONE
+            }else{
+                binding.commentsLastPicture.visibility = View.VISIBLE
+            }
+
+            if(index != post.images.size - 1){
+                binding.commentsNextPicture.visibility = View.VISIBLE
+            }
+        }
+
+        binding.commentsNextPicture.setOnClickListener {
+            index += 1
+            snsViewModel.getFirstComments(post.id, post.images[index].id)
+            binding.commentCommentsIndex.text = "${index + 1}/${post.images.size}"
+
+            if(index == post.images.size - 1){
+                binding.commentsNextPicture.visibility = View.GONE
+            }else{
+                binding.commentsNextPicture.visibility = View.VISIBLE
+            }
+
+            if(index != 0){
+                binding.commentsLastPicture.visibility = View.VISIBLE
+            }
+        }
         commentsRecyclerView.addOnScrollListener(scrollListener)
 
         snsViewModel.Comments.observe(viewLifecycleOwner){comments ->
@@ -87,13 +127,20 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
             }
         }
 
+        snsViewModel.FirstComments.observe(viewLifecycleOwner){comments ->
+            if(comments.size > 0){
+                adapter.firstComment(comments)
+                binding.commentCount.text = adapter.itemCount.toString()
+            }else{
+                adapter.firstComment(arrayListOf())
+                binding.commentCount.text = "0"
+                newComment = false
+            }
+        }
+
         binding.commentBackbutton.setOnClickListener {
             val fragmentManager = parentFragmentManager
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-//            val fragment = SnsFragment()
-//            parentFragmentManager.beginTransaction()
-//                .replace(R.id.fragments_frame, fragment)
-//                .commit()
         }
 
         snsViewModel.ChangeResult.observe(viewLifecycleOwner){result ->
