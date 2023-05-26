@@ -1560,6 +1560,7 @@ class CalendarItemFragment(val schedule: Schedule,
         //반복이 설정되어 있을 때
         if (schedule.repeatOption != null) {
             binding.repeatSwitchSchedule.isChecked = true
+            binding.repeatOptionSelectSchedule.visibility = View.VISIBLE
 
             binding.repeatIvSchedule.backgroundTintList =
                 ColorStateList.valueOf(Color.parseColor("#191919"))
@@ -1618,6 +1619,12 @@ class CalendarItemFragment(val schedule: Schedule,
             textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             textView.gravity = Gravity.CENTER
 
+            if (!monthsValue[i - 1]) {
+                textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            } else {
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+            }
+
             textView.setOnClickListener {
                 if (!monthsValue[i - 1]) {
                     textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
@@ -1642,6 +1649,12 @@ class CalendarItemFragment(val schedule: Schedule,
             textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
             textView.gravity = Gravity.CENTER
 
+            if (!yearsValue[i - 1]) {
+                textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            } else {
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+            }
+
             textView.setOnClickListener {
                 if (!yearsValue[i - 1]) {
                     textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
@@ -1661,9 +1674,15 @@ class CalendarItemFragment(val schedule: Schedule,
         }
 
         for (i in 0..6) {
-            binding.everyWeekLayout.getChildAt(i).setOnClickListener {
-                val view = it as TextView
+            val view = binding.everyWeekLayout.getChildAt(i) as TextView
 
+            if (!weeksValue[i]) {
+                view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            } else {
+                view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+            }
+
+            view.setOnClickListener {
                 if (!weeksValue[i]) {
                     weeksValue[i] = true
                     view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))

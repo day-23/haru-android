@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -27,7 +28,7 @@ import com.example.haru.view.checklist.CalendarAddFragment
 import java.util.Date
 import kotlin.math.abs
 
-class CalendarDetailDialog (context : Context,
+class CalendarDetailDialog (val context : Context,
                             val lifecycleOwner: LifecycleOwner,
                             val startDate: Date,
                             val adaptermonth:AdapterMonth,
@@ -36,6 +37,10 @@ class CalendarDetailDialog (context : Context,
                             ){
     private val dlg = Dialog(context)
 
+    fun dpToPx(context: Context, dp: Float): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics)
+    }
+
     fun show(height:Int) {
         dlg.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -43,7 +48,7 @@ class CalendarDetailDialog (context : Context,
 
         dlg.window!!.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
-            height/5*4
+            dpToPx(context, 480f).toInt()
         )
 
         dlg.setCanceledOnTouchOutside(true)

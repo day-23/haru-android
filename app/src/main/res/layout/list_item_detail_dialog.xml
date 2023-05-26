@@ -7,20 +7,20 @@
     
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_height="70dp"
         android:gravity="left"
         android:orientation="horizontal"
-        android:background="@drawable/calendar_gardient_background">
+        android:background="@drawable/detail_dialog_radius">
 
         <TextView
             android:id="@+id/detail_day_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:textColor="#FDFDFD"
             android:layout_marginLeft="24dp"
-            android:layout_marginTop="28dp"
-            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:textSize="24sp"
             android:text="14일 화요일"/>
 
         <LinearLayout
@@ -30,16 +30,16 @@
             <ImageView
                 android:id="@+id/mini_back_imv"
                 android:background="@drawable/mini_calendar_back_btn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_gravity="center"/>
 
             <ImageView
                 android:id="@+id/mini_next_imv"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/mini_calendar_back_btn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_gravity="center"
                 android:rotation="180"/>
         </LinearLayout>
@@ -48,8 +48,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
-        android:background="@color/white">
+        android:layout_weight="1"
+        android:background="#FDFDFD">
 
         <LinearLayout
             android:orientation="vertical"
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 app:cardElevation="0dp"
                 app:cardUseCompatPadding="true"
-                app:contentPadding="20sp">
+                app:contentPadding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -86,7 +86,10 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="6dp"
                                 android:text="일정"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
                                 android:textColor="#1DAFFF"
                                 android:textSize="14sp" />
                         </LinearLayout>
@@ -131,6 +134,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="할일"
+                            android:textStyle="bold"
+                            android:layout_marginLeft="6dp"
+                            android:layout_gravity="center"
                             android:textColor="#1DAFFF" />
                     </LinearLayout>
 
@@ -148,14 +154,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/white"
-        android:layout_weight="1">
+        android:layout_height="56dp"
+        android:background="#FDFDFD">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="5"
+            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/calendar_border"
             android:orientation="horizontal">
 
@@ -170,20 +178,19 @@
                 android:textColor="#191919" />
         </LinearLayout>
 
-        <Button
+        <ImageView
             android:id="@+id/simple_schedule_btn"
-            android:visibility="invisible"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="16dp"
-            android:text="추가"/>
+            android:layout_gravity="center"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="17dp"
+            android:background="@drawable/fab"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/calendar_gardient_background"
-        android:layout_weight="1"/>
+        android:layout_height="26dp"
+        android:background="@drawable/detail_dialog_radius_bottom"/>
 
 </LinearLayout>
