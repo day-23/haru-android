@@ -33,10 +33,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
 
-class CalendarFragment(private val activity: Activity) : Fragment() {
+class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayout.DrawerListener {
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var adapterMonth: AdapterMonth
     private lateinit var categoryAdapter: CategoryAdapter
+
+    private lateinit var categoryDrawerLayout: DrawerLayout
 
     private lateinit var checkListViewModel: CheckListViewModel
 
@@ -136,7 +138,7 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
         val categoryAddImage = view.findViewById<ImageView>(R.id.category_add_image)
         val categoryButtonImv = view.findViewById<ImageView>(R.id.category_button_imv)
 
-        val categoryDrawerLayout = view.findViewById<DrawerLayout>(R.id.category_drawerlayout)
+        categoryDrawerLayout = view.findViewById<DrawerLayout>(R.id.category_drawerlayout)
 
         val month_viewpager = view.findViewById<ViewPager2>(R.id.month_viewpager)
 
@@ -163,7 +165,6 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
         val scheduleApplyImv = view.findViewById<ImageView>(R.id.schedule_apply_imv)
         val scheduleApplyTv = view.findViewById<TextView>(R.id.schedule_apply_tv)
 
-        val categoryOkTv = view.findViewById<TextView>(R.id.category_ok_tv)
         val allBlindTv = view.findViewById<TextView>(R.id.all_blind_tv)
 
         val calendar = Calendar.getInstance()
@@ -187,7 +188,7 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
                 val filter = ColorMatrixColorFilter(matrix)
                 drawable.setColorFilter(filter)
 
-                todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                todoCompleteTv.setTextColor(Color.parseColor("#BABABA"))
             }
 
             if(!calendarMainData.todoInComplete){
@@ -200,7 +201,7 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
                 val filter = ColorMatrixColorFilter(matrix)
                 drawable.setColorFilter(filter)
 
-                todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                todoIncompleteTv.setTextColor(Color.parseColor("#BABABA"))
             }
 
             todoApplyTv.setTextColor(
@@ -225,8 +226,8 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
             drawable.setColorFilter(filter)
             drawable2.setColorFilter(filter)
 
-            todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
-            todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+            todoCompleteTv.setTextColor(Color.parseColor("#BABABA"))
+            todoIncompleteTv.setTextColor(Color.parseColor("#BABABA"))
         }
 
         todoCompleteLayout.setOnClickListener {
@@ -239,7 +240,7 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
                     val filter = ColorMatrixColorFilter(matrix)
                     drawable.setColorFilter(filter)
 
-                    todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                    todoCompleteTv.setTextColor(Color.parseColor("#BABABA"))
                 } else {
                     drawable.setColorFilter(null)
 
@@ -260,7 +261,7 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
                     val filter = ColorMatrixColorFilter(matrix)
                     drawable.setColorFilter(filter)
 
-                    todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                    todoIncompleteTv.setTextColor(Color.parseColor("#BABABA"))
                 } else {
                     drawable.setColorFilter(null)
 
@@ -290,8 +291,13 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
                 drawable.setColorFilter(filter)
                 drawable2.setColorFilter(filter)
 
-                todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
-                todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                todoCompleteTv.setTextColor(Color.parseColor("#BABABA"))
+                todoIncompleteTv.setTextColor(Color.parseColor("#BABABA"))
+
+                if(!calendarMainData.scheduleApply){
+                    allBlindTv.text = "모두 표시"
+                    allBlindTv.setTextColor(Color.parseColor("#1DAFFF"))
+                }
             } else {
                 calendarMainData.todoApply = true
 
@@ -340,6 +346,11 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
                 scheduleApplyTv.setTextColor(
                     Color.parseColor("#BABABA")
                 )
+
+                if(!calendarMainData.todoApply){
+                    allBlindTv.text = "모두 표시"
+                    allBlindTv.setTextColor(Color.parseColor("#1DAFFF"))
+                }
             } else {
                 calendarMainData.scheduleApply = true
 
@@ -353,42 +364,103 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
             categoryAdapter.dataAllChanged()
         }
 
-        categoryOkTv.setOnClickListener {
-            adapterMonth.notifyDataSetChanged()
-            categoryDrawerLayout.closeDrawer(Gravity.RIGHT)
+        categoryDrawerLayout.addDrawerListener(this)
+
+        if(!calendarMainData.todoApply && !calendarMainData.scheduleApply){
+            allBlindTv.text = "모두 표시"
+            allBlindTv.setTextColor(Color.parseColor("#1DAFFF"))
         }
 
         //모두 잠그기
         allBlindTv.setOnClickListener {
-            var changeStatus = false
+            if(allBlindTv.text.toString() == "모두 가리기") {
+                var changeStatus = false
 
-            if(calendarMainData.todoApply) {
-                todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image_false)
+                if (calendarMainData.todoApply) {
+                    todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image_false)
 
-                todoApplyTv.setTextColor(
-                    Color.parseColor("#BABABA")
-                )
+                    todoApplyTv.setTextColor(
+                        Color.parseColor("#BABABA")
+                    )
 
-                changeStatus = true
-            }
+                    if (calendarMainData.todoInComplete) {
+                        val drawable = todoIncompleteImv.background as VectorDrawable
+                        val matrix = ColorMatrix()
 
-            if(calendarMainData.scheduleApply) {
-                scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image_false)
+                        matrix.setSaturation(0f)
+
+                        val filter = ColorMatrixColorFilter(matrix)
+                        drawable.setColorFilter(filter)
+
+                        todoIncompleteTv.setTextColor(Color.parseColor("#BABABA"))
+                    }
+
+                    if (calendarMainData.todoComplete) {
+                        val drawable = todoCompleteImv.background as VectorDrawable
+                        val matrix = ColorMatrix()
+                        matrix.setSaturation(0f)
+
+                        val filter = ColorMatrixColorFilter(matrix)
+                        drawable.setColorFilter(filter)
+
+                        todoCompleteTv.setTextColor(Color.parseColor("#BABABA"))
+                    }
+
+                    changeStatus = true
+                }
+
+                if (calendarMainData.scheduleApply) {
+                    scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image_false)
+
+                    scheduleApplyTv.setTextColor(
+                        Color.parseColor("#BABABA")
+                    )
+
+                    changeStatus = true
+                }
+
+                calendarMainData.todoApply = false
+                calendarMainData.scheduleApply = false
+
+                if (changeStatus) {
+                    categoryAdapter.dataAllChanged()
+                }
+
+                allBlindTv.text = "모두 표시"
+                allBlindTv.setTextColor(Color.parseColor("#1DAFFF"))
+            } else{
+                calendarMainData.scheduleApply = true
+
+                scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
 
                 scheduleApplyTv.setTextColor(
-                    Color.parseColor("#BABABA")
+                    Color.parseColor("#1DAFFF")
                 )
 
-                changeStatus = true
-            }
-
-            calendarMainData.todoApply = false
-            calendarMainData.scheduleApply = false
-
-            Log.d("changeStatus", changeStatus.toString())
-
-            if(changeStatus) {
                 categoryAdapter.dataAllChanged()
+
+                calendarMainData.todoApply = true
+
+                todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
+
+                todoApplyTv.setTextColor(
+                    Color.parseColor("#1DAFFF")
+                )
+
+                if(calendarMainData.todoComplete){
+                    val drawable = todoCompleteImv.background as VectorDrawable
+                    todoCompleteTv.setTextColor(Color.parseColor("#191919"))
+                    drawable.setColorFilter(null)
+                }
+
+                if(calendarMainData.todoInComplete){
+                    val drawable = todoIncompleteImv.background as VectorDrawable
+                    todoIncompleteTv.setTextColor(Color.parseColor("#191919"))
+                    drawable.setColorFilter(null)
+                }
+
+                allBlindTv.text = "모두 가리기"
+                allBlindTv.setTextColor(Color.parseColor("#646464"))
             }
         }
 
@@ -514,5 +586,22 @@ class CalendarFragment(private val activity: Activity) : Fragment() {
 
             adapterMonth.setCategories(categoryAdapter.categoryList)
         }
+    }
+
+    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+
+    }
+
+    override fun onDrawerOpened(drawerView: View) {
+
+    }
+
+    override fun onDrawerClosed(drawerView: View) {
+        adapterMonth.notifyDataSetChanged()
+        categoryDrawerLayout.closeDrawer(Gravity.RIGHT)
+    }
+
+    override fun onDrawerStateChanged(newState: Int) {
+
     }
 }

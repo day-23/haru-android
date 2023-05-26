@@ -6,11 +6,7 @@
     <FrameLayout
         android:background="@drawable/category_image"
         android:id="@+id/color_item_layout"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_width="28dp"
-        android:layout_height="28dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

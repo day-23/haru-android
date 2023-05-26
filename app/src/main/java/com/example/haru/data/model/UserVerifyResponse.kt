@@ -7,8 +7,26 @@ data class UserVerifyResponse (
     val data: UserVerify
     )
 
-
 data class UserVerify(
+    val user : UserRelatedWithSnsData,
+    val haruId : String,
+    val email: String,
+    val socialAccountType: String,
+    val isPostBrowsingEnabled: Boolean,
+    val isAllowFeedLike: Int,
+    val isAllowFeedComment: Int,
+    val isAllowSearch: Boolean,
+    val createdAt: String,
+    val accessToken: String?
+)
+
+data class UserRelatedWithSnsData(
     val id: String,
-    val accessToken: String
+    val name: String,
+    val introduction: String,
+    val profileImage: String,
+    val postCount: Int,
+    val friendCount: Int,
+    val friendStatus: Int,
+    val isPublicAccount: Boolean
 )

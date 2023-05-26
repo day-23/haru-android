@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.data.retrofit.RetrofitClient.postService
+import com.example.haru.utils.User.id
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
@@ -63,6 +64,40 @@ class ProfileRepository() {
                 user = User("","","","", false,0,0,0)
             }
             callback(user)
+        }
+        catch (e: Exception) {
+            Log.e("EDITTAG", "Error occurred while editing profile", e)
+        }
+    }
+
+
+    suspend fun editProfileInit(name:String, haruId:String, callback: () -> Unit) = withContext(
+        Dispatchers.IO) {
+        try {
+            val response = profileService.editProfileInit(
+                com.example.haru.utils.User.id,
+                ProfileInitBody(name, haruId)
+            ).execute()
+
+            val data: UserVerifyResponse
+            if (response.isSuccessful) {
+                Log.d("EDITTAG", "Success to update profile")
+                com.example.haru.utils.User.id = response.body()?.data?.user?.id.toString()
+                com.example.haru.utils.User.name = response.body()?.data?.user?.name.toString()
+                com.example.haru.utils.User.isPublicAccount = response.body()?.data?.user?.isPublicAccount!!
+                com.example.haru.utils.User.haruId = response.body()?.data?.haruId.toString()
+                com.example.haru.utils.User.email = response.body()?.data?.email.toString()
+                com.example.haru.utils.User.socialAccountType = response.body()?.data?.socialAccountType.toString()
+                com.example.haru.utils.User.isPostBrowsingEnabled = response.body()?.data?.isPostBrowsingEnabled!!
+                com.example.haru.utils.User.isAllowFeedLike = response.body()?.data?.isAllowFeedLike!!
+                com.example.haru.utils.User.isAllowFeedComment = response.body()?.data?.isAllowFeedComment!!
+                com.example.haru.utils.User.isAllowSearch = response.body()?.data?.isAllowSearch!!
+                com.example.haru.utils.User.createdAt = response.body()?.data?.createdAt.toString()
+                callback()
+            } else {
+                Log.d("EDITTAG", "Fail to update Profile: $response")
+
+            }
         }
         catch (e: Exception) {
             Log.e("EDITTAG", "Error occurred while editing profile", e)

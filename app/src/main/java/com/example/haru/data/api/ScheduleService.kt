@@ -14,13 +14,13 @@ interface ScheduleService {
     @HTTP(method = "DELETE", path="schedule/{userId}/{scheduleId}")
     fun deleteSchedule(@Path("userId") userId: String, @Path("scheduleId") scheduleId: String) : Call<SuccessFail>
 
-    @HTTP(method = "DELETE", path="schedule/{userId}/{scheduleId}/repeat/front")
+    @HTTP(method = "DELETE", path="schedule/{userId}/{scheduleId}/repeat/front", hasBody = true)
     fun deleteScheduleFront(@Path("userId") userId: String, @Path("scheduleId") scheduleId: String, @Body frontDelete: ScheduleFrontDelete) : Call<SuccessFail>
 
-    @HTTP(method = "DELETE", path="schedule/{userId}/{scheduleId}/repeat/middle")
+    @HTTP(method = "DELETE", path="schedule/{userId}/{scheduleId}/repeat/middle", hasBody = true)
     fun deleteScheduleMiddle(@Path("userId") userId: String, @Path("scheduleId") scheduleId: String, @Body middleDelete: ScheduleMiddleDelete) : Call<SuccessFail>
 
-    @HTTP(method = "DELETE", path="schedule/{userId}/{scheduleId}/repeat/back")
+    @HTTP(method = "DELETE", path="schedule/{userId}/{scheduleId}/repeat/back", hasBody = true)
     fun deleteScheduleBack(@Path("userId") userId: String, @Path("scheduleId") scheduleId: String, @Body backDelete: ScheduleBackDelete) : Call<SuccessFail>
 
     @PATCH("schedule/{userId}/{scheduleId}")
