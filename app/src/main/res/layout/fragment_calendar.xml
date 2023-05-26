@@ -30,7 +30,7 @@
                         android:background="#FDFDFD"
                         >
                         <ImageView
-                            android:id="@+id/checklist_haru_title"
+                            android:id="@+id/calendar_haru_title"
                             android:layout_width="60dp"
                             android:layout_height="30dp"
                             android:src="@drawable/haru_logo"
@@ -40,7 +40,7 @@
                             android:layout_alignParentTop="true"
                             />
                         <ImageView
-                            android:id="@+id/checklist_search_button"
+                            android:id="@+id/calendar_search_button"
                             android:layout_marginTop="3dp"
                             android:layout_width="28dp"
                             android:layout_height="28dp"

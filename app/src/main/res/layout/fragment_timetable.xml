@@ -13,13 +13,50 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingHorizontal="10dp">
+        android:background="#FDFDFD"
+        >
+
+        <LinearLayout
+            android:id="@+id/timetable_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FDFDFD"
+            android:paddingStart="10dp"
+            android:paddingEnd="20dp"
+            tools:ignore="MissingConstraints">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="#FDFDFD"
+                >
+                <ImageView
+                    android:id="@+id/timetable_haru_title"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/haru_logo"
+                    android:layout_marginTop="2dp"
+                    android:textStyle="bold"
+                    android:textColor="#191919"
+                    android:layout_alignParentTop="true"
+                    />
+                <ImageView
+                    android:id="@+id/timetable_search_button"
+                    android:layout_marginTop="3dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/search_icon"/>
+            </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            tools:ignore="MissingConstraints">
+            android:paddingHorizontal="10dp"
+            android:background="#FDFDFD"
+            app:layout_constraintTop_toBottomOf="@id/timetable_header">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -303,7 +340,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="14"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+
+                    >
                 </LinearLayout>
 
 
@@ -314,23 +353,27 @@
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/timetable_scroll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="#FDFDFD">
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    >
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/timetable_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        tools:listitem="@layout/items_timetable" />
+                        tools:listitem="@layout/items_timetable"
+                        />
 
                     <!--요일별 그리드-->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        >
 
                         <LinearLayout
                             android:layout_width="wrap_content"
