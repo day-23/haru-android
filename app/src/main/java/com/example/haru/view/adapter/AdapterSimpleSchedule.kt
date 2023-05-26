@@ -74,6 +74,9 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
 
         if(schedule.isAllDay){
             detailScheduleTimeTv.text = "하루종일"
+        } else {
+            val timeFormat = SimpleDateFormat("MM월 dd일 a H:mm", Locale.KOREA)
+            detailScheduleTimeTv.text = timeFormat.format(schedule.startTime)+" - "+timeFormat.format(schedule.endTime)
         }
 
         if(schedule.category == null){
@@ -167,7 +170,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                                 schedule.repeatEnd!!)
                         }
 
-                        "2주마다" -> {
+                        "격주" -> {
                             nextData = FormatDate.nextStartDateEveryWeek(
                                 schedule.repeatValue,
                                 2,

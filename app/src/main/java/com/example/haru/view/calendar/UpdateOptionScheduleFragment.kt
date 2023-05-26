@@ -164,72 +164,22 @@ class UpdateOptionScheduleFragment(val callback: (Int) -> Unit) :
                     binding.btnOptionOneUpdate.isClickable = false
                     callback(1)
                     dismiss()
-//                    when (type) {
-//                        UpdateType.FRONT_TWO, UpdateType.FRONT_THREE -> { // front
-//                            todoAddViewModel.updateRepeatFrontTodo {
-//                                binding.btnOptionOneUpdate.isClickable = true
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//                        }
-//                        UpdateType.MIDDLE_TWO, UpdateType.MIDDLE_THREE -> { // middle
-//                            todoAddViewModel.updateRepeatMiddleTodo {
-//                                binding.btnOptionOneUpdate.isClickable = true
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//                        }
-//                        UpdateType.BACK_TWO, UpdateType.BACK_THREE -> { // back
-//                            todoAddViewModel.updateRepeatBackTodo {
-//                                binding.btnOptionOneUpdate.isClickable = true
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//                        }
-//                        else -> {
-//                            Log.d("20191627", "UpdateOptionDialog -> OneUpdate 잘못된 Type")
-//                        }
-//                    }
                 }
                 binding.btnOptionAllUpdate.id -> {
                     binding.btnOptionAllUpdate.isClickable = false
                     callback(2)
                     dismiss()
-//                    todoAddViewModel.updateTodo {
-//                        binding.btnOptionAllUpdate.isClickable = true
-//                        dismiss()
-//                        requireActivity().supportFragmentManager.popBackStack()
-//                    }
                 }
                 binding.btnOptionAfterUpdate.id -> {
                     binding.btnOptionAfterUpdate.isClickable = false
                     callback(3)
                     dismiss()
-                    // middle, back의 이후부터 수정
-//                    when (type) {
-//                        UpdateType.MIDDLE_ONE, UpdateType.MIDDLE_THREE,
-//                        UpdateType.BACK_ONE, UpdateType.BACK_THREE -> {
-//                            todoAddViewModel.updateRepeatBackTodo {
-//                                binding.btnOptionAfterUpdate.isClickable = true
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//                        }
-//                        else -> {}
-//                    }
-
                 }
 
                 binding.btnOptionSave.id -> {
                     binding.btnOptionSave.isClickable = false
                     callback(0)
                     dismiss()
-//                    Log.d("20191627", "update")
-//                    todoAddViewModel.updateTodo {
-//                        binding.btnOptionSave.isClickable = true
-//                        dismiss()
-//                        requireActivity().supportFragmentManager.popBackStack()
-//                    }
                 }
 
                 binding.btnOptionUpdateCancel.id -> {

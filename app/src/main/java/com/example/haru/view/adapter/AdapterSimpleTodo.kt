@@ -201,7 +201,7 @@ class AdapterSimpleTodo(
                         nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue,1,beforeFormatToday, beforeFormatEnd)
                     }
 
-                    "2주마다"->{
+                    "격주"->{
                         preData = FormatDate.preEndDate(beforeFormatToday,todo.repeatOption, todo.repeatValue!!)
                         nextData = FormatDate.nextEndDateEveryWeek(todo.repeatValue, 2, beforeFormatToday, beforeFormatEnd)
                     }
