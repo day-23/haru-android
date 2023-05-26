@@ -1,5 +1,6 @@
 package com.example.haru.view.calendar
 
+import BaseActivity
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -127,9 +128,16 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         return null
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.calendarHeader.id)
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as BaseActivity).adjustTopMargin(binding.calendarHeader.id)
 
         parentView = view.findViewById<RelativeLayout>(R.id.calendar_fragment_parent_layout)
 
