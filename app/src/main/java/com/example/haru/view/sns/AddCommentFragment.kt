@@ -42,7 +42,7 @@ import com.example.haru.view.checklist.ChecklistInputFragment
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
+class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClickListener{
     lateinit var binding : FragmentAddCommentBinding
     lateinit var commentContainer: FrameLayout
     lateinit var writeContainer: FrameLayout
@@ -52,6 +52,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     private lateinit var snsViewModel: SnsViewModel
     var imageIndex = 0
     var CommentIsVisible = true
+    val myInfo = myInfo
 
     //사진위 댓글 값
     var onWrite = false
@@ -105,7 +106,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
            }
        }else if(position == 1){
            snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
-           val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, true,"","")
+           val addedComment = Comments("",myInfo,AddContent,AddX,AddY, true,"","")
            postIndex[imageIndex].comments.add(addedComment)
            bindComment(addedComment)
            onWrite = false
@@ -208,7 +209,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         binding.writeCommentApply.setOnClickListener {
             if(AddContent != ""){
                 snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
-                val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, true,"","")
+                val addedComment = Comments("",myInfo,AddContent,AddX,AddY, true,"","")
                 postIndex[imageIndex].comments.add(addedComment)
                 bindComment(addedComment)
                 onWrite = false
@@ -252,7 +253,6 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         // TextView를 찾아서 텍스트를 변경
         val textView = view.findViewById<TextView>(R.id.comment_on_picture_text)
         textView.text = comment.content
-        Log.d("20191668", "${comment.content}")
 
         val params = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -261,10 +261,12 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
 
         view.setOnClickListener{
             Toast.makeText(requireContext(),"${comment.content}", Toast.LENGTH_SHORT).show()
+            val writerName = comment.user.name
+            val writerProfile = comment.user.profileImage
+            val writerId = comment.user.id
         }
         params.leftMargin = commentContainer.width * comment.x / 100
         params.topMargin =  commentContainer.height * comment.y / 100
-        Log.d("20191668", "params : ${params.topMargin} ${textView.height} $viewHeight")
         if(params.topMargin + textView.height > viewHeight){
             params.topMargin -= (params.leftMargin + textView.height) - viewHeight
         }
