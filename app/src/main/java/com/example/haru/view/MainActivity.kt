@@ -139,6 +139,9 @@ class MainActivity : BaseActivity(){
     }
 
     private fun replaceFragment(fragment: Fragment) {
+        while(supportFragmentManager.backStackEntryCount > 0){
+            supportFragmentManager.popBackStackImmediate()
+        }
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragments_frame, fragment)
             .commit()

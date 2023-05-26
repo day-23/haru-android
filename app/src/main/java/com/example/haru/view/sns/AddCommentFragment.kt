@@ -1,11 +1,9 @@
 package com.example.haru.view.sns
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.StaticLayout
 import android.text.TextPaint
@@ -13,36 +11,28 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.activity.OnBackPressedCallback
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.contains
+import androidx.core.view.get
 import androidx.core.view.isGone
+import androidx.core.view.size
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.CommentBody
 import com.example.haru.data.model.Comments
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.User
-import com.example.haru.databinding.CustomGalleryBinding
 import com.example.haru.databinding.FragmentAddCommentBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
-import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AddCommentPagerAdapter
-import com.example.haru.view.adapter.GalleryAdapter
 import com.example.haru.view.adapter.ImageClickListener
-import com.example.haru.view.checklist.ChecklistInputFragment
-import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
+class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClickListener{
     lateinit var binding : FragmentAddCommentBinding
     lateinit var commentContainer: FrameLayout
     lateinit var writeContainer: FrameLayout
@@ -52,9 +42,11 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
     private lateinit var snsViewModel: SnsViewModel
     var imageIndex = 0
     var CommentIsVisible = true
+    val myInfo = myInfo
 
     //사진위 댓글 값
     var onWrite = false
+    var showWriter = true
     var ImageWidth = 0
     var ImageHeight = 0
     var AddContent = ""
@@ -105,7 +97,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
            }
        }else if(position == 1){
            snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
-           val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, true,"","")
+           val addedComment = Comments("",myInfo,AddContent,AddX,AddY, true,"","")
            postIndex[imageIndex].comments.add(addedComment)
            bindComment(addedComment)
            onWrite = false
@@ -164,6 +156,16 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
             backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
 
+        binding.tempCheckWriter.setOnClickListener {
+
+            if(showWriter) {
+                for (i in 0..commentContainer.size - 1) {
+                    val view = commentContainer.get(i)
+                    view.visibility = View.VISIBLE
+                }
+            }
+        }
+
         viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 writeContainer.removeAllViews()
@@ -208,7 +210,7 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         binding.writeCommentApply.setOnClickListener {
             if(AddContent != ""){
                 snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
-                val addedComment = Comments("",User("","","","",false,0,0,0),AddContent,AddX,AddY, true,"","")
+                val addedComment = Comments("",myInfo,AddContent,AddX,AddY, true,"","")
                 postIndex[imageIndex].comments.add(addedComment)
                 bindComment(addedComment)
                 onWrite = false
@@ -244,32 +246,77 @@ class AddCommentFragment(postitem : Post) : Fragment(), ImageClickListener{
         return binding.root
     }
 
+    @SuppressLint("MissingInflatedId")
     fun bindComment(comment : Comments){
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.item_comment_on_picture, null)
         val viewHeight = commentContainer.height
-        Log.d("20191668" , "$viewHeight")
         // TextView를 찾아서 텍스트를 변경
         val textView = view.findViewById<TextView>(R.id.comment_on_picture_text)
         textView.text = comment.content
-        Log.d("20191668", "${comment.content}")
 
         val params = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
+        val density = resources.displayMetrics.density
+
+
+        val writerParam = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            (33 * density + 0.5f).toInt()
+        )
+
         view.setOnClickListener{
             Toast.makeText(requireContext(),"${comment.content}", Toast.LENGTH_SHORT).show()
         }
+
         params.leftMargin = commentContainer.width * comment.x / 100
         params.topMargin =  commentContainer.height * comment.y / 100
-        Log.d("20191668", "params : ${params.topMargin} ${textView.height} $viewHeight")
-        if(params.topMargin + textView.height > viewHeight){
+        if(params.topMargin + textView.height > viewHeight){ // 사진에서 벗어나는 댓글에 대한 보정
             params.topMargin -= (params.leftMargin + textView.height) - viewHeight
         }
         view.layoutParams = params
         commentContainer.addView(view)
+
+        //작성자 정보를 위한 뷰
+        val Name = comment.user.name
+        val ProfileImage = comment.user.profileImage
+        val Id = comment.user.id
+
+        val writerView = inflater.inflate(R.layout.item_comment_on_picture_writer, null)
+        val writerName = writerView.findViewById<TextView>(R.id.comment_on_picture_name)
+        val writerProfile = writerView.findViewById<ImageView>(R.id.comment_on_picture_profile)
+        val toUserPageBtn = writerView.findViewById<ImageView>(R.id.comment_on_picture_move_page)
+        writerView.visibility = View.GONE
+
+        view.post {
+            Log.d("20191668", "${view.width}, ${view.height}")
+            writerParam.leftMargin = params.leftMargin + view.width / 2
+            writerParam.topMargin = params.topMargin - (view.height + 30)
+            writerView.layoutParams = writerParam
+            commentContainer.addView(writerView)
+        }
+
+        writerView.post {
+            writerName.text = Name// 유저명
+
+            Glide.with(this)//프로필 사진
+                .load(ProfileImage)
+                .into(writerProfile)
+
+            toUserPageBtn.setOnClickListener {// 유저페이지 이동
+                val newFrag = MyPageFragment(Id)
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragments_frame, newFrag)
+                transaction.addToBackStack("snsaddcomment")
+                transaction.commit()
+
+            }
+        }
+
+
     }
 
     fun writeComment(position : Int){

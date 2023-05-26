@@ -29,13 +29,18 @@ class CategoryCorrectionActivity : AppCompatActivity() {
     private var color: String? = ""
     private var isSelected: Boolean = false
 
+    val colorsList = listOf(
+        "#2E2E2E", "#656565", "#818181", "#9D9D9D", "#B9B9B9", "#D5D5D5",
+        "#FF0959", "#FF509C", "#FF5AB6", "#FE7DCD", "#FFAAE5", "#FFBDFB",
+        "#B237BB", "#C93DEB", "#B34CED", "#9D5BE3", "#BB93F8", "#C6B2FF",
+        "#4C45FF", "#2E57FF", "#4D8DFF", "#45BDFF", "#6DDDFF", "#65F4FF",
+        "#FE7E7E", "#FF572E", "#C22E2E", "#A07553", "#E3942E", "#E8A753",
+        "#FF892E", "#FFAB4C", "#FFD166", "#FFDE2E", "#CFE855", "#B9D32E",
+        "#105C08", "#39972E", "#3EDB67", "#55E1B6", "#69FFD0", "#05C5C0",
+    )
+
     fun changeColor(newColor:String){
-        val choiseCategoryColor = findViewById<ImageView>(R.id.choise_category_color)
-        val drawable = choiseCategoryColor.background as VectorDrawable
-
         color = newColor
-
-        drawable.setColorFilter(Color.parseColor(color), PorterDuff.Mode.SRC_ATOP)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -50,6 +55,13 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
+    override fun onBackPressed() {
+        intent.putExtra("status", "back")
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+        super.onBackPressed()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_correction)
@@ -57,7 +69,6 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         var category = intent.getSerializableExtra("category") as Category
         val index = intent.getSerializableExtra("index") as Int
 
-        val choiseCategoryColor = findViewById<ImageView>(R.id.choise_category_color)
         val correctionScheduleName = findViewById<EditText>(R.id.correction_schedule_name)
         val correctionSwitch = findViewById<SwitchCompat>(R.id.correction_event_alarm_switch)
         val categoriesRecyclerview = findViewById<RecyclerView>(R.id.categories_recyclerview)
@@ -71,19 +82,9 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         isSelected = category.isSelected
         correctionSwitch.isChecked = isSelected
 
-        val drawable = choiseCategoryColor.background as VectorDrawable
-
-        color = category.color
-
-        if(color != null) {
-            drawable.setColorFilter(Color.parseColor(color), PorterDuff.Mode.SRC_ATOP)
-        } else {
-            drawable.setColorFilter(Color.parseColor("#BBE7FF"), PorterDuff.Mode.SRC_ATOP)
-        }
-
         categoriesRecyclerview.layoutManager = GridLayoutManager(this,6)
         categoriesRecyclerview.addItemDecoration(MyItemDecoration())
-        categoriesRecyclerview.adapter = CategoriesColorAdapter(this)
+        categoriesRecyclerview.adapter = CategoriesColorAdapter(this, null, colorsList.indexOf(category.color))
 
         correctionBackImageview.setOnClickListener {
             intent.putExtra("status", "back")

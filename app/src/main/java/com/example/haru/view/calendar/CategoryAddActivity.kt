@@ -27,12 +27,7 @@ class CategoryAddActivity : AppCompatActivity() {
     private var color: String = ""
 
     fun changeColor(newColor:String){
-        val choiseCategoryColor = findViewById<ImageView>(R.id.add_choise_category_color)
-        val drawable = choiseCategoryColor.background as VectorDrawable
-
         color = newColor
-
-        drawable.setColorFilter(Color.parseColor(color), PorterDuff.Mode.SRC_ATOP)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -47,19 +42,21 @@ class CategoryAddActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
+    override fun onBackPressed() {
+        intent.putExtra("status", "back")
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+        super.onBackPressed()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_add)
 
-        val addChoiseCategoryColor = findViewById<ImageView>(R.id.add_choise_category_color)
         val addScheduleName = findViewById<EditText>(R.id.add_schedule_name)
         val addCategoriesRecyclerview = findViewById<RecyclerView>(R.id.add_categories_recyclerview)
         val addBackImageview = findViewById<ImageView>(R.id.add_back_imageView)
         val addCheckImageview = findViewById<ImageView>(R.id.add_check_imageView)
-
-        val drawable = addChoiseCategoryColor.background as VectorDrawable
-
-        drawable.setColorFilter(Color.parseColor("#BBE7FF"), PorterDuff.Mode.SRC_ATOP)
 
         addCategoriesRecyclerview.layoutManager = GridLayoutManager(this,6)
         addCategoriesRecyclerview.addItemDecoration(MyItemDecoration())

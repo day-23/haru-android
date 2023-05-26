@@ -30,13 +30,17 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
     val userId = userId
 
     override fun onCommentClick(postitem: Post) {
-        val newFrag = AddCommentFragment(postitem)
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragments_frame, newFrag)
-        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-        if(!isSnsMainInBackStack)
-            transaction.addToBackStack("snsmypage")
-        transaction.commit()
+        mypageViewModel.getUserInfo("jts") //TODO:하드코딩값 후에 알맞게 바인딩
+
+        mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
+            val newFrag = AddCommentFragment(postitem,user)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
+            if (!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmypage")
+            transaction.commit()
+        }
     }
 
     override fun onTotalCommentClick(post: Post) {
