@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import BaseActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -66,6 +67,19 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         Log.d("TAG", "MypageFragment - onCreate() called")
         mypageViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
+
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(SnsFragment.TAG, "sns onViewCreated: ")
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
