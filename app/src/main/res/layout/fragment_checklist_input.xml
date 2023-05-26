@@ -207,7 +207,6 @@
 
                 </LinearLayout>
 
-<!--android:animateLayoutChanges="true"-->
                 <LinearLayout
                     android:id="@+id/endDateSetLayout"
                     style="@style/linearBorderLine"
@@ -217,7 +216,6 @@
                     android:orientation="vertical">
 
 
-<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -263,7 +261,6 @@
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
 
-<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:id="@+id/endDateTime_layout"
                         android:layout_width="match_parent"
@@ -307,8 +304,6 @@
 
                 </LinearLayout>
 
-
-<!--                android:animateLayoutChanges="true"-->
                 <LinearLayout
                     style="@style/linearBorderLine"
                     android:layout_width="match_parent"
@@ -366,12 +361,8 @@
                         android:layout_marginEnd="20dp"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
-
-
                 </LinearLayout>
 
-
-<!--                android:animateLayoutChanges="true"-->
                 <LinearLayout
                     android:id="@+id/repeatSetLayout"
                     style="@style/linearBorderLine"
@@ -413,16 +404,12 @@
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
 
-
-<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:id="@+id/repeatOptionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="8dp">
 
-
-<!--                        android:animateLayoutChanges="true"-->
                         <LinearLayout
                             android:id="@+id/repeatOptionSelect"
                             android:layout_width="match_parent"
@@ -503,8 +490,6 @@
 
                     </LinearLayout>
 
-
-<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:id="@+id/everyWeekSelectLayout"
                         android:layout_width="match_parent"
@@ -606,8 +591,6 @@
                         android:rowCount="2"
                         android:useDefaultMargins="true" />
 
-
-<!--                    android:animateLayoutChanges="true"-->
                     <LinearLayout
                         android:id="@+id/repeatEndDateLayout"
                         android:animateLayoutChanges="true"
