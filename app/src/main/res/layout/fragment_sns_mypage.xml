@@ -38,6 +38,7 @@
                 android:rotation="-90"/>
 
             <TextView
+                android:id="@+id/my_page_my_record"
                 android:layout_toStartOf="@id/search_button"
                 android:layout_width="70dp"
                 android:layout_height="32dp"

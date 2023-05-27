@@ -177,7 +177,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
         //내 피드 보기 클릭
         binding.myRecords.setOnClickListener {
-           onProfileClick("")
+           onProfileClick(User.id)
         }
 
         binding.addPost.setOnClickListener {
