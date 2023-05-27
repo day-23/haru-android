@@ -29,6 +29,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
     private lateinit var mypageViewModel: MyPageViewModel
     private var click = false
     val userId = userId
+    var isMyPage = false
+    var friendStatus = 0
 
     override fun onCommentClick(postitem: Post) {
         mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
@@ -92,11 +94,13 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         mypageViewModel.init_page()
 
         if(userId == com.example.haru.utils.User.id){
+            isMyPage = true
             binding.editProfile.text = "프로필 편집"
             binding.profileShare.visibility = View.VISIBLE
             binding.myPageMyRecord.visibility = View.GONE
             mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
         }else{
+            isMyPage = false
             binding.editProfile.text = "친구 신청"
             binding.profileShare.visibility = View.GONE
             mypageViewModel.getUserInfo(userId)
@@ -106,11 +110,16 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             binding.profileName.text = user.name
             binding.profileIntroduction.text = user.introduction
             binding.profilePostCount.text = user.postCount.toString()
-            binding.profileFollowCount.text = user.followingCount.toString()
-            binding.profileFollowerCount.text = user.followerCount.toString()
-
-            if(user.isFollowing){
-                binding.editProfile.text = "팔로우 취소"
+            binding.profileFriendsCount.text = user.friendCount.toString()
+            friendStatus = user.friendStatus
+            if(!isMyPage) { //타인의 페이지라면
+                if (user.friendStatus == 0) {
+                    binding.editProfile.text = "친구 신청"
+                } else if (user.friendStatus == 1) {
+                    binding.editProfile.text = "신청 취소"
+                } else {
+                    binding.editProfile.text = "내 친구"
+                }
             }
 
             if(user.profileImage != "") {
@@ -163,14 +172,15 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         }
 
         binding.editProfile.setOnClickListener {
-            if(binding.editProfile.text == "팔로우"){
-                requestFollow()
-                binding.editProfile.text = "팔로우 취소"
-            }else if(binding.editProfile.text == "팔로우 취소"){
-                requestUnFollow()
-                binding.editProfile.text = "팔로우"
-            }else{
-                moveEditprofile(userId)
+            if(isMyPage) moveEditprofile(userId) // 내 페이지면 프로필 수정 이동
+            else{ //타인 페이지라면 친구 작업
+                if (friendStatus == 0) {
+                    requestFollow() //TODO:친구 신청
+                } else if (friendStatus == 1) {
+                    requestUnFollow() //TODO: 친구신청 취소
+                } else{
+                    //TODO:친구끊기
+                }
             }
         }
 

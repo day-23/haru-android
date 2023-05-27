@@ -213,7 +213,7 @@ class PostRepository() {
             comments = data.data
         }else{
             Log.d("TAG", "Fail to write comments")
-            comments = Comments("",User("","","","",false,0,0,0),"",-1,-1,true,"","")
+            comments = Comments("",User("","","","",0,0,0,false),"",-1,-1,true,"","")
         }
         callback(comments)
     }

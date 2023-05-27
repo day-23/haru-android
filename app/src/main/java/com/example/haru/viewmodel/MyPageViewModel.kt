@@ -122,7 +122,7 @@ class MyPageViewModel(): ViewModel() {
     }
 
     fun getUserInfo(targetId: String){
-        var user = User("","","","",false,0,0,0)
+        var user = User("","","","",0,0,0,false)
         viewModelScope.launch {
             ProfileRepository.getUserInfo(targetId){
                 if(it.id != ""){
@@ -220,7 +220,7 @@ class MyPageViewModel(): ViewModel() {
     }
 
     fun editProfile(image: MultipartBody.Part, name: String, introduction: String){
-        var user = User("","","","",false,0,0,0)
+        var user = User("","","","",0,0,0,false)
         viewModelScope.launch {
             ProfileRepository.editProfile(image, name, introduction){
                 if(it.id != "") {
@@ -233,7 +233,7 @@ class MyPageViewModel(): ViewModel() {
     }
 
     fun editProfileName(name:String, introduction: String){
-        var user = User("","","","",false,0,0,0)
+        var user = User("","","","",0,0,0,false)
         viewModelScope.launch {
             ProfileRepository.editProfileName(name, introduction){
                 if(it.id != ""){

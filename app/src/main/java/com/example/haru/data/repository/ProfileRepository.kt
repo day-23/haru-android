@@ -37,7 +37,7 @@ class ProfileRepository() {
 
             } else {
                 Log.d("EDITTAG", "Fail to update Profile: $response")
-                user = User("","","","", false,0,0,0)
+                user = User("","","","", 0,0,0,false)
             }
             callback(user)
         }
@@ -62,7 +62,7 @@ class ProfileRepository() {
 
             } else {
                 Log.d("EDITTAG", "Fail to update Profile: $response")
-                user = User("","","","", false,0,0,0)
+                user = User("","","","", 0,0,0,false)
             }
             callback(user)
         }
@@ -120,7 +120,7 @@ class ProfileRepository() {
             user = data.data
         } else{
             Log.d("TAG", "Fail to get User")
-            user = User("","","","",false,0,0,0)
+            user = User("","","","",0,0,0,false)
         }
         callback(user)
     }
