@@ -668,7 +668,6 @@ class ChecklistInputFragment(
                         )
                     )
             }
-
         })
 
         binding.tagEt.setOnKeyListener { view, keyCode, keyEvent -> // 엔터키와 하드웨어 키보드의 스페이스바 입력 감지
