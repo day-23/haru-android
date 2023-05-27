@@ -89,7 +89,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         Log.d("TAG", "MyPageFragment - onCreateView() called")
 
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
-        binding.myRecords.setTextColor(0xFF1DAFFF.toInt())
         mypageViewModel.init_page()
 
         if(userId == com.example.haru.utils.User.id){
@@ -154,10 +153,12 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             if(click == false){
                 binding.snsButtons.visibility = View.VISIBLE
                 click = true
+                binding.menuButton.animate().rotation(0f)
             }
             else{
                 binding.snsButtons.visibility = View.GONE
                 click = false
+                binding.menuButton.animate().rotation(-90f)
             }
         }
 

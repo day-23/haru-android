@@ -80,6 +80,9 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="8dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:text="친구피드"/>
         <View
             android:layout_width="match_parent"
@@ -91,19 +94,10 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="8dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:text="둘러보기"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#707070"/>
-
-        <TextView
-            android:id="@+id/my_records"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:text="내 기록" />
     </LinearLayout>
 
     <!--프로필-->

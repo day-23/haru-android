@@ -55,7 +55,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
     override fun OnImageClick(position: Int) {
         if(!onWrite) {
             onWrite = true
-            writeComment(position)
+            writeComment()
             writeStart()
         }
     }
@@ -123,17 +123,13 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
     // status bar height 조정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as BaseActivity).adjustTopMargin(binding.addCommentRootview.id)
+        (activity as BaseActivity).adjustTopMargin(binding.addCommentLayout.id)
 
     }
 
     override fun onResume() {
         super.onResume()
-
-        (activity as BaseActivity).adjustTopMargin(binding.addCommentRootview.id)
-
-
-
+        (activity as BaseActivity).adjustTopMargin(binding.addCommentLayout.id)
     }
 
     override fun onCreateView(
@@ -329,8 +325,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
 
     }
 
-    fun writeComment(position : Int){
-
+    fun writeComment(){
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         val dragTouchListener = object : View.OnTouchListener {
