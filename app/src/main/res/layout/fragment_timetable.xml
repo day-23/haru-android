@@ -11,57 +11,25 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/timetable_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FDFDFD"
         >
 
         <LinearLayout
-            android:id="@+id/timetable_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FDFDFD"
-            android:paddingStart="10dp"
-            android:paddingEnd="20dp"
-            tools:ignore="MissingConstraints">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="#FDFDFD"
-                >
-                <ImageView
-                    android:id="@+id/timetable_haru_title"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/haru_logo"
-                    android:layout_marginTop="2dp"
-                    android:textStyle="bold"
-                    android:textColor="#191919"
-                    android:layout_alignParentTop="true"
-                    />
-                <ImageView
-                    android:id="@+id/timetable_search_button"
-                    android:layout_marginTop="3dp"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/search_icon"/>
-            </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="10dp"
             android:background="#FDFDFD"
-            app:layout_constraintTop_toBottomOf="@id/timetable_header">
+            tools:ignore="MissingConstraints">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginBottom="20dp"
+                android:layout_height="34dp"
+                android:layout_marginBottom="14dp"
+                android:paddingStart="33dp"
+                android:paddingRight="20dp"
                 android:gravity="center">
 
                 <TextView
@@ -105,12 +73,8 @@
 
                 <LinearLayout
                     android:layout_width="28dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="28dp"
                     android:orientation="vertical">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
@@ -129,11 +93,6 @@
                             android:onClick="@{() -> viewModel.todayClick()}"
                             />
                     </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"/>
                 </LinearLayout>
 
                 <View
@@ -156,80 +115,74 @@
                 android:id="@+id/layout_date_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="20dp"
                     android:gravity="center"
-                    android:layout_marginBottom="9dp">
-
+                    >
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:text=""
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
                         android:text="일"
-                        android:textSize="12dp"
+                        android:textSize="14sp"
                         android:layout_weight="2"
                         android:gravity="center"
                         android:textColor="#F71E58"/>
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text="월"
-                        android:textSize="12dp"
+                        android:textSize="14sp"
                         android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"/>
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text="화"
-                        android:textSize="12dp"
+                        android:textSize="14sp"
                         android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"/>
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text="수"
-                        android:textSize="12dp"
+                        android:textSize="14sp"
                         android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"/>
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text="목"
-                        android:textSize="12dp"
+                        android:textSize="14sp"
                         android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"/>
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text="금"
-                        android:textSize="12dp"
+                        android:textSize="14sp"
                         android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"/>
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text="토"
-                        android:textSize="12dp"
+                        android:textSize="14sp"
                         android:gravity="center"
                         android:textColor="#1DAFFF" />
                 </LinearLayout>
@@ -237,22 +190,17 @@
 
                 <View
                     android:layout_width="match_parent"
+                    android:layout_marginTop="2dp"
                     android:layout_height="1dp"
+                    android:layout_marginHorizontal="4dp"
                     android:background="#DBDBDB"
-                    android:layout_marginLeft="28dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_marginBottom="7dp" />
+                    android:layout_marginBottom="5dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="5dp"
                     android:gravity="center">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"/>
 
                     <TextView
                         android:id="@+id/sun_btn"
@@ -328,7 +276,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp">
 
                 <View
                     android:layout_width="0dp"
@@ -360,11 +309,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     >
+                    <View
+                        android:id="@+id/recylcer_view_top_border"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="#EDEDED"
+                        android:layout_marginBottom="5dp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/timetable_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
                         android:layout_weight="1"
                         tools:listitem="@layout/items_timetable"
                         />
@@ -374,11 +331,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         >
-
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="20dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"/>
+                            />
 
                         <FrameLayout
                             android:id="@+id/sun_table"
@@ -441,6 +397,10 @@
                             android:orientation="vertical">
                         </FrameLayout>
 
+                        <LinearLayout
+                            android:layout_width="20dp"
+                            android:layout_height="match_parent"
+                            />
                     </LinearLayout>
 
                 </FrameLayout>
