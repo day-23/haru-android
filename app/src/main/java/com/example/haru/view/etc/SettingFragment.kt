@@ -13,6 +13,7 @@ import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.databinding.FragmentSettingBinding
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.utils.User
 import com.example.haru.view.auth.LoginActivity
 
 class SettingFragment : Fragment() {
@@ -52,6 +53,8 @@ class SettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+
+        Log.e("20191627", User.toString())
 
         binding.ivBackIconSetting.setOnClickListener(ClickListener())
 

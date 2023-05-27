@@ -15,17 +15,22 @@ import com.example.haru.R
 import com.example.haru.databinding.ActivityLoginBinding
 import com.example.haru.databinding.FragmentEtcBinding
 import com.example.haru.databinding.FragmentSnsBinding
+import com.example.haru.utils.FormatDate
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.utils.User
 import com.example.haru.view.auth.LoginActivity
 import com.example.haru.view.checklist.ChecklistTodayFragment
+import com.example.haru.viewmodel.EtcViewModel
+import java.util.*
 
 class EtcFragment : Fragment() {
     private lateinit var binding: FragmentEtcBinding
+    private var etcViewModel = EtcViewModel()
 
-    companion object{
-        const val TAG : String = "로그"
+    companion object {
+        const val TAG: String = "로그"
 
-        fun newInstance() : EtcFragment {
+        fun newInstance(): EtcFragment {
             return EtcFragment()
         }
     }
@@ -50,18 +55,53 @@ class EtcFragment : Fragment() {
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.etcHeader.id)
 
+        // User Name
+        binding.tvName.text = User.name
+
+        // User Introduction
+        binding.tvIntroduction.text = "SNS User 필요"
+
+        // User Post Count
+//        binding.tvPostCount.text =
+
+        // User Friend Count
+//        binding.tvFriendCount.text =
+
+        // User Completed Todo Count
+//        binding.tvCompletedTodoCount.text =
+
+        // User Total Todo Count
+//        binding.tvTotalTodoCount.text =
+
+        etcViewModel.setTodayYearMonth()
+
+        etcViewModel.todayYearMonth.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvEtcDate.text =
+                etcViewModel.todayYearMonth.value?.substring(0, 4) + "년 " +
+                        etcViewModel.todayYearMonth.value?.substring(4) + "월 나의 하루"
+            binding.tvEtcDateMonth.text = etcViewModel.todayYearMonth.value!!.substring(4) + "월"
+        })
+
+
+        binding.ivEtcDateLeft.setOnClickListener(ClickListener())
+        binding.ivEtcDateRight.setOnClickListener(ClickListener())
+
         binding.settingIcon.setOnClickListener(ClickListener())
     }
 
-    inner class ClickListener : View.OnClickListener{
+    inner class ClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            when(v?.id){
+            when (v?.id) {
                 binding.settingIcon.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.fragments_frame, SettingFragment())
                         .addToBackStack(null)
                         .commit()
                 }
+
+                binding.ivEtcDateLeft.id -> etcViewModel.addSubTodayYearMonth(false)
+
+                binding.ivEtcDateRight.id -> etcViewModel.addSubTodayYearMonth(true)
             }
         }
 
