@@ -29,7 +29,6 @@ import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.lang.reflect.Type
 import java.util.*
 
 class ChecklistInputFragment(
@@ -269,6 +268,8 @@ class ChecklistInputFragment(
                 binding.tvEndDateSet.setTextColor(ContextCompat.getColor(requireContext(), color))
                 binding.endDateTimeLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
                 binding.btnEndDatePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
+
+                Log.e("20191627", "endDateSetLayout : ${ binding.endDateSetLayout.height }")
                 when (it) {
                     true -> {
                         binding.endDateSetLayout.animateViewHeight(
@@ -323,6 +324,7 @@ class ChecklistInputFragment(
             when (it) {
                 true -> {
                     todoAddViewModel.setRepeatSetLayoutH(binding.repeatSetLayout.height)
+                    Log.e("20191627", "repeatSetLayout : ${ todoAddViewModel.repeatSetLayoutHeight }")
 
                     binding.repeatSetLayout.animateViewHeight(
                         400, binding.repeatSetLayout.height,

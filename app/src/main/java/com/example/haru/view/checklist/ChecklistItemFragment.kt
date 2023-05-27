@@ -10,6 +10,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -28,11 +30,16 @@ import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import java.util.*
 
-class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, val todo: Todo?=null) : Fragment() {
+class ChecklistItemFragment(
+    checkListViewModel: CheckListViewModel,
+    id: String,
+    val todo: Todo? = null
+) : Fragment() {
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
     private var lastClickTime = SystemClock.elapsedRealtime()
+
     enum class UpdateType {
         FRONT_ONE, FRONT_TWO, FRONT_THREE,
         MIDDLE_ONE, MIDDLE_TWO, MIDDLE_THREE,
@@ -135,7 +142,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 todoAddViewModel.setEndTimeHeight(binding.infoEndDateTimeLayout.height)
                 binding.infoEndDateTimeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 Log.d("20191627", todoAddViewModel.endTimeLayoutHeight.toString())
-//                binding.infoEndDateTimeLayout.visibility = View.GONE
+                binding.infoEndDateTimeLayout.visibility = View.GONE
             }
         })
 
@@ -149,7 +156,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     "20191627",
                     "infoRepeatOptionLayout : " + todoAddViewModel.repeatOptionHeight.toString()
                 )
-//                binding.infoRepeatOptionLayout.visibility = View.GONE
+                binding.infoRepeatOptionLayout.visibility = View.GONE
+
             }
         })
 
@@ -160,7 +168,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 todoAddViewModel.setWeekHeight(binding.infoEveryWeekSelectLayout.height)
                 Log.d("20191627", "WeekSelect Height : ${todoAddViewModel.repeatWeekHeight}")
                 binding.infoEveryWeekSelectLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                binding.infoEveryWeekSelectLayout.visibility = View.GONE
+                binding.infoEveryWeekSelectLayout.visibility = View.GONE
             }
         })
 
@@ -170,7 +178,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
             override fun onGlobalLayout() {
                 todoAddViewModel.setMonthHeight(binding.infoGridMonth.height)
                 binding.infoGridMonth.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                binding.infoGridMonth.visibility = View.GONE
+                binding.infoGridMonth.visibility = View.GONE
             }
         })
 
@@ -179,7 +187,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
             override fun onGlobalLayout() {
                 todoAddViewModel.setYearHeight(binding.infoGridYear.height)
                 binding.infoGridYear.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                binding.infoGridYear.visibility = View.GONE
+                binding.infoGridYear.visibility = View.GONE
+                binding.infoGridYear.requestLayout()
             }
         })
 
@@ -193,7 +202,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     "20191627",
                     "infoRepeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString()
                 )
-//                binding.infoRepeatEndDateLayout.visibility = View.GONE
+                binding.infoRepeatEndDateLayout.visibility = View.GONE
+                binding.infoRepeatEndDateLayout.requestLayout()
+
             }
         })
 
@@ -203,20 +214,19 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // flag 관련 UI Update
         todoAddViewModel.setClickTodo(id, todo)
         binding.vm = todoAddViewModel
 
-
         if (todo != null)
-            Log.d("20191627", todo.endDate?: "null")
+            Log.d("20191627", todo.endDate ?: "null")
 
-        if (todoAddViewModel.clickedTodo!!.completed){
+        if (todoAddViewModel.clickedTodo!!.completed) {
             binding.infoSubTodoAddLayout.visibility = View.GONE
         }
 
         Log.d("20191627", todoAddViewModel.clickedTodo.toString())
 
-        // flag 관련 UI Update
         todoAddViewModel.flagTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.e("20191627", "호출")
             binding.cbInfoFlag.isChecked = it
@@ -257,22 +267,32 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                             )
 
                         }
-                    addView.findViewById<EditText>(R.id.et_subTodo).addTextChangedListener(object :
-                        TextWatcher {
-                        override fun beforeTextChanged(
-                            p0: CharSequence?,
-                            p1: Int,
-                            p2: Int,
-                            p3: Int
-                        ) {
-                        }
+                    addView.findViewById<EditText>(R.id.et_subTodo)
+                        .addTextChangedListener(object :
+                            TextWatcher {
+                            override fun beforeTextChanged(
+                                p0: CharSequence?,
+                                p1: Int,
+                                p2: Int,
+                                p3: Int
+                            ) {
+                            }
 
-                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                        override fun afterTextChanged(e: Editable?) {
-                            todoAddViewModel.subTodos[binding.infoSubTodoLayout.indexOfChild(addView)] =
-                                e.toString()
-                        }
-                    })
+                            override fun onTextChanged(
+                                p0: CharSequence?,
+                                p1: Int,
+                                p2: Int,
+                                p3: Int
+                            ) {
+                            }
+
+                            override fun afterTextChanged(e: Editable?) {
+                                todoAddViewModel.subTodos[binding.infoSubTodoLayout.indexOfChild(
+                                    addView
+                                )] =
+                                    e.toString()
+                            }
+                        })
 
                     binding.infoSubTodoLayout.addView(
                         addView,
@@ -289,18 +309,49 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
             binding.infoTodaySwitch.isChecked = it
             binding.ivInfoTodayIcon.backgroundTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
-            binding.tvInfoTodayTodo.setTextColor(ContextCompat.getColor(requireContext(), color))
+            binding.tvInfoTodayTodo.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    color
+                )
+            )
         })
 
         // endDateLayout 관련 UI Update
         todoAddViewModel.endDateSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.e("20191627", "endDateSwith.observe, $it")
             val color = if (it) R.color.todo_description else R.color.light_gray
             binding.infoEndDateSwitch.isChecked = it
             binding.ivInfoCalendarIcon.backgroundTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
-            binding.tvInfoEndDateSet.setTextColor(ContextCompat.getColor(requireContext(), color))
+            binding.tvInfoEndDateSet.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    color
+                )
+            )
+
+            binding.infoEndDateTimeLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
             binding.btnInfoEndDatePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
-            binding.infoEndDateTimeLayout.visibility = if (it) View.VISIBLE else View.GONE
+            Log.e("20191627", "endDateSetLayout : ${binding.infoEndDateSetLayout.height}")
+            when (it) {
+                true -> {
+                    binding.infoEndDateSetLayout.animateViewHeight(
+                        400,
+                        binding.infoEndDateSetLayout.height,
+                        binding.infoEndDateSetLayout.height + todoAddViewModel.endTimeLayoutHeight
+                    )
+                }
+                else -> {
+                    if (todoAddViewModel.repeatSwitch.value == true)
+                        todoAddViewModel.setRepeatSwitch()
+
+                    binding.infoEndDateSetLayout.animateViewHeight(
+                        400, binding.infoEndDateSetLayout.height,
+                        binding.infoEndDateSetLayout.height - todoAddViewModel.endTimeLayoutHeight
+                    )
+                }
+            }
         })
 
         // endDate Button UI Update
@@ -353,6 +404,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         // repeat Switch 관련 UI Update
         // 반복설정, 태그 연동, 하위 항목, 메모 만들어서 마무리하기
         todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.e("20191627", "repeatSwitch.observe, $it")
             if (it && todoAddViewModel.endDateSwitch.value != true) {
                 todoAddViewModel.setEndDateSwitch()
             }
@@ -361,9 +413,38 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
             binding.infoRepeatSwitch.isChecked = it
             binding.ivInfoRepeatIcon.backgroundTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
-            binding.tvInfoRepeatSet.setTextColor(ContextCompat.getColor(requireContext(), color))
-            binding.infoRepeatOptionLayout.visibility = if (it) View.VISIBLE else View.GONE
-            binding.infoRepeatEndDateLayout.visibility = if (it) View.VISIBLE else View.GONE
+            binding.tvInfoRepeatSet.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    color
+                )
+            )
+            binding.infoRepeatOptionLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
+            binding.infoRepeatEndDateLayout.visibility =
+                if (it) View.VISIBLE else View.INVISIBLE
+            Log.e("20191627", "repeatSetLayout : ${binding.infoRepeatSetLayout.height}")
+            when (it) {
+                true -> {
+                    todoAddViewModel.setRepeatSetLayoutH(binding.infoRepeatSetLayout.height)
+                    Log.e(
+                        "20191627",
+                        "repeatSetLayout : ${todoAddViewModel.repeatSetLayoutHeight}"
+                    )
+                    binding.infoRepeatSetLayout.animateViewHeight(
+                        400, binding.infoRepeatSetLayout.height,
+                        binding.infoRepeatSetLayout.height +
+                                todoAddViewModel.repeatOptionHeight +
+                                todoAddViewModel.repeatEndDateHeight
+                    )
+                }
+                false -> {
+                    binding.infoRepeatSetLayout.animateViewHeight(
+                        400, binding.infoRepeatSetLayout.height,
+                        todoAddViewModel.repeatSetLayoutHeight
+                    )
+                }
+                else -> {}
+            }
 
             binding.infoEveryWeekSelectLayout.visibility =
                 if (it && todoAddViewModel.repeatOption.value in listOf(
@@ -375,11 +456,11 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 if (it && todoAddViewModel.repeatOption.value == 3) View.VISIBLE else View.GONE
             binding.infoGridYear.visibility =
                 if (it && todoAddViewModel.repeatOption.value == 4) View.VISIBLE else View.GONE
-
         })
 
         // repeat Option 관련 UI Update
         todoAddViewModel.repeatOption.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.e("20191627", "repeatOption.observe, $it")
             for (i in 0 until binding.infoRepeatOptionSelect.childCount)
                 if (i == it)
                     binding.infoRepeatOptionSelect.getChildAt(i).backgroundTintList = null
@@ -391,6 +472,40 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 android.R.color.transparent
                             )
                         )
+
+            when (it) {
+                0 -> {
+                    binding.infoRepeatSetLayout.animateViewHeight(
+                        400, binding.infoRepeatSetLayout.height,
+                        todoAddViewModel.repeatSetLayoutHeight +
+                                todoAddViewModel.repeatOptionHeight +
+                                todoAddViewModel.repeatEndDateHeight
+                    )
+                }
+                1, 2 -> {
+                    binding.infoRepeatSetLayout.animateViewHeight(
+                        400, binding.infoRepeatSetLayout.height,
+                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
+                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.repeatWeekHeight
+                    )
+                }
+
+                3 -> {
+                    binding.infoRepeatSetLayout.animateViewHeight(
+                        400, binding.infoRepeatSetLayout.height,
+                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
+                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridMonthHeight
+                    )
+                }
+
+                4 -> {
+                    binding.infoRepeatSetLayout.animateViewHeight(
+                        400, binding.infoRepeatSetLayout.height,
+                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
+                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridYearHeight
+                    )
+                }
+            }
 
             binding.infoEveryWeekSelectLayout.visibility =
                 if (it == 1 || it == 2) View.VISIBLE else View.GONE
@@ -484,7 +599,6 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     }
                     if (date == null)
                         todoAddViewModel.setDate(0, Date())
-
                     else
                         todoAddViewModel.setDate(0, date)
 
@@ -504,7 +618,8 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         color
                     )
                 )
-                binding.btnInfoRepeatEndDate.visibility = if (it) View.VISIBLE else View.INVISIBLE
+                binding.btnInfoRepeatEndDate.visibility =
+                    if (it) View.VISIBLE else View.INVISIBLE
             })
 
         // repeat EndDate 관련 UI Update
@@ -514,7 +629,12 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
         todoAddViewModel.tagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.ivInfoTagIcon.backgroundTintList = if (it.isEmpty())
-                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.icon_gray))
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.icon_gray
+                    )
+                )
             else
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
@@ -551,7 +671,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
             }
         })
 
-        binding.infoTagEt.addTextChangedListener(object : TextWatcher{
+        binding.infoTagEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -563,7 +683,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 if (str == "")
                     return
 
-                if (str[str.length - 1] == ' '){
+                if (str[str.length - 1] == ' ') {
                     todoAddViewModel.addTagList()
                     binding.infoTagEt.setText("")
                 }
@@ -642,6 +762,18 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
         binding.btnInfoDelete.setOnClickListener(BtnClickListener())
     }
 
+    fun View.animateViewHeight(duration: Long, startHeight: Int, endHeight: Int) {
+        val animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+                val newHeight = (startHeight + (endHeight - startHeight) * interpolatedTime).toInt()
+                val params = this@animateViewHeight.layoutParams as ViewGroup.LayoutParams
+                params.height = newHeight
+                this@animateViewHeight.layoutParams = params
+            }
+        }
+        animation.duration = duration
+        this@animateViewHeight.startAnimation(animation)
+    }
 
     inner class BtnClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
@@ -663,7 +795,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 binding.btnInfoRepeatEndDate.id -> {
                     val datePicker = when (v.id) {
                         binding.btnInfoEndDatePick.id -> CustomCalendarDialog(todoAddViewModel.endDate.value)
-                        binding.btnInfoRepeatEndDate.id -> CustomCalendarDialog(todoAddViewModel.repeatEndDate.value, todoAddViewModel.endDate.value)
+                        binding.btnInfoRepeatEndDate.id -> CustomCalendarDialog(
+                            todoAddViewModel.repeatEndDate.value,
+                            todoAddViewModel.endDate.value
+                        )
                         binding.btnInfoAlarmDatePick.id -> CustomCalendarDialog(todoAddViewModel.alarmDate.value)
                         else -> CustomCalendarDialog()
                     }
@@ -693,21 +828,25 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
 
                 binding.btnInfoEndTimePick.id,
                 binding.btnInfoAlarmTimePick.id -> {
-                    val timePicker = when(v.id){
-                        binding.btnInfoEndTimePick.id -> {CustomTimeDialog(todoAddViewModel.endTime.value)}
-                        binding.btnInfoAlarmTimePick.id -> {CustomTimeDialog(todoAddViewModel.alarmTime.value)}
+                    val timePicker = when (v.id) {
+                        binding.btnInfoEndTimePick.id -> {
+                            CustomTimeDialog(todoAddViewModel.endTime.value)
+                        }
+                        binding.btnInfoAlarmTimePick.id -> {
+                            CustomTimeDialog(todoAddViewModel.alarmTime.value)
+                        }
                         else -> CustomTimeDialog()
                     }
-                    timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener{
+                    timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener {
                         override fun onClick(
-                            timeDivider : NumberPicker,
+                            timeDivider: NumberPicker,
                             hourNumberPicker: NumberPicker,
                             minuteNumberPicker: NumberPicker
                         ) {
                             val timeDivision = timeDivider.value
                             var hour = hourNumberPicker.value
                             val minute = minuteNumberPicker.value
-                            if (timeDivision == 0){
+                            if (timeDivision == 0) {
                                 if (hour == 11)
                                     hour = 0
                                 else hour++
@@ -722,7 +861,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 set(Calendar.MINUTE, minute * 5)
                             }
                             val time = FormatDate.cal.time
-                            when(v.id){
+                            when (v.id) {
                                 binding.btnInfoEndTimePick.id ->
                                     todoAddViewModel.setTime(0, time)
                                 binding.btnInfoAlarmTimePick.id ->
@@ -752,7 +891,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
                 binding.btnInfoDelete.id -> {
-                    if (SystemClock.elapsedRealtime() - lastClickTime < 2000){
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 2000) {
                         Log.d("20191627", "삭제 옵션창 띄우기 중복 막기")
                         return
                     }
@@ -769,7 +908,7 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                     option.show(parentFragmentManager, option.tag)
                 }
                 binding.btnInfoSave.id -> {
-                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
                         Log.d("20191627", "저장 옵션창 띄우기 중복 막기")
                         return
                     }
@@ -783,12 +922,12 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                         Log.d("20191627", "checkEndDate : $checkEndDate")
                         Log.d("20191627", "checkRepeatData : $checkRepeatData")
 
-                        val type = when(todoAddViewModel.clickedTodo?.location){
+                        val type = when (todoAddViewModel.clickedTodo?.location) {
                             0 -> { // front
                                 val type = if (checkEndDate && checkRepeatData) {
                                     // 전체 이벤트 수정
                                     UpdateType.FRONT_ONE
-                                } else if (checkEndDate){
+                                } else if (checkEndDate) {
                                     // 이 이벤트만 수정
                                     UpdateType.FRONT_TWO
                                 } else if (checkRepeatData) {
@@ -801,10 +940,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 type
                             }
                             1 -> { // middle
-                                val type = if (checkEndDate && checkRepeatData){
+                                val type = if (checkEndDate && checkRepeatData) {
                                     // 전체 이벤트 수정, 이 이벤트부터 수정
                                     UpdateType.MIDDLE_ONE
-                                } else if(checkEndDate){
+                                } else if (checkEndDate) {
                                     // 이 이벤트만 수정
                                     UpdateType.MIDDLE_TWO
                                 } else if (checkRepeatData) {
@@ -817,10 +956,10 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 type
                             }
                             2 -> { // back
-                                val type = if (checkEndDate && checkRepeatData){
+                                val type = if (checkEndDate && checkRepeatData) {
                                     // 전체 이벤트 수정, 이 이벤트부터 수정
                                     UpdateType.BACK_ONE
-                                } else if(checkEndDate){
+                                } else if (checkEndDate) {
                                     // 이 이벤트만 수정
                                     UpdateType.BACK_TWO
                                 } else if (checkRepeatData) {
@@ -832,7 +971,9 @@ class ChecklistItemFragment(checkListViewModel: CheckListViewModel, id: String, 
                                 }
                                 type
                             }
-                            else -> { UpdateType.NOT_REPEAT }
+                            else -> {
+                                UpdateType.NOT_REPEAT
+                            }
                         }
                         Log.d("20191627", "type : $type")
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)

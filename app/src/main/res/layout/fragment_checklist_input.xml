@@ -363,6 +363,7 @@
                         app:track="@drawable/custom_switch" />
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:id="@+id/repeatSetLayout"
                     style="@style/linearBorderLine"
@@ -414,9 +415,9 @@
                             android:id="@+id/repeatOptionSelect"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:animateLayoutChanges="true"
                             android:layout_marginStart="35dp"
                             android:layout_marginEnd="55dp"
+                            android:animateLayoutChanges="true"
                             android:background="@drawable/btn_group_custom"
                             android:orientation="horizontal">
 
@@ -593,9 +594,9 @@
 
                     <LinearLayout
                         android:id="@+id/repeatEndDateLayout"
-                        android:animateLayoutChanges="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:animateLayoutChanges="true"
                         android:paddingTop="14dp">
 
                         <TextView
@@ -633,7 +634,6 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     style="@style/linearBorderLine"
