@@ -23,30 +23,8 @@
                     android:background="#FDFDFD"
                     android:paddingStart="10dp"
                     android:paddingEnd="20dp"
-                    >
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="#FDFDFD"
-                        >
-                        <ImageView
-                            android:id="@+id/calendar_haru_title"
-                            android:layout_width="60dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/haru_logo"
-                            android:layout_marginTop="2dp"
-                            android:textStyle="bold"
-                            android:textColor="#191919"
-                            android:layout_alignParentTop="true"
-                            />
-                        <ImageView
-                            android:id="@+id/calendar_search_button"
-                            android:layout_marginTop="3dp"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_alignParentEnd="true"
-                            android:src="@drawable/search_icon"/>
-                    </RelativeLayout>
+                    android:orientation="horizontal">
+
                 </LinearLayout>
 
                 <androidx.cardview.widget.CardView
