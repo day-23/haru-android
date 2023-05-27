@@ -29,6 +29,7 @@
             android:text="게으름민수"
             android:textStyle="bold"
             android:layout_gravity="center"
+            android:textColor="#191919"
             android:textSize="14dp"
             android:layout_marginRight="10dp"/>
 
@@ -38,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="1일 전"
-            android:textSize="10dp"
+            android:textSize="14sp"
             />
         <View
             android:layout_width="0dp"
@@ -106,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginLeft="24dp"
+            android:layout_marginStart="20dp"
             android:src="@drawable/likedyet"/>
 
         <TextView
@@ -117,7 +118,7 @@
             android:textStyle="bold"
             android:textSize="14dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginLeft="54dp"
+            android:layout_marginLeft="50dp"
             android:gravity="center"/>
         <ImageView
             android:id="@+id/button_comment"
@@ -125,7 +126,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/comment"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginLeft="66dp"/>
+            android:layout_marginStart="62dp"/>
         <TextView
             android:id="@+id/post_comment_count"
             android:layout_width="wrap_content"
@@ -133,7 +134,7 @@
             android:gravity="center"
             android:textSize="14dp"
             android:textStyle="bold"
-            android:layout_marginLeft="99dp"
+            android:layout_marginLeft="95dp"
             app:layout_constraintLeft_toLeftOf="parent"
             android:text="0"/>
 

@@ -12,10 +12,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.core.view.contains
-import androidx.core.view.get
-import androidx.core.view.isGone
-import androidx.core.view.size
+import androidx.core.view.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -59,15 +56,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
         if(!onWrite) {
             onWrite = true
             writeComment(position)
-            val color = Color.argb(170, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-            writeContainer.setBackgroundColor(color)
-            binding.writeCommentBack.isGone = true
-            binding.commentVisibility.isGone = true
-            binding.writeCommentApply.visibility = View.VISIBLE
-            binding.writeCommentCancel.visibility = View.VISIBLE
-            binding.commentOnWrite.visibility = View.VISIBLE
-            writeContainer.isClickable = true
-            binding.writeCommentTitle.text = "코멘트 작성"
+            writeStart()
         }
     }
     override fun OnPopupClick(position: Int) {
@@ -85,15 +74,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
                if (writeContainer.contains(writeBox)) {
                    writeContainer.removeView(writeBox)
                    onWrite = false
-                   val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-                   writeContainer.setBackgroundColor(color)
-                   binding.writeCommentBack.visibility = View.VISIBLE
-                   binding.commentVisibility.visibility = View.VISIBLE
-                   binding.writeCommentCancel.isGone = true
-                   binding.writeCommentApply.isGone = true
-                   binding.commentOnWrite.isGone = true
-                   writeContainer.isClickable = false
-                   binding.writeCommentTitle.text = "코멘트 남기기"
+                   writeEnd()
                }
            }
        }else if(position == 1){
@@ -103,17 +84,36 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
            bindComment(addedComment)
            onWrite = false
            writeContainer.removeAllViews()
-           val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-           writeContainer.setBackgroundColor(color)
-           binding.writeCommentBack.visibility = View.VISIBLE
-           binding.commentVisibility.visibility = View.VISIBLE
-           binding.writeCommentCancel.isGone = true
-           binding.writeCommentApply.isGone = true
-           binding.commentOnWrite.isGone = true
-           writeContainer.isClickable = false
+           writeEnd()
            binding.writeCommentTitle.text = "코멘트 남기기"
        }
     }
+
+    fun writeEnd(){
+        val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
+        writeContainer.setBackgroundColor(color)
+        binding.writeCommentBack.visibility = View.VISIBLE
+        binding.commentVisibility.visibility = View.VISIBLE
+        binding.writeCommentCancel.isGone = true
+        binding.writeCommentApply.isGone = true
+        binding.commentOnWrite.isGone = true
+        writeContainer.isClickable = false
+        binding.writeCommentTitle.text = "코멘트 남기기"
+    }
+
+    fun writeStart(){
+        val color = Color.argb(170, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
+        writeContainer.setBackgroundColor(color)
+        binding.writeCommentBack.isGone = true
+        binding.commentVisibility.isGone = true
+        binding.writeCommentApply.visibility = View.VISIBLE
+        binding.writeCommentCancel.visibility = View.VISIBLE
+        binding.commentOnWrite.visibility = View.VISIBLE
+        writeContainer.isClickable = true
+        binding.writeCommentTitle.text = "코멘트 작성"
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "SnsMypageFragment - onCreate() called")
@@ -123,13 +123,17 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
     // status bar height 조정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(SnsFragment.TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(binding.addCommentLayout.id)
+        (activity as BaseActivity).adjustTopMargin(binding.addCommentRootview.id)
+
     }
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.addCommentLayout.id)
+
+        (activity as BaseActivity).adjustTopMargin(binding.addCommentRootview.id)
+
+
+
     }
 
     override fun onCreateView(
@@ -228,14 +232,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
                 bindComment(addedComment)
                 onWrite = false
                 writeContainer.removeAllViews()
-                val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-                writeContainer.setBackgroundColor(color)
-                binding.writeCommentBack.visibility = View.VISIBLE
-                binding.commentVisibility.visibility = View.VISIBLE
-                binding.writeCommentCancel.isGone = true
-                binding.writeCommentApply.isGone = true
-                binding.commentOnWrite.isGone = true
-                writeContainer.isClickable = false
+                writeEnd()
                 binding.writeCommentTitle.text = "코멘트 남기기"
             }else{
                 Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
@@ -429,9 +426,9 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
                                 onWrite = false
                                 val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
                                 writeContainer.setBackgroundColor(color)
+                                writeEnd()
                                 onDelete = false
                             }
-
                         }
                         isDragging = false // Reset the dragging flag
                     }

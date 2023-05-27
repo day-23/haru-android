@@ -132,12 +132,14 @@
                     android:text="이름"
                     android:textColor="#191919"
                     android:textStyle="bold"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
                 <TextView
                     android:id="@+id/profile_introduction"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textColor="#191919"
                     android:text="자기소개"/>
             </LinearLayout>
 
