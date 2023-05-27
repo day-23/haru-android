@@ -16,8 +16,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class CalendarViewModel : ViewModel() {
-//    private val todoRepository = TodoRepository()
-//    private val scheduleRepository = ScheduleRepository()
     private val alldoRepository = AllDoRepository()
     private val categoryRepository = CategoryRepository()
     private val ScheduleRepository = ScheduleRepository()
