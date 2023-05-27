@@ -68,33 +68,6 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         binding.ivTodayBackIcon.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
-
-        binding.btnAddTodoToday.setOnClickListener {
-            val text = binding.etSimpleAddTodoToday.text.toString()
-
-            if (text.replace(" ", "") == "") {
-                val todoInput = ChecklistInputFragment(checkListViewModel, today = true)
-                todoInput.show(parentFragmentManager, todoInput.tag)
-            } else {
-                val todo = TodoRequest(
-                    content = text,
-                    memo = "",
-                    todayTodo = true,
-                    flag = false,
-                    isAllDay = false,
-                    tags = emptyList(),
-                    subTodos = emptyList(),
-                    alarms = emptyList()
-                )
-                checkListViewModel.addTodo(todo) {
-                    binding.etSimpleAddTodoToday.setText("")
-                    binding.etSimpleAddTodoToday.clearFocus()
-                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(binding.etSimpleAddTodoToday.windowToken, 0)
-                }
-            }
-        }
     }
 
     private fun initToday() {
@@ -236,15 +209,6 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         todayRecyclerView.adapter = todoAdapter
         todayRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
-        todayRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                    binding.simpleAddFabLayoutToday.visibility = View.VISIBLE
-                else binding.simpleAddFabLayoutToday.visibility = View.GONE
-            }
-        })
 
         checkListViewModel.todayTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val todayTodo = it.filterIsInstance<Todo>()

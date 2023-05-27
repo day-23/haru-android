@@ -15,7 +15,7 @@
     <string name="today_todo">오늘 나의 하루</string>
     <string name="today_todo_before_add">나의 하루에 추가</string>
     <string name="today_todo_after_add">나의 하루에 추가됨</string>
-    <string name="todo_input">투두 입력</string>
+    <string name="todo_input">할일 입력</string>
     <string name="subTodo_input">하위 항목 추가</string>
     <string name="tag">태그</string>
     <string name="endDate_set">마감일 설정</string>
