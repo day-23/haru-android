@@ -124,11 +124,16 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.addCommentRootview.id)
+
     }
 
     override fun onResume() {
         super.onResume()
+
         (activity as BaseActivity).adjustTopMargin(binding.addCommentRootview.id)
+
+
+
     }
 
     override fun onCreateView(
