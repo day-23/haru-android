@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout
-        android:id="@+id/calendar_fragment_parent_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -13,6 +12,7 @@
             android:layout_height="match_parent">
 
             <RelativeLayout
+                android:id="@+id/calendar_fragment_parent_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -105,7 +105,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center"
                                 android:text="일"
-                                android:textColor="#ACACAC"
+                                android:textColor="#F71E58"
                                 android:textSize="14sp" />
 
                             <TextView
@@ -159,7 +159,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center"
                                 android:text="토"
-                                android:textColor="#ACACAC"
+                                android:textColor="#1DAFFF"
                                 android:textSize="14sp" />
                         </LinearLayout>
 
