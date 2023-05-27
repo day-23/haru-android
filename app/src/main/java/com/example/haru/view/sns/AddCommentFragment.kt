@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import BaseActivity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
@@ -117,6 +118,18 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
         super.onCreate(savedInstanceState)
         Log.d("TAG", "SnsMypageFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
+    }
+
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(SnsFragment.TAG, "sns onViewCreated: ")
+        (activity as BaseActivity).adjustTopMargin(binding.addCommentLayout.id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.addCommentLayout.id)
     }
 
     override fun onCreateView(
