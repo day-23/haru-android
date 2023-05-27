@@ -1,5 +1,6 @@
 package com.example.haru.view.checklist
 
+import BaseActivity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -25,6 +26,7 @@ import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
+import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.CheckListViewModel
 import java.util.*
 
@@ -60,6 +62,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // status bar height 조정
+        (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
+
         initTagList()
         initTodoList()
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.GradientDrawable.Orientation
+import android.media.Image
 import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
@@ -63,7 +64,7 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
         val detailTodoRecyclerView = holder.itemView.findViewById<RecyclerView>(R.id.detail_todo_recyclerview)
         val detailDayTv = holder.itemView.findViewById<TextView>(R.id.detail_day_tv)
         val simpleScheduleInputEt = holder.itemView.findViewById<EditText>(R.id.simple_schedule_input_et)
-        val simpleScheduleBtn = holder.itemView.findViewById<Button>(R.id.simple_schedule_btn)
+        val simpleScheduleBtn = holder.itemView.findViewById<ImageView>(R.id.simple_schedule_btn)
 
         calendar.time = startDate
         calendar.add(Calendar.DAY_OF_MONTH, position - Int.MAX_VALUE/2)

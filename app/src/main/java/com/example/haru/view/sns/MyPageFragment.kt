@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import BaseActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,13 +31,17 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
     val userId = userId
 
     override fun onCommentClick(postitem: Post) {
-        val newFrag = AddCommentFragment(postitem)
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragments_frame, newFrag)
-        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-        if(!isSnsMainInBackStack)
-            transaction.addToBackStack("snsmypage")
-        transaction.commit()
+        mypageViewModel.getUserInfo("jts") //TODO:하드코딩값 후에 알맞게 바인딩
+
+        mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
+            val newFrag = AddCommentFragment(postitem,user)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
+            if (!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmypage")
+            transaction.commit()
+        }
     }
 
     override fun onTotalCommentClick(post: Post) {
@@ -62,6 +67,19 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         Log.d("TAG", "MypageFragment - onCreate() called")
         mypageViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
+
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(SnsFragment.TAG, "sns onViewCreated: ")
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -1,22 +1,24 @@
 package com.example.haru.view.auth
 
-import android.content.ActivityNotFoundException
+import BaseActivity
 import android.content.Intent
-import android.net.Uri
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.haru.App
 import com.example.haru.data.model.UserKakaoAuthResponse
 import com.example.haru.data.model.UserVerifyResponse
 import com.example.haru.data.retrofit.RetrofitClient
-import com.example.haru.view.MainActivity
 import com.example.haru.databinding.ActivityLoginBinding
 import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
-import com.example.haru.utils.User.accessToken
+import com.example.haru.view.MainActivity
 import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -26,7 +28,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginActivity : AppCompatActivity() {
+
+class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

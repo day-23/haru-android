@@ -1,5 +1,6 @@
 package com.example.haru.view.timetable
 
+import BaseActivity
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -58,6 +59,18 @@ class TodotableFragment : Fragment() {
         checkListViewModel = CheckListViewModel()
         Log.d(TodotableFragment.TAG, "TodotableFragment - onCreate() called")
     }
+
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.todotableHeader.id)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.todotableHeader.id)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

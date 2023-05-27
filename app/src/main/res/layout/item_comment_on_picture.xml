@@ -12,7 +12,6 @@
         android:text="고양이 눈 완전 귀엽다"
         android:textColor="#191919"
         android:textSize="14dp"
-        android:textStyle="bold"
         android:gravity="center"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,8 +12,11 @@ import com.example.haru.R
 import com.example.haru.view.calendar.CategoryAddActivity
 import com.example.haru.view.calendar.CategoryCorrectionActivity
 
-class CategoriesColorAdapter(val activity: CategoryCorrectionActivity?=null, val activity2:CategoryAddActivity?=null): RecyclerView.Adapter<CategoriesColorAdapter.ColorsView>(){
+class CategoriesColorAdapter(val activity: CategoryCorrectionActivity?=null,
+                             val activity2:CategoryAddActivity?=null,
+                             initIndex: Int = -1): RecyclerView.Adapter<CategoriesColorAdapter.ColorsView>(){
 
+    var lastChooseIndex = initIndex
     val colorsList = listOf(
         "#2E2E2E", "#656565", "#818181", "#9D9D9D", "#B9B9B9", "#D5D5D5",
         "#FF0959", "#FF509C", "#FF5AB6", "#FE7DCD", "#FFAAE5", "#FFBDFB",
@@ -46,11 +49,26 @@ class CategoriesColorAdapter(val activity: CategoryCorrectionActivity?=null, val
         val drawable = categoryImage.background as VectorDrawable
         drawable.setColorFilter(Color.parseColor(colorsList[position]), PorterDuff.Mode.SRC_ATOP)
 
+        if(lastChooseIndex == position){
+            holder.itemView.setBackgroundResource(R.drawable.category_choose_image)
+        } else {
+            holder.itemView.setBackgroundResource(com.kakao.sdk.friend.R.color.transparent)
+        }
+
         categoryImage.setOnClickListener {
             if(activity != null) {
-                activity!!.changeColor(colorsList[position])
+                activity.changeColor(colorsList[position])
             } else {
                 activity2!!.changeColor(colorsList[position])
+            }
+
+            if(lastChooseIndex != -1){
+                notifyItemChanged(lastChooseIndex)
+                notifyItemChanged(position)
+                lastChooseIndex = position
+            } else {
+                notifyItemChanged(position)
+                lastChooseIndex = position
             }
         }
     }

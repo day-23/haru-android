@@ -1,5 +1,7 @@
 package com.example.haru.data.model
 
+import java.util.*
+
 data class Schedule(
     val type: Int = 2,
     val id: String = "",
@@ -16,5 +18,6 @@ data class Schedule(
     val repeatOption: String? = null,
     val repeatValue: String? = null,
     var location: Int? = null,
-    var todayDate: String? = null
+    var startTime: Date? = null,
+    var endTime: Date? = null
 )

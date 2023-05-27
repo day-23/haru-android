@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import BaseActivity
 import UserViewModelFactory
 import android.content.Intent
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
@@ -38,18 +39,23 @@ import retrofit2.converter.gson.GsonConverterFactory
 class SnsFragment : Fragment(), OnPostClickListener {
     private lateinit var userViewModel: UserViewModel
     private lateinit var snsViewModel: SnsViewModel
+    private lateinit var profileViewModel: MyPageViewModel
     private lateinit var binding: FragmentSnsBinding
     private var click = false
     private lateinit var snsPostAdapter: SnsPostAdapter
 
     override fun onCommentClick(postitem: Post) {
-        val newFrag = AddCommentFragment(postitem)
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragments_frame, newFrag)
-        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-        if(!isSnsMainInBackStack)
-            transaction.addToBackStack("snsmain")
-        transaction.commit()
+        profileViewModel.getUserInfo("jts") //TODO:하드코딩값, 후에 개인 아이디로 바인딩
+
+        profileViewModel.UserInfo.observe(viewLifecycleOwner){user ->
+            val newFrag = AddCommentFragment(postitem, user)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
+            transaction.commit()
+        }
     }
     override fun onTotalCommentClick(post : Post) {
         val newFrag = CommentsFragment(post)
@@ -94,7 +100,20 @@ class SnsFragment : Fragment(), OnPostClickListener {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "SnsFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
 
+    }
+
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "sns onViewCreated: ")
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
     }
 
     override fun onCreateView(
@@ -103,7 +122,8 @@ class SnsFragment : Fragment(), OnPostClickListener {
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "SnsFragment - onCreateView() called")
-
+        val manager = parentFragmentManager
+        manager.clearBackStack("snsmain")
         binding = FragmentSnsBinding.inflate(inflater, container, false)
         binding.friendFeed.setTextColor(0xFF1DAFFF.toInt())
         val postRecycler = binding.postOfAll
@@ -185,7 +205,6 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
         val viewModelFactory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, viewModelFactory).get(UserViewModel::class.java)
-
 
 
         val userId = 1// Replace with actual user ID

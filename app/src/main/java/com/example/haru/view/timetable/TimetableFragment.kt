@@ -1,5 +1,6 @@
 package com.example.haru.view.timetable
 
+import BaseActivity
 import android.content.ClipData
 import android.content.res.Resources
 import android.graphics.Canvas
@@ -49,6 +50,16 @@ class TimetableFragment : Fragment() {
         super.onCreate(savedInstanceState)
         reviewModel = TimeTableRecyclerViewModel()
         Log.d(TAG, "TimetableFragment - onCreate() called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.timetableHeader.id)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.timetableHeader.id)
     }
 
     override fun onCreateView(

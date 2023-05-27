@@ -74,6 +74,35 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
 
         if(schedule.isAllDay){
             detailScheduleTimeTv.text = "하루종일"
+        } else {
+            var scheduleTime = ""
+            scheduleTime += schedule.startTime!!.month.toString()+"월 " + schedule.startTime!!.date.toString()+"일 "
+            scheduleTime += if(schedule.startTime!!.hours < 12) "오전 " else "오후 "
+            scheduleTime +=
+                if (schedule.startTime!!.hours == 0 || schedule.startTime!!.hours == 12) "12"
+                else if (schedule.startTime!!.hours > 12) (schedule.startTime!!.hours-12).toString()
+                else schedule.startTime!!.hours.toString()
+
+            scheduleTime += ":"
+            scheduleTime +=
+                if (schedule.startTime!!.minutes < 10) "0"+schedule.startTime!!.minutes.toString()
+                else schedule.startTime!!.minutes.toString()
+
+            scheduleTime += " - "
+
+            scheduleTime += schedule.endTime!!.month.toString()+"월 " + schedule.endTime!!.date.toString()+"일 "
+            scheduleTime += if(schedule.endTime!!.hours < 12) "오전 " else "오후 "
+            scheduleTime +=
+                if (schedule.endTime!!.hours == 0 || schedule.endTime!!.hours == 12) "12"
+                else if (schedule.endTime!!.hours > 12) (schedule.endTime!!.hours-12).toString()
+                else schedule.endTime!!.hours.toString()
+
+            scheduleTime += ":"
+            scheduleTime +=
+                if (schedule.endTime!!.minutes < 10) "0"+schedule.endTime!!.minutes.toString()
+                else schedule.endTime!!.minutes.toString()
+
+            detailScheduleTimeTv.text = scheduleTime
         }
 
         if(schedule.category == null){
@@ -167,7 +196,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                                 schedule.repeatEnd!!)
                         }
 
-                        "2주마다" -> {
+                        "격주" -> {
                             nextData = FormatDate.nextStartDateEveryWeek(
                                 schedule.repeatValue,
                                 2,

@@ -80,6 +80,12 @@ class CommentsAdapter(val context: Context,
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    fun firstComment(items: ArrayList<Comments>){
+        itemList = items
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun deleteItem(item: Comments){
         itemList.remove(item)
         notifyDataSetChanged()
