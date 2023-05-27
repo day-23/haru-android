@@ -19,6 +19,7 @@ import java.util.UUID
 
 class PostRepository() {
     private val postService = RetrofitClient.postService
+    val userId = com.example.haru.utils.User.id
 
     //게시글 추가
     suspend fun addPost(post: AddPost, callback: (postInfo: SendPost) -> Unit) = withContext(Dispatchers.IO) {
@@ -36,7 +37,7 @@ class PostRepository() {
         }
 
         // Call the addPost function from the PostService
-        val call = postService.addPost("jts", images, content, hashTags)
+        val call = postService.addPost(userId, images, content, hashTags)
         val response = call.execute()
 
         val postInfo = SendPost()
@@ -52,7 +53,7 @@ class PostRepository() {
 
     //게시글 삭제
     suspend fun deletePost(postId: String, callback: (delete: Boolean) -> Unit) = withContext(Dispatchers.IO) {
-        val call = postService.deletePost("jts", postId)
+        val call = postService.deletePost(userId, postId)
         val response = call.execute()
         var delete = false
         val data = response.body()
@@ -70,7 +71,7 @@ class PostRepository() {
     suspend fun getPost(lastCreatedAt:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getPosts(
-            "jts",
+            userId,
             lastCreatedAt
         ).execute()
 
@@ -90,7 +91,7 @@ class PostRepository() {
     suspend fun getFirstPost(callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getFirstPosts(
-            "jts",
+            userId,
         ).execute()
 
         val posts: ArrayList<Post>
@@ -110,7 +111,7 @@ class PostRepository() {
     suspend fun postLike(id:String, callback: (liked: Boolean) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.postLike(
-            "jts",
+            userId,
             id
         ).execute()
         val data: LikeResponse
@@ -130,7 +131,7 @@ class PostRepository() {
     suspend fun getMyFeed(page:String, targetId:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getMyFeed(
-            "jts",
+            userId,
             targetId,
             page
         ).execute()
@@ -152,7 +153,7 @@ class PostRepository() {
         Dispatchers.IO){
             Log.d("TAG", "post id recieve-------------- $postId")
             val response = postService.getComments(
-                "jts",
+                userId,
                 postId,
                 imageId,
                 lastCreatedAt
@@ -176,7 +177,7 @@ class PostRepository() {
         Dispatchers.IO){
         Log.d("TAG", "post id recieve-------------- $postId")
         val response = postService.getFirstComments(
-            "jts",
+            userId,
             postId,
             imageId,
         ).execute()
@@ -197,7 +198,7 @@ class PostRepository() {
         Dispatchers.IO){
         Log.d("TAG", "post id recieve-------------- $postId")
         val response = postService.writeComments(
-            "jts",
+            userId,
             postId,
             imageId,
             comment

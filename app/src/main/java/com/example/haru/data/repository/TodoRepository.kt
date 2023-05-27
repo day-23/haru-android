@@ -19,17 +19,16 @@ class TodoRepository() {
     ) = withContext(Dispatchers.IO) {
         val response =
             todoService.getTodoDates(
-                "dd62593d-161b-45cb-9534-346cd5b5e556",
-//                "ysr",
-                startDate,
-                endDate
+                com.example.haru.utils.User.id,
+                body
             )
                 .execute()
         val data: GetTodoResponse
         val todoData: List<Todo>
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get todos")
+            Log.d("20191668", "Success to get todos")
+            Log.d("20191668", "${response.body()}")
             data = response.body()!!
             todoData = data.data
         } else {

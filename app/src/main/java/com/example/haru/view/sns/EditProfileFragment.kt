@@ -1,13 +1,8 @@
 package com.example.haru.view.sns
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.ContentResolver
+import BaseActivity
 import android.content.ContentUris
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.graphics.Rect
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -17,38 +12,22 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
-import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
-import com.example.haru.data.model.Profile
 import com.example.haru.databinding.CustomGalleryBinding
 import com.example.haru.databinding.FragmentEditProfileBinding
-import com.example.haru.databinding.FragmentSnsBinding
+import com.example.haru.utils.User
 import com.example.haru.view.adapter.GalleryAdapter
-import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
-import com.example.haru.viewmodel.SnsViewModel
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.File
-import java.util.jar.Manifest
 
 class EditProfileFragment(userId: String): Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
@@ -60,6 +39,17 @@ class EditProfileFragment(userId: String): Fragment() {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "SnsMypageFragment - onCreate() called")
         profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
+    }
+
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.editProfileRootview.id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.editProfileRootview.id)
     }
 
     override fun onCreateView(
@@ -78,7 +68,7 @@ class EditProfileFragment(userId: String): Fragment() {
                 fragmentManager.popBackStack()
             }
         }
-        if(userId == "") userId = "jts" //TODO:나중에는 동적으로 할당해야함
+        if(userId == "") userId = User.id //TODO:나중에는 동적으로 할당해야함
         profileViewModel.getUserInfo(userId)
 
         profileViewModel.UserInfo.observe(viewLifecycleOwner){profile ->

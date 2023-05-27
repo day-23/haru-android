@@ -31,7 +31,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
     val userId = userId
 
     override fun onCommentClick(postitem: Post) {
-        mypageViewModel.getUserInfo("jts") //TODO:하드코딩값 후에 알맞게 바인딩
+        mypageViewModel.getUserInfo(com.example.haru.utils.User.id) //TODO:하드코딩값 후에 알맞게 바인딩
 
         mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
             val newFrag = AddCommentFragment(postitem,user)
@@ -93,8 +93,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         mypageViewModel.init_page()
 
         //TODO("내 계정으로 접근할때 조건문 추가해야함")
-        if(userId == "" || userId == "jts"){
-            mypageViewModel.getUserInfo("jts")
+        if(userId == "" || userId == com.example.haru.utils.User.id){
+            mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
             binding.editProfile.text = "프로필 편집"
             binding.profileShare.visibility = View.VISIBLE
         }else{
@@ -132,7 +132,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         mypageViewModel.Page.observe(viewLifecycleOwner){page ->
             val page = page.toString()
             //TODO("본인 계정 정보를 불러와 쓰도록 후속조치 필요함")
-            if(userId == "") mypageViewModel.getFeed(page,"jts")
+            if(userId == "") mypageViewModel.getFeed(page,com.example.haru.utils.User.id)
             else mypageViewModel.getFeed(page, userId)
         }
 

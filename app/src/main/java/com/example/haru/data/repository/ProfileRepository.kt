@@ -15,6 +15,7 @@ import okhttp3.RequestBody
 
 class ProfileRepository() {
     private val profileService = RetrofitClient.profileService
+    val userId = com.example.haru.utils.User.id
 
     suspend fun editProfile(imageFile: MultipartBody.Part, name:String, introduction:String ,callback:(user : User) -> Unit) = withContext(
         Dispatchers.IO) {
@@ -22,7 +23,7 @@ class ProfileRepository() {
             val name = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
             val introduction = RequestBody.create("text/plain".toMediaTypeOrNull(), introduction)
             val response = profileService.editProfile(
-                "jts",
+                userId,
                 imageFile,
                 name,
                 introduction
@@ -49,7 +50,7 @@ class ProfileRepository() {
         Dispatchers.IO) {
         try {
             val response = profileService.editProfileName(
-                "jts",
+                userId,
                 EditBody(name, introduction)
             ).execute()
             val user: User
@@ -108,7 +109,7 @@ class ProfileRepository() {
         Dispatchers.IO){
         Log.d("TAG", "-----------------$targetId")
         val response = profileService.getUserInfo(
-            "jts",
+            userId,
             targetId
         ).execute()
         val user: User

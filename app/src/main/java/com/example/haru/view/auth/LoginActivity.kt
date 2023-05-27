@@ -46,8 +46,8 @@ class LoginActivity : BaseActivity() {
         binding.loginBtn.setOnClickListener {
             /* 로그인 성공 */
             //하드코딩된 값 쓰고 싶으면 여기 넣으면됨
-            User.id = "005224c0-eec1-4638-9143-58cbfc9688c5"
-//            User.id = "ysr"
+//            User.id = "005224c0-eec1-4638-9143-58cbfc9688c5"
+            User.id = "jts"
 
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -83,7 +83,10 @@ class LoginActivity : BaseActivity() {
                     }
 
                     // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
-                    UserApiClient.instance.loginWithKakaoAccount(this@LoginActivity, callback = callback)
+                    UserApiClient.instance.loginWithKakaoAccount(
+                        this@LoginActivity,
+                        callback = callback
+                    )
                 } else if (token != null) {
                     Log.i("LOGIN", "카카오톡으로 로그인 성공 ${token.accessToken}")
                     validateUserWithServer(token)
@@ -96,17 +99,23 @@ class LoginActivity : BaseActivity() {
     }
 
 
-
     // 카카오 accessToken을 통해 서버에 해당 유저가 유효한지 확인
     private fun validateUserWithServer(token: OAuthToken) {
         // Call your API
-        val call = RetrofitClient.apiService.validateKakaoUser(mapOf("authorization" to "Bearer ${token.accessToken}"))
+        val call =
+            RetrofitClient.apiService.validateKakaoUser(mapOf("authorization" to "Bearer ${token.accessToken}"))
 
         // Enqueue the call
         call.enqueue(object : Callback<UserKakaoAuthResponse> {
-            override fun onResponse(call: Call<UserKakaoAuthResponse>, response: Response<UserKakaoAuthResponse>) {
+            override fun onResponse(
+                call: Call<UserKakaoAuthResponse>,
+                response: Response<UserKakaoAuthResponse>
+            ) {
                 if (response.isSuccessful) {
-                    Log.i("LOGIN", "Server login successful, received JWT: ${response.body().toString()}")
+                    Log.i(
+                        "LOGIN",
+                        "Server login successful, received JWT: ${response.body().toString()}"
+                    )
 
                     // Fetch user email from Kakao SDK
                     UserApiClient.instance.me { user, error ->
@@ -125,7 +134,7 @@ class LoginActivity : BaseActivity() {
                             val accessToken = response.body()?.data?.accessToken.toString()
                             val refreshToken = response.body()?.data?.refreshToken.toString()
 
-                            with (sharedPreferences.edit()) {
+                            with(sharedPreferences.edit()) {
                                 putString("accessToken", accessToken)
                                 putString("refreshToken", refreshToken)
                                 commit()
@@ -181,7 +190,10 @@ class LoginActivity : BaseActivity() {
                                     }
                                 }
 
-                                override fun onFailure(call: Call<UserVerifyResponse>, t: Throwable) {
+                                override fun onFailure(
+                                    call: Call<UserVerifyResponse>,
+                                    t: Throwable
+                                ) {
                                     Log.d(TAG, "onFailure: ${t.message}")
                                 }
                             })
@@ -189,11 +201,11 @@ class LoginActivity : BaseActivity() {
                             // If user is not registered, go to sign up page
                             Log.d(TAG, "자동로그인 onResponse: ${User.name} ${User.email} ${User.id}")
 
-                            if(User.name == ""){
+                            if (User.name == "") {
                                 val intent = Intent(this@LoginActivity, SignUpActivity::class.java)
                                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                                 finish()
-                            } else{
+                            } else {
                                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
                                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                                 finish()

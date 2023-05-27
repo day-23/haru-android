@@ -584,7 +584,11 @@ class AdapterMonth(val activity: Activity,
                 var saveCntList = ArrayList<Int>()
                 var saveScheduleList = ArrayList<Schedule>()
 
-                loop@for (position2 in 0 until 175) {
+                Log.d("망할 오류", maxTextCount.toString())
+
+                var position2 = -1
+                loop@while(true) {
+                    position2++
                     val newpostion = positionplus + position2
 
                     if(newpostion >= (maxTextCount+1) * (size+1) * 7) break
