@@ -27,6 +27,10 @@
             android:text="게시글 작성을 취소할까요? 작성중인 내용은 삭제됩니다."
             android:textColor="@color/date_text"
             android:textSize="14sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DBDBDB"/>
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/sns_add_post_unsave"
             android:layout_width="match_parent"
