@@ -40,6 +40,7 @@ import com.example.haru.data.model.Profile
 import com.example.haru.databinding.CustomGalleryBinding
 import com.example.haru.databinding.FragmentEditProfileBinding
 import com.example.haru.databinding.FragmentSnsBinding
+import com.example.haru.utils.User
 import com.example.haru.view.adapter.GalleryAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
@@ -78,7 +79,7 @@ class EditProfileFragment(userId: String): Fragment() {
                 fragmentManager.popBackStack()
             }
         }
-        if(userId == "") userId = "jts" //TODO:나중에는 동적으로 할당해야함
+        if(userId == "") userId = User.id //TODO:나중에는 동적으로 할당해야함
         profileViewModel.getUserInfo(userId)
 
         profileViewModel.UserInfo.observe(viewLifecycleOwner){profile ->
