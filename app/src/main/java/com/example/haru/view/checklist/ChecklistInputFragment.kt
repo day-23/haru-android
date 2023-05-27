@@ -4,6 +4,7 @@ package com.example.haru.view.checklist
 import android.app.Dialog
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.SystemClock
 import android.text.Editable
@@ -28,6 +29,7 @@ import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.lang.reflect.Type
 import java.util.*
 
 class ChecklistInputFragment(
@@ -630,6 +632,23 @@ class ChecklistInputFragment(
 
         })
 // -------------------------------------------
+        binding.todoEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val str = s.toString()
+                if (str == "") {
+                    binding.todoEt.setTypeface(null, Typeface.NORMAL)
+                    return
+                }
+
+                binding.todoEt.setTypeface(null, Typeface.BOLD)
+            }
+
+        })
+
         binding.etMemo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 

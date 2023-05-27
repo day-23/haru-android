@@ -51,7 +51,7 @@
                 android:id="@+id/btn_submit_todo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/todo_description"
+                android:backgroundTint="@color/date_text"
                 android:background="@drawable/check_icon" />
 
         </LinearLayout>
@@ -82,14 +82,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
                         android:layout_weight="1"
-                        android:background="@android:color/transparent"
+                        android:background="@null"
                         android:hint="@string/todo_input"
-                        android:inputType="text"
+                        android:inputType="textNoSuggestions"
                         android:text="@={viewModel.content}"
                         android:textColor="@color/todo_description"
                         android:textColorHint="@color/light_gray"
-                        android:textSize="24sp"
-                        android:textStyle="bold"/>
+                        android:textSize="24sp" />
 
 
                     <CheckBox
@@ -121,6 +120,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
+                            android:backgroundTint="@color/light_gray"
                             android:background="@drawable/calendar_schedule_plus_image"/>
 
                         <TextView
