@@ -1,5 +1,6 @@
 package com.example.haru.view.sns
 
+import BaseActivity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
@@ -11,10 +12,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.core.view.contains
-import androidx.core.view.get
-import androidx.core.view.isGone
-import androidx.core.view.size
+import androidx.core.view.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -113,10 +111,23 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
            binding.writeCommentTitle.text = "코멘트 남기기"
        }
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "SnsMypageFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
+    }
+
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.addCommentTitle.id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.addCommentTitle.id)
     }
 
     override fun onCreateView(
