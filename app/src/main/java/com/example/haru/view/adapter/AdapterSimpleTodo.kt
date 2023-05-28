@@ -21,9 +21,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Flag
-import com.example.haru.data.model.Schedule
-import com.example.haru.data.model.Todo
+import com.example.haru.data.model.*
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
@@ -89,14 +87,95 @@ class AdapterSimpleTodo(
 
         if (tag.length > 0) tag = tag.dropLast(0)
 
-        detailTodoTagsTv.text = tag
+        if(tag != "") {
+            detailTodoTagsTv.visibility = View.VISIBLE
+            detailTodoTagsTv.text = tag
+        } else {
+            detailTodoTagsTv.visibility = View.GONE
+            detailTodoTagsTv.text = ""
+        }
 
         if(todo.flag){
             detailTodoFlagImv.setBackgroundResource(R.drawable.star_check)
         }
 
         detailTodoComplete.setOnClickListener {
+            val calendarViewModel = CalendarViewModel()
 
+            if(todo.repeatOption != null){
+                if (todo.endDate != null && todo.repeatOption != null) {
+                    val end = serverDateFormat.parse(todo.endDate)
+                    val today = todayDateFormat.parse(todayTodo)
+
+                    if (end.year == today.year && end.month == today.month && end.date == today.date) {
+                        calendarViewModel.completeRepeatFrontTodo(todo.id, FrontEndDate(todayTodo)){}
+                        return@setOnClickListener
+                    }
+                }
+
+                if(todo.repeatEnd != null && todo.repeatOption != null){
+                    val today = todayDateFormat.parse(todayTodo)
+                    val beforeFormatToday =
+                        FormatDate.calendarBackFormat(serverDateFormat.format(today))
+                    val beforeFormatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
+
+                    var nextData: Date? = null
+
+                    when (todo.repeatOption) {
+                        "매일" -> {
+                            nextData = FormatDate.nextEndDate(beforeFormatToday, beforeFormatEnd)
+                        }
+
+                        "매주" -> {
+                            nextData = FormatDate.nextEndDateEveryWeek(
+                                todo.repeatValue,
+                                1,
+                                beforeFormatToday,
+                                beforeFormatEnd
+                            )
+                        }
+
+                        "격주" -> {
+                            nextData = FormatDate.nextEndDateEveryWeek(
+                                todo.repeatValue,
+                                2,
+                                beforeFormatToday,
+                                beforeFormatEnd
+                            )
+                        }
+
+                        "매달" -> {
+                            nextData = FormatDate.nextEndDateEveryMonth(
+                                todo.repeatValue!!,
+                                beforeFormatToday,
+                                beforeFormatEnd
+                            )
+                        }
+
+                        "매년" -> {
+                            nextData = FormatDate.nextEndDateEveryYear(
+                                todo.repeatValue!!,
+                                beforeFormatToday,
+                                beforeFormatEnd
+                            )
+                        }
+                    }
+
+                    if (nextData == null) {
+
+
+                        calendarViewModel.completeRepeatBackTodo(todo.id, BackCompleteEndDate(todayTodo)){}
+                        return@setOnClickListener
+                    }
+
+                    calendarViewModel.completeRepeatMiddleTodo(todo.id, MiddleCompleteEndDate(todayTodo, todayDateFormat.format(nextData))){}
+                }
+            } else {
+                calendarViewModel.completeNotRepeatTodo(todo.id, Completed(!todo.completed)){}
+
+                todos[position].completed = !todos[position].completed
+                notifyItemChanged(position)
+            }
         }
 
         detailTodoFlagImv.setOnClickListener {

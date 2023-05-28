@@ -18,6 +18,7 @@ import kotlin.collections.ArrayList
 class CalendarViewModel : ViewModel() {
     private val alldoRepository = AllDoRepository()
     private val categoryRepository = CategoryRepository()
+    private val TodoRepository = TodoRepository()
     private val ScheduleRepository = ScheduleRepository()
 
     val _liveCategoryList = MutableLiveData<List<Category>>()
@@ -34,6 +35,46 @@ class CalendarViewModel : ViewModel() {
 
     val _liveScheduleList = MutableLiveData<List<Schedule>>()
     val liveScheduleList: MutableLiveData<List<Schedule>> get() = _liveScheduleList
+
+    fun completeNotRepeatTodo(todoId: String,
+                              completed: Completed,
+                              callback: () -> Unit){
+        viewModelScope.launch {
+            TodoRepository.completeNotRepeatTodo(todoId, completed){
+                callback()
+            }
+        }
+    }
+
+    fun completeRepeatFrontTodo(todoId: String,
+                              endDate: FrontEndDate,
+                              callback: () -> Unit){
+        viewModelScope.launch {
+            TodoRepository.completeRepeatFrontTodo(todoId, endDate){
+                callback()
+            }
+        }
+    }
+
+    fun completeRepeatMiddleTodo(todoId: String,
+                              endDate: MiddleCompleteEndDate,
+                              callback: () -> Unit){
+        viewModelScope.launch {
+            TodoRepository.completeRepeatMiddleTodo(todoId, endDate){
+                callback()
+            }
+        }
+    }
+
+    fun completeRepeatBackTodo(todoId: String,
+                               endDate: BackCompleteEndDate,
+                              callback: () -> Unit){
+        viewModelScope.launch {
+            TodoRepository.completeRepeatBackTodo(todoId, endDate){
+                callback()
+            }
+        }
+    }
 
     fun getCategories(){
         viewModelScope.launch {

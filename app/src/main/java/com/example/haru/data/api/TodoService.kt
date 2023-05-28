@@ -50,6 +50,12 @@ interface TodoService {
     @PATCH("todo/{userId}/complete/todo/{todoId}/repeat/front") //front 완료
     fun completeRepeatFrontTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body frontEndDate: FrontEndDate) : Call<SuccessFail>
 
+    @PATCH("todo/{userId}/complete/todo/{todoId}/repeat/middle") //middle 완료
+    fun completeRepeatMiddleTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body middleEndDate: MiddleCompleteEndDate) : Call<SuccessFail>
+
+    @PATCH("todo/{userId}/complete/todo/{todoId}/repeat/back") //back 완료
+    fun completeRepeatBackTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body backEndDate: BackCompleteEndDate) : Call<SuccessFail>
+
     @HTTP(method = "DELETE", path = "todo/{userId}/todo/{todoId}/repeat/front", hasBody = true) // front 삭제
     fun deleteRepeatFrontTodo(@Path("userId") userId: String, @Path("todoId") todoId: String, @Body frontEndDate: FrontEndDate) : Call<SuccessFail>
 

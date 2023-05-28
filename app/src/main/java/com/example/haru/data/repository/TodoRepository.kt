@@ -331,6 +331,48 @@ class TodoRepository() {
         callback(successData)
     }
 
+    suspend fun completeRepeatMiddleTodo(
+        todoId: String,
+        middleEndDate: MiddleCompleteEndDate,
+        callback: (successData: SuccessFail?) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.completeRepeatMiddleTodo(User.id, todoId, middleEndDate).execute()
+        var data = response.body()
+
+        val successData: SuccessFail? = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Complete Repeat Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Complete Repeat Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
+            data
+        }
+        callback(successData)
+    }
+
+    suspend fun completeRepeatBackTodo(
+        todoId: String,
+        backEndDate: BackCompleteEndDate,
+        callback: (successData: SuccessFail?) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = todoService.completeRepeatBackTodo(User.id, todoId, backEndDate).execute()
+        var data = response.body()
+
+        val successData: SuccessFail? = if (response.isSuccessful) {
+            Log.d("TAG", "Success to Complete Repeat Todo")
+            data
+        } else {
+            Log.d("TAG", "Fail to Complete Repeat Todo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, SuccessFail::class.java)
+            data
+        }
+        callback(successData)
+    }
+
     suspend fun updateRepeatFrontTodo(
         todoId: String,
         updateRepeatFrontTodo: UpdateRepeatFrontTodo,
