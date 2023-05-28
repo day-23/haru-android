@@ -28,47 +28,47 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
     var lastY = 0
     val shadowView = Button(context)
     override fun onDrag(view: View, event: DragEvent): Boolean {
-        var targetFramelayout: FrameLayout
+        var targetFrameLayout: FrameLayout
 
         if (event.action == DragEvent.ACTION_DROP) {
             val draggedView = event.localState as View
             try {
-                targetFramelayout = view as FrameLayout
+                targetFrameLayout = view as FrameLayout
             } catch (e: java.lang.ClassCastException) {
-                targetFramelayout = view.parent.parent as FrameLayout
+                targetFrameLayout = view.parent.parent as FrameLayout
             }
-            val displayMetrics = targetFramelayout.resources.displayMetrics
+            val displayMetrics = targetFrameLayout.resources.displayMetrics
             val x = event.x
-            val y = ((event.y / displayMetrics.density).toInt() / 10) * 10
+            val y = ((event.y / displayMetrics.density).toInt() / 10) * 6
 
             val dropY = Math.round( y * displayMetrics.density)
             draggedView.y = dropY.toFloat()
-            val SourceLayout = draggedView.parent as LinearLayout
-            Log.d("DRAGGED", "${targetFramelayout.id} , $y")
+            val sourceLayout = draggedView.parent as LinearLayout
+            Log.d("DRAGGED", "${targetFrameLayout.id} , $y")
 
             var index = -1
             for(i : Int in 0..6){
-                if(targetFramelayout.id == layoutIndex[i]){
+                if(targetFrameLayout.id == layoutIndex[i]){
                     index = i
                     break
                 }
             }
-            SourceLayout.removeView(draggedView)
+            sourceLayout.removeView(draggedView)
             timetableViewModel.scheduleMoved(y, draggedView, index)
         }
 
         if (event.action == DragEvent.ACTION_DRAG_LOCATION) {
             val draggedView = event.localState as TextView
             try {
-                targetFramelayout = view as FrameLayout
+                targetFrameLayout = view as FrameLayout
             } catch (e: java.lang.ClassCastException) {
-                targetFramelayout = view.parent.parent as FrameLayout
+                targetFrameLayout = view.parent.parent as FrameLayout
             }
-            val shadowparams = FrameLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, draggedView.height)
-//            shadowView.alpha = 1f
-            shadowView.layoutParams = shadowparams
-            val displayMetrics = targetFramelayout.resources.displayMetrics
-            val y = ((event.y / displayMetrics.density).toInt() / 10) * 10
+            val shadowParams = FrameLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, draggedView.height)
+            shadowView.alpha = 1f
+            shadowView.layoutParams = shadowParams
+            val displayMetrics = targetFrameLayout.resources.displayMetrics
+            val y = ((event.y / displayMetrics.density).toInt() / 10) * 6
             val dropY = Math.round( y * displayMetrics.density)
             shadowView.setBackgroundResource(R.drawable.timetable_schedule)
             shadowView.alpha = 0.5f
@@ -80,7 +80,7 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
                 } catch (e: java.lang.NullPointerException){}
                 shadowView.y = dropY.toFloat()
                 shadowView.text = draggedView.text
-                targetFramelayout.addView(shadowView)
+                targetFrameLayout.addView(shadowView)
                 true
             }
 
@@ -88,11 +88,11 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
 
         if (event.action == DragEvent.ACTION_DRAG_EXITED) {
             try {
-                targetFramelayout = view as FrameLayout
+                targetFrameLayout = view as FrameLayout
             } catch (e: java.lang.ClassCastException) {
-                targetFramelayout = view.parent.parent as FrameLayout
+                targetFrameLayout = view.parent.parent as FrameLayout
             }
-            targetFramelayout.removeView(shadowView)
+            targetFrameLayout.removeView(shadowView)
         }
         return true
     }

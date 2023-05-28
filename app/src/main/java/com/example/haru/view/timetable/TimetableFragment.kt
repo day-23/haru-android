@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
-import androidx.core.view.marginTop
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,7 +72,9 @@ class TimetableFragment : Fragment() {
         val rootView = binding.root
         timetableviewModel = TimetableViewModel(requireContext())
         binding.viewModel = timetableviewModel
+
         reviewModel.init_value()
+
         timetableAdapter =
             TimetableAdapter(requireContext(), reviewModel.TimeList.value ?: timeList)
         timeTableRecyclerView = binding.timetableRecyclerview
@@ -81,7 +82,7 @@ class TimetableFragment : Fragment() {
         timeTableRecyclerView.adapter = timetableAdapter
         timetableviewModel.init_value()
 
-        //타임테이블 프래그먼트 아이디 값
+        //타임테이블 frameLayout 프래그먼트 아이디 값
         layoutId.add(binding.sunTable.id)
         layoutId.add(binding.monTable.id)
         layoutId.add(binding.tueTable.id)
@@ -101,10 +102,10 @@ class TimetableFragment : Fragment() {
         binding.friTable.setOnDragListener(scheduleDrag)
         binding.satTable.setOnDragListener(scheduleDrag)
 
-        binding.timetableScroll.setOnDragListener{ _, event ->
+        binding.timetableScroll.setOnDragListener { _, event ->
             val boxesLayoutCoords = intArrayOf(0, 0)
             binding.timetableScroll.getLocationInWindow(boxesLayoutCoords)
-            when(event.action){
+            when (event.action) {
                 DragEvent.ACTION_DRAG_LOCATION -> {
                     checkForScroll(event.y, boxesLayoutCoords[1])
                     true
@@ -143,32 +144,32 @@ class TimetableFragment : Fragment() {
             scheduleMap.clear()
 
             binding.sunTable.removeAllViews()
-            Drawtimes(binding.sunTable, schedule[0])
+            drawTimes(binding.sunTable, schedule[0])
 
             binding.monTable.removeAllViews()
-            Drawtimes(binding.monTable, schedule[1])
+            drawTimes(binding.monTable, schedule[1])
 
             binding.tueTable.removeAllViews()
-            Drawtimes(binding.tueTable, schedule[2])
+            drawTimes(binding.tueTable, schedule[2])
 
             binding.wedTable.removeAllViews()
-            Drawtimes(binding.wedTable, schedule[3])
+            drawTimes(binding.wedTable, schedule[3])
 
             binding.thuTable.removeAllViews()
-            Drawtimes(binding.thuTable, schedule[4])
+            drawTimes(binding.thuTable, schedule[4])
 
             binding.friTable.removeAllViews()
-            Drawtimes(binding.friTable, schedule[5])
+            drawTimes(binding.friTable, schedule[5])
 
             binding.satTable.removeAllViews()
-            Drawtimes(binding.satTable, schedule[6])
+            drawTimes(binding.satTable, schedule[6])
 
         }
         //하루종일 or 2일이상 일정을 바인딩
         timetableviewModel.SchedulesAllday.observe(viewLifecycleOwner) { days ->
             binding.daysTable.removeAllViews()
             Log.d("ALLDAYsss", "$days")
-            DrawDays(binding.daysTable, days,timetableviewModel.getDates())
+            DrawDays(binding.daysTable, days, timetableviewModel.getDates())
         }
 
         //드래그 앤 드랍시 이동한 뷰의 정보
@@ -197,8 +198,6 @@ class TimetableFragment : Fragment() {
     }
 
 
-
-
     fun scroll() {
         val child = timeTableRecyclerView.getChildAt(8)
         val originalPos = IntArray(2)
@@ -210,24 +209,40 @@ class TimetableFragment : Fragment() {
     }
 
     //하루이상의 할일을 동적으로 바인딩
-    fun DrawDays(table: ViewGroup, days: ArrayList<Schedule>, dates: ArrayList<String>){
+    fun DrawDays(table: ViewGroup, days: ArrayList<Schedule>, dates: ArrayList<String>) {
         val displayMetrics = resources.displayMetrics
         val deleteSchedule = ArrayList<Schedule>()
-        while(days.size > 0){
+        while (days.size > 0) {
             val layout1 = FrameLayout(requireContext())
-            val rowParams1 = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, Math.round(18 * displayMetrics.density))
+            val rowParams1 = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                Math.round(18 * displayMetrics.density)
+            )
 
             layout1.layoutParams = rowParams1
 
             var occupied = 0
             deleteSchedule.clear()
 
-            for(day in days){
-                val startDate = day.repeatStart?.slice(IntRange(0,3)) + day.repeatStart?.slice(IntRange(5,6)) + day.repeatStart?.slice(IntRange(8,9))
-                val endDate = day.repeatEnd?.slice(IntRange(0,3)) + day.repeatEnd?.slice(IntRange(5,6)) + day.repeatEnd?.slice(IntRange(8,9))
-                if(startDate.toInt() > occupied) {
+            for (day in days) {
+                val startDate = day.repeatStart?.slice(IntRange(0, 3)) + day.repeatStart?.slice(
+                    IntRange(
+                        5,
+                        6
+                    )
+                ) + day.repeatStart?.slice(IntRange(8, 9))
+                val endDate = day.repeatEnd?.slice(IntRange(0, 3)) + day.repeatEnd?.slice(
+                    IntRange(
+                        5,
+                        6
+                    )
+                ) + day.repeatEnd?.slice(IntRange(8, 9))
+                if (startDate.toInt() > occupied) {
                     val layout2 = LinearLayout(requireContext())
-                    val rowParams2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+                    val rowParams2 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    )
                     layout2.layoutParams = rowParams2
                     deleteSchedule.add(day)
                     val period = (dates.indexOf(endDate) - dates.indexOf(startDate)) + 1
@@ -235,20 +250,33 @@ class TimetableFragment : Fragment() {
 
                     val view = TextView(requireContext())
                     view.text = day.content
-                    view.textSize = (10).toFloat()
+                    view.textSize = 10f
                     view.gravity = Gravity.CENTER
-                    view.setPadding(2,2,2,2)
+                    view.setPadding(2, 2, 2, 2)
                     view.maxLines = 1
                     view.setBackgroundResource(R.drawable.timetable_schedule_allday)
                     val frontPadding = View(requireContext())
                     val backPadding = View(requireContext())
                     view.setOnClickListener {
-                        Toast.makeText(requireContext(), "${day.content}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "${day.content}", Toast.LENGTH_SHORT)
+                            .show()
                     }
 
-                    val frontParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, position.toFloat())
-                    val backParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, (7 - (position + period).toFloat()))
-                    val itemParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, period.toFloat())
+                    val frontParams = LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        position.toFloat()
+                    )
+                    val backParams = LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        (7 - (position + period).toFloat())
+                    )
+                    val itemParams = LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        period.toFloat()
+                    )
 
                     view.layoutParams = itemParams
                     frontPadding.layoutParams = frontParams
@@ -260,18 +288,19 @@ class TimetableFragment : Fragment() {
                     layout1.addView(layout2)
                 }
             }
-            for(item in deleteSchedule){
+            for (item in deleteSchedule) {
+                Log.d(TAG, "DrawDays: ${item.repeatStart}")
                 days.remove(item)
             }
             table.addView(layout1)
         }
-
     }
+
     //하루치 일정을 동적으로 바인딩
-    fun Drawtimes(table: ViewGroup, times: ArrayList<Schedule>) {
+    private fun drawTimes(table: ViewGroup, times: ArrayList<Schedule>) {
         var past_start = 0
         var past_end = 2359
-        val UnionList = ArrayList<ArrayList<Schedule>>()
+        val unionList = ArrayList<ArrayList<Schedule>>()
         var overlapList = ArrayList<Schedule>()
         Log.d("DRAGGED", "${times}")
         for (times in times) {
@@ -284,7 +313,7 @@ class TimetableFragment : Fragment() {
             val end =
                 times.repeatEnd?.slice(IntRange(11, 12)) + times.repeatEnd?.slice(IntRange(14, 15))
 
-            if (start.toInt() in past_start..past_end-1) {
+            if (start.toInt() in past_start..past_end - 1) {
                 overlapList.add(times)
             } else {
                 val arraylist = ArrayList<Schedule>()
@@ -293,14 +322,14 @@ class TimetableFragment : Fragment() {
                 }
                 overlapList.clear()
                 overlapList.add(times)
-                UnionList.add(arraylist)
+                unionList.add(arraylist)
             }
 
             past_start = start.toInt()
             past_end = end.toInt()
         }
-        UnionList.add(overlapList)
-        for (union in UnionList) {
+        unionList.add(overlapList)
+        for (union in unionList) {
             val layout = LinearLayout(requireContext())
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -324,13 +353,14 @@ class TimetableFragment : Fragment() {
                     hour -= 1
                     min += 60
                 }
+                val timesCalculatedValue = hour * 72  + min / 5 * 6
                 val displayMetrics = resources.displayMetrics
                 val itemparams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    Math.round((hour * 120 + min * 2) * displayMetrics.density),
+                    Math.round((timesCalculatedValue) * displayMetrics.density),
                     1f
                 )
-                val margin = start_hour * 120 + start_min * 2
+                val margin = start_hour * 72 + start_min / 5 * 6
                 Log.d("Schedules", "times : $hour and $min $margin ${time.content}")
                 itemparams.topMargin = Math.round(margin * displayMetrics.density)
                 itemparams.rightMargin = 1
@@ -349,7 +379,7 @@ class TimetableFragment : Fragment() {
                 Schedule_View.layoutParams = itemparams
                 Schedule_View.setText(time.content)
                 Schedule_View.setLineSpacing((0).toFloat(), (1).toFloat())
-                Schedule_View.setPadding(4,4,4,4)
+                Schedule_View.setPadding(4, 4, 4, 4)
                 Schedule_View.setOnClickListener {
                     Toast.makeText(requireContext(), "${time.content}", Toast.LENGTH_SHORT)
                         .show()
@@ -358,28 +388,28 @@ class TimetableFragment : Fragment() {
                 Schedule_View.setBackgroundResource(R.drawable.timetable_schedule)
                 layout.addView(Schedule_View)
             }
-                table.addView(layout)
-            }
+            table.addView(layout)
         }
+    }
 
-        fun checkForScroll(pointerY: Float, startOfScrollView: Int) {
-            val lowerLimForScroll = (Resources.getSystem().displayMetrics.heightPixels * 0.8).toInt()
-            /* if the upper limit is passed, meaning a pixel height, scroll up */
-            Log.d("DRAGGED", "$pointerY $startOfScrollView, $lowerLimForScroll")
-            if ( pointerY < 100) {
-                binding.timetableScroll.smoothScrollBy(0, -20)
-                Log.d("DRAGGED", "up")
-            }
-            /* if the lower limit is passed, meaning a pixel height, scroll down */
-            else if (pointerY > lowerLimForScroll) {
-                binding.timetableScroll.smoothScrollBy(0, 15)
-                Log.d("DRAGGED", "down")
-            }
+    fun checkForScroll(pointerY: Float, startOfScrollView: Int) {
+        val lowerLimForScroll = (Resources.getSystem().displayMetrics.heightPixels * 0.8).toInt()
+        /* if the upper limit is passed, meaning a pixel height, scroll up */
+        Log.d("DRAGGED", "$pointerY, $startOfScrollView, $lowerLimForScroll")
+        if (pointerY < 100) {
+            binding.timetableScroll.smoothScrollBy(0, -20)
+            Log.d("DRAGGED", "up")
         }
+        /* if the lower limit is passed, meaning a pixel height, scroll down */
+        else if (pointerY > lowerLimForScroll) {
+            binding.timetableScroll.smoothScrollBy(0, 15)
+            Log.d("DRAGGED", "down")
+        }
+    }
 
 
     //타임테이블 왼쪽 1시부터 24시 시간 표기
-    fun drawLeftTime() {
+    private fun drawLeftTime() {
         val standardTextView = binding.leftTimeTextview
         for (num in 3..24) {
             val newTextView = TextView(context).apply {
