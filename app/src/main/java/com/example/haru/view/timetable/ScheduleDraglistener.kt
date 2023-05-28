@@ -47,18 +47,12 @@ class ScheduleDraglistener(private val timetableViewModel: TimetableViewModel,
         if (parentBounds.contains(parentBounds.left, dropY, parentBounds.right, newBottom)) {
             // If it is within bounds, update the location of the view
             shadowView.y = dropY.toFloat()
-            Log.d("patchMoved", "contain")
         } else if(dropY <= parentBounds.top){
             shadowView.y = parentBounds.top.toFloat()
-            Log.d("patchMoved", "dropY <= parentBounds.top")
         } else if(newBottom > parentBounds.bottom){
             shadowView.y = (parentBounds.bottom - draggedView.height).toFloat()
             y = ((parentBounds.bottom - draggedView.height) / displayMetrics.density).toInt()
-
-            Log.d("patchMoved", "newBottom > parentBounds.bottom")
         }
-
-        Log.d("patchMoved", "patchMoved: ${newBottom}, ${parentBounds.bottom}, ${draggedView.height}, ${shadowView.y}, ${shadowView.y + draggedView.height}")
         val sourceLayout = draggedView.parent as LinearLayout
 
         var index = -1
@@ -75,9 +69,11 @@ class ScheduleDraglistener(private val timetableViewModel: TimetableViewModel,
     }
 
     private fun handleDragLocationAction(targetFrameLayout: FrameLayout, draggedView: TextView, event: DragEvent) {
-        shadowView.layoutParams = FrameLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, draggedView.height)
-        shadowView.background = targetFrameLayout.background
-        shadowView.alpha = 0.5f
+        shadowView.apply {
+            layoutParams = FrameLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, draggedView.height)
+            background = draggedView.background
+            alpha = 0.5f
+        }
 
         try {
             val shadowParent = shadowView.parent as FrameLayout
@@ -88,15 +84,12 @@ class ScheduleDraglistener(private val timetableViewModel: TimetableViewModel,
         val newLocation = calculateNewLocation(event.y, draggedView.height, displayMetrics)
         val parentBounds = getParentBounds(targetFrameLayout)
 
-        Log.d("handleDragLocationAction", "handleDragLocationAction: $newLocation, ${parentBounds.top} , ${parentBounds.bottom}")
-
         updateViewLocation(draggedView, newLocation, parentBounds, targetFrameLayout)
     }
 
     private fun handleDragExitedAction(targetFrameLayout: FrameLayout) {
         targetFrameLayout.removeView(shadowView)
     }
-
 
     private fun getTargetFrameLayout(view: View): FrameLayout {
         return try {
@@ -130,29 +123,5 @@ class ScheduleDraglistener(private val timetableViewModel: TimetableViewModel,
         }
         shadowView.text = draggedView.text
         targetFrameLayout.addView(shadowView)
-    }
-
-
-    fun makeShapeDrawable(color : String?): LayerDrawable {
-        val gd = GradientDrawable()
-
-        if(color == null){
-            gd.setColor(Color.parseColor("#1DAFFF")) // Initial color
-        }else{
-            gd.setColor(Color.parseColor(color))
-        }
-
-        gd.cornerRadius = 30f
-
-        // Create another GradientDrawable as background
-        val bg = GradientDrawable()
-        bg.setColor(Color.WHITE) // Set the color to white
-        bg.cornerRadius = 30f
-
-        // Use a LayerDrawable to put two drawables together
-        val ld = LayerDrawable(arrayOf(bg, gd))
-        ld.setLayerInset(1, 1, 1, 1, 1) // This is equivalent to padding 1dp to gd
-
-        return ld
     }
 }
