@@ -372,7 +372,11 @@ class TimetableViewModel(val context : Context): ViewModel() {
         if(periodMin < 10) fixedMin = "0"+periodMin.toString()
         else fixedMin = periodMin.toString()
         val endDate = end.slice(IntRange(0,9))
-        val endTime = "T$fixedHour:$fixedMin:00.000Z"
+        var endTime = "T$fixedHour:$fixedMin:00+09:00"
+
+        if(fixedHour.toInt() >= 24){
+            endTime = "T24:00:00+09:00"
+        }
 
         Log.d("patchMoved", "이건 대체 뭐지? $start, ${endDate+endTime}")
         for(lists in IndexList){
