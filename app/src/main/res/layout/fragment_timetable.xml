@@ -320,7 +320,7 @@
                         <LinearLayout
                             android:id="@+id/left_time_textview_layout"
                             android:layout_width="20dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1748dp"
                             android:layout_marginTop="1dp"
                             android:orientation="vertical">
 
@@ -348,43 +348,43 @@
                         <FrameLayout
                             android:id="@+id/sun_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
                         <FrameLayout
                             android:id="@+id/mon_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
                         <FrameLayout
                             android:id="@+id/tue_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
                         <FrameLayout
                             android:id="@+id/wed_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
                         <FrameLayout
                             android:id="@+id/thu_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
                         <FrameLayout
                             android:id="@+id/fri_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
                         <FrameLayout
                             android:id="@+id/sat_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
                         <LinearLayout
