@@ -9,7 +9,9 @@ import com.example.haru.data.model.ScheduleRequest
 import com.example.haru.data.model.StatisticsResponse
 import com.example.haru.data.repository.EtcRepository
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.User
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 
 class EtcViewModel : ViewModel() {
@@ -21,15 +23,16 @@ class EtcViewModel : ViewModel() {
     private val _itemCount = MutableLiveData<Pair<Int?, Int?>>()
     val itemCount : LiveData<Pair<Int?, Int?>> = _itemCount
 
-    private val _completedCount = MutableLiveData<Int>()
-    val completedCount : LiveData<Int> = _completedCount
-
-    private val _totalItemCount = MutableLiveData<Int>()
-    val totalItemCount : LiveData<Int> = _totalItemCount
+    private val _withHaru = MutableLiveData<Long>()
+    val withHaru : LiveData<Long> = _withHaru
 
     var year : Int = 0
     var month : Int = 0
 
+    init {
+        setTodayYearMonth()
+        calculateWithHaru()
+    }
     fun getTodoStatistics(body : ScheduleRequest, callback : () -> Unit) {
         viewModelScope.launch {
             etcRepository.getTodoStatistics(body){
@@ -50,6 +53,7 @@ class EtcViewModel : ViewModel() {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
             set(Calendar.DAY_OF_MONTH, 1)
             year = get(Calendar.YEAR)
             month = get(Calendar.MONTH) + 1
@@ -79,6 +83,7 @@ class EtcViewModel : ViewModel() {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
 
             add(Calendar.MONTH, tmp)
             year = FormatDate.cal.get(Calendar.YEAR)
@@ -97,4 +102,17 @@ class EtcViewModel : ViewModel() {
         }
     }
 
+    fun calculateWithHaru(){
+        val dateFormat = SimpleDateFormat("yyyyMMdd")
+
+        val startDate = dateFormat.parse(User.createdAt).time
+        val today = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time.time
+
+        _withHaru.value = (today - startDate) / (24 * 60 * 60 * 1000) + 1
+    }
 }

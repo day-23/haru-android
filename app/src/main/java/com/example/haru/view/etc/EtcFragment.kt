@@ -73,8 +73,6 @@ class EtcFragment : Fragment() {
         // User Total Todo Count
 //        binding.tvTotalTodoCount.text =
 
-        etcViewModel.setTodayYearMonth()
-
         etcViewModel.todayYearMonth.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.tvEtcDate.text = String.format(
                 getString(R.string.textMyHaru),
@@ -93,13 +91,15 @@ class EtcFragment : Fragment() {
             binding.tvCompletedTodoCount.text = if (it.first == null) "0" else it.first.toString()
             binding.tvTotalTodoCount.text = if (it.second == null) "0" else it.second.toString()
 
-            val text: String
-            if (it.first != null && it.second != null) {
-                text = if (it.second == 0) "0%"
+            binding.tvPercent.text = if (it.first != null && it.second != null) {
+                if (it.second == 0) "0%"
                 else (it.first!! / it.second!! * 100).toString() + "%"
             } else
-                text = "0%"
-            binding.tvPercent.text = text
+                "0%"
+        })
+
+        etcViewModel.withHaru.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvWithHaru.text = it.toString()
         })
 
 
