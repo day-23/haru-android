@@ -24,7 +24,7 @@ class TimetableAdapter(val context: Context,
     }
 
     override fun onBindViewHolder(holder: TimetableViewHolder, position: Int) {
-        holder.timetable_time.text = itemList[position].time
+//        holder.timetable_time.text = itemList[position].time
         val draglistener = TimetableDraglistener()
 
         holder.timetable_sun.setOnDragListener(draglistener)
@@ -103,7 +103,7 @@ class TimetableAdapter(val context: Context,
     }
 
     inner class TimetableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var timetable_time = itemView.findViewById<TextView>(R.id.tv_timetable_time)
+//        var timetable_time = itemView.findViewById<TextView>(R.id.tv_timetable_time)
         var timetable_sun = itemView.findViewById<ImageView>(R.id.tv_timetable_sun)
         var timetable_mon = itemView.findViewById<ImageView>(R.id.tv_timetable_mon)
         var timetable_tue = itemView.findViewById<ImageView>(R.id.tv_timetable_tue)

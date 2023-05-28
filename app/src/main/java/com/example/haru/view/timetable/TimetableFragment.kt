@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.core.view.marginTop
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,7 +33,7 @@ class TimetableFragment : Fragment() {
     private lateinit var reviewModel: TimeTableRecyclerViewModel
     private lateinit var timetableAdapter: TimetableAdapter
     var timeList: ArrayList<timetable_data> = ArrayList()
-    lateinit var recyclerView1: RecyclerView
+    lateinit var timeTableRecyclerView: RecyclerView
     private lateinit var scheduleDrag: ScheduleDraglistener
     val scheduleViewList: ArrayList<View> = ArrayList<View>()
     val scheduleMap = mutableMapOf<View, Schedule>()
@@ -75,9 +76,9 @@ class TimetableFragment : Fragment() {
         reviewModel.init_value()
         timetableAdapter =
             TimetableAdapter(requireContext(), reviewModel.TimeList.value ?: timeList)
-        recyclerView1 = binding.timetableRecyclerview
-        recyclerView1.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView1.adapter = timetableAdapter
+        timeTableRecyclerView = binding.timetableRecyclerview
+        timeTableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        timeTableRecyclerView.adapter = timetableAdapter
         timetableviewModel.init_value()
 
         //타임테이블 프래그먼트 아이디 값
@@ -188,11 +189,18 @@ class TimetableFragment : Fragment() {
             transaction.commit()
             true
         }
+
+        //타임테이블 왼쪽 1시부터 24시 시간 표기
+        drawLeftTime()
+
         return rootView
     }
 
+
+
+
     fun scroll() {
-        val child = recyclerView1.getChildAt(8)
+        val child = timeTableRecyclerView.getChildAt(8)
         val originalPos = IntArray(2)
         if (child != null) {
             child.getLocationInWindow(originalPos)
@@ -369,4 +377,38 @@ class TimetableFragment : Fragment() {
             }
         }
 
+
+    //타임테이블 왼쪽 1시부터 24시 시간 표기
+    fun drawLeftTime() {
+        val standardTextView = binding.leftTimeTextview
+        for (num in 3..24) {
+            val newTextView = TextView(context).apply {
+                text = num.toString()
+                textSize = 12f  // 12sp
+                setTextColor(standardTextView.currentTextColor)
+                typeface = standardTextView.typeface
+                gravity = standardTextView.gravity
+                layoutParams = LinearLayout.LayoutParams(
+                    standardTextView.layoutParams.width,
+                    standardTextView.layoutParams.height
+                ).apply {
+                    if (standardTextView.layoutParams is ViewGroup.MarginLayoutParams) {
+                        val params =
+                            standardTextView.layoutParams as ViewGroup.MarginLayoutParams
+                        setMargins(
+                            params.leftMargin,
+                            params.topMargin,
+                            params.rightMargin,
+                            params.bottomMargin
+                        )
+                    }
+                }
+                setPadding(
+                    standardTextView.paddingLeft, standardTextView.paddingTop,
+                    standardTextView.paddingRight, standardTextView.paddingBottom
+                )
+            }
+            binding.leftTimeTextviewLayout.addView(newTextView)
+        }
+    }
 }
