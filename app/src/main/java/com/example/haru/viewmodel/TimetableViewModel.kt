@@ -193,7 +193,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 else colorlist.add("#BBE7FF")
             }
             //토요일 푸른색
-            else if(d == addday) colorlist.add("#191919") // 일반 검정색
+            else if(d == addday) colorlist.add("#646464") // 일반 검정색
             else colorlist.add("#DBDBDB") //지난달 다음달 회색
 
             //선택한 날짜 '년월일', '7일' 형식 리스트 작성
@@ -215,7 +215,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
             scheduleRepository.getScheduleByDates(date[0], date[6], body) {
                 val TodoList = it
-                d(TAG, "DrawDays: endDate ${endDate}")
 
                 //내용 추출
                 for(data in TodoList.schedules){
