@@ -89,6 +89,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
         _Colors.value = colorlist
         _Dates.value = Datelist
         _Schedules.value = IndexList
+
+
     }
 
     //날짜정보//
@@ -250,6 +252,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 Log.d("ALLDAYsss", "index : $IndexList")
                 Log.d("ALLDAYsss", "index : $IndexList_allday")
             }
+            d(TAG, "init_value: ${IndexList}")
+
             _Schedules.value = IndexList
             _SchedulesAllday.value = IndexList_allday
         }
@@ -332,6 +336,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
     }
 
     fun patchMoved(start: String , end: String, data: Schedule){
+        d(TAG, "patchMoved: ${start}, ${end}")
+        
         val moveview = data
         //"2023-03-07T18:30:00.000Z" 11 12 14 15
         //repeatend 값을 바뀐 repeatstart에 맞추어 수정

@@ -149,6 +149,8 @@ class TimetableFragment : Fragment() {
             binding.monTable.removeAllViews()
             drawTimes(binding.monTable, schedule[1])
 
+            Log.d(TAG, "onCreateView: ${schedule[1]} for color")
+
             binding.tueTable.removeAllViews()
             drawTimes(binding.tueTable, schedule[2])
 
