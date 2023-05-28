@@ -50,6 +50,7 @@
                         android:layout_height="wrap_content"
                         app:cardElevation="0dp"
                         app:cardUseCompatPadding="true"
+                        android:backgroundTint="#FDFDFD"
                         app:contentPadding="20dp">
 
                         <LinearLayout
@@ -120,6 +121,7 @@
                         android:layout_weight="1"
                         app:cardElevation="0dp"
                         app:cardUseCompatPadding="true"
+                        android:backgroundTint="#FDFDFD"
                         app:contentPadding="20dp">
 
                         <LinearLayout
@@ -234,9 +236,7 @@
                 android:background="@drawable/category_botton_border">
             </LinearLayout>
 
-
         </LinearLayout>
-
         <View
             android:layout_width="1dp"
             android:layout_height="0dp"
