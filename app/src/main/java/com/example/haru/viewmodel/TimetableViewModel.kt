@@ -20,6 +20,8 @@ import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.data.repository.TodoRepository
+import com.example.haru.utils.FormatDate
+import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -208,13 +210,18 @@ class TimetableViewModel(val context : Context): ViewModel() {
             val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", "" , "", Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
             val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
-            val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
+            val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T23:59:59+09:00"
             val body = ScheduleRequest(startDate, endDate)
+
             scheduleRepository.getScheduleByDates(date[0], date[6], body) {
                 val TodoList = it
+                d(TAG, "DrawDays: endDate ${endDate}")
 
                 //내용 추출
                 for(data in TodoList.schedules){
+                    data.repeatStart = FormatDate.calendarFormat(data.repeatStart!!)
+                    data.repeatEnd = FormatDate.calendarFormat(data.repeatEnd!!)
+
                     val year_start = data.repeatStart?.slice(IntRange(0,3))
                     val month_start = data.repeatStart?.slice(IntRange(5,6))
                     val day_start = data.repeatStart?.slice(IntRange(8,9))
