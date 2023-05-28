@@ -1,6 +1,7 @@
 package com.example.haru.view.etc
 
 import BaseActivity
+import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -96,16 +97,14 @@ class EtcFragment : Fragment() {
                 else it.first!! / it.second!! * 100
             } else
                 0
-//            val beforeProgress = binding.progressbar.progress
-//            if (beforeProgress < percent)
-//                for(i in beforeProgress + 1 .. percent)
-//                    binding.progressbar.progress = i
-//            else
-//                for(i in percent + 1 downTo  beforeProgress)
-//                    binding.progressbar.progress = i
             binding.tvPercent.text = String.format(getString(R.string.percent), percent)
-            binding.progressbar.progress = percent
-            // 프로그래스바 애니메이션 적용해야 됨.
+            
+            ObjectAnimator.ofInt(
+                binding.progressbar,
+                "progress",
+                binding.progressbar.progress,
+                percent
+            ).setDuration(700).start()
         })
 
         etcViewModel.withHaru.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
