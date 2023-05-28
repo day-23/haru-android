@@ -39,11 +39,27 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
     override fun onResume() {
         super.onResume()
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+
+        etcViewModel.isPublicAccount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.switchAccountPublic.isChecked = it
+        })
+
+        etcViewModel.isPostBrowsingEnabled.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.switchBrowsingEnabled.isChecked = it
+        })
+
+        etcViewModel.isAllowSearch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.switchAllowSearch.isChecked = it
+        })
+
+
+        binding.switchAccountPublic.setOnClickListener(ClickListener())
         binding.ivBackIconProtect.setOnClickListener(ClickListener())
     }
 
@@ -52,6 +68,21 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
             when (v?.id) {
                 binding.ivBackIconProtect.id -> {
                     requireActivity().supportFragmentManager.popBackStack()
+                }
+
+                binding.switchAccountPublic.id -> {
+                    etcViewModel.submitIsPublicAccount {
+                        if (it?.success != true)
+                            binding.switchAccountPublic.isChecked = !binding.switchAccountPublic.isChecked
+                    }
+                }
+
+                binding.switchBrowsingEnabled.id -> {
+
+                }
+
+                binding.switchAllowSearch.id -> {
+
                 }
             }
         }

@@ -155,25 +155,63 @@ class EtcViewModel : ViewModel() {
         _withHaru.value = (today - startDate) / (24 * 60 * 60 * 1000) + 1
     }
 
-    fun updateUserInfo(body: Any, callback: () -> Unit) {
+    fun updateUserInfo(body: Any, callback: (it : SuccessFail?) -> Unit) {
         viewModelScope.launch {
             etcRepository.updateUserInfo(body) {
                 if (it?.success == true) {
                     when (body) {
-                        is UpdateEmail -> _email.postValue(body.email)
-                        is UpdateHaruId -> _haruId.postValue(body.haruId)
-                        is UpdateIsAllowFeedComment -> _isAllowFeedComment.postValue(body.isAllowFeedComment)
-                        is UpdateIsAllowFeedLike -> _isAllowFeedLike.postValue(body.isAllowFeedLike)
-                        is UpdateIsAllowSearch -> _isAllowSearch.postValue(body.isAllowSearch)
-                        is UpdateIsPostBrowsingEnabled -> _isPostBrowsingEnabled.postValue(body.isPostBrowsingEnabled)
-                        is UpdateIsPublicAccount -> _isPublicAccount.postValue(body.isPublicAccount)
+                        is UpdateEmail -> {
+                            _email.postValue(body.email)
+                            User.email = body.email
+                        }
+                        is UpdateHaruId -> {
+                            _haruId.postValue(body.haruId)
+                            User.haruId = body.haruId
+                        }
+                        is UpdateIsAllowFeedComment -> {
+                            _isAllowFeedComment.postValue(body.isAllowFeedComment)
+                            User.isAllowFeedComment = body.isAllowFeedComment
+                        }
+                        is UpdateIsAllowFeedLike -> {
+                            _isAllowFeedLike.postValue(body.isAllowFeedLike)
+                            User.isAllowFeedLike = body.isAllowFeedLike
+                        }
+                        is UpdateIsAllowSearch -> {
+                            _isAllowSearch.postValue(body.isAllowSearch)
+                            User.isAllowSearch = body.isAllowSearch
+                        }
+                        is UpdateIsPostBrowsingEnabled -> {
+                            _isPostBrowsingEnabled.postValue(body.isPostBrowsingEnabled)
+                            User.isPostBrowsingEnabled = body.isPostBrowsingEnabled
+                        }
+                        is UpdateIsPublicAccount -> {
+                            _isPublicAccount.postValue(body.isPublicAccount)
+                            User.isPublicAccount = body.isPublicAccount
+                        }
                     }
                 } else {
                     Log.e("20191627", it.toString())
                 }
-                callback()
+                callback(it)
             }
         }
     }
 
+    fun submitIsPublicAccount(callback: (it : SuccessFail?) -> Unit) {
+        if (isPublicAccount.value == null)
+            return
+        val flag = !isPublicAccount.value!!
+
+        updateUserInfo(UpdateIsPublicAccount(flag)){
+            callback(it)
+        }
+    }
+
+    fun submitIsPostBrowsingEnabled() {
+
+    }
+
+    fun submitIsAllowSearch() {
+
+    }
 }

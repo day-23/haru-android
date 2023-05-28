@@ -81,6 +81,7 @@
                 android:layout_weight="1" />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_account_public"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -126,6 +127,7 @@
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_browsing_enabled"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -148,6 +150,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/tv_allow_feed_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
@@ -201,6 +204,7 @@
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_allow_search"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
