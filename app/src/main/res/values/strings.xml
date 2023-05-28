@@ -92,4 +92,6 @@
     <string name="relatedTodoText">연관된 할일</string>
     <string name="TopTagFerment">상단에 태그 띄우기</string>
 
+    <string name="textMyHaru">%1s년 %2s월 나의 하루</string>
+    <string name="textMonthMyHaru">%1s월</string>
 </resources>

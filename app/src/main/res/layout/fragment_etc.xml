@@ -246,7 +246,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_total_todo_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -263,6 +262,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_total_todo_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="20"
@@ -279,6 +279,16 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="30%"
+        android:textColor="@color/highlight"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
 
     <View
         android:layout_width="match_parent"

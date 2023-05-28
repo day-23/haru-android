@@ -76,10 +76,30 @@ class EtcFragment : Fragment() {
         etcViewModel.setTodayYearMonth()
 
         etcViewModel.todayYearMonth.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            binding.tvEtcDate.text =
-                etcViewModel.todayYearMonth.value?.substring(0, 4) + "년 " +
-                        etcViewModel.todayYearMonth.value?.substring(4) + "월 나의 하루"
-            binding.tvEtcDateMonth.text = etcViewModel.todayYearMonth.value!!.substring(4) + "월"
+            binding.tvEtcDate.text = String.format(
+                getString(R.string.textMyHaru),
+                etcViewModel.todayYearMonth.value?.substring(0, 4),
+                etcViewModel.todayYearMonth.value?.substring(4)
+            )
+
+            binding.tvEtcDateMonth.text = String.format(
+                getString(R.string.textMonthMyHaru),
+                etcViewModel.todayYearMonth.value!!.substring(4)
+            )
+
+        })
+
+        etcViewModel.itemCount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvCompletedTodoCount.text = if (it.first == null) "0" else it.first.toString()
+            binding.tvTotalTodoCount.text = if (it.second == null) "0" else it.second.toString()
+
+            val text: String
+            if (it.first != null && it.second != null) {
+                text = if (it.second == 0) "0%"
+                else (it.first!! / it.second!! * 100).toString() + "%"
+            } else
+                text = "0%"
+            binding.tvPercent.text = text
         })
 
 

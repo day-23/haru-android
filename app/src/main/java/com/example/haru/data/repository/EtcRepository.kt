@@ -12,11 +12,14 @@ import kotlinx.coroutines.withContext
 class EtcRepository {
     private val etcService = RetrofitClient.etcService
 
-    suspend fun getTodoStatistics(body : ScheduleRequest) = withContext(Dispatchers.IO) {
+    suspend fun getTodoStatistics(
+        body: ScheduleRequest,
+        callback: (statisticsResponse: StatisticsResponse?) -> Unit
+    ) = withContext(Dispatchers.IO) {
         val response = etcService.getTodoStatistics(User.id, body).execute()
         var data = response.body()
 
-        val statisticsResponse : StatisticsResponse? = if (response.isSuccessful) {
+        val statisticsResponse: StatisticsResponse? = if (response.isSuccessful) {
             Log.d("TAG", "Success to get Statistic")
             data
         } else {
@@ -26,6 +29,6 @@ class EtcRepository {
             data = gson.fromJson(error, StatisticsResponse::class.java)
             data
         }
-        statisticsResponse
+        callback(statisticsResponse)
     }
 }
