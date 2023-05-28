@@ -245,7 +245,10 @@ class TodoRepository() {
             data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
-        callback(successData)
+
+        withContext(Dispatchers.Main) {
+            callback(successData)
+        }
     }
 
     suspend fun getTodayTodo(
@@ -328,7 +331,10 @@ class TodoRepository() {
             data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
-        callback(successData)
+
+        withContext(Dispatchers.Main) {
+            callback(successData)
+        }
     }
 
     suspend fun completeRepeatMiddleTodo(
@@ -349,7 +355,10 @@ class TodoRepository() {
             data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
-        callback(successData)
+
+        withContext(Dispatchers.Main) {
+            callback(successData)
+        }
     }
 
     suspend fun completeRepeatBackTodo(
@@ -370,7 +379,10 @@ class TodoRepository() {
             data = gson.fromJson(error, SuccessFail::class.java)
             data
         }
-        callback(successData)
+
+        withContext(Dispatchers.Main) {
+            callback(successData)
+        }
     }
 
     suspend fun updateRepeatFrontTodo(
