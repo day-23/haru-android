@@ -175,11 +175,30 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             if(isMyPage) moveEditprofile(userId) // 내 페이지면 프로필 수정 이동
             else{ //타인 페이지라면 친구 작업
                 if (friendStatus == 0) {
-                    requestFollow() //TODO:친구 신청
+                    requestFriend() //TODO:친구 신청
                 } else if (friendStatus == 1) {
-                    requestUnFollow() //TODO: 친구신청 취소
+                    requestUnFriend() //TODO: 친구신청 취소
                 } else{
-                    //TODO:친구끊기
+                    requestDelFriend() //TODO:친구끊기
+                }
+            }
+            binding.editProfile.isClickable = false //전송 중 클릭못하도록
+
+            mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
+                binding.editProfile.isClickable = true //결과 받고 클릭 가능하도록
+                if(result){
+                    if(friendStatus == 0) { //신청 성공
+                        friendStatus = 1
+                        binding.editProfile.text = "신청 대기"
+                    }else if(friendStatus == 1){ //신청 취소
+                        friendStatus = 0
+                        binding.editProfile.text = "친구 신청"
+                    }else{
+                        friendStatus = 0
+                        binding.editProfile.text = "친구 신청"
+                    }
+                }else{
+                    Toast.makeText(requireContext(), "요청에 실패하였습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -215,11 +234,15 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         true
     }
 
-    fun requestFollow(){
-        mypageViewModel.requestFollow(Followbody(userId))
+    fun requestFriend(){
+        mypageViewModel.requestFriend(Followbody(userId))
     }
 
-    fun requestUnFollow(){
-        mypageViewModel.requestUnFollow(UnFollowbody(userId))
+    fun requestUnFriend(){
+        mypageViewModel.requestUnFriend(UnFollowbody(userId))
+    }
+
+    fun requestDelFriend(){
+        mypageViewModel.requestDelFriend(UnFollowbody(userId))
     }
 }

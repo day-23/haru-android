@@ -15,6 +15,7 @@ import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.data.repository.UserRepository
+import com.kakao.sdk.talk.model.Friend
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -79,6 +80,16 @@ class MyPageViewModel(): ViewModel() {
 
     private val _PostTagLiveData = MutableLiveData<List<String>>()
     val PostTagLiveData: LiveData<List<String>> = _PostTagLiveData
+
+    private val _FriendRequest = MutableLiveData<Boolean>()
+    val FriendRequest: LiveData<Boolean> = _FriendRequest
+
+    private val _Friends = MutableLiveData<FriendsResponse>()
+    val Friends: LiveData<FriendsResponse> = _Friends
+
+    private val _FirstFriends = MutableLiveData<FriendsResponse>()
+    val FirstFriends: LiveData<FriendsResponse> = _FirstFriends
+
 
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
@@ -260,27 +271,72 @@ class MyPageViewModel(): ViewModel() {
         _PostTagLiveData.value = arrayListOf()
     }
 
-    fun requestFollow(body: Followbody){
+    fun requestFriend(body: Followbody){
+        var result = false
         viewModelScope.launch {
-            UserRepository.requestFollowing(body){
+            UserRepository.requestFriend(body){
                 if(it){
-                    Log.d("TAG","Success to follow")
+                    Log.d("TAG","Success to request Friend")
+                    result = it
                 }else{
-                    Log.d("TAG","Fail to follow")
+                    Log.d("TAG","Fail to request Friend")
                 }
             }
+            _FriendRequest.value = result
         }
     }
 
-    fun requestUnFollow(body: UnFollowbody){
+    fun requestUnFriend(body: UnFollowbody){
+        var result = false
         viewModelScope.launch {
-            UserRepository.requestunFollowing(body){
+            UserRepository.requestunFriend(body){
                 if(it){
-                    Log.d("TAG","Success to unfollow")
+                    Log.d("TAG","Success to request UnFriend")
+                    result = it
                 }else{
-                    Log.d("TAG","Fail to unfollow")
+                    Log.d("TAG","Fail to request UnFriend")
                 }
             }
+            _FriendRequest.value = result
+        }
+    }
+
+    fun requestDelFriend(body: UnFollowbody){
+        var result = false
+        viewModelScope.launch {
+            UserRepository.requestDelFriend(body){
+                if(it){
+                    Log.d("TAG", "Success to request Delete Friend")
+                    result = it
+                }else{
+                    Log.d("TAG", "Fail to request Delete Friend")
+                }
+            }
+            _FriendRequest.value = result
+        }
+    }
+
+    fun getFriendsList(targetId: String, lastCreatedAt:String){
+        var Friends = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.requestFriendsList(targetId,lastCreatedAt){
+                if(it.success){
+                    Friends = it
+                }
+            }
+            _Friends.value = Friends
+        }
+    }
+
+    fun getFirstFriendsList(targetId: String){
+        var Friends = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.requestFirstFriendsList(targetId){
+                if(it.success){
+                    Friends = it
+                }
+            }
+            _FirstFriends.value = Friends
         }
     }
 
