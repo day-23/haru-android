@@ -1,12 +1,8 @@
 package com.example.haru.view.timetable
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.DragEvent
 import android.view.View
 import android.widget.Button
@@ -16,9 +12,9 @@ import android.widget.TextView
 import com.example.haru.viewmodel.TimetableViewModel
 
 
-class ScheduleDraglistener(private val timetableViewModel: TimetableViewModel,
-                            layoutIndex: ArrayList<Int>,
-                            val context : Context) : View.OnDragListener{
+class ScheduleDragListener(private val timetableViewModel: TimetableViewModel,
+                           layoutIndex: ArrayList<Int>,
+                           val context : Context) : View.OnDragListener{
     val layoutIndex = layoutIndex
     val shadowView = Button(context)
 
