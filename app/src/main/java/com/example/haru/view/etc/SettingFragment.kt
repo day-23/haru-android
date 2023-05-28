@@ -15,15 +15,16 @@ import com.example.haru.databinding.FragmentSettingBinding
 import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
 import com.example.haru.view.auth.LoginActivity
+import com.example.haru.viewmodel.EtcViewModel
 
-class SettingFragment : Fragment() {
+class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentSettingBinding
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): SettingFragment {
-            return SettingFragment()
+        fun newInstance(etcViewModel: EtcViewModel): SettingFragment {
+            return SettingFragment(etcViewModel)
         }
     }
 
@@ -80,35 +81,35 @@ class SettingFragment : Fragment() {
 
                 binding.layoutAccount.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AccountFragment())
+                        .replace(R.id.fragments_frame, AccountFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.layoutProtect.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, ProtectFragment())
+                        .replace(R.id.fragments_frame, ProtectFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.layoutDisplay.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, DisplayFragment())
+                        .replace(R.id.fragments_frame, DisplayFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.layoutAlarm.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AlarmFragment())
+                        .replace(R.id.fragments_frame, AlarmFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.layoutInformation.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, InformationFragment())
+                        .replace(R.id.fragments_frame, InformationFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }

@@ -3,6 +3,7 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.ScheduleRequest
 import com.example.haru.data.model.StatisticsResponse
+import com.example.haru.data.model.SuccessFail
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.utils.User
 import com.google.gson.Gson
@@ -31,4 +32,22 @@ class EtcRepository {
         }
         callback(statisticsResponse)
     }
+
+    suspend fun updateUserInfo(body: Any, callback: (successFail: SuccessFail?) -> Unit) =
+        withContext(Dispatchers.IO) {
+            val response = etcService.updateUserInfo(User.id, body).execute()
+            var data = response.body()
+
+            val successFail: SuccessFail? = if (response.isSuccessful) {
+                Log.d("TAG", "Success to UpdateUserInfo")
+                data
+            } else {
+                Log.d("TAG", "Fail to UpdateUserInfo")
+                val error = response.errorBody()?.string()
+                val gson = Gson()
+                data = gson.fromJson(error, SuccessFail::class.java)
+                data
+            }
+            callback(successFail)
+        }
 }

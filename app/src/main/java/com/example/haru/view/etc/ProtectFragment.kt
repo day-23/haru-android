@@ -9,15 +9,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.databinding.FragmentProtectBinding
 import com.example.haru.view.sns.SnsFragment
+import com.example.haru.viewmodel.EtcViewModel
 
-class ProtectFragment : Fragment() {
+class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentProtectBinding
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): ProtectFragment {
-            return ProtectFragment()
+        fun newInstance(etcViewModel: EtcViewModel): ProtectFragment {
+            return ProtectFragment(etcViewModel)
         }
     }
 

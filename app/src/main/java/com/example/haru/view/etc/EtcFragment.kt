@@ -56,11 +56,17 @@ class EtcFragment : Fragment() {
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.etcHeader.id)
 
-        // User Name
-        binding.tvName.text = User.name
+        Log.e("20191627", User.toString())
 
-        // User Introduction
+        // User Name -> nickname
+        etcViewModel.name.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvName.text = it
+        })
+
+        // User Introduction -> sns에서 입력
         binding.tvIntroduction.text = "SNS User 필요"
+
+
 
         // User Post Count
 //        binding.tvPostCount.text =
@@ -98,7 +104,7 @@ class EtcFragment : Fragment() {
             } else
                 0
             binding.tvPercent.text = String.format(getString(R.string.percent), percent)
-            
+
             ObjectAnimator.ofInt(
                 binding.progressbar,
                 "progress",
@@ -123,7 +129,7 @@ class EtcFragment : Fragment() {
             when (v?.id) {
                 binding.settingIcon.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, SettingFragment())
+                        .replace(R.id.fragments_frame, SettingFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }

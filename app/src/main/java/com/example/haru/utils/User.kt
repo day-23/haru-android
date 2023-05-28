@@ -6,9 +6,9 @@ import com.example.haru.data.model.UserRelatedWithSnsData
 //이 값은 사용자가 로그인할 때 서버에서 받아온다.
 object User {
     var id: String = ""
-    var name: String = ""
+    var name: String = ""  // sns 이름 = nickname
     var isPublicAccount: Boolean = true
-    var haruId: String = ""
+    var haruId: String = ""  // 검색용 이름
     var email: String = ""
     var socialAccountType: String = ""
     var isPostBrowsingEnabled: Boolean = true
