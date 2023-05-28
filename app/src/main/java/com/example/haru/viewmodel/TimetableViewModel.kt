@@ -1,25 +1,14 @@
 package com.example.haru.viewmodel
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import android.provider.ContactsContract.RawContacts.Data
 import android.util.Log
 import android.util.Log.d
 import android.view.View
 import android.widget.DatePicker
-import android.widget.FrameLayout
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide.init
+import androidx.lifecycle.*
 import com.example.haru.data.model.*
+import com.example.haru.data.repository.CategoryRepository
 import com.example.haru.data.repository.ScheduleRepository
-import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import kotlinx.coroutines.launch
@@ -30,6 +19,10 @@ import kotlin.math.abs
 
 class TimetableViewModel(val context : Context): ViewModel() {
     private val scheduleRepository = ScheduleRepository()
+    private val categoryRepository = CategoryRepository()
+
+
+
 
     private val _Dates = MutableLiveData<ArrayList<String>>()
     val Dates : LiveData<ArrayList<String>>
@@ -47,9 +40,18 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Colors : LiveData<ArrayList<String>>
         get() = _Colors
 
+    private val _liveCategoryList = MutableLiveData<List<Category>>()
+    val liveCategoryList: MutableLiveData<List<Category>> get() = _liveCategoryList
+
     private val _Schedules = MutableLiveData<ArrayList<ArrayList<Schedule>>>()
     val Schedules : LiveData<ArrayList<ArrayList<Schedule>>>
         get() = _Schedules
+
+    val categoryAndScheduleCombinedData: LiveData<Pair<List<Category>, ArrayList<ArrayList<Schedule>>>> =
+        MediatorLiveData<Pair<List<Category>, ArrayList<ArrayList<Schedule>>>>().apply {
+            addSource(_liveCategoryList) { value = it to (_Schedules.value ?: arrayListOf()) }
+            addSource(_Schedules) { value = (_liveCategoryList.value ?: listOf()) to it }
+        }
 
     private val _SchedulesAllday = MutableLiveData<ArrayList<Schedule>>()
     val SchedulesAllday: LiveData<ArrayList<Schedule>>
@@ -90,7 +92,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
         _Dates.value = Datelist
         _Schedules.value = IndexList
 
-
+        getCategories()
     }
 
     //날짜정보//
@@ -338,7 +340,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
         _MoveView.value = view
     }
 
-    fun patchMoved(start: String , end: String, data: Schedule){
+    suspend fun patchMoved(start: String, end: String, data: Schedule){
         d("patchMoved", "patchMoved: ${start}, ${end}, ${data}")
         
         val moveview = data
@@ -388,7 +390,30 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
         data.repeatStart = start
         data.repeatEnd = endDate+endTime
+
         sortSchedule(data)
         _Schedules.value = IndexList
+
+        val body = PostSchedule(
+            data.content,
+            data.memo,
+            data.isAllDay,
+            data.repeatStart!!,
+            data.repeatEnd,
+            data.repeatOption,
+            data.repeatValue,
+            data.category?.id,
+            emptyList()
+        )
+        scheduleRepository.submitSchedule(data.id, body) {}
+    }
+
+
+    fun getCategories(){
+        viewModelScope.launch {
+            categoryRepository.getCategories {
+                _liveCategoryList.postValue(it)
+            }
+        }
     }
 }

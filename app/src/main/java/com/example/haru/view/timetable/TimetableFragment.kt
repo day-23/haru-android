@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
@@ -20,6 +21,7 @@ import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
+import kotlinx.coroutines.launch
 
 //드래그 앤 드롭 그림자 없어지게 하는 클래스
 class EmptyShadowBuilder(view: View) : View.DragShadowBuilder(view) {
@@ -82,6 +84,7 @@ class TimetableFragment : Fragment() {
         timeTableRecyclerView.adapter = timetableAdapter
         timetableviewModel.init_value()
 
+
         //타임테이블 frameLayout 프래그먼트 아이디 값
         layoutId.add(binding.sunTable.id)
         layoutId.add(binding.monTable.id)
@@ -139,6 +142,11 @@ class TimetableFragment : Fragment() {
         timetableviewModel.Days.observe(viewLifecycleOwner) { days ->
             binding.invalidateAll()
         }
+
+        timetableviewModel.liveCategoryList.observe(viewLifecycleOwner){
+            Log.d(TAG, "onCreateView: ${it}")
+        }
+
         //스케줄을 타임테이블에 바인딩
         timetableviewModel.Schedules.observe(viewLifecycleOwner) { schedule ->
             scheduleMap.clear()
@@ -148,8 +156,6 @@ class TimetableFragment : Fragment() {
 
             binding.monTable.removeAllViews()
             drawTimes(binding.monTable, schedule[1])
-
-            Log.d(TAG, "onCreateView: ${schedule[1]} for color")
 
             binding.tueTable.removeAllViews()
             drawTimes(binding.tueTable, schedule[2])
@@ -165,8 +171,9 @@ class TimetableFragment : Fragment() {
 
             binding.satTable.removeAllViews()
             drawTimes(binding.satTable, schedule[6])
-
         }
+
+
         //하루종일 or 2일이상 일정을 바인딩
         timetableviewModel.SchedulesAllday.observe(viewLifecycleOwner) { days ->
             binding.daysTable.removeAllViews()
@@ -181,7 +188,10 @@ class TimetableFragment : Fragment() {
             val endDate = start!!.slice(IntRange(0, 9))
             val endTime = movedData!!.repeatEnd!!.slice(IntRange(10, 23))
             val end = endDate + endTime
-            timetableviewModel.patchMoved(start!!, end, movedData)
+
+            timetableviewModel.viewModelScope.launch {
+                timetableviewModel.patchMoved(start, end, movedData)
+            }
         }
 
         binding.todolistChange.setOnClickListener {
