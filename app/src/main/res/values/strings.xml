@@ -94,4 +94,6 @@
 
     <string name="textMyHaru">%1s년 %2s월 나의 하루</string>
     <string name="textMonthMyHaru">%1s월</string>
+
+    <string name="percent">%1d%%</string>
 </resources>

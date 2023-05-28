@@ -105,6 +105,7 @@ class EtcViewModel : ViewModel() {
     fun calculateWithHaru(){
         val dateFormat = SimpleDateFormat("yyyyMMdd")
 
+
         val startDate = dateFormat.parse(User.createdAt).time
         val today = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, 0)

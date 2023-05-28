@@ -20,6 +20,8 @@
     <color name="divider">#DBDBDB</color>
     <color name="delete_red">#F71E58</color>
 
+    <color name="circle_progressbar_bg">#D2D7FF</color>
+
     <color name="icon_gray">#767676</color>
 
     <color name="option_background">#eff0ee</color>

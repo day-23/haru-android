@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -291,15 +292,34 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_percent"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="30%"
-                android:textColor="@color/highlight"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:layout_gravity="center">
+
+                <TextView
+                    android:id="@+id/tv_percent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="30%"
+                    android:textColor="@color/highlight"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/progressbar"
+                    android:layout_width="123dp"
+                    android:layout_height="123dp"
+                    android:progress="30"
+                    app:trackCornerRadius="10dp"
+                    app:indicatorSize="123dp"
+                    app:trackThickness="10dp"
+                    app:trackColor="@color/circle_progressbar_bg"
+                    app:indicatorColor="@color/highlight"
+                    app:indicatorDirectionCircular="clockwise"/>
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -346,7 +366,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/haru_fighting"/>
+                android:background="@drawable/haru_fighting" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
