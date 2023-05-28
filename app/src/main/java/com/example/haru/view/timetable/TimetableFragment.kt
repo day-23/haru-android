@@ -5,6 +5,8 @@ import android.content.ClipData
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -15,6 +17,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Category
 import com.example.haru.data.model.Schedule
 import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
@@ -118,14 +121,14 @@ class TimetableFragment : Fragment() {
         }
 
         //타임테이블 리사이클러뷰 실행
-        reviewModel.TimeList.observe(viewLifecycleOwner) { times ->
-            timetableAdapter.setData(times)
+        reviewModel.TimeList.observe(viewLifecycleOwner) { schedule ->
+            timetableAdapter.setData(schedule)
             scroll() // 화면에 오후 12시가 중앙에 오도록
             timetableAdapter.notifyDataSetChanged()
         }
 
         //날짜가 바뀌면 12시를 화면 중앙에 두도록
-        timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
+        timetableviewModel.Selected.observe(viewLifecycleOwner) { schedule ->
             scroll()
         }
         //지난달 다음달을 구분해주는 색 바인딩
@@ -147,38 +150,29 @@ class TimetableFragment : Fragment() {
             Log.d(TAG, "onCreateView: ${it}")
         }
 
-        //스케줄을 타임테이블에 바인딩
-        timetableviewModel.Schedules.observe(viewLifecycleOwner) { schedule ->
+        //그리드에 그려지는 스케줄을 타임테이블에 바인딩
+        timetableviewModel.categoryAndSchedulesCombinedData.observe(viewLifecycleOwner) { (categories, schedules) ->
             scheduleMap.clear()
-
             binding.sunTable.removeAllViews()
-            drawTimes(binding.sunTable, schedule[0])
-
             binding.monTable.removeAllViews()
-            drawTimes(binding.monTable, schedule[1])
-
             binding.tueTable.removeAllViews()
-            drawTimes(binding.tueTable, schedule[2])
-
             binding.wedTable.removeAllViews()
-            drawTimes(binding.wedTable, schedule[3])
-
             binding.thuTable.removeAllViews()
-            drawTimes(binding.thuTable, schedule[4])
-
             binding.friTable.removeAllViews()
-            drawTimes(binding.friTable, schedule[5])
-
             binding.satTable.removeAllViews()
-            drawTimes(binding.satTable, schedule[6])
+            drawTimesSchedules(binding.sunTable, categories, schedules[0])
+            drawTimesSchedules(binding.monTable, categories, schedules[1])
+            drawTimesSchedules(binding.tueTable, categories, schedules[2])
+            drawTimesSchedules(binding.wedTable, categories, schedules[3])
+            drawTimesSchedules(binding.thuTable, categories, schedules[4])
+            drawTimesSchedules(binding.friTable, categories, schedules[5])
+            drawTimesSchedules(binding.satTable, categories, schedules[6])
         }
 
-
         //하루종일 or 2일이상 일정을 바인딩
-        timetableviewModel.SchedulesAllday.observe(viewLifecycleOwner) { days ->
+        timetableviewModel.categoryAndSchedulesAlldayCombinedData.observe(viewLifecycleOwner) { (categories, days) ->
             binding.daysTable.removeAllViews()
-            Log.d("ALLDAYsss", "$days")
-            DrawDays(binding.daysTable, days, timetableviewModel.getDates())
+            drawDaysSchedule(binding.daysTable, categories, days, timetableviewModel.getDates())
         }
 
         //드래그 앤 드랍시 이동한 뷰의 정보
@@ -221,7 +215,7 @@ class TimetableFragment : Fragment() {
     }
 
     //하루이상의 할일을 동적으로 바인딩
-    fun DrawDays(table: ViewGroup, days: ArrayList<Schedule>, dates: ArrayList<String>) {
+    private fun drawDaysSchedule(table: ViewGroup, categories: List<Category>? , days: ArrayList<Schedule>, dates: ArrayList<String>) {
         val displayMetrics = resources.displayMetrics
         val deleteSchedule = ArrayList<Schedule>()
         while (days.size > 0) {
@@ -267,6 +261,11 @@ class TimetableFragment : Fragment() {
                     view.setPadding(2, 2, 2, 2)
                     view.maxLines = 1
                     view.setBackgroundResource(R.drawable.timetable_schedule_allday)
+
+                    // 카테고리 색칠하기
+                    val category = categories?.find { it.id == day.category?.id }
+                    view.background = makeShapeDrawable(category?.color)
+
                     val frontPadding = View(requireContext())
                     val backPadding = View(requireContext())
                     view.setOnClickListener {
@@ -309,31 +308,31 @@ class TimetableFragment : Fragment() {
     }
 
     //하루치 일정을 동적으로 바인딩
-    private fun drawTimes(table: ViewGroup, times: ArrayList<Schedule>) {
+    private fun drawTimesSchedules(table: ViewGroup, categories: List<Category>?, schedules: ArrayList<Schedule>) {
         var past_start = 0
         var past_end = 2359
         val unionList = ArrayList<ArrayList<Schedule>>()
         var overlapList = ArrayList<Schedule>()
-        Log.d("DRAGGED", "${times}")
-        for (times in times) {
-            val start = times.repeatStart?.slice(IntRange(11, 12)) + times.repeatStart?.slice(
+
+        for (schedule in schedules) {
+            val start = schedule.repeatStart?.slice(IntRange(11, 12)) + schedule.repeatStart?.slice(
                 IntRange(
                     14,
                     15
                 )
             )
             val end =
-                times.repeatEnd?.slice(IntRange(11, 12)) + times.repeatEnd?.slice(IntRange(14, 15))
+                schedule.repeatEnd?.slice(IntRange(11, 12)) + schedule.repeatEnd?.slice(IntRange(14, 15))
 
             if (start.toInt() in past_start..past_end - 1) {
-                overlapList.add(times)
+                overlapList.add(schedule)
             } else {
                 val arraylist = ArrayList<Schedule>()
                 for (i in overlapList) {
                     arraylist.add(i)
                 }
                 overlapList.clear()
-                overlapList.add(times)
+                overlapList.add(schedule)
                 unionList.add(arraylist)
             }
 
@@ -341,6 +340,7 @@ class TimetableFragment : Fragment() {
             past_end = end.toInt()
         }
         unionList.add(overlapList)
+
         for (union in unionList) {
             val layout = LinearLayout(requireContext())
             val layoutParams = LinearLayout.LayoutParams(
@@ -349,11 +349,11 @@ class TimetableFragment : Fragment() {
             )
             layout.layoutParams = layoutParams
 
-            for (time in union) {
-                val union_start_hour = time.repeatStart?.slice(IntRange(11, 12))
-                val union_start_min = time.repeatStart?.slice(IntRange(14, 15))
-                val union_end_hour = time.repeatEnd?.slice(IntRange(11, 12))
-                val union_end_min = time.repeatEnd?.slice(IntRange(14, 15))
+            for (schedule in union) {
+                val union_start_hour = schedule.repeatStart?.slice(IntRange(11, 12))
+                val union_start_min = schedule.repeatStart?.slice(IntRange(14, 15))
+                val union_end_hour = schedule.repeatEnd?.slice(IntRange(11, 12))
+                val union_end_min = schedule.repeatEnd?.slice(IntRange(14, 15))
                 val start_hour = union_start_hour!!.toInt()
                 val start_min = union_start_min!!.toInt()
                 val end_hour = union_end_hour!!.toInt()
@@ -365,46 +365,56 @@ class TimetableFragment : Fragment() {
                     hour -= 1
                     min += 60
                 }
-                val timesCalculatedValue = hour * 72  + min / 5 * 6
+                val scheduleCalculatedValue = hour * 72  + min / 5 * 6
+                val margin = start_hour * 72 + start_min / 5 * 6
+
                 val displayMetrics = resources.displayMetrics
                 val itemparams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    Math.round((timesCalculatedValue) * displayMetrics.density),
+                    Math.round((scheduleCalculatedValue) * displayMetrics.density),
                     1f
                 )
-                val margin = start_hour * 72 + start_min / 5 * 6
-                Log.d("Schedules", "times : $hour and $min $margin ${time.content}")
+
+                Log.d("Schedules", "schedule : $hour and $min $margin ${schedule.content}")
                 itemparams.topMargin = Math.round(margin * displayMetrics.density)
                 itemparams.rightMargin = 1
                 itemparams.gravity = (Gravity.TOP)
-                val Schedule_View = TextView(requireContext())
-                scheduleMap.put(Schedule_View, time)
 
-                Schedule_View.setOnLongClickListener { view ->
+
+                val scheduleView = TextView(requireContext())
+                scheduleMap.put(scheduleView, schedule)
+
+                scheduleView.setOnLongClickListener { view ->
                     val data = ClipData.newPlainText("", "")
                     val shadowBuilder = EmptyShadowBuilder(view)
                     view?.startDragAndDrop(data, shadowBuilder, view, 0)
                     false
                 }
 
-                scheduleViewList.add(Schedule_View)
-                Schedule_View.layoutParams = itemparams
-                Schedule_View.setText(time.content)
-                Schedule_View.setLineSpacing((0).toFloat(), (1).toFloat())
-                Schedule_View.setPadding(4, 4, 4, 4)
-                Schedule_View.setOnClickListener {
-                    Toast.makeText(requireContext(), "${time.content}", Toast.LENGTH_SHORT)
+                scheduleViewList.add(scheduleView)
+                scheduleView.layoutParams = itemparams
+                scheduleView.text = schedule.content
+
+//                scheduleView.setTextColor()
+//                scheduleView.setLineSpacing((0).toFloat(), (1).toFloat())
+                scheduleView.setPadding(4, 4, 4, 4)
+
+                scheduleView.setOnClickListener {
+                    Toast.makeText(requireContext(), "${schedule.content}", Toast.LENGTH_SHORT)
                         .show()
                 }
 
-                Schedule_View.setBackgroundResource(R.drawable.timetable_schedule)
-                layout.addView(Schedule_View)
+
+                // 카테고리 색칠하기
+                val category = categories?.find { it.id == schedule.category?.id }
+                scheduleView.background = makeShapeDrawable(category?.color)
+                layout.addView(scheduleView)
             }
             table.addView(layout)
         }
     }
 
-    fun checkForScroll(pointerY: Float, startOfScrollView: Int) {
+    private fun checkForScroll(pointerY: Float, startOfScrollView: Int) {
         val lowerLimForScroll = (Resources.getSystem().displayMetrics.heightPixels * 0.8).toInt()
         /* if the upper limit is passed, meaning a pixel height, scroll up */
         Log.d("DRAGGED", "$pointerY, $startOfScrollView, $lowerLimForScroll")
@@ -452,5 +462,30 @@ class TimetableFragment : Fragment() {
             }
             binding.leftTimeTextviewLayout.addView(newTextView)
         }
+    }
+
+
+
+    fun makeShapeDrawable(color : String?): LayerDrawable {
+        val gd = GradientDrawable()
+
+        if(color == null){
+            gd.setColor(Color.parseColor("#1DAFFF")) // Initial color
+        }else{
+            gd.setColor(Color.parseColor(color))
+        }
+
+        gd.cornerRadius = 30f
+
+        // Create another GradientDrawable as background
+        val bg = GradientDrawable()
+        bg.setColor(Color.WHITE) // Set the color to white
+        bg.cornerRadius = 30f
+
+        // Use a LayerDrawable to put two drawables together
+        val ld = LayerDrawable(arrayOf(bg, gd))
+        ld.setLayerInset(1, 1, 1, 1, 1) // This is equivalent to padding 1dp to gd
+
+        return ld
     }
 }

@@ -76,7 +76,7 @@ class ScheduleDraglistener(private val timetableViewModel: TimetableViewModel,
 
     private fun handleDragLocationAction(targetFrameLayout: FrameLayout, draggedView: TextView, event: DragEvent) {
         shadowView.layoutParams = FrameLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, draggedView.height)
-        shadowView.background = makeShapeDrawable()
+        shadowView.background = targetFrameLayout.background
         shadowView.alpha = 0.5f
 
         try {
@@ -133,10 +133,15 @@ class ScheduleDraglistener(private val timetableViewModel: TimetableViewModel,
     }
 
 
-    private fun makeShapeDrawable(): LayerDrawable {
-        // Create a GradientDrawable with rounded corners
+    fun makeShapeDrawable(color : String?): LayerDrawable {
         val gd = GradientDrawable()
-        gd.setColor(Color.parseColor("#FFAAE5")) // Initial color
+
+        if(color == null){
+            gd.setColor(Color.parseColor("#1DAFFF")) // Initial color
+        }else{
+            gd.setColor(Color.parseColor(color))
+        }
+
         gd.cornerRadius = 30f
 
         // Create another GradientDrawable as background

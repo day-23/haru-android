@@ -21,9 +21,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
     private val scheduleRepository = ScheduleRepository()
     private val categoryRepository = CategoryRepository()
 
-
-
-
     private val _Dates = MutableLiveData<ArrayList<String>>()
     val Dates : LiveData<ArrayList<String>>
         get() = _Dates
@@ -47,15 +44,24 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Schedules : LiveData<ArrayList<ArrayList<Schedule>>>
         get() = _Schedules
 
-    val categoryAndScheduleCombinedData: LiveData<Pair<List<Category>, ArrayList<ArrayList<Schedule>>>> =
-        MediatorLiveData<Pair<List<Category>, ArrayList<ArrayList<Schedule>>>>().apply {
-            addSource(_liveCategoryList) { value = it to (_Schedules.value ?: arrayListOf()) }
-            addSource(_Schedules) { value = (_liveCategoryList.value ?: listOf()) to it }
-        }
-
     private val _SchedulesAllday = MutableLiveData<ArrayList<Schedule>>()
     val SchedulesAllday: LiveData<ArrayList<Schedule>>
         get() = _SchedulesAllday
+
+    val categoryAndSchedulesCombinedData: LiveData<Pair<List<Category>?, ArrayList<ArrayList<Schedule>>>> =
+        Transformations.switchMap(_liveCategoryList) { categoryList: List<Category>? ->
+            Transformations.map(_Schedules) { schedules ->
+                Pair(categoryList, schedules)
+            }
+        }
+
+    val categoryAndSchedulesAlldayCombinedData: LiveData<Pair<List<Category>?, ArrayList<Schedule>>> =
+        Transformations.switchMap(_liveCategoryList) { categoryList: List<Category>? ->
+            Transformations.map(_SchedulesAllday) { schedulesAllday ->
+                Pair(categoryList, schedulesAllday)
+            }
+        }
+
 
     private val _TodayDay = MutableLiveData<String>()
     val TodayDay : LiveData<String>
