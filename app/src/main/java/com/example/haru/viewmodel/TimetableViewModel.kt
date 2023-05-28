@@ -311,8 +311,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
     }
 
     fun scheduleMoved(margin : Int, view: View, index: Int){
-        val hour = (margin / 120).toInt()
-        val min = (( margin % 120) / 2).toInt()
+        val hour = (margin / 72).toInt()
+        val min = (( margin % 72) / 6) * 5.toInt()
         var stringHour = ""
         var stringMin = ""
         if(hour > 9) stringHour = hour.toString()
@@ -323,9 +323,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
         val moveDate = Datelist[index]
         //"2023-04-01T00:00:00.000Z"
         val newDate = "${moveDate.slice(IntRange(0,3))}-${moveDate.slice(IntRange(4, 5))}-${moveDate.slice(IntRange(6, 7))}T"
-        val newTime = "$stringHour:$stringMin:00.000Z"
+        val newTime = "$stringHour:$stringMin:00+09:00"
         val newDateInfo = newDate + newTime // 수정 돼야할 시간정보
 
+        d(TAG, "scheduleMoved: ${newDateInfo}}")
         _MoveDate.value = newDateInfo
         _MoveView.value = view
     }

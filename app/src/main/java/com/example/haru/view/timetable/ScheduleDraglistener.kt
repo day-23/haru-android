@@ -18,6 +18,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Todo
+import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import com.example.haru.viewmodel.TimetableViewModel
 
 
@@ -40,9 +41,9 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
             val displayMetrics = targetFrameLayout.resources.displayMetrics
             val x = event.x
             val y = ((event.y / displayMetrics.density).toInt() / 10) * 6
-
             val dropY = Math.round( y * displayMetrics.density)
             draggedView.y = dropY.toFloat()
+
             val sourceLayout = draggedView.parent as LinearLayout
             Log.d("DRAGGED", "${targetFrameLayout.id} , $y")
 
@@ -69,6 +70,7 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
             shadowView.layoutParams = shadowParams
             val displayMetrics = targetFrameLayout.resources.displayMetrics
             val y = ((event.y / displayMetrics.density).toInt() / 10) * 6
+
             val dropY = Math.round( y * displayMetrics.density)
             shadowView.setBackgroundResource(R.drawable.timetable_schedule)
             shadowView.alpha = 0.5f
@@ -83,7 +85,6 @@ class ScheduleDraglistener (private val timetableViewModel: TimetableViewModel,
                 targetFrameLayout.addView(shadowView)
                 true
             }
-
         }
 
         if (event.action == DragEvent.ACTION_DRAG_EXITED) {
