@@ -576,7 +576,7 @@ class ChecklistInputFragment(
 //------------------------------
         todoAddViewModel.tagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.ivTagIcon.backgroundTintList = if (it.isEmpty())
-                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.icon_gray))
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.light_gray))
             else
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
@@ -661,7 +661,7 @@ class ChecklistInputFragment(
                     if (s.toString() == "") ColorStateList.valueOf(
                         ContextCompat.getColor(
                             requireContext(),
-                            R.color.icon_gray
+                            R.color.light_gray
                         )
                     ) else ColorStateList.valueOf(
                         ContextCompat.getColor(

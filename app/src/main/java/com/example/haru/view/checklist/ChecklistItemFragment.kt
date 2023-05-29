@@ -141,7 +141,6 @@ class ChecklistItemFragment(
             override fun onGlobalLayout() {
                 todoAddViewModel.setEndTimeHeight(binding.infoEndDateTimeLayout.height)
                 binding.infoEndDateTimeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                Log.d("20191627", todoAddViewModel.endTimeLayoutHeight.toString())
                 binding.infoEndDateTimeLayout.visibility = View.GONE
             }
         })
@@ -152,12 +151,7 @@ class ChecklistItemFragment(
             override fun onGlobalLayout() {
                 todoAddViewModel.setRepeatOptionH(binding.infoRepeatOptionLayout.height)
                 binding.infoRepeatOptionLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                Log.d(
-                    "20191627",
-                    "infoRepeatOptionLayout : " + todoAddViewModel.repeatOptionHeight.toString()
-                )
                 binding.infoRepeatOptionLayout.visibility = View.GONE
-
             }
         })
 
@@ -166,7 +160,6 @@ class ChecklistItemFragment(
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 todoAddViewModel.setWeekHeight(binding.infoEveryWeekSelectLayout.height)
-                Log.d("20191627", "WeekSelect Height : ${todoAddViewModel.repeatWeekHeight}")
                 binding.infoEveryWeekSelectLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 binding.infoEveryWeekSelectLayout.visibility = View.GONE
             }
@@ -188,7 +181,7 @@ class ChecklistItemFragment(
                 todoAddViewModel.setYearHeight(binding.infoGridYear.height)
                 binding.infoGridYear.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 binding.infoGridYear.visibility = View.GONE
-                binding.infoGridYear.requestLayout()
+
             }
         })
 
@@ -198,13 +191,585 @@ class ChecklistItemFragment(
             override fun onGlobalLayout() {
                 todoAddViewModel.setRepeatEndDateH(binding.infoRepeatEndDateLayout.height)
                 binding.infoRepeatEndDateLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                Log.d(
-                    "20191627",
-                    "infoRepeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString()
-                )
                 binding.infoRepeatEndDateLayout.visibility = View.GONE
-                binding.infoRepeatEndDateLayout.requestLayout()
 
+                binding.infoRepeatEndDateLayout.post {
+                    // flag 관련 UI Update
+                    todoAddViewModel.setClickTodo(id, todo)
+                    binding.vm = todoAddViewModel
+
+                    if (todo != null)
+                        Log.d("20191627", todo.endDate ?: "null")
+
+                    if (todoAddViewModel.clickedTodo!!.completed) {
+                        binding.infoSubTodoAddLayout.visibility = View.GONE
+                    }
+
+                    Log.d("20191627", todoAddViewModel.clickedTodo.toString())
+
+                    todoAddViewModel.flagTodo.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            binding.cbInfoFlag.isChecked = it
+                        })
+
+                    // complete 관련 UI Update  --> 수정창에서 완료하는 기능을 뺐으므로 수정 예정
+                    todoAddViewModel.completedTodo.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            val color = if (it) R.color.light_gray else R.color.todo_description
+                            binding.btnInfoSave.visibility = if (it) View.GONE else View.VISIBLE
+                            binding.etInfoContent.setTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    color
+                                )
+                            )
+                        })
+
+                    // subTodo 관련 UI Update
+                    todoAddViewModel.subTodoList.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            if (todoAddViewModel.subTodoCnt > binding.infoSubTodoLayout.childCount - 1) {
+                                for (i in binding.infoSubTodoLayout.childCount - 1 until todoAddViewModel.subTodoCnt) {
+                                    val layoutInflater =
+                                        context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                                    val addView =
+                                        layoutInflater.inflate(R.layout.subtodo_input_layout, null)
+
+                                    addView.findViewById<ImageView>(R.id.iv_subTodo_cancel)
+                                        .setOnClickListener {
+                                            todoAddViewModel.setSubTodoPosition(
+                                                binding.infoSubTodoLayout.indexOfChild(
+                                                    addView
+                                                )
+                                            )
+                                            todoAddViewModel.deleteSubTodo()
+                                        }
+
+                                    if (todoAddViewModel.subTodoCompleted.isNotEmpty() && i < todoAddViewModel.subTodoCompleted.size)
+                                        addView.findViewById<EditText>(R.id.et_subTodo).apply {
+                                            setText(todoAddViewModel.subTodos[i])
+                                            if (todoAddViewModel.subTodoCompleted[i]) setTextColor(
+                                                ContextCompat.getColor(
+                                                    requireContext(),
+                                                    R.color.light_gray
+                                                )
+                                            )
+
+                                        }
+                                    addView.findViewById<EditText>(R.id.et_subTodo)
+                                        .addTextChangedListener(object :
+                                            TextWatcher {
+                                            override fun beforeTextChanged(
+                                                p0: CharSequence?,
+                                                p1: Int,
+                                                p2: Int,
+                                                p3: Int
+                                            ) {
+                                            }
+
+                                            override fun onTextChanged(
+                                                p0: CharSequence?,
+                                                p1: Int,
+                                                p2: Int,
+                                                p3: Int
+                                            ) {
+                                            }
+
+                                            override fun afterTextChanged(e: Editable?) {
+                                                todoAddViewModel.subTodos[binding.infoSubTodoLayout.indexOfChild(
+                                                    addView
+                                                )] =
+                                                    e.toString()
+                                            }
+                                        })
+
+                                    binding.infoSubTodoLayout.addView(
+                                        addView,
+                                        binding.infoSubTodoLayout.childCount - 1
+                                    )
+                                    todoAddViewModel.subTodoClickPosition++
+                                }
+                            } else binding.infoSubTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
+                        })
+
+                    // todayTodo 관련 UI Update
+                    todoAddViewModel.todayTodo.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            val color = if (it) R.color.highlight else R.color.light_gray
+                            binding.infoTodaySwitch.isChecked = it
+                            binding.ivInfoTodayIcon.backgroundTintList =
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        color
+                                    )
+                                )
+                            binding.tvInfoTodayTodo.setTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    color
+                                )
+                            )
+                        })
+
+                    // endDateLayout 관련 UI Update
+                    todoAddViewModel.endDateSwitch.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            val color = if (it) R.color.todo_description else R.color.light_gray
+                            binding.infoEndDateSwitch.isChecked = it
+                            binding.ivInfoCalendarIcon.backgroundTintList =
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        color
+                                    )
+                                )
+                            binding.tvInfoEndDateSet.setTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    color
+                                )
+                            )
+
+                            binding.infoEndDateTimeLayout.visibility =
+                                if (it) View.VISIBLE else View.INVISIBLE
+                            binding.btnInfoEndDatePick.visibility =
+                                if (it) View.VISIBLE else View.INVISIBLE
+                            when (it) {
+                                true -> {
+                                    binding.infoEndDateSetLayout.animateViewHeight(
+                                        400,
+                                        binding.infoEndDateSetLayout.height,
+                                        binding.infoEndDateSetLayout.height + todoAddViewModel.endTimeLayoutHeight
+                                    )
+                                }
+                                else -> {
+                                    if (todoAddViewModel.repeatSwitch.value == true)
+                                        todoAddViewModel.setRepeatSwitch()
+
+                                    binding.infoEndDateSetLayout.animateViewHeight(
+                                        400, binding.infoEndDateSetLayout.height,
+                                        binding.infoEndDateSetLayout.height - todoAddViewModel.endTimeLayoutHeight
+                                    )
+                                }
+                            }
+                        })
+
+                    // endDate Button UI Update
+                    todoAddViewModel.endDate.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            Log.d("20191627", "endDAte $it")
+                            binding.btnInfoEndDatePick.text = FormatDate.simpleDateToStr(it)
+                        })
+
+                    // endDateTime 관련 UI Update
+                    todoAddViewModel.isSelectedEndDateTime.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            binding.infoEndDateTimeSwitch.isChecked = it
+                            val color = if (it) R.color.todo_description else R.color.light_gray
+                            binding.tvInfoEndTimeSet.setTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    color
+                                )
+                            )
+                            binding.btnInfoEndTimePick.visibility =
+                                if (it) View.VISIBLE else View.INVISIBLE
+                        })
+
+                    // endDateTime Button UI Update
+                    todoAddViewModel.endTime.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            binding.btnInfoEndTimePick.text = FormatDate.simpleTimeToStr(it)
+                        })
+
+                    // alarm 관련 UI Update
+                    todoAddViewModel.alarmSwitch.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            val color = if (it) R.color.todo_description else R.color.light_gray
+                            binding.infoAlarmSwitch.isChecked = it
+                            binding.ivInfoAlarmIcon.backgroundTintList =
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        color
+                                    )
+                                )
+                            binding.tvInfoAlarmSet.setTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    color
+                                )
+                            )
+                            binding.btnInfoAlarmDatePick.visibility =
+                                if (it) View.VISIBLE else View.INVISIBLE
+                            binding.btnInfoAlarmTimePick.visibility =
+                                if (it) View.VISIBLE else View.INVISIBLE
+                        })
+
+                    // alarm Date Update
+                    todoAddViewModel.alarmDate.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            binding.btnInfoAlarmDatePick.text = FormatDate.simpleDateToStr(it)
+                        })
+
+                    // alarm Time Update
+                    todoAddViewModel.alarmTime.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            binding.btnInfoAlarmTimePick.text = FormatDate.simpleTimeToStr(it)
+                        })
+
+                    // repeat Switch 관련 UI Update
+                    // 반복설정, 태그 연동, 하위 항목, 메모 만들어서 마무리하기
+                    todoAddViewModel.repeatSwitch.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            if (it && todoAddViewModel.endDateSwitch.value != true) {
+                                todoAddViewModel.setEndDateSwitch()
+                            }
+
+                            val color = if (it) R.color.todo_description else R.color.light_gray
+                            binding.infoRepeatSwitch.isChecked = it
+                            binding.ivInfoRepeatIcon.backgroundTintList =
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        color
+                                    )
+                                )
+                            binding.tvInfoRepeatSet.setTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    color
+                                )
+                            )
+                            binding.infoRepeatOptionLayout.visibility =
+                                if (it) View.VISIBLE else View.INVISIBLE
+                            binding.infoRepeatEndDateLayout.visibility =
+                                if (it) View.VISIBLE else View.INVISIBLE
+                            when (it) {
+                                true -> {
+                                    todoAddViewModel.setRepeatSetLayoutH(binding.infoRepeatSetLayout.height)
+                                    binding.infoRepeatSetLayout.animateViewHeight(
+                                        400, binding.infoRepeatSetLayout.height,
+                                        binding.infoRepeatSetLayout.height +
+                                                todoAddViewModel.repeatOptionHeight +
+                                                todoAddViewModel.repeatEndDateHeight
+                                    )
+                                }
+                                false -> {
+                                    binding.infoRepeatSetLayout.animateViewHeight(
+                                        400, binding.infoRepeatSetLayout.height,
+                                        todoAddViewModel.repeatSetLayoutHeight
+                                    )
+                                }
+                                else -> {}
+                            }
+
+                            binding.infoEveryWeekSelectLayout.visibility =
+                                if (it && todoAddViewModel.repeatOption.value in listOf(
+                                        1,
+                                        2
+                                    )
+                                ) View.VISIBLE else View.GONE
+                            binding.infoGridMonth.visibility =
+                                if (it && todoAddViewModel.repeatOption.value == 3) View.VISIBLE else View.GONE
+                            binding.infoGridYear.visibility =
+                                if (it && todoAddViewModel.repeatOption.value == 4) View.VISIBLE else View.GONE
+                        })
+
+                    // repeat Option 관련 UI Update
+                    todoAddViewModel.repeatOption.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            for (i in 0 until binding.infoRepeatOptionSelect.childCount)
+                                if (i == it)
+                                    binding.infoRepeatOptionSelect.getChildAt(i).backgroundTintList =
+                                        null
+                                else
+                                    binding.infoRepeatOptionSelect.getChildAt(i).backgroundTintList =
+                                        ColorStateList.valueOf(
+                                            ContextCompat.getColor(
+                                                requireContext(),
+                                                android.R.color.transparent
+                                            )
+                                        )
+
+                            when (it) {
+                                0 -> {
+                                    binding.infoRepeatSetLayout.animateViewHeight(
+                                        400, binding.infoRepeatSetLayout.height,
+                                        todoAddViewModel.repeatSetLayoutHeight +
+                                                todoAddViewModel.repeatOptionHeight +
+                                                todoAddViewModel.repeatEndDateHeight
+                                    )
+                                }
+                                1, 2 -> {
+                                    binding.infoRepeatSetLayout.animateViewHeight(
+                                        400, binding.infoRepeatSetLayout.height,
+                                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
+                                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.repeatWeekHeight
+                                    )
+                                }
+
+                                3 -> {
+                                    binding.infoRepeatSetLayout.animateViewHeight(
+                                        400, binding.infoRepeatSetLayout.height,
+                                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
+                                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridMonthHeight
+                                    )
+                                }
+
+                                4 -> {
+                                    binding.infoRepeatSetLayout.animateViewHeight(
+                                        400, binding.infoRepeatSetLayout.height,
+                                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
+                                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridYearHeight
+                                    )
+                                }
+                            }
+
+                            binding.infoEveryWeekSelectLayout.visibility =
+                                if (it == 1 || it == 2) View.VISIBLE else View.GONE
+                            binding.infoGridMonth.visibility =
+                                if (it == 3) View.VISIBLE else View.GONE
+                            binding.infoGridYear.visibility =
+                                if (it == 4) View.VISIBLE else View.GONE
+                        })
+
+                    todoAddViewModel.repeatValue.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            Log.d("20191627", it.toString())
+                            val layout = when (it?.length) {
+                                7 -> binding.infoEveryWeekSelectLayout
+                                31 -> binding.infoGridMonth
+                                12 -> binding.infoGridYear
+                                else -> null
+                            }
+
+                            if (layout != null) {
+                                for (i in 0 until it!!.length) {
+                                    if (it[i] == '1')
+                                        (layout.getChildAt(i) as TextView).setTextColor(
+                                            ContextCompat.getColor(
+                                                requireContext(),
+                                                R.color.highlight
+                                            )
+                                        )
+                                    else if (it[i] == '0') (layout.getChildAt(i) as TextView).setTextColor(
+                                        ContextCompat.getColor(
+                                            requireContext(),
+                                            R.color.light_gray
+                                        )
+                                    ) else
+                                        (layout.getChildAt(i) as TextView).setTextColor(
+                                            ContextCompat.getColor(
+                                                requireContext(),
+                                                R.color.delete_red
+                                            )
+                                        )
+                                }
+                            }
+
+                            if (!todoAddViewModel.calculateDateFlag) {
+                                todoAddViewModel.calculateDateFlag = true
+                            } else if (todoAddViewModel.repeatOption.value != null) {
+                                val flagOne = todoAddViewModel.repeatValue.value!!.contains('1')
+                                val flagTwo = todoAddViewModel.repeatValue.value!!.contains('2')
+
+                                if (todoAddViewModel.selectDateFlag)
+                                    return@Observer
+
+                                if (!flagOne && !flagTwo) {  // 1도 없고, 2도 없는 0으로만 이루어진 상황
+                                    todoAddViewModel.setDate(0, Date())
+                                    return@Observer
+                                } else if (flagTwo && !flagOne) { // endDate를 직접 설정하면 무조건 그 날짜를 표시, 그 후에 반복 옵션을 건드리면 날짜 계산 방식으로 변경해야한다.
+                                    if (todoAddViewModel.selectedDate.value == null) {
+                                        FormatDate.cal.time = Date()
+                                        FormatDate.cal.set(
+                                            Calendar.DAY_OF_MONTH,
+                                            todoAddViewModel.day!!
+                                        )
+                                    } else {
+                                        FormatDate.cal.time = todoAddViewModel.selectedDate.value!!
+                                    }
+                                    todoAddViewModel.setDate(0, FormatDate.cal.time)
+                                    return@Observer
+                                } else {
+                                    val date = when (todoAddViewModel.repeatValue.value?.length) {
+                                        7 -> FormatDate.nextEndDateEveryWeek(
+                                            todoAddViewModel.repeatValue.value,
+                                            todoAddViewModel.repeatOption.value,
+                                            null,
+                                            null
+                                        )
+                                        31 -> FormatDate.nextEndDateEveryMonth(
+                                            todoAddViewModel.repeatValue.value!!,
+                                            null,
+                                            null
+                                        )
+                                        12 -> {
+                                            FormatDate.cal.time = todoAddViewModel.endDate.value!!
+
+                                            val day = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
+
+                                            FormatDate.nextEndDateEveryYear(
+                                                todoAddViewModel.repeatValue.value!!,
+                                                null,
+                                                null,
+                                                day
+                                            )
+                                        }
+                                        else -> {
+                                            FormatDate.cal.time = Date()
+                                            FormatDate.cal.time
+                                        }
+                                    }
+                                    if (date == null)
+                                        todoAddViewModel.setDate(0, Date())
+                                    else
+                                        todoAddViewModel.setDate(0, date)
+
+                                }
+                            }
+                        })
+
+                    // repeat EndDate Switch UI Update
+                    todoAddViewModel.repeatEndDateSwitch.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            val color = if (it) R.color.todo_description else R.color.light_gray
+                            binding.infoRepeatEndDateSwitch.isChecked = it
+                            binding.tvInfoRepeatEnd.setTextColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    color
+                                )
+                            )
+                            binding.btnInfoRepeatEndDate.visibility =
+                                if (it) View.VISIBLE else View.INVISIBLE
+                        })
+
+                    // repeat EndDate 관련 UI Update
+                    todoAddViewModel.repeatEndDate.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            binding.btnInfoRepeatEndDate.text = FormatDate.simpleDateToStr(it)
+                        })
+
+                    todoAddViewModel.tagLiveData.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer {
+                            binding.ivInfoTagIcon.backgroundTintList = if (it.isEmpty())
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.light_gray
+                                    )
+                                )
+                            else
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.todo_description
+                                    )
+                                )
+
+                            if (it.size < binding.infoTagContainerLayout.childCount - 2)
+                                for (i in 1 until binding.infoTagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
+                                    val chip =
+                                        binding.infoTagContainerLayout.getChildAt(i) as LinearLayout
+                                    if (!it.contains((chip.getChildAt(0) as AppCompatButton).text)) {
+                                        binding.infoTagContainerLayout.removeViewAt(i)
+                                        break
+                                    }
+                                }
+                            else if (it.size > binding.infoTagContainerLayout.childCount - 2) {
+                                val layoutInflater =
+                                    context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                                val childCount = binding.infoTagContainerLayout.childCount
+                                for (i in childCount - 2 until it.size) {
+                                    val chip = layoutInflater.inflate(R.layout.custom_chip, null)
+                                    chip.findViewById<AppCompatButton>(R.id.tag_chip).apply {
+                                        text = it[i]
+                                        setOnClickListener {
+                                            todoAddViewModel.subTagList(this.text.toString())
+                                        }
+                                    }
+                                    binding.infoTagContainerLayout.addView(
+                                        chip,
+                                        binding.infoTagContainerLayout.childCount - 1
+                                    )
+                                }
+                            }
+                        })
+
+                    binding.infoTagEt.addTextChangedListener(object : TextWatcher {
+                        override fun beforeTextChanged(
+                            p0: CharSequence?,
+                            p1: Int,
+                            p2: Int,
+                            p3: Int
+                        ) {
+                        }
+
+                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                        override fun afterTextChanged(s: Editable?) {
+                            if (s == null)
+                                return
+
+                            val str = s.toString()
+                            if (str == "")
+                                return
+
+                            if (str[str.length - 1] == ' ') {
+                                todoAddViewModel.addTagList()
+                                binding.infoTagEt.setText("")
+                            }
+                        }
+
+                    })
+
+                    binding.etInfoMemo.addTextChangedListener(object : TextWatcher {
+                        override fun beforeTextChanged(
+                            p0: CharSequence?,
+                            p1: Int,
+                            p2: Int,
+                            p3: Int
+                        ) {
+                        }
+
+                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                        override fun afterTextChanged(s: Editable?) {
+                            binding.ivInfoMemoIcon.backgroundTintList =
+                                if (s.toString() == "") ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.light_gray
+                                    )
+                                ) else ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        requireContext(),
+                                        R.color.todo_description
+                                    )
+                                )
+                        }
+                    })
+                }
             }
         })
 
@@ -213,506 +778,6 @@ class ChecklistItemFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // flag 관련 UI Update
-        todoAddViewModel.setClickTodo(id, todo)
-        binding.vm = todoAddViewModel
-
-        if (todo != null)
-            Log.d("20191627", todo.endDate ?: "null")
-
-        if (todoAddViewModel.clickedTodo!!.completed) {
-            binding.infoSubTodoAddLayout.visibility = View.GONE
-        }
-
-        Log.d("20191627", todoAddViewModel.clickedTodo.toString())
-
-        todoAddViewModel.flagTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.e("20191627", "호출")
-            binding.cbInfoFlag.isChecked = it
-        })
-
-        // complete 관련 UI Update  --> 수정창에서 완료하는 기능을 뺐으므로 수정 예정
-        todoAddViewModel.completedTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val color = if (it) R.color.light_gray else R.color.todo_description
-            binding.btnInfoSave.visibility = if (it) View.GONE else View.VISIBLE
-            binding.etInfoContent.setTextColor(ContextCompat.getColor(requireContext(), color))
-        })
-
-        // subTodo 관련 UI Update
-        todoAddViewModel.subTodoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (todoAddViewModel.subTodoCnt > binding.infoSubTodoLayout.childCount - 1) {
-                for (i in binding.infoSubTodoLayout.childCount - 1 until todoAddViewModel.subTodoCnt) {
-                    val layoutInflater =
-                        context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                    val addView = layoutInflater.inflate(R.layout.subtodo_input_layout, null)
-
-                    addView.findViewById<ImageView>(R.id.iv_subTodo_cancel).setOnClickListener {
-                        todoAddViewModel.setSubTodoPosition(
-                            binding.infoSubTodoLayout.indexOfChild(
-                                addView
-                            )
-                        )
-                        todoAddViewModel.deleteSubTodo()
-                    }
-
-                    if (todoAddViewModel.subTodoCompleted.isNotEmpty() && i < todoAddViewModel.subTodoCompleted.size)
-                        addView.findViewById<EditText>(R.id.et_subTodo).apply {
-                            setText(todoAddViewModel.subTodos[i])
-                            if (todoAddViewModel.subTodoCompleted[i]) setTextColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.light_gray
-                                )
-                            )
-
-                        }
-                    addView.findViewById<EditText>(R.id.et_subTodo)
-                        .addTextChangedListener(object :
-                            TextWatcher {
-                            override fun beforeTextChanged(
-                                p0: CharSequence?,
-                                p1: Int,
-                                p2: Int,
-                                p3: Int
-                            ) {
-                            }
-
-                            override fun onTextChanged(
-                                p0: CharSequence?,
-                                p1: Int,
-                                p2: Int,
-                                p3: Int
-                            ) {
-                            }
-
-                            override fun afterTextChanged(e: Editable?) {
-                                todoAddViewModel.subTodos[binding.infoSubTodoLayout.indexOfChild(
-                                    addView
-                                )] =
-                                    e.toString()
-                            }
-                        })
-
-                    binding.infoSubTodoLayout.addView(
-                        addView,
-                        binding.infoSubTodoLayout.childCount - 1
-                    )
-                    todoAddViewModel.subTodoClickPosition++
-                }
-            } else binding.infoSubTodoLayout.removeViewAt(todoAddViewModel.subTodoClickPosition)
-        })
-
-        // todayTodo 관련 UI Update
-        todoAddViewModel.todayTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val color = if (it) R.color.highlight else R.color.light_gray
-            binding.infoTodaySwitch.isChecked = it
-            binding.ivInfoTodayIcon.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
-            binding.tvInfoTodayTodo.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    color
-                )
-            )
-        })
-
-        // endDateLayout 관련 UI Update
-        todoAddViewModel.endDateSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.e("20191627", "endDateSwith.observe, $it")
-            val color = if (it) R.color.todo_description else R.color.light_gray
-            binding.infoEndDateSwitch.isChecked = it
-            binding.ivInfoCalendarIcon.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
-            binding.tvInfoEndDateSet.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    color
-                )
-            )
-
-            binding.infoEndDateTimeLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
-            binding.btnInfoEndDatePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
-            Log.e("20191627", "endDateSetLayout : ${binding.infoEndDateSetLayout.height}")
-            when (it) {
-                true -> {
-                    binding.infoEndDateSetLayout.animateViewHeight(
-                        400,
-                        binding.infoEndDateSetLayout.height,
-                        binding.infoEndDateSetLayout.height + todoAddViewModel.endTimeLayoutHeight
-                    )
-                }
-                else -> {
-                    if (todoAddViewModel.repeatSwitch.value == true)
-                        todoAddViewModel.setRepeatSwitch()
-
-                    binding.infoEndDateSetLayout.animateViewHeight(
-                        400, binding.infoEndDateSetLayout.height,
-                        binding.infoEndDateSetLayout.height - todoAddViewModel.endTimeLayoutHeight
-                    )
-                }
-            }
-        })
-
-        // endDate Button UI Update
-        todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.d("20191627", "endDAte $it")
-            binding.btnInfoEndDatePick.text = FormatDate.simpleDateToStr(it)
-        })
-
-        // endDateTime 관련 UI Update
-        todoAddViewModel.isSelectedEndDateTime.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer {
-                binding.infoEndDateTimeSwitch.isChecked = it
-                val color = if (it) R.color.todo_description else R.color.light_gray
-                binding.tvInfoEndTimeSet.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        color
-                    )
-                )
-                binding.btnInfoEndTimePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
-            })
-
-        // endDateTime Button UI Update
-        todoAddViewModel.endTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            binding.btnInfoEndTimePick.text = FormatDate.simpleTimeToStr(it)
-        })
-
-        // alarm 관련 UI Update
-        todoAddViewModel.alarmSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            val color = if (it) R.color.todo_description else R.color.light_gray
-            binding.infoAlarmSwitch.isChecked = it
-            binding.ivInfoAlarmIcon.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
-            binding.tvInfoAlarmSet.setTextColor(ContextCompat.getColor(requireContext(), color))
-            binding.btnInfoAlarmDatePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
-            binding.btnInfoAlarmTimePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
-        })
-
-        // alarm Date Update
-        todoAddViewModel.alarmDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            binding.btnInfoAlarmDatePick.text = FormatDate.simpleDateToStr(it)
-        })
-
-        // alarm Time Update
-        todoAddViewModel.alarmTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            binding.btnInfoAlarmTimePick.text = FormatDate.simpleTimeToStr(it)
-        })
-
-        // repeat Switch 관련 UI Update
-        // 반복설정, 태그 연동, 하위 항목, 메모 만들어서 마무리하기
-        todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.e("20191627", "repeatSwitch.observe, $it")
-            if (it && todoAddViewModel.endDateSwitch.value != true) {
-                todoAddViewModel.setEndDateSwitch()
-            }
-
-            val color = if (it) R.color.todo_description else R.color.light_gray
-            binding.infoRepeatSwitch.isChecked = it
-            binding.ivInfoRepeatIcon.backgroundTintList =
-                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
-            binding.tvInfoRepeatSet.setTextColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    color
-                )
-            )
-            binding.infoRepeatOptionLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
-            binding.infoRepeatEndDateLayout.visibility =
-                if (it) View.VISIBLE else View.INVISIBLE
-            Log.e("20191627", "repeatSetLayout : ${binding.infoRepeatSetLayout.height}")
-            when (it) {
-                true -> {
-                    todoAddViewModel.setRepeatSetLayoutH(binding.infoRepeatSetLayout.height)
-                    Log.e(
-                        "20191627",
-                        "repeatSetLayout : ${todoAddViewModel.repeatSetLayoutHeight}"
-                    )
-                    binding.infoRepeatSetLayout.animateViewHeight(
-                        400, binding.infoRepeatSetLayout.height,
-                        binding.infoRepeatSetLayout.height +
-                                todoAddViewModel.repeatOptionHeight +
-                                todoAddViewModel.repeatEndDateHeight
-                    )
-                }
-                false -> {
-                    binding.infoRepeatSetLayout.animateViewHeight(
-                        400, binding.infoRepeatSetLayout.height,
-                        todoAddViewModel.repeatSetLayoutHeight
-                    )
-                }
-                else -> {}
-            }
-
-            binding.infoEveryWeekSelectLayout.visibility =
-                if (it && todoAddViewModel.repeatOption.value in listOf(
-                        1,
-                        2
-                    )
-                ) View.VISIBLE else View.GONE
-            binding.infoGridMonth.visibility =
-                if (it && todoAddViewModel.repeatOption.value == 3) View.VISIBLE else View.GONE
-            binding.infoGridYear.visibility =
-                if (it && todoAddViewModel.repeatOption.value == 4) View.VISIBLE else View.GONE
-        })
-
-        // repeat Option 관련 UI Update
-        todoAddViewModel.repeatOption.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.e("20191627", "repeatOption.observe, $it")
-            for (i in 0 until binding.infoRepeatOptionSelect.childCount)
-                if (i == it)
-                    binding.infoRepeatOptionSelect.getChildAt(i).backgroundTintList = null
-                else
-                    binding.infoRepeatOptionSelect.getChildAt(i).backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                android.R.color.transparent
-                            )
-                        )
-
-            when (it) {
-                0 -> {
-                    binding.infoRepeatSetLayout.animateViewHeight(
-                        400, binding.infoRepeatSetLayout.height,
-                        todoAddViewModel.repeatSetLayoutHeight +
-                                todoAddViewModel.repeatOptionHeight +
-                                todoAddViewModel.repeatEndDateHeight
-                    )
-                }
-                1, 2 -> {
-                    binding.infoRepeatSetLayout.animateViewHeight(
-                        400, binding.infoRepeatSetLayout.height,
-                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
-                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.repeatWeekHeight
-                    )
-                }
-
-                3 -> {
-                    binding.infoRepeatSetLayout.animateViewHeight(
-                        400, binding.infoRepeatSetLayout.height,
-                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
-                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridMonthHeight
-                    )
-                }
-
-                4 -> {
-                    binding.infoRepeatSetLayout.animateViewHeight(
-                        400, binding.infoRepeatSetLayout.height,
-                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
-                                + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridYearHeight
-                    )
-                }
-            }
-
-            binding.infoEveryWeekSelectLayout.visibility =
-                if (it == 1 || it == 2) View.VISIBLE else View.GONE
-            binding.infoGridMonth.visibility = if (it == 3) View.VISIBLE else View.GONE
-            binding.infoGridYear.visibility = if (it == 4) View.VISIBLE else View.GONE
-        })
-
-        todoAddViewModel.repeatValue.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.d("20191627", it.toString())
-            val layout = when (it?.length) {
-                7 -> binding.infoEveryWeekSelectLayout
-                31 -> binding.infoGridMonth
-                12 -> binding.infoGridYear
-                else -> null
-            }
-
-            if (layout != null) {
-                for (i in 0 until it!!.length) {
-                    if (it[i] == '1')
-                        (layout.getChildAt(i) as TextView).setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.highlight
-                            )
-                        )
-                    else if (it[i] == '0') (layout.getChildAt(i) as TextView).setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.light_gray
-                        )
-                    ) else
-                        (layout.getChildAt(i) as TextView).setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.delete_red
-                            )
-                        )
-                }
-            }
-
-            if (!todoAddViewModel.calculateDateFlag) {
-                todoAddViewModel.calculateDateFlag = true
-            } else if (todoAddViewModel.repeatOption.value != null) {
-                val flagOne = todoAddViewModel.repeatValue.value!!.contains('1')
-                val flagTwo = todoAddViewModel.repeatValue.value!!.contains('2')
-
-                if (todoAddViewModel.selectDateFlag)
-                    return@Observer
-
-                if (!flagOne && !flagTwo) {  // 1도 없고, 2도 없는 0으로만 이루어진 상황
-                    todoAddViewModel.setDate(0, Date())
-                    return@Observer
-                } else if (flagTwo && !flagOne) { // endDate를 직접 설정하면 무조건 그 날짜를 표시, 그 후에 반복 옵션을 건드리면 날짜 계산 방식으로 변경해야한다.
-                    if (todoAddViewModel.selectedDate.value == null) {
-                        FormatDate.cal.time = Date()
-                        FormatDate.cal.set(Calendar.DAY_OF_MONTH, todoAddViewModel.day!!)
-                    } else {
-                        FormatDate.cal.time = todoAddViewModel.selectedDate.value!!
-                    }
-                    todoAddViewModel.setDate(0, FormatDate.cal.time)
-                    return@Observer
-                } else {
-                    val date = when (todoAddViewModel.repeatValue.value?.length) {
-                        7 -> FormatDate.nextEndDateEveryWeek(
-                            todoAddViewModel.repeatValue.value,
-                            todoAddViewModel.repeatOption.value,
-                            null,
-                            null
-                        )
-                        31 -> FormatDate.nextEndDateEveryMonth(
-                            todoAddViewModel.repeatValue.value!!,
-                            null,
-                            null
-                        )
-                        12 -> {
-                            FormatDate.cal.time = todoAddViewModel.endDate.value!!
-
-                            val day = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
-
-                            FormatDate.nextEndDateEveryYear(
-                                todoAddViewModel.repeatValue.value!!,
-                                null,
-                                null,
-                                day
-                            )
-                        }
-                        else -> {
-                            FormatDate.cal.time = Date()
-                            FormatDate.cal.time
-                        }
-                    }
-                    if (date == null)
-                        todoAddViewModel.setDate(0, Date())
-                    else
-                        todoAddViewModel.setDate(0, date)
-
-                }
-            }
-        })
-
-        // repeat EndDate Switch UI Update
-        todoAddViewModel.repeatEndDateSwitch.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer {
-                val color = if (it) R.color.todo_description else R.color.light_gray
-                binding.infoRepeatEndDateSwitch.isChecked = it
-                binding.tvInfoRepeatEnd.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        color
-                    )
-                )
-                binding.btnInfoRepeatEndDate.visibility =
-                    if (it) View.VISIBLE else View.INVISIBLE
-            })
-
-        // repeat EndDate 관련 UI Update
-        todoAddViewModel.repeatEndDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            binding.btnInfoRepeatEndDate.text = FormatDate.simpleDateToStr(it)
-        })
-
-        todoAddViewModel.tagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            binding.ivInfoTagIcon.backgroundTintList = if (it.isEmpty())
-                ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.icon_gray
-                    )
-                )
-            else
-                ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.todo_description
-                    )
-                )
-
-            if (it.size < binding.infoTagContainerLayout.childCount - 2)
-                for (i in 1 until binding.infoTagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
-                    val chip = binding.infoTagContainerLayout.getChildAt(i) as LinearLayout
-                    if (!it.contains((chip.getChildAt(0) as AppCompatButton).text)) {
-                        binding.infoTagContainerLayout.removeViewAt(i)
-                        break
-                    }
-                }
-            else if (it.size > binding.infoTagContainerLayout.childCount - 2) {
-                val layoutInflater =
-                    context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val childCount = binding.infoTagContainerLayout.childCount
-                for (i in childCount - 2 until it.size) {
-                    val chip = layoutInflater.inflate(R.layout.custom_chip, null)
-                    chip.findViewById<AppCompatButton>(R.id.tag_chip).apply {
-                        text = it[i]
-                        setOnClickListener {
-                            todoAddViewModel.subTagList(this.text.toString())
-                        }
-                    }
-                    binding.infoTagContainerLayout.addView(
-                        chip,
-                        binding.infoTagContainerLayout.childCount - 1
-                    )
-                }
-            }
-        })
-
-        binding.infoTagEt.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s == null)
-                    return
-
-                val str = s.toString()
-                if (str == "")
-                    return
-
-                if (str[str.length - 1] == ' ') {
-                    todoAddViewModel.addTagList()
-                    binding.infoTagEt.setText("")
-                }
-            }
-
-        })
-
-        binding.etInfoMemo.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                binding.ivInfoMemoIcon.backgroundTintList =
-                    if (s.toString() == "") ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.icon_gray
-                        )
-                    ) else ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.todo_description
-                        )
-                    )
-            }
-
-        })
-
 
         // flag click event
         binding.cbInfoFlag.setOnClickListener(BtnClickListener())
