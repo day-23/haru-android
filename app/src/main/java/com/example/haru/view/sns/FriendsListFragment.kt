@@ -2,6 +2,7 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.R
 import com.example.haru.data.model.FriendInfo
 import com.example.haru.data.model.UnFollowbody
 import com.example.haru.databinding.FragmentFriendsListBinding
@@ -72,15 +74,15 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         binding.friendsListRecycler.adapter = friendAdapter
 
         mypageViewModel.getFirstFriendsList(targetId)
+        mypageViewModel.getFirstFriendsRequestList(targetId)
 
         mypageViewModel.FirstFriends.observe(viewLifecycleOwner){friends ->
-            if(isFriendList){
-                friendAdapter.addFirstList(friends.data)
-            }
-            lastCreatedAt = getLastCreated(friends.data)
-
             val friendCount = friends.pagination.totalItems
             binding.friendslistFriendsCount.text = "친구 목록 $friendCount"
+            if(friends.data.size > 0 && isFriendList){
+                friendAdapter.addFirstList(friends.data)
+                lastCreatedAt = getLastCreated(friends.data)
+            }
         }
 
         mypageViewModel.Friends.observe(viewLifecycleOwner){friends ->
@@ -91,7 +93,8 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         }
 
         mypageViewModel.FirstRequests.observe(viewLifecycleOwner){friends ->
-            if(friends.data.size > 0) {
+            binding.friendslistFriendsRequestCount.text = "친구 신청 ${friends.pagination.totalItems}"
+            if(friends.data.size > 0 && !isFriendList) {
                 friendAdapter.addFirstList(friends.data)
                 lastCreatedAt = getLastCreated(friends.data)
             }
@@ -125,14 +128,23 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
                 isFriendList = false
                 mypageViewModel.getFirstFriendsRequestList(targetId)
                 //TODO:알맞게 뷰의 색등이 변하도록
+                binding.friendslistFriendsRequestCount.setTextColor(Color.parseColor( "#1DAFFF"))
+                binding.requestListUnderline.setImageResource(R.drawable.todo_table_selected)
+                binding.friendslistFriendsCount.setTextColor(Color.parseColor( "#acacac"))
+                binding.friendsCountUnderline.setImageResource(R.color.white)
             }
         }
 
-        //친구목록
+        //친구목록 클릭
         binding.friendslistFriendsCount.setOnClickListener {
             if(!isFriendList){
                 isFriendList = true
                 mypageViewModel.getFirstFriendsList(targetId)
+
+                binding.friendslistFriendsRequestCount.setTextColor(Color.parseColor( "#acacac"))
+                binding.requestListUnderline.setImageResource(R.color.white)
+                binding.friendslistFriendsCount.setTextColor(Color.parseColor( "#1DAFFF"))
+                binding.friendsCountUnderline.setImageResource(R.drawable.todo_table_selected)
             }
         }
 

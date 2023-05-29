@@ -39,7 +39,7 @@
             android:layout_height="match_parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="68dp"
-            android:text="친구 목록 12"
+            android:text="친구 목록 0"
             android:textColor="#1DAFFF"
             android:textStyle="bold"
             android:textSize="16sp"/>
@@ -50,13 +50,14 @@
             android:layout_height="match_parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginEnd="65dp"
-            android:text="친구 신청 20"
+            android:text="친구 신청 0"
             android:textColor="#ACACAC"
             android:textStyle="bold"
             android:textSize="16sp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
+        android:id="@+id/friends_count_underline"
         android:layout_width="175dp"
         android:layout_height="4dp"
         app:layout_constraintTop_toBottomOf="@id/friends_btn"
@@ -66,13 +67,14 @@
         android:src="@drawable/todo_table_selected"/>
 
     <ImageView
+        android:id="@+id/request_list_underline"
         android:layout_width="175dp"
         android:layout_height="4dp"
         app:layout_constraintTop_toBottomOf="@id/friends_btn"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/todo_table_selected"/>
+        android:src="@color/white"/>
 
     <LinearLayout
         android:id="@+id/friends_list_search"
