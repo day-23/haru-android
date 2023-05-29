@@ -253,6 +253,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
     }
 
     fun requestDelFriend(){
-        mypageViewModel.requestDelFriend(UnFollowbody(userId))
+        mypageViewModel.requestDelFriend(DelFriendBody(userId))
     }
 }

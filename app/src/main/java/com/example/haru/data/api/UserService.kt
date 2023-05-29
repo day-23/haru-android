@@ -16,7 +16,13 @@ interface UserService {
     fun requestUnFriend(@Path("userId") userId: String, @Body followingId: UnFollowbody) : Call<FollowResponse>
     //친구 삭제
     @HTTP(method = "DELETE", path = "friends/{userId}", hasBody = true)
-    fun requestDelFriend(@Path("userId") userId: String, @Body followingId: UnFollowbody) : Call<FollowResponse>
+    fun requestDelFriend(@Path("userId") userId: String, @Body followingId: DelFriendBody) : Call<FollowResponse>
+    //친구 수락
+    @POST("friends/{userId}/accept")
+    fun acceptFriend(@Path("userId") userId: String, @Body followingId : Friendbody) : Call<FollowResponse>
+    //유저 차단
+    @POST("friends/{userId}/block")
+    fun blockUser(@Path("userId") userId: String, @Body blockId : BlockBody) : Call<FollowResponse>
 
     //친구 목록
     @GET("friends/{userId}/{targetId}/")

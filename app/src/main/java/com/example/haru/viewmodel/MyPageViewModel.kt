@@ -307,7 +307,7 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun requestDelFriend(body: UnFollowbody){
+    fun requestDelFriend(body: DelFriendBody){
         var result = false
         viewModelScope.launch {
             UserRepository.requestDelFriend(body){
@@ -316,6 +316,36 @@ class MyPageViewModel(): ViewModel() {
                     result = it
                 }else{
                     Log.d("TAG", "Fail to request Delete Friend")
+                }
+            }
+            _FriendRequest.value = result
+        }
+    }
+
+    fun requestAccpet(body: Friendbody){
+        var result = false
+        viewModelScope.launch {
+            UserRepository.acceptFriend(body){
+                if(it){
+                    Log.d("TAG", "Success to accept Friend")
+                    result = it
+                }else{
+                    Log.d("TAG", "Fail to accept Friend")
+                }
+            }
+            _FriendRequest.value = result
+        }
+    }
+
+    fun blockUser(body: BlockBody){
+        var result = false
+        viewModelScope.launch {
+            UserRepository.blockUser(body){
+                if(it){
+                    Log.d("TAG", "Success to block User")
+                    result = it
+                }else{
+                    Log.d("TAG", "Fail to block User")
                 }
             }
             _FriendRequest.value = result

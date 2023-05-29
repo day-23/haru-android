@@ -50,10 +50,47 @@ class UserRepository() {
         }
         callback(data)
     }
+
     //친구 삭제 요청
-    suspend fun requestDelFriend(body: UnFollowbody, callback: (result : Boolean) -> Unit) = withContext(
+    suspend fun requestDelFriend(body: DelFriendBody, callback: (result : Boolean) -> Unit) = withContext(
         Dispatchers.IO){
-        val response = userService.requestUnFriend(
+        val response = userService.requestDelFriend(
+            userId,
+            body
+        ).execute()
+        val result: FollowResponse
+        val data: Boolean
+        if(response.isSuccessful){
+            result = response.body()!!
+            data = result.success
+        } else{
+            data = false
+        }
+        callback(data)
+    }
+
+    //친구 수락
+    suspend fun acceptFriend(body: Friendbody, callback: (result : Boolean) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = userService.acceptFriend(
+            userId,
+            body
+        ).execute()
+        val result: FollowResponse
+        val data: Boolean
+        if(response.isSuccessful){
+            result = response.body()!!
+            data = result.success
+        } else{
+            data = false
+        }
+        callback(data)
+    }
+
+    //유저 차단
+    suspend fun blockUser(body: BlockBody, callback: (result : Boolean) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = userService.blockUser(
             userId,
             body
         ).execute()

@@ -16,8 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.FriendInfo
-import com.example.haru.data.model.UnFollowbody
+import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentFriendsListBinding
 import com.example.haru.utils.User
 import com.example.haru.view.adapter.FriendsListAdapter
@@ -25,6 +24,10 @@ import com.example.haru.viewmodel.MyPageViewModel
 
 interface OnFriendClicked{
     fun onDeleteClick(item : FriendInfo)
+
+    fun onAcceptClick(item: FriendInfo)
+
+    fun onRejectClick(item: FriendInfo)
 }
 class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
     lateinit var binding : FragmentFriendsListBinding
@@ -35,13 +38,28 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onDeleteClick(item: FriendInfo) {
-        mypageViewModel.requestDelFriend(UnFollowbody(item.id!!))
+        mypageViewModel.requestDelFriend(DelFriendBody(item.id!!))
         mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
-
-            friendAdapter.deleteFriend(item)
-            Toast.makeText(requireContext(), "삭제 성공", Toast.LENGTH_SHORT).show()
+        friendAdapter.deleteFriend(item)
+        Toast.makeText(requireContext(), "삭제 성공", Toast.LENGTH_SHORT).show()
 
         }
+    }
+
+    override fun onAcceptClick(item: FriendInfo) {
+        mypageViewModel.requestAccpet(Friendbody(item.id!!))
+        item.friendStatus = 2
+        friendAdapter.patchInfo(item)
+    }
+
+    override fun onRejectClick(item: FriendInfo) {
+        mypageViewModel.requestUnFriend(UnFollowbody(item.id!!))
+
+        mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
+            friendAdapter.deleteFriend(item)
+            Toast.makeText(requireContext(), "거절 성공", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

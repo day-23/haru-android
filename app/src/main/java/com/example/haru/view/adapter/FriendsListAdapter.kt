@@ -39,6 +39,14 @@ class FriendsListAdapter(val context: Context,
             onFriendClicked.onDeleteClick(itemList[position])
         }
 
+        holder.accept.setOnClickListener {
+            onFriendClicked.onAcceptClick(itemList[position])
+        }
+
+        holder.reject.setOnClickListener {
+            onFriendClicked.onRejectClick(itemList[position])
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -84,6 +92,13 @@ class FriendsListAdapter(val context: Context,
     @SuppressLint("NotifyDataSetChanged")
     fun deleteFriend(targetUser : FriendInfo){
         itemList.remove(targetUser)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun patchInfo(item: FriendInfo){
+        val index = itemList.indexOf(item)
+        itemList[index] = item
         notifyDataSetChanged()
     }
 
