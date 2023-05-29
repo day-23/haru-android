@@ -68,6 +68,15 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
             }
         })
 
+        etcViewModel.isAllowFeedComment.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvAllowFeedComment.text = when(it) {
+                0 -> getString(R.string.notAllow)
+                1 -> getString(R.string.onlyFriend)
+                2 -> getString(R.string.everyOne)
+                else -> ""
+            }
+        })
+
 
         binding.switchAccountPublic.setOnClickListener(ClickListener())
         binding.switchBrowsingEnabled.setOnClickListener(ClickListener())

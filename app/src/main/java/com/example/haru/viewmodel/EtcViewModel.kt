@@ -226,4 +226,25 @@ class EtcViewModel : ViewModel() {
             callback(it)
         }
     }
+
+    fun submitIsAllowFeedLike(callback: (it: SuccessFail?) -> Unit) {
+        if (isAllowFeedLike.value == null)
+            return
+
+//        val type = 0, 1, 2
+//        updateUserInfo(UpdateIsAllowFeedLike(type)){
+//            callback(it)
+//        }
+    }
+
+    fun submitIsAllowFeedComment(callback: (it: SuccessFail?) -> Unit) {
+        if (isAllowFeedComment.value == null)
+            return
+
+//        val type = 0, 1, 2
+//        updateUserInfo(UpdateIsAllowFeedComment(type)){
+//            callback(it)
+//        }
+    }
+
 }
