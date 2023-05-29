@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.ViewCompat.canScrollVertically
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -79,9 +80,11 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         mypageViewModel.FirstFriends.observe(viewLifecycleOwner){friends ->
             val friendCount = friends.pagination.totalItems
             binding.friendslistFriendsCount.text = "친구 목록 $friendCount"
-            if(friends.data.size > 0 && isFriendList){
+            if(isFriendList){
+                if(friends.data.size > 0) {
+                    lastCreatedAt = getLastCreated(friends.data)
+                }
                 friendAdapter.addFirstList(friends.data)
-                lastCreatedAt = getLastCreated(friends.data)
             }
         }
 
@@ -94,9 +97,11 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
 
         mypageViewModel.FirstRequests.observe(viewLifecycleOwner){friends ->
             binding.friendslistFriendsRequestCount.text = "친구 신청 ${friends.pagination.totalItems}"
-            if(friends.data.size > 0 && !isFriendList) {
+            if(!isFriendList) {
+                if(friends.data.size > 0) {
+                    lastCreatedAt = getLastCreated(friends.data)
+                }
                 friendAdapter.addFirstList(friends.data)
-                lastCreatedAt = getLastCreated(friends.data)
             }
         }
 
@@ -145,6 +150,13 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
                 binding.requestListUnderline.setImageResource(R.color.white)
                 binding.friendslistFriendsCount.setTextColor(Color.parseColor( "#1DAFFF"))
                 binding.friendsCountUnderline.setImageResource(R.drawable.todo_table_selected)
+            }
+        }
+
+        binding.friendsListBack.setOnClickListener {
+            val fragmentManager = parentFragmentManager
+            if (fragmentManager.backStackEntryCount > 0) {
+                fragmentManager.popBackStack()
             }
         }
 

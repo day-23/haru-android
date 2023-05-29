@@ -73,7 +73,11 @@ class FriendsListAdapter(val context: Context,
 
     @SuppressLint("NotifyDataSetChanged")
     fun addFirstList(items: ArrayList<FriendInfo>){
-        itemList = items
+        if(items.size > 0)
+            itemList = items
+        else{
+            itemList.clear()
+        }
         notifyDataSetChanged()
     }
 
