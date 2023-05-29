@@ -1,20 +1,24 @@
 package com.example.haru.view.timetable
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Rect
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.DragEvent
 import android.view.View
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.view.ViewTreeObserver
+import android.view.animation.DecelerateInterpolator
+import android.widget.*
+import androidx.core.widget.NestedScrollView
 import com.example.haru.viewmodel.TimetableViewModel
 
 
-class ScheduleDragListener(private val timetableViewModel: TimetableViewModel,
+class TimeTableScheduleDragListener(private val timetableViewModel: TimetableViewModel,
                            layoutIndex: ArrayList<Int>,
-                           val context : Context) : View.OnDragListener{
+                           val context : Context,
+                           private val nestedScrollView: NestedScrollView
+) : View.OnDragListener{
     val layoutIndex = layoutIndex
     val shadowView = Button(context)
 
@@ -107,6 +111,43 @@ class ScheduleDragListener(private val timetableViewModel: TimetableViewModel,
     private fun updateViewLocation(draggedView: TextView, newLocation: Int, parentBounds: Rect, targetFrameLayout: FrameLayout) {
         val newTop = newLocation
         val newBottom = newTop + draggedView.height
+
+
+        shadowView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                // Ensure this listener is only called once
+                shadowView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val shadowViewLocation = IntArray(2)
+                shadowView.getLocationOnScreen(shadowViewLocation)
+                val shadowViewTop = shadowViewLocation[1]
+                val shadowViewBottom = shadowViewTop + shadowView.height
+                val shadowViewMedian = (shadowViewTop + shadowViewBottom) / 2
+
+                // Now shadowViewTop should be correctly calculated
+
+                Log.d("Scroll", "shadowView: ${shadowViewTop} ${shadowViewBottom} ${shadowViewMedian}")
+
+                val nestedScrollViewLocation = IntArray(2)
+                nestedScrollView.getLocationOnScreen(nestedScrollViewLocation)
+                val nestedScrollViewTop = nestedScrollViewLocation[1]
+                val nestedScrollViewBottom = nestedScrollViewTop + nestedScrollView.height
+
+                val threshold = 50
+
+                Log.d("Scroll", "nestedScrollView: ${nestedScrollViewTop} ${nestedScrollViewBottom}")
+                if (shadowViewTop - nestedScrollViewTop < threshold) {
+                    nestedScrollView.smoothScrollBy(0, -20)
+                } else if (nestedScrollViewBottom - shadowViewBottom < threshold) {
+                    nestedScrollView.smoothScrollBy(0, 20)
+                }
+            }
+        })
+
+
+
+
+
 
         // Check if the new location is within the parent bounds
         if (parentBounds.contains(parentBounds.left, newTop, parentBounds.right, newBottom)) {

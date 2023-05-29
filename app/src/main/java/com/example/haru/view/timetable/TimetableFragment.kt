@@ -38,7 +38,7 @@ class TimetableFragment : Fragment() {
     private lateinit var timetableAdapter: TimetableAdapter
     var timeList: ArrayList<timetable_data> = ArrayList()
     lateinit var timeTableRecyclerView: RecyclerView
-    private lateinit var scheduleDrag: ScheduleDragListener
+    private lateinit var scheduleDrag: TimeTableScheduleDragListener
     val scheduleViewList: ArrayList<View> = ArrayList<View>()
     val scheduleMap = mutableMapOf<View, Schedule>()
     val layoutId: ArrayList<Int> = ArrayList<Int>()
@@ -97,7 +97,7 @@ class TimetableFragment : Fragment() {
         layoutId.add(binding.friTable.id)
         layoutId.add(binding.satTable.id)
 
-        scheduleDrag = ScheduleDragListener(timetableviewModel, layoutId, requireContext())
+        scheduleDrag = TimeTableScheduleDragListener(timetableviewModel, layoutId, requireContext(), binding.timetableScroll)
 
         //각 레이아웃에 드래그 앤 드롭을 위한 리스너 등록
         binding.sunTable.setOnDragListener(scheduleDrag)
