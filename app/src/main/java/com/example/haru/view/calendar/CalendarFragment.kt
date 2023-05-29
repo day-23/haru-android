@@ -150,7 +150,9 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         val month_viewpager = view.findViewById<ViewPager2>(R.id.month_viewpager)
 
-        val item_month_btn = view.findViewById<TextView>(R.id.item_month_btn)
+        val calendarMonthChooseLayout = view.findViewById<LinearLayout>(R.id.calendar_month_choose_layout)
+        val itemYearBtn = view.findViewById<TextView>(R.id.item_year_btn)
+        val itemMonthBtn = view.findViewById<TextView>(R.id.item_month_btn)
 
         val categoryRecyclerView = view.findViewById<RecyclerView>(R.id.category_recyclerView)
 
@@ -181,7 +183,8 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         calendar.time = Date()
 
-        item_month_btn.text = "${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월"
+        itemYearBtn.text = "${calendar.get(Calendar.YEAR)}년"
+        itemMonthBtn.text = "${calendar.get(Calendar.MONTH) + 1}월"
 
         if(calendarMainData.todoApply) {
             todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
@@ -473,7 +476,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         }
 
         //달 선택 버튼
-        item_month_btn.setOnClickListener {
+        calendarMonthChooseLayout.setOnClickListener {
             val today = GregorianCalendar()
             val year: Int = today.get(Calendar.YEAR)
             val month: Int = today.get(Calendar.MONTH)
@@ -497,7 +500,8 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         
         calendarTodayTv.setOnClickListener{
             month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
-            item_month_btn.text = "${Date().year+1900}년 ${Date().month+1}월"
+            itemYearBtn.text = "${Date().year+1900}년"
+            itemMonthBtn.text = "${Date().month+1}월"
         }
 
         //카테고리 메뉴 버튼
@@ -566,7 +570,8 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 calendar.time = Date()
                 calendar.add(Calendar.MONTH, pos - Int.MAX_VALUE / 2)
 
-                item_month_btn.text = "${calendar.get(Calendar.YEAR)}년 ${calendar.get(Calendar.MONTH) + 1}월"
+                itemYearBtn.text = "${calendar.get(Calendar.YEAR)}년"
+                itemMonthBtn.text = "${calendar.get(Calendar.MONTH) + 1}월"
             }
         }
 

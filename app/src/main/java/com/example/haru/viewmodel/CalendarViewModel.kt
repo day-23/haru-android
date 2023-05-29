@@ -18,6 +18,7 @@ import kotlin.collections.ArrayList
 class CalendarViewModel : ViewModel() {
     private val alldoRepository = AllDoRepository()
     private val categoryRepository = CategoryRepository()
+    private val TodoRepository = TodoRepository()
     private val ScheduleRepository = ScheduleRepository()
 
     val _liveCategoryList = MutableLiveData<List<Category>>()
@@ -34,6 +35,46 @@ class CalendarViewModel : ViewModel() {
 
     val _liveScheduleList = MutableLiveData<List<Schedule>>()
     val liveScheduleList: MutableLiveData<List<Schedule>> get() = _liveScheduleList
+
+    fun completeNotRepeatTodo(todoId: String,
+                              completed: Completed,
+                              callback: () -> Unit){
+        viewModelScope.launch {
+            TodoRepository.completeNotRepeatTodo(todoId, completed){
+                callback()
+            }
+        }
+    }
+
+    fun completeRepeatFrontTodo(todoId: String,
+                              endDate: FrontEndDate,
+                              callback: () -> Unit){
+        viewModelScope.launch {
+            TodoRepository.completeRepeatFrontTodo(todoId, endDate){
+                callback()
+            }
+        }
+    }
+
+    fun completeRepeatMiddleTodo(todoId: String,
+                              endDate: MiddleCompleteEndDate,
+                              callback: () -> Unit){
+        viewModelScope.launch {
+            TodoRepository.completeRepeatMiddleTodo(todoId, endDate){
+                callback()
+            }
+        }
+    }
+
+    fun completeRepeatBackTodo(todoId: String,
+                               endDate: BackCompleteEndDate,
+                              callback: () -> Unit){
+        viewModelScope.launch {
+            TodoRepository.completeRepeatBackTodo(todoId, endDate){
+                callback()
+            }
+        }
+    }
 
     fun getCategories(){
         viewModelScope.launch {
@@ -179,7 +220,7 @@ class CalendarViewModel : ViewModel() {
                             if(it.todos[i].repeatOption == null ||
                                 it.todos[i].repeatValue == null ||
                                 it.todos[i].repeatOption == "매일" ){
-                                todoList.add(it.todos[i])
+                                todoList.add(it.todos[i].copy())
                             } else {
                                 while (todayDate != null && date_comparison(todayDate, startdateFormat) < 0) {
                                     when (it.todos[i].repeatOption) {
@@ -188,7 +229,7 @@ class CalendarViewModel : ViewModel() {
                                                 it.todos[i].repeatValue!!,
                                                 1,
                                                 today,
-                                                it.todos[i].repeatEnd!!
+                                                it.todos[i].repeatEnd
                                             )
 
                                             if(todayDate == null) break
@@ -201,7 +242,7 @@ class CalendarViewModel : ViewModel() {
                                                 it.todos[i].repeatValue!!,
                                                 2,
                                                 today,
-                                                it.todos[i].repeatEnd!!
+                                                it.todos[i].repeatEnd
                                             )
 
                                             if(todayDate == null) break
@@ -213,7 +254,7 @@ class CalendarViewModel : ViewModel() {
                                             todayDate = FormatDate.nextStartDateEveryMonth(
                                                 it.todos[i].repeatValue!!,
                                                 today,
-                                                it.todos[i].repeatEnd!!
+                                                it.todos[i].repeatEnd
                                             )
 
                                             if(todayDate == null) break
@@ -225,7 +266,7 @@ class CalendarViewModel : ViewModel() {
                                             todayDate = FormatDate.nextStartDateEveryMonth(
                                                 it.todos[i].repeatValue!!,
                                                 today,
-                                                it.todos[i].repeatEnd!!
+                                                it.todos[i].repeatEnd
                                             )
 
                                             if(todayDate == null) break
@@ -235,19 +276,16 @@ class CalendarViewModel : ViewModel() {
                                     }
                                 }
 
-                                today = FormatDate.calendarFormat(today)
-
                                 if(todayDate == null){
                                     todayDate = serverformat.parse(today)
                                 }
 
                                 if(todayDate != null && date_comparison(todayDate, startdateFormat) == 0){
-                                    it.todos[i].endDate = FormatDate.calendarFormat(it.todos[i].endDate!!)
-                                    todoList.add(it.todos[i])
+                                    todoList.add(it.todos[i].copy())
                                 }
                             }
                         } else {
-                            todoList.add(it.todos[i])
+                            todoList.add(it.todos[i].copy())
                         }
                     }
 
@@ -289,7 +327,7 @@ class CalendarViewModel : ViewModel() {
                                 schedule.endTime = todayDate
                             }
 
-                            scheduleList.add(schedule)
+                            scheduleList.add(schedule.copy())
                         } else {
                             if(schedule.repeatValue.contains("T")){
                                 today = schedule.repeatStart!!
@@ -306,7 +344,7 @@ class CalendarViewModel : ViewModel() {
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
                                                 schedule.startTime = todayDate
                                                 schedule.endTime = scheduleT.time
-                                                scheduleList.add(schedule)
+                                                scheduleList.add(schedule.copy())
                                                 break
                                             }
 
@@ -331,7 +369,7 @@ class CalendarViewModel : ViewModel() {
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
                                                 schedule.startTime = todayDate
                                                 schedule.endTime = scheduleT.time
-                                                scheduleList.add(schedule)
+                                                scheduleList.add(schedule.copy())
                                                 break
                                             }
 
@@ -356,7 +394,7 @@ class CalendarViewModel : ViewModel() {
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
                                                 schedule.startTime = todayDate
                                                 schedule.endTime = scheduleT.time
-                                                scheduleList.add(schedule)
+                                                scheduleList.add(schedule.copy())
                                                 break
                                             }
 
@@ -380,7 +418,7 @@ class CalendarViewModel : ViewModel() {
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
                                                 schedule.startTime = todayDate
                                                 schedule.endTime = scheduleT.time
-                                                scheduleList.add(schedule)
+                                                scheduleList.add(schedule.copy())
                                                 break
                                             }
 
@@ -512,7 +550,7 @@ class CalendarViewModel : ViewModel() {
                                     todayDate.minutes = endtime.minutes
                                     todayDate.seconds = endtime.seconds
                                     schedule.endTime = todayDate
-                                    scheduleList.add(schedule)
+                                    scheduleList.add(schedule.copy())
                                 }
                             }
                         }
@@ -760,7 +798,7 @@ class CalendarViewModel : ViewModel() {
 
                         for (i in 0 until repeatDate.size) {
                             if (repeatDate[i]) {
-                                todoList[i].todos.add(todo)
+                                todoList[i].todos.add(todo.copy())
                             }
                         }
                     }
@@ -813,7 +851,7 @@ class CalendarViewModel : ViewModel() {
                                             ) {
                                                 scheduleList.add(
                                                     ScheduleCalendarData(
-                                                        schedule,
+                                                        schedule.copy(),
                                                         cnt,
                                                         1
                                                     )
@@ -846,7 +884,7 @@ class CalendarViewModel : ViewModel() {
                                             ) {
                                                 if (repeatValue[weeklycnt] == '1') {
                                                     scheduleList.add(ScheduleCalendarData(
-                                                        schedule,
+                                                        schedule.copy(),
                                                         cnt,
                                                         1
                                                     ))
@@ -883,7 +921,7 @@ class CalendarViewModel : ViewModel() {
                                             ) {
                                                 if (repeatValue[weeklycnt] == '1' && twoweek) {
                                                     scheduleList.add(ScheduleCalendarData(
-                                                        schedule,
+                                                        schedule.copy(),
                                                         cnt,
                                                         1
                                                     ))
@@ -921,7 +959,7 @@ class CalendarViewModel : ViewModel() {
                                             ) {
                                                 if (repeatValue[calendar.time.date - 1] == '1') {
                                                     scheduleList.add(ScheduleCalendarData(
-                                                        schedule,
+                                                        schedule.copy(),
                                                         cnt,
                                                         1
                                                     ))
@@ -956,7 +994,7 @@ class CalendarViewModel : ViewModel() {
                                                 if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
                                                     if (calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day)
                                                         scheduleList.add(ScheduleCalendarData(
-                                                            schedule,
+                                                            schedule.copy(),
                                                             cnt,
                                                             1
                                                         ))
@@ -1006,7 +1044,7 @@ class CalendarViewModel : ViewModel() {
                                                 ) == 0
                                             ){
                                                 scheduleList.add(ScheduleCalendarData(
-                                                    schedule,
+                                                    schedule.copy(),
                                                     cnt,
                                                     null,
                                                     intervaldate.toInt()
@@ -1043,7 +1081,7 @@ class CalendarViewModel : ViewModel() {
                                                 ) == 0
                                             ){
                                                 scheduleList.add(ScheduleCalendarData(
-                                                    schedule,
+                                                    schedule.copy(),
                                                     cnt,
                                                     null,
                                                     intervaldate.toInt()
@@ -1080,7 +1118,7 @@ class CalendarViewModel : ViewModel() {
                                                 ) == 0
                                             ){
                                                 scheduleList.add(ScheduleCalendarData(
-                                                    schedule,
+                                                    schedule.copy(),
                                                     cnt,
                                                     null,
                                                     intervaldate.toInt()
@@ -1117,7 +1155,7 @@ class CalendarViewModel : ViewModel() {
                                                 ) == 0
                                             ){
                                                 scheduleList.add(ScheduleCalendarData(
-                                                    schedule,
+                                                    schedule.copy(),
                                                     cnt,
                                                     null,
                                                     intervaldate.toInt()
@@ -1161,7 +1199,7 @@ class CalendarViewModel : ViewModel() {
                             }
 
                             scheduleList.add(ScheduleCalendarData(
-                                schedule,
+                                schedule.copy(),
                                 startcnt,
                                 daycnt
                             ))

@@ -21,9 +21,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.liveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Flag
-import com.example.haru.data.model.Schedule
-import com.example.haru.data.model.Todo
+import com.example.haru.data.model.*
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
@@ -33,16 +31,22 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AdapterSimpleTodo(
-    val todos: List<Todo>,
+    todos: List<Todo>,
     val activity: FragmentActivity,
     val todayTodo: String,
-    val dialog: Dialog
+    val dialog: Dialog,
+    val adapter: AdapterMonth
 ) : RecyclerView.Adapter<AdapterSimpleTodo.DetailView>() {
     inner class DetailView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
+    private lateinit var todos: List<Todo>
     val serverDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
     val todayDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
     val format = SimpleDateFormat("yyyy-MM-dd")
+
+    init {
+        this.todos = todos
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -89,14 +93,125 @@ class AdapterSimpleTodo(
 
         if (tag.length > 0) tag = tag.dropLast(0)
 
-        detailTodoTagsTv.text = tag
+        if(tag != "") {
+            detailTodoTagsTv.visibility = View.VISIBLE
+            detailTodoTagsTv.text = tag
+        } else {
+            detailTodoTagsTv.visibility = View.GONE
+            detailTodoTagsTv.text = ""
+        }
 
         if(todo.flag){
             detailTodoFlagImv.setBackgroundResource(R.drawable.star_check)
         }
 
         detailTodoComplete.setOnClickListener {
+            val calendarViewModel = CalendarViewModel()
 
+            if(todo.repeatOption != null && !todo.completed){
+                val end = serverDateFormat.parse(todo.endDate)
+                var today = todayDateFormat.parse(todayTodo)
+                val frontOk = today.clone() as Date
+
+                today.hours = end.hours
+                today.minutes = end.minutes
+                today.seconds = end.seconds
+
+                if (todo.endDate != null) {
+                    val enddate = serverDateFormat.format(today)
+
+                    when(todo.repeatOption){
+                        "매일"->{
+                            today = FormatDate.nextStartDate(enddate, todo.repeatEnd)
+                        }
+
+                        "매주"->{
+                            today = FormatDate.nextStartDateEveryWeek(todo.repeatValue!!, 1, enddate, todo.repeatEnd)
+                        }
+
+                        "격주"->{
+                            today = FormatDate.nextStartDateEveryWeek(todo.repeatValue!!, 2, enddate, todo.repeatEnd)
+                        }
+
+                        "매달"->{
+                            today = FormatDate.nextStartDateEveryMonth(todo.repeatValue!!, enddate, todo.repeatEnd)
+                        }
+
+                        "매년"->{
+                            today = FormatDate.nextStartDateEveryYear(todo.repeatValue!!, enddate, todo.repeatEnd)
+                        }
+                    }
+
+                    if (end.year == frontOk.year && end.month == frontOk.month && end.date == frontOk.date) {
+                        if(today == null){
+                            calendarViewModel.completeNotRepeatTodo(todo.id, Completed(!todo.completed)){
+                                todos[position].completed = !todos[position].completed
+                                notifyItemChanged(position)
+                                adapter.notifyDataSetChanged()
+                            }
+
+                            return@setOnClickListener
+                        }
+
+                        val nextStartDay = todayDateFormat.format(today)
+
+                        calendarViewModel.completeRepeatFrontTodo(todo.id, FrontEndDate(nextStartDay)){
+                            todos[position].completed = !todos[position].completed
+                            notifyItemChanged(position)
+                            adapter.notifyDataSetChanged()
+                        }
+                        return@setOnClickListener
+                    }
+
+                    if (today == null) {
+                        today = todayDateFormat.parse(todayTodo)
+
+                        today.hours = end.hours
+                        today.minutes = end.minutes
+                        today.seconds = end.seconds
+
+                        val preStartDay = FormatDate.preStartDate(
+                            serverDateFormat.format(today),
+                            todo.repeatOption,
+                            todo.repeatValue
+                        )
+
+                        calendarViewModel.completeRepeatBackTodo(todo.id,
+                            BackCompleteEndDate(
+                                todayDateFormat.format(preStartDay)
+                            )
+                        ){
+                            todos[position].completed = !todos[position].completed
+                            notifyItemChanged(position)
+                            adapter.notifyDataSetChanged()
+                        }
+                        return@setOnClickListener
+                    }
+
+                    val completedDay = todayDateFormat.parse(todayTodo)
+                    completedDay.hours = end.hours
+                    completedDay.minutes = end.minutes
+                    completedDay.seconds = end.seconds
+
+                    calendarViewModel.completeRepeatMiddleTodo(
+                        todo.id,
+                        MiddleCompleteEndDate(
+                            todayDateFormat.format(completedDay),
+                            todayDateFormat.format(today)
+                        )
+                    ){
+                        todos[position].completed = !todos[position].completed
+                        notifyItemChanged(position)
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+            } else {
+                calendarViewModel.completeNotRepeatTodo(todo.id, Completed(!todo.completed)){
+                    todos[position].completed = !todos[position].completed
+                    notifyItemChanged(position)
+                    adapter.notifyDataSetChanged()
+                }
+            }
         }
 
         detailTodoFlagImv.setOnClickListener {
@@ -112,8 +227,6 @@ class AdapterSimpleTodo(
             val checklistviewmodel = CheckListViewModel()
 
             var todoendDate = ""
-
-            Log.d("todoLocation", todo.toString())
 
             if (todo.endDate != null) {
                 val enddate = serverDateFormat.parse(todo.endDate)
