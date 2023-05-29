@@ -1,5 +1,6 @@
 package com.example.haru.view.checklist
 
+import BaseActivity
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.res.ColorStateList
@@ -776,9 +777,14 @@ class ChecklistItemFragment(
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
         // flag click event
         binding.cbInfoFlag.setOnClickListener(BtnClickListener())
 
