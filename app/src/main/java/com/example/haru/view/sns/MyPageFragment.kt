@@ -174,33 +174,33 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         binding.editProfile.setOnClickListener {
             if(isMyPage) moveEditprofile(userId) // 내 페이지면 프로필 수정 이동
             else{ //타인 페이지라면 친구 작업
+                binding.editProfile.isClickable = false //전송 중 클릭못하도록
                 if (friendStatus == 0) {
-                    requestFriend() //TODO:친구 신청
+                    requestFriend() //친구 신청
                 } else if (friendStatus == 1) {
-                    requestUnFriend() //TODO: 친구신청 취소
+                    requestUnFriend() //친구신청 취소
                 } else{
-                    requestDelFriend() //TODO:친구끊기
+                    requestDelFriend() //친구끊기
                 }
             }
-            binding.editProfile.isClickable = false //전송 중 클릭못하도록
+        }
 
-            mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
-                binding.editProfile.isClickable = true //결과 받고 클릭 가능하도록
-                if(result){
-                    if(friendStatus == 0) { //신청 성공
-                        friendStatus = 1
-                        binding.editProfile.text = "신청 대기"
-                    }else if(friendStatus == 1){ //신청 취소
-                        friendStatus = 0
-                        binding.editProfile.text = "친구 신청"
-                    }else{
-                        friendStatus = 0
-                        binding.editProfile.text = "친구 신청"
-                    }
+        mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
+            if(result){
+                if(friendStatus == 0) { //신청 성공
+                    friendStatus = 1
+                    binding.editProfile.text = "신청 대기"
+                }else if(friendStatus == 1){ //신청 취소
+                    friendStatus = 0
+                    binding.editProfile.text = "친구 신청"
                 }else{
-                    Toast.makeText(requireContext(), "요청에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                    friendStatus = 0
+                    binding.editProfile.text = "친구 신청"
                 }
+            }else{
+                Toast.makeText(requireContext(), "요청에 실패하였습니다.", Toast.LENGTH_SHORT).show()
             }
+            binding.editProfile.isClickable = true //결과 받고 클릭 가능하도록
         }
 
         binding.profileFriendsLayout.setOnClickListener {
