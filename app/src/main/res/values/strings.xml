@@ -96,4 +96,8 @@
     <string name="textMonthMyHaru">%1s월</string>
 
     <string name="percent">%1d%%</string>
+
+    <string name="notAllow">허용 안함</string>
+    <string name="onlyFriend">친구만</string>
+    <string name="everyOne">모든 사람</string>
 </resources>

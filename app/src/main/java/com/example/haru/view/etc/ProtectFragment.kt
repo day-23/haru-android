@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.haru.R
 import com.example.haru.databinding.FragmentProtectBinding
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.EtcViewModel
@@ -58,8 +59,19 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
             binding.switchAllowSearch.isChecked = it
         })
 
+        etcViewModel.isAllowFeedLike.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvAllowFeedLike.text = when(it){
+                0 -> getString(R.string.notAllow)
+                1 -> getString(R.string.onlyFriend)
+                2 -> getString(R.string.everyOne)
+                else -> ""
+            }
+        })
+
 
         binding.switchAccountPublic.setOnClickListener(ClickListener())
+        binding.switchBrowsingEnabled.setOnClickListener(ClickListener())
+        binding.switchAllowSearch.setOnClickListener(ClickListener())
         binding.ivBackIconProtect.setOnClickListener(ClickListener())
     }
 
@@ -74,15 +86,24 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     etcViewModel.submitIsPublicAccount {
                         if (it?.success != true)
                             binding.switchAccountPublic.isChecked = !binding.switchAccountPublic.isChecked
+                        Log.e("20191627", binding.switchAccountPublic.isChecked.toString())
                     }
                 }
 
                 binding.switchBrowsingEnabled.id -> {
-
+                    etcViewModel.submitIsPostBrowsingEnabled {
+                        if (it?.success != true)
+                            binding.switchBrowsingEnabled.isChecked = !binding.switchBrowsingEnabled.isChecked
+                        Log.e("20191627", binding.switchBrowsingEnabled.isChecked.toString())
+                    }
                 }
 
                 binding.switchAllowSearch.id -> {
-
+                    etcViewModel.submitIsAllowSearch{
+                        if (it?.success != true)
+                            binding.switchAllowSearch.isChecked = !binding.switchAllowSearch.isChecked
+                        Log.e("20191627", binding.switchAllowSearch.isChecked.toString())
+                    }
                 }
             }
         }

@@ -207,11 +207,23 @@ class EtcViewModel : ViewModel() {
         }
     }
 
-    fun submitIsPostBrowsingEnabled() {
+    fun submitIsPostBrowsingEnabled(callback: (it: SuccessFail?) -> Unit) {
+        if (isPostBrowsingEnabled.value == null)
+            return
+        val flag = !isPostBrowsingEnabled.value!!
 
+        updateUserInfo(UpdateIsPostBrowsingEnabled(flag)){
+            callback(it)
+        }
     }
 
-    fun submitIsAllowSearch() {
+    fun submitIsAllowSearch(callback: (it: SuccessFail?) -> Unit) {
+        if (isAllowSearch.value == null)
+            return
+        val flag = !isAllowSearch.value!!
 
+        updateUserInfo(UpdateIsAllowSearch(flag)){
+            callback(it)
+        }
     }
 }
