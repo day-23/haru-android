@@ -3,6 +3,8 @@ package com.example.haru.view.timetable
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Rect
+import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.DragEvent
@@ -21,6 +23,20 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
 ) : View.OnDragListener{
     val layoutIndex = layoutIndex
     val shadowView = Button(context)
+    private val moveOffset = 50
+    private val moveThreshold = 50
+
+    /* 드래그 이벤트 중 스크롤뷰의 스크롤을 위한 코드 */
+    private var lastScrollY = -1
+    private val handler = Handler(Looper.getMainLooper())
+    private val runnable = object : Runnable {
+        override fun run() {
+            settingNestedScrollViewByShadowView()
+            // Schedule the next update
+//            handler.postDelayed(this, 100)
+        }
+    }
+
 
     override fun onDrag(view: View, event: DragEvent): Boolean {
         val targetFrameLayout = getTargetFrameLayout(view)
@@ -30,6 +46,8 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
             DragEvent.ACTION_DROP -> handleDropAction(targetFrameLayout, draggedView, event)
             DragEvent.ACTION_DRAG_LOCATION -> handleDragLocationAction(targetFrameLayout, draggedView, event)
             DragEvent.ACTION_DRAG_EXITED -> handleDragExitedAction(targetFrameLayout)
+            DragEvent.ACTION_DRAG_STARTED -> handler.post(runnable)  // Start updating
+            DragEvent.ACTION_DRAG_ENDED -> handler.removeCallbacks(runnable)  // Stop updating
         }
         return true
     }
@@ -118,29 +136,7 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
                 // Ensure this listener is only called once
                 shadowView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val shadowViewLocation = IntArray(2)
-                shadowView.getLocationOnScreen(shadowViewLocation)
-                val shadowViewTop = shadowViewLocation[1]
-                val shadowViewBottom = shadowViewTop + shadowView.height
-                val shadowViewMedian = (shadowViewTop + shadowViewBottom) / 2
-
-                // Now shadowViewTop should be correctly calculated
-
-                Log.d("Scroll", "shadowView: ${shadowViewTop} ${shadowViewBottom} ${shadowViewMedian}")
-
-                val nestedScrollViewLocation = IntArray(2)
-                nestedScrollView.getLocationOnScreen(nestedScrollViewLocation)
-                val nestedScrollViewTop = nestedScrollViewLocation[1]
-                val nestedScrollViewBottom = nestedScrollViewTop + nestedScrollView.height
-
-                val threshold = 50
-
-                Log.d("Scroll", "nestedScrollView: ${nestedScrollViewTop} ${nestedScrollViewBottom}")
-                if (shadowViewTop - nestedScrollViewTop < threshold) {
-                    nestedScrollView.smoothScrollBy(0, -20)
-                } else if (nestedScrollViewBottom - shadowViewBottom < threshold) {
-                    nestedScrollView.smoothScrollBy(0, 20)
-                }
+                settingNestedScrollViewByShadowView()
             }
         })
 
@@ -160,5 +156,36 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
         }
         shadowView.text = draggedView.text
         targetFrameLayout.addView(shadowView)
+    }
+
+
+
+
+    private fun settingNestedScrollViewByShadowView(){
+        val shadowViewLocation = IntArray(2)
+        shadowView.getLocationOnScreen(shadowViewLocation)
+        val shadowViewTop = shadowViewLocation[1]
+        val shadowViewBottom = shadowViewTop + shadowView.height
+        val shadowViewMedian = (shadowViewTop + shadowViewBottom) / 2
+
+        // Now shadowViewTop should be correctly calculated
+
+
+        val nestedScrollViewLocation = IntArray(2)
+        nestedScrollView.getLocationOnScreen(nestedScrollViewLocation)
+        val nestedScrollViewTop = nestedScrollViewLocation[1]
+        val nestedScrollViewBottom = nestedScrollViewTop + nestedScrollView.height
+
+        Log.d("Scroll", "shadowView: ${shadowViewTop} ${shadowViewBottom} nested : ${nestedScrollViewTop} ${nestedScrollViewBottom}")
+        Log.d("Scroll", "threshold: ${shadowViewTop - nestedScrollViewTop} ${nestedScrollViewBottom - shadowViewBottom}")
+
+
+        if (shadowViewTop - nestedScrollViewTop < moveThreshold && lastScrollY != nestedScrollView.scrollY) {
+            lastScrollY = nestedScrollView.scrollY
+            nestedScrollView.smoothScrollBy(0, -moveOffset)
+        } else if (nestedScrollViewBottom - shadowViewBottom < moveThreshold && lastScrollY != nestedScrollView.scrollY) {
+            lastScrollY = nestedScrollView.scrollY
+            nestedScrollView.smoothScrollBy(0, moveOffset)
+        }
     }
 }
