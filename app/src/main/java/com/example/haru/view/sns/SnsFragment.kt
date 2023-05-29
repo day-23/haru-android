@@ -46,7 +46,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
     private lateinit var snsPostAdapter: SnsPostAdapter
 
     override fun onCommentClick(postitem: Post) {
-        profileViewModel.getUserInfo(User.id) //TODO:하드코딩값, 후에 개인 아이디로 바인딩
+        profileViewModel.getUserInfo(User.id)
 
         profileViewModel.UserInfo.observe(viewLifecycleOwner){user ->
             val newFrag = AddCommentFragment(postitem, user)

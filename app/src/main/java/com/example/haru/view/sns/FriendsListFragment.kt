@@ -23,6 +23,8 @@ import com.example.haru.view.adapter.FriendsListAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
 interface OnFriendClicked{
+
+    fun onProfileClick(item: FriendInfo)
     fun onDeleteClick(item : FriendInfo)
 
     fun onAcceptClick(item: FriendInfo)
@@ -35,6 +37,14 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
     private lateinit var friendAdapter: FriendsListAdapter
     var isFriendList = true // 친구목록 보기중인지 false == 친구신청 보여주기
     var lastCreatedAt = ""
+
+    override fun onProfileClick(item: FriendInfo) {
+        val newFrag = MyPageFragment(item.id!!)
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        transaction.addToBackStack("friendlist")
+        transaction.commit()
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onDeleteClick(item: FriendInfo) {

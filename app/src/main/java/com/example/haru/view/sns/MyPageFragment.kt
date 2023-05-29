@@ -39,9 +39,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             val newFrag = AddCommentFragment(postitem,user)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-            if (!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmypage")
+            transaction.addToBackStack("snsmypage")
             transaction.commit()
         }
     }
@@ -50,9 +48,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         val newFrag = CommentsFragment(post)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
-        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-        if(!isSnsMainInBackStack)
-            transaction.addToBackStack("snsmypage")
+        transaction.addToBackStack("snsmypage")
         transaction.commit()
     }
 
@@ -100,6 +96,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             binding.myPageMyRecord.visibility = View.GONE
             mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
         }else{
+            hideMytitle()
+            showFriendTitle()
             isMyPage = false
             binding.editProfile.text = "친구 신청"
             binding.profileShare.visibility = View.GONE
@@ -207,9 +205,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             val newFrag = FriendsListFragment(userId)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-            if(!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmypage")
+            transaction.addToBackStack("snsmypage")
             transaction.commit()
         }
 
@@ -237,9 +233,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         val newFrag = EditProfileFragment(userId)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
-        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-        if(!isSnsMainInBackStack)
-            transaction.addToBackStack("snsmypage")
+        transaction.addToBackStack("snsmypage")
         transaction.commit()
         true
     }
@@ -254,5 +248,18 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
 
     fun requestDelFriend(){
         mypageViewModel.requestDelFriend(DelFriendBody(userId))
+    }
+
+    fun hideMytitle(){
+        binding.snsHaruTitle.visibility = View.GONE
+        binding.menuButton.visibility = View.GONE
+        binding.myPageMyRecord.visibility = View.GONE
+        binding.searchButton.visibility = View.GONE
+    }
+
+    fun showFriendTitle(){
+        binding.snsMenu.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
+        binding.mypageBack.visibility = View.VISIBLE
+        binding.mypageSetup.visibility = View.VISIBLE
     }
 }

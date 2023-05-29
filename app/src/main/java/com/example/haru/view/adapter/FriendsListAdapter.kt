@@ -47,6 +47,10 @@ class FriendsListAdapter(val context: Context,
             onFriendClicked.onRejectClick(itemList[position])
         }
 
+        holder.profile.setOnClickListener {
+            onFriendClicked.onProfileClick(itemList[position])
+        }
+
     }
 
     override fun getItemCount(): Int {
