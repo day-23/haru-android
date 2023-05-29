@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -23,7 +24,11 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
     private var ratio: Int = 30
     private var type: DeleteType
     private var todoAddViewModel: TodoAddViewModel
+    var dismissEvent : DismissEvent? = null
 
+    interface DismissEvent {
+        fun onDismiss()
+    }
     init {
         this.type = type
         ratio = when (type) {
@@ -73,6 +78,8 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
         return displayMetrics.heightPixels
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -116,6 +123,15 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
         binding.btnOptionDelete.setOnClickListener(ButtonClickListener())
     }
 
+    override fun dismiss() {
+        super.dismiss()
+        dismissEvent?.onDismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        dismissEvent?.onDismiss()
+    }
     inner class ButtonClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {

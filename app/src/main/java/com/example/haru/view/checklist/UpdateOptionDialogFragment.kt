@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -23,6 +24,10 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
     private var ratio: Int = 30
     private var type: UpdateType
     private var todoAddViewModel: TodoAddViewModel
+    var dismissEvent : DismissEvent? = null
+    interface DismissEvent {
+        fun onDismiss()
+    }
 
 
     init {
@@ -205,6 +210,16 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
         binding.btnOptionAfterUpdate.setOnClickListener(ButtonClickListener())
         binding.btnOptionSave.setOnClickListener(ButtonClickListener())
         binding.btnOptionUpdateCancel.setOnClickListener(ButtonClickListener())
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        dismissEvent?.onDismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        dismissEvent?.onDismiss()
     }
 
     inner class ButtonClickListener : View.OnClickListener {

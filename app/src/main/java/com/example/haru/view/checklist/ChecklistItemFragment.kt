@@ -1,10 +1,8 @@
 package com.example.haru.view.checklist
 
 import BaseActivity
-import android.app.TimePickerDialog
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Paint
 import android.os.Bundle
 import android.os.SystemClock
 import android.text.Editable
@@ -18,10 +16,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
-import com.example.haru.data.model.Alarm
-import com.example.haru.data.model.Tag
 import com.example.haru.data.model.Todo
-import com.example.haru.databinding.FragmentChecklistItemBinding
 import com.example.haru.databinding.FragmentChecklistItemInfoBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
@@ -39,7 +34,6 @@ class ChecklistItemFragment(
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
-    private var lastClickTime = SystemClock.elapsedRealtime()
 
     enum class UpdateType {
         FRONT_UPDATE_REPEAT, FRONT_NOT_UPDATE_REPEAT,
@@ -965,11 +959,8 @@ class ChecklistItemFragment(
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
                 binding.btnInfoDelete.id -> {
-                    if (SystemClock.elapsedRealtime() - lastClickTime < 2000) {
-                        Log.d("20191627", "삭제 옵션창 띄우기 중복 막기")
-                        return
-                    }
-                    lastClickTime = SystemClock.elapsedRealtime()
+                    binding.btnInfoDelete.isClickable = false
+                        Log.d("20191627", "삭제")
 
                     Log.d("20191627", todoAddViewModel.clickedTodo.toString())
                     val type = when (todoAddViewModel.clickedTodo?.location) {
@@ -979,14 +970,16 @@ class ChecklistItemFragment(
                         else -> DeleteType.NOT_REPEAT
                     }
                     val option = DeleteOptionDialogFragment(todoAddViewModel, type)
+                    option.dismissEvent = object : DeleteOptionDialogFragment.DismissEvent{
+                        override fun onDismiss() {
+                            binding.btnInfoDelete.isClickable = true
+                        }
+                    }
                     option.show(parentFragmentManager, option.tag)
                 }
                 binding.btnInfoSave.id -> {
-                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
-                        Log.d("20191627", "저장 옵션창 띄우기 중복 막기")
-                        return
-                    }
-                    lastClickTime = SystemClock.elapsedRealtime()
+                    binding.btnInfoSave.isClickable = false
+                        Log.d("20191627", "저장")
 
                     todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
@@ -1001,7 +994,7 @@ class ChecklistItemFragment(
 
                         val type = when (todoAddViewModel.clickedTodo?.location) {
                             0 -> { // front
-                                val type = if (checkRepeatData)
+                                    if (checkRepeatData)
                                     UpdateType.FRONT_UPDATE_REPEAT
                                     else UpdateType.FRONT_NOT_UPDATE_REPEAT
 //                                val type = if (checkEndDate && checkRepeatData) {
@@ -1017,10 +1010,9 @@ class ChecklistItemFragment(
 //                                    // 전체 이벤트 수정, 이 이벤트만 수정
 //                                    UpdateType.FRONT_THREE
 //                                }
-                                type
                             }
                             1 -> { // middle
-                                val type = if (checkRepeatData)
+                                if (checkRepeatData)
                                     UpdateType.MIDDLE_UPDATE_REPEAT
                                     else UpdateType.MIDDLE_NOT_UPDATE_REPEAT
 //                                val type = if (checkEndDate && checkRepeatData) {
@@ -1036,10 +1028,9 @@ class ChecklistItemFragment(
 //                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
 //                                    UpdateType.MIDDLE_THREE
 //                                }
-                                type
                             }
                             2 -> { // back
-                                val type = UpdateType.BACK
+                                UpdateType.BACK
 //                                val type = if (checkEndDate && checkRepeatData) {
 //                                    // 전체 이벤트 수정, 이 이벤트부터 수정
 //                                    UpdateType.BACK_ONE
@@ -1053,7 +1044,6 @@ class ChecklistItemFragment(
 //                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
 //                                    UpdateType.BACK_THREE
 //                                }
-                                type
                             }
                             else -> {
                                 UpdateType.NOT_REPEAT
@@ -1061,11 +1051,20 @@ class ChecklistItemFragment(
                         }
                         Log.d("20191627", "type : $type")
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        option.dismissEvent = object : UpdateOptionDialogFragment.DismissEvent {
+                            override fun onDismiss() {
+                                binding.btnInfoSave.isClickable = true
+                            }
+                        }
                         option.show(parentFragmentManager, option.tag)
-
                     } else {
                         val type = UpdateType.NOT_REPEAT
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        option.dismissEvent = object : UpdateOptionDialogFragment.DismissEvent {
+                            override fun onDismiss() {
+                                binding.btnInfoSave.isClickable = true
+                            }
+                        }
                         option.show(parentFragmentManager, option.tag)
                     }
                 }
