@@ -90,6 +90,12 @@ class MyPageViewModel(): ViewModel() {
     private val _FirstFriends = MutableLiveData<FriendsResponse>()
     val FirstFriends: LiveData<FriendsResponse> = _FirstFriends
 
+    private val _FirstRequests = MutableLiveData<FriendsResponse>()
+    val FirstRequests: LiveData<FriendsResponse> = _FirstRequests
+
+    private val _Requests = MutableLiveData<FriendsResponse>()
+    val Requests: LiveData<FriendsResponse> = _Requests
+
 
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
@@ -337,6 +343,30 @@ class MyPageViewModel(): ViewModel() {
                 }
             }
             _FirstFriends.value = Friends
+        }
+    }
+
+    fun getFirstFriendsRequestList(targetId: String){
+        var Requests = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.getFirstRequestList(targetId){
+                if(it.success){
+                    Requests = it
+                }
+            }
+            _FirstRequests.value = Requests
+        }
+    }
+
+    fun getFriendsRequestList(targetId: String, lastCreatedAt: String){
+        var Requests = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.getRequestList(targetId, lastCreatedAt){
+                if(it.success){
+                    Requests = it
+                }
+            }
+            _Requests.value = Requests
         }
     }
 

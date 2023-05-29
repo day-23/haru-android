@@ -23,4 +23,10 @@ interface UserService {
     fun getFriendsList(@Path("userId") userId: String, @Path("targetId") targetId: String, @Query("lastCreatedAt") lastCreatedAt: String) : Call<FriendsResponse>
     @GET("friends/{userId}/{targetId}/")
     fun getFirstFriendsList(@Path("userId") userId: String, @Path("targetId") targetId: String, @Query("page") page: String) : Call<FriendsResponse>
+
+    //친구 신청 목록
+    @GET("friends/{userId}/request")
+    fun getRequestList(@Path("userId") userId: String, @Query("lastCreatedAt") lastCreatedAt: String) : Call<FriendsResponse>
+    @GET("friends/{userId}/request")
+    fun getFirstRequestList(@Path("userId") userId: String, @Query("page") page: String) : Call<FriendsResponse>
 }

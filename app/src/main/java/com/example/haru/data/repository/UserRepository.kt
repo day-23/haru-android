@@ -6,6 +6,7 @@ import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.data.retrofit.RetrofitClient.profileService
 import com.example.haru.data.retrofit.RetrofitClient.userService
+import com.kakao.sdk.talk.model.Friend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,6 +16,7 @@ class UserRepository() {
     suspend fun getUser(userId: Int): User {
         return userService.getUser(userId)
     }
+    //친구 요청
     suspend fun requestFriend(body: Followbody, callback: (result : Boolean) -> Unit) = withContext(
         Dispatchers.IO){
         val response = userService.requestFriend(
@@ -31,7 +33,7 @@ class UserRepository() {
         }
         callback(data)
     }
-
+    //친구 요청 취소
     suspend fun requestunFriend(body: UnFollowbody, callback: (result : Boolean) -> Unit) = withContext(
         Dispatchers.IO){
         val response = userService.requestUnFriend(
@@ -48,7 +50,7 @@ class UserRepository() {
         }
         callback(data)
     }
-
+    //친구 삭제 요청
     suspend fun requestDelFriend(body: UnFollowbody, callback: (result : Boolean) -> Unit) = withContext(
         Dispatchers.IO){
         val response = userService.requestUnFriend(
@@ -66,6 +68,7 @@ class UserRepository() {
         callback(data)
     }
 
+    //친구리스트 요청
     suspend fun requestFriendsList(targetId:String, lastCreatedAt:String, callback: (friends : FriendsResponse) -> Unit) = withContext(
         Dispatchers.IO){
         val response = userService.getFriendsList(
@@ -90,6 +93,33 @@ class UserRepository() {
             targetId,
             "1"
         ).execute()
+        val result : FriendsResponse
+
+        if(response.isSuccessful){
+            result = response.body()!!
+        }else{
+            result = FriendsResponse(false, arrayListOf(), pagination())
+        }
+        callback(result)
+    }
+
+    //친구요청 목록 요청
+    suspend fun getRequestList(userId: String, lastCreatedAt: String, callback: (friends: FriendsResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = userService.getRequestList(userId, lastCreatedAt).execute()
+        val result : FriendsResponse
+
+        if(response.isSuccessful){
+            result = response.body()!!
+        }else{
+            result = FriendsResponse(false, arrayListOf(), pagination())
+        }
+        callback(result)
+    }
+
+    suspend fun getFirstRequestList(userId: String, callback: (friends: FriendsResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = userService.getFirstRequestList(userId, "1").execute()
         val result : FriendsResponse
 
         if(response.isSuccessful){

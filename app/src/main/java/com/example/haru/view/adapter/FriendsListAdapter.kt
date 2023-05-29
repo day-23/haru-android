@@ -2,19 +2,21 @@ package com.example.haru.view.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.FriendInfo
-import com.example.haru.data.model.SnsPost
-import com.kakao.sdk.talk.model.Friends
+import com.example.haru.view.sns.OnFriendClicked
 
 class FriendsListAdapter(val context: Context,
-                         private var itemList: ArrayList<FriendInfo> = arrayListOf()
+                         private var itemList: ArrayList<FriendInfo> = arrayListOf(),
+                         val onFriendClicked: OnFriendClicked
                         ) : RecyclerView.Adapter<FriendsListAdapter.FriendsListViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendsListAdapter.FriendsListViewHolder {
@@ -24,11 +26,43 @@ class FriendsListAdapter(val context: Context,
     }
 
     override fun onBindViewHolder(holder: FriendsListViewHolder, position: Int) {
+        hideButtons(holder)
+        showButtons(holder, itemList[position].friendStatus!!)
+
+        Glide.with(holder.itemView.context)
+            .load(itemList[position].profileImageUrl)
+            .into(holder.profile)
+
+        holder.name.text = itemList[position].name
+
+        holder.delete.setOnClickListener {
+            onFriendClicked.onDeleteClick(itemList[position])
+        }
 
     }
 
     override fun getItemCount(): Int {
         return itemList.size
+    }
+
+    fun showButtons(holder: FriendsListViewHolder, status: Int){
+        when(status){
+            1 -> {
+                holder.accept.visibility = View.VISIBLE
+                holder.reject.visibility = View.VISIBLE
+                }
+            2 -> {
+                holder.delete.visibility = View.VISIBLE
+                holder.setup.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    fun hideButtons(holder: FriendsListViewHolder){
+        holder.delete.visibility = View.GONE
+        holder.accept.visibility = View.GONE
+        holder.reject.visibility = View.GONE
+        holder.setup.visibility = View.GONE
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -37,11 +71,24 @@ class FriendsListAdapter(val context: Context,
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addFirstList(items: ArrayList<FriendInfo>){
         itemList = items
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun deleteFriend(targetUser : FriendInfo){
+        itemList.remove(targetUser)
+        notifyDataSetChanged()
+    }
+
     inner class FriendsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var profile = itemView.findViewById<ImageView>(R.id.search_profile)
+        var name = itemView.findViewById<TextView>(R.id.search_id)
+        var delete = itemView.findViewById<TextView>(R.id.friend_delete)
+        var accept = itemView.findViewById<TextView>(R.id.friend_accept)
+        var reject = itemView.findViewById<TextView>(R.id.friend_reject)
+        var setup = itemView.findViewById<ImageView>(R.id.search_setup)
     }
 }

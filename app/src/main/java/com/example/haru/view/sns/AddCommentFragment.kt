@@ -278,8 +278,8 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
             Toast.makeText(requireContext(),"${comment.content}", Toast.LENGTH_SHORT).show()
         }
 
-        params.leftMargin = commentContainer.width * comment.x / 100
-        params.topMargin =  commentContainer.height * comment.y / 100
+        params.leftMargin = commentContainer.width * comment.x!! / 100
+        params.topMargin =  commentContainer.height * comment.y!! / 100
         if(params.topMargin + textView.height > viewHeight){ // 사진에서 벗어나는 댓글에 대한 보정
             params.topMargin -= (params.leftMargin + textView.height) - viewHeight
         }
@@ -287,9 +287,9 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
         commentContainer.addView(view)
 
         //작성자 정보를 위한 뷰
-        val Name = comment.user.name
-        val ProfileImage = comment.user.profileImage
-        val Id = comment.user.id
+        val Name = comment.user!!.name
+        val ProfileImage = comment.user!!.profileImage
+        val Id = comment.user!!.id
 
         val writerView = inflater.inflate(R.layout.item_comment_on_picture_writer, null)
         val writerName = writerView.findViewById<TextView>(R.id.comment_on_picture_name)

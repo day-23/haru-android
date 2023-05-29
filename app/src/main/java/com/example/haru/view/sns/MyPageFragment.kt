@@ -203,6 +203,16 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             }
         }
 
+        binding.profileFriendsLayout.setOnClickListener {
+            val newFrag = FriendsListFragment(userId)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmypage")
+            transaction.commit()
+        }
+
         binding.friendFeed.setOnClickListener {
             val fragmentManager = parentFragmentManager
             if (fragmentManager.backStackEntryCount > 0) {
