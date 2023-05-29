@@ -42,9 +42,12 @@ class ChecklistItemFragment(
     private var lastClickTime = SystemClock.elapsedRealtime()
 
     enum class UpdateType {
-        FRONT_ONE, FRONT_TWO, FRONT_THREE,
-        MIDDLE_ONE, MIDDLE_TWO, MIDDLE_THREE,
-        BACK_ONE, BACK_TWO, BACK_THREE,
+        FRONT_UPDATE_REPEAT, FRONT_NOT_UPDATE_REPEAT,
+        MIDDLE_UPDATE_REPEAT, MIDDLE_NOT_UPDATE_REPEAT,
+        BACK,
+//        FRONT_ONE, FRONT_TWO, FRONT_THREE,
+//        MIDDLE_ONE, MIDDLE_TWO, MIDDLE_THREE,
+//        BACK_ONE, BACK_TWO, BACK_THREE,
         NOT_REPEAT
     }
 
@@ -987,59 +990,69 @@ class ChecklistItemFragment(
 
                     todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
-                        // front, middle, back 구분할 수 있는 데이터로 분기 설정 front 면 아래 코드
-                        val checkEndDate = todoAddViewModel.checkChangeEndDate()
+
                         val checkRepeatData = todoAddViewModel.checkChangeRepeat()
-                        Log.d("20191627", "checkEndDate : $checkEndDate")
+
+                        // endDate 변경 사항 확인
+//                        val checkEndDate = todoAddViewModel.checkChangeEndDate()
+//                        Log.d("20191627", "checkEndDate : $checkEndDate")
+
                         Log.d("20191627", "checkRepeatData : $checkRepeatData")
 
                         val type = when (todoAddViewModel.clickedTodo?.location) {
                             0 -> { // front
-                                val type = if (checkEndDate && checkRepeatData) {
-                                    // 전체 이벤트 수정
-                                    UpdateType.FRONT_ONE
-                                } else if (checkEndDate) {
-                                    // 이 이벤트만 수정
-                                    UpdateType.FRONT_TWO
-                                } else if (checkRepeatData) {
-                                    // 전체 이벤트 수정
-                                    UpdateType.FRONT_ONE
-                                } else {
-                                    // 전체 이벤트 수정, 이 이벤트만 수정
-                                    UpdateType.FRONT_THREE
-                                }
+                                val type = if (checkRepeatData)
+                                    UpdateType.FRONT_UPDATE_REPEAT
+                                    else UpdateType.FRONT_NOT_UPDATE_REPEAT
+//                                val type = if (checkEndDate && checkRepeatData) {
+//                                    // 전체 이벤트 수정
+//                                    UpdateType.FRONT_ONE
+//                                } else if (checkEndDate) {
+//                                    // 이 이벤트만 수정
+//                                    UpdateType.FRONT_TWO
+//                                } else if (checkRepeatData) {
+//                                    // 전체 이벤트 수정
+//                                    UpdateType.FRONT_ONE
+//                                } else {
+//                                    // 전체 이벤트 수정, 이 이벤트만 수정
+//                                    UpdateType.FRONT_THREE
+//                                }
                                 type
                             }
                             1 -> { // middle
-                                val type = if (checkEndDate && checkRepeatData) {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정
-                                    UpdateType.MIDDLE_ONE
-                                } else if (checkEndDate) {
-                                    // 이 이벤트만 수정
-                                    UpdateType.MIDDLE_TWO
-                                } else if (checkRepeatData) {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정
-                                    UpdateType.MIDDLE_ONE
-                                } else {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
-                                    UpdateType.MIDDLE_THREE
-                                }
+                                val type = if (checkRepeatData)
+                                    UpdateType.MIDDLE_UPDATE_REPEAT
+                                    else UpdateType.MIDDLE_NOT_UPDATE_REPEAT
+//                                val type = if (checkEndDate && checkRepeatData) {
+//                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+//                                    UpdateType.MIDDLE_ONE
+//                                } else if (checkEndDate) {
+//                                    // 이 이벤트만 수정
+//                                    UpdateType.MIDDLE_TWO
+//                                } else if (checkRepeatData) {
+//                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+//                                    UpdateType.MIDDLE_ONE
+//                                } else {
+//                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
+//                                    UpdateType.MIDDLE_THREE
+//                                }
                                 type
                             }
                             2 -> { // back
-                                val type = if (checkEndDate && checkRepeatData) {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정
-                                    UpdateType.BACK_ONE
-                                } else if (checkEndDate) {
-                                    // 이 이벤트만 수정
-                                    UpdateType.BACK_TWO
-                                } else if (checkRepeatData) {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정
-                                    UpdateType.BACK_ONE
-                                } else {
-                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
-                                    UpdateType.BACK_THREE
-                                }
+                                val type = UpdateType.BACK
+//                                val type = if (checkEndDate && checkRepeatData) {
+//                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+//                                    UpdateType.BACK_ONE
+//                                } else if (checkEndDate) {
+//                                    // 이 이벤트만 수정
+//                                    UpdateType.BACK_TWO
+//                                } else if (checkRepeatData) {
+//                                    // 전체 이벤트 수정, 이 이벤트부터 수정
+//                                    UpdateType.BACK_ONE
+//                                } else {
+//                                    // 전체 이벤트 수정, 이 이벤트부터 수정, 이 이벤트만 수정
+//                                    UpdateType.BACK_THREE
+//                                }
                                 type
                             }
                             else -> {

@@ -658,35 +658,35 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     }
 
-    fun checkChangeEndDate(): Boolean { // 마감일의 년, 월, 일을 검사 -> 시간까지 확인하는 거면 시간과 분까지 확인
-        val changeYear = endDateStr?.substring(0, 4)
-        val changeMonth = endDateStr?.substring(5, 7)
-        val changeDay = endDateStr?.substring(8, 10)
-
-        val date = FormatDate.dateToStr(FormatDate.strToDate(clickedTodo!!.endDate))
-        val year = date?.substring(0, 4)
-        val month = date?.substring(5, 7)
-        val day = date?.substring(8, 10)
-
-        if (changeYear != year || changeMonth != month || changeDay != day) {
-            return true
-        }
-        if (clickedTodo!!.isAllDay) {
-            if (isSelectedEndDateTime.value != true)
-                return true
-            val changeHour = endDateStr?.substring(11, 13)
-            val changeMinute = endDateStr?.substring(14, 16)
-            val hour = date?.substring(11, 13)
-            val minute = date?.substring(14, 16)
-
-            if (changeHour != hour || changeMinute != minute)
-                return true
-        } else {
-            if (isSelectedEndDateTime.value == true)
-                return true
-        }
-        return false
-    }
+//    fun checkChangeEndDate(): Boolean { // 마감일의 년, 월, 일을 검사 -> 시간까지 확인하는 거면 시간과 분까지 확인
+//        val changeYear = endDateStr?.substring(0, 4)
+//        val changeMonth = endDateStr?.substring(5, 7)
+//        val changeDay = endDateStr?.substring(8, 10)
+//
+//        val date = FormatDate.dateToStr(FormatDate.strToDate(clickedTodo!!.endDate))
+//        val year = date?.substring(0, 4)
+//        val month = date?.substring(5, 7)
+//        val day = date?.substring(8, 10)
+//
+//        if (changeYear != year || changeMonth != month || changeDay != day) {
+//            return true
+//        }
+//        if (clickedTodo!!.isAllDay) {
+//            if (isSelectedEndDateTime.value != true)
+//                return true
+//            val changeHour = endDateStr?.substring(11, 13)
+//            val changeMinute = endDateStr?.substring(14, 16)
+//            val hour = date?.substring(11, 13)
+//            val minute = date?.substring(14, 16)
+//
+//            if (changeHour != hour || changeMinute != minute)
+//                return true
+//        } else {
+//            if (isSelectedEndDateTime.value == true)
+//                return true
+//        }
+//        return false
+//    }
 
     fun checkChangeRepeat(): Boolean {
         // repeatOption이 바뀌었는지, repeatValue가 바뀌었는지, repeatEndDate가 변경되었는지 (년, 월, 일만 검사)
