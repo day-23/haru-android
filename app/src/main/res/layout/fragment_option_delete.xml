@@ -39,6 +39,17 @@
             android:textSize="20sp" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_option_after_delete"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/with_divider_btn"
+            android:gravity="center"
+            android:text="@string/afterDelete"
+            android:textColor="@color/todo_description"
+            android:textSize="20sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_option_delete"
             android:layout_width="match_parent"
             android:layout_height="0dp"
