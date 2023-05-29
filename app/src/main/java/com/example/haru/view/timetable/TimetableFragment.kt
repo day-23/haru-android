@@ -46,6 +46,7 @@ class TimetableFragment : Fragment() {
     val scheduleMap = mutableMapOf<View, Schedule>()
     val layoutId: ArrayList<Int> = ArrayList<Int>()
 
+
     companion object {
         const val TAG: String = "로그"
 
@@ -260,11 +261,9 @@ class TimetableFragment : Fragment() {
                     view.gravity = Gravity.CENTER
                     view.setPadding(2, 2, 2, 2)
                     view.maxLines = 1
-                    view.setBackgroundResource(R.drawable.timetable_schedule_allday)
 
-                    // 카테고리 색칠하기
-                    val category = categories?.find { it.id == day.category?.id }
-                    view.background = makeShapeDrawable(category?.color)
+                    // 카테고리, 글자색 색칠하기
+                    colorCategoryAndTextColorOnScheduleView(view, day, categories)
 
                     val frontPadding = View(requireContext())
                     val backPadding = View(requireContext())
@@ -348,27 +347,10 @@ class TimetableFragment : Fragment() {
             layout.layoutParams = layoutParams
 
             for (schedule in union) {
-                val repeatStart = schedule.repeatStart!!
-                val repeatEnd = schedule.repeatEnd!!
-
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
-
-                // Parse the strings to ZonedDateTime instances
-                val preRepeatStart = ZonedDateTime.parse(repeatStart, formatter)
-                val preRepeatEnd = ZonedDateTime.parse(repeatEnd, formatter)
-
-                // Calculate the difference (offset) between the two dates
-                val diff = Duration.between(preRepeatStart, preRepeatEnd)
-
-                // calculate the offset in seconds
-                val offsetInMinutes = diff.toMinutes()
-                val startHour = preRepeatStart.hour
-                val startMin = preRepeatStart.minute
-
-                val scheduleCalculatedValue = offsetInMinutes / 5 * 6
-                val margin = startHour * 72 + startMin / 5 * 6
+                val (scheduleCalculatedValue, margin) = getHeightAndMarginOfLinearLayout(schedule.repeatStart!!, schedule.repeatEnd!!)
 
                 val displayMetrics = resources.displayMetrics
+
                 val itemParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     Math.round((scheduleCalculatedValue) * displayMetrics.density),
@@ -392,6 +374,7 @@ class TimetableFragment : Fragment() {
                 scheduleView.layoutParams = itemParams
                 scheduleView.text = schedule.content
                 scheduleView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                scheduleView.setTextColor(Color.parseColor("#000000"))
 
 //                scheduleView.setTextColor()
                 scheduleView.setLineSpacing((0).toFloat(), (1).toFloat())
@@ -402,9 +385,8 @@ class TimetableFragment : Fragment() {
                         .show()
                 }
 
-                // 카테고리 색칠하기
-                val category = categories?.find { it.id == schedule.category?.id }
-                scheduleView.background = makeShapeDrawable(category?.color)
+                // 카테고리, 글자색 색칠하기
+                colorCategoryAndTextColorOnScheduleView(scheduleView, schedule, categories)
                 layout.addView(scheduleView)
             }
             table.addView(layout)
@@ -423,6 +405,22 @@ class TimetableFragment : Fragment() {
         else if (pointerY > lowerLimForScroll) {
             binding.timetableScroll.smoothScrollBy(0, 15)
             Log.d("DRAGGED", "down")
+        }
+    }
+
+
+
+    private fun colorCategoryAndTextColorOnScheduleView(scheduleView: TextView, schedule:Schedule, categories: List<Category>?) {
+        val category = categories?.find { it.id == schedule.category?.id }
+        scheduleView.background = makeShapeDrawable(category?.color)
+        if(colorList.indexOf(category?.color) in listOf(
+                0,1,2,6,7,8,12,13,14,15,
+                18,19,20,24,25,26,27,30,31,32,
+                36,37,38
+            )){
+            scheduleView.setTextColor(Color.parseColor("#FDFDFD"))
+        } else{
+            scheduleView.setTextColor(Color.parseColor("#191919"))
         }
     }
 
@@ -462,8 +460,29 @@ class TimetableFragment : Fragment() {
     }
 
 
+    private fun getHeightAndMarginOfLinearLayout(repeatStart : String, repeatEnd : String): Pair<Int, Int>{
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
-    fun makeShapeDrawable(color : String?): LayerDrawable {
+        // Parse the strings to ZonedDateTime instances
+        val preRepeatStart = ZonedDateTime.parse(repeatStart, formatter)
+        val preRepeatEnd = ZonedDateTime.parse(repeatEnd, formatter)
+
+        // Calculate the difference (offset) between the two dates
+        val diff = Duration.between(preRepeatStart, preRepeatEnd)
+
+        // calculate the offset in seconds
+        val offsetInMinutes = diff.toMinutes()
+        val startHour = preRepeatStart.hour
+        val startMin = preRepeatStart.minute
+
+        val scheduleCalculatedValue = (offsetInMinutes / 5 * 6).toInt()
+        val margin = (startHour * 72 + startMin / 5 * 6)
+
+        return Pair(scheduleCalculatedValue, margin)
+    }
+
+
+    private fun makeShapeDrawable(color : String?): LayerDrawable {
         val gd = GradientDrawable()
 
         if(color == null){
@@ -471,7 +490,6 @@ class TimetableFragment : Fragment() {
         }else{
             gd.setColor(Color.parseColor(color))
         }
-
         gd.cornerRadius = 30f
 
         // Create another GradientDrawable as background
@@ -485,4 +503,14 @@ class TimetableFragment : Fragment() {
 
         return ld
     }
+
+    private val colorList = listOf(
+        "#2E2E2E", "#656565", "#818181", "#9D9D9D", "#B9B9B9", "#D5D5D5",
+        "#FF0959", "#FF509C", "#FF5AB6", "#FE7DCD", "#FFAAE5", "#FFBDFB",
+        "#B237BB", "#C93DEB", "#B34CED", "#9D5BE3", "#BB93F8", "#C6B2FF",
+        "#4C45FF", "#2E57FF", "#4D8DFF", "#45BDFF", "#6DDDFF", "#65F4FF",
+        "#FE7E7E", "#FF572E", "#C22E2E", "#A07553", "#E3942E", "#E8A753",
+        "#FF892E", "#FFAB4C", "#FFD166", "#FFDE2E", "#CFE855", "#B9D32E",
+        "#105C08", "#39972E", "#3EDB67", "#55E1B6", "#69FFD0", "#05C5C0",
+    )
 }
