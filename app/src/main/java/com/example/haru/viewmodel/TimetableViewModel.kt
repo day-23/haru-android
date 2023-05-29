@@ -13,6 +13,8 @@ import com.example.haru.utils.FormatDate
 import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.*
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
@@ -228,8 +230,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                 //내용 추출
                 for(data in TodoList.schedules){
-                    data.repeatStart = FormatDate.calendarFormat(data.repeatStart!!)
-                    data.repeatEnd = FormatDate.calendarFormat(data.repeatEnd!!)
+                    d("Schedules", "getSchedule:${data.repeatStart} ${data.repeatEnd}, ${data.content}, here smell")
+                    data.repeatStart = zuluTimeStringToKoreaTimeString(data.repeatStart!!)
+                    data.repeatEnd = zuluTimeStringToKoreaTimeString(data.repeatEnd!!)
+                    d("Schedules", "getSchedule:${data.repeatStart} ${data.repeatEnd}, ${data.content}, convert after here smell")
 
                     val year_start = data.repeatStart?.slice(IntRange(0,3))
                     val month_start = data.repeatStart?.slice(IntRange(5,6))
@@ -337,83 +341,60 @@ class TimetableViewModel(val context : Context): ViewModel() {
         val month = moveDate.substring(4, 6)
         val day = moveDate.substring(6, 8)
 
-        val newDate = "$year-$month-$day"
-        val newTime = "$stringHour:$stringMin:00+09:00"
-        val newDateInfo = "${newDate}T${newTime}"
+        val newDateInfo = "${year}-${month}-${day}T${stringHour}:${stringMin}:00+09:00"
 
-        d("patchMoved", "scheduleMoved: $newDateInfo")
+        d("Schedules", "newDateInfo: ${newDateInfo}")
+
         _MoveDate.value = newDateInfo
         _MoveView.value = view
     }
 
-    suspend fun patchMoved(start: String, end: String, data: Schedule){
-        d("patchMoved", "patchMoved: ${start}, ${end}, ${data}")
-        
-        val moveview = data
-        //"2023-03-07T18:30:00.000Z" 11 12 14 15
-        //repeatend 값을 바뀐 repeatstart에 맞추어 수정
-        val nowStartHour = start.slice(IntRange(11,12)).toInt()
-        val nowStartMin = start.slice(IntRange(14,15)).toInt()
-        val pastStartHour = moveview.repeatStart!!.slice(IntRange(11, 12)).toInt()
-        val pastStartMin = moveview.repeatStart!!.slice(IntRange(14, 15)).toInt()
-        val pastEndHour = moveview.repeatEnd!!.slice(IntRange(11, 12)).toInt()
-        val pastEndMin = moveview.repeatEnd!!.slice(IntRange(14, 15)).toInt()
-        var periodHour = pastEndHour - pastStartHour
-        var periodMin = pastEndMin - pastStartMin
+    suspend fun patchMoved(newRepeatStart: String, preScheduleData: Schedule){
+        //"2023-03-07T18:30:00.000Z" X -> "2023-05-07T00:00:00+09:00"
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
-        if(periodMin < 0 ){
-            periodHour -= 1
-            periodMin += 60
-        }
-        periodHour += nowStartHour
-        periodMin += nowStartMin
+        // Parse the strings to ZonedDateTime instances
+        val preRepeatStart = ZonedDateTime.parse(preScheduleData.repeatStart, formatter)
+        val preRepeatEnd = ZonedDateTime.parse(preScheduleData.repeatEnd, formatter)
 
-        if(periodMin > 59){
-            periodHour += 1
-            periodMin -= 60
-        }
-        var fixedHour = ""
-        var fixedMin = ""
+        // Calculate the difference (offset) between the two dates
+        val diff = Duration.between(preRepeatStart, preRepeatEnd)
 
-        if(periodHour < 10) fixedHour = "0"+periodHour.toString()
-        else fixedHour = periodHour.toString()
-        if(periodMin < 10) fixedMin = "0"+periodMin.toString()
-        else fixedMin = periodMin.toString()
-        val endDate = end.slice(IntRange(0,9))
-        var endTime = "T$fixedHour:$fixedMin:00+09:00"
+        // calculate the offset in seconds
+        val offsetInSeconds = diff.seconds
+        val movedStartSeconds = ZonedDateTime.parse(newRepeatStart, formatter).toEpochSecond()
+        val newDateSeconds = movedStartSeconds + offsetInSeconds
 
+        // convert the new date seconds to ZonedDateTime with the time zone "Asia/Seoul"
+        val newRepeatEndTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(newDateSeconds), ZoneId.of("Asia/Seoul"))
+        val newRepeatEnd = newRepeatEndTime.format(formatter)
 
-        d("patchMoved", "patchMoved: ${fixedHour}, ${fixedMin}")
-        if(fixedHour.toInt() >= 24){
-            endTime = "T23:55:00+09:00"
-        }
-
-        Log.d("patchMoved", "이건 대체 뭐지? $start, ${endDate+endTime}")
+        //기존 데이터 제거
         for(lists in IndexList){
-            if(lists.contains(data)){
-                lists.remove(data)
+            if(lists.contains(preScheduleData)){
+                lists.remove(preScheduleData)
                 break
             }
         }
 
-        data.repeatStart = start
-        data.repeatEnd = endDate+endTime
+        preScheduleData.repeatStart = newRepeatStart
+        preScheduleData.repeatEnd = newRepeatEnd
 
-        sortSchedule(data)
+        sortSchedule(preScheduleData)
         _Schedules.value = IndexList
 
         val body = PostSchedule(
-            data.content,
-            data.memo,
-            data.isAllDay,
-            data.repeatStart!!,
-            data.repeatEnd,
-            data.repeatOption,
-            data.repeatValue,
-            data.category?.id,
+            preScheduleData.content,
+            preScheduleData.memo,
+            preScheduleData.isAllDay,
+            preScheduleData.repeatStart!!,
+            preScheduleData.repeatEnd,
+            preScheduleData.repeatOption,
+            preScheduleData.repeatValue,
+            preScheduleData.category?.id,
             emptyList()
         )
-        scheduleRepository.submitSchedule(data.id, body) {}
+        scheduleRepository.submitSchedule(preScheduleData.id, body) {}
     }
 
 
@@ -423,5 +404,21 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 _liveCategoryList.postValue(it)
             }
         }
+    }
+
+
+    private fun zuluTimeStringToKoreaTimeString(dateTimeStr : String) : String{
+        val korFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+
+        // Parse the date/time string to an Instant instance
+        val dateTimeInstant = Instant.parse(dateTimeStr)
+
+        // Convert the Instant to a ZonedDateTime at "+09:00" timezone
+        val korDateTime = dateTimeInstant.atZone(ZoneId.of("Asia/Seoul"))
+
+        // Format the date/time as a string
+        val korDateTimeStr = korDateTime.format(korFormatter)
+
+        return korDateTimeStr
     }
 }

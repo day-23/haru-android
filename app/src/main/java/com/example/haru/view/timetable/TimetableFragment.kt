@@ -25,6 +25,9 @@ import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 //드래그 앤 드롭 그림자 없어지게 하는 클래스
 class EmptyShadowBuilder(view: View) : View.DragShadowBuilder(view) {
@@ -177,14 +180,11 @@ class TimetableFragment : Fragment() {
 
         //드래그 앤 드랍시 이동한 뷰의 정보
         timetableviewModel.MoveView.observe(viewLifecycleOwner) { view ->
-            val movedData = scheduleMap[view]
-            val start = timetableviewModel.MoveDate.value
-            val endDate = start!!.slice(IntRange(0, 9))
-            val endTime = movedData!!.repeatEnd!!.slice(IntRange(10, 23))
-            val end = endDate + endTime
+            val movedData = scheduleMap[view]!!
+            val start = timetableviewModel.MoveDate.value!!
 
             timetableviewModel.viewModelScope.launch {
-                timetableviewModel.patchMoved(start, end, movedData)
+                timetableviewModel.patchMoved(start, movedData)
             }
         }
 
@@ -307,24 +307,22 @@ class TimetableFragment : Fragment() {
         }
     }
 
-    //하루치 일정을 동적으로 바인딩
+    //그리드 내에 그려지는 일정을 동적으로 바인딩
     private fun drawTimesSchedules(table: ViewGroup, categories: List<Category>?, schedules: ArrayList<Schedule>) {
         var past_start = 0
         var past_end = 2359
         val unionList = ArrayList<ArrayList<Schedule>>()
         var overlapList = ArrayList<Schedule>()
 
-        for (schedule in schedules) {
-            val start = schedule.repeatStart?.slice(IntRange(11, 12)) + schedule.repeatStart?.slice(
-                IntRange(
-                    14,
-                    15
-                )
-            )
-            val end =
-                schedule.repeatEnd?.slice(IntRange(11, 12)) + schedule.repeatEnd?.slice(IntRange(14, 15))
 
-            if (start.toInt() in past_start..past_end - 1) {
+        for (schedule in schedules) {
+            val repeatStart = schedule.repeatStart!!
+            val repeatEnd = schedule.repeatEnd!!
+
+            val startTime = (repeatStart.slice(IntRange(11, 12)) + repeatStart.slice(IntRange(14, 15))).toInt()
+            val endTime = (repeatEnd.slice(IntRange(11, 12)) + repeatEnd.slice(IntRange(14, 15))).toInt()
+
+            if (startTime in past_start until past_end) {
                 overlapList.add(schedule)
             } else {
                 val arraylist = ArrayList<Schedule>()
@@ -336,8 +334,8 @@ class TimetableFragment : Fragment() {
                 unionList.add(arraylist)
             }
 
-            past_start = start.toInt()
-            past_end = end.toInt()
+            past_start = startTime
+            past_end = endTime
         }
         unionList.add(overlapList)
 
@@ -350,36 +348,35 @@ class TimetableFragment : Fragment() {
             layout.layoutParams = layoutParams
 
             for (schedule in union) {
-                val union_start_hour = schedule.repeatStart?.slice(IntRange(11, 12))
-                val union_start_min = schedule.repeatStart?.slice(IntRange(14, 15))
-                val union_end_hour = schedule.repeatEnd?.slice(IntRange(11, 12))
-                val union_end_min = schedule.repeatEnd?.slice(IntRange(14, 15))
-                val start_hour = union_start_hour!!.toInt()
-                val start_min = union_start_min!!.toInt()
-                val end_hour = union_end_hour!!.toInt()
-                val end_min = union_end_min!!.toInt()
+                val repeatStart = schedule.repeatStart!!
+                val repeatEnd = schedule.repeatEnd!!
 
-                var hour = end_hour - start_hour
-                var min = end_min - start_min
-                if (min < 0) {
-                    hour -= 1
-                    min += 60
-                }
-                val scheduleCalculatedValue = hour * 72  + min / 5 * 6
-                val margin = start_hour * 72 + start_min / 5 * 6
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+
+                // Parse the strings to ZonedDateTime instances
+                val preRepeatStart = ZonedDateTime.parse(repeatStart, formatter)
+                val preRepeatEnd = ZonedDateTime.parse(repeatEnd, formatter)
+
+                // Calculate the difference (offset) between the two dates
+                val diff = Duration.between(preRepeatStart, preRepeatEnd)
+
+                // calculate the offset in seconds
+                val offsetInMinutes = diff.toMinutes()
+                val startHour = preRepeatStart.hour
+                val startMin = preRepeatStart.minute
+
+                val scheduleCalculatedValue = offsetInMinutes / 5 * 6
+                val margin = startHour * 72 + startMin / 5 * 6
 
                 val displayMetrics = resources.displayMetrics
-                val itemparams = LinearLayout.LayoutParams(
+                val itemParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     Math.round((scheduleCalculatedValue) * displayMetrics.density),
                     1f
                 )
 
-                Log.d("Schedules", "schedule : $hour and $min $margin ${schedule.content}")
-                itemparams.topMargin = Math.round(margin * displayMetrics.density)
-                itemparams.rightMargin = 1
-                itemparams.gravity = (Gravity.TOP)
-
+                itemParams.topMargin = Math.round(margin * displayMetrics.density)
+                itemParams.gravity = (Gravity.TOP)
 
                 val scheduleView = TextView(requireContext())
                 scheduleMap.put(scheduleView, schedule)
@@ -392,18 +389,18 @@ class TimetableFragment : Fragment() {
                 }
 
                 scheduleViewList.add(scheduleView)
-                scheduleView.layoutParams = itemparams
+                scheduleView.layoutParams = itemParams
                 scheduleView.text = schedule.content
+                scheduleView.textAlignment = View.TEXT_ALIGNMENT_CENTER
 
 //                scheduleView.setTextColor()
-//                scheduleView.setLineSpacing((0).toFloat(), (1).toFloat())
+                scheduleView.setLineSpacing((0).toFloat(), (1).toFloat())
                 scheduleView.setPadding(4, 4, 4, 4)
 
                 scheduleView.setOnClickListener {
                     Toast.makeText(requireContext(), "${schedule.content}", Toast.LENGTH_SHORT)
                         .show()
                 }
-
 
                 // 카테고리 색칠하기
                 val category = categories?.find { it.id == schedule.category?.id }

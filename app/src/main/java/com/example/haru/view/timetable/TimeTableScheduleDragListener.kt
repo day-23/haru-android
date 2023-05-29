@@ -26,7 +26,6 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
     private var isRunning = false
 
     /* 드래그 이벤트 중 스크롤뷰의 스크롤을 위한 코드 */
-    private var lastScrollY = -1
     private val handler = Handler(Looper.getMainLooper())
     private val runnable = object : Runnable {
         override fun run() {
@@ -37,7 +36,6 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
             }
         }
     }
-
 
     override fun onDrag(view: View, event: DragEvent): Boolean {
         val targetFrameLayout = getTargetFrameLayout(view)
@@ -147,11 +145,6 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
             }
         })
 
-
-
-
-
-
         // Check if the new location is within the parent bounds
         if (parentBounds.contains(parentBounds.left, newTop, parentBounds.right, newBottom)) {
             // If it is within bounds, update the location of the view
@@ -177,18 +170,13 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
 
         // Now shadowViewTop should be correctly calculated
 
-
         val nestedScrollViewLocation = IntArray(2)
         nestedScrollView.getLocationOnScreen(nestedScrollViewLocation)
         val nestedScrollViewTop = nestedScrollViewLocation[1]
         val nestedScrollViewBottom = nestedScrollViewTop + nestedScrollView.height
 
-        Log.d("Scroll", "shadowView: ${shadowViewTop} ${shadowViewBottom} nested : ${nestedScrollViewTop} ${nestedScrollViewBottom}")
-        Log.d("Scroll", "threshold: ${shadowViewTop - nestedScrollViewTop} ${nestedScrollViewBottom - shadowViewBottom}")
-
         val displayMetrics = shadowView.resources.displayMetrics
         val calculatedOffset = (((moveOffset * displayMetrics.density) / 5) * 5).toInt()
-        Log.d("Scroll", "settingNestedScrollViewByShadowView: ${calculatedOffset}}")
 
         if (shadowViewTop - nestedScrollViewTop < moveThreshold) {
             nestedScrollView.smoothScrollBy(0, -calculatedOffset)
