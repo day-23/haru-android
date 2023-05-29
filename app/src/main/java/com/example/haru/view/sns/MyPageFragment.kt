@@ -20,15 +20,18 @@ import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSnsMypageBinding
 import com.example.haru.view.adapter.MediaAdapter
+import com.example.haru.view.adapter.MediaTagAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
-class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
+class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaTagClicked{
     private lateinit var binding: FragmentSnsMypageBinding
     private lateinit var feedRecyclerView: RecyclerView
     private lateinit var mediaRecyclerView: RecyclerView
+    private lateinit var tagRecyclerView: RecyclerView
     private lateinit var feedAdapter: SnsPostAdapter
     private lateinit var mediaAdapter: MediaAdapter
+    private lateinit var tagAdapter: MediaTagAdapter
     private lateinit var mypageViewModel: MyPageViewModel
     private var click = false
     val userId = userId
@@ -63,6 +66,10 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         TODO("Not yet implemented")
     }
 
+    override fun onTagClicked(tagId: String) {
+        mypageViewModel.getFirstTagMedia(userId, tagId)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "MypageFragment - onCreate() called")
@@ -93,6 +100,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         mypageViewModel.init_page()
 
         mypageViewModel.getFirstMedia(userId)
+        mypageViewModel.getUserTags(userId)
 
         if(userId == com.example.haru.utils.User.id){
             isMyPage = true
@@ -144,6 +152,12 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         mediaAdapter = MediaAdapter(requireContext(), arrayListOf())
         mediaRecyclerView.adapter = mediaAdapter
 
+        tagRecyclerView = binding.mediaTags
+        tagAdapter = MediaTagAdapter(requireContext(), arrayListOf(), this)
+
+        tagRecyclerView.adapter = tagAdapter
+        tagRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
         mypageViewModel.Page.observe(viewLifecycleOwner){page ->
             val page = page.toString()
             mypageViewModel.getFeed(page, userId)
@@ -158,6 +172,9 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             mediaAdapter.firstPage(medias.data)
         }
 
+        mypageViewModel.Tags.observe(viewLifecycleOwner){tags ->
+            tagAdapter.newPage(ArrayList(tags))
+        }
         val scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -199,12 +216,12 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
 
         binding.mypageShowFeed.setOnClickListener {
             binding.feedRecycler.visibility = View.VISIBLE
-            binding.mediaRecycler.visibility = View.GONE
+            binding.mediaContainer.visibility = View.GONE
         }
 
         binding.mypageShowMedia.setOnClickListener {
             binding.feedRecycler.visibility = View.GONE
-            binding.mediaRecycler.visibility = View.VISIBLE
+            binding.mediaContainer.visibility = View.VISIBLE
         }
 
         mypageViewModel.FriendRequest.observe(viewLifecycleOwner){ result ->

@@ -168,6 +168,45 @@ class PostRepository() {
         callback(medias)
     }
 
+    suspend fun getFirstTagMedia(targetId: String, tagId: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstTagMedia(
+            userId,
+            targetId,
+            tagId
+        ).execute()
+
+        val medias: MediaResponse
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            medias = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            medias = MediaResponse(false, arrayListOf(), pagination())
+        }
+        callback(medias)
+    }
+
+    suspend fun getUserTags(targetId: String, callback: (tags : List<Tag>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getUserTags(
+            userId,
+            targetId
+        ).execute()
+
+        val tags: List<Tag>
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            tags = response.body()!!.data
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            tags = listOf()
+        }
+        callback(tags)
+    }
+
     //미디어
     suspend fun getMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
         Dispatchers.IO){

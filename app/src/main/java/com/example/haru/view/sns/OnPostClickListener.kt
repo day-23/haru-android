@@ -12,3 +12,7 @@ interface OnPostClickListener {
 
     fun onSetupClick(userId: String, postId: String, item: Post)
 }
+
+interface OnMediaTagClicked {
+    fun onTagClicked(tagId:String)
+}

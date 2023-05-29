@@ -102,6 +102,9 @@ class MyPageViewModel(): ViewModel() {
     private val _FirstMedia = MutableLiveData<MediaResponse>()
     val FirstMedia: LiveData<MediaResponse> = _FirstMedia
 
+    private val _Tags = MutableLiveData<List<Tag>>()
+    val Tags: LiveData<List<Tag>> = _Tags
+
 
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
@@ -148,6 +151,20 @@ class MyPageViewModel(): ViewModel() {
         var newMedia = MediaResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
             PostRepository.getFirstMedia(targetId) {
+                if (it.data.size > 0) { //get success
+                    newMedia = it
+                }
+            }
+            if(newMedia.success){
+                _FirstMedia.value = newMedia
+            }
+        }
+    }
+
+    fun getFirstTagMedia(targetId: String, tagId:String){
+        var newMedia = MediaResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            PostRepository.getFirstTagMedia(targetId, tagId) {
                 if (it.data.size > 0) { //get success
                     newMedia = it
                 }
@@ -417,6 +434,19 @@ class MyPageViewModel(): ViewModel() {
                 }
             }
             _Requests.value = Requests
+        }
+    }
+
+    //미디어 태그 구하기
+    fun getUserTags(targetId: String){
+        var tags = listOf<Tag>()
+        viewModelScope.launch {
+            PostRepository.getUserTags(targetId){
+                if(it.size > 0){
+                    tags = it
+                }
+            }
+            _Tags.value = tags
         }
     }
 

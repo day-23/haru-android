@@ -1,6 +1,7 @@
 package com.example.haru.data.api
 
 import com.example.haru.data.model.*
+import com.example.haru.data.model.Tag
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -77,7 +78,17 @@ interface PostService {
         @Body body: PatchCommentBody
     ): Call<EditCommentResponse>
 
+    @GET("post/{userId}/hashtags/{targetId}")
+    fun getUserTags(
+        @Path("userId") userId: String,
+        @Path("targetId") targetId: String
+    ): Call<TagResponse>
 
-
+    @GET("post/{userId}/posts/user/{targetId}/media/hashtag/{tagId}?page=1")
+    fun getFirstTagMedia(
+        @Path("userId") userId: String,
+        @Path("targetId") targetId: String,
+        @Path("tagId") tagId: String
+    ) : Call<MediaResponse>
 
 }
