@@ -1,6 +1,5 @@
 package com.example.haru.view.timetable
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Rect
 import android.os.Handler
@@ -10,7 +9,6 @@ import android.util.Log
 import android.view.DragEvent
 import android.view.View
 import android.view.ViewTreeObserver
-import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import androidx.core.widget.NestedScrollView
 import com.example.haru.viewmodel.TimetableViewModel
@@ -23,8 +21,9 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
 ) : View.OnDragListener{
     val layoutIndex = layoutIndex
     val shadowView = Button(context)
-    private val moveOffset = 50
+    private val moveOffset = 20
     private val moveThreshold = 50
+    private var isRunning = false
 
     /* 드래그 이벤트 중 스크롤뷰의 스크롤을 위한 코드 */
     private var lastScrollY = -1
@@ -33,7 +32,9 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
         override fun run() {
             settingNestedScrollViewByShadowView()
             // Schedule the next update
-//            handler.postDelayed(this, 100)
+            if (isRunning) {
+                handler.postDelayed(this, 100)
+            }
         }
     }
 
@@ -43,11 +44,17 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
         val draggedView = event.localState as TextView
 
         when (event.action) {
-            DragEvent.ACTION_DROP -> handleDropAction(targetFrameLayout, draggedView, event)
+            DragEvent.ACTION_DRAG_STARTED -> {
+                isRunning = true
+                handler.post(runnable)  // Start the recurring task
+            }
+            DragEvent.ACTION_DROP -> {
+                handleDropAction(targetFrameLayout, draggedView, event)
+                isRunning = false
+                handler.removeCallbacks(runnable)  // Stop the recurring task
+            }
             DragEvent.ACTION_DRAG_LOCATION -> handleDragLocationAction(targetFrameLayout, draggedView, event)
             DragEvent.ACTION_DRAG_EXITED -> handleDragExitedAction(targetFrameLayout)
-            DragEvent.ACTION_DRAG_STARTED -> handler.post(runnable)  // Start updating
-            DragEvent.ACTION_DRAG_ENDED -> handler.removeCallbacks(runnable)  // Stop updating
         }
         return true
     }
@@ -179,13 +186,17 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
         Log.d("Scroll", "shadowView: ${shadowViewTop} ${shadowViewBottom} nested : ${nestedScrollViewTop} ${nestedScrollViewBottom}")
         Log.d("Scroll", "threshold: ${shadowViewTop - nestedScrollViewTop} ${nestedScrollViewBottom - shadowViewBottom}")
 
+        val displayMetrics = shadowView.resources.displayMetrics
+        val calculatedOffset = (((moveOffset * displayMetrics.density) / 5) * 5).toInt()
+        Log.d("Scroll", "settingNestedScrollViewByShadowView: ${calculatedOffset}}")
 
-        if (shadowViewTop - nestedScrollViewTop < moveThreshold && lastScrollY != nestedScrollView.scrollY) {
-            lastScrollY = nestedScrollView.scrollY
-            nestedScrollView.smoothScrollBy(0, -moveOffset)
-        } else if (nestedScrollViewBottom - shadowViewBottom < moveThreshold && lastScrollY != nestedScrollView.scrollY) {
-            lastScrollY = nestedScrollView.scrollY
-            nestedScrollView.smoothScrollBy(0, moveOffset)
+        if (shadowViewTop - nestedScrollViewTop < moveThreshold) {
+            nestedScrollView.smoothScrollBy(0, -calculatedOffset)
+        } else if (nestedScrollViewBottom - shadowViewBottom < moveThreshold) {
+            nestedScrollView.smoothScrollBy(0, calculatedOffset)
+        } else {
+            // Stop the Runnable if none of the conditions are met
+            isRunning = false
         }
     }
 }

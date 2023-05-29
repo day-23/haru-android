@@ -382,8 +382,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
         val endDate = end.slice(IntRange(0,9))
         var endTime = "T$fixedHour:$fixedMin:00+09:00"
 
+
+        d("patchMoved", "patchMoved: ${fixedHour}, ${fixedMin}")
         if(fixedHour.toInt() >= 24){
-            endTime = "T24:00:00+09:00"
+            endTime = "T23:55:00+09:00"
         }
 
         Log.d("patchMoved", "이건 대체 뭐지? $start, ${endDate+endTime}")
