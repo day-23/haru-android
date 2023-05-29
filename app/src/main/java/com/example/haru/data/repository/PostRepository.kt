@@ -127,7 +127,7 @@ class PostRepository() {
         callback(liked)
     }
 
-    //내 피드
+    //피드
     suspend fun getMyFeed(page:String, targetId:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getMyFeed(
@@ -148,6 +148,46 @@ class PostRepository() {
         callback(posts)
     }
 
+    //미디어
+    suspend fun getFirstMedia(targetId: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstMedia(
+            userId,
+            targetId
+        ).execute()
+
+        val medias: MediaResponse
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            medias = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            medias = MediaResponse(false, arrayListOf(), pagination())
+        }
+        callback(medias)
+    }
+
+    //미디어
+    suspend fun getMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getMedia(
+            userId,
+            targetId,
+            lastCreatedAt
+        ).execute()
+
+        val medias: MediaResponse
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            medias = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            medias = MediaResponse(false, arrayListOf(), pagination())
+        }
+        callback(medias)
+    }
     //전체 댓글
     suspend fun getComment(postId: String, imageId: String, lastCreatedAt: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
         Dispatchers.IO){

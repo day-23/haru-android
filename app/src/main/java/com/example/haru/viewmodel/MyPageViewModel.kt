@@ -96,6 +96,12 @@ class MyPageViewModel(): ViewModel() {
     private val _Requests = MutableLiveData<FriendsResponse>()
     val Requests: LiveData<FriendsResponse> = _Requests
 
+    private val _Media = MutableLiveData<MediaResponse>()
+    val Media: LiveData<MediaResponse> = _Media
+
+    private val _FirstMedia = MutableLiveData<MediaResponse>()
+    val FirstMedia: LiveData<MediaResponse> = _FirstMedia
+
 
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
@@ -135,6 +141,20 @@ class MyPageViewModel(): ViewModel() {
             }
             _NewFeed.value = newPost
             _Feed.value = allPost
+        }
+    }
+
+    fun getFirstMedia(targetId: String){
+        var newMedia = MediaResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            PostRepository.getFirstMedia(targetId) {
+                if (it.data.size > 0) { //get success
+                    newMedia = it
+                }
+            }
+            if(newMedia.success){
+                _FirstMedia.value = newMedia
+            }
         }
     }
 

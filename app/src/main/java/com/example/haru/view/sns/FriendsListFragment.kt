@@ -106,6 +106,8 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         mypageViewModel.getFirstFriendsRequestList(targetId)
 
         mypageViewModel.FirstFriends.observe(viewLifecycleOwner){friends ->
+
+            Log.d("Friends", "${friends.pagination} :: ${friends.data}")
             val friendCount = friends.pagination.totalItems
             binding.friendslistFriendsCount.text = "친구 목록 $friendCount"
             if(isFriendList){

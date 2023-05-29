@@ -301,6 +301,7 @@
         android:paddingHorizontal="20dp">
 
         <LinearLayout
+            android:id="@+id/mypage_show_feed"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -321,6 +322,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/mypage_show_media"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -351,5 +353,13 @@
         app:layout_constraintTop_toBottomOf="@+id/select"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/media_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/select"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

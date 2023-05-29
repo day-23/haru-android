@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import BaseActivity
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,21 +12,23 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSnsMypageBinding
-import com.example.haru.view.adapter.MyFeedAdapter
+import com.example.haru.view.adapter.MediaAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
 class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
     private lateinit var binding: FragmentSnsMypageBinding
-    private lateinit var FeedRecyclerView: RecyclerView
+    private lateinit var feedRecyclerView: RecyclerView
+    private lateinit var mediaRecyclerView: RecyclerView
     private lateinit var feedAdapter: SnsPostAdapter
-    private lateinit var mediaAdapter: MyFeedAdapter
+    private lateinit var mediaAdapter: MediaAdapter
     private lateinit var mypageViewModel: MyPageViewModel
     private var click = false
     val userId = userId
@@ -89,6 +92,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
         mypageViewModel.init_page()
 
+        mypageViewModel.getFirstMedia(userId)
+
         if(userId == com.example.haru.utils.User.id){
             isMyPage = true
             binding.editProfile.text = "프로필 편집"
@@ -128,12 +133,16 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             }
         }
 
-        FeedRecyclerView = binding.feedRecycler
+        feedRecyclerView = binding.feedRecycler
         feedAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
-        FeedRecyclerView.adapter = feedAdapter
+        feedRecyclerView.adapter = feedAdapter
         val layoutManager = LinearLayoutManager(context)
-        FeedRecyclerView.layoutManager = layoutManager
+        feedRecyclerView.layoutManager = layoutManager
 
+        mediaRecyclerView = binding.mediaRecycler
+        mediaLayout()
+        mediaAdapter = MediaAdapter(requireContext(), arrayListOf())
+        mediaRecyclerView.adapter = mediaAdapter
 
         mypageViewModel.Page.observe(viewLifecycleOwner){page ->
             val page = page.toString()
@@ -145,16 +154,21 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             if(feeds.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
+        mypageViewModel.FirstMedia.observe(viewLifecycleOwner){medias ->
+            mediaAdapter.firstPage(medias.data)
+        }
+
         val scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!FeedRecyclerView.canScrollVertically(1)) {
+                if (!feedRecyclerView.canScrollVertically(1)) {
                     mypageViewModel.addPage()
-                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT)
                 }
             }
         }
-        FeedRecyclerView.addOnScrollListener(scrollListener)
+
+        feedRecyclerView.addOnScrollListener(scrollListener)
 
         binding.menuButton.setOnClickListener {
             if(click == false){
@@ -183,7 +197,17 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             }
         }
 
-        mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
+        binding.mypageShowFeed.setOnClickListener {
+            binding.feedRecycler.visibility = View.VISIBLE
+            binding.mediaRecycler.visibility = View.GONE
+        }
+
+        binding.mypageShowMedia.setOnClickListener {
+            binding.feedRecycler.visibility = View.GONE
+            binding.mediaRecycler.visibility = View.VISIBLE
+        }
+
+        mypageViewModel.FriendRequest.observe(viewLifecycleOwner){ result ->
             if(result){
                 if(friendStatus == 0) { //신청 성공
                     friendStatus = 1
@@ -213,6 +237,13 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             val fragmentManager = parentFragmentManager
             if (fragmentManager.backStackEntryCount > 0) {
                 fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
+        }
+
+        binding.mypageBack.setOnClickListener {
+            val fragmentManager = parentFragmentManager
+            if (fragmentManager.backStackEntryCount > 0) {
+                fragmentManager.popBackStack()
             }
         }
 
@@ -261,5 +292,29 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         binding.snsMenu.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
         binding.mypageBack.visibility = View.VISIBLE
         binding.mypageSetup.visibility = View.VISIBLE
+    }
+
+    fun mediaLayout(){
+        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return 1 // 각 아이템의 너비를 1로 설정
+            }
+        }
+        mediaRecyclerView.layoutManager = gridLayoutManager
+
+        mediaRecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                val position = parent.getChildAdapterPosition(view) // item position
+                val column = position % 3 // item column
+                if(column == 3) outRect.set(0, 0, 0, 3)
+                else outRect.set(0,0,3,3)
+            }
+        })
     }
 }

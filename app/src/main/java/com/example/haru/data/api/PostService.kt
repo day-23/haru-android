@@ -13,10 +13,17 @@ interface PostService {
     @GET("post/{userId}/posts/all?page=1")
     fun getFirstPosts(@Path("userId") userId: String) : Call<PostResponse>
 
-    @GET("post/{userId}/posts/user/{targetId}/feed")
+    @GET("post/{userId}/posts/user/{targetId}/feed") //TODO:lastCreatedAt 처리 해주어야함
     fun getMyFeed(@Path("userId") userId: String,
                   @Path("targetId") targetId : String,
                   @Query("page") page:String) : Call<PostResponse>
+
+    @GET("post/{userId}/posts/user/{targetId}/media?page=1")
+    fun getFirstMedia(@Path("userId") userId: String, @Path("targetId") targetId: String) : Call<MediaResponse>
+
+    @GET("post/{userId}/posts/user/{targetId}/media")
+    fun getMedia(@Path("userId") userId: String, @Path("targetId") targetId: String, @Query("lastCreatedAt") lastCreatedAt: String) : Call<MediaResponse>
+
     @GET("comment/{userId}/{postId}/{imageId}/comments/all")
     fun getComments(
         @Path("userId") userId: String,
