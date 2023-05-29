@@ -23,6 +23,8 @@ import com.example.haru.view.auth.LoginActivity
 import com.example.haru.view.checklist.ChecklistTodayFragment
 import com.example.haru.viewmodel.EtcViewModel
 import java.util.*
+import kotlin.math.round
+import kotlin.math.roundToInt
 
 class EtcFragment : Fragment() {
     private lateinit var binding: FragmentEtcBinding
@@ -98,9 +100,10 @@ class EtcFragment : Fragment() {
             binding.tvCompletedTodoCount.text = if (it.first == null) "0" else it.first.toString()
             binding.tvTotalTodoCount.text = if (it.second == null) "0" else it.second.toString()
 
+            Log.e("20191627", "pair $it")
             val percent = if (it.first != null && it.second != null) {
                 if (it.second == 0) 0
-                else it.first!! / it.second!! * 100
+                else (it.first!!.toFloat() / it.second!!.toFloat() * 100).roundToInt()
             } else
                 0
             binding.tvPercent.text = String.format(getString(R.string.percent), percent)

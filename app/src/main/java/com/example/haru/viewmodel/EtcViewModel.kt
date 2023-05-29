@@ -67,7 +67,7 @@ class EtcViewModel : ViewModel() {
     }
 
     // itemCount에 값 넣어주는 함수
-    fun getTodoStatistics(body: ScheduleRequest, callback: () -> Unit) {
+    private fun getTodoStatistics(body: ScheduleRequest, callback: () -> Unit) {
         viewModelScope.launch {
             etcRepository.getTodoStatistics(body) {
                 if (it?.success == true) {
@@ -81,7 +81,7 @@ class EtcViewModel : ViewModel() {
     }
 
     // 오늘 날짜 설정
-    fun setTodayYearMonth() {
+    private fun setTodayYearMonth() {
         val startDate: Date
         val endDate: Date
         FormatDate.cal.apply {
@@ -140,18 +140,17 @@ class EtcViewModel : ViewModel() {
     }
 
     // 하루와 함께한 날짜 계산
-    fun calculateWithHaru() {
-        val dateFormat = SimpleDateFormat("yyyyMMdd")
+    private fun calculateWithHaru() {
 
-
-        val startDate = dateFormat.parse(User.createdAt).time
-        val today = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
+        val startDate = FormatDate.cal.apply {
+            time = FormatDate.strToDate(User.createdAt)!!
+            Log.e("20191627", time.toString())
         }.time.time
 
+        val today = FormatDate.cal.apply {
+            time = Date()
+            Log.e("20191627", time.toString())
+        }.time.time
         _withHaru.value = (today - startDate) / (24 * 60 * 60 * 1000) + 1
     }
 
