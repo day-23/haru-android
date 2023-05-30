@@ -230,10 +230,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                 //내용 추출
                 for(data in TodoList.schedules){
-                    d("Schedules", "getSchedule:${data.repeatStart} ${data.repeatEnd}, ${data.content}, here smell")
                     data.repeatStart = zuluTimeStringToKoreaTimeString(data.repeatStart!!)
                     data.repeatEnd = zuluTimeStringToKoreaTimeString(data.repeatEnd!!)
-                    d("Schedules", "getSchedule:${data.repeatStart} ${data.repeatEnd}, ${data.content}, convert after here smell")
 
                     val year_start = data.repeatStart?.slice(IntRange(0,3))
                     val month_start = data.repeatStart?.slice(IntRange(5,6))
@@ -244,8 +242,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                     val month_end = data.repeatEnd?.slice(IntRange(5,6))
                     val day_end = data.repeatEnd?.slice(IntRange(8,9))
                     val result_end = year_end+month_end+day_end
-                    Log.d("ALLDAYsss", "$data")
 
+                    /* 하루 이상 일정인지 아닌지 분리 */
                     if(data.repeatStart?.slice(IntRange(11,15)) != data.repeatEnd?.slice(IntRange(11,15)) && result_start == result_end){ //하루치 일정
                         when(result_start){
                             date[0] -> IndexList[0].add(data)
@@ -261,10 +259,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                         IndexList_allday.add(data)// 하루종일 or 하루이상 일정
                     }
                 }
-                Log.d("ALLDAYsss", "index : $IndexList")
-                Log.d("ALLDAYsss", "index : $IndexList_allday")
             }
-            d(TAG, "init_value: ${IndexList}")
 
             _Schedules.value = IndexList
             _SchedulesAllday.value = IndexList_allday
