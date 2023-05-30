@@ -46,8 +46,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Schedules : LiveData<ArrayList<ArrayList<Schedule>>>
         get() = _Schedules
 
-    private val _SchedulesAllday = MutableLiveData<ArrayList<Schedule>>()
-    val SchedulesAllday: LiveData<ArrayList<Schedule>>
+    private val _SchedulesAllday = MutableLiveData<ArrayList<ScheduleCalendarData>>()
+    val SchedulesAllday: LiveData<ArrayList<ScheduleCalendarData>>
         get() = _SchedulesAllday
 
     val categoryAndSchedulesCombinedData: LiveData<Pair<List<Category>?, ArrayList<ArrayList<Schedule>>>> =
@@ -57,7 +57,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
             }
         }
 
-    val categoryAndSchedulesAlldayCombinedData: LiveData<Pair<List<Category>?, ArrayList<Schedule>>> =
+    val categoryAndSchedulesAlldayCombinedData: LiveData<Pair<List<Category>?, ArrayList<ScheduleCalendarData>>> =
         Transformations.switchMap(_liveCategoryList) { categoryList: List<Category>? ->
             Transformations.map(_SchedulesAllday) { schedulesAllday ->
                 Pair(categoryList, schedulesAllday)
@@ -82,7 +82,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var dayslist: ArrayList<String> = ArrayList()
     var Datelist: ArrayList<String> = ArrayList()
     var IndexList: ArrayList<ArrayList<Schedule>> = ArrayList()
-    var IndexList_allday: ArrayList<Schedule> = ArrayList()
+    var IndexList_allday: ArrayList<ScheduleCalendarData> = ArrayList()
     var timetable_today = ""
     init {
         timetable_today = SimpleDateFormat("yyyyMMdd").format(Date(calendar.get(Calendar.YEAR) - 1900, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)))
@@ -231,8 +231,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 for(parsedSchedule in parsedScheduleList){
                     val (schedule, position, cnt, timeInterval) = parsedSchedule
 
-                    d("parsedSchedule", "${schedule.content}, ${schedule.repeatOption}:")
-
                     /* 상록이 코드 기준 데이터 포맷 맞추기 */
                     val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
                     val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
@@ -252,10 +250,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                     d("parsedSchedule", "${schedule.content}, ${scheduleStartDate}, ${scheduleEndDate}, ${schedule.isAllDay}, ${schedule.repeatOption}, ${position}:")
 
-
                     /* 일정이 하루 종일이거나, 반복 일정이 아니면서 시작 날짜와 끝 날짜가 다를 경우. */
                     if(schedule.isAllDay || schedule.repeatOption == null && scheduleStartDate != scheduleEndDate){
-                        IndexList_allday.add(schedule)
+                        IndexList_allday.add(parsedSchedule)
                         continue
                     }
 
@@ -267,7 +264,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
 
                         }else {/* 2일 연속 일정 timeInterval 존재하면 무조건 연속된 일정 */
-                            IndexList_allday.add(schedule)
+                            d("parsedSchedule", "getSchedule: timeInterval: ${timeInterval}")
+                            IndexList_allday.add(parsedSchedule)
                         }
 
                         continue
@@ -463,12 +461,12 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
 
             var repeatStart: Date? = null
-            var repeateEnd: Date? = null
+            var repeatEnd: Date? = null
 
             val repeatOption = schedule.repeatOption
             val repeatValue = schedule.repeatValue
 
-            repeateEnd = schedule.repeatEnd?.let { serverformat.parse(it) }
+            repeatEnd = schedule.repeatEnd?.let { serverformat.parse(it) }
             repeatStart = schedule.repeatStart?.let { serverformat.parse(it) }
 
 
@@ -483,7 +481,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                             calendar.time = dateformat.parse(startDate) as Date
 
-                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
                                 && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
 
                                 if (date_comparison(calendar.time, repeatStart!!) >= 0) {
@@ -501,7 +499,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                             calendar.time = dateformat.parse(startDate)
 
-                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
                                 && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
 
                                 if (date_comparison(calendar.time, repeatStart!!) >= 0) {
@@ -526,7 +524,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                             calendar.time = dateformat.parse(startDate)
 
-                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
                                 && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
 
                                 if (date_comparison(calendar.time, repeatStart!!) >= 0) {
@@ -551,7 +549,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             var cnt = 0
                             calendar.time = dateformat.parse(startDate)
 
-                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
                                 && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
 
                                 if (date_comparison(calendar.time, repeatStart!!) >= 0) {
@@ -572,7 +570,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
                                 && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
 
                                 if (date_comparison(calendar.time, repeatStart!!) >= 0) {
@@ -609,7 +607,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
                                 && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
 
                                 val startCalendar = Calendar.getInstance()
@@ -633,7 +631,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
                                 && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
 
                                 val startCalendar = Calendar.getInstance()
@@ -657,7 +655,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
                                 && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
 
                                 val startCalendar = Calendar.getInstance()
@@ -681,7 +679,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
                                 && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
 
                                 val startCalendar = Calendar.getInstance()
@@ -713,7 +711,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                 while (date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
                     if (date_comparison(calendar.time, repeatStart!!) >= 0
-                        && (repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)) {
+                        && (repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)) {
                         if(!start) {
                             startcnt = cnt
                             start = true

@@ -13,6 +13,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
@@ -21,15 +22,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.Schedule
+import com.example.haru.data.model.ScheduleCalendarData
 import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import kotlinx.coroutines.launch
-import java.time.Duration
-import java.time.LocalTime
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
@@ -179,9 +179,9 @@ class TimetableFragment : Fragment() {
         }
 
         //하루종일 or 2일이상 일정을 바인딩
-        timetableviewModel.categoryAndSchedulesAlldayCombinedData.observe(viewLifecycleOwner) { (categories, days) ->
+        timetableviewModel.categoryAndSchedulesAlldayCombinedData.observe(viewLifecycleOwner) { (categories, scheduleCalendarData) ->
             binding.daysTable.removeAllViews()
-            drawDaysSchedule(binding.daysTable, categories, days, timetableviewModel.getDates())
+            drawDaysSchedule(binding.daysTable, categories, scheduleCalendarData, timetableviewModel.getDates())
         }
 
         //드래그 앤 드랍시 이동한 뷰의 정보
@@ -221,84 +221,120 @@ class TimetableFragment : Fragment() {
     }
 
     //하루이상의 할일을 동적으로 바인딩
-    private fun drawDaysSchedule(table: ViewGroup, categories: List<Category>? , days: ArrayList<Schedule>, dates: ArrayList<String>) {
+    private fun drawDaysSchedule(table: ViewGroup, categories: List<Category>?, scheduleCalendarDataList: ArrayList<ScheduleCalendarData>, dates: ArrayList<String>) {
         val displayMetrics = resources.displayMetrics
-        val deleteSchedule = ArrayList<Schedule>()
-        while (days.size > 0) {
+        val deleteSchedule = ArrayList<ScheduleCalendarData>()
+
+        while (scheduleCalendarDataList.size > 0) {
             val layout1 = FrameLayout(requireContext())
             val rowParams1 = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, Math.round(18 * displayMetrics.density))
-
             layout1.layoutParams = rowParams1
 
             var occupied = 0
             deleteSchedule.clear()
 
-            for (day in days) {
-                val startDate = day.repeatStart?.slice(IntRange(0, 3)) + day.repeatStart?.slice(IntRange(5, 6)) + day.repeatStart?.slice(IntRange(8, 9))
-                val endDate = day.repeatEnd?.slice(IntRange(0, 3)) + day.repeatEnd?.slice(IntRange(5, 6)) + day.repeatEnd?.slice(IntRange(8, 9))
+            for (scheduleCalendarData in scheduleCalendarDataList) {
+                val schedule = scheduleCalendarData.schedule
+                /* 반복 일정이 아닌 경우 */
 
+                var startDate = schedule.repeatStart?.slice(IntRange(0, 3)) + schedule.repeatStart?.slice(IntRange(5, 6)) + schedule.repeatStart?.slice(IntRange(8, 9))
+                var endDate = schedule.repeatEnd?.slice(IntRange(0, 3)) + schedule.repeatEnd?.slice(IntRange(5, 6)) + schedule.repeatEnd?.slice(IntRange(8, 9))
+                
+                // 반복 일정인 경우 -> startDate, endDate를 다시 구하기
+                if(!schedule.repeatValue.isNullOrEmpty()){
+                    scheduleCalendarData.position
+
+                    /* 반복 옵션의 현재 week에서 시작 날짜 구하기 */
+                    val currentWeekValue = timetableviewModel.Selected.value
+                    val year = currentWeekValue?.year?.dropLast(1).toString().padStart(4, '0')
+                    val week = currentWeekValue?.month?.dropLast(1).toString().padStart(2, '0')
+                    val date = timetableviewModel.Days.value?.get(scheduleCalendarData.position)?.padStart(2, '0')
+
+                    startDate = year+week+date
+
+                    // Reformat newDate to match the format in the originalDateTime
+                    val reformattedNewDate = "${year}-${week}-${date}"
+                    val newDateTime = "${reformattedNewDate}${schedule.repeatStart?.substring(10)}" // "2024-05-12T21:00:00+09:00"
+                    val originalDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxx")
+                    val originalDateTime = OffsetDateTime.parse(newDateTime, originalDateTimeFormatter)
+
+                    // Add seconds
+                    val newEndDateTime = schedule.repeatValue.drop(1).toLong().let { originalDateTime.plusSeconds(it/1000) }
+
+                    // Convert new date-time back to string
+                    val newDateTimeString = newEndDateTime?.format(originalDateTimeFormatter)
+                    endDate = newDateTimeString?.slice(IntRange(0, 3)) + newDateTimeString?.slice(IntRange(5, 6)) + newDateTimeString?.slice(IntRange(8, 9))
+                }
 
                 if (startDate.toInt() > occupied) {
-                    val layout2 = LinearLayout(requireContext())
-                    val rowParams2 = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT
-                    )
-                    layout2.layoutParams = rowParams2
-                    deleteSchedule.add(day)
                     val period = (dates.indexOf(endDate) - dates.indexOf(startDate)) + 1
                     val position = dates.indexOf(startDate)
 
-                    val view = TextView(requireContext())
-                    view.text = day.content
-                    view.textSize = 12f
-                    view.gravity = Gravity.CENTER
-                    view.setPadding(2, 2, 2, 2)
-                    view.maxLines = 1
-
-                    // 카테고리, 글자색 색칠하기
-                    colorCategoryAndTextColorOnScheduleView(view, day, categories, 2, 4)
-
-                    val frontPadding = View(requireContext())
-                    val backPadding = View(requireContext())
-                    view.setOnClickListener {
-                        Toast.makeText(requireContext(), "${day.content}", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-
-                    val frontParams = LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        position.toFloat()
-                    )
-                    val backParams = LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        (7 - (position + period).toFloat())
-                    )
-                    val itemParams = LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        period.toFloat()
-                    )
-
-                    view.layoutParams = itemParams
-                    frontPadding.layoutParams = frontParams
-                    backPadding.layoutParams = backParams
-                    layout2.addView(frontPadding)
-                    layout2.addView(view)
-                    layout2.addView(backPadding)
+                    layout1.addView(makeInnerLinearLayoutInDrawDaySchedules(schedule, categories, position, period))
+                    deleteSchedule.add(scheduleCalendarData)
                     occupied = endDate.toInt()
-                    layout1.addView(layout2)
                 }
             }
+
             for (item in deleteSchedule) {
-                Log.d(TAG, "DrawDays: ${item.repeatStart}")
-                days.remove(item)
+//                Log.d(TAG, "DrawDays: ${item.repeatStart}")
+                scheduleCalendarDataList.remove(item)
             }
             table.addView(layout1)
         }
     }
+
+    private fun makeInnerLinearLayoutInDrawDaySchedules(day : Schedule, categories: List<Category>?, position:Int, period : Int): LinearLayout{
+        val layout2 = LinearLayout(requireContext())
+        val rowParams2 = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        layout2.layoutParams = rowParams2
+
+        val view = TextView(requireContext())
+        view.text = day.content
+        view.textSize = 12f
+        view.gravity = Gravity.CENTER
+        view.setPadding(2, 2, 2, 2)
+        view.maxLines = 1
+
+        // 카테고리, 글자색 색칠하기
+        colorCategoryAndTextColorOnScheduleView(view, day, categories, 2, 4)
+
+        val frontPadding = View(requireContext())
+        val backPadding = View(requireContext())
+        view.setOnClickListener {
+            Toast.makeText(requireContext(), "${day.content}", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        val frontParams = LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            position.toFloat()
+        )
+        val backParams = LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            (7 - (position + period).toFloat())
+        )
+        val itemParams = LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            period.toFloat()
+        )
+
+        view.layoutParams = itemParams
+        frontPadding.layoutParams = frontParams
+        backPadding.layoutParams = backParams
+        layout2.addView(frontPadding)
+        layout2.addView(view)
+        layout2.addView(backPadding)
+
+        return layout2
+    }
+
 
     //하나의 날짜내에서 그려지는 시간 일정을 동적으로 바인딩
     private fun drawTimesSchedules(table: ViewGroup, categories: List<Category>?, schedules: ArrayList<Schedule>) {
