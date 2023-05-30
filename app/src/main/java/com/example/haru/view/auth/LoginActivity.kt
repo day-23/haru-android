@@ -48,8 +48,7 @@ class LoginActivity : BaseActivity() {
             //하드코딩된 값 쓰고 싶으면 여기 넣으면됨
 //            User.id = "005224c0-eec1-4638-9143-58cbfc9688c5"
             User.id = "jts"
-            User.createdAt = "2023-05-28T00:00:00000"
-
+            User.createdAt = "2023-05-28T00:00:00.000Z"
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()

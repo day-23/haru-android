@@ -107,40 +107,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/layout_display"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/linear_border_up_bottom"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/display_icon" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingStart="10dp"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
-            android:text="화면"
-            android:textColor="@color/todo_description"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/arrow" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/layout_alarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -209,39 +175,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_plus_friend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/linear_border_up_bottom"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/plus_friend_icon" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingStart="10dp"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
-            android:text="친구 초대"
-            android:textColor="@color/todo_description"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/arrow" />
-
-    </LinearLayout>
 
     <View
         android:layout_width="0dp"

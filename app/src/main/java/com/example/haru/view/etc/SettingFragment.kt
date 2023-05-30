@@ -63,8 +63,6 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
         binding.layoutProtect.setOnClickListener(ClickListener())
 
-        binding.layoutDisplay.setOnClickListener(ClickListener())
-
         binding.layoutAlarm.setOnClickListener(ClickListener())
 
         binding.layoutInformation.setOnClickListener(ClickListener())
@@ -93,13 +91,6 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
                         .commit()
                 }
 
-                binding.layoutDisplay.id -> {
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, DisplayFragment(etcViewModel))
-                        .addToBackStack(null)
-                        .commit()
-                }
-
                 binding.layoutAlarm.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.fragments_frame, AlarmFragment(etcViewModel))
@@ -115,21 +106,23 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
                 }
 
                 binding.logout.id -> {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("Logout")
-                        .setMessage("Are you sure you want to log out?")
-                        .setPositiveButton("Yes") { dialog, which ->
-                            // User confirmed logout, perform the logout operation
-                            SharedPrefsManager.clear(App.instance)
-                            val intent = Intent(activity, LoginActivity::class.java)
-                            startActivity(intent)
-                            activity?.finish()
-                        }
-                        .setNegativeButton("No") { dialog, which ->
-                            // User cancelled logout, just close the dialog
-                            dialog.dismiss()
-                        }
-                        .show()
+                    val modal = EtcModalFragment()
+                    modal.show(parentFragmentManager, modal.tag)
+//                    AlertDialog.Builder(requireContext())
+//                        .setTitle("Logout")
+//                        .setMessage("Are you sure you want to log out?")
+//                        .setPositiveButton("Yes") { dialog, which ->
+//                            // User confirmed logout, perform the logout operation
+//                            SharedPrefsManager.clear(App.instance)
+//                            val intent = Intent(activity, LoginActivity::class.java)
+//                            startActivity(intent)
+//                            activity?.finish()
+//                        }
+//                        .setNegativeButton("No") { dialog, which ->
+//                            // User cancelled logout, just close the dialog
+//                            dialog.dismiss()
+//                        }
+//                        .show()
                 }
             }
         }
