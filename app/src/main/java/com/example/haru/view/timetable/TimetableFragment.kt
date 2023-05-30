@@ -255,7 +255,7 @@ class TimetableFragment : Fragment() {
                     view.maxLines = 1
 
                     // 카테고리, 글자색 색칠하기
-                    colorCategoryAndTextColorOnScheduleView(view, day, categories)
+                    colorCategoryAndTextColorOnScheduleView(view, day, categories, 2, 4)
 
                     val frontPadding = View(requireContext())
                     val backPadding = View(requireContext())
@@ -334,7 +334,7 @@ class TimetableFragment : Fragment() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
             unionLinearLayout.layoutParams = layoutParams
-            unionLinearLayout.setBackgroundColor(Color.parseColor("#FF0000"))
+//            unionLinearLayout.setBackgroundColor(Color.parseColor("#FF0000"))
 
             for (schedule in union) {
                 val scheduleView = makeScheduleViewInDrawTimesSchedule(schedule, categories)
@@ -363,9 +363,16 @@ class TimetableFragment : Fragment() {
         scheduleView.layoutParams = scheduleViewLayoutParams
         scheduleView.text = schedule.content
         scheduleView.textSize = 12f
-        scheduleView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        scheduleView.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
         scheduleView.gravity = Gravity.TOP
-        scheduleView.setPadding(6, 6, 6, 6)
+
+        val spacingInPxFromXD = 18f  // Adobe XD에서 제공하는 행간
+        val spacingInDp = spacingInPxFromXD / resources.displayMetrics.density
+        val spacingInPx = spacingInDp * resources.displayMetrics.density
+        scheduleView.setLineSpacing(spacingInPx,1f)
+
+        val paddingValue = 4 * displayMetrics.density.toInt()
+        scheduleView.setPadding(paddingValue, paddingValue, paddingValue, paddingValue)
 
         scheduleView.setOnClickListener {
             Toast.makeText(requireContext(), "${schedule.content}", Toast.LENGTH_SHORT)
@@ -380,7 +387,7 @@ class TimetableFragment : Fragment() {
         }
 
         // 카테고리, 글자색 색칠하기
-        colorCategoryAndTextColorOnScheduleView(scheduleView, schedule, categories)
+        colorCategoryAndTextColorOnScheduleView(scheduleView, schedule, categories, 0, 10)
         return scheduleView
     }
 
@@ -402,9 +409,9 @@ class TimetableFragment : Fragment() {
 
 
 
-    private fun colorCategoryAndTextColorOnScheduleView(scheduleView: TextView, schedule:Schedule, categories: List<Category>?) {
+    private fun colorCategoryAndTextColorOnScheduleView(scheduleView: TextView, schedule:Schedule, categories: List<Category>?, padding: Int, cornerRadius: Int) {
         val category = categories?.find { it.id == schedule.category?.id }
-        scheduleView.background = makeShapeDrawable(category?.color)
+        scheduleView.background = makeShapeDrawable(category?.color, padding, cornerRadius)
         if(colorList.indexOf(category?.color) in listOf(
                 0,1,2,6,7,8,12,13,14,15,
                 18,19,20,24,25,26,27,30,31,32,
@@ -474,7 +481,7 @@ class TimetableFragment : Fragment() {
     }
 
 
-    private fun makeShapeDrawable(color : String?): LayerDrawable {
+    private fun makeShapeDrawable(color : String?, padding: Int, cornerRadius: Int): LayerDrawable {
         val gd = GradientDrawable()
 
         if(color == null){
@@ -482,16 +489,16 @@ class TimetableFragment : Fragment() {
         }else{
             gd.setColor(Color.parseColor(color))
         }
-        gd.cornerRadius = 30f
+        gd.cornerRadius = cornerRadius * displayMetrics.density
 
         // Create another GradientDrawable as background
         val bg = GradientDrawable()
-        bg.setColor(Color.WHITE) // Set the color to white
-        bg.cornerRadius = 30f
+//        bg.setColor(Color.WHITE) // Set the color to white
+        bg.cornerRadius = cornerRadius * displayMetrics.density
 
         // Use a LayerDrawable to put two drawables together
         val ld = LayerDrawable(arrayOf(bg, gd))
-        ld.setLayerInset(1, 2, 2, 2, 2) // This is equivalent to padding 1dp to gd
+        ld.setLayerInset(1, padding, padding, padding, padding) // This is equivalent to padding 1dp to gd
 
         return ld
     }

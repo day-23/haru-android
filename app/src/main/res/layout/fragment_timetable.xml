@@ -345,48 +345,82 @@
                                 android:textColor="#191919"
                                 android:textSize="12sp" />
                         </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1728dp"
+                            />
+
                         <FrameLayout
                             android:id="@+id/sun_table"
                             android:layout_width="0dp"
                             android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1728dp"
+                            />
                         <FrameLayout
                             android:id="@+id/mon_table"
                             android:layout_width="0dp"
                             android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1728dp"
+                            />
                         <FrameLayout
                             android:id="@+id/tue_table"
                             android:layout_width="0dp"
                             android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1728dp"
+                            />
                         <FrameLayout
                             android:id="@+id/wed_table"
                             android:layout_width="0dp"
                             android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1728dp"
+                            />
                         <FrameLayout
                             android:id="@+id/thu_table"
                             android:layout_width="0dp"
                             android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1728dp"
+                            />
                         <FrameLayout
                             android:id="@+id/fri_table"
                             android:layout_width="0dp"
                             android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1728dp"
+                            />
                         <FrameLayout
                             android:id="@+id/sat_table"
                             android:layout_width="0dp"
                             android:layout_height="1728dp"
                             android:layout_weight="2"
                             android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1728dp"
+                            />
                         <LinearLayout
                             android:layout_width="20dp"
                             android:layout_height="match_parent" />
