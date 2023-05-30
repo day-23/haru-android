@@ -11,7 +11,7 @@ class ScheduleRepository() {
 
     suspend fun getScheduleByDates(startDate:String, endDate:String, body: ScheduleRequest, callback:(todoData : ScheduleByDateResponse) -> Unit) = withContext(Dispatchers.IO) {
         val response = scheduleService.getScheduleDates(
-            "jts",
+            com.example.haru.utils.User.id,
             body,
         ).execute()
         val data: GetScheduleResponse

@@ -5,8 +5,8 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface TodoService {
-    @GET("todo/{userId}/todos/date")
-    fun getTodoDates(@Path("userId") userId: String, @Query("startDate") startDate:String, @Query("endDate") endDate:String) : Call<GetTodoResponse>
+    @POST("todo/{userId}/todos/date")
+    fun getTodoDates(@Path("userId") userId: String, @Body body:ScheduleRequest): Call<GetTodoResponse>
   
     @GET("todo/{userId}/todos/main")
     fun getTodoMain(@Path("userId") userId: String) : Call<GetMainTodoResponse>

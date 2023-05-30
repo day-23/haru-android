@@ -1,5 +1,6 @@
 package com.example.haru.view.auth
 
+import BaseActivity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,13 +12,15 @@ import com.example.haru.databinding.ActivitySignUpBinding
 import com.example.haru.view.MainActivity
 import kotlinx.coroutines.launch
 
-class SignUpActivity : AppCompatActivity() {
+class SignUpActivity : BaseActivity() {
     private lateinit var binding: ActivitySignUpBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        this.adjustTopMargin(binding.headerTitle.id)
 
         //기본정보 입력 완료시에 회원가입 성공
         binding.btnSignup.setOnClickListener {
@@ -34,7 +37,7 @@ class SignUpActivity : AppCompatActivity() {
             else{
                 //회원가입 성공
                 lifecycleScope.launch {
-                    ProfileRepository().editProfileInit(haruId, nickname){
+                    ProfileRepository().editProfileInit(nickname, haruId){
                         val intent = Intent(this@SignUpActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -47,4 +50,11 @@ class SignUpActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        this.adjustTopMargin(binding.headerTitle.id)
+    }
+
+
 }

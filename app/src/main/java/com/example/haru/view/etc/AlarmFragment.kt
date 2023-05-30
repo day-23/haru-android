@@ -9,15 +9,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.databinding.FragmentAlarmBinding
 import com.example.haru.utils.User
+import com.example.haru.viewmodel.EtcViewModel
 
-class AlarmFragment : Fragment() {
+class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentAlarmBinding
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): AlarmFragment {
-            return AlarmFragment()
+        fun newInstance(etcViewModel: EtcViewModel): AlarmFragment {
+            return AlarmFragment(etcViewModel)
         }
     }
 

@@ -51,8 +51,31 @@ open class BaseActivity : AppCompatActivity() {
 
                 // Set the padding, preserving the current left, right and bottom padding values
                 view.setPadding(paddingLeft, (statusBarHeight * 1.4).toInt(), paddingRight, paddingBottom)
+                Log.d("Padding", "$statusBarHeight")
                 insets
             }
         }
     }
+
+    fun adjustTopMargin(viewId: Int, ratio : Float) {
+        findViewById<View>(viewId)?.let {
+            ViewCompat.setOnApplyWindowInsetsListener(it) { view, insets ->
+                val statusBarHeight: Int
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+                } else {
+                    statusBarHeight = insets.systemWindowInsetTop
+                }
+                val paddingLeft = view.paddingLeft
+                val paddingRight = view.paddingRight
+                val paddingBottom = view.paddingBottom
+
+                // Set the padding, preserving the current left, right and bottom padding values
+                view.setPadding(paddingLeft, (statusBarHeight * ratio).toInt(), paddingRight, paddingBottom)
+                Log.d("Padding", "$statusBarHeight")
+                insets
+            }
+        }
+    }
+
 }

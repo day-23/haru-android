@@ -19,6 +19,7 @@ import java.util.UUID
 
 class PostRepository() {
     private val postService = RetrofitClient.postService
+    val userId = com.example.haru.utils.User.id
 
     //게시글 추가
     suspend fun addPost(post: AddPost, callback: (postInfo: SendPost) -> Unit) = withContext(Dispatchers.IO) {
@@ -36,7 +37,7 @@ class PostRepository() {
         }
 
         // Call the addPost function from the PostService
-        val call = postService.addPost("jts", images, content, hashTags)
+        val call = postService.addPost(userId, images, content, hashTags)
         val response = call.execute()
 
         val postInfo = SendPost()
@@ -52,7 +53,7 @@ class PostRepository() {
 
     //게시글 삭제
     suspend fun deletePost(postId: String, callback: (delete: Boolean) -> Unit) = withContext(Dispatchers.IO) {
-        val call = postService.deletePost("jts", postId)
+        val call = postService.deletePost(userId, postId)
         val response = call.execute()
         var delete = false
         val data = response.body()
@@ -70,7 +71,7 @@ class PostRepository() {
     suspend fun getPost(lastCreatedAt:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getPosts(
-            "jts",
+            userId,
             lastCreatedAt
         ).execute()
 
@@ -90,7 +91,7 @@ class PostRepository() {
     suspend fun getFirstPost(callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getFirstPosts(
-            "jts",
+            userId,
         ).execute()
 
         val posts: ArrayList<Post>
@@ -110,7 +111,7 @@ class PostRepository() {
     suspend fun postLike(id:String, callback: (liked: Boolean) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.postLike(
-            "jts",
+            userId,
             id
         ).execute()
         val data: LikeResponse
@@ -126,11 +127,11 @@ class PostRepository() {
         callback(liked)
     }
 
-    //내 피드
+    //피드
     suspend fun getMyFeed(page:String, targetId:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getMyFeed(
-            "jts",
+            userId,
             targetId,
             page
         ).execute()
@@ -147,12 +148,91 @@ class PostRepository() {
         callback(posts)
     }
 
+    //미디어
+    suspend fun getFirstMedia(targetId: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstMedia(
+            userId,
+            targetId
+        ).execute()
+
+        val medias: MediaResponse
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            medias = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            medias = MediaResponse(false, arrayListOf(), pagination())
+        }
+        callback(medias)
+    }
+
+    suspend fun getFirstTagMedia(targetId: String, tagId: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstTagMedia(
+            userId,
+            targetId,
+            tagId
+        ).execute()
+
+        val medias: MediaResponse
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            medias = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            medias = MediaResponse(false, arrayListOf(), pagination())
+        }
+        callback(medias)
+    }
+
+    suspend fun getUserTags(targetId: String, callback: (tags : List<Tag>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getUserTags(
+            userId,
+            targetId
+        ).execute()
+
+        val tags: List<Tag>
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            tags = response.body()!!.data
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            tags = listOf()
+        }
+        callback(tags)
+    }
+
+    //미디어
+    suspend fun getMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getMedia(
+            userId,
+            targetId,
+            lastCreatedAt
+        ).execute()
+
+        val medias: MediaResponse
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            medias = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            medias = MediaResponse(false, arrayListOf(), pagination())
+        }
+        callback(medias)
+    }
     //전체 댓글
     suspend fun getComment(postId: String, imageId: String, lastCreatedAt: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
         Dispatchers.IO){
             Log.d("TAG", "post id recieve-------------- $postId")
             val response = postService.getComments(
-                "jts",
+                userId,
                 postId,
                 imageId,
                 lastCreatedAt
@@ -176,7 +256,7 @@ class PostRepository() {
         Dispatchers.IO){
         Log.d("TAG", "post id recieve-------------- $postId")
         val response = postService.getFirstComments(
-            "jts",
+            userId,
             postId,
             imageId,
         ).execute()
@@ -197,7 +277,7 @@ class PostRepository() {
         Dispatchers.IO){
         Log.d("TAG", "post id recieve-------------- $postId")
         val response = postService.writeComments(
-            "jts",
+            userId,
             postId,
             imageId,
             comment
@@ -212,7 +292,7 @@ class PostRepository() {
             comments = data.data
         }else{
             Log.d("TAG", "Fail to write comments")
-            comments = Comments("",User("","","","",false,0,0,0),"",-1,-1,true,"","")
+            comments = Comments("",User("","","","",0,0,0,false),"",-1,-1,true,"","")
         }
         callback(comments)
     }

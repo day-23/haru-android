@@ -26,6 +26,7 @@ import com.example.haru.data.model.Profile
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.databinding.FragmentSnsBinding
+import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.view.adapter.TimetableAdapter
@@ -45,7 +46,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
     private lateinit var snsPostAdapter: SnsPostAdapter
 
     override fun onCommentClick(postitem: Post) {
-        profileViewModel.getUserInfo("jts") //TODO:하드코딩값, 후에 개인 아이디로 바인딩
+        profileViewModel.getUserInfo(User.id)
 
         profileViewModel.UserInfo.observe(viewLifecycleOwner){user ->
             val newFrag = AddCommentFragment(postitem, user)
@@ -176,7 +177,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
         //내 피드 보기 클릭
         binding.myRecords.setOnClickListener {
-           onProfileClick("")
+           onProfileClick(User.id)
         }
 
         binding.addPost.setOnClickListener {
