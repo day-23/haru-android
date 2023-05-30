@@ -231,6 +231,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 for(parsedSchedule in parsedScheduleList){
                     val (schedule, position, cnt, timeInterval) = parsedSchedule
 
+                    d("parsedSchedule", "${schedule.content}, ${schedule.repeatOption}:")
+
                     /* 상록이 코드 기준 데이터 포맷 맞추기 */
                     val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
                     val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
@@ -247,20 +249,39 @@ class TimetableViewModel(val context : Context): ViewModel() {
                     val scheduleStartDate = schedule.repeatStart?.slice(IntRange(0,3)) + schedule.repeatStart?.slice(IntRange(5,6)) + schedule.repeatStart?.slice(IntRange(8,9))
                     val scheduleEndDate = schedule.repeatEnd?.slice(IntRange(0,3)) + schedule.repeatEnd?.slice(IntRange(5,6)) + schedule.repeatEnd?.slice(IntRange(8,9))
 
-                    /* 하루 이상 일정인지 아닌지 분리 */
-                    if(scheduleStartDate != scheduleEndDate || schedule.isAllDay){ // 하루종일 or 하루이상 일정
+
+                    d("parsedSchedule", "${schedule.content}, ${scheduleStartDate}, ${scheduleEndDate}, ${schedule.isAllDay}, ${schedule.repeatOption}, ${position}:")
+
+
+                    /* 일정이 하루 종일이거나, 반복 일정이 아니면서 시작 날짜와 끝 날짜가 다를 경우. */
+                    if(schedule.isAllDay || schedule.repeatOption == null && scheduleStartDate != scheduleEndDate){
                         IndexList_allday.add(schedule)
+                        continue
                     }
-                    else{
-                        when(scheduleStartDate){ //하루치 일정
-                            date[0] -> IndexList[0].add(schedule)
-                            date[1] -> IndexList[1].add(schedule)
-                            date[2] -> IndexList[2].add(schedule)
-                            date[3] -> IndexList[3].add(schedule)
-                            date[4] -> IndexList[4].add(schedule)
-                            date[5] -> IndexList[5].add(schedule)
-                            date[6] -> IndexList[6].add(schedule)
+
+                    /* 일정이 반복 일정일 경우 */
+                    if(schedule.repeatOption != null && schedule.repeatValue != null) {
+                        if (schedule.repeatValue[0] != 'T'){/* 단일 날짜 일정 */
+                            IndexList[position].add(schedule)
+                        }else {/* 2일 연속 일정 */
+
+
                         }
+
+
+
+
+                        continue
+                    }
+
+                    when (scheduleStartDate) { /* 하루치 일정 */
+                        date[0] -> IndexList[0].add(schedule)
+                        date[1] -> IndexList[1].add(schedule)
+                        date[2] -> IndexList[2].add(schedule)
+                        date[3] -> IndexList[3].add(schedule)
+                        date[4] -> IndexList[4].add(schedule)
+                        date[5] -> IndexList[5].add(schedule)
+                        date[6] -> IndexList[6].add(schedule)
                     }
                 }
             }
