@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountBinding
 import com.example.haru.viewmodel.EtcViewModel
 
@@ -57,6 +58,7 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
         })
 
         binding.ivBackIconAccount.setOnClickListener(ClickListener())
+        binding.accountDelete.setOnClickListener(ClickListener())
     }
 
     inner class ClickListener : View.OnClickListener {
@@ -64,6 +66,13 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
             when (v?.id) {
                 binding.ivBackIconAccount.id -> {
                     requireActivity().supportFragmentManager.popBackStack()
+                }
+
+                binding.accountDelete.id -> {
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragments_frame, AccountDeleteFragment())
+                        .addToBackStack(null)
+                        .commit()
                 }
             }
         }
