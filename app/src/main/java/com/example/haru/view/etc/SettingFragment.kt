@@ -13,16 +13,18 @@ import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.databinding.FragmentSettingBinding
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.utils.User
 import com.example.haru.view.auth.LoginActivity
+import com.example.haru.viewmodel.EtcViewModel
 
-class SettingFragment : Fragment() {
+class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentSettingBinding
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): SettingFragment {
-            return SettingFragment()
+        fun newInstance(etcViewModel: EtcViewModel): SettingFragment {
+            return SettingFragment(etcViewModel)
         }
     }
 
@@ -53,13 +55,13 @@ class SettingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
 
+        Log.e("20191627", User.toString())
+
         binding.ivBackIconSetting.setOnClickListener(ClickListener())
 
         binding.layoutAccount.setOnClickListener(ClickListener())
 
         binding.layoutProtect.setOnClickListener(ClickListener())
-
-        binding.layoutDisplay.setOnClickListener(ClickListener())
 
         binding.layoutAlarm.setOnClickListener(ClickListener())
 
@@ -77,55 +79,35 @@ class SettingFragment : Fragment() {
 
                 binding.layoutAccount.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AccountFragment())
+                        .replace(R.id.fragments_frame, AccountFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.layoutProtect.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, ProtectFragment())
-                        .addToBackStack(null)
-                        .commit()
-                }
-
-                binding.layoutDisplay.id -> {
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, DisplayFragment())
+                        .replace(R.id.fragments_frame, ProtectFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.layoutAlarm.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AlarmFragment())
+                        .replace(R.id.fragments_frame, AlarmFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.layoutInformation.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, InformationFragment())
+                        .replace(R.id.fragments_frame, InformationFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.logout.id -> {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("Logout")
-                        .setMessage("Are you sure you want to log out?")
-                        .setPositiveButton("Yes") { dialog, which ->
-                            // User confirmed logout, perform the logout operation
-                            SharedPrefsManager.clear(App.instance)
-                            val intent = Intent(activity, LoginActivity::class.java)
-                            startActivity(intent)
-                            activity?.finish()
-                        }
-                        .setNegativeButton("No") { dialog, which ->
-                            // User cancelled logout, just close the dialog
-                            dialog.dismiss()
-                        }
-                        .show()
+                    val modal = EtcModalFragment()
+                    modal.show(parentFragmentManager, modal.tag)
                 }
             }
         }

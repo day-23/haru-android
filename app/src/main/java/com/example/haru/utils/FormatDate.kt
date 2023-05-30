@@ -1,8 +1,6 @@
 package com.example.haru.utils
 
 import android.util.Log
-import androidx.core.util.rangeTo
-import com.example.haru.utils.FormatDate.cal
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId

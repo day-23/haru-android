@@ -35,4 +35,10 @@ interface UserService {
     fun getRequestList(@Path("userId") userId: String, @Query("lastCreatedAt") lastCreatedAt: String) : Call<FriendsResponse>
     @GET("friends/{userId}/request")
     fun getFirstRequestList(@Path("userId") userId: String, @Query("page") page: String) : Call<FriendsResponse>
+
+    @PATCH("user/{userId}/setting")
+    fun updateUserInfo(@Path("userId") userId: String, @Body body : Any) : Call<SuccessFail>
+
+    @DELETE("user/{userId}")
+    fun deleteUserAccount(@Path("userId") userId: String) : Call<SuccessFail>
 }
