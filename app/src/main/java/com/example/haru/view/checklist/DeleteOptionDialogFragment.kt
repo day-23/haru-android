@@ -1,8 +1,10 @@
 package com.example.haru.view.checklist
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,11 +24,16 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
     private var ratio: Int = 30
     private var type: DeleteType
     private var todoAddViewModel: TodoAddViewModel
+    var dismissEvent : DismissEvent? = null
 
+    interface DismissEvent {
+        fun onDismiss()
+    }
     init {
         this.type = type
         ratio = when (type) {
-            DeleteType.REPEAT_FRONT, DeleteType.REPEAT_MIDDLE, DeleteType.REPEAT_BACK -> 35
+            DeleteType.REPEAT_FRONT, DeleteType.REPEAT_BACK -> 35
+            DeleteType.REPEAT_MIDDLE -> 43
             DeleteType.NOT_REPEAT -> 27
         }
         this.todoAddViewModel = todoAddViewModel
@@ -71,6 +78,8 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
         return displayMetrics.heightPixels
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -78,13 +87,25 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
             binding.layoutParentBtnDelete.layoutParams as LinearLayout.LayoutParams
 
         params.weight = when (type) {
-            DeleteType.REPEAT_FRONT, DeleteType.REPEAT_MIDDLE, DeleteType.REPEAT_BACK -> {
-                binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
+            DeleteType.REPEAT_FRONT, DeleteType.REPEAT_BACK -> {
+                binding.layoutParentBtnDelete.apply {
+                    removeView(binding.btnOptionDelete)
+                    removeView(binding.btnOptionAfterDelete)
+                }
                 3f
             }
+
+            DeleteType.REPEAT_MIDDLE -> {
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
+                4f
+            }
+
             DeleteType.NOT_REPEAT -> {
-                binding.layoutParentBtnDelete.removeView(binding.btnOptionAllDelete)
-                binding.layoutParentBtnDelete.removeView(binding.btnOptionOneDelete)
+                binding.layoutParentBtnDelete.apply {
+                    removeView(binding.btnOptionAllDelete)
+                    removeView(binding.btnOptionOneDelete)
+                    removeView(binding.btnOptionAfterDelete)
+                }
                 binding.textViewDeleteInfo.text =
                     getString(R.string.deleteDescription).substring(0, 12)
                 2f
@@ -97,10 +118,20 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
 
         binding.btnOptionOneDelete.setOnClickListener(ButtonClickListener())
         binding.btnOptionAllDelete.setOnClickListener(ButtonClickListener())
+        binding.btnOptionAfterDelete.setOnClickListener(ButtonClickListener())
         binding.btnOptionDeleteCancel.setOnClickListener(ButtonClickListener())
         binding.btnOptionDelete.setOnClickListener(ButtonClickListener())
     }
 
+    override fun dismiss() {
+        super.dismiss()
+        dismissEvent?.onDismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        dismissEvent?.onDismiss()
+    }
     inner class ButtonClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
@@ -131,24 +162,65 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
                         }
                         else -> {
                             binding.btnOptionOneDelete.isClickable = true
+                            Log.e("20191627", "DeleteOption -> OneDelete 잘못된 Type")
                         }
                     }
                 }
 
                 binding.btnOptionAllDelete.id -> {
                     binding.btnOptionAllDelete.isClickable = false
-                    todoAddViewModel.deleteTodo {
-                        binding.btnOptionAllDelete.isClickable = true
-                        dismiss()
-                        requireActivity().supportFragmentManager.popBackStack()
+                    when (type) {
+                        DeleteType.REPEAT_FRONT, DeleteType.REPEAT_MIDDLE,
+                        DeleteType.REPEAT_BACK -> {
+                            todoAddViewModel.deleteTodo {
+                                binding.btnOptionAllDelete.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        else -> {
+                            binding.btnOptionAllDelete.isClickable = true
+                            Log.e("20191627", "DeleteOption -> AllDelete 잘못된 Type")
+                        }
+                    }
+//                    todoAddViewModel.deleteTodo {
+//                        binding.btnOptionAllDelete.isClickable = true
+//                        dismiss()
+//                        requireActivity().supportFragmentManager.popBackStack()
+//                    }
+                }
+
+                binding.btnOptionAfterDelete.id -> {
+                    binding.btnOptionAfterDelete.isClickable = false
+                    when (type) {
+                        DeleteType.REPEAT_MIDDLE -> {
+                            todoAddViewModel.deleteRepeatBackTodo {
+                                binding.btnOptionAfterDelete.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        else -> {
+                            binding.btnOptionAfterDelete.isClickable = true
+                            Log.e("20191627", "DeleteOption -> AfterDelete 잘못된 Type")
+                        }
                     }
                 }
+
                 binding.btnOptionDelete.id -> {
                     binding.btnOptionDelete.isClickable = false
-                    todoAddViewModel.deleteTodo {
-                        binding.btnOptionDelete.isClickable = true
-                        dismiss()
-                        requireActivity().supportFragmentManager.popBackStack()
+                    when (type) {
+                        DeleteType.NOT_REPEAT -> {
+                            todoAddViewModel.deleteTodo {
+                                binding.btnOptionDelete.isClickable = true
+                                dismiss()
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                        else -> {
+                            binding.btnOptionDelete.isClickable = true
+                            Log.e("20191627", "DeleteOption -> Delete 잘못된 Type")
+                        }
                     }
                 }
 

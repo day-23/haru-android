@@ -222,6 +222,7 @@ class CalendarViewModel : ViewModel() {
                                 it.todos[i].repeatOption == "매일" ){
                                 todoList.add(it.todos[i].copy())
                             } else {
+                                Log.d("반복투두", it.todos[i].toString())
                                 while (todayDate != null && date_comparison(todayDate, startdateFormat) < 0) {
                                     when (it.todos[i].repeatOption) {
                                         "매주" -> {
@@ -251,6 +252,7 @@ class CalendarViewModel : ViewModel() {
                                         }
 
                                         "매달" -> {
+                                            Log.d("반복투두", todayDate.toString())
                                             todayDate = FormatDate.nextStartDateEveryMonth(
                                                 it.todos[i].repeatValue!!,
                                                 today,
@@ -288,12 +290,6 @@ class CalendarViewModel : ViewModel() {
                             todoList.add(it.todos[i].copy())
                         }
                     }
-
-//                    for (i in 0 until todoList.size){
-//                        if (todoList[i].endDate != null){
-//                            todoList[i].endDate = FormatDate.calendarFormat(todoList[i].endDate!!)
-//                        }
-//                    }
 
                     for(i in 0 until it.schedules.size){
                         val schedule = it.schedules[i]
@@ -434,43 +430,6 @@ class CalendarViewModel : ViewModel() {
                                         }
                                     }
                                 }
-
-//                                if(todayDate == null){
-//                                    todayDate = serverformat.parse(today)
-//                                }
-//
-//                                if (todayDate != null) {
-//                                    val scheduleT = Calendar.getInstance()
-//                                    scheduleT.time = todayDate
-//
-//                                    when(schedule.repeatOption){
-//                                        "매주"->{
-//                                            scheduleT.add(Calendar.DAY_OF_MONTH,-7)
-//                                        }
-//                                        "격주"->{
-//                                            scheduleT.add(Calendar.DAY_OF_MONTH,-14)
-//                                        }
-//                                        "매달"->{
-//                                            scheduleT.add(Calendar.MONTH,-1)
-//                                        }
-//                                        "매년"->{
-//                                            scheduleT.add(Calendar.YEAR,-1)
-//                                        }
-//                                    }
-//
-//                                    todayDate = scheduleT.time
-//
-//                                    Log.d("dailyLog", todayDate.toString())
-//
-//                                    scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
-//
-//                                    Log.d("dailyLog", scheduleT.time.toString())
-//
-//                                    if(date_comparison(todayDate, startdateFormat) <= 0 &&
-//                                        date_comparison(scheduleT.time, startdateFormat) >= 0){
-//                                        scheduleList.add(schedule)
-//                                    }
-//                                }
                             } else {
                                 today = schedule.repeatStart!!
                                 val endtime = serverformat.parse(schedule.repeatEnd!!)
@@ -555,16 +514,6 @@ class CalendarViewModel : ViewModel() {
                             }
                         }
                     }
-
-//                    for (i in 0 until scheduleList.size){
-//                        if (scheduleList[i].repeatStart != null){
-//                            scheduleList[i].repeatStart = FormatDate.calendarFormat(scheduleList[i].repeatStart!!)
-//                        }
-//
-//                        if(scheduleList[i].repeatEnd != null){
-//                            scheduleList[i].repeatEnd = FormatDate.calendarFormat(scheduleList[i].repeatEnd!!)
-//                        }
-//                    }
 
                     _liveTodoList.postValue(todoList)
                     _liveScheduleList.postValue(scheduleList)

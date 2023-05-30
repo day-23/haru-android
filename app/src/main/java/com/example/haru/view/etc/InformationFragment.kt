@@ -8,15 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.databinding.FragmentInformationBinding
+import com.example.haru.viewmodel.EtcViewModel
 
-class InformationFragment : Fragment() {
+class InformationFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentInformationBinding
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): InformationFragment {
-            return InformationFragment()
+        fun newInstance(etcViewModel: EtcViewModel): InformationFragment {
+            return InformationFragment(etcViewModel)
         }
     }
 
@@ -42,6 +43,9 @@ class InformationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+
+
+
         binding.ivBackIconInformation.setOnClickListener(ClickListener())
     }
 

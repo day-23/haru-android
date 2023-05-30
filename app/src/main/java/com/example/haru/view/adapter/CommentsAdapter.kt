@@ -31,19 +31,19 @@ class CommentsAdapter(val context: Context,
 
     override fun onBindViewHolder(holder: CommentsAdapter.CommentsViewHolder, position: Int) {
         val item = itemList[position]
-        var disclosure = item.isPublic
+        var disclosure = item.isPublic!!
 
         Log.d("20191668", "${item.content} : ${item.isPublic}")
-        if(itemList[position].user.profileImage != "https://harus3.s3.ap-northeast-2.amazonaws.com/null") {
+        if(itemList[position].user!!.profileImage != "https://harus3.s3.ap-northeast-2.amazonaws.com/null") {
             Glide.with(holder.itemView.context)
-                .load(itemList[position].user.profileImage)
+                .load(itemList[position].user!!.profileImage)
                 .into(holder.profile)
         }
-        holder.userid.text = itemList[position].user.name
+        holder.userid.text = itemList[position].user!!.name
         holder.content.text = itemList[position].content
 
         holder.setup.setOnClickListener {
-            listener.onDeleteClick(itemList[position].user.id, itemList[position].id, item)
+            listener.onDeleteClick(itemList[position].user!!.id, itemList[position].id, item)
         }
 
         if(disclosure){
@@ -60,8 +60,8 @@ class CommentsAdapter(val context: Context,
                 holder.disclosure.setImageResource(R.drawable.on_write_comment)
                 disclosure = true
             }
-            val body = PatchCommentBody(item.x, item.y, disclosure)
-            listener.onPublicClick(item.user.id, item.id, body)
+            val body = PatchCommentBody(item.x!!, item.y!!, disclosure!!)
+            listener.onPublicClick(item.user!!.id, item.id, body)
         }
     }
 
@@ -70,7 +70,7 @@ class CommentsAdapter(val context: Context,
     }
 
     fun getLastComment(): String {
-        return itemList[itemCount - 1].createdAt
+        return itemList[itemCount - 1].createdAt!!
     }
 
     @SuppressLint("NotifyDataSetChanged")

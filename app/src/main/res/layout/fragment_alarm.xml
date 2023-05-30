@@ -88,6 +88,7 @@
             android:textSize="14sp" />
 
         <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/comment_alarm_switch"
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

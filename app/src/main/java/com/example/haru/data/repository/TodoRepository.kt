@@ -19,7 +19,7 @@ class TodoRepository() {
     ) = withContext(Dispatchers.IO) {
         val response =
             todoService.getTodoDates(
-                com.example.haru.utils.User.id,
+                User.id,
                 body
             )
                 .execute()

@@ -726,6 +726,67 @@ class CalendarItemFragment(val schedule: Schedule,
                             requireActivity().supportFragmentManager.popBackStack()
                         }
                     }
+
+                    3->{//이후 삭제하기
+                        Log.d("삭제옵션", "이후 삭제")
+                        var pre = calendarDateFormatter.format(todayDate)
+                        var preDate:Date? = null
+
+                        preDate = FormatDate.preStartDate(pre, schedule.repeatOption,schedule.repeatValue)
+
+                        Log.d("삭제옵션", preDate.toString())
+
+                        if(preDate != null) {
+                            if(schedule.repeatValue != null && schedule.repeatValue.contains("T")) {
+                                val repeatStartDate = calendarDateFormatter.parse(schedule.repeatStart)
+                                val datediff = dateDifference(
+                                    repeatStartDate,
+                                    preDate
+                                )
+
+                                when(schedule.repeatOption){
+                                    "매주"->{
+                                        val cal = Calendar.getInstance()
+                                        cal.time = preDate
+                                        cal.add(Calendar.DATE, -(datediff%7))
+                                        preDate = cal.time
+                                    }
+
+                                    "격주"->{
+                                        val cal = Calendar.getInstance()
+                                        cal.time = preDate
+                                        cal.add(Calendar.DATE, -(datediff%14))
+                                        preDate = cal.time
+                                    }
+
+                                    "매달"->{
+                                        if(repeatStartDate.date != preDate.date){
+                                            preDate.date = repeatStartDate.date
+                                        }
+                                    }
+
+                                    "매년"->{
+                                        if(repeatStartDate.month != preDate.month){
+                                            preDate.month = repeatStartDate.month
+                                        }
+
+                                        if(repeatStartDate.date != preDate.date){
+                                            preDate.date = repeatStartDate.date
+                                        }
+                                    }
+                                }
+                            }
+
+                            calendarviewmodel.deleteBackSchedule(
+                                schedule.id,
+                                ScheduleBackDelete(
+                                    serverFormatter.format(preDate)
+                                )
+                            ) {
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                    }
                 }
             }
 

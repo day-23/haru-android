@@ -37,7 +37,7 @@ class SignUpActivity : BaseActivity() {
             else{
                 //회원가입 성공
                 lifecycleScope.launch {
-                    ProfileRepository().editProfileInit(haruId, nickname){
+                    ProfileRepository().editProfileInit(nickname, haruId){
                         val intent = Intent(this@SignUpActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()

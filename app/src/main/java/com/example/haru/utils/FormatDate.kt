@@ -1,8 +1,6 @@
 package com.example.haru.utils
 
 import android.util.Log
-import androidx.core.util.rangeTo
-import com.example.haru.utils.FormatDate.cal
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -717,6 +715,8 @@ object FormatDate {
             val idxPlus = 1
             var flag = false
             var days = 32
+            Log.d("반복투두", (idx+idxPlus).toString())
+
             for (i in idx + idxPlus until 31)
                 if (repeatValue[i] == '1') {
                     days = i + 1
@@ -735,23 +735,27 @@ object FormatDate {
                 1
             )  // 만약 31일인 상태에서 3월에서 + 1하면 5월 1일로 간다. 그렇기 때문에 날짜를 1로 설정해줌
 
+            //5월 1일
+
+            //10 < 10
             if (days < idx + 1) {
                 calendar.add(Calendar.MONTH, 1)
                 if (calendar.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
                     calendar.add(Calendar.MONTH, 1)
                 calendar.set(Calendar.DAY_OF_MONTH, days)
             } else {
+                //31 < 10
                 if (calendar.getActualMaximum(Calendar.DAY_OF_MONTH) < days) {
                     calendar.add(Calendar.MONTH, 1)
                     if (repeatValue.substring(0, days - 1).contains('1')) {
                         days = repeatValue.indexOf('1') + 1
                     }
-                } else {
-                    calendar.add(Calendar.MONTH, 1)
                 }
                 calendar.set(Calendar.DAY_OF_MONTH, days)
             }
-            val nextEndDate = cal.time
+            val nextEndDate = calendar.time
+
+            Log.d("반복투두", nextEndDate.toString())
 
             if(repeatEndDateStr == null) return nextEndDate
 
