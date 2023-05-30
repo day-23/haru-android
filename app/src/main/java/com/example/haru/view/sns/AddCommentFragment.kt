@@ -44,6 +44,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
     var imageIndex = 0
     var CommentIsVisible = true
     val myInfo = myInfo
+    var onEdit = false
 
     //사진위 댓글 값
     var onWrite = false
@@ -106,7 +107,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
     }
 
     fun writeStart(){
-        val color = Color.argb(100, 25, 25, 25) // 204 represents 80% transparency black (255 * 0.8 = 204)
+        val color = Color.argb(100, 25, 25, 25)
         //writeContainer.setBackgroundColor(color)
         filterFrame.setBackgroundColor(color)
         binding.writeCommentBack.isGone = true
@@ -213,7 +214,6 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
         })
 
         binding.writeCommentCancel.setOnClickListener {
-
             if(onWrite && AddContent != "") {
                 val fragment = PopupComment(this)
                 val fragmentManager = childFragmentManager
@@ -253,8 +253,50 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
             }
         }
 
+        binding.addCommentEditComments.setOnClickListener {
+            if(onEdit){//편집 종료
+                editEnd()
+                onEdit = false
+            }else{//편집 시작
+                editStart()
+                onEdit = true
+            }
+        }
+
         viewpager.adapter = viewPagerAdapter
         return binding.root
+    }
+
+    fun editStart(){
+        val color = Color.argb(100, 25, 25, 25)
+        binding.editFilterFrame.setBackgroundColor(color)
+        binding.addCommentEditComments.setImageResource(R.drawable.edit_comment_blue_finger)
+        binding.addCommentEditText.setText("편집중")
+        binding.addCommentEditText.setTextColor(Color.parseColor("#1DAFFF"))
+        binding.addCommentResetIcon.visibility = View.VISIBLE
+        binding.addCommentResetText.visibility = View.VISIBLE
+        binding.lastPicture.visibility = View.GONE
+        binding.nextPicture.visibility = View.GONE
+        binding.addcommentIndex.visibility = View.GONE
+        binding.commentVisibility.visibility = View.GONE
+        binding.showTotalComment.visibility = View.GONE
+
+
+    }
+
+    fun editEnd(){
+        val color = Color.argb(0, 0, 0, 0)
+        binding.editFilterFrame.setBackgroundColor(color)
+        binding.addCommentEditComments.setImageResource(R.drawable.edit_comment_white_finger)
+        binding.addCommentEditText.setText("편집하기")
+        binding.addCommentEditText.setTextColor(Color.parseColor("#FDFDFD"))
+        binding.addCommentResetIcon.visibility = View.GONE
+        binding.addCommentResetText.visibility = View.GONE
+        binding.lastPicture.visibility = View.VISIBLE
+        binding.nextPicture.visibility = View.VISIBLE
+        binding.addcommentIndex.visibility = View.VISIBLE
+        binding.commentVisibility.visibility = View.VISIBLE
+        binding.showTotalComment.visibility = View.VISIBLE
     }
 
     @SuppressLint("MissingInflatedId")
