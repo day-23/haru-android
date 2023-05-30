@@ -222,6 +222,7 @@ class CalendarViewModel : ViewModel() {
                                 it.todos[i].repeatOption == "매일" ){
                                 todoList.add(it.todos[i].copy())
                             } else {
+                                Log.d("반복투두", it.todos[i].toString())
                                 while (todayDate != null && date_comparison(todayDate, startdateFormat) < 0) {
                                     when (it.todos[i].repeatOption) {
                                         "매주" -> {
@@ -251,6 +252,7 @@ class CalendarViewModel : ViewModel() {
                                         }
 
                                         "매달" -> {
+                                            Log.d("반복투두", todayDate.toString())
                                             todayDate = FormatDate.nextStartDateEveryMonth(
                                                 it.todos[i].repeatValue!!,
                                                 today,
