@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.databinding.ActivityLoginBinding
@@ -59,6 +60,12 @@ class EtcFragment : Fragment() {
         (activity as BaseActivity).adjustTopMargin(binding.etcHeader.id)
 
         Log.e("20191627", User.toString())
+
+        etcViewModel.profileImage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Glide.with(this)
+                .load(it)
+                .into(binding.ivProfile)
+        })
 
         // User Name -> nickname
         etcViewModel.name.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -123,8 +130,11 @@ class EtcFragment : Fragment() {
 
         binding.ivEtcDateLeft.setOnClickListener(ClickListener())
         binding.ivEtcDateRight.setOnClickListener(ClickListener())
-
         binding.settingIcon.setOnClickListener(ClickListener())
+
+
+        // 프로필 편집 클릭시 -> EditProfileFragment(userId)
+        // 친구 클릭시 -> FriendsListFragment(userId)
     }
 
     inner class ClickListener : View.OnClickListener {

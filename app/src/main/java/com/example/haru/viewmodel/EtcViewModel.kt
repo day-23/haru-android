@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.EtcRepository
+import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.User
@@ -18,6 +19,7 @@ import java.util.*
 class EtcViewModel : ViewModel() {
     private val etcRepository = EtcRepository()
     private val userRepository = UserRepository()
+    private val profileRepository = ProfileRepository()
 
     private val _todayYearMonth = MutableLiveData<String>()
     val todayYearMonth: LiveData<String> = _todayYearMonth
@@ -28,8 +30,21 @@ class EtcViewModel : ViewModel() {
     private val _withHaru = MutableLiveData<Long>()
     val withHaru: LiveData<Long> = _withHaru
 
+    // 기본 프사 지정이 되어야함.
+    private val _profileImage = MutableLiveData<String>()
+    val profileImage : LiveData<String> = _profileImage
+
     private val _name = MutableLiveData<String>()
     val name: LiveData<String> = _name
+
+    private val _introduction = MutableLiveData<String>()
+    val introduction : LiveData<String> = _introduction
+
+    private val _postCount = MutableLiveData<Int>()
+    val postCount : LiveData<Int> = _postCount
+
+    private val _friendCount = MutableLiveData<Int>()
+    val friendCount : LiveData<Int> = _friendCount
 
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
@@ -80,6 +95,24 @@ class EtcViewModel : ViewModel() {
                     Log.e("20191627", it.toString())
                 }
                 callback()
+            }
+        }
+    }
+
+    // ProfileRepository
+    // MypageViewModel -> getUserInfo
+    private fun getSnsInfo() {
+        viewModelScope.launch {
+            profileRepository.getUserInfo(User.id){
+                if (it.id != ""){
+                    _name.postValue(it.name)
+                    _introduction.postValue(it.introduction)
+                    _profileImage.postValue(it.profileImage)
+                    _postCount.postValue(it.postCount)
+//                    _friendCount.postValue(it.)
+                } else {
+                    //실패한 경우
+                }
             }
         }
     }

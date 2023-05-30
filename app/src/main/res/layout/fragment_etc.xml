@@ -57,10 +57,10 @@
                 android:orientation="horizontal"
                 android:paddingStart="20dp">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_profile"
                     android:layout_width="62dp"
-                    android:layout_height="62dp"
-                    android:background="@drawable/checklist_flag_star" />
+                    android:layout_height="62dp" />
 
                 <LinearLayout
                     android:layout_width="0dp"
