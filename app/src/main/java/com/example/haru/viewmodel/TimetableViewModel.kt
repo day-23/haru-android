@@ -224,415 +224,16 @@ class TimetableViewModel(val context : Context): ViewModel() {
             val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T23:59:59+09:00"
             val body = ScheduleRequest(startDate, endDate)
 
-            d("getSchedule", "getSchedule: $date")
+
             scheduleRepository.getScheduleByDates(date[0], date[6], body) { data ->
-                //내용 추출
-
-                val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
-                val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
-
-                val parsedScheduleList = ArrayList<ScheduleCalendarData>()
-
-                for (schedule in data.schedules) {
-                    schedule.repeatStart = FormatDate.calendarFormat(schedule.repeatStart!!)
-                    schedule.repeatEnd = FormatDate.calendarFormat(schedule.repeatEnd!!)
-
-
-                    var repeatStart: Date? = null
-                    var repeateEnd: Date? = null
-
-                    val repeatOption = schedule.repeatOption
-                    val repeatValue = schedule.repeatValue
-
-                    repeateEnd = schedule.repeatEnd?.let { serverformat.parse(it) }
-                    repeatStart = schedule.repeatStart?.let { serverformat.parse(it) }
-
-
-                    if (repeatOption != null && repeatValue != null) {
-                        if(!repeatValue.contains("T")) {
-                            val calendar = Calendar.getInstance()
-
-                            when (repeatOption) {
-                                "매일" -> {
-                                    Log.d("매일","개수")
-                                    var cnt = 0
-
-                                    calendar.time = dateformat.parse(startDate) as Date
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            parsedScheduleList.add(
-                                                ScheduleCalendarData(
-                                                    schedule,
-                                                    cnt,
-                                                    1
-                                                )
-                                            )
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
-
-                                "매주" -> {
-                                    var weeklycnt = 0
-                                    var cnt = 0
-
-                                    calendar.time = dateformat.parse(startDate)
-
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            if (repeatValue[weeklycnt] == '1') {
-                                                parsedScheduleList.add(ScheduleCalendarData(
-                                                    schedule,
-                                                    cnt,
-                                                    1
-                                                ))
-                                            }
-                                        }
-
-                                        weeklycnt++
-                                        cnt++
-
-                                        if (weeklycnt == 7) weeklycnt = 0
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
-
-                                "격주" -> {
-                                    var weeklycnt = 0
-                                    var cnt = 0
-                                    var twoweek = true
-
-                                    calendar.time = dateformat.parse(startDate)
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            if (repeatValue[weeklycnt] == '1' && twoweek) {
-                                                parsedScheduleList.add(ScheduleCalendarData(
-                                                    schedule,
-                                                    cnt,
-                                                    1
-                                                ))
-                                            }
-                                        }
-
-                                        cnt++
-                                        weeklycnt++
-
-                                        if (weeklycnt == 7) {
-                                            weeklycnt = 0
-                                            twoweek = !twoweek
-                                        }
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
-
-                                "매달" -> {
-                                    var cnt = 0
-
-                                    calendar.time = dateformat.parse(startDate)
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            if (repeatValue[calendar.time.date - 1] == '1') {
-                                                parsedScheduleList.add(ScheduleCalendarData(
-                                                    schedule,
-                                                    cnt,
-                                                    1
-                                                ))
-                                            }
-                                        }
-
-                                        cnt++
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
-
-                                "매년" -> {
-                                    var cnt = 0
-
-                                    val tempStartDate = dateformat.parse(startDate)
-
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
-                                                if (calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day)
-                                                    parsedScheduleList.add(ScheduleCalendarData(
-                                                        schedule,
-                                                        cnt,
-                                                        1
-                                                    ))
-                                            }
-                                        }
-
-                                        cnt++
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
-                            }
-                        } else {
-                            val newRepeatValue = repeatValue.replace("T","")
-                            val repeatstart = serverformat.parse(schedule.repeatStart)
-                            val calendar = Calendar.getInstance()
-
-                            calendar.time = repeatstart
-
-                            calendar.add(Calendar.MILLISECOND, newRepeatValue.toInt())
-
-                            val intervaldate = calendar.timeInMillis - repeatstart.time
-
-                            when (repeatOption) {
-                                "매주"->{
-                                    var cnt = 0
-                                    val tempStartDate = dateformat.parse(startDate)
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ){
-                                        val startCalendar = Calendar.getInstance()
-                                        startCalendar.time = repeatStart
-
-                                        while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                            startCalendar.add(Calendar.DAY_OF_MONTH, 7)
-                                        }
-
-                                        if (date_comparison(
-                                                calendar.time, startCalendar.time
-                                            ) == 0
-                                        ){
-                                            parsedScheduleList.add(ScheduleCalendarData(
-                                                schedule,
-                                                cnt,
-                                                null,
-                                                intervaldate.toInt()
-                                            ))
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH,1)
-                                    }
-                                }
-
-                                "격주"->{
-                                    var cnt = 0
-                                    val tempStartDate = dateformat.parse(startDate)
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ){
-                                        val startCalendar = Calendar.getInstance()
-                                        startCalendar.time = repeatStart
-
-                                        while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                            startCalendar.add(Calendar.DAY_OF_MONTH, 14)
-                                        }
-
-                                        if (date_comparison(
-                                                calendar.time, startCalendar.time!!
-                                            ) == 0
-                                        ){
-                                            parsedScheduleList.add(ScheduleCalendarData(
-                                                schedule,
-                                                cnt,
-                                                null,
-                                                intervaldate.toInt()
-                                            ))
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH,1)
-                                    }
-                                }
-
-                                "매달"->{
-                                    var cnt = 0
-                                    val tempStartDate = dateformat.parse(startDate)
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ){
-                                        val startCalendar = Calendar.getInstance()
-                                        startCalendar.time = repeatStart
-
-                                        while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                            startCalendar.add(Calendar.MONTH, 1)
-                                        }
-
-                                        if (date_comparison(
-                                                calendar.time, startCalendar.time!!
-                                            ) == 0
-                                        ){
-                                            parsedScheduleList.add(ScheduleCalendarData(
-                                                schedule,
-                                                cnt,
-                                                null,
-                                                intervaldate.toInt()
-                                            ))
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH,1)
-                                    }
-                                }
-
-                                "매년"->{
-                                    var cnt = 0
-                                    val tempStartDate = dateformat.parse(startDate)
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ){
-                                        val startCalendar = Calendar.getInstance()
-                                        startCalendar.time = repeatStart
-
-                                        while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                            startCalendar.add(Calendar.YEAR, 1)
-                                        }
-
-                                        if (date_comparison(
-                                                calendar.time, startCalendar.time!!
-                                            ) == 0
-                                        ){
-                                            parsedScheduleList.add(ScheduleCalendarData(
-                                                schedule,
-                                                cnt,
-                                                null,
-                                                intervaldate.toInt()
-                                            ))
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH,1)
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        var start = false
-                        val calendar = Calendar.getInstance()
-
-                        var startcnt = 0
-                        var daycnt = 0
-                        var cnt = 0
-                        val tempStartDate = dateformat.parse(startDate)
-                        calendar.time = tempStartDate
-
-                        while (date_comparison(calendar.time, dateformat.parse(
-                                endDate
-                            )) <= 0) {
-                            if (date_comparison(
-                                    calendar.time, repeatStart!!
-                                ) >= 0 && (repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
-                            ) {
-                                if(!start) {
-                                    startcnt = cnt
-                                    start = true
-                                }
-
-                                daycnt++
-                            }
-
-                            cnt++
-
-                            calendar.add(Calendar.DAY_OF_MONTH, 1)
-                        }
-
-                        parsedScheduleList.add(ScheduleCalendarData(
-                            schedule,
-                            startcnt,
-                            daycnt
-                        ))
-                    }
-                }
+                /* repeat data parsing */
+                val parsedScheduleList = parseRepeatSchedule(data.schedules, startDate, endDate)
 
                 // ---- 기존 코드 -----//
                 for(parsedSchedule in parsedScheduleList){
                     val (schedule, position, cnt, timeInterval) = parsedSchedule
-                    d("getSchedule", "${schedule.repeatStart}  ${schedule.repeatEnd}, ${schedule.content}: ")
 
+                    /* 상록이 코드 기준 데이터 포맷 맞추기 */
                     val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
                     val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
 
@@ -641,8 +242,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                     schedule.repeatStart = serverFormatter.format(format.parse(startDate))
                     schedule.repeatEnd = serverFormatter.format(format.parse(endDate))
-
-                    d("getSchedule 변환", "${schedule.repeatStart}  ${schedule.repeatEnd}, ${schedule.content}: ")
 
                     //format ex 20230531 20230601
                     val scheduleStartDate = schedule.repeatStart?.slice(IntRange(0,3)) + schedule.repeatStart?.slice(IntRange(5,6)) + schedule.repeatStart?.slice(IntRange(8,9))
@@ -832,430 +431,408 @@ class TimetableViewModel(val context : Context): ViewModel() {
         return first_date.compareTo(second_date)
     }
 
-    fun getAlldo(date : ArrayList<String>, maxi: Int){
-        viewModelScope.launch {
-            IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
-            val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
-            val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T23:59:59+09:00"
-            val body = ScheduleRequest(startDate, endDate)
 
-            //cnt 란 무엇인가?
+    private fun parseRepeatSchedule(schedules : List<Schedule>, startDate : String, endDate : String) : ArrayList<ScheduleCalendarData>{
+        val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+        val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
 
-            scheduleRepository.getScheduleByDates(date[0], date[6], body) {
-                val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
-                val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
+        val parsedScheduleList = ArrayList<ScheduleCalendarData>()
 
-                val scheduleList = ArrayList<ScheduleCalendarData>()
-
-                for (schedule in it.schedules) {
-                    if (schedule.repeatStart != null){
-                        schedule.repeatStart = FormatDate.calendarFormat(schedule.repeatStart!!)
-                    }
-
-                    if(schedule.repeatEnd != null){
-                        schedule.repeatEnd = FormatDate.calendarFormat(schedule.repeatEnd!!)
-                    }
-
-                    var repeatStart: Date? = null
-                    var repeateEnd: Date? = null
-
-                    val repeatOption = schedule.repeatOption
-                    var repeatValue = schedule.repeatValue
-
-                    if (schedule.repeatEnd != null) {
-                        repeateEnd = serverformat.parse(schedule.repeatEnd)
-                    }
-
-                    if (schedule.repeatStart != null) {
-                        repeatStart = serverformat.parse(schedule.repeatStart)
-                    }
-
-                    if (repeatOption != null && repeatValue != null) {
-                        if(!repeatValue.contains("T")) {
-                            val calendar = Calendar.getInstance()
-
-                            when (repeatOption) {
-                                "매일" -> {
-                                    Log.d("매일","개수")
-                                    var cnt = 0
-
-                                    calendar.time = dateformat.parse(startDate)
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            scheduleList.add(
-                                                ScheduleCalendarData(
-                                                    schedule,
-                                                    cnt,
-                                                    1
-                                                )
-                                            )
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
-
-                                "매주" -> {
-                                    var weeklycnt = 0
-                                    var cnt = 0
-
-                                    calendar.time = dateformat.parse(startDate)
+        for (schedule in schedules) {
+            schedule.repeatStart = FormatDate.calendarFormat(schedule.repeatStart!!)
+            schedule.repeatEnd = FormatDate.calendarFormat(schedule.repeatEnd!!)
 
 
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            if (repeatValue[weeklycnt] == '1') {
-                                                scheduleList.add(ScheduleCalendarData(
-                                                    schedule,
-                                                    cnt,
-                                                    1
-                                                ))
-                                            }
-                                        }
+            var repeatStart: Date? = null
+            var repeateEnd: Date? = null
 
-                                        weeklycnt++
-                                        cnt++
+            val repeatOption = schedule.repeatOption
+            val repeatValue = schedule.repeatValue
 
-                                        if (weeklycnt == 7) weeklycnt = 0
+            repeateEnd = schedule.repeatEnd?.let { serverformat.parse(it) }
+            repeatStart = schedule.repeatStart?.let { serverformat.parse(it) }
 
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
 
-                                "격주" -> {
-                                    var weeklycnt = 0
-                                    var cnt = 0
-                                    var twoweek = true
+            if (repeatOption != null && repeatValue != null) {
+                if(!repeatValue.contains("T")) {
+                    val calendar = Calendar.getInstance()
 
-                                    calendar.time = dateformat.parse(startDate)
+                    when (repeatOption) {
+                        "매일" -> {
+                            Log.d("매일","개수")
+                            var cnt = 0
 
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            if (repeatValue[weeklycnt] == '1' && twoweek) {
-                                                scheduleList.add(ScheduleCalendarData(
-                                                    schedule,
-                                                    cnt,
-                                                    1
-                                                ))
-                                            }
-                                        }
+                            calendar.time = dateformat.parse(startDate) as Date
 
-                                        cnt++
-                                        weeklycnt++
-
-                                        if (weeklycnt == 7) {
-                                            weeklycnt = 0
-                                            twoweek = !twoweek
-                                        }
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
-
-                                "매달" -> {
-                                    var cnt = 0
-
-                                    calendar.time = dateformat.parse(startDate)
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            if (repeatValue[calendar.time.date - 1] == '1') {
-                                                scheduleList.add(ScheduleCalendarData(
-                                                    schedule,
-                                                    cnt,
-                                                    1
-                                                ))
-                                            }
-                                        }
-
-                                        cnt++
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
-
-                                "매년" -> {
-                                    var cnt = 0
-
-                                    val tempStartDate = dateformat.parse(startDate)
-
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ) {
-                                        if (date_comparison(
-                                                calendar.time, repeatStart!!
-                                            ) >= 0
-                                        ) {
-                                            if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
-                                                if (calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day)
-                                                    scheduleList.add(ScheduleCalendarData(
-                                                        schedule,
-                                                        cnt,
-                                                        1
-                                                    ))
-                                            }
-                                        }
-
-                                        cnt++
-
-                                        calendar.add(Calendar.DAY_OF_MONTH, 1)
-                                    }
-                                }
-                            }
-                        } else {
-                            val newRepeatValue = repeatValue.replace("T","")
-                            val repeatstart = serverformat.parse(schedule.repeatStart)
-                            val calendar = Calendar.getInstance()
-
-                            calendar.time = repeatstart
-
-                            calendar.add(Calendar.MILLISECOND, newRepeatValue.toInt())
-
-                            val intervaldate = calendar.timeInMillis - repeatstart.time
-
-                            when (repeatOption) {
-                                "매주"->{
-                                    var cnt = 0
-                                    val tempStartDate = dateformat.parse(startDate)
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ){
-                                        val startCalendar = Calendar.getInstance()
-                                        startCalendar.time = repeatStart
-
-                                        while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                            startCalendar.add(Calendar.DAY_OF_MONTH, 7)
-                                        }
-
-                                        if (date_comparison(
-                                                calendar.time, startCalendar.time!!
-                                            ) == 0
-                                        ){
-                                            scheduleList.add(ScheduleCalendarData(
-                                                schedule,
-                                                cnt,
-                                                null,
-                                                intervaldate.toInt()
-                                            ))
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH,1)
-                                    }
-                                }
-
-                                "격주"->{
-                                    var cnt = 0
-                                    val tempStartDate = dateformat.parse(startDate)
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ){
-                                        val startCalendar = Calendar.getInstance()
-                                        startCalendar.time = repeatStart
-
-                                        while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                            startCalendar.add(Calendar.DAY_OF_MONTH, 14)
-                                        }
-
-                                        if (date_comparison(
-                                                calendar.time, startCalendar.time!!
-                                            ) == 0
-                                        ){
-                                            scheduleList.add(ScheduleCalendarData(
-                                                schedule,
-                                                cnt,
-                                                null,
-                                                intervaldate.toInt()
-                                            ))
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH,1)
-                                    }
-                                }
-
-                                "매달"->{
-                                    var cnt = 0
-                                    val tempStartDate = dateformat.parse(startDate)
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ){
-                                        val startCalendar = Calendar.getInstance()
-                                        startCalendar.time = repeatStart
-
-                                        while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                            startCalendar.add(Calendar.MONTH, 1)
-                                        }
-
-                                        if (date_comparison(
-                                                calendar.time, startCalendar.time!!
-                                            ) == 0
-                                        ){
-                                            scheduleList.add(ScheduleCalendarData(
-                                                schedule,
-                                                cnt,
-                                                null,
-                                                intervaldate.toInt()
-                                            ))
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH,1)
-                                    }
-                                }
-
-                                "매년"->{
-                                    var cnt = 0
-                                    val tempStartDate = dateformat.parse(startDate)
-                                    calendar.time = tempStartDate
-
-                                    while ((repeateEnd == null || date_comparison(
-                                            calendar.time, repeateEnd
-                                        ) <= 0) && date_comparison(
-                                            calendar.time, dateformat.parse(
-                                                endDate
-                                            )
-                                        ) <= 0
-                                    ){
-                                        val startCalendar = Calendar.getInstance()
-                                        startCalendar.time = repeatStart
-
-                                        while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                            startCalendar.add(Calendar.YEAR, 1)
-                                        }
-
-                                        if (date_comparison(
-                                                calendar.time, startCalendar.time!!
-                                            ) == 0
-                                        ){
-                                            scheduleList.add(ScheduleCalendarData(
-                                                schedule,
-                                                cnt,
-                                                null,
-                                                intervaldate.toInt()
-                                            ))
-                                        }
-
-                                        cnt++
-                                        calendar.add(Calendar.DAY_OF_MONTH,1)
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        var start = false
-                        val calendar = Calendar.getInstance()
-
-                        var startcnt = 0
-                        var daycnt = 0
-                        var cnt = 0
-                        val tempStartDate = dateformat.parse(startDate)
-                        calendar.time = tempStartDate
-
-                        while (date_comparison(calendar.time, dateformat.parse(
-                                endDate
-                            )) <= 0) {
-                            if (date_comparison(
-                                    calendar.time, repeatStart!!
-                                ) >= 0 && (repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                            while ((repeateEnd == null || date_comparison(
+                                    calendar.time, repeateEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
+                                    )
+                                ) <= 0
                             ) {
-                                if(!start) {
-                                    startcnt = cnt
-                                    start = true
+                                if (date_comparison(
+                                        calendar.time, repeatStart!!
+                                    ) >= 0
+                                ) {
+                                    parsedScheduleList.add(
+                                        ScheduleCalendarData(
+                                            schedule,
+                                            cnt,
+                                            1
+                                        )
+                                    )
                                 }
 
-                                daycnt++
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
                             }
-
-                            cnt++
-
-                            calendar.add(Calendar.DAY_OF_MONTH, 1)
                         }
 
-                        scheduleList.add(ScheduleCalendarData(
-                            schedule,
-                            startcnt,
-                            daycnt
-                        ))
+                        "매주" -> {
+                            var weeklycnt = 0
+                            var cnt = 0
+
+                            calendar.time = dateformat.parse(startDate)
+
+
+                            while ((repeateEnd == null || date_comparison(
+                                    calendar.time, repeateEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
+                                    )
+                                ) <= 0
+                            ) {
+                                if (date_comparison(
+                                        calendar.time, repeatStart!!
+                                    ) >= 0
+                                ) {
+                                    if (repeatValue[weeklycnt] == '1') {
+                                        parsedScheduleList.add(ScheduleCalendarData(
+                                            schedule,
+                                            cnt,
+                                            1
+                                        ))
+                                    }
+                                }
+
+                                weeklycnt++
+                                cnt++
+
+                                if (weeklycnt == 7) weeklycnt = 0
+
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+
+                        "격주" -> {
+                            var weeklycnt = 0
+                            var cnt = 0
+                            var twoweek = true
+
+                            calendar.time = dateformat.parse(startDate)
+
+                            while ((repeateEnd == null || date_comparison(
+                                    calendar.time, repeateEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
+                                    )
+                                ) <= 0
+                            ) {
+                                if (date_comparison(
+                                        calendar.time, repeatStart!!
+                                    ) >= 0
+                                ) {
+                                    if (repeatValue[weeklycnt] == '1' && twoweek) {
+                                        parsedScheduleList.add(ScheduleCalendarData(
+                                            schedule,
+                                            cnt,
+                                            1
+                                        ))
+                                    }
+                                }
+
+                                cnt++
+                                weeklycnt++
+
+                                if (weeklycnt == 7) {
+                                    weeklycnt = 0
+                                    twoweek = !twoweek
+                                }
+
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+
+                        "매달" -> {
+                            var cnt = 0
+
+                            calendar.time = dateformat.parse(startDate)
+
+                            while ((repeateEnd == null || date_comparison(
+                                    calendar.time, repeateEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
+                                    )
+                                ) <= 0
+                            ) {
+                                if (date_comparison(
+                                        calendar.time, repeatStart!!
+                                    ) >= 0
+                                ) {
+                                    if (repeatValue[calendar.time.date - 1] == '1') {
+                                        parsedScheduleList.add(ScheduleCalendarData(
+                                            schedule,
+                                            cnt,
+                                            1
+                                        ))
+                                    }
+                                }
+
+                                cnt++
+
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+
+                        "매년" -> {
+                            var cnt = 0
+
+                            val tempStartDate = dateformat.parse(startDate)
+
+                            calendar.time = tempStartDate
+
+                            while ((repeateEnd == null || date_comparison(
+                                    calendar.time, repeateEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
+                                    )
+                                ) <= 0
+                            ) {
+                                if (date_comparison(
+                                        calendar.time, repeatStart!!
+                                    ) >= 0
+                                ) {
+                                    if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
+                                        if (calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day)
+                                            parsedScheduleList.add(ScheduleCalendarData(
+                                                schedule,
+                                                cnt,
+                                                1
+                                            ))
+                                    }
+                                }
+
+                                cnt++
+
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+                    }
+                } else {
+                    val newRepeatValue = repeatValue.replace("T","")
+                    val repeatstart = serverformat.parse(schedule.repeatStart)
+                    val calendar = Calendar.getInstance()
+
+                    calendar.time = repeatstart
+
+                    calendar.add(Calendar.MILLISECOND, newRepeatValue.toInt())
+
+                    val intervaldate = calendar.timeInMillis - repeatstart.time
+
+                    when (repeatOption) {
+                        "매주"->{
+                            var cnt = 0
+                            val tempStartDate = dateformat.parse(startDate)
+                            calendar.time = tempStartDate
+
+                            while ((repeateEnd == null || date_comparison(
+                                    calendar.time, repeateEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
+                                    )
+                                ) <= 0
+                            ){
+                                val startCalendar = Calendar.getInstance()
+                                startCalendar.time = repeatStart
+
+                                while (date_comparison(startCalendar.time, calendar.time) < 0){
+                                    startCalendar.add(Calendar.DAY_OF_MONTH, 7)
+                                }
+
+                                if (date_comparison(
+                                        calendar.time, startCalendar.time
+                                    ) == 0
+                                ){
+                                    parsedScheduleList.add(ScheduleCalendarData(
+                                        schedule,
+                                        cnt,
+                                        null,
+                                        intervaldate.toInt()
+                                    ))
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH,1)
+                            }
+                        }
+
+                        "격주"->{
+                            var cnt = 0
+                            val tempStartDate = dateformat.parse(startDate)
+                            calendar.time = tempStartDate
+
+                            while ((repeateEnd == null || date_comparison(
+                                    calendar.time, repeateEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
+                                    )
+                                ) <= 0
+                            ){
+                                val startCalendar = Calendar.getInstance()
+                                startCalendar.time = repeatStart
+
+                                while (date_comparison(startCalendar.time, calendar.time) < 0){
+                                    startCalendar.add(Calendar.DAY_OF_MONTH, 14)
+                                }
+
+                                if (date_comparison(
+                                        calendar.time, startCalendar.time!!
+                                    ) == 0
+                                ){
+                                    parsedScheduleList.add(ScheduleCalendarData(
+                                        schedule,
+                                        cnt,
+                                        null,
+                                        intervaldate.toInt()
+                                    ))
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH,1)
+                            }
+                        }
+
+                        "매달"->{
+                            var cnt = 0
+                            val tempStartDate = dateformat.parse(startDate)
+                            calendar.time = tempStartDate
+
+                            while ((repeateEnd == null || date_comparison(
+                                    calendar.time, repeateEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
+                                    )
+                                ) <= 0
+                            ){
+                                val startCalendar = Calendar.getInstance()
+                                startCalendar.time = repeatStart
+
+                                while (date_comparison(startCalendar.time, calendar.time) < 0){
+                                    startCalendar.add(Calendar.MONTH, 1)
+                                }
+
+                                if (date_comparison(
+                                        calendar.time, startCalendar.time!!
+                                    ) == 0
+                                ){
+                                    parsedScheduleList.add(ScheduleCalendarData(
+                                        schedule,
+                                        cnt,
+                                        null,
+                                        intervaldate.toInt()
+                                    ))
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH,1)
+                            }
+                        }
+
+                        "매년"->{
+                            var cnt = 0
+                            val tempStartDate = dateformat.parse(startDate)
+                            calendar.time = tempStartDate
+
+                            while ((repeateEnd == null || date_comparison(
+                                    calendar.time, repeateEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
+                                    )
+                                ) <= 0
+                            ){
+                                val startCalendar = Calendar.getInstance()
+                                startCalendar.time = repeatStart
+
+                                while (date_comparison(startCalendar.time, calendar.time) < 0){
+                                    startCalendar.add(Calendar.YEAR, 1)
+                                }
+
+                                if (date_comparison(
+                                        calendar.time, startCalendar.time!!
+                                    ) == 0
+                                ){
+                                    parsedScheduleList.add(ScheduleCalendarData(
+                                        schedule,
+                                        cnt,
+                                        null,
+                                        intervaldate.toInt()
+                                    ))
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH,1)
+                            }
+                        }
                     }
                 }
+            } else {
+                var start = false
+                val calendar = Calendar.getInstance()
 
+                var startcnt = 0
+                var daycnt = 0
+                var cnt = 0
+                val tempStartDate = dateformat.parse(startDate)
+                calendar.time = tempStartDate
 
-//                    _liveScheduleCalendarList.postValue(scheduleList)
+                while (date_comparison(calendar.time, dateformat.parse(
+                        endDate
+                    )) <= 0) {
+                    if (date_comparison(
+                            calendar.time, repeatStart!!
+                        ) >= 0 && (repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                    ) {
+                        if(!start) {
+                            startcnt = cnt
+                            start = true
+                        }
 
-                _Schedules.value = IndexList
-                _SchedulesAllday.value = IndexList_allday
+                        daycnt++
+                    }
+
+                    cnt++
+
+                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                }
+
+                parsedScheduleList.add(ScheduleCalendarData(
+                    schedule,
+                    startcnt,
+                    daycnt
+                ))
             }
         }
+
+        return parsedScheduleList
     }
 }
