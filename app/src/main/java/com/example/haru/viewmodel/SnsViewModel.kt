@@ -109,7 +109,7 @@ class SnsViewModel: ViewModel() {
             PostRepository.getFirstComment(postId, imageId){
                 if(it.data.size > 0){
                     comments = it.data
-                    total = it.pagination.totalItems
+                    total = it.pagination.totalItems!!
                 }
             }
             _FirstComments.value = comments

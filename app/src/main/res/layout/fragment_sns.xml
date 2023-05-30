@@ -39,6 +39,7 @@
                 android:rotation="-90"/>
 
             <TextView
+                android:id="@+id/my_records"
                 android:layout_toStartOf="@id/search_button"
                 android:layout_width="70dp"
                 android:layout_height="32dp"
@@ -81,6 +82,10 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="8dp"
+            android:gravity="center"
+            android:textColor="#191919"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:text="친구피드"/>
         <View
             android:layout_width="match_parent"
@@ -92,19 +97,12 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="8dp"
+            android:gravity="center"
+            android:textColor="#191919"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:text="둘러보기"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#707070"/>
 
-        <TextView
-            android:id="@+id/my_records"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:text="내 기록" />
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -122,12 +120,22 @@
 
     <ImageView
         android:id="@+id/add_post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:src="@drawable/add_sns_post"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="20dp"/>
+
+    <ImageView
+        android:id="@+id/write_haru"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:src="@drawable/write_haru"
+        app:layout_constraintBottom_toTopOf = "@+id/add_post"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

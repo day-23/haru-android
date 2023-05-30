@@ -2,12 +2,14 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.icu.text.Transliterator.Position
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -78,12 +80,13 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(binding.commentsRootView.id)
+        (activity as BaseActivity).adjustTopMargin(binding.commentMenu.id, 1.1f)
     }
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.commentsRootView.id)
+        (activity as BaseActivity).adjustTopMargin(binding.commentMenu.id)
+        (activity as BaseActivity).adjustTopMargin(binding.commentMenu.id, 1.1f)
     }
 
     @SuppressLint("SetTextI18n")
@@ -207,13 +210,13 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
         val fragment = PopupDeleteComment(this)
         val fragmentManager = childFragmentManager
         val transaction = fragmentManager.beginTransaction()
-        transaction.add(R.id.anchor_popup_comments, fragment)
+        transaction.add(R.id.add_comment_anchor, fragment)
         transaction.commit()
     }
 
     fun deletePopup(){
         val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comments)
+        val fragment = fragmentManager.findFragmentById(R.id.add_comment_anchor)
 
         if(fragment != null) {
             val transaction = fragmentManager.beginTransaction()
@@ -226,6 +229,18 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
 class PopupDeleteComment(listener: onCommentClick): Fragment(){
     lateinit var popupbinding : PopupSnsCommentDeleteBinding
     val listener = listener
+
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(SnsFragment.TAG, "sns onViewCreated: ")
+        (activity as BaseActivity).adjustTopMargin(popupbinding.popupTotalCommentsContainer.id, 2f)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(popupbinding.popupTotalCommentsContainer.id, 2f)
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         popupbinding = PopupSnsCommentDeleteBinding.inflate(inflater, container, false)
 

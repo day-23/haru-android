@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import BaseActivity
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,35 +12,41 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSnsMypageBinding
-import com.example.haru.view.adapter.MyFeedAdapter
+import com.example.haru.view.adapter.MediaAdapter
+import com.example.haru.view.adapter.MediaTagAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
-class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
+class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaTagClicked{
     private lateinit var binding: FragmentSnsMypageBinding
-    private lateinit var FeedRecyclerView: RecyclerView
+    private lateinit var feedRecyclerView: RecyclerView
+    private lateinit var mediaRecyclerView: RecyclerView
+    private lateinit var tagRecyclerView: RecyclerView
     private lateinit var feedAdapter: SnsPostAdapter
-    private lateinit var mediaAdapter: MyFeedAdapter
+    private lateinit var mediaAdapter: MediaAdapter
+    private lateinit var tagAdapter: MediaTagAdapter
     private lateinit var mypageViewModel: MyPageViewModel
     private var click = false
     val userId = userId
+    var isMyPage = false
+    var friendStatus = 0
+    var selectedTag: MediaTagAdapter.MediaTagViewHolder? = null
 
     override fun onCommentClick(postitem: Post) {
-        mypageViewModel.getUserInfo(com.example.haru.utils.User.id) //TODO:하드코딩값 후에 알맞게 바인딩
+        mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
 
         mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
             val newFrag = AddCommentFragment(postitem,user)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-            if (!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmypage")
+            transaction.addToBackStack("snsmypage")
             transaction.commit()
         }
     }
@@ -48,9 +55,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         val newFrag = CommentsFragment(post)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
-        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-        if(!isSnsMainInBackStack)
-            transaction.addToBackStack("snsmypage")
+        transaction.addToBackStack("snsmypage")
         transaction.commit()
     }
 
@@ -60,6 +65,18 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
 
     override fun onSetupClick(userId: String, postId: String, item: Post) {
         TODO("Not yet implemented")
+    }
+
+    override fun onTagClicked(tag: Tag, holder : MediaTagAdapter.MediaTagViewHolder) {
+        if(selectedTag != holder) {
+            selectedTag = holder
+            holder.tag.setBackgroundResource(R.drawable.tag_btn_clicked)
+            mypageViewModel.getFirstTagMedia(userId, tag.id)
+        }else{
+            selectedTag = null
+            holder.tag.setBackgroundResource(R.drawable.tag_btn_custom)
+            mypageViewModel.getFirstMedia(userId)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,16 +106,22 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         Log.d("TAG", "MyPageFragment - onCreateView() called")
 
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
-        binding.myRecords.setTextColor(0xFF1DAFFF.toInt())
         mypageViewModel.init_page()
 
-        //TODO("내 계정으로 접근할때 조건문 추가해야함")
-        if(userId == "" || userId == com.example.haru.utils.User.id){
-            mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
+        mypageViewModel.getFirstMedia(userId)
+        mypageViewModel.getUserTags(userId)
+
+        if(userId == com.example.haru.utils.User.id){
+            isMyPage = true
             binding.editProfile.text = "프로필 편집"
             binding.profileShare.visibility = View.VISIBLE
+            binding.myPageMyRecord.visibility = View.GONE
+            mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
         }else{
-            binding.editProfile.text = "팔로우"
+            hideMytitle()
+            showFriendTitle()
+            isMyPage = false
+            binding.editProfile.text = "친구 신청"
             binding.profileShare.visibility = View.GONE
             mypageViewModel.getUserInfo(userId)
         }
@@ -107,11 +130,16 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             binding.profileName.text = user.name
             binding.profileIntroduction.text = user.introduction
             binding.profilePostCount.text = user.postCount.toString()
-            binding.profileFollowCount.text = user.followingCount.toString()
-            binding.profileFollowerCount.text = user.followerCount.toString()
-
-            if(user.isFollowing){
-                binding.editProfile.text = "팔로우 취소"
+            binding.profileFriendsCount.text = user.friendCount.toString()
+            friendStatus = user.friendStatus
+            if(!isMyPage) { //타인의 페이지라면
+                if (user.friendStatus == 0) {
+                    binding.editProfile.text = "친구 신청"
+                } else if (user.friendStatus == 1) {
+                    binding.editProfile.text = "신청 취소"
+                } else {
+                    binding.editProfile.text = "내 친구"
+                }
             }
 
             if(user.profileImage != "") {
@@ -122,18 +150,26 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             }
         }
 
-        FeedRecyclerView = binding.feedRecycler
+        feedRecyclerView = binding.feedRecycler
         feedAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
-        FeedRecyclerView.adapter = feedAdapter
+        feedRecyclerView.adapter = feedAdapter
         val layoutManager = LinearLayoutManager(context)
-        FeedRecyclerView.layoutManager = layoutManager
+        feedRecyclerView.layoutManager = layoutManager
 
+        mediaRecyclerView = binding.mediaRecycler
+        mediaLayout()
+        mediaAdapter = MediaAdapter(requireContext(), arrayListOf())
+        mediaRecyclerView.adapter = mediaAdapter
+
+        tagRecyclerView = binding.mediaTags
+        tagAdapter = MediaTagAdapter(requireContext(), arrayListOf(), this)
+
+        tagRecyclerView.adapter = tagAdapter
+        tagRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         mypageViewModel.Page.observe(viewLifecycleOwner){page ->
             val page = page.toString()
-            //TODO("본인 계정 정보를 불러와 쓰도록 후속조치 필요함")
-            if(userId == "") mypageViewModel.getFeed(page,com.example.haru.utils.User.id)
-            else mypageViewModel.getFeed(page, userId)
+            mypageViewModel.getFeed(page, userId)
         }
 
         mypageViewModel.NewFeed.observe(viewLifecycleOwner){feeds ->
@@ -141,44 +177,99 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
             if(feeds.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
+        mypageViewModel.FirstMedia.observe(viewLifecycleOwner){medias ->
+            mediaAdapter.firstPage(medias.data)
+        }
+
+        mypageViewModel.Tags.observe(viewLifecycleOwner){tags ->
+            tagAdapter.newPage(ArrayList(tags))
+        }
         val scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!FeedRecyclerView.canScrollVertically(1)) {
+                if (!feedRecyclerView.canScrollVertically(1)) {
                     mypageViewModel.addPage()
-                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT)
                 }
             }
         }
-        FeedRecyclerView.addOnScrollListener(scrollListener)
+
+        feedRecyclerView.addOnScrollListener(scrollListener)
 
         binding.menuButton.setOnClickListener {
             if(click == false){
                 binding.snsButtons.visibility = View.VISIBLE
                 click = true
+                binding.menuButton.animate().rotation(0f)
             }
             else{
                 binding.snsButtons.visibility = View.GONE
                 click = false
+                binding.menuButton.animate().rotation(-90f)
             }
         }
 
         binding.editProfile.setOnClickListener {
-            if(binding.editProfile.text == "팔로우"){
-                requestFollow()
-                binding.editProfile.text = "팔로우 취소"
-            }else if(binding.editProfile.text == "팔로우 취소"){
-                requestUnFollow()
-                binding.editProfile.text = "팔로우"
-            }else{
-                moveEditprofile(userId)
+            if(isMyPage) moveEditprofile(userId) // 내 페이지면 프로필 수정 이동
+            else{ //타인 페이지라면 친구 작업
+                binding.editProfile.isClickable = false //전송 중 클릭못하도록
+                if (friendStatus == 0) {
+                    requestFriend() //친구 신청
+                } else if (friendStatus == 1) {
+                    requestUnFriend() //친구신청 취소
+                } else{
+                    requestDelFriend() //친구끊기
+                }
             }
+        }
+
+        binding.mypageShowFeed.setOnClickListener {
+            binding.feedRecycler.visibility = View.VISIBLE
+            binding.mediaContainer.visibility = View.GONE
+        }
+
+        binding.mypageShowMedia.setOnClickListener {
+            binding.feedRecycler.visibility = View.GONE
+            binding.mediaContainer.visibility = View.VISIBLE
+        }
+
+        mypageViewModel.FriendRequest.observe(viewLifecycleOwner){ result ->
+            if(result){
+                if(friendStatus == 0) { //신청 성공
+                    friendStatus = 1
+                    binding.editProfile.text = "신청 대기"
+                }else if(friendStatus == 1){ //신청 취소
+                    friendStatus = 0
+                    binding.editProfile.text = "친구 신청"
+                }else{
+                    friendStatus = 0
+                    binding.editProfile.text = "친구 신청"
+                }
+            }else{
+                Toast.makeText(requireContext(), "요청에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+            }
+            binding.editProfile.isClickable = true //결과 받고 클릭 가능하도록
+        }
+
+        binding.profileFriendsLayout.setOnClickListener {
+            val newFrag = FriendsListFragment(userId)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.addToBackStack("snsmypage")
+            transaction.commit()
         }
 
         binding.friendFeed.setOnClickListener {
             val fragmentManager = parentFragmentManager
             if (fragmentManager.backStackEntryCount > 0) {
                 fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
+        }
+
+        binding.mypageBack.setOnClickListener {
+            val fragmentManager = parentFragmentManager
+            if (fragmentManager.backStackEntryCount > 0) {
+                fragmentManager.popBackStack()
             }
         }
 
@@ -199,18 +290,57 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener{
         val newFrag = EditProfileFragment(userId)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
-        val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmypage")
-        if(!isSnsMainInBackStack)
-            transaction.addToBackStack("snsmypage")
+        transaction.addToBackStack("snsmypage")
         transaction.commit()
         true
     }
 
-    fun requestFollow(){
-        mypageViewModel.requestFollow(Followbody(userId))
+    fun requestFriend(){
+        mypageViewModel.requestFriend(Followbody(userId))
     }
 
-    fun requestUnFollow(){
-        mypageViewModel.requestUnFollow(UnFollowbody(userId))
+    fun requestUnFriend(){
+        mypageViewModel.requestUnFriend(userId, UnFollowbody(com.example.haru.utils.User.id))
+    }
+
+    fun requestDelFriend(){
+        mypageViewModel.requestDelFriend(DelFriendBody(userId))
+    }
+
+    fun hideMytitle(){
+        binding.snsHaruTitle.visibility = View.GONE
+        binding.menuButton.visibility = View.GONE
+        binding.myPageMyRecord.visibility = View.GONE
+        binding.searchButton.visibility = View.GONE
+    }
+
+    fun showFriendTitle(){
+        binding.snsMenu.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
+        binding.mypageBack.visibility = View.VISIBLE
+        binding.mypageSetup.visibility = View.VISIBLE
+    }
+
+    fun mediaLayout(){
+        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return 1 // 각 아이템의 너비를 1로 설정
+            }
+        }
+        mediaRecyclerView.layoutManager = gridLayoutManager
+
+        mediaRecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                val position = parent.getChildAdapterPosition(view) // item position
+                val column = position % 3 // item column
+                if(column == 3) outRect.set(0, 0, 0, 3)
+                else outRect.set(0,0,3,3)
+            }
+        })
     }
 }

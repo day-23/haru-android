@@ -5,8 +5,8 @@ data class User(
     val name: String,
     val introduction: String,
     val profileImage: String,
-    var isFollowing: Boolean,
     val postCount: Int,
-    val followerCount: Int,
-    val followingCount: Int
+    val friendCount: Int,
+    val friendStatus: Int,
+    val isPublicAccount: Boolean
 )

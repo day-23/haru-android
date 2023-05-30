@@ -58,12 +58,12 @@ class AddPostFragment : Fragment(), PostInterface{
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.addpostRootView.id)
+        (activity as BaseActivity).adjustTopMargin(binding.addpostTitle.id)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as BaseActivity).adjustTopMargin(binding.addpostRootView.id)
+        (activity as BaseActivity).adjustTopMargin(binding.addpostTitle.id)
     }
 
     override fun Postpopup(position: Int) {

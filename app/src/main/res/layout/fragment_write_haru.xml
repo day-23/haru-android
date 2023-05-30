@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/addpost_root_view"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/addpost_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        tools:ignore="MissingConstraints">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp">
+            <ImageView
+                android:id="@+id/addpost_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/sns_add_post_cancel"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+            <TextView
+                android:id="@+id/addpost_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="하루 쓰기"
+                android:gravity="center"
+                android:textColor="#191919"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_marginRight="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+            <ImageView
+                android:id="@+id/addpost_apply"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/sns_addpost_apply"
+                app:layout_constraintRight_toRightOf="parent"
+                />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/addpost_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:textColor="#191919"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginTop="20dp"
+        android:hint="텍스트를 입력해주세요"
+        app:layout_constraintTop_toBottomOf="@+id/addpost_title"
+        android:gravity="top"
+        android:background="#00000000"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/write_haru_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
