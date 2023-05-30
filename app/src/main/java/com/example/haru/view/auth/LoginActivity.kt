@@ -49,6 +49,7 @@ class LoginActivity : BaseActivity() {
 //            User.id = "005224c0-eec1-4638-9143-58cbfc9688c5"
             User.id = "jts"
             User.createdAt = "2023-05-28T00:00:00.000Z"
+            User.name = "게으른 민수"
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()

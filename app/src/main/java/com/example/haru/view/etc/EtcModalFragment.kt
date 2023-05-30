@@ -3,11 +3,16 @@ package com.example.haru.view.etc
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.databinding.FragmentEtcModalBinding
@@ -64,7 +69,20 @@ class EtcModalFragment() : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.textViewLogoutInfo.text = String.format(getString(R.string.logoutDescription), User.name)
+        val str = String.format(getString(R.string.logoutDescription), User.name)
+        val start = str.indexOf(User.name)
+        val end = start + User.name.length
+        val span = SpannableString(str)
+
+        span.setSpan(
+            ForegroundColorSpan(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.highlight
+                )
+            ), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        binding.textViewLogoutInfo.text = span
 
         binding.btnOptionLogout.setOnClickListener {
             // User confirmed logout, perform the logout operation
