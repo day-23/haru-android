@@ -224,12 +224,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
             val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T23:59:59+09:00"
             val body = ScheduleRequest(startDate, endDate)
 
-
-            scheduleRepository.getScheduleByDates(date[0], date[6], body) { data ->
+            scheduleRepository.getScheduleByDates(body) { data ->
                 /* repeat data parsing */
                 val parsedScheduleList = parseRepeatSchedule(data.schedules, startDate, endDate)
 
-                // ---- 기존 코드 -----//
                 for(parsedSchedule in parsedScheduleList){
                     val (schedule, position, cnt, timeInterval) = parsedSchedule
 
@@ -242,6 +240,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                     schedule.repeatStart = serverFormatter.format(format.parse(startDate))
                     schedule.repeatEnd = serverFormatter.format(format.parse(endDate))
+                    /* 상록이 코드 기준 데이터 포맷 맞추기 끝 */
+
 
                     //format ex 20230531 20230601
                     val scheduleStartDate = schedule.repeatStart?.slice(IntRange(0,3)) + schedule.repeatStart?.slice(IntRange(5,6)) + schedule.repeatStart?.slice(IntRange(8,9))
@@ -342,8 +342,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
         val newDateInfo = "${year}-${month}-${day}T${stringHour}:${stringMin}:00+09:00"
 
-        d("Schedules", "newDateInfo: ${newDateInfo}")
-
         _MoveDate.value = newDateInfo
         _MoveView.value = view
     }
@@ -439,6 +437,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
         val parsedScheduleList = ArrayList<ScheduleCalendarData>()
 
         for (schedule in schedules) {
+            /* 기존 상록이 코드 */
             schedule.repeatStart = FormatDate.calendarFormat(schedule.repeatStart!!)
             schedule.repeatEnd = FormatDate.calendarFormat(schedule.repeatEnd!!)
 
@@ -464,25 +463,11 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                             calendar.time = dateformat.parse(startDate) as Date
 
-                            while ((repeateEnd == null || date_comparison(
-                                    calendar.time, repeateEnd
-                                ) <= 0) && date_comparison(
-                                    calendar.time, dateformat.parse(
-                                        endDate
-                                    )
-                                ) <= 0
-                            ) {
-                                if (date_comparison(
-                                        calendar.time, repeatStart!!
-                                    ) >= 0
-                                ) {
-                                    parsedScheduleList.add(
-                                        ScheduleCalendarData(
-                                            schedule,
-                                            cnt,
-                                            1
-                                        )
-                                    )
+                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, 1))
                                 }
 
                                 cnt++
@@ -496,25 +481,12 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                             calendar.time = dateformat.parse(startDate)
 
+                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
 
-                            while ((repeateEnd == null || date_comparison(
-                                    calendar.time, repeateEnd
-                                ) <= 0) && date_comparison(
-                                    calendar.time, dateformat.parse(
-                                        endDate
-                                    )
-                                ) <= 0
-                            ) {
-                                if (date_comparison(
-                                        calendar.time, repeatStart!!
-                                    ) >= 0
-                                ) {
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
                                     if (repeatValue[weeklycnt] == '1') {
-                                        parsedScheduleList.add(ScheduleCalendarData(
-                                            schedule,
-                                            cnt,
-                                            1
-                                        ))
+                                        parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, 1))
                                     }
                                 }
 
@@ -534,24 +506,12 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                             calendar.time = dateformat.parse(startDate)
 
-                            while ((repeateEnd == null || date_comparison(
-                                    calendar.time, repeateEnd
-                                ) <= 0) && date_comparison(
-                                    calendar.time, dateformat.parse(
-                                        endDate
-                                    )
-                                ) <= 0
-                            ) {
-                                if (date_comparison(
-                                        calendar.time, repeatStart!!
-                                    ) >= 0
-                                ) {
+                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
                                     if (repeatValue[weeklycnt] == '1' && twoweek) {
-                                        parsedScheduleList.add(ScheduleCalendarData(
-                                            schedule,
-                                            cnt,
-                                            1
-                                        ))
+                                        parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, 1))
                                     }
                                 }
 
@@ -569,32 +529,18 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                         "매달" -> {
                             var cnt = 0
-
                             calendar.time = dateformat.parse(startDate)
 
-                            while ((repeateEnd == null || date_comparison(
-                                    calendar.time, repeateEnd
-                                ) <= 0) && date_comparison(
-                                    calendar.time, dateformat.parse(
-                                        endDate
-                                    )
-                                ) <= 0
-                            ) {
-                                if (date_comparison(
-                                        calendar.time, repeatStart!!
-                                    ) >= 0
-                                ) {
+                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
                                     if (repeatValue[calendar.time.date - 1] == '1') {
-                                        parsedScheduleList.add(ScheduleCalendarData(
-                                            schedule,
-                                            cnt,
-                                            1
-                                        ))
+                                        parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, 1))
                                     }
                                 }
 
                                 cnt++
-
                                 calendar.add(Calendar.DAY_OF_MONTH, 1)
                             }
                         }
@@ -606,22 +552,14 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(
-                                    calendar.time, repeateEnd
-                                ) <= 0) && date_comparison(
-                                    calendar.time, dateformat.parse(
-                                        endDate
-                                    )
-                                ) <= 0
-                            ) {
-                                if (date_comparison(
-                                        calendar.time, repeatStart!!
-                                    ) >= 0
-                                ) {
+                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
                                     if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
                                         if (calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day)
                                             parsedScheduleList.add(ScheduleCalendarData(
-                                                schedule,
+                                                schedule.copy(),
                                                 cnt,
                                                 1
                                             ))
@@ -651,14 +589,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(
-                                    calendar.time, repeateEnd
-                                ) <= 0) && date_comparison(
-                                    calendar.time, dateformat.parse(
-                                        endDate
-                                    )
-                                ) <= 0
-                            ){
+                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
+
                                 val startCalendar = Calendar.getInstance()
                                 startCalendar.time = repeatStart
 
@@ -666,16 +599,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                                     startCalendar.add(Calendar.DAY_OF_MONTH, 7)
                                 }
 
-                                if (date_comparison(
-                                        calendar.time, startCalendar.time
-                                    ) == 0
-                                ){
-                                    parsedScheduleList.add(ScheduleCalendarData(
-                                        schedule,
-                                        cnt,
-                                        null,
-                                        intervaldate.toInt()
-                                    ))
+                                if (date_comparison(calendar.time, startCalendar.time) == 0){
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, null, intervaldate.toInt()))
                                 }
 
                                 cnt++
@@ -688,14 +613,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(
-                                    calendar.time, repeateEnd
-                                ) <= 0) && date_comparison(
-                                    calendar.time, dateformat.parse(
-                                        endDate
-                                    )
-                                ) <= 0
-                            ){
+                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
+
                                 val startCalendar = Calendar.getInstance()
                                 startCalendar.time = repeatStart
 
@@ -703,16 +623,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                                     startCalendar.add(Calendar.DAY_OF_MONTH, 14)
                                 }
 
-                                if (date_comparison(
-                                        calendar.time, startCalendar.time!!
-                                    ) == 0
-                                ){
-                                    parsedScheduleList.add(ScheduleCalendarData(
-                                        schedule,
-                                        cnt,
-                                        null,
-                                        intervaldate.toInt()
-                                    ))
+                                if (date_comparison(calendar.time, startCalendar.time!!) == 0){
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, null, intervaldate.toInt()))
                                 }
 
                                 cnt++
@@ -725,14 +637,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(
-                                    calendar.time, repeateEnd
-                                ) <= 0) && date_comparison(
-                                    calendar.time, dateformat.parse(
-                                        endDate
-                                    )
-                                ) <= 0
-                            ){
+                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
+
                                 val startCalendar = Calendar.getInstance()
                                 startCalendar.time = repeatStart
 
@@ -740,16 +647,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                                     startCalendar.add(Calendar.MONTH, 1)
                                 }
 
-                                if (date_comparison(
-                                        calendar.time, startCalendar.time!!
-                                    ) == 0
-                                ){
-                                    parsedScheduleList.add(ScheduleCalendarData(
-                                        schedule,
-                                        cnt,
-                                        null,
-                                        intervaldate.toInt()
-                                    ))
+                                if (date_comparison(calendar.time, startCalendar.time!!) == 0){
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, null, intervaldate.toInt()))
                                 }
 
                                 cnt++
@@ -762,14 +661,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
 
-                            while ((repeateEnd == null || date_comparison(
-                                    calendar.time, repeateEnd
-                                ) <= 0) && date_comparison(
-                                    calendar.time, dateformat.parse(
-                                        endDate
-                                    )
-                                ) <= 0
-                            ){
+                            while ((repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
+
                                 val startCalendar = Calendar.getInstance()
                                 startCalendar.time = repeatStart
 
@@ -777,16 +671,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                                     startCalendar.add(Calendar.YEAR, 1)
                                 }
 
-                                if (date_comparison(
-                                        calendar.time, startCalendar.time!!
-                                    ) == 0
-                                ){
-                                    parsedScheduleList.add(ScheduleCalendarData(
-                                        schedule,
-                                        cnt,
-                                        null,
-                                        intervaldate.toInt()
-                                    ))
+                                if (date_comparison(calendar.time, startCalendar.time!!) == 0){
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, null, intervaldate.toInt()))
                                 }
 
                                 cnt++
@@ -805,13 +691,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 val tempStartDate = dateformat.parse(startDate)
                 calendar.time = tempStartDate
 
-                while (date_comparison(calendar.time, dateformat.parse(
-                        endDate
-                    )) <= 0) {
-                    if (date_comparison(
-                            calendar.time, repeatStart!!
-                        ) >= 0 && (repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)
-                    ) {
+                while (date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+                    if (date_comparison(calendar.time, repeatStart!!) >= 0
+                        && (repeateEnd == null || date_comparison(calendar.time, repeateEnd) <= 0)) {
                         if(!start) {
                             startcnt = cnt
                             start = true
@@ -825,11 +707,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                     calendar.add(Calendar.DAY_OF_MONTH, 1)
                 }
 
-                parsedScheduleList.add(ScheduleCalendarData(
-                    schedule,
-                    startcnt,
-                    daycnt
-                ))
+                parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), startcnt, daycnt))
             }
         }
 

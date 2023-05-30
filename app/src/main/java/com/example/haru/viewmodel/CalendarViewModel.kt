@@ -8,6 +8,7 @@ import com.example.haru.data.model.*
 import com.example.haru.data.repository.AllDoRepository
 import com.example.haru.data.repository.CategoryRepository
 import com.example.haru.data.repository.ScheduleRepository
+import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
