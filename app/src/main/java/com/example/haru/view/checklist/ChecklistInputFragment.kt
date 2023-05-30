@@ -1,19 +1,19 @@
 package com.example.haru.view.checklist
 
 
-import android.animation.ValueAnimator
 import android.app.Dialog
-import android.app.TimePickerDialog
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Handler
 import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
@@ -30,7 +30,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
-import kotlin.concurrent.schedule
 
 class ChecklistInputFragment(
     checkListViewModel: CheckListViewModel,
@@ -124,10 +123,6 @@ class ChecklistInputFragment(
             binding.gridYear.addView(textView, params)
         }
 
-        binding.endDateSetLayout.layoutTransition.apply {
-            setAnimateParentHierarchy(false)
-        }
-
         // 마감일 레이아웃 크기 계산
         binding.endDateTimeLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
@@ -188,7 +183,7 @@ class ChecklistInputFragment(
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 todoAddViewModel.setRepeatEndDateH(binding.repeatEndDateLayout.height)
-                binding.gridMonth.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding.repeatEndDateLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 Log.d(
                     "20191627",
                     "repeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString()
@@ -256,112 +251,40 @@ class ChecklistInputFragment(
 
 
         todoAddViewModel.todayTodo.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                true -> {
-                    binding.todaySwitch.isChecked = true
-                    binding.tvTodayTodo.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.highlight
-                        )
-                    )
-                    binding.ivTodayIcon.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.highlight
-                            )
-                        )
-                }
-                else -> {
-                    binding.todaySwitch.isChecked = false
-                    binding.tvTodayTodo.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.light_gray
-                        )
-                    )
-                    binding.ivTodayIcon.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.light_gray
-                            )
-                        )
-                }
-            }
+            val color = if (it) R.color.highlight else R.color.light_gray
+            binding.todaySwitch.isChecked = it
+            binding.tvTodayTodo.setTextColor(ContextCompat.getColor(requireContext(), color))
+            binding.ivTodayIcon.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
         })
 
         todoAddViewModel.endDateSwitch.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer {
+                val color = if (it) R.color.todo_description else R.color.light_gray
+                binding.endDateSwitch.isChecked = it
+                binding.ivCalendarIcon.backgroundTintList =
+                    ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
+                binding.tvEndDateSet.setTextColor(ContextCompat.getColor(requireContext(), color))
+                binding.endDateTimeLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
+                binding.btnEndDatePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
+
+                Log.e("20191627", "endDateSetLayout : ${ binding.endDateSetLayout.height }")
                 when (it) {
                     true -> {
-                        Log.e("20191627", "endDateSwitch")
-                        binding.endDateSwitch.isChecked = it
-                        binding.btnEndDatePick.visibility = View.VISIBLE
-
-                        val valueAnimator = ValueAnimator.ofInt(
+                        binding.endDateSetLayout.animateViewHeight(
+                            400,
                             binding.endDateSetLayout.height,
                             binding.endDateSetLayout.height + todoAddViewModel.endTimeLayoutHeight
-                        )
-
-                        Log.e(
-                            "20191627",
-                            "endTimeLayoutHeight -> ${todoAddViewModel.endTimeLayoutHeight}"
-                        )
-                        valueAnimator.addUpdateListener { animator ->
-                            val layoutParams = binding.endDateSetLayout.layoutParams
-                            layoutParams.height = animator.animatedValue as Int
-                            binding.endDateSetLayout.layoutParams = layoutParams
-                        }
-                        valueAnimator.duration = 400
-                        valueAnimator.start()
-
-                        binding.endDateTimeLayout.visibility = View.VISIBLE
-                        binding.ivCalendarIcon.backgroundTintList =
-                            ColorStateList.valueOf(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.todo_description
-                                )
-                            )
-                        binding.tvEndDateSet.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.todo_description
-                            )
                         )
                     }
                     else -> {
                         if (todoAddViewModel.repeatSwitch.value == true)
                             todoAddViewModel.setRepeatSwitch()
-                        binding.endDateSwitch.isChecked = it
-                        binding.btnEndDatePick.visibility = View.INVISIBLE
-                        val valueAnimator = ValueAnimator.ofInt(
-                            binding.endDateSetLayout.height,
+
+                        binding.endDateSetLayout.animateViewHeight(
+                            400, binding.endDateSetLayout.height,
                             binding.endDateSetLayout.height - todoAddViewModel.endTimeLayoutHeight
-                        )
-                        valueAnimator.addUpdateListener { animator ->
-                            val layoutParams = binding.endDateSetLayout.layoutParams
-                            layoutParams.height = animator.animatedValue as Int
-                            binding.endDateSetLayout.layoutParams = layoutParams
-                        }
-                        valueAnimator.duration = 400
-                        valueAnimator.start()
-                        binding.endDateTimeLayout.visibility = View.INVISIBLE
-                        binding.ivCalendarIcon.backgroundTintList =
-                            ColorStateList.valueOf(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.light_gray
-                                )
-                            )
-                        binding.tvEndDateSet.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.light_gray
-                            )
                         )
                     }
                 }
@@ -370,139 +293,51 @@ class ChecklistInputFragment(
         todoAddViewModel.isSelectedEndDateTime.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer {
-                when (it) {
-                    true -> {
-                        binding.endDateTimeSwitch.isChecked = it
-                        binding.btnEndTimePick.visibility = View.VISIBLE
-                        binding.tvEndTimeSet.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.todo_description
-                            )
-                        )
-                    }
-                    else -> {
-                        binding.endDateTimeSwitch.isChecked = it
-                        binding.btnEndTimePick.visibility = View.INVISIBLE
-                        binding.tvEndTimeSet.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.light_gray
-                            )
-                        )
-                    }
-                }
+                binding.endDateTimeSwitch.isChecked = it
+                val color = if (it) R.color.todo_description else R.color.light_gray
+                binding.tvEndTimeSet.setTextColor(ContextCompat.getColor(requireContext(), color))
+                binding.btnEndTimePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
             })
 
         todoAddViewModel.alarmSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                true -> {
-                    binding.alarmSwitch.isChecked = it
-                    binding.btnAlarmDatePick.visibility = View.VISIBLE
-                    binding.btnAlarmTimePick.visibility = View.VISIBLE
-                    binding.ivAlarmIcon.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.todo_description
-                            )
-                        )
-                    binding.tvAlarmSet.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.todo_description
-                        )
-                    )
-                }
-                else -> {
-                    binding.alarmSwitch.isChecked = it
-                    binding.btnAlarmDatePick.visibility = View.INVISIBLE
-                    binding.btnAlarmTimePick.visibility = View.INVISIBLE
-                    binding.ivAlarmIcon.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.light_gray
-                            )
-                        )
-                    binding.tvAlarmSet.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.light_gray
-                        )
-                    )
-                }
-            }
+            val color = if (it) R.color.todo_description else R.color.light_gray
+            binding.alarmSwitch.isChecked = it
+            binding.btnAlarmDatePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
+            binding.btnAlarmTimePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
+            binding.ivAlarmIcon.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
+            binding.tvAlarmSet.setTextColor(ContextCompat.getColor(requireContext(), color))
         })
 
         todoAddViewModel.repeatSwitch.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it && todoAddViewModel.endDateSwitch.value != true) {
+                todoAddViewModel.setEndDateSwitch()
+            }
+
+            val color = if (it) R.color.todo_description else R.color.light_gray
+            binding.repeatSwitch.isChecked = it
+            binding.ivRepeatIcon.backgroundTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
+            binding.tvRepeatSet.setTextColor(ContextCompat.getColor(requireContext(), color))
+            binding.repeatOptionLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
+            binding.repeatEndDateLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
             when (it) {
                 true -> {
-                    if (todoAddViewModel.endDateSwitch.value != true) {
-                        todoAddViewModel.setEndDateSwitch()
-                    }
-
-                    binding.repeatSwitch.isChecked = it
-                    binding.ivRepeatIcon.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.todo_description
-                            )
-                        )
-                    binding.tvRepeatSet.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.todo_description
-                        )
-                    )
                     todoAddViewModel.setRepeatSetLayoutH(binding.repeatSetLayout.height)
+                    Log.e("20191627", "repeatSetLayout : ${ todoAddViewModel.repeatSetLayoutHeight }")
 
-                    val valueAnimator = ValueAnimator.ofInt(
-                        binding.repeatSetLayout.height,
-                        binding.repeatSetLayout.height + todoAddViewModel.repeatOptionHeight + todoAddViewModel.repeatEndDateHeight
+                    binding.repeatSetLayout.animateViewHeight(
+                        400, binding.repeatSetLayout.height,
+                        binding.repeatSetLayout.height +
+                                todoAddViewModel.repeatOptionHeight +
+                                todoAddViewModel.repeatEndDateHeight
                     )
-                    valueAnimator.addUpdateListener { animator ->
-                        val layoutParams = binding.repeatSetLayout.layoutParams
-                        layoutParams.height = animator.animatedValue as Int
-                        binding.repeatSetLayout.layoutParams = layoutParams
-                    }
-                    valueAnimator.duration = 400
-                    valueAnimator.start()
-
-                    binding.repeatOptionLayout.visibility = View.VISIBLE
-                    binding.repeatEndDateLayout.visibility = View.VISIBLE
                 }
                 false -> {
-                    binding.repeatSwitch.isChecked = it
-                    binding.ivRepeatIcon.backgroundTintList =
-                        ColorStateList.valueOf(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.light_gray
-                            )
-                        )
-                    binding.tvRepeatSet.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.light_gray
-                        )
-                    )
-
-                    val valueAnimator = ValueAnimator.ofInt(
-                        binding.repeatSetLayout.height,
+                    binding.repeatSetLayout.animateViewHeight(
+                        400, binding.repeatSetLayout.height,
                         todoAddViewModel.repeatSetLayoutHeight
                     )
-                    valueAnimator.addUpdateListener { animator ->
-                        val layoutParams = binding.repeatSetLayout.layoutParams
-                        layoutParams.height = animator.animatedValue as Int
-                        binding.repeatSetLayout.layoutParams = layoutParams
-                    }
-                    valueAnimator.duration = 400
-                    valueAnimator.start()
-
-                    binding.repeatOptionLayout.visibility = View.INVISIBLE
-                    binding.repeatEndDateLayout.visibility = View.INVISIBLE
                 }
                 else -> {}
             }
@@ -511,30 +346,14 @@ class ChecklistInputFragment(
         todoAddViewModel.repeatEndDateSwitch.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer {
-                when (it) {
-                    true -> {
-                        binding.tvRepeatEnd.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.todo_description
-                            )
-                        )
-                        binding.btnRepeatEndDate.visibility = View.VISIBLE
-                    }
-                    else -> {
-                        binding.tvRepeatEnd.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.light_gray
-                            )
-                        )
-                        binding.btnRepeatEndDate.visibility = View.INVISIBLE
-                    }
-                }
+                val color = if (it) R.color.todo_description else R.color.light_gray
+                binding.repeatEndDateSwitch.isChecked = it
+                binding.tvRepeatEnd.setTextColor(ContextCompat.getColor(requireContext(), color))
+                binding.btnRepeatEndDate.visibility = if (it) View.VISIBLE else View.INVISIBLE
             })
 
         todoAddViewModel.repeatOption.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            for (i in 0 until binding.repeatOptionSelect.childCount) {
+            for (i in 0 until binding.repeatOptionSelect.childCount)
                 if (i == it)
                     binding.repeatOptionSelect.getChildAt(i).backgroundTintList = null
                 else
@@ -545,82 +364,45 @@ class ChecklistInputFragment(
                                 android.R.color.transparent
                             )
                         )
-            }
+
             when (it) {
                 0 -> {
-                    val valueAnimator = ValueAnimator.ofInt(
-                        binding.repeatSetLayout.height,
-                        todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight + todoAddViewModel.repeatEndDateHeight
+                    binding.repeatSetLayout.animateViewHeight(
+                        400, binding.repeatSetLayout.height,
+                        todoAddViewModel.repeatSetLayoutHeight +
+                                todoAddViewModel.repeatOptionHeight +
+                                todoAddViewModel.repeatEndDateHeight
                     )
-                    valueAnimator.addUpdateListener { animator ->
-                        val layoutParams = binding.repeatSetLayout.layoutParams
-                        layoutParams.height = animator.animatedValue as Int
-                        binding.repeatSetLayout.layoutParams = layoutParams
-                    }
-                    valueAnimator.duration = 400
-                    valueAnimator.start()
-
-                    binding.everyWeekSelectLayout.visibility = View.GONE
-                    binding.gridMonth.visibility = View.GONE
-                    binding.gridYear.visibility = View.GONE
                 }
                 1, 2 -> {
-                    val valueAnimator = ValueAnimator.ofInt(
-                        binding.repeatSetLayout.height,
+                    binding.repeatSetLayout.animateViewHeight(
+                        400, binding.repeatSetLayout.height,
                         todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
                                 + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.repeatWeekHeight
                     )
-                    valueAnimator.addUpdateListener { animator ->
-                        val layoutParams = binding.repeatSetLayout.layoutParams
-                        layoutParams.height = animator.animatedValue as Int
-                        binding.repeatSetLayout.layoutParams = layoutParams
-                    }
-                    valueAnimator.duration = 400
-                    valueAnimator.start()
-
-                    binding.everyWeekSelectLayout.visibility = View.VISIBLE
-                    binding.gridMonth.visibility = View.GONE
-                    binding.gridYear.visibility = View.GONE
                 }
 
                 3 -> {
-                    val valueAnimator = ValueAnimator.ofInt(
-                        binding.repeatSetLayout.height,
+                    binding.repeatSetLayout.animateViewHeight(
+                        400, binding.repeatSetLayout.height,
                         todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
                                 + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridMonthHeight
                     )
-                    valueAnimator.addUpdateListener { animator ->
-                        val layoutParams = binding.repeatSetLayout.layoutParams
-                        layoutParams.height = animator.animatedValue as Int
-                        binding.repeatSetLayout.layoutParams = layoutParams
-                    }
-                    valueAnimator.duration = 400
-                    valueAnimator.start()
-
-                    binding.gridMonth.visibility = View.VISIBLE
-                    binding.everyWeekSelectLayout.visibility = View.GONE
-                    binding.gridYear.visibility = View.GONE
                 }
 
                 4 -> {
-                    val valueAnimator = ValueAnimator.ofInt(
-                        binding.repeatSetLayout.height,
+                    binding.repeatSetLayout.animateViewHeight(
+                        400, binding.repeatSetLayout.height,
                         todoAddViewModel.repeatSetLayoutHeight + todoAddViewModel.repeatOptionHeight
                                 + todoAddViewModel.repeatEndDateHeight + todoAddViewModel.gridYearHeight
                     )
-                    valueAnimator.addUpdateListener { animator ->
-                        val layoutParams = binding.repeatSetLayout.layoutParams
-                        layoutParams.height = animator.animatedValue as Int
-                        binding.repeatSetLayout.layoutParams = layoutParams
-                    }
-                    valueAnimator.duration = 400
-                    valueAnimator.start()
-
-                    binding.gridMonth.visibility = View.GONE
-                    binding.everyWeekSelectLayout.visibility = View.GONE
-                    binding.gridYear.visibility = View.VISIBLE
                 }
             }
+
+            binding.everyWeekSelectLayout.visibility =
+                if (it == 1 || it == 2) View.VISIBLE else View.GONE
+            binding.gridMonth.visibility = if (it == 3) View.VISIBLE else View.GONE
+            binding.gridYear.visibility = if (it == 4) View.VISIBLE else View.GONE
         })
 
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -794,7 +576,7 @@ class ChecklistInputFragment(
 //------------------------------
         todoAddViewModel.tagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.ivTagIcon.backgroundTintList = if (it.isEmpty())
-                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.icon_gray))
+                ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.light_gray))
             else
                 ColorStateList.valueOf(
                     ContextCompat.getColor(
@@ -852,6 +634,23 @@ class ChecklistInputFragment(
 
         })
 // -------------------------------------------
+        binding.todoEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val str = s.toString()
+                if (str == "") {
+                    binding.todoEt.setTypeface(null, Typeface.NORMAL)
+                    return
+                }
+
+                binding.todoEt.setTypeface(null, Typeface.BOLD)
+            }
+
+        })
+
         binding.etMemo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -862,7 +661,7 @@ class ChecklistInputFragment(
                     if (s.toString() == "") ColorStateList.valueOf(
                         ContextCompat.getColor(
                             requireContext(),
-                            R.color.icon_gray
+                            R.color.light_gray
                         )
                     ) else ColorStateList.valueOf(
                         ContextCompat.getColor(
@@ -871,7 +670,6 @@ class ChecklistInputFragment(
                         )
                     )
             }
-
         })
 
         binding.tagEt.setOnKeyListener { view, keyCode, keyEvent -> // 엔터키와 하드웨어 키보드의 스페이스바 입력 감지
@@ -917,11 +715,6 @@ class ChecklistInputFragment(
         binding.btnClose.setOnClickListener(btnListener())
 
         binding.subTodoAddLayout.setOnClickListener(btnListener())
-
-//        if (today == true) {
-//            todoAddViewModel.setTodayTodo()
-//            todoAddViewModel.setEndDateSwitch()
-//        }
     }
 
     override fun onStart() {
@@ -932,6 +725,19 @@ class ChecklistInputFragment(
     override fun dismiss() {
         onDismissListener?.invoke()
         super.dismiss()
+    }
+
+    fun View.animateViewHeight(duration: Long, startHeight: Int, endHeight: Int) {
+        val animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+                val newHeight = (startHeight + (endHeight - startHeight) * interpolatedTime).toInt()
+                val params = this@animateViewHeight.layoutParams as ViewGroup.LayoutParams
+                params.height = newHeight
+                this@animateViewHeight.layoutParams = params
+            }
+        }
+        animation.duration = duration
+        this@animateViewHeight.startAnimation(animation)
     }
 
     inner class btnListener : View.OnClickListener {

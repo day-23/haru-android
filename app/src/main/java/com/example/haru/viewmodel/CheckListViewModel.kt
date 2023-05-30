@@ -26,10 +26,6 @@ class CheckListViewModel() :
 
     private val _todoDataList = MutableLiveData<List<Todo>>()
     private val _tagDataList = MutableLiveData<List<Tag>>()
-//    private val _flaggedTodos = MutableLiveData<List<Todo>>()
-//    private val _taggedTodos = MutableLiveData<List<Todo>>()
-//    private val _untaggedTodos = MutableLiveData<List<Todo>>()
-//    private val _completedTodos = MutableLiveData<List<Todo>>()
 
     private val _todoByTag = MutableLiveData<Boolean>()
     val todoByTag: LiveData<Boolean> = _todoByTag
@@ -44,10 +40,6 @@ class CheckListViewModel() :
     private val todoList = mutableListOf<Todo>()
     val todoDataList: LiveData<List<Todo>> get() = _todoDataList
     val tagDataList: LiveData<List<Tag>> get() = _tagDataList
-//    val flaggedTodos: LiveData<List<Todo>> get() = _flaggedTodos
-//    val taggedTodos: LiveData<List<Todo>> get() = _taggedTodos
-//    val untaggedTodos: LiveData<List<Todo>> get() = _untaggedTodos
-//    val completedTodos: LiveData<List<Todo>> get() = _completedTodos
 
     var todoByTagItem: String? = null
 
@@ -55,10 +47,6 @@ class CheckListViewModel() :
 
     init {
         getTodoMain {
-//            flaggedTodos.value?.let { todoList.addAll(it) }
-//            taggedTodos.value?.let { todoList.addAll(it) }
-//            untaggedTodos.value?.let { todoList.addAll(it) }
-//            completedTodos.value?.let { todoList.addAll(it) }
             _todoDataList.postValue(todoList)
         }
         getTag()
@@ -432,13 +420,6 @@ class CheckListViewModel() :
             }
             _todoDataList.value = todoList
         }
-    }
-
-    fun clear() {
-//        _flaggedTodos.value = emptyList()
-//        _taggedTodos.value = emptyList()
-//        _untaggedTodos.value = emptyList()
-//        _completedTodos.value = emptyList()
     }
 
     /* ------------------------------------할 일의 수정 기능--------------------------------- */
