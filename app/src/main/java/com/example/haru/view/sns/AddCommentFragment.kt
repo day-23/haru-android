@@ -12,11 +12,13 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.haru.R
@@ -34,6 +36,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
     lateinit var binding : FragmentAddCommentBinding
     lateinit var commentContainer: FrameLayout
     lateinit var writeContainer: FrameLayout
+    lateinit var filterFrame: LinearLayout
     lateinit var writeBox: View
     val postitem = postitem
     val postIndex = postitem.images
@@ -91,7 +94,8 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
 
     fun writeEnd(){
         val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-        writeContainer.setBackgroundColor(color)
+        //writeContainer.setBackgroundColor(color)
+        filterFrame.setBackgroundColor(color)
         binding.writeCommentBack.visibility = View.VISIBLE
         binding.commentVisibility.visibility = View.VISIBLE
         binding.writeCommentCancel.isGone = true
@@ -102,8 +106,9 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
     }
 
     fun writeStart(){
-        val color = Color.argb(170, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-        writeContainer.setBackgroundColor(color)
+        val color = Color.argb(100, 25, 25, 25) // 204 represents 80% transparency black (255 * 0.8 = 204)
+        //writeContainer.setBackgroundColor(color)
+        filterFrame.setBackgroundColor(color)
         binding.writeCommentBack.isGone = true
         binding.commentVisibility.isGone = true
         binding.writeCommentApply.visibility = View.VISIBLE
@@ -140,7 +145,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
         Log.d("TAG", "SnsFragment - onCreateView() called")
         binding = FragmentAddCommentBinding.inflate(inflater, container, false)
         commentContainer = binding.commentFrame
-
+        filterFrame = binding.filterFrame
         commentContainer.post{
             ImageWidth = commentContainer.width
             ImageHeight = commentContainer.height
@@ -420,7 +425,8 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
                                 writeContainer.removeView(writeBox)
                                 onWrite = false
                                 val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-                                writeContainer.setBackgroundColor(color)
+                                //writeContainer.setBackgroundColor(color)
+                                filterFrame.setBackgroundColor(color)
                                 writeEnd()
                                 onDelete = false
                             }
