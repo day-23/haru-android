@@ -324,6 +324,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginTop="20dp"
                 android:background="@color/divider" />
 
             <TextView
@@ -365,6 +366,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="21dp"
                 android:layout_gravity="center"
                 android:background="@drawable/haru_fighting" />
         </LinearLayout>
