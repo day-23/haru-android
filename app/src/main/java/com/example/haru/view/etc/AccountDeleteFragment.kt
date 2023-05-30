@@ -9,15 +9,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountDeleteBinding
+import com.example.haru.viewmodel.EtcViewModel
 
-class AccountDeleteFragment : Fragment() {
+class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentAccountDeleteBinding
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): AccountDeleteFragment {
-            return AccountDeleteFragment()
+        fun newInstance(etcViewModel: EtcViewModel): AccountDeleteFragment {
+            return AccountDeleteFragment(etcViewModel)
         }
     }
 
@@ -38,6 +39,14 @@ class AccountDeleteFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+
+        etcViewModel.email.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvEmail.text = it
+        })
+
+        etcViewModel.name.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvAccountName.text = it
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +57,7 @@ class AccountDeleteFragment : Fragment() {
         binding.ivBackIconAccountDelete.setOnClickListener(ClickListener())
     }
 
-    inner class ClickListener() : View.OnClickListener {
+    inner class ClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
                 binding.ivBackIconAccountDelete.id -> {
@@ -57,7 +66,7 @@ class AccountDeleteFragment : Fragment() {
 
                 binding.btnAccountDelete.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AccountDeleteDoubleCheckFragment())
+                        .replace(R.id.fragments_frame, AccountDeleteDoubleCheckFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }

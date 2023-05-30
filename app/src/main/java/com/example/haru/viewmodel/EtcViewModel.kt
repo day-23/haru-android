@@ -7,14 +7,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.EtcRepository
+import com.example.haru.data.repository.UserRepository
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.User
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 class EtcViewModel : ViewModel() {
     private val etcRepository = EtcRepository()
+    private val userRepository = UserRepository()
 
     private val _todayYearMonth = MutableLiveData<String>()
     val todayYearMonth: LiveData<String> = _todayYearMonth
@@ -155,9 +158,17 @@ class EtcViewModel : ViewModel() {
         _withHaru.value = (today - startDate) / (24 * 60 * 60 * 1000) + 1
     }
 
+    fun deleteUserAccount(callback: (it: SuccessFail?) -> Unit) {
+        viewModelScope.launch {
+            userRepository.deleteUserAccount {
+                callback(it)
+            }
+        }
+    }
+
     fun updateUserInfo(body: Any, callback: (it : SuccessFail?) -> Unit) {
         viewModelScope.launch {
-            etcRepository.updateUserInfo(body) {
+            userRepository.updateUserInfo(body) {
                 if (it?.success == true) {
                     when (body) {
                         is UpdateEmail -> {

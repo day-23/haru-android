@@ -70,7 +70,7 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
                 binding.accountDelete.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AccountDeleteFragment())
+                        .replace(R.id.fragments_frame, AccountDeleteFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }

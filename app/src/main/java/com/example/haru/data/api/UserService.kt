@@ -13,4 +13,10 @@ interface UserService {
     fun requestFollowing(@Path("userId") userId: String, @Body followingId : Followbody) : Call<FollowResponse>
     @HTTP(method = "DELETE", path = "follows/{userId}/following", hasBody = true)
     fun requestUnFollowing(@Path("userId") userId: String, @Body followingId: UnFollowbody) : Call<FollowResponse>
+
+    @PATCH("user/{userId}/setting")
+    fun updateUserInfo(@Path("userId") userId: String, @Body body : Any) : Call<SuccessFail>
+
+    @DELETE("user/{userId}")
+    fun deleteUserAccount(@Path("userId") userId: String) : Call<SuccessFail>
 }
