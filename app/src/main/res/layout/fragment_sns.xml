@@ -128,4 +128,14 @@
         android:layout_marginBottom="10dp"
         android:layout_marginRight="20dp"/>
 
+    <ImageView
+        android:id="@+id/write_haru"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:src="@drawable/write_haru"
+        app:layout_constraintBottom_toTopOf = "@+id/add_post"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="20dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
