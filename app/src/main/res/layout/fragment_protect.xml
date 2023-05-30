@@ -115,7 +115,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
             <TextView
@@ -138,6 +137,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -153,22 +153,15 @@
                 android:id="@+id/tv_allow_feed_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-
-                android:textColor="@color/date_text"
+                android:textColor="@color/highlight"
                 android:textSize="14sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/arrow" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="22dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -184,14 +177,8 @@
                 android:id="@+id/tv_allow_feed_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:textColor="@color/date_text"
+                android:textColor="@color/highlight"
                 android:textSize="14sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/arrow" />
 
         </LinearLayout>
 
