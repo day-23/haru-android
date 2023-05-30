@@ -76,7 +76,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
             detailScheduleTimeTv.text = "하루종일"
         } else {
             var scheduleTime = ""
-            scheduleTime += schedule.startTime!!.month.toString()+"월 " + schedule.startTime!!.date.toString()+"일 "
+            scheduleTime += (schedule.startTime!!.month+1).toString()+"월 " + schedule.startTime!!.date.toString()+"일 "
             scheduleTime += if(schedule.startTime!!.hours < 12) "오전 " else "오후 "
             scheduleTime +=
                 if (schedule.startTime!!.hours == 0 || schedule.startTime!!.hours == 12) "12"
@@ -90,7 +90,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
 
             scheduleTime += " - "
 
-            scheduleTime += schedule.endTime!!.month.toString()+"월 " + schedule.endTime!!.date.toString()+"일 "
+            scheduleTime += (schedule.endTime!!.month+1).toString()+"월 " + schedule.endTime!!.date.toString()+"일 "
             scheduleTime += if(schedule.endTime!!.hours < 12) "오전 " else "오후 "
             scheduleTime +=
                 if (schedule.endTime!!.hours == 0 || schedule.endTime!!.hours == 12) "12"

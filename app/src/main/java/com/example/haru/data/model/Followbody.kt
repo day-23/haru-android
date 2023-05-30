@@ -1,9 +1,21 @@
 package com.example.haru.data.model
 
 data class Followbody(
-    val followId: String
+    val acceptorId: String
 )
 
 data class UnFollowbody(
-    val followingId: String
+    val acceptorId: String
+)
+
+data class Friendbody(
+    val requesterId: String
+)
+
+data class DelFriendBody(
+    val friendId: String
+)
+
+data class BlockBody(
+    val userId: String
 )

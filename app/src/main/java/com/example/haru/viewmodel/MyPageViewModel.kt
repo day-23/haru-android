@@ -15,6 +15,7 @@ import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.data.repository.UserRepository
+import com.kakao.sdk.talk.model.Friend
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -80,6 +81,31 @@ class MyPageViewModel(): ViewModel() {
     private val _PostTagLiveData = MutableLiveData<List<String>>()
     val PostTagLiveData: LiveData<List<String>> = _PostTagLiveData
 
+    private val _FriendRequest = MutableLiveData<Boolean>()
+    val FriendRequest: LiveData<Boolean> = _FriendRequest
+
+    private val _Friends = MutableLiveData<FriendsResponse>()
+    val Friends: LiveData<FriendsResponse> = _Friends
+
+    private val _FirstFriends = MutableLiveData<FriendsResponse>()
+    val FirstFriends: LiveData<FriendsResponse> = _FirstFriends
+
+    private val _FirstRequests = MutableLiveData<FriendsResponse>()
+    val FirstRequests: LiveData<FriendsResponse> = _FirstRequests
+
+    private val _Requests = MutableLiveData<FriendsResponse>()
+    val Requests: LiveData<FriendsResponse> = _Requests
+
+    private val _Media = MutableLiveData<MediaResponse>()
+    val Media: LiveData<MediaResponse> = _Media
+
+    private val _FirstMedia = MutableLiveData<MediaResponse>()
+    val FirstMedia: LiveData<MediaResponse> = _FirstMedia
+
+    private val _Tags = MutableLiveData<List<Tag>>()
+    val Tags: LiveData<List<Tag>> = _Tags
+
+
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
 
@@ -121,8 +147,36 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
+    fun getFirstMedia(targetId: String){
+        var newMedia = MediaResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            PostRepository.getFirstMedia(targetId) {
+                if (it.data.size > 0) { //get success
+                    newMedia = it
+                }
+            }
+            if(newMedia.success){
+                _FirstMedia.value = newMedia
+            }
+        }
+    }
+
+    fun getFirstTagMedia(targetId: String, tagId:String){
+        var newMedia = MediaResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            PostRepository.getFirstTagMedia(targetId, tagId) {
+                if (it.data != null) { //get success
+                    newMedia = it
+                }
+            }
+            if(newMedia.success){
+                _FirstMedia.value = newMedia
+            }
+        }
+    }
+
     fun getUserInfo(targetId: String){
-        var user = User("","","","",false,0,0,0)
+        var user = User("","","","",0,0,0,false)
         viewModelScope.launch {
             ProfileRepository.getUserInfo(targetId){
                 if(it.id != ""){
@@ -220,7 +274,7 @@ class MyPageViewModel(): ViewModel() {
     }
 
     fun editProfile(image: MultipartBody.Part, name: String, introduction: String){
-        var user = User("","","","",false,0,0,0)
+        var user = User("","","","",0,0,0,false)
         viewModelScope.launch {
             ProfileRepository.editProfile(image, name, introduction){
                 if(it.id != "") {
@@ -233,7 +287,7 @@ class MyPageViewModel(): ViewModel() {
     }
 
     fun editProfileName(name:String, introduction: String){
-        var user = User("","","","",false,0,0,0)
+        var user = User("","","","",0,0,0,false)
         viewModelScope.launch {
             ProfileRepository.editProfileName(name, introduction){
                 if(it.id != ""){
@@ -260,27 +314,139 @@ class MyPageViewModel(): ViewModel() {
         _PostTagLiveData.value = arrayListOf()
     }
 
-    fun requestFollow(body: Followbody){
+    fun requestFriend(body: Followbody){
+        var result = false
         viewModelScope.launch {
-            UserRepository.requestFollowing(body){
+            UserRepository.requestFriend(body){
                 if(it){
-                    Log.d("TAG","Success to follow")
+                    Log.d("TAG","Success to request Friend")
+                    result = it
                 }else{
-                    Log.d("TAG","Fail to follow")
+                    Log.d("TAG","Fail to request Friend")
                 }
             }
+            _FriendRequest.value = result
         }
     }
 
-    fun requestUnFollow(body: UnFollowbody){
+    fun requestUnFriend(targetId: String, body: UnFollowbody){
+        var result = false
         viewModelScope.launch {
-            UserRepository.requestunFollowing(body){
+            UserRepository.requestunFriend(targetId ,body){
                 if(it){
-                    Log.d("TAG","Success to unfollow")
+                    Log.d("TAG","Success to request UnFriend")
+                    result = it
                 }else{
-                    Log.d("TAG","Fail to unfollow")
+                    Log.d("TAG","Fail to request UnFriend")
                 }
             }
+            _FriendRequest.value = result
+        }
+    }
+
+    fun requestDelFriend(body: DelFriendBody){
+        var result = false
+        viewModelScope.launch {
+            UserRepository.requestDelFriend(body){
+                if(it){
+                    Log.d("TAG", "Success to request Delete Friend")
+                    result = it
+                }else{
+                    Log.d("TAG", "Fail to request Delete Friend")
+                }
+            }
+            _FriendRequest.value = result
+        }
+    }
+
+    fun requestAccpet(body: Friendbody){
+        var result = false
+        viewModelScope.launch {
+            UserRepository.acceptFriend(body){
+                if(it){
+                    Log.d("TAG", "Success to accept Friend")
+                    result = it
+                }else{
+                    Log.d("TAG", "Fail to accept Friend")
+                }
+            }
+            _FriendRequest.value = result
+        }
+    }
+
+    fun blockUser(body: BlockBody){
+        var result = false
+        viewModelScope.launch {
+            UserRepository.blockUser(body){
+                if(it){
+                    Log.d("TAG", "Success to block User")
+                    result = it
+                }else{
+                    Log.d("TAG", "Fail to block User")
+                }
+            }
+            _FriendRequest.value = result
+        }
+    }
+
+    fun getFriendsList(targetId: String, lastCreatedAt:String){
+        var Friends = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.requestFriendsList(targetId,lastCreatedAt){
+                if(it.success){
+                    Friends = it
+                }
+            }
+            _Friends.value = Friends
+        }
+    }
+
+    fun getFirstFriendsList(targetId: String){
+        var Friends = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.requestFirstFriendsList(targetId){
+                if(it.success){
+                    Friends = it
+                }
+            }
+            _FirstFriends.value = Friends
+        }
+    }
+
+    fun getFirstFriendsRequestList(targetId: String){
+        var Requests = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.getFirstRequestList(targetId){
+                if(it.success){
+                    Requests = it
+                }
+            }
+            _FirstRequests.value = Requests
+        }
+    }
+
+    fun getFriendsRequestList(targetId: String, lastCreatedAt: String){
+        var Requests = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.getRequestList(targetId, lastCreatedAt){
+                if(it.success){
+                    Requests = it
+                }
+            }
+            _Requests.value = Requests
+        }
+    }
+
+    //미디어 태그 구하기
+    fun getUserTags(targetId: String){
+        var tags = listOf<Tag>()
+        viewModelScope.launch {
+            PostRepository.getUserTags(targetId){
+                if(it.size > 0){
+                    tags = it
+                }
+            }
+            _Tags.value = tags
         }
     }
 

@@ -93,6 +93,10 @@ object RetrofitClient {
         retrofit.create(UserService::class.java)
     }
 
+    val etcService : EtcService by lazy {
+        retrofit.create(EtcService::class.java)
+    }
+
     val apiService: ApiService by lazy {
         retrofit.create(ApiService::class.java)
     }
