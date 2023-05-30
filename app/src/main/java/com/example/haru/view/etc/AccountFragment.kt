@@ -48,6 +48,14 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
             binding.tvEmail.text = it
         })
 
+        etcViewModel.name.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvName.text = it
+        })
+
+        etcViewModel.haruId.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvHaruId.text = it
+        })
+
         binding.ivBackIconAccount.setOnClickListener(ClickListener())
     }
 

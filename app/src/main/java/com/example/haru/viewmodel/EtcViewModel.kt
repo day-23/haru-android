@@ -56,6 +56,7 @@ class EtcViewModel : ViewModel() {
     init {
         _name.value = User.name
         _email.value = User.email
+        _haruId.value = User.haruId
         _isPublicAccount.value = User.isPublicAccount
         _isPostBrowsingEnabled.value = User.isPostBrowsingEnabled
         _isAllowFeedLike.value = User.isAllowFeedLike
