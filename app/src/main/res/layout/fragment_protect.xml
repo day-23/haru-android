@@ -81,6 +81,7 @@
                 android:layout_weight="1" />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_account_public"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,7 +115,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
             <TextView
@@ -126,6 +126,7 @@
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_browsing_enabled"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -136,6 +137,31 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="피드 댓글 허용"
+                android:textColor="@color/date_text"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_allow_feed_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/highlight"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -148,17 +174,11 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/tv_allow_feed_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="모든 사람"
-                android:textColor="@color/date_text"
+                android:textColor="@color/highlight"
                 android:textSize="14sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/arrow" />
 
         </LinearLayout>
 
@@ -201,6 +221,7 @@
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_allow_search"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -8,15 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.databinding.FragmentDisplayBinding
+import com.example.haru.viewmodel.EtcViewModel
 
-class DisplayFragment : Fragment() {
+class DisplayFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentDisplayBinding
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): DisplayFragment {
-            return DisplayFragment()
+        fun newInstance(etcViewModel: EtcViewModel): DisplayFragment {
+            return DisplayFragment(etcViewModel)
         }
     }
 
