@@ -68,7 +68,7 @@
             android:layout_weight="1"
             android:background="@drawable/with_divider_btn"
             android:gravity="center"
-            android:text="이후 반복 일정도 수정"
+            android:text="이 일정부터 수정"
             android:textColor="@color/todo_description"
             android:textSize="20sp" />
 
