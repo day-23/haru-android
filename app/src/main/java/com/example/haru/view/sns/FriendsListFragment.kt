@@ -63,7 +63,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
     }
 
     override fun onRejectClick(item: FriendInfo) {
-        mypageViewModel.requestUnFriend(UnFollowbody(item.id!!))
+        mypageViewModel.requestUnFriend(item.id!!, UnFollowbody(User.id))
 
         mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
             friendAdapter.deleteFriend(item)

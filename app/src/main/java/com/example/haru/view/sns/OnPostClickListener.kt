@@ -2,6 +2,8 @@ package com.example.haru.view.sns
 
 import com.example.haru.R
 import com.example.haru.data.model.Post
+import com.example.haru.data.model.Tag
+import com.example.haru.view.adapter.MediaTagAdapter
 
 interface OnPostClickListener {
     fun onCommentClick(postitem: Post)
@@ -14,5 +16,5 @@ interface OnPostClickListener {
 }
 
 interface OnMediaTagClicked {
-    fun onTagClicked(tagId:String)
+    fun onTagClicked(tag: Tag, holder:MediaTagAdapter.MediaTagViewHolder)
 }

@@ -34,10 +34,10 @@ class UserRepository() {
         callback(data)
     }
     //친구 요청 취소
-    suspend fun requestunFriend(body: UnFollowbody, callback: (result : Boolean) -> Unit) = withContext(
+    suspend fun requestunFriend(targetId: String, body: UnFollowbody, callback: (result : Boolean) -> Unit) = withContext(
         Dispatchers.IO){
         val response = userService.requestUnFriend(
-            userId,
+            targetId,
             body
         ).execute()
         val result: FollowResponse

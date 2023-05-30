@@ -165,7 +165,7 @@ class MyPageViewModel(): ViewModel() {
         var newMedia = MediaResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
             PostRepository.getFirstTagMedia(targetId, tagId) {
-                if (it.data.size > 0) { //get success
+                if (it.data != null) { //get success
                     newMedia = it
                 }
             }
@@ -329,10 +329,10 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun requestUnFriend(body: UnFollowbody){
+    fun requestUnFriend(targetId: String, body: UnFollowbody){
         var result = false
         viewModelScope.launch {
-            UserRepository.requestunFriend(body){
+            UserRepository.requestunFriend(targetId ,body){
                 if(it){
                     Log.d("TAG","Success to request UnFriend")
                     result = it

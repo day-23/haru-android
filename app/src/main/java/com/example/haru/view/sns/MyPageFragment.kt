@@ -37,6 +37,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     val userId = userId
     var isMyPage = false
     var friendStatus = 0
+    var selectedTag: MediaTagAdapter.MediaTagViewHolder? = null
 
     override fun onCommentClick(postitem: Post) {
         mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
@@ -66,8 +67,16 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         TODO("Not yet implemented")
     }
 
-    override fun onTagClicked(tagId: String) {
-        mypageViewModel.getFirstTagMedia(userId, tagId)
+    override fun onTagClicked(tag: Tag, holder : MediaTagAdapter.MediaTagViewHolder) {
+        if(selectedTag != holder) {
+            selectedTag = holder
+            holder.tag.setBackgroundResource(R.drawable.tag_btn_clicked)
+            mypageViewModel.getFirstTagMedia(userId, tag.id)
+        }else{
+            selectedTag = null
+            holder.tag.setBackgroundResource(R.drawable.tag_btn_custom)
+            mypageViewModel.getFirstMedia(userId)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -291,7 +300,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     fun requestUnFriend(){
-        mypageViewModel.requestUnFriend(UnFollowbody(userId))
+        mypageViewModel.requestUnFriend(userId, UnFollowbody(com.example.haru.utils.User.id))
     }
 
     fun requestDelFriend(){

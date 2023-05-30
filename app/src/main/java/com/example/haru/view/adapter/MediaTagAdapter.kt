@@ -29,7 +29,7 @@ class MediaTagAdapter (val context: Context,
         holder.tag.text = itemList[position].content
 
         holder.tag.setOnClickListener {
-            tagClicked.onTagClicked(itemList[position].id)
+            tagClicked.onTagClicked(itemList[position], holder)
         }
     }
 
