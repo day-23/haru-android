@@ -263,13 +263,12 @@ class TimetableViewModel(val context : Context): ViewModel() {
                     if(schedule.repeatOption != null && schedule.repeatValue != null) {
                         if (schedule.repeatValue[0] != 'T'){/* 단일 날짜 일정 */
                             IndexList[position].add(schedule)
-                        }else {/* 2일 연속 일정 */
 
 
+
+                        }else {/* 2일 연속 일정 timeInterval 존재하면 무조건 연속된 일정 */
+                            IndexList_allday.add(schedule)
                         }
-
-
-
 
                         continue
                     }

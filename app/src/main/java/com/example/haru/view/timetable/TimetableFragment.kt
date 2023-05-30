@@ -28,8 +28,10 @@ import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import kotlinx.coroutines.launch
 import java.time.Duration
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 //드래그 앤 드롭 그림자 없어지게 하는 클래스
 class EmptyShadowBuilder(view: View) : View.DragShadowBuilder(view) {
@@ -310,9 +312,12 @@ class TimetableFragment : Fragment() {
             val repeatStart = schedule.repeatStart!!
             val repeatEnd = schedule.repeatEnd!!
 
+
+
             val startTime = (repeatStart.slice(IntRange(11, 12)) + repeatStart.slice(IntRange(14, 15))).toInt()
             val endTime = (repeatEnd.slice(IntRange(11, 12)) + repeatEnd.slice(IntRange(14, 15))).toInt()
 
+            Log.d("drawTimesSchedules", "drawTimesSchedules: ${repeatStart} ${repeatEnd} ${schedule.content} ${startTime} ${endTime}")
             if (startTime in pastStart until pastEnd) {
                 overlapList.add(schedule)
             } else {
@@ -469,8 +474,12 @@ class TimetableFragment : Fragment() {
         // Calculate the difference (offset) between the two dates
         val diff = Duration.between(preRepeatStart, preRepeatEnd)
 
-        // calculate the offset in seconds
-        val offsetInMinutes = diff.toMinutes()
+
+        // Get only the time part
+        val timeOfRepeatStart = LocalTime.parse(repeatStart.substring(11, 16))
+        val timeOfRepeatEnd = LocalTime.parse(repeatEnd.substring(11, 16))
+        val offsetInMinutes = ChronoUnit.MINUTES.between(timeOfRepeatStart, timeOfRepeatEnd).let { if (it < 0) it + 24 * 60 else it }
+
         val startHour = preRepeatStart.hour
         val startMin = preRepeatStart.minute
 
