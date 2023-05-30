@@ -17,4 +17,5 @@ object User {
     var isAllowSearch: Boolean = true
     var createdAt: String = ""
     var accessToken: String = ""
+    var alarmAprove: Boolean = false
 }

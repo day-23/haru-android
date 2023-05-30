@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.databinding.FragmentAlarmBinding
+import com.example.haru.utils.User
 
 class AlarmFragment : Fragment() {
     private lateinit var binding: FragmentAlarmBinding
@@ -44,6 +45,12 @@ class AlarmFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
         binding.ivBackIconAlarm.setOnClickListener(ClickListener())
+
+        binding.commentAlarmSwitch.isChecked = User.alarmAprove
+
+        binding.commentAlarmSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            User.alarmAprove = isChecked
+        }
     }
 
     inner class ClickListener : View.OnClickListener {

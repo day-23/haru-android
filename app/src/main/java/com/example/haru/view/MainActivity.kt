@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -53,6 +54,7 @@ class MainActivity : BaseActivity(){
         editor.putBoolean("todoComplete", calendarMainData.todoComplete)
         editor.putBoolean("todoInComplete", calendarMainData.todoInComplete)
         editor.putString("userId", User.id)
+        editor.putBoolean("alarmAprove", User.alarmAprove)
         editor.apply()
 
         initAlarm()
@@ -61,33 +63,42 @@ class MainActivity : BaseActivity(){
     }
 
     fun initAlarm(){
-        Log.d("알람", "알람 설정")
-        AlarmWorker.lifecycle = this
+        if(User.alarmAprove) {
+            Log.d("알람", "알람 설정")
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
-        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            val intent = Intent(this, AlarmWorker::class.java)
+            if (User.id != "") {
+                intent.putExtra("userId", User.id)
+                val pendingIntent = PendingIntent.getBroadcast(
+                    this, 0, intent,
+                    PendingIntent.FLAG_MUTABLE
+                )
 
-        val intent = Intent(this, AlarmWorker::class.java)
-        if (User.id != "") {
-            intent.putExtra("userId", User.id)
-            val pendingIntent = PendingIntent.getBroadcast(
-                this, 0, intent,
-                PendingIntent.FLAG_MUTABLE
-            )
+                val calendar = Calendar.getInstance()
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                }
 
-            val calendar = Calendar.getInstance()
-            calendar.apply {
-                set(Calendar.HOUR_OF_DAY, 9)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent
+                )
             }
-            calendar.add(Calendar.MINUTE, 1)
+        } else {
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            val intent = Intent(baseContext, AlarmWorker::class.java)
 
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                AlarmManager.INTERVAL_DAY,
-                pendingIntent
-            )
+            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+                PendingIntent.getBroadcast(baseContext,0,intent,PendingIntent.FLAG_IMMUTABLE)
+            }else{
+                PendingIntent.getBroadcast(baseContext,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+            }
+
+            alarmManager.cancel(pendingIntent)
         }
     }
 
@@ -115,6 +126,7 @@ class MainActivity : BaseActivity(){
             sharedPreference.getBoolean("unclassifiedCategory", true)
         calendarMainData.todoComplete = sharedPreference.getBoolean("todoComplete", true)
         calendarMainData.todoInComplete = sharedPreference.getBoolean("todoInComplete", true)
+        User.alarmAprove = sharedPreference.getBoolean("alarmAprove", true)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
