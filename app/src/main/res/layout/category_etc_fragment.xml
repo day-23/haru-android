@@ -19,8 +19,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3"
+                android:layout_height="70dp"
                 android:gravity="left"
                 android:background="@drawable/category_up_border">
 
@@ -38,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="#FDFDFD"
-                android:layout_weight="16">
+                android:layout_weight="577">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -223,6 +222,7 @@
                     android:textSize="20sp"
                     android:gravity="center"
                     android:text="모두 가리기"
+                    android:background="#FDFDFD"
                     android:layout_marginBottom="27dp"
                     android:textColor="#646464" />
             </LinearLayout>
@@ -230,7 +230,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="26"
                 android:background="@drawable/category_botton_border">
             </LinearLayout>
 

@@ -17,6 +17,7 @@ object User {
     var isAllowSearch: Boolean = true
     var createdAt: String = ""
     var accessToken: String = ""
+    var alarmAprove: Boolean = false
 
     override fun toString(): String {
         return "User : {id : $id}, " +

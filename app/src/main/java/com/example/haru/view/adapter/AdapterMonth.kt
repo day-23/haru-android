@@ -529,7 +529,6 @@ class AdapterMonth(val activity: Activity,
             testView.setTextColor(Color.parseColor("#191919"))
         }
 
-
         if(completed){
             testView.alpha = 0.7f
             testView.setPaintFlags(testView.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
@@ -584,8 +583,6 @@ class AdapterMonth(val activity: Activity,
                 var saveCntList = ArrayList<Int>()
                 var saveScheduleList = ArrayList<Schedule>()
 
-                Log.d("망할 오류", maxTextCount.toString())
-
                 var position2 = -1
                 loop@while(true) {
                     position2++
@@ -602,32 +599,6 @@ class AdapterMonth(val activity: Activity,
 
                     if(contentLine >= maxTextCount-1) continue
 
-//                    if(size == 4 && newpostion >= 175) break
-//                    if(size == 5 && newpostion >= 168) break
-//
-//                    if(size == 4){
-//                        if(newpostion/7 in arrayOf(0,5,10,15,20,25)) continue
-//                    } else if(size == 5){
-//                        if(newpostion/7 in arrayOf(0,4,8,12,16,20,24)) continue
-//                    }
-//
-//                    var contentPosition = 0
-//                    var contentLine = 0
-//
-//                    if(size == 5) {
-//                        val cyclevalue = newpostion / 28 * 7
-//                        contentPosition = cyclevalue + newpostion % 7
-//                        contentLine = (newpostion / 7) % 4 - 1
-//
-//                        if(contentLine >= 2) continue
-//                    } else {
-//                        val cyclevalue = newpostion / 35 * 7
-//                        contentPosition = cyclevalue + newpostion % 7
-//                        contentLine = (newpostion / 7) % 5 - 1
-//
-//                        if(contentLine >= 3) continue
-//                    }
-
                     if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
                         val index = saveLineList.indexOf(contentLine)
 
@@ -642,8 +613,6 @@ class AdapterMonth(val activity: Activity,
                                 saveScheduleList[index].category!!.color != null){
                                 color = Color.parseColor(saveScheduleList[index].category!!.color)
                             }
-
-//                            (4 * (contentPosition / 7) + (contentLine + 2)) / 29f,
 
                             addViewFunction(
                                 holder,
@@ -968,7 +937,6 @@ class AdapterMonth(val activity: Activity,
                                 (i % 7) / 6f,
                                 i/7,
                                 maxTextCount-1,
-//                                3,
                                 1,
                                 Color.rgb(0xED, 0xED, 0xED),
                                 false,
@@ -983,7 +951,6 @@ class AdapterMonth(val activity: Activity,
                                 (i % 7) / 6f,
                                 i/7,
                                 maxTextCount-1,
-//                                4,
                                 1,
                                 Color.rgb(0xED, 0xED, 0xED),
                                 false,

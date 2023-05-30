@@ -12,7 +12,6 @@ class AllDoRepository{
     suspend fun getAllDoByDates(startDate:String, endDate:String, callback:(alldoData : AlldoData?) -> Unit) = withContext(Dispatchers.IO) {
         val response = allDoService.getAllDoDates(
             com.example.haru.utils.User.id,
-//            "005224c0-eec1-4638-9143-58cbfc9688c5",
             AlldoBodyCategory(startDate, endDate),
         ).execute()
 

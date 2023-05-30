@@ -604,7 +604,7 @@ object FormatDate {
     }
 
     //이 다음 4개의 next 함수는 스케줄 용입니다.
-    fun nextStartDate(endDateStr: String, repeatEndDateStr: String): Date? {
+    fun nextStartDate(endDateStr: String, repeatEndDateStr: String?): Date? {
         val endDate = strToDate(endDateStr)
         val calendar = Calendar.getInstance()
 
@@ -613,6 +613,8 @@ object FormatDate {
             add(Calendar.DATE, 1)
         }
         val nextEndDate = calendar.time
+
+        if(repeatEndDateStr == null) return  nextEndDate
 
         calendar.apply {
             time = strToDate(repeatEndDateStr)!!
@@ -630,7 +632,7 @@ object FormatDate {
         repeatValue: String,
         repeatOption: Int,
         endDateStr: String,
-        repeatEndDateStr: String
+        repeatEndDateStr: String?
     ): Date? {
         val calendar = Calendar.getInstance()
 
@@ -639,12 +641,10 @@ object FormatDate {
 
             calendar.time =
                 strToDatecalendar(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
-            Log.d("20191630", "endDate:"+endDateStr)
 
             val nWeek = calendar.get(Calendar.DAY_OF_WEEK)
 
             val idx = nWeek - 1
-            Log.d("20191630", "idx:"+idx.toString())
             val idxPlus = 1  // Todo를 완료하기 위해서 다음 endDate를 구할때는 해당 날이 포함되서는 안된다.
             var flag = false
 
@@ -663,6 +663,8 @@ object FormatDate {
                     }
             }
             val nextEndDate = calendar.time
+
+            if(repeatEndDateStr == null) return  nextEndDate
 
             calendar.apply {
                 time = strToDatecalendar(repeatEndDateStr)
@@ -702,7 +704,7 @@ object FormatDate {
 
     fun nextStartDateEveryMonth(
         repeatValue: String, endDateStr: String,
-        repeatEndDateStr: String
+        repeatEndDateStr: String?
     ): Date? {
         val calendar = Calendar.getInstance()
 
@@ -713,6 +715,8 @@ object FormatDate {
             val idxPlus = 1
             var flag = false
             var days = 32
+            Log.d("반복투두", (idx+idxPlus).toString())
+
             for (i in idx + idxPlus until 31)
                 if (repeatValue[i] == '1') {
                     days = i + 1
@@ -731,24 +735,29 @@ object FormatDate {
                 1
             )  // 만약 31일인 상태에서 3월에서 + 1하면 5월 1일로 간다. 그렇기 때문에 날짜를 1로 설정해줌
 
+            //5월 1일
+
+            //10 < 10
             if (days < idx + 1) {
                 calendar.add(Calendar.MONTH, 1)
                 if (calendar.getActualMaximum(Calendar.DAY_OF_MONTH) < days)
                     calendar.add(Calendar.MONTH, 1)
                 calendar.set(Calendar.DAY_OF_MONTH, days)
             } else {
+                //31 < 10
                 if (calendar.getActualMaximum(Calendar.DAY_OF_MONTH) < days) {
                     calendar.add(Calendar.MONTH, 1)
                     if (repeatValue.substring(0, days - 1).contains('1')) {
                         days = repeatValue.indexOf('1') + 1
                     }
-                } else {
-                    calendar.add(Calendar.MONTH, 1)
                 }
                 calendar.set(Calendar.DAY_OF_MONTH, days)
             }
-            val nextEndDate = cal.time
-            Log.d("20191627", "nextEndDate : ${nextEndDate}")
+            val nextEndDate = calendar.time
+
+            Log.d("반복투두", nextEndDate.toString())
+
+            if(repeatEndDateStr == null) return nextEndDate
 
             calendar.apply {
                 time = strToDatecalendar(repeatEndDateStr)
@@ -786,7 +795,7 @@ object FormatDate {
     fun nextStartDateEveryYear(
         repeatValue: String,
         endDateStr: String,
-        repeatEndDateStr: String,    // endDateStr을 하면 현재 시간으로 값을 정하지만 만약 사용자가 직접 날짜를 설정한다면????? 방법 강구하기
+        repeatEndDateStr: String?,    // endDateStr을 하면 현재 시간으로 값을 정하지만 만약 사용자가 직접 날짜를 설정한다면????? 방법 강구하기
         day: Int? = null
     ): Date? {                       // todoAddViewModel에 사용자가 직접 endDate를 설정한 것을 표시할 수 있는 값 만들기???
         val calendar = Calendar.getInstance()
@@ -828,6 +837,8 @@ object FormatDate {
                 }
             }
             val nextEndDate = calendar.time
+
+            if(repeatEndDateStr == null) return nextEndDate
 
             calendar.apply {
                 time = strToDatecalendar(repeatEndDateStr)

@@ -1,11 +1,17 @@
 package com.example.haru.view
 
 import BaseActivity
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -15,10 +21,16 @@ import com.example.haru.R
 import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.databinding.ActivityMainBinding
+import com.example.haru.utils.User
 import com.example.haru.view.calendar.calendarMainData
+import com.example.haru.view.etc.AlarmWorker
 import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.view.timetable.TimetableFragment
+import com.example.haru.viewmodel.CalendarViewModel
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity(){
     private val fragments = arrayOfNulls<Fragment>(5)
@@ -41,9 +53,53 @@ class MainActivity : BaseActivity(){
         editor.putBoolean("unclassifiedCategory", calendarMainData.unclassifiedCategory)
         editor.putBoolean("todoComplete", calendarMainData.todoComplete)
         editor.putBoolean("todoInComplete", calendarMainData.todoInComplete)
+        editor.putString("userId", User.id)
+        editor.putBoolean("alarmAprove", User.alarmAprove)
         editor.apply()
 
+        initAlarm()
+
         super.onPause()
+    }
+
+    fun initAlarm(){
+        if(User.alarmAprove) {
+            Log.d("알람", "알람 설정")
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+            val intent = Intent(this, AlarmWorker::class.java)
+            if (User.id != "") {
+                intent.putExtra("userId", User.id)
+                val pendingIntent = PendingIntent.getBroadcast(
+                    this, 0, intent,
+                    PendingIntent.FLAG_MUTABLE
+                )
+
+                val calendar = Calendar.getInstance()
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                }
+
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent
+                )
+            }
+        } else {
+            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+            val intent = Intent(baseContext, AlarmWorker::class.java)
+
+            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+                PendingIntent.getBroadcast(baseContext,0,intent,PendingIntent.FLAG_IMMUTABLE)
+            }else{
+                PendingIntent.getBroadcast(baseContext,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+            }
+
+            alarmManager.cancel(pendingIntent)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +126,7 @@ class MainActivity : BaseActivity(){
             sharedPreference.getBoolean("unclassifiedCategory", true)
         calendarMainData.todoComplete = sharedPreference.getBoolean("todoComplete", true)
         calendarMainData.todoInComplete = sharedPreference.getBoolean("todoInComplete", true)
+        User.alarmAprove = sharedPreference.getBoolean("alarmAprove", true)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
