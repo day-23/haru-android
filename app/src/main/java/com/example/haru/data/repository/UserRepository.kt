@@ -156,16 +156,17 @@ class UserRepository() {
     }
 
     suspend fun getFirstRequestList(userId: String, callback: (friends: FriendsResponse) -> Unit) = withContext(
-        Dispatchers.IO){
+        Dispatchers.IO) {
         val response = userService.getFirstRequestList(userId, "1").execute()
-        val result : FriendsResponse
+        val result: FriendsResponse
 
-        if(response.isSuccessful){
+        if (response.isSuccessful) {
             result = response.body()!!
-        }else{
+        } else {
             result = FriendsResponse(false, arrayListOf(), pagination())
         }
         callback(result)
+    }
 
     suspend fun updateUserInfo(body: Any, callback: (successFail: SuccessFail?) -> Unit) =
         withContext(Dispatchers.IO) {
@@ -185,20 +186,23 @@ class UserRepository() {
             callback(successFail)
         }
 
-    suspend fun deleteUserAccount(callback: (successFail: SuccessFail?) -> Unit) = withContext(Dispatchers.IO) {
-        val response = userService.deleteUserAccount(UserObject.id).execute()
-        var data = response.body()
+    suspend fun deleteUserAccount(callback: (successFail: SuccessFail?) -> Unit) =
+        withContext(Dispatchers.IO) {
+            val response = userService.deleteUserAccount(UserObject.id).execute()
+            var data = response.body()
 
-        val successFail : SuccessFail? = if (response.isSuccessful) {
-            Log.d("20191627", "Success to DeleteAccount")
-            data
-        } else {
-            Log.d("20191627", "Fail to DeleteAccount")
-            val error = response.errorBody()?.string()
-            val gson = Gson()
-            data = gson.fromJson(error, SuccessFail::class.java)
-            data
+            val successFail: SuccessFail? = if (response.isSuccessful) {
+                Log.d("20191627", "Success to DeleteAccount")
+                data
+            } else {
+                Log.d("20191627", "Fail to DeleteAccount")
+                val error = response.errorBody()?.string()
+                val gson = Gson()
+                data = gson.fromJson(error, SuccessFail::class.java)
+                data
+            }
+            callback(successFail)
         }
-        callback(successFail)
-    }
 }
+
+
