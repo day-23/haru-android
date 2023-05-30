@@ -7,23 +7,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.haru.R
-import com.example.haru.databinding.FragmentAccountDeleteBinding
+import com.example.haru.databinding.FragmentAccountDeleteDoubleCheckBinding
 
-class AccountDeleteFragment : Fragment() {
-    private lateinit var binding: FragmentAccountDeleteBinding
+class AccountDeleteDoubleCheckFragment : Fragment() {
+    private lateinit var binding : FragmentAccountDeleteDoubleCheckBinding
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(): AccountDeleteFragment {
-            return AccountDeleteFragment()
+        fun newInstance() : AccountDeleteDoubleCheckFragment {
+            return AccountDeleteDoubleCheckFragment()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "AccountDeleteFragment - onCreate() called")
+        Log.d(TAG, "AccountDeleteDoubleCheckFragment - onCreate() called")
     }
 
     override fun onCreateView(
@@ -31,7 +30,7 @@ class AccountDeleteFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAccountDeleteBinding.inflate(inflater)
+        binding = FragmentAccountDeleteDoubleCheckBinding.inflate(inflater)
         return binding.root
     }
 
@@ -44,24 +43,22 @@ class AccountDeleteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
 
-        binding.btnAccountDelete.setOnClickListener(ClickListener())
-        binding.ivBackIconAccountDelete.setOnClickListener(ClickListener())
+        binding.ivCancelAccountDelete.setOnClickListener(ClickListener())
+        binding.btnAccountDeleteComplete.setOnClickListener(ClickListener())
     }
 
-    inner class ClickListener() : View.OnClickListener {
+    inner class ClickListener : View.OnClickListener{
         override fun onClick(v: View?) {
-            when (v?.id) {
-                binding.ivBackIconAccountDelete.id -> {
+            when(v?.id){
+                binding.ivCancelAccountDelete.id -> {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
 
-                binding.btnAccountDelete.id -> {
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AccountDeleteDoubleCheckFragment())
-                        .addToBackStack(null)
-                        .commit()
+                binding.btnAccountDeleteComplete.id -> {
+
                 }
             }
         }
+
     }
 }
