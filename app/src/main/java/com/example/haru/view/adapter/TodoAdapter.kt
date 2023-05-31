@@ -52,11 +52,19 @@ class TodoAdapter(val context: Context) :
     }
 
     interface CompleteClick {
-        fun onClick(view: View, id: String, callback: (completed: Completed, successData : SuccessFail?) -> Unit)
+        fun onClick(
+            view: View,
+            id: String,
+            callback: (completed: Completed, successData: SuccessFail?) -> Unit
+        )
     }
 
     interface FlagClick {
-        fun onClick(view: View, id: String, callback : (flag : Flag, successData : SuccessFail?) -> Unit)
+        fun onClick(
+            view: View,
+            id: String,
+            callback: (flag: Flag, successData: SuccessFail?) -> Unit
+        )
     }
 
     interface SubTodoCompleteClick {
@@ -104,7 +112,7 @@ class TodoAdapter(val context: Context) :
         }
     }
 
-    val diffUtil = AsyncListDiffer(this, diffCallback)
+    private val diffUtil = AsyncListDiffer(this, diffCallback)
 
     override fun getItemViewType(position: Int): Int = diffUtil.currentList[position].type
 
@@ -212,7 +220,7 @@ class TodoAdapter(val context: Context) :
 
             if (flagClick != null) {
                 binding.checkFlag.setOnClickListener {
-                    flagClick?.onClick(it, item.id){ flag, successData ->
+                    flagClick?.onClick(it, item.id) { flag, successData ->
                         if (successData == null)
                             binding.checkFlag.isChecked = !flag.flag
                         else if (!successData.success)
@@ -223,7 +231,7 @@ class TodoAdapter(val context: Context) :
 
             if (completeClick != null) {
                 binding.checkDone.setOnClickListener {
-                    completeClick?.onClick(it, item.id){ completed, successData ->
+                    completeClick?.onClick(it, item.id) { completed, successData ->
                         if (successData == null)
                             binding.checkDone.isChecked = !completed.completed
                         else if (!successData.success)

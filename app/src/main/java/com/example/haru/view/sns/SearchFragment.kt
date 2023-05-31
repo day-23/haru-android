@@ -11,9 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Content
 import com.example.haru.databinding.FragmentSearchBinding
+import com.example.haru.view.adapter.SearchTodoAdapter
+import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.viewmodel.CheckListViewModel
 
 class SearchFragment(val viewModel: Any) : Fragment() {
@@ -45,8 +48,15 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
         // checklist와 캘린더에서 접근한 검색 화면일 경우
         if (viewModel is CheckListViewModel) {
+            val todoListView : RecyclerView = binding.searchRecyclerTwo
+            val todoAdapter = SearchTodoAdapter(requireContext())
 
-
+            todoListView.adapter = todoAdapter
+            todoListView.layoutManager = ChecklistFragment.WrapContentLinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+            )
 
             viewModel.searchList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 binding.searchRecyclerOne.visibility =
@@ -56,7 +66,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                 binding.emptyLayout.visibility =
                     if (it.first == null && it.second == null) View.VISIBLE else View.GONE
 
-
+                todoAdapter.setDataList(it.second)
             })
 
             binding.etSearchContent.setOnKeyListener { view, keyCode, keyEvent ->
@@ -64,7 +74,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     val content = binding.etSearchContent.text.toString().trim()
                     if (content == "")
                         return@setOnKeyListener false
-                    viewModel.getScheduleTodoSearch(content = Content(content))
+                    viewModel.getScheduleTodoSearch(content = content)
                     return@setOnKeyListener false
                 }
                 return@setOnKeyListener false

@@ -33,10 +33,10 @@
             android:drawablePadding="10dp"
             android:drawableTint="@color/light_gray"
             android:hint="@string/searchDescription"
+            android:maxLines="1"
             android:paddingStart="10dp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:maxLines="1"
             android:textColor="@color/todo_description"
             android:textColorHint="@color/light_gray"
             android:textSize="16sp" />
@@ -79,7 +79,9 @@
                 android:id="@+id/search_recycler_one"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:orientation="vertical"
+                android:overScrollMode="never"
                 android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -87,7 +89,9 @@
                 android:id="@+id/search_recycler_two"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:orientation="vertical"
+                android:overScrollMode="never"
                 android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

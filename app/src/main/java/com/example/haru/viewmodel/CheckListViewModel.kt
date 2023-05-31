@@ -92,7 +92,8 @@ class CheckListViewModel() :
         return todoList
     }
 
-    fun getScheduleTodoSearch(content: Content) {
+    // 검색 API 호출
+    fun getScheduleTodoSearch(content: String) {
         viewModelScope.launch {
             scheduleRepository.getScheduleTodoSearch(content) {
                 if (it?.success == true) {
@@ -103,8 +104,8 @@ class CheckListViewModel() :
 
                     val todo = if (it.data?.todos?.isNotEmpty() == true) {
                         if (schedule != null)
-                            listOf(Todo(1), Todo(type = 0)) + it.data.todos
-                        else listOf(Todo(type = 0)) + it.data.todos
+                            listOf(Todo(0), Todo(type = 1)) + it.data.todos
+                        else listOf(Todo(type = 1)) + it.data.todos
                     } else null
                     _searchList.postValue(Pair(schedule, todo))
                 } else Log.e("20191627", it.toString())

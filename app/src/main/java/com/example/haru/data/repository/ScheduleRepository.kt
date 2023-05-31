@@ -11,11 +11,15 @@ import kotlinx.coroutines.withContext
 class ScheduleRepository() {
     private val scheduleService = RetrofitClient.scheduleService
 
-    suspend fun getScheduleTodoSearch(content: Content, callback: (searchData : GetSearchResponse?) -> Unit) = withContext(Dispatchers.IO) {
+
+    suspend fun getScheduleTodoSearch(
+        content: String,
+        callback: (searchData: GetSearchResponse?) -> Unit
+    ) = withContext(Dispatchers.IO) {
         val response = scheduleService.getScheduleTodoSearch(User.id, content).execute()
         var data = response.body()
 
-        val searchData : GetSearchResponse? = if (response.isSuccessful) {
+        val searchData: GetSearchResponse? = if (response.isSuccessful) {
             Log.d("TAG", "Success to get SearchData")
             data
         } else {
@@ -28,7 +32,12 @@ class ScheduleRepository() {
         callback(searchData)
     }
 
-    suspend fun getScheduleByDates(startDate:String, endDate:String, body: ScheduleRequest, callback:(todoData : ScheduleByDateResponse) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun getScheduleByDates(
+        startDate: String,
+        endDate: String,
+        body: ScheduleRequest,
+        callback: (todoData: ScheduleByDateResponse) -> Unit
+    ) = withContext(Dispatchers.IO) {
         val response = scheduleService.getScheduleDates(
             User.id,
             body,
@@ -47,10 +56,10 @@ class ScheduleRepository() {
         callback(todoData)
     }
 
-    suspend fun postSchedule(body: PostSchedule, callback: () -> Unit){
+    suspend fun postSchedule(body: PostSchedule, callback: () -> Unit) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.createSchedule(
-                    User.id,
+                User.id,
                 body
             ).execute()
 
@@ -71,10 +80,10 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun deleteSchedule(scheduleId: String, callback: () -> Unit){
+    suspend fun deleteSchedule(scheduleId: String, callback: () -> Unit) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteSchedule(
-                    User.id,
+                User.id,
                 scheduleId
             ).execute()
 
@@ -90,7 +99,11 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun frontDeleteSchedule(scheduleId: String, frontDelete: ScheduleFrontDelete, callback: () -> Unit){
+    suspend fun frontDeleteSchedule(
+        scheduleId: String,
+        frontDelete: ScheduleFrontDelete,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteScheduleFront(
                 User.id,
@@ -110,7 +123,11 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun middleDeleteSchedule(scheduleId: String, middleDelete: ScheduleMiddleDelete, callback: () -> Unit){
+    suspend fun middleDeleteSchedule(
+        scheduleId: String,
+        middleDelete: ScheduleMiddleDelete,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteScheduleMiddle(
                 User.id,
@@ -130,7 +147,11 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun backDeleteSchedule(scheduleId: String, backDelete: ScheduleBackDelete, callback: () -> Unit){
+    suspend fun backDeleteSchedule(
+        scheduleId: String,
+        backDelete: ScheduleBackDelete,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteScheduleBack(
                 User.id,
@@ -150,7 +171,7 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit){
+    suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.submitSchedule(
                 User.id,
@@ -170,7 +191,11 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun submitScheduleFront(scheduleId: String, postBodyFront: PostScheduleFront, callback: () -> Unit){
+    suspend fun submitScheduleFront(
+        scheduleId: String,
+        postBodyFront: PostScheduleFront,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.submitScheduleFront(
                 User.id,
@@ -190,7 +215,11 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun submitScheduleMiddle(scheduleId: String, postBodyMiddle: PostScheduleMiddle, callback: () -> Unit){
+    suspend fun submitScheduleMiddle(
+        scheduleId: String,
+        postBodyMiddle: PostScheduleMiddle,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.submitScheduleMiddle(
                 User.id,
@@ -210,7 +239,11 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun submitScheduleBack(scheduleId: String, postBodyBack: PostScheduleBack, callback: () -> Unit){
+    suspend fun submitScheduleBack(
+        scheduleId: String,
+        postBodyBack: PostScheduleBack,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.submitScheduleBack(
                 User.id,

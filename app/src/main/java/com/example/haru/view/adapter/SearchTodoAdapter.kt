@@ -8,36 +8,46 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Todo
+import com.example.haru.databinding.FragmentChecklistDividerBinding
 import com.example.haru.databinding.FragmentChecklistItemBinding
+import com.example.haru.databinding.FragmentSearchTodoHeaderBinding
 import com.example.haru.utils.FormatDate
 
 class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var todoData = emptyList<Todo>()
+//    private var todoData = emptyList<Todo>()
+    private val divider = 0
+    private val header = 1
+    private val item = 2
 
+    private val diffCallback = object : DiffUtil.ItemCallback<Todo>() {
+        override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-    private val header = 0
-    private val empty = 2
-    private val item = 1
-
-
-    override fun getItemViewType(position: Int): Int {
-        return if (todoData.isEmpty())
-            empty
-        else {
-            if (position == 0)
-                header
-            else item
+        override fun areContentsTheSame(oldItem: Todo, newItem: Todo): Boolean {
+            return oldItem == newItem
         }
     }
 
+    private val diffUtil = AsyncListDiffer(this, diffCallback)
+
+
+    override fun getItemViewType(position: Int): Int = diffUtil.currentList[position].type
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-//            header -> {
-//
-//            }
+            header -> HeaderViewHolder(
+                FragmentSearchTodoHeaderBinding.inflate(
+                    LayoutInflater.from(context),
+                    parent,
+                    false
+                )
+            )
 
             item -> TodoViewHolder(
                 FragmentChecklistItemBinding.inflate(
@@ -46,29 +56,30 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
                     false
                 )
             )
-            else ->
-                TodoViewHolder(
-                    FragmentChecklistItemBinding.inflate(
-                        LayoutInflater.from(context),
-                        parent,
-                        false
-                    )
-                )
-            
 
+            divider -> DividerViewHolder(
+                FragmentChecklistDividerBinding.inflate(
+                    LayoutInflater.from(context),
+                    parent,
+                    false
+                )
+            )
+
+            else -> throw ClassCastException("Unknown viewType $viewType")
         }
     }
 
 
-    override fun getItemCount(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun getItemCount(): Int = diffUtil.currentList.count()
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//        when(holder){
-//            is
-//        }
+        val todo = diffUtil.currentList[position]
+        when (holder) {
+            is HeaderViewHolder -> {}
+            is DividerViewHolder -> {}
+            is TodoViewHolder -> holder.bind(todo)
+        }
     }
 
     inner class TodoViewHolder(val binding: FragmentChecklistItemBinding) :
@@ -233,6 +244,19 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
             }
 
         }
+    }
+
+    inner class DividerViewHolder(val binding: FragmentChecklistDividerBinding) :
+        RecyclerView.ViewHolder(binding.root) {}
+
+    inner class HeaderViewHolder(val binding: FragmentSearchTodoHeaderBinding) :
+        RecyclerView.ViewHolder(binding.root) {}
+
+
+    fun setDataList(dataList: List<Todo>?) {
+        if (dataList == null)
+            return
+        diffUtil.submitList(dataList as MutableList<Todo>)
     }
 
 }

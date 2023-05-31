@@ -6,7 +6,7 @@ import retrofit2.http.*
 
 interface ScheduleService {
     @GET("schedule/{userId}/search")
-    fun getScheduleTodoSearch(@Path("userId") userId: String, @Body content: Content) : Call<GetSearchResponse>
+    fun getScheduleTodoSearch(@Path("userId") userId: String, @Query("content") content: String) : Call<GetSearchResponse>
 
     @POST("schedule/{userId}/schedules/date")
     fun getScheduleDates(@Path("userId") userId: String, @Body scheduleRequest: ScheduleRequest) : Call<GetScheduleResponse>
