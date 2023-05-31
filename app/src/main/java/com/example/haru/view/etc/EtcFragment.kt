@@ -64,10 +64,13 @@ class EtcFragment : Fragment() {
 
         Log.e("20191627", User.toString())
         etcViewModel.getSnsInfo()
+        etcViewModel.setTodayYearMonth()
+        etcViewModel.calculateWithHaru()
 
         etcViewModel.profileImage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it == "")
-                binding.ivProfile.background = ContextCompat.getDrawable(requireContext(), R.drawable.haru_fighting)
+                binding.ivProfile.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.haru_fighting)
             else Glide.with(this)
                 .load(it)
                 .into(binding.ivProfile)

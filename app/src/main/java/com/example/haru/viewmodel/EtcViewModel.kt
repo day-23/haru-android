@@ -80,9 +80,6 @@ class EtcViewModel : ViewModel() {
         _isAllowFeedLike.value = User.isAllowFeedLike
         _isAllowFeedComment.value = User.isAllowFeedComment
         _isAllowSearch.value = User.isAllowSearch
-
-        setTodayYearMonth()
-        calculateWithHaru()
     }
 
     // itemCount에 값 넣어주는 함수
@@ -122,7 +119,7 @@ class EtcViewModel : ViewModel() {
     }
 
     // 오늘 날짜 설정
-    private fun setTodayYearMonth() {
+    fun setTodayYearMonth() {
         val startDate: Date
         val endDate: Date
         FormatDate.cal.apply {
@@ -181,7 +178,7 @@ class EtcViewModel : ViewModel() {
     }
 
     // 하루와 함께한 날짜 계산
-    private fun calculateWithHaru() {
+    fun calculateWithHaru() {
 
         val startDate = FormatDate.cal.apply {
             time = FormatDate.strToDate(User.createdAt)!!
