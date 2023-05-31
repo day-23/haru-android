@@ -133,21 +133,27 @@ class ScheduleRepository() {
 
     suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit){
         withContext(Dispatchers.IO) {
-            val response = scheduleService.submitSchedule(
-                com.example.haru.utils.User.id,
-                scheduleId,
-                postBody
-            ).execute()
+//            try {
+                val response = scheduleService.submitSchedule(
+                    com.example.haru.utils.User.id,
+                    scheduleId,
+                    postBody
+                ).execute()
 
-            if (response.isSuccessful) {
-                Log.d("TAG", "Success to submit schedule")
-            } else {
-                Log.d("TAG", "Fail to submit schedule")
-            }
+                if (response.isSuccessful) {
+                    Log.d("TAG", "Success to submit schedule")
 
-            withContext(Dispatchers.Main) {
-                callback()
-            }
+
+                } else {
+                    Log.d("TAG", "Fail to submit schedule")
+                }
+
+                withContext(Dispatchers.Main) {
+                    callback()
+                }
+//            }catch (e: Exception){
+//                Log.d("TAG", "Fail to submit schedule")
+//            }
         }
     }
 
