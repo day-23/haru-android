@@ -239,7 +239,7 @@ class TimetableFragment : Fragment() {
 
                 var startDate = schedule.repeatStart?.slice(IntRange(0, 3)) + schedule.repeatStart?.slice(IntRange(5, 6)) + schedule.repeatStart?.slice(IntRange(8, 9))
                 var endDate = schedule.repeatEnd?.slice(IntRange(0, 3)) + schedule.repeatEnd?.slice(IntRange(5, 6)) + schedule.repeatEnd?.slice(IntRange(8, 9))
-                
+
                 // 반복 일정인 경우 -> startDate, endDate를 다시 구하기
                 if(!schedule.repeatValue.isNullOrEmpty()){
                     scheduleCalendarData.position
