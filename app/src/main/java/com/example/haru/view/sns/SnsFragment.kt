@@ -161,6 +161,17 @@ class SnsFragment : Fragment(), OnPostClickListener {
             if(post.size == 0) Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
         }
 
+        binding.writeHaru.setOnClickListener {
+            val newFrag = WriteHaruFragment()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
+            transaction.commit()
+
+        }
+
         //하루 옆 메뉴 클릭
         binding.menuButton.setOnClickListener{
             if(click == false){

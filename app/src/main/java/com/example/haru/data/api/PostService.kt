@@ -91,4 +91,9 @@ interface PostService {
         @Path("tagId") tagId: String
     ) : Call<MediaResponse>
 
+    @GET("post/{userId}/template")
+    fun getTemplates(
+        @Path("userId") userId: String,
+    ) : Call<ProfileListResponse>
+
 }

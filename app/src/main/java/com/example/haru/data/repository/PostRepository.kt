@@ -188,6 +188,24 @@ class PostRepository() {
         callback(medias)
     }
 
+    suspend fun getTemplates(callback: (templates: ArrayList<Profile>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getTemplates(
+            userId
+        ).execute()
+
+        val templates: ArrayList<Profile>
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get templates")
+            templates = response.body()!!.data
+        }else{
+            Log.d("TAG", "Fail to get templates")
+            templates = arrayListOf()
+        }
+        callback(templates)
+    }
+
     suspend fun getUserTags(targetId: String, callback: (tags : List<Tag>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getUserTags(

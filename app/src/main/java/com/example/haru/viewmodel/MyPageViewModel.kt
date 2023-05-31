@@ -105,6 +105,9 @@ class MyPageViewModel(): ViewModel() {
     private val _Tags = MutableLiveData<List<Tag>>()
     val Tags: LiveData<List<Tag>> = _Tags
 
+    private val _Templates = MutableLiveData<ArrayList<com.example.haru.data.model.Profile>>()
+    val Templates: LiveData<ArrayList<com.example.haru.data.model.Profile>> = _Templates
+
 
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
@@ -175,6 +178,17 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
+    fun getTemplates(){
+        var templates = arrayListOf<com.example.haru.data.model.Profile>()
+        viewModelScope.launch {
+            PostRepository.getTemplates {
+                if(it.size > 0){
+                    templates = it
+                }
+            }
+            _Templates.value = templates
+        }
+    }
     fun getUserInfo(targetId: String){
         var user = User("","","","",0,0,0,false)
         viewModelScope.launch {

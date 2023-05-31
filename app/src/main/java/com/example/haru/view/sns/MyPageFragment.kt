@@ -68,15 +68,13 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     override fun onTagClicked(tag: Tag, holder : MediaTagAdapter.MediaTagViewHolder) {
-        if(selectedTag != holder) {
-            selectedTag = holder
-            holder.tag.setBackgroundResource(R.drawable.tag_btn_clicked)
+        holder.tag.setBackgroundResource(R.drawable.tag_btn_clicked)
+        if(holder != selectedTag) {
             mypageViewModel.getFirstTagMedia(userId, tag.id)
-        }else{
-            selectedTag = null
-            holder.tag.setBackgroundResource(R.drawable.tag_btn_custom)
-            mypageViewModel.getFirstMedia(userId)
         }
+        selectedTag?.tag?.setBackgroundResource(R.drawable.tag_btn_custom)
+        selectedTag = holder
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
