@@ -26,6 +26,7 @@ import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
+import com.example.haru.view.sns.SearchFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.CheckListViewModel
 import java.util.*
@@ -67,6 +68,13 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         initTagList()
         initTodoList()
+
+        binding.ivChecklistSearch.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .addToBackStack(null)
+                .commit()
+        }
 
         binding.ivTagEtc.setOnClickListener {
             if (!binding.drawableLayout.isDrawerOpen(Gravity.RIGHT))

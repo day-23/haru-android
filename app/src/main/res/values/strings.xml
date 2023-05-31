@@ -101,6 +101,8 @@
     <string name="logoutDescription">%1s 계정에서 로그아웃 할까요?</string>
     <string name="logout">로그아웃</string>
 
+    <string name="searchDescription">검색어를 입력하세요</string>
+
     <string name="notAllow">허용 안함</string>
     <string name="onlyFriend">친구만</string>
     <string name="everyOne">모든 사람</string>
