@@ -72,7 +72,6 @@ class EtcViewModel : ViewModel() {
     var month: Int = 0
 
     init {
-        getSnsInfo()
         _name.value = User.name
         _email.value = User.email
         _haruId.value = User.haruId
@@ -102,7 +101,7 @@ class EtcViewModel : ViewModel() {
 
     // ProfileRepository
     // MypageViewModel -> getUserInfo
-    private fun getSnsInfo() {
+    fun getSnsInfo() {
         viewModelScope.launch {
             profileRepository.getUserInfo(User.id){
                 if (it.id != ""){

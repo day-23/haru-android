@@ -97,6 +97,7 @@
                     android:paddingEnd="20dp">
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_profile_edit"
                         style="@style/minSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -107,19 +108,6 @@
                         android:paddingEnd="12dp"
                         android:paddingBottom="6dp"
                         android:text="프로필 편집"
-                        android:textColor="@color/date_text"
-                        android:textSize="16sp" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        style="@style/minSize"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/btn_group_custom"
-                        android:paddingStart="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingEnd="12dp"
-                        android:paddingBottom="6dp"
-                        android:text="프로필 공유"
                         android:textColor="@color/date_text"
                         android:textSize="16sp" />
 
@@ -160,6 +148,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/layout_friend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

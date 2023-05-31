@@ -23,6 +23,8 @@ import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
 import com.example.haru.view.auth.LoginActivity
 import com.example.haru.view.checklist.ChecklistTodayFragment
+import com.example.haru.view.sns.EditProfileFragment
+import com.example.haru.view.sns.FriendsListFragment
 import com.example.haru.viewmodel.EtcViewModel
 import java.util.*
 import kotlin.math.round
@@ -61,7 +63,7 @@ class EtcFragment : Fragment() {
         (activity as BaseActivity).adjustTopMargin(binding.etcHeader.id)
 
         Log.e("20191627", User.toString())
-
+        etcViewModel.getSnsInfo()
 
         etcViewModel.profileImage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it == "")
@@ -131,8 +133,8 @@ class EtcFragment : Fragment() {
         binding.ivEtcDateRight.setOnClickListener(ClickListener())
         binding.settingIcon.setOnClickListener(ClickListener())
 
-        // 프로필 편집 클릭시 -> EditProfileFragment(userId)
-        // 친구 클릭시 -> FriendsListFragment(userId)
+        binding.btnProfileEdit.setOnClickListener(ClickListener())
+        binding.layoutFriend.setOnClickListener(ClickListener())
     }
 
     inner class ClickListener : View.OnClickListener {
@@ -148,6 +150,20 @@ class EtcFragment : Fragment() {
                 binding.ivEtcDateLeft.id -> etcViewModel.addSubTodayYearMonth(false)
 
                 binding.ivEtcDateRight.id -> etcViewModel.addSubTodayYearMonth(true)
+
+                binding.btnProfileEdit.id -> {
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragments_frame, EditProfileFragment(User.id))
+                        .addToBackStack(null)
+                        .commit()
+                }
+
+                binding.layoutFriend.id -> {
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragments_frame, FriendsListFragment(User.id))
+                        .addToBackStack(null)
+                        .commit()
+                }
             }
         }
 

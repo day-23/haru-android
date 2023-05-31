@@ -92,16 +92,28 @@ class EditProfileFragment(userId: String): Fragment() {
             val name = binding.editName.text.toString()
             val introduction = binding.editIntroduction.text.toString()
             if(multipart != null) {
-                profileViewModel.editProfile(multipart!!, name, introduction)
+                profileViewModel.editProfile(multipart, name, introduction){
+                    val fragmentManager = parentFragmentManager
+                    if (fragmentManager.backStackEntryCount > 0) {
+                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+                        fragmentManager.popBackStack()
+                    }
+                }
             }else{
-                profileViewModel.editProfileName(name, introduction)
+                profileViewModel.editProfileName(name, introduction){
+                    val fragmentManager = parentFragmentManager
+                    if (fragmentManager.backStackEntryCount > 0) {
+                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+                        fragmentManager.popBackStack()
+                    }
+                }
             }
 
-            val fragmentManager = parentFragmentManager
-            if (fragmentManager.backStackEntryCount > 0) {
-                // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-                fragmentManager.popBackStack()
-            }
+//            val fragmentManager = parentFragmentManager
+//            if (fragmentManager.backStackEntryCount > 0) {
+//                // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+//                fragmentManager.popBackStack()
+//            }
 
 //            val newFrag = MyPageFragment(userId)
 //            val transaction = parentFragmentManager.beginTransaction()

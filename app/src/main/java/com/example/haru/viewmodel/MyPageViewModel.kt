@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build.VERSION_CODES.P
 import android.provider.ContactsContract.Profile
 import android.provider.MediaStore
+import android.security.KeyChainAliasCallback
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -273,7 +274,7 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun editProfile(image: MultipartBody.Part, name: String, introduction: String){
+    fun editProfile(image: MultipartBody.Part, name: String, introduction: String, callback : () -> Unit){
         var user = User("","","","",0,0,0,false)
         viewModelScope.launch {
             ProfileRepository.editProfile(image, name, introduction){
@@ -281,12 +282,14 @@ class MyPageViewModel(): ViewModel() {
                     user = it
                     Log.d("TAG", "Success to Edit!")
                 }
+                _UserInfo.postValue(user)
+                callback()
             }
-            _UserInfo.value = user
+//            _UserInfo.value = user
         }
     }
 
-    fun editProfileName(name:String, introduction: String){
+    fun editProfileName(name:String, introduction: String, callback: () -> Unit){
         var user = User("","","","",0,0,0,false)
         viewModelScope.launch {
             ProfileRepository.editProfileName(name, introduction){
@@ -297,8 +300,10 @@ class MyPageViewModel(): ViewModel() {
                 else{
                     Log.d("TAG", "Fail to Edit name")
                 }
+                _UserInfo.postValue(user)
+                callback()
             }
-            _UserInfo.value = user
+//            _UserInfo.value = user
         }
     }
 
