@@ -48,6 +48,8 @@ class CalendarItemFragment(val schedule: Schedule,
 
     private var repeatOption = -1
 
+    private var initRepeatSwitch = false
+
     private var weeksValue = arrayListOf(
         false, false, false, false, false, false, false
     )
@@ -854,7 +856,6 @@ class CalendarItemFragment(val schedule: Schedule,
                     calendarClone.add(Calendar.YEAR, 100)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) + "T23:59:55+09:00"
-                    Log.d("20191630", repeatEndDate)
                 } else {
                     repeatStartDate =
                         dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
@@ -953,27 +954,36 @@ class CalendarItemFragment(val schedule: Schedule,
             if(schedule.location == null){//반복이 아닐 때
                 sizeOption = 0
             } else {
-                if (binding.repeatStartDateBtn.text.toString() != initStartDate ||
-                    binding.repeatEndDateBtn.text.toString() != initEndDate ||
-                    initIsAllday != isAllday ||
-                    (!isAllday && binding.repeatStartTimeBtn.text.toString() != initStartTime) ||
-                    (!isAllday && binding.repeatEndTimeBtn.text.toString() != initEndTime)
-                ) { // start 또는 end가 바뀌었을 때
-                    if (schedule.location == 0) {//front
-                        sizeOption = 1
-                    } else { // middle, back
-                        sizeOption = 2
-                    }
-                } else if(repeatvalue != schedule.repeatValue || option != schedule.repeatOption){// 반복 옵션이 바뀌었을 때
+//                if (binding.repeatStartDateBtn.text.toString() != initStartDate ||
+//                    binding.repeatEndDateBtn.text.toString() != initEndDate ||
+//                    initIsAllday != isAllday ||
+//                    (!isAllday && binding.repeatStartTimeBtn.text.toString() != initStartTime) ||
+//                    (!isAllday && binding.repeatEndTimeBtn.text.toString() != initEndTime) ||
+//
+//                ) { // start 또는 end가 바뀌었을 때
+//                    if (schedule.location == 0) {//front
+//                        sizeOption = 1
+//                    } else { // middle, back
+//                        sizeOption = 2
+//                    }
+//                } else if(repeatvalue != schedule.repeatValue || option != schedule.repeatOption){// 반복 옵션이 바뀌었을 때
+                if(repeatvalue != schedule.repeatValue ||
+                    option != schedule.repeatOption ||
+                    initRepeatSwitch != binding.repeatSwitchSchedule.isChecked
+                ){
                     if(schedule.location == 0){// front
+                        sizeOption = 1
+                    } else if(schedule.location == 1){ // middle
+                        sizeOption = 2
+                    } else { // back
                         sizeOption = 3
-                    } else { // middle, back
-                        sizeOption = 4
                     }
                 } else { // 디폴트
                     if(schedule.location == 0){ // front
+                        sizeOption = 4
+                    } else if(schedule.location == 1) { // middle
                         sizeOption = 5
-                    } else { // middle, back
+                    } else { // back
                         sizeOption = 6
                     }
                 }
@@ -984,7 +994,7 @@ class CalendarItemFragment(val schedule: Schedule,
                     1->{// 이 일정만 수정하기
                         when(schedule.location){
                             0->{//front
-                                var next = schedule.repeatStart
+                                val next = schedule.repeatStart
                                 var nextDate:Date? = null
 
                                 when(schedule.repeatOption){
@@ -1761,5 +1771,7 @@ class CalendarItemFragment(val schedule: Schedule,
         initEndTime = binding.repeatEndTimeBtn.text.toString()
 
         initIsAllday = binding.alldaySwitch.isChecked
+
+        initRepeatSwitch = binding.repeatSwitchSchedule.isChecked
     }
 }

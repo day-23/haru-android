@@ -304,6 +304,4 @@ class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFr
             }
         }
     }
-
-
 }
