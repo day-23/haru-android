@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import BaseActivity
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -69,10 +70,12 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
 
     override fun onTagClicked(tag: Tag, holder : MediaTagAdapter.MediaTagViewHolder) {
         holder.tag.setBackgroundResource(R.drawable.tag_btn_clicked)
+        holder.tag.setTextColor(Color.parseColor("#fdfdfd"))
         if(holder != selectedTag) {
             mypageViewModel.getFirstTagMedia(userId, tag.id)
         }
         selectedTag?.tag?.setBackgroundResource(R.drawable.tag_btn_custom)
+        selectedTag?.tag?.setTextColor(Color.parseColor("#191919"))
         selectedTag = holder
 
     }
