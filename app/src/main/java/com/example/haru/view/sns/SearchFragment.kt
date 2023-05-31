@@ -6,16 +6,18 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.data.model.Content
 import com.example.haru.databinding.FragmentSearchBinding
 import com.example.haru.viewmodel.CheckListViewModel
 
-class SearchFragment(val viewModel : Any): Fragment() {
-    lateinit var binding : FragmentSearchBinding
+class SearchFragment(val viewModel: Any) : Fragment() {
+    lateinit var binding: FragmentSearchBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,16 +44,38 @@ class SearchFragment(val viewModel : Any): Fragment() {
         (activity as BaseActivity).adjustTopMargin(binding.searchHeader.id)
 
         // checklist와 캘린더에서 접근한 검색 화면일 경우
-        if (viewModel is CheckListViewModel){
-            val searchView : RecyclerView = binding.searchRecycler
-//            val searchAdapter =
-        } else{
+        if (viewModel is CheckListViewModel) {
+
+
+
+            viewModel.searchList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                binding.searchRecyclerOne.visibility =
+                    if (it.first == null) View.GONE else View.VISIBLE
+                binding.searchRecyclerTwo.visibility =
+                    if (it.second == null) View.GONE else View.VISIBLE
+                binding.emptyLayout.visibility =
+                    if (it.first == null && it.second == null) View.VISIBLE else View.GONE
+
+
+            })
+
+            binding.etSearchContent.setOnKeyListener { view, keyCode, keyEvent ->
+                if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+                    val content = binding.etSearchContent.text.toString().trim()
+                    if (content == "")
+                        return@setOnKeyListener false
+                    viewModel.getScheduleTodoSearch(content = Content(content))
+                    return@setOnKeyListener false
+                }
+                return@setOnKeyListener false
+            }
+        } else {
             TODO()
         }
 
 
         // 검색어 입력시에만 bold처리
-        binding.etSearchContent.addTextChangedListener(object : TextWatcher{
+        binding.etSearchContent.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -78,9 +102,9 @@ class SearchFragment(val viewModel : Any): Fragment() {
         (activity as BaseActivity).adjustTopMargin(binding.searchHeader.id)
     }
 
-    inner class ClickListener : View.OnClickListener{
+    inner class ClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            when(v?.id){
+            when (v?.id) {
                 binding.ivSearchCancel.id -> {
                     requireActivity().supportFragmentManager.popBackStack()
                 }

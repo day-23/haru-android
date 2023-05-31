@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 class ScheduleRepository() {
     private val scheduleService = RetrofitClient.scheduleService
 
-    suspend fun getScheduleTodoSearch(content: Content) = withContext(Dispatchers.IO) {
+    suspend fun getScheduleTodoSearch(content: Content, callback: (searchData : GetSearchResponse?) -> Unit) = withContext(Dispatchers.IO) {
         val response = scheduleService.getScheduleTodoSearch(User.id, content).execute()
         var data = response.body()
 
@@ -25,7 +25,7 @@ class ScheduleRepository() {
             data = gson.fromJson(error, GetSearchResponse::class.java)
             data
         }
-        searchData
+        callback(searchData)
     }
 
     suspend fun getScheduleByDates(startDate:String, endDate:String, body: ScheduleRequest, callback:(todoData : ScheduleByDateResponse) -> Unit) = withContext(Dispatchers.IO) {

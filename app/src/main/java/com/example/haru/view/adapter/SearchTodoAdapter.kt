@@ -19,8 +19,8 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
 
 
     private val header = 0
-    private val item = 1
     private val empty = 2
+    private val item = 1
 
 
     override fun getItemViewType(position: Int): Int {
