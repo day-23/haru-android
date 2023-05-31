@@ -257,6 +257,7 @@ class AdapterMonth(val activity: Activity,
                     dateTextViews[i*7 + k].setTextColor(Color.parseColor("#1DAFFF"))
                     dateLayoutViews[i*7 + k].background = ContextCompat.getDrawable(parentFragment.requireContext(),R.drawable.calendar_in_today_image)
                 } else {
+                    dateTextViews[i*7 + k].setTypeface(dateTextViews[i*7 + k].typeface, Typeface.NORMAL)
                     dateLayoutViews[i*7 + k].background = ContextCompat.getDrawable(parentFragment.requireContext(),R.color.white)
                 }
             }
@@ -334,8 +335,6 @@ class AdapterMonth(val activity: Activity,
                     }
 
                     if(longPress && startColumn != -1 && startRow != -1){
-                        Log.d("long press", "%d %d to %d %d로 움직임".format(startColumn,startRow, column, row))
-
                         var startPosition = startRow * 7 + startColumn
                         var endPosition = row * 7 + column
 

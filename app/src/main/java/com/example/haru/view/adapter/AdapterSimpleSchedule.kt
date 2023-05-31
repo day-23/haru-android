@@ -75,6 +75,9 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
         if(schedule.isAllDay){
             detailScheduleTimeTv.text = "하루종일"
         } else {
+            Log.d("반복이슈", schedule.startTime.toString())
+            Log.d("반복이슈", schedule.endTime.toString())
+
             var scheduleTime = ""
             scheduleTime += (schedule.startTime!!.month+1).toString()+"월 " + schedule.startTime!!.date.toString()+"일 "
             scheduleTime += if(schedule.startTime!!.hours < 12) "오전 " else "오후 "
