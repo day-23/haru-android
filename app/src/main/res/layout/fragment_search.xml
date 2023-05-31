@@ -4,15 +4,15 @@
     android:id="@+id/searchHeader"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/search_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:paddingBottom="14dp">
 
         <ImageView
@@ -25,6 +25,7 @@
             android:id="@+id/et_search_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
             android:background="@drawable/shape_rect_radius_10"
             android:backgroundTint="@color/dateBtn_bg"
@@ -32,7 +33,6 @@
             android:drawablePadding="10dp"
             android:drawableTint="@color/light_gray"
             android:hint="@string/searchDescription"
-            android:layout_marginStart="12dp"
             android:paddingStart="10dp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
@@ -69,14 +69,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_recycler"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            android:orientation="vertical">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_schedule_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_todo_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

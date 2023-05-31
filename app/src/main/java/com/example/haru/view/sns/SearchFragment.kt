@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.databinding.FragmentSearchBinding
 import com.example.haru.viewmodel.CheckListViewModel
 
@@ -42,7 +43,8 @@ class SearchFragment(val viewModel : Any): Fragment() {
 
         // checklist와 캘린더에서 접근한 검색 화면일 경우
         if (viewModel is CheckListViewModel){
-
+            val searchView : RecyclerView = binding.searchRecycler
+//            val searchAdapter =
         } else{
             TODO()
         }

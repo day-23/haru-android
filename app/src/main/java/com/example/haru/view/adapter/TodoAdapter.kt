@@ -301,15 +301,6 @@ class TodoAdapter(val context: Context) :
 
 
             complete = item.completed
-//            if (item.completed){
-//                complete = true
-////                binding.tvTitle.paintFlags =
-////                    Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG
-//            }
-//            else{
-//                complete = false
-////                binding.tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
-//            }
 
             binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
             binding.tvTitle.text = item.content
