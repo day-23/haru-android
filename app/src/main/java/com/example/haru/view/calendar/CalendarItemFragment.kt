@@ -48,6 +48,8 @@ class CalendarItemFragment(val schedule: Schedule,
 
     private var repeatOption = -1
 
+    private var initRepeatSwitch = false
+
     private var weeksValue = arrayListOf(
         false, false, false, false, false, false, false
     )
@@ -726,6 +728,67 @@ class CalendarItemFragment(val schedule: Schedule,
                             requireActivity().supportFragmentManager.popBackStack()
                         }
                     }
+
+                    3->{//이후 삭제하기
+                        Log.d("삭제옵션", "이후 삭제")
+                        var pre = calendarDateFormatter.format(todayDate)
+                        var preDate:Date? = null
+
+                        preDate = FormatDate.preStartDate(pre, schedule.repeatOption,schedule.repeatValue)
+
+                        Log.d("삭제옵션", preDate.toString())
+
+                        if(preDate != null) {
+                            if(schedule.repeatValue != null && schedule.repeatValue.contains("T")) {
+                                val repeatStartDate = calendarDateFormatter.parse(schedule.repeatStart)
+                                val datediff = dateDifference(
+                                    repeatStartDate,
+                                    preDate
+                                )
+
+                                when(schedule.repeatOption){
+                                    "매주"->{
+                                        val cal = Calendar.getInstance()
+                                        cal.time = preDate
+                                        cal.add(Calendar.DATE, -(datediff%7))
+                                        preDate = cal.time
+                                    }
+
+                                    "격주"->{
+                                        val cal = Calendar.getInstance()
+                                        cal.time = preDate
+                                        cal.add(Calendar.DATE, -(datediff%14))
+                                        preDate = cal.time
+                                    }
+
+                                    "매달"->{
+                                        if(repeatStartDate.date != preDate.date){
+                                            preDate.date = repeatStartDate.date
+                                        }
+                                    }
+
+                                    "매년"->{
+                                        if(repeatStartDate.month != preDate.month){
+                                            preDate.month = repeatStartDate.month
+                                        }
+
+                                        if(repeatStartDate.date != preDate.date){
+                                            preDate.date = repeatStartDate.date
+                                        }
+                                    }
+                                }
+                            }
+
+                            calendarviewmodel.deleteBackSchedule(
+                                schedule.id,
+                                ScheduleBackDelete(
+                                    serverFormatter.format(preDate)
+                                )
+                            ) {
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        }
+                    }
                 }
             }
 
@@ -793,7 +856,6 @@ class CalendarItemFragment(val schedule: Schedule,
                     calendarClone.add(Calendar.YEAR, 100)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) + "T23:59:55+09:00"
-                    Log.d("20191630", repeatEndDate)
                 } else {
                     repeatStartDate =
                         dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
@@ -892,27 +954,36 @@ class CalendarItemFragment(val schedule: Schedule,
             if(schedule.location == null){//반복이 아닐 때
                 sizeOption = 0
             } else {
-                if (binding.repeatStartDateBtn.text.toString() != initStartDate ||
-                    binding.repeatEndDateBtn.text.toString() != initEndDate ||
-                    initIsAllday != isAllday ||
-                    (!isAllday && binding.repeatStartTimeBtn.text.toString() != initStartTime) ||
-                    (!isAllday && binding.repeatEndTimeBtn.text.toString() != initEndTime)
-                ) { // start 또는 end가 바뀌었을 때
-                    if (schedule.location == 0) {//front
-                        sizeOption = 1
-                    } else { // middle, back
-                        sizeOption = 2
-                    }
-                } else if(repeatvalue != schedule.repeatValue || option != schedule.repeatOption){// 반복 옵션이 바뀌었을 때
+//                if (binding.repeatStartDateBtn.text.toString() != initStartDate ||
+//                    binding.repeatEndDateBtn.text.toString() != initEndDate ||
+//                    initIsAllday != isAllday ||
+//                    (!isAllday && binding.repeatStartTimeBtn.text.toString() != initStartTime) ||
+//                    (!isAllday && binding.repeatEndTimeBtn.text.toString() != initEndTime) ||
+//
+//                ) { // start 또는 end가 바뀌었을 때
+//                    if (schedule.location == 0) {//front
+//                        sizeOption = 1
+//                    } else { // middle, back
+//                        sizeOption = 2
+//                    }
+//                } else if(repeatvalue != schedule.repeatValue || option != schedule.repeatOption){// 반복 옵션이 바뀌었을 때
+                if(repeatvalue != schedule.repeatValue ||
+                    option != schedule.repeatOption ||
+                    initRepeatSwitch != binding.repeatSwitchSchedule.isChecked
+                ){
                     if(schedule.location == 0){// front
+                        sizeOption = 1
+                    } else if(schedule.location == 1){ // middle
+                        sizeOption = 2
+                    } else { // back
                         sizeOption = 3
-                    } else { // middle, back
-                        sizeOption = 4
                     }
                 } else { // 디폴트
                     if(schedule.location == 0){ // front
+                        sizeOption = 4
+                    } else if(schedule.location == 1) { // middle
                         sizeOption = 5
-                    } else { // middle, back
+                    } else { // back
                         sizeOption = 6
                     }
                 }
@@ -923,7 +994,7 @@ class CalendarItemFragment(val schedule: Schedule,
                     1->{// 이 일정만 수정하기
                         when(schedule.location){
                             0->{//front
-                                var next = schedule.repeatStart
+                                val next = schedule.repeatStart
                                 var nextDate:Date? = null
 
                                 when(schedule.repeatOption){
@@ -1700,5 +1771,7 @@ class CalendarItemFragment(val schedule: Schedule,
         initEndTime = binding.repeatEndTimeBtn.text.toString()
 
         initIsAllday = binding.alldaySwitch.isChecked
+
+        initRepeatSwitch = binding.repeatSwitchSchedule.isChecked
     }
 }
