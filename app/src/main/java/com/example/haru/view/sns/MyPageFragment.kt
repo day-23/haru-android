@@ -225,13 +225,11 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         }
 
         binding.mypageShowFeed.setOnClickListener {
-            binding.feedRecycler.visibility = View.VISIBLE
-            binding.mediaContainer.visibility = View.GONE
+            feedClicked()
         }
 
         binding.mypageShowMedia.setOnClickListener {
-            binding.feedRecycler.visibility = View.GONE
-            binding.mediaContainer.visibility = View.VISIBLE
+            mediaClicked()
         }
 
         mypageViewModel.FriendRequest.observe(viewLifecycleOwner){ result ->
@@ -319,6 +317,24 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         binding.snsMenu.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
         binding.mypageBack.visibility = View.VISIBLE
         binding.mypageSetup.visibility = View.VISIBLE
+    }
+
+    fun feedClicked(){
+        binding.feedRecycler.visibility = View.VISIBLE
+        binding.mediaContainer.visibility = View.GONE
+        binding.feedUnderline.setBackgroundResource(R.drawable.todo_table_selected)
+        binding.mediaUnderline.setBackgroundColor(Color.parseColor("#fdfdfd"))
+        binding.feedText.setTextColor(Color.parseColor("#1DAFFF"))
+        binding.mediaText.setTextColor(Color.parseColor("#acacac"))
+    }
+
+    fun mediaClicked(){
+        binding.feedRecycler.visibility = View.GONE
+        binding.mediaContainer.visibility = View.VISIBLE
+        binding.mediaUnderline.setBackgroundResource(R.drawable.todo_table_selected)
+        binding.feedUnderline.setBackgroundColor(Color.parseColor("#fdfdfd"))
+        binding.mediaText.setTextColor(Color.parseColor("#1DAFFF"))
+        binding.feedText.setTextColor(Color.parseColor("#acacac"))
     }
 
     fun mediaLayout(){
