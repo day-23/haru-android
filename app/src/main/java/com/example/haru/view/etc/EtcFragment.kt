@@ -68,7 +68,8 @@ class EtcFragment : Fragment() {
         etcViewModel.calculateWithHaru()
 
         etcViewModel.profileImage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it == "")
+
+            if (it == "" || it == null)
                 binding.ivProfile.background =
                     ContextCompat.getDrawable(requireContext(), R.drawable.haru_fighting)
             else Glide.with(this)

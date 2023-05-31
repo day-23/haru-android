@@ -101,6 +101,7 @@ class EtcViewModel : ViewModel() {
     fun getSnsInfo() {
         viewModelScope.launch {
             profileRepository.getUserInfo(User.id){
+                Log.e("20191627", it.toString())
                 if (it.id != ""){
                     _name.postValue(it.name)
                     _introduction.postValue(it.introduction)
