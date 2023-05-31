@@ -9,23 +9,23 @@ import kotlinx.coroutines.withContext
 class ScheduleRepository() {
     private val scheduleService = RetrofitClient.scheduleService
 
-    suspend fun getScheduleByDates(startDate:String, endDate:String, body: ScheduleRequest, callback:(todoData : ScheduleByDateResponse) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun getScheduleByDates(body: ScheduleRequest, callback:(todoData : ScheduleByDateResponse) -> Unit) = withContext(Dispatchers.IO) {
         val response = scheduleService.getScheduleDates(
             com.example.haru.utils.User.id,
             body,
         ).execute()
         val data: GetScheduleResponse
-        val todoData: ScheduleByDateResponse
+        val scheduleData: ScheduleByDateResponse
 
         if (response.isSuccessful) {
             Log.d("TAG", "Success to get todos")
             data = response.body()!!
-            todoData = data.data
+            scheduleData = data.data
         } else {
             Log.d("TAG", "Fail to get todos")
-            todoData = ScheduleByDateResponse(emptyList(), emptyList())
+            scheduleData = ScheduleByDateResponse(emptyList(), emptyList())
         }
-        callback(todoData)
+        callback(scheduleData)
     }
 
     suspend fun postSchedule(body: PostSchedule, callback: () -> Unit){
@@ -133,21 +133,27 @@ class ScheduleRepository() {
 
     suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit){
         withContext(Dispatchers.IO) {
-            val response = scheduleService.submitSchedule(
-                com.example.haru.utils.User.id,
-                scheduleId,
-                postBody
-            ).execute()
+//            try {
+                val response = scheduleService.submitSchedule(
+                    com.example.haru.utils.User.id,
+                    scheduleId,
+                    postBody
+                ).execute()
 
-            if (response.isSuccessful) {
-                Log.d("TAG", "Success to submit schedule")
-            } else {
-                Log.d("TAG", "Fail to submit schedule")
-            }
+                if (response.isSuccessful) {
+                    Log.d("TAG", "Success to submit schedule")
 
-            withContext(Dispatchers.Main) {
-                callback()
-            }
+
+                } else {
+                    Log.d("TAG", "Fail to submit schedule")
+                }
+
+                withContext(Dispatchers.Main) {
+                    callback()
+                }
+//            }catch (e: Exception){
+//                Log.d("TAG", "Fail to submit schedule")
+//            }
         }
     }
 
