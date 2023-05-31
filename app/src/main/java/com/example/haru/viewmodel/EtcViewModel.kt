@@ -72,6 +72,7 @@ class EtcViewModel : ViewModel() {
     var month: Int = 0
 
     init {
+        getSnsInfo()
         _name.value = User.name
         _email.value = User.email
         _haruId.value = User.haruId
@@ -109,9 +110,13 @@ class EtcViewModel : ViewModel() {
                     _introduction.postValue(it.introduction)
                     _profileImage.postValue(it.profileImage)
                     _postCount.postValue(it.postCount)
-//                    _friendCount.postValue(it.)
+                    _friendCount.postValue(it.friendCount)
                 } else {
-                    //실패한 경우
+                    Log.e("20191627", "Fail to getSnsInfo")
+                    _introduction.postValue("소개를 작성해주세요")
+                    _postCount.postValue(0)
+                    _friendCount.postValue(0)
+                    _profileImage.postValue("")
                 }
             }
         }

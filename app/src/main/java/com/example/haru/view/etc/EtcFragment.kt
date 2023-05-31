@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -61,8 +62,11 @@ class EtcFragment : Fragment() {
 
         Log.e("20191627", User.toString())
 
+
         etcViewModel.profileImage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Glide.with(this)
+            if (it == "")
+                binding.ivProfile.background = ContextCompat.getDrawable(requireContext(), R.drawable.haru_fighting)
+            else Glide.with(this)
                 .load(it)
                 .into(binding.ivProfile)
         })
@@ -72,22 +76,17 @@ class EtcFragment : Fragment() {
             binding.tvName.text = it
         })
 
-        // User Introduction -> sns에서 입력
-        binding.tvIntroduction.text = "SNS User 필요"
+        etcViewModel.introduction.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvIntroduction.text = it
+        })
 
+        etcViewModel.postCount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvPostCount.text = it.toString()
+        })
 
-
-        // User Post Count
-//        binding.tvPostCount.text =
-
-        // User Friend Count
-//        binding.tvFriendCount.text =
-
-        // User Completed Todo Count
-//        binding.tvCompletedTodoCount.text =
-
-        // User Total Todo Count
-//        binding.tvTotalTodoCount.text =
+        etcViewModel.friendCount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvFriendCount.text = it.toString()
+        })
 
         etcViewModel.todayYearMonth.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.tvEtcDate.text = String.format(
@@ -131,7 +130,6 @@ class EtcFragment : Fragment() {
         binding.ivEtcDateLeft.setOnClickListener(ClickListener())
         binding.ivEtcDateRight.setOnClickListener(ClickListener())
         binding.settingIcon.setOnClickListener(ClickListener())
-
 
         // 프로필 편집 클릭시 -> EditProfileFragment(userId)
         // 친구 클릭시 -> FriendsListFragment(userId)
