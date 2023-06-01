@@ -231,7 +231,10 @@ class CalendarItemFragment(val schedule: Schedule,
                                 binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatStartCalendar.time)
                             }
 
-                            if(flag) return
+                            if(flag) {
+                                optionChange()
+                                return
+                            }
 
                             if(repeatOption == 0) repeatOption = -1
 

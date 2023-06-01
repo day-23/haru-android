@@ -76,23 +76,23 @@ class MainActivity : BaseActivity(){
                 )
 
                 val calendar = Calendar.getInstance()
-//                val todaytime = calendar.time
-//
-//                todaytime.hours = 9
-//                todaytime.minutes = 0
-//                todaytime.seconds = 0
-//
-//                if (calendar.time.after(todaytime)){
-//                    calendar.add(Calendar.DATE, 1)
-//                }
-//
-//                calendar.apply {
-//                    set(Calendar.HOUR_OF_DAY, 9)
-//                    set(Calendar.MINUTE, 0)
-//                    set(Calendar.SECOND, 0)
-//                }
+                val todaytime = calendar.time
 
-                calendar.add(Calendar.SECOND, 20)
+                todaytime.hours = 9
+                todaytime.minutes = 0
+                todaytime.seconds = 0
+
+                if (calendar.time.after(todaytime)){
+                    calendar.add(Calendar.DATE, 1)
+                }
+
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                }
+
+//                calendar.add(Calendar.SECOND, 20)
 
                 alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
