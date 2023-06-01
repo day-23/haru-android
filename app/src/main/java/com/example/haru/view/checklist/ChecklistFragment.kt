@@ -413,7 +413,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
 
         todoListView.adapter = todoAdapter
-        todoListView.layoutManager = WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        todoListView.layoutManager =
+            WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
 //        todoListView.itemAnimator = null
 
