@@ -70,6 +70,9 @@ class SearchScheduleAdapter(val context: Context) : RecyclerView.Adapter<Recycle
             RecyclerView.ViewHolder(binding.root) {
                 fun bind(item : Schedule){
                     Log.e("20191627", "$item")
+
+                    binding.detailScheduleContentTv.text = item.content
+
                     if (item.isAllDay)
                         binding.detailScheduleTimeTv.text = "하루종일"
                     else{
