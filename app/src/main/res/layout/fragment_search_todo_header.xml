@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:paddingStart="40dp"
     android:paddingTop="6dp"
+    android:paddingBottom="6dp"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 

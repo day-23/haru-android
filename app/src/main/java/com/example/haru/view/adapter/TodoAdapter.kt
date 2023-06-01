@@ -84,14 +84,14 @@ class TodoAdapter(val context: Context) :
     var dropListener: DropListener? = null
 
     //    val HeaderType1 = 0   -> 디자인 시안 변경으로 인해 사용 X
-//    val HeaderType2 = 1
+    val HeaderType2 = 1
     val Item = 2
     val Divider = 3
     val HeaderType3 = 4
     val Empty = 5
     val Blank = 6
 
-    var tags = mutableListOf(Tag("", "분류"), Tag("", "미분류"), Tag("", "완료"), Tag("", ""))
+    var tags = mutableListOf(Tag("", "완료"), Tag("", ""))
 
     var data = mutableListOf<Todo>()
 
@@ -118,6 +118,12 @@ class TodoAdapter(val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
+            HeaderType2 -> HeaderTypeTwoViewHolder(
+                ChecklistHeaderType2Binding.inflate(
+                    LayoutInflater.from(context), parent, false
+                )
+            )
+
             HeaderType3 -> HeaderTypeThreeViewHolder(
                 ChecklistHeaderType3Binding.inflate(
                     LayoutInflater.from(context), parent, false
@@ -169,6 +175,7 @@ class TodoAdapter(val context: Context) :
     ) {
         val todo = diffUtil.currentList[position]
         when (holder) {
+            is HeaderTypeTwoViewHolder -> holder.bind(todo.content)
             is HeaderTypeThreeViewHolder -> holder.bind(todo.content)
             is DividerViewHolder -> {}
             is TodoViewHolder -> {
@@ -176,6 +183,18 @@ class TodoAdapter(val context: Context) :
             }
             is EmptyViewHolder -> holder.bind(todo)
             is BlankViewHolder -> {}
+        }
+    }
+
+    inner class HeaderTypeTwoViewHolder(val binding: ChecklistHeaderType2Binding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: String) {
+            binding.str = item
+            if (sectionToggleClick != null)
+                binding.ivSectionArrow.setOnClickListener {
+                    binding.ivSectionArrow.isSelected = !it.isSelected
+                    sectionToggleClick?.onClick(it, item)
+                }
         }
     }
 
@@ -383,7 +402,7 @@ class TodoAdapter(val context: Context) :
     fun setTodoByTag(content: String?) {
         if (content != null) {
             todoByTag = true
-            tags[3].content = content
+            tags[1].content = content
         } else todoByTag = false
     }
 

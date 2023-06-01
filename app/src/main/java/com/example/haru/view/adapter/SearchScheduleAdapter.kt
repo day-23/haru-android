@@ -15,8 +15,10 @@ import com.example.haru.data.model.Schedule
 import com.example.haru.databinding.FragmentSearchScheduleBinding
 import com.example.haru.databinding.FragmentSearchScheduleHeaderBinding
 import com.example.haru.databinding.ListItemSimpleScheduleBinding
+import com.example.haru.utils.FormatDate
 
-class SearchScheduleAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SearchScheduleAdapter(val context: Context) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val header = 0
     private val item = 1
@@ -36,7 +38,7 @@ class SearchScheduleAdapter(val context: Context) : RecyclerView.Adapter<Recycle
     override fun getItemViewType(position: Int): Int = diffUtil.currentList[position].searchType
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType){
+        return when (viewType) {
             header -> HeaderViewHolder(
                 FragmentSearchScheduleHeaderBinding.inflate(
                     LayoutInflater.from(context),
@@ -68,16 +70,16 @@ class SearchScheduleAdapter(val context: Context) : RecyclerView.Adapter<Recycle
         }
     }
 
-    inner class ScheduleViewHolder(val binding : FragmentSearchScheduleBinding) :
-            RecyclerView.ViewHolder(binding.root) {
-                fun bind(item : Schedule){
-                    Log.e("20191627", "$item")
+    inner class ScheduleViewHolder(val binding: FragmentSearchScheduleBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Schedule) {
+            Log.e("20191627", "$item")
 
-                    binding.tvScheduleContent.text = item.content
+            binding.tvScheduleContent.text = item.content
 
-                    if (item.isAllDay)
-                        binding.tvScheduleTime.text = "하루종일"
-                    else{
+            if (item.isAllDay)
+                binding.tvScheduleTime.text = "하루종일"
+            else {
 //                        var scheduleTime = ""
 //                        scheduleTime += (item.startTime!!.month+1).toString()+"월 " + item.startTime!!.date.toString()+"일 "
 //                        scheduleTime += if(item.startTime!!.hours < 12) "오전 " else "오후 "
@@ -105,27 +107,28 @@ class SearchScheduleAdapter(val context: Context) : RecyclerView.Adapter<Recycle
 //                            if (item.endTime!!.minutes < 10) "0"+item.endTime!!.minutes.toString()
 //                            else item.endTime!!.minutes.toString()
 
-                        binding.tvScheduleTime.text = "test"
+                binding.tvScheduleTime.text = "test"
 //                            scheduleTime
-                    }
+            }
 
-                    if(item.category == null){
-                        binding.ivCategoryColor.backgroundTintList =
-                            ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
+            if (item.category == null) {
+                binding.ivCategoryColor.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
 //                        val drawable = binding.ivCategoryColor.background as VectorDrawable
 //                        drawable.setColorFilter(Color.parseColor("#1DAFFF"), PorterDuff.Mode.SRC_ATOP)
-                    } else {
-                        binding.ivCategoryColor.backgroundTintList =
-                            ColorStateList.valueOf(Color.parseColor(item.category.color))
+            } else {
+                binding.ivCategoryColor.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor(item.category.color))
 //                        val drawable = binding.ivCategoryColor.background as VectorDrawable
 //                        drawable.setColorFilter(Color.parseColor(item.category.color), PorterDuff.Mode.SRC_ATOP)
-                    }
-                }
             }
-    inner class HeaderViewHolder(val binding : FragmentSearchScheduleHeaderBinding) :
-            RecyclerView.ViewHolder(binding.root) {}
+        }
+    }
 
-    fun setDataList(dataList : List<Schedule>?){
+    inner class HeaderViewHolder(val binding: FragmentSearchScheduleHeaderBinding) :
+        RecyclerView.ViewHolder(binding.root) {}
+
+    fun setDataList(dataList: List<Schedule>?) {
         if (dataList == null)
             return
         Log.e("20191627", dataList.toString())

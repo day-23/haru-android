@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:gravity="center"
-            android:text="아이디 또는 닉네임 검색을 통해\n친구를 찾을 수 있어요."
+            android:text="할일 또는 일정을 검색할 수 있어요."
             android:textColor="@color/date_text"
             android:textSize="16sp" />
     </LinearLayout>

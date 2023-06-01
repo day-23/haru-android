@@ -23,7 +23,7 @@ class CheckListViewModel() :
     private val tagRepository = TagRepository()
     private val scheduleRepository = ScheduleRepository()
 
-    private val basicTag = listOf<Tag>(Tag("완료", "완료"), Tag("미분류", "미분류"))
+    private val basicTag = listOf<Tag>(Tag("완료", "완료"))
     var clickedTag: Int? = null
 
     private val _todoDataList = MutableLiveData<List<Todo>>()
@@ -62,7 +62,9 @@ class CheckListViewModel() :
 
     fun setVisibility(str: String, type: Int) { // Section Toggle 기능
         if (type == 0) {
-            val index = todoList.indexOf(Todo(type = 4, content = str))
+            var index = todoList.indexOf(Todo(type = 4, content = str))
+            if (index == -1)
+                index = todoList.indexOf(Todo(type = 1, content = str))
             for (i in index + 1 until todoList.size) {
                 if (todoList[i].type == 6)
                     break
@@ -258,13 +260,13 @@ class CheckListViewModel() :
                         todoList.addAll(
                             listOf(
                                 Todo(
-                                    type = 4,
-                                    content = "분류"
+                                    type = 1,
+                                    content = "태그"
                                 )
                             ) + it.data.taggedTodos + listOf(Todo(type = 3))
                         ) else todoList.addAll(
                         listOf(
-                            Todo(type = 4, content = "분류"),
+                            Todo(type = 1, content = "태그"),
                             Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
                             Todo(type = 3)
                         )
@@ -273,13 +275,13 @@ class CheckListViewModel() :
                         todoList.addAll(
                             listOf(
                                 Todo(
-                                    type = 4,
-                                    content = "미분류"
+                                    type = 1,
+                                    content = "태그 없음"
                                 )
                             ) + it.data.untaggedTodos + listOf(Todo(type = 3))
                         ) else todoList.addAll(
                         listOf(
-                            Todo(type = 4, content = "미분류"),
+                            Todo(type = 1, content = "태그 없음"),
                             Todo(type = 5, content = "모든 할 일을 마쳤습니다!"),
                             Todo(type = 3)
                         )
@@ -288,13 +290,13 @@ class CheckListViewModel() :
                         todoList.addAll(
                             listOf(
                                 Todo(
-                                    type = 4,
+                                    type = 1,
                                     content = "완료"
                                 )
                             ) + it.data.completedTodos + listOf(Todo(type = 6))
                         ) else todoList.addAll(
                         listOf(
-                            Todo(type = 4, content = "완료"),
+                            Todo(type = 1, content = "완료"),
                             Todo(type = 5, content = "할일을 완료해 보세요!"),
                             Todo(type = 6)
                         )
@@ -403,18 +405,18 @@ class CheckListViewModel() :
                             }
                         }
                     }
-                    2 -> {
-                        todoRepository.getTodoByUntag {
-                            if (it?.success == true) {
-                                this.addAll(
-                                    listOf(Todo(type = 4, content = todoByTagItem!!))
-                                            + it.data!!
-                                )
-                                if (it.data.isEmpty())
-                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
-                            }
-                        }
-                    }
+//                    2 -> {
+//                        todoRepository.getTodoByUntag {
+//                            if (it?.success == true) {
+//                                this.addAll(
+//                                    listOf(Todo(type = 4, content = todoByTagItem!!))
+//                                            + it.data!!
+//                                )
+//                                if (it.data.isEmpty())
+//                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+//                            }
+//                        }
+//                    }
                     else -> {
                         todoRepository.getTodoByTag(tagDataList.value!![position - 1].id) {
                             if (it?.success == true) {
@@ -430,7 +432,7 @@ class CheckListViewModel() :
                                 else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
                                 this.add(Todo(type = 3))
 
-                                this.add(Todo(type = 4, content = "완료"))
+                                this.add(Todo(type = 1, content = "완료"))
                                 if (it.data.completedTodos.isNotEmpty())
                                     this.addAll(it.data.completedTodos)
                                 else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))

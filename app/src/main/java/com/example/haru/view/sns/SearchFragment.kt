@@ -51,7 +51,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
         // checklist와 캘린더에서 접근한 검색 화면일 경우
         if (viewModel is CheckListViewModel) {
-            val scheduleListView : RecyclerView = binding.searchRecyclerOne
+            val scheduleListView: RecyclerView = binding.searchRecyclerOne
             val scheduleAdapter = SearchScheduleAdapter(requireContext())
 
             val todoListView: RecyclerView = binding.searchRecyclerTwo
@@ -99,7 +99,6 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
                 return@setOnKeyListener false
             }
-
 
 
         } else {
