@@ -190,6 +190,7 @@
                     android:backgroundTint="@android:color/transparent"
                     android:clickable="true"
                     android:src="@drawable/fab"
+                    app:elevation="5dp"
                     app:borderWidth="0dp"
                     app:tint="@null" />
 

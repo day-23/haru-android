@@ -17,7 +17,8 @@ object FormatDate {
     private val localTimeFormatter = DateTimeFormatter.ofPattern("a h:mm까지")
     private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지")
 
-    private val calendarDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
+    private val calendarDateFormatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
 
     //// DatePicker와 TimePicker로 받는 값들은 Date이므로 SimpleDateFormat으로 서버로 보낼 형식으로 변환하는 formatter
     private val dateFormatterToServer = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
@@ -72,13 +73,13 @@ object FormatDate {
         return date.format(localDateFormatter)
     }
 
-    fun calendarFormat(str: String): String{
+    fun calendarFormat(str: String): String {
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         return date.format(calendarDateFormatter)
     }
 
 
-    fun calendarBackFormat(str: String): String{
+    fun calendarBackFormat(str: String): String {
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(-diff)
         return date.format(calendarDateFormatter)
     }
@@ -113,7 +114,7 @@ object FormatDate {
         return simpleFormatterKorea.format(date)
     }
 
-    fun simpleCalendarToStr(date : Date) : String{
+    fun simpleCalendarToStr(date: Date): String {
         return simpleFormatterCalendar.format(date)
     }
 
@@ -214,9 +215,9 @@ object FormatDate {
                 val days = cal.get(Calendar.DAY_OF_MONTH)
 
                 var flag = false
-                var month : Int
-                for(i in idx - 1 downTo 0){
-                    if (repeatValue[i] == '1'){
+                var month: Int
+                for (i in idx - 1 downTo 0) {
+                    if (repeatValue[i] == '1') {
                         month = i
                         cal.set(Calendar.DAY_OF_MONTH, 1)
                         cal.set(Calendar.MONTH, i)
@@ -229,7 +230,7 @@ object FormatDate {
                 }
                 while (!flag) {
                     cal.add(Calendar.YEAR, -1)
-                    for (i in 11 downTo  0) {
+                    for (i in 11 downTo 0) {
                         if (repeatValue[i] == '1') {
                             month = i
                             cal.set(Calendar.DAY_OF_MONTH, 1)
@@ -255,32 +256,34 @@ object FormatDate {
         if (endDateStr == null || repeatOption == null || repeatValue == null)
             return null
 
-        if (repeatValue.contains("T")){
+        if (repeatValue.contains("T")) {
             val endDate = strToDatecalendar(endDateStr)
             cal.time = endDate!!
 
-            val preStartDate = when(repeatOption){
-                "매주"->{
+            val preStartDate = when (repeatOption) {
+                "매주" -> {
                     cal.add(Calendar.DATE, -7)
                     cal.time
                 }
 
-                "격주"->{
+                "격주" -> {
                     cal.add(Calendar.DATE, -14)
                     cal.time
                 }
 
-                "매달"->{
+                "매달" -> {
                     cal.add(Calendar.MONTH, -1)
                     cal.time
                 }
 
-                "매년"->{
+                "매년" -> {
                     cal.add(Calendar.YEAR, -1)
                     cal.time
                 }
 
-                else -> {null}
+                else -> {
+                    null
+                }
             }
 
             return preStartDate
@@ -512,12 +515,12 @@ object FormatDate {
                 cal.add(Calendar.MONTH, 1)
             cal.set(Calendar.DAY_OF_MONTH, days)
         } else { // days >= idx + 1 -> 해당 달에 있을 수 있다.
-            if (endDateStr != null){ // endDate 당일을 포함하면 안되는 조건
-                if (days == idx + 1){ // 같은 일이면 무조건 +1달
+            if (endDateStr != null) { // endDate 당일을 포함하면 안되는 조건
+                if (days == idx + 1) { // 같은 일이면 무조건 +1달
                     cal.add(Calendar.MONTH, 1)
                 }
 
-                if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days){
+                if (cal.getActualMaximum(Calendar.DAY_OF_MONTH) < days) {
                     cal.add(Calendar.MONTH, 1)
                     if (repeatValue.substring(0, days - 1).contains('1'))
                         days = repeatValue.indexOf('1') + 1
@@ -621,7 +624,7 @@ object FormatDate {
         }
         val nextEndDate = calendar.time
 
-        if(repeatEndDateStr == null) return  nextEndDate
+        if (repeatEndDateStr == null) return nextEndDate
 
         calendar.apply {
             time = strToDate(repeatEndDateStr)!!
@@ -643,7 +646,7 @@ object FormatDate {
     ): Date? {
         val calendar = Calendar.getInstance()
 
-        if(!repeatValue.contains("T")) {
+        if (!repeatValue.contains("T")) {
             val plusValue = if (repeatOption == 2) 8 else 1
 
             calendar.time =
@@ -671,7 +674,7 @@ object FormatDate {
             }
             val nextEndDate = calendar.time
 
-            if(repeatEndDateStr == null) return  nextEndDate
+            if (repeatEndDateStr == null) return nextEndDate
 
             calendar.apply {
                 time = strToDatecalendar(repeatEndDateStr)
@@ -687,7 +690,7 @@ object FormatDate {
             calendar.time =
                 strToDatecalendar(endDateStr)
 
-            if(repeatOption == 1){
+            if (repeatOption == 1) {
                 calendar.add(Calendar.DAY_OF_MONTH, 7)
             } else {
                 calendar.add(Calendar.DAY_OF_MONTH, 14)
@@ -703,7 +706,7 @@ object FormatDate {
             }
             val repeatStartDate = calendar.time
 
-            return if(nextStartDate.after(repeatStartDate))
+            return if (nextStartDate.after(repeatStartDate))
                 null
             else nextStartDate
         }
@@ -715,14 +718,14 @@ object FormatDate {
     ): Date? {
         val calendar = Calendar.getInstance()
 
-        if(!repeatValue.contains("T")) {
+        if (!repeatValue.contains("T")) {
             calendar.time = strToDatecalendar(endDateStr)
 
             val idx = calendar.get(Calendar.DAY_OF_MONTH) - 1
             val idxPlus = 1
             var flag = false
             var days = 32
-            Log.d("반복투두", (idx+idxPlus).toString())
+            Log.d("반복투두", (idx + idxPlus).toString())
 
             for (i in idx + idxPlus until 31)
                 if (repeatValue[i] == '1') {
@@ -764,7 +767,7 @@ object FormatDate {
 
             Log.d("반복투두", nextEndDate.toString())
 
-            if(repeatEndDateStr == null) return nextEndDate
+            if (repeatEndDateStr == null) return nextEndDate
 
             calendar.apply {
                 time = strToDatecalendar(repeatEndDateStr)
@@ -772,7 +775,7 @@ object FormatDate {
                 set(Calendar.MINUTE, 59)
                 set(Calendar.SECOND, 59)
             }
-            
+
             val repeatEndDate = calendar.time
             return if (nextEndDate.after(repeatEndDate)) // 반복 마감일보다 다음 마감일이 더 뒤라면 반복 종료
                 null
@@ -793,7 +796,7 @@ object FormatDate {
             }
             val repeatStartDate = calendar.time
 
-            return if(nextStartDate.after(repeatStartDate))
+            return if (nextStartDate.after(repeatStartDate))
                 null
             else nextStartDate
         }
@@ -807,7 +810,7 @@ object FormatDate {
     ): Date? {                       // todoAddViewModel에 사용자가 직접 endDate를 설정한 것을 표시할 수 있는 값 만들기???
         val calendar = Calendar.getInstance()
 
-        if(!repeatValue.contains("T")) {
+        if (!repeatValue.contains("T")) {
             calendar.time = strToDatecalendar(endDateStr)
 
             Log.d("20191627", "day : $day")
@@ -845,7 +848,7 @@ object FormatDate {
             }
             val nextEndDate = calendar.time
 
-            if(repeatEndDateStr == null) return nextEndDate
+            if (repeatEndDateStr == null) return nextEndDate
 
             calendar.apply {
                 time = strToDatecalendar(repeatEndDateStr)
@@ -874,9 +877,17 @@ object FormatDate {
             }
             val repeatStartDate = calendar.time
 
-            return if(nextStartDate.after(repeatStartDate))
+            return if (nextStartDate.after(repeatStartDate))
                 null
             else nextStartDate
         }
     }
+
+    fun getIntervalDate(
+        interval: Long,
+        repeatStart: String
+    ) {
+
+    }
+
 }

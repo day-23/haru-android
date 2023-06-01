@@ -16,6 +16,7 @@ import com.example.haru.databinding.FragmentSearchScheduleBinding
 import com.example.haru.databinding.FragmentSearchScheduleHeaderBinding
 import com.example.haru.databinding.ListItemSimpleScheduleBinding
 import com.example.haru.utils.FormatDate
+import java.util.*
 
 class SearchScheduleAdapter(val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -87,7 +88,14 @@ class SearchScheduleAdapter(val context: Context) :
                     val startDateStr = FormatDate.simpleCalendarToStr(startDate)
                     val endDateStr = FormatDate.simpleCalendarToStr(endDate)
                     binding.tvScheduleTime.text = "$startDateStr - $endDateStr"
-                } else binding.tvScheduleTime.text = "test"
+                } else {
+                    val today = Date()
+                    if (item.repeatValue!![0] == 'T'){
+                        val interval = item.repeatValue.substring(1).toLong()
+
+                    }
+//                    binding.tvScheduleTime.text = "test"
+                }
 
             }
 
