@@ -109,19 +109,19 @@ class CalendarAddFragment(private val activity: Activity,
             repeatStartCalendar.set(Calendar.MINUTE, 30)
         } else {
             repeatStartCalendar.set(Calendar.MINUTE, 0)
-            repeatStartCalendar.add(Calendar.HOUR, 1)
+            repeatStartCalendar.add(Calendar.HOUR_OF_DAY, 1)
         }
 
         if(repeatStartCalendar.time.month == repeatEndCalendar.time.month &&
                 repeatEndCalendar.time.date == repeatEndCalendar.time.date){
             repeatEndCalendar.time = repeatStartCalendar.time.clone() as Date
-            repeatEndCalendar.add(Calendar.HOUR, 1)
+            repeatEndCalendar.add(Calendar.HOUR_OF_DAY, 1)
         } else {
             if (repeatEndCalendar.time.minutes < 30){
                 repeatEndCalendar.set(Calendar.MINUTE, 30)
             } else {
                 repeatEndCalendar.set(Calendar.MINUTE, 0)
-                repeatEndCalendar.add(Calendar.HOUR, 1)
+                repeatEndCalendar.add(Calendar.HOUR_OF_DAY, 1)
             }
         }
 
@@ -158,7 +158,10 @@ class CalendarAddFragment(private val activity: Activity,
                                 binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatStartCalendar.time)
                             }
 
-                            if(flag) return
+                            if(flag) {
+                                optionChange(binding)
+                                return
+                            }
 
                             if(repeatOption == 0) repeatOption = -1
 

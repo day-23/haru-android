@@ -36,6 +36,9 @@ class CalendarViewModel : ViewModel() {
     val _liveScheduleList = MutableLiveData<List<Schedule>>()
     val liveScheduleList: MutableLiveData<List<Schedule>> get() = _liveScheduleList
 
+    val _liveHolidaysList = MutableLiveData<List<Holiday>>()
+    val liveHolidaysList: MutableLiveData<List<Holiday>> get() = _liveHolidaysList
+
     fun completeNotRepeatTodo(todoId: String,
                               completed: Completed,
                               callback: () -> Unit){
@@ -1165,6 +1168,7 @@ class CalendarViewModel : ViewModel() {
                         }
                     }
 
+                    _liveHolidaysList.postValue(it.holidays)
                     _liveTodoCalendarList.postValue(todoList)
                     _liveScheduleCalendarList.postValue(scheduleList)
                 }
