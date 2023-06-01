@@ -408,11 +408,358 @@ class TimetableViewModel(val context : Context): ViewModel() {
             /* 로케이션 계산 */
             calculateLocation(schedule, todayTodo)
 
+            //시간 변경
+            callUpdateRepeatScheduleAPI(schedule, newRepeatStart, newRepeatEnd, "여기 오늘 날짜 넣어야함")
+
         }
 
         sortSchedule(preScheduleData)
         _Schedules.value = IndexList
     }
+
+    private fun callUpdateRepeatScheduleAPI(schedule : Schedule, preChangedDateString : String, newRepeatStart : String, newRepeatEnd : String){
+        val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
+
+        var preChangedDate = koreaFormatter.parse((preChangedDateString))
+
+        when(schedule.location){
+            0->{//front
+                val next = schedule.repeatStart
+                var nextDate:Date? = null
+
+                when(schedule.repeatOption){
+                    "매일"->{
+                        nextDate = FormatDate.nextStartDate(
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+
+                    "매주"->{
+                        nextDate = FormatDate.nextStartDateEveryWeek(
+                            schedule.repeatValue!!,
+                            1,
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+
+                    "격주"->{
+                        nextDate = FormatDate.nextStartDateEveryWeek(
+                            schedule.repeatValue!!,
+                            2,
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+
+                    "매달"->{
+                        nextDate = FormatDate.nextStartDateEveryMonth(
+                            schedule.repeatValue!!,
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+
+                    "매년"->{
+                        nextDate = FormatDate.nextStartDateEveryYear(
+                            schedule.repeatValue!!,
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+                }
+
+                if(nextDate != null) {
+                    if (schedule.repeatValue != null && schedule.repeatValue.contains(
+                            "T"
+                        )
+                    ) {
+                        val repeatStartDate =
+                            koreaFormatter.parse(schedule.repeatStart)
+                        val datediff = dateDifference(
+                            repeatStartDate,
+                            nextDate!!
+                        )
+
+                        when (schedule.repeatOption) {
+                            "매주" -> {
+                                val cal = Calendar.getInstance()
+                                cal.time = nextDate
+                                cal.add(Calendar.DATE, -(datediff % 7))
+                                nextDate = cal.time
+                            }
+
+                            "격주" -> {
+                                val cal = Calendar.getInstance()
+                                cal.time = nextDate
+                                cal.add(Calendar.DATE, -(datediff % 14))
+                                nextDate = cal.time
+                            }
+
+                            "매달" -> {
+                                if (repeatStartDate.date != nextDate!!.date) {
+                                    nextDate!!.date = repeatStartDate.date
+                                }
+                            }
+
+                            "매년" -> {
+                                if (repeatStartDate.month != nextDate!!.month) {
+                                    nextDate!!.month = repeatStartDate.month
+                                }
+
+                                if (repeatStartDate.date != nextDate!!.date) {
+                                    nextDate!!.date = repeatStartDate.date
+                                }
+                            }
+                        }
+                    }
+
+                    val calendarviewmodel = CalendarViewModel()
+                    calendarviewmodel.submitScheduleFront(
+                        schedule.id, PostScheduleFront(
+                            schedule.content,
+                            schedule.memo.toString(),
+                            schedule.category?.id,
+                            emptyList(),
+                            schedule.isAllDay,
+                            null,
+                            null,
+                            serverFormatter.format(schedule.startTime),
+                            serverFormatter.format(schedule.endTime),
+                            serverFormatter.format(nextDate)
+                        )
+                    ) {}
+                } else {
+                    val calendarviewmodel = CalendarViewModel()
+
+                    calendarviewmodel.submitSchedule(
+                        schedule.id, PostSchedule(
+                            schedule.content,
+                            schedule.memo.toString(),
+                            schedule.isAllDay,
+                            newRepeatStart,
+                            newRepeatEnd,
+                            schedule.repeatOption,
+                            schedule.repeatValue,
+                            schedule.category?.id,
+                            emptyList()
+                        )
+                    ) {}
+                }
+            }
+
+            1->{//middle
+                var next = koreaFormatter.format(preChangedDate)
+                var nextDate:Date? = null
+
+                when(schedule.repeatOption){
+                    "매일"->{
+                        nextDate = FormatDate.nextStartDate(
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+
+                    "매주"->{
+                        nextDate = FormatDate.nextStartDateEveryWeek(
+                            schedule.repeatValue!!,
+                            1,
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+
+                    "격주"->{
+                        nextDate = FormatDate.nextStartDateEveryWeek(
+                            schedule.repeatValue!!,
+                            2,
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+
+                    "매달"->{
+                        nextDate = FormatDate.nextStartDateEveryMonth(
+                            schedule.repeatValue!!,
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+
+                    "매년"->{
+                        nextDate = FormatDate.nextStartDateEveryYear(
+                            schedule.repeatValue!!,
+                            next!!,
+                            schedule.repeatEnd!!
+                        )
+                    }
+                }
+
+                if(nextDate != null) {
+                    if (schedule.repeatValue != null && schedule.repeatValue.contains(
+                            "T"
+                        )
+                    ) {
+                        val repeatStartDate =
+                            koreaFormatter.parse(schedule.repeatStart)
+
+                        val datediff = dateDifference(
+                            repeatStartDate,
+                            nextDate!!
+                        )
+
+                        val datediff2 = dateDifference(
+                            repeatStartDate,
+                            preChangedDate
+                        )
+
+                        when (schedule.repeatOption) {
+                            "매주" -> {
+                                val cal = Calendar.getInstance()
+                                cal.time = nextDate
+                                cal.add(Calendar.DATE, -(datediff % 7))
+                                nextDate = cal.time
+
+                                cal.time = preChangedDate
+                                cal.add(Calendar.DATE, -(datediff2 % 7))
+                                preChangedDate = cal.time
+                            }
+
+                            "격주" -> {
+                                val cal = Calendar.getInstance()
+                                cal.time = nextDate
+                                cal.add(Calendar.DATE, -(datediff % 14))
+                                nextDate = cal.time
+
+                                cal.time = preChangedDate
+                                cal.add(Calendar.DATE, -(datediff2 % 14))
+                                preChangedDate = cal.time
+                            }
+
+                            "매달" -> {
+                                if (repeatStartDate.date != nextDate!!.date) {
+                                    nextDate!!.date = repeatStartDate.date
+                                }
+
+                                if (repeatStartDate.date != preChangedDate.date) {
+                                    preChangedDate.date = repeatStartDate.date
+                                }
+                            }
+
+                            "매년" -> {
+                                if (repeatStartDate.month != nextDate!!.month) {
+                                    nextDate!!.month = repeatStartDate.month
+                                }
+
+                                if (repeatStartDate.month != preChangedDate.month) {
+                                    preChangedDate.month = repeatStartDate.month
+                                }
+
+                                if (repeatStartDate.date != nextDate!!.date) {
+                                    nextDate!!.date = repeatStartDate.date
+                                }
+
+                                if (repeatStartDate.date != preChangedDate.date) {
+                                    preChangedDate.date = repeatStartDate.date
+                                }
+                            }
+                        }
+                    }
+
+                    val calendarviewmodel = CalendarViewModel()
+
+                    calendarviewmodel.submitScheduleMiddle(
+                        schedule.id, PostScheduleMiddle(
+                            schedule.content,
+                            schedule.memo.toString(),
+                            schedule.category?.id,
+                            emptyList(),
+                            schedule.isAllDay,
+                            null,
+                            null,
+                            serverFormatter.format(newRepeatStart),
+                            serverFormatter.format(newRepeatEnd),
+                            serverFormatter.format(preChangedDate),
+                            serverFormatter.format(nextDate)
+                        )
+                    ) {}
+                }
+            }
+
+            2->{//back
+                var pre = koreaFormatter.format(preChangedDate)
+                var preDate:Date? = null
+
+                preDate = FormatDate.preStartDate(pre, schedule.repeatOption,schedule.repeatValue)
+
+                if(preDate != null) {
+                    if (schedule.repeatValue != null && schedule.repeatValue.contains(
+                            "T"
+                        )
+                    ) {
+                        val repeatStartDate =
+                            koreaFormatter.parse(schedule.repeatStart)
+                        val datediff = dateDifference(
+                            repeatStartDate,
+                            preDate!!
+                        )
+
+                        when (schedule.repeatOption) {
+                            "매주" -> {
+                                val cal = Calendar.getInstance()
+                                cal.time = preDate
+                                cal.add(Calendar.DATE, -(datediff % 7))
+                                preDate = cal.time
+                            }
+
+                            "격주" -> {
+                                val cal = Calendar.getInstance()
+                                cal.time = preDate
+                                cal.add(Calendar.DATE, -(datediff % 14))
+                                preDate = cal.time
+                            }
+
+                            "매달" -> {
+                                if (repeatStartDate.date != preDate!!.date) {
+                                    preDate!!.date = repeatStartDate.date
+                                }
+                            }
+
+                            "매년" -> {
+                                if (repeatStartDate.month != preDate!!.month) {
+                                    preDate!!.month = repeatStartDate.month
+                                }
+
+                                if (repeatStartDate.date != preDate!!.date) {
+                                    preDate!!.date = repeatStartDate.date
+                                }
+                            }
+                        }
+                    }
+
+                    val calendarviewmodel = CalendarViewModel()
+                    calendarviewmodel.submitScheduleBack(
+                        schedule.id, PostScheduleBack(
+                            schedule.content,
+                            schedule.memo.toString(),
+                            schedule.category?.id,
+                            emptyList(),
+                            schedule.isAllDay,
+                            null,
+                            null,
+                            serverFormatter.format(newRepeatStart),
+                            serverFormatter.format(newRepeatEnd),
+                            serverFormatter.format(preDate)
+                        )
+                    ) {}
+                }
+            }
+        }
+    }
+
+
+
 
 
     private fun calculateLocation(schedule: Schedule, todayTodo: String){
@@ -574,42 +921,6 @@ class TimetableViewModel(val context : Context): ViewModel() {
         return differenceInDays.toInt()
     }
 
-
-
-
-    private fun calculateScheduleLocation(schedule : Schedule, searchDate : String){
-        val startDate = koreaFormatter.parse(schedule.repeatStart)
-        val today = koreaFormatter.parse(searchDate)
-        val repeatEndDate = koreaFormatter.parse(schedule.repeatEnd)
-
-        d("getSchedule", "calculateScheduleLocation: $startDate, $today, $repeatEndDate,   origin : ${schedule.repeatStart}, ${searchDate}, ${schedule.repeatEnd} ")
-
-        if(schedule.repeatValue != null && schedule.repeatValue.contains("T")){
-            val scheduleCalendar = Calendar.getInstance()
-            scheduleCalendar.time = startDate
-            scheduleCalendar.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
-
-            val today = koreaFormatter.parse(searchDate)
-            if(date_comparison(startDate, today)<=0 && date_comparison(scheduleCalendar.time, today) >= 0) {
-                schedule.location = 0
-                Log.d("20191630", "스케줄 프론트")
-                return
-            }
-        } else {
-            if (startDate.year == today.year && startDate.month == today.month && startDate.date == today.date) {
-                schedule.location = 0
-                Log.d("20191630", "스케줄 프론트")
-                return
-            }
-        }
-
-        if(schedule.repeatOption != null && schedule.repeatValue != null && repeatEndDate.year < 200) {
-            schedule.location = 2
-            return
-        }
-
-        schedule.location = 1
-    }
 
     private fun parseRepeatSchedule(schedules : List<Schedule>, searchDate:String, startDate : String, endDate : String) : ArrayList<ScheduleCalendarData>{
         val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
