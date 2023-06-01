@@ -88,6 +88,10 @@ class CheckListViewModel() :
         todayList.clear()
     }
 
+    fun clearSearch() {
+        _searchList.value = Pair(null, null)
+    }
+
     fun getTodoList(): List<Todo> {
         return todoList
     }

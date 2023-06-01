@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Content
 import com.example.haru.databinding.FragmentSearchBinding
+import com.example.haru.view.adapter.SearchScheduleAdapter
 import com.example.haru.view.adapter.SearchTodoAdapter
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.viewmodel.CheckListViewModel
@@ -50,8 +51,18 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
         // checklist와 캘린더에서 접근한 검색 화면일 경우
         if (viewModel is CheckListViewModel) {
+            val scheduleListView : RecyclerView = binding.searchRecyclerOne
+            val scheduleAdapter = SearchScheduleAdapter(requireContext())
+
             val todoListView: RecyclerView = binding.searchRecyclerTwo
             val todoAdapter = SearchTodoAdapter(requireContext())
+
+            scheduleListView.adapter = scheduleAdapter
+            scheduleListView.layoutManager = ChecklistFragment.WrapContentLinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+            )
 
             todoListView.adapter = todoAdapter
             todoListView.layoutManager = ChecklistFragment.WrapContentLinearLayoutManager(
@@ -68,6 +79,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                 binding.emptyLayout.visibility =
                     if (it.first == null && it.second == null) View.VISIBLE else View.GONE
 
+                scheduleAdapter.setDataList(it.first)
                 todoAdapter.setDataList(it.second)
             })
 
@@ -127,6 +139,8 @@ class SearchFragment(val viewModel: Any) : Fragment() {
         override fun onClick(v: View?) {
             when (v?.id) {
                 binding.ivSearchCancel.id -> {
+                    if (viewModel is CheckListViewModel)
+                        viewModel.clearSearch()
                     requireActivity().supportFragmentManager.popBackStack()
                 }
 
