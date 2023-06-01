@@ -129,11 +129,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         })
 
         binding.btnAddTodo.setOnClickListener {
-            val text = binding.etSimpleAddTodo.text.toString()
-
+            val text = binding.etSimpleAddTodo.text.toString().trim()
             if (text.replace(" ", "") == "") {
                 val todoInput = ChecklistInputFragment(checkListViewModel)
                 todoInput.show(parentFragmentManager, todoInput.tag)
+                binding.etSimpleAddTodo.setText("")
+                binding.etSimpleAddTodo.clearFocus()
             } else {
                 val todo = TodoRequest(
                     content = text,
@@ -153,6 +154,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     imm.hideSoftInputFromWindow(binding.etSimpleAddTodo.windowToken, 0)
                 }
             }
+        }
+
+        binding.etSimpleAddTodo.setOnKeyListener { view, keyCode, keyEvent ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+                binding.btnAddTodo.performClick()
+                return@setOnKeyListener true
+            }
+
+            return@setOnKeyListener false
         }
 
         binding.todayTodoLayout.setOnClickListener {
