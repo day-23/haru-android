@@ -1,6 +1,7 @@
 package com.example.haru.utils
 
 import android.util.Log
+import java.nio.channels.Pipe
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -21,7 +22,7 @@ object FormatDate {
         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
 
     //// DatePicker와 TimePicker로 받는 값들은 Date이므로 SimpleDateFormat으로 서버로 보낼 형식으로 변환하는 formatter
-    private val dateFormatterToServer = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
+    private val dateFormatterToServer = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 
     private val simpleFormatterDate = SimpleDateFormat("yyyy.MM.dd E", Locale.KOREA)
     private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
@@ -884,10 +885,66 @@ object FormatDate {
     }
 
     fun getIntervalDate(
-        interval: Long,
-        repeatStart: String
-    ) {
+        interval: Int,
+        repeatStartStr: String,
+        repeatEndDateStr: String,
+        repeatOption: String,
+        today : Date
+    ) : Pair<Date, Date> {
+        val repeatStart = dateFormatterToServer.parse(repeatStartStr)!!
+        val repeatEnd = dateFormatterToServer.parse(repeatEndDateStr)!!
 
+        cal.time = repeatEnd
+        val endHour = cal.get(Calendar.HOUR_OF_DAY)
+        val endMinute = cal.get(Calendar.MINUTE)
+
+        cal.time = repeatStart
+
+        if (today < cal.time){
+            val startDate = cal.time
+            cal.apply {
+                add(Calendar.MILLISECOND, interval)
+                Log.e("20191627", "1startDate : $startDate, endDAte : $time")
+                set(Calendar.HOUR_OF_DAY, endHour)
+                set(Calendar.MINUTE, endMinute)
+            }
+            return Pair(startDate, cal.time)
+        }
+
+        while(today < cal.time) {
+            when(repeatOption){
+                "매주" -> cal.add(Calendar.DAY_OF_MONTH, 7)
+                "격주" -> cal.add(Calendar.DAY_OF_MONTH, 14)
+                "매달" -> cal.add(Calendar.MONTH, 1)
+                "매년" -> cal.add(Calendar.YEAR, 1)
+            }
+        }
+        if (cal.time < repeatEnd){
+            val startDate = cal.time
+            cal.apply {
+                add(Calendar.MILLISECOND, interval)
+                Log.e("20191627", "2startDate : $startDate, endDAte : $time")
+                set(Calendar.HOUR_OF_DAY, endHour)
+                set(Calendar.MINUTE, endMinute)
+            }
+            return Pair(startDate, cal.time)
+        }
+
+        when(repeatOption){
+            "매주" -> cal.add(Calendar.DAY_OF_MONTH, -7)
+            "격주" -> cal.add(Calendar.DAY_OF_MONTH, -14)
+            "매달" -> cal.add(Calendar.MONTH, -1)
+            "매년" -> cal.add(Calendar.YEAR, -1)
+        }
+
+        val startDate = cal.time
+        cal.apply {
+            add(Calendar.MILLISECOND, interval)
+            Log.e("20191627", "3startDate : $startDate, endDAte : $time")
+            set(Calendar.HOUR_OF_DAY, endHour)
+            set(Calendar.MINUTE, endMinute)
+        }
+        return Pair(startDate, cal.time)
     }
 
 }

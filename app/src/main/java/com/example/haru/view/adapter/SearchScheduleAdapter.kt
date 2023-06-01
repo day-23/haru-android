@@ -81,21 +81,33 @@ class SearchScheduleAdapter(val context: Context) :
             if (item.isAllDay)
                 binding.tvScheduleTime.text = "하루종일"
             else {
-                if (item.repeatOption == null && item.repeatValue == ""){
-                    val startDate = FormatDate.strToDate(item.repeatStart)!!
-                    val endDate = FormatDate.strToDate(item.repeatEnd)!!
-
-                    val startDateStr = FormatDate.simpleCalendarToStr(startDate)
-                    val endDateStr = FormatDate.simpleCalendarToStr(endDate)
-                    binding.tvScheduleTime.text = "$startDateStr - $endDateStr"
+                val startDate : Date
+                val endDate : Date
+                if (item.repeatOption == null && (item.repeatValue == "" || item.repeatValue?.contains('T') == true)) {
+                    startDate = FormatDate.strToDate(item.repeatStart)!!
+                    endDate = FormatDate.strToDate(item.repeatEnd)!!
                 } else {
                     val today = Date()
-                    if (item.repeatValue!![0] == 'T'){
-                        val interval = item.repeatValue.substring(1).toLong()
-
+                    if (item.repeatValue!![0] == 'T') {
+                        val interval = item.repeatValue.substring(1).toInt()
+                        val rangeDate = FormatDate.getIntervalDate(
+                            interval,
+                            item.repeatStart!!,
+                            item.repeatEnd!!,
+                            item.repeatOption!!,
+                            today
+                        )
+                        startDate = rangeDate.first
+                        endDate = rangeDate.second
+                    } else {
+                        startDate = Date()
+                        endDate = Date()
                     }
-//                    binding.tvScheduleTime.text = "test"
                 }
+
+                val startDateStr = FormatDate.simpleCalendarToStr(startDate)
+                val endDateStr = FormatDate.simpleCalendarToStr(endDate)
+                binding.tvScheduleTime.text = "$startDateStr - $endDateStr"
 
             }
 
