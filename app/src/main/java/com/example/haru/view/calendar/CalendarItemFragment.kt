@@ -231,7 +231,10 @@ class CalendarItemFragment(val schedule: Schedule,
                                 binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatStartCalendar.time)
                             }
 
-                            if(flag) return
+                            if(flag) {
+                                optionChange()
+                                return
+                            }
 
                             if(repeatOption == 0) repeatOption = -1
 
@@ -566,6 +569,10 @@ class CalendarItemFragment(val schedule: Schedule,
                                             serverFormatter.format(nextDate)
                                         )
                                     ) {
+                                        requireActivity().supportFragmentManager.popBackStack()
+                                    }
+                                } else {
+                                    calendarviewmodel.deleteSchedule(schedule.id) {
                                         requireActivity().supportFragmentManager.popBackStack()
                                     }
                                 }
@@ -1151,6 +1158,42 @@ class CalendarItemFragment(val schedule: Schedule,
                                                 serverFormatter.format(schedule.startTime),
                                                 serverFormatter.format(schedule.endTime),
                                                 serverFormatter.format(nextDate)
+                                            )
+                                        ) {
+                                            requireActivity().supportFragmentManager.popBackStack()
+                                        }
+                                    }
+                                } else {
+                                    val calendarviewmodel = CalendarViewModel()
+
+                                    if (category != null) {
+                                        calendarviewmodel.submitSchedule(
+                                            schedule.id, PostSchedule(
+                                                binding.scheduleContentEt.text.toString(),
+                                                binding.etMemoSchedule.text.toString(),
+                                                isAllday,
+                                                repeatStartDate,
+                                                repeatEndDate,
+                                                option,
+                                                repeatvalue,
+                                                category!!.id,
+                                                emptyList()
+                                            )
+                                        ) {
+                                            requireActivity().supportFragmentManager.popBackStack()
+                                        }
+                                    } else {
+                                        calendarviewmodel.submitSchedule(
+                                            schedule.id, PostSchedule(
+                                                binding.scheduleContentEt.text.toString(),
+                                                binding.etMemoSchedule.text.toString(),
+                                                isAllday,
+                                                repeatStartDate,
+                                                repeatEndDate,
+                                                option,
+                                                repeatvalue,
+                                                null,
+                                                emptyList()
                                             )
                                         ) {
                                             requireActivity().supportFragmentManager.popBackStack()

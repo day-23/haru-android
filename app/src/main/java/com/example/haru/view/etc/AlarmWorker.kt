@@ -98,7 +98,7 @@ class AlarmWorker : BroadcastReceiver(){
                 set(Calendar.HOUR_OF_DAY, 9)
                 set(Calendar.MINUTE, 0)
                 set(Calendar.SECOND, 0)
-                add(Calendar.DATE, 1)
+                add(Calendar.HOUR_OF_DAY, 12)
             }
 
             alarmManager.setExactAndAllowWhileIdle(
@@ -460,7 +460,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         startdateFormat
                                     ) == 0
                                 ) {
-                                    schedule.startTime = todayDate
+                                    schedule.startTime = todayDate.clone() as Date
                                     todayDate.hours = endtime.hours
                                     todayDate.minutes = endtime.minutes
                                     todayDate.seconds = endtime.seconds
