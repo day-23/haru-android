@@ -19,7 +19,7 @@ import com.example.haru.databinding.FragmentSearchTodoHeaderBinding
 import com.example.haru.utils.FormatDate
 
 class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-//    private var todoData = emptyList<Todo>()
+
     private val divider = 0
     private val header = 1
     private val item = 2

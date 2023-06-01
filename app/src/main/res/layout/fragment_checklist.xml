@@ -4,14 +4,13 @@
     android:id="@+id/drawable_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FDFDFD"
-    >
+    android:background="#FDFDFD">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
         android:background="#FDFDFD"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <LinearLayout
@@ -19,36 +18,37 @@
             android:layout_height="match_parent"
             android:background="#FDFDFD"
             android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/checklist_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#FDFDFD"
                 android:paddingStart="10dp"
-                android:paddingEnd="20dp"
-                >
+                android:paddingEnd="20dp">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:background="#FDFDFD"
-                    >
+                    android:background="#FDFDFD">
+
                     <ImageView
                         android:id="@+id/checklist_haru_title"
                         android:layout_width="60dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/haru_logo"
-                        android:layout_marginTop="2dp"
-                        android:textStyle="bold"
-                        android:textColor="#191919"
                         android:layout_alignParentTop="true"
-                        />
+                        android:layout_marginTop="2dp"
+                        android:src="@drawable/haru_logo"
+                        android:textColor="#191919"
+                        android:textStyle="bold" />
+
                     <ImageView
                         android:id="@+id/iv_checklist_search"
-                        android:layout_marginTop="3dp"
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:layout_alignParentEnd="true"
-                        android:src="@drawable/search_icon"/>
+                        android:layout_marginTop="3dp"
+                        android:src="@drawable/search_icon" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -173,6 +173,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/simple_add_todo"
                     android:hint="@string/simpleAddTodo"
+                    android:maxLines="1"
                     android:minWidth="0dp"
                     android:minHeight="0dp"
                     android:textColor="@color/date_text"

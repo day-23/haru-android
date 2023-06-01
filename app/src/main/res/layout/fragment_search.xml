@@ -19,7 +19,8 @@
             android:id="@+id/iv_search_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/back_arrow" />
+            android:background="@drawable/back_arrow"
+            android:focusable="false" />
 
         <EditText
             android:id="@+id/et_search_content"
@@ -33,6 +34,7 @@
             android:drawablePadding="10dp"
             android:drawableTint="@color/light_gray"
             android:hint="@string/searchDescription"
+            android:inputType="text"
             android:maxLines="1"
             android:paddingStart="10dp"
             android:paddingTop="3dp"

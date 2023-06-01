@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import BaseActivity
+import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +11,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,7 +50,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
         // checklist와 캘린더에서 접근한 검색 화면일 경우
         if (viewModel is CheckListViewModel) {
-            val todoListView : RecyclerView = binding.searchRecyclerTwo
+            val todoListView: RecyclerView = binding.searchRecyclerTwo
             val todoAdapter = SearchTodoAdapter(requireContext())
 
             todoListView.adapter = todoAdapter
@@ -72,13 +74,22 @@ class SearchFragment(val viewModel: Any) : Fragment() {
             binding.etSearchContent.setOnKeyListener { view, keyCode, keyEvent ->
                 if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
                     val content = binding.etSearchContent.text.toString().trim()
-                    if (content == "")
-                        return@setOnKeyListener false
-                    viewModel.getScheduleTodoSearch(content = content)
-                    return@setOnKeyListener false
+                    if (content != "") {
+                        viewModel.getScheduleTodoSearch(content = content)
+                    }
+                    binding.etSearchContent.setText("")
+                    binding.etSearchContent.clearFocus()
+                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.etSearchContent.windowToken, 0)
+                    return@setOnKeyListener true
                 }
+
                 return@setOnKeyListener false
             }
+
+
+
         } else {
             TODO()
         }
