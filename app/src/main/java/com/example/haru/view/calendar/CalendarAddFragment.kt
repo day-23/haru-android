@@ -168,7 +168,10 @@ class CalendarAddFragment(private val activity: Activity,
                                 binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatStartCalendar.time)
                             }
 
-                            if(flag) return
+                            if(flag) {
+                                optionChange(binding)
+                                return
+                            }
 
                             if(repeatOption == 0) repeatOption = -1
 
