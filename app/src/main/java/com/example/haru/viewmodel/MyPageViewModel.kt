@@ -34,9 +34,9 @@ class MyPageViewModel(): ViewModel() {
     val Profile: LiveData<com.example.haru.data.model.Profile>
         get() = _Profile
 
-    private val _Feed = MutableLiveData<ArrayList<Post>>()
-    val MyFeed: LiveData<ArrayList<Post>>
-        get() = _Feed
+    private val _InitFeed = MutableLiveData<ArrayList<Post>>()
+    val InitFeed: LiveData<ArrayList<Post>>
+        get() = _InitFeed
 
     private val _NewFeed = MutableLiveData<ArrayList<Post>>()
     val NewFeed: LiveData<ArrayList<Post>>
@@ -134,18 +134,27 @@ class MyPageViewModel(): ViewModel() {
         _Page.value = _Page.value?.plus(1)
     }
 
-    fun getFeed(page: String, targetId:String) {
+    fun getFeed(targetId: String, lastCreatedAt: String) {
         var newPost: ArrayList<Post> = arrayListOf()
-        var allPost = _Feed.value ?: arrayListOf()
         viewModelScope.launch {
-            PostRepository.getMyFeed(page, targetId) {
+            PostRepository.getMyFeed(targetId, lastCreatedAt) {
                 if (it.size > 0) { //get success
                     newPost = it
-                    allPost.addAll(it)
                 }
             }
             _NewFeed.value = newPost
-            _Feed.value = allPost
+        }
+    }
+
+    fun getFirstFeed(targetId: String){
+        var initPost: ArrayList<Post> = arrayListOf()
+        viewModelScope.launch {
+            PostRepository.getFirstMyFeed(targetId){
+                if(it.size > 0){
+                    initPost = it
+                }
+            }
+            _InitFeed.value = initPost
         }
     }
 
@@ -153,6 +162,20 @@ class MyPageViewModel(): ViewModel() {
         var newMedia = MediaResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
             PostRepository.getFirstMedia(targetId) {
+                if (it.data.size > 0) { //get success
+                    newMedia = it
+                }
+            }
+            if(newMedia.success){
+                _FirstMedia.value = newMedia
+            }
+        }
+    }
+
+    fun getMedia(targetId: String, lastCreatedAt: String){
+        var newMedia = MediaResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            PostRepository.getFirstMedia(targetId, lastCreatedAt) {
                 if (it.data.size > 0) { //get success
                     newMedia = it
                 }

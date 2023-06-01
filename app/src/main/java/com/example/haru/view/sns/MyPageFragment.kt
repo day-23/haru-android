@@ -39,6 +39,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     var isMyPage = false
     var friendStatus = 0
     var selectedTag: MediaTagAdapter.MediaTagViewHolder? = null
+    var lastDate = ""
+    var index = 0
 
     override fun onCommentClick(postitem: Post) {
         mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
@@ -113,6 +115,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
 
         initProfile()
+        mypageViewModel.getFirstFeed(userId)
         mypageViewModel.getFirstMedia(userId)
         mypageViewModel.getUserTags(userId)
 
@@ -157,30 +160,51 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         tagRecyclerView.adapter = tagAdapter
         tagRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        mypageViewModel.Page.observe(viewLifecycleOwner){page ->
-            val page = page.toString()
-            mypageViewModel.getFeed(page, userId)
+        mypageViewModel.InitFeed.observe(viewLifecycleOwner){feeds ->
+            if(feeds.size > 0) {
+                index = feeds.size - 1
+                lastDate = feeds[index].createdAt
+                feedAdapter.initList(feeds)
+            }
         }
 
         mypageViewModel.NewFeed.observe(viewLifecycleOwner){feeds ->
-            feedAdapter.newPage(feeds)
-            if(feeds.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+            if(feeds.size > 0) {
+                index = feeds.size - 1
+                lastDate = feeds[index].createdAt
+                feedAdapter.newPage(feeds)
+            }else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
         mypageViewModel.FirstMedia.observe(viewLifecycleOwner){medias ->
-            mediaAdapter.firstPage(medias.data)
+            if(medias.data.size > 0) {
+                index = medias.data.size - 1
+                lastDate = medias.data[index].createdAt
+                mediaAdapter.firstPage(medias.data)
+            }
+        }
+
+        mypageViewModel.Media.observe(viewLifecycleOwner){medias ->
+            if(medias.data.size > 0){
+                index = medias.data.size - 1
+                lastDate = medias.data[index].createdAt
+                mediaAdapter.newPage(medias.data)
+            }
         }
 
         mypageViewModel.Tags.observe(viewLifecycleOwner){tags ->
             tagAdapter.newPage(ArrayList(tags))
         }
+
         val scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!feedRecyclerView.canScrollVertically(1)) {
-                    mypageViewModel.addPage()
-                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT)
+                    mypageViewModel.getFeed(userId, lastDate)
+                }else if(!mediaRecyclerView.canScrollVertically(1)){
+                    mypageViewModel.getMedia(userId, lastDate)
                 }
+                Toast.makeText(requireContext(), "새 게시글 불러오는 중 ", Toast.LENGTH_SHORT).show()
             }
         }
 

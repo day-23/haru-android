@@ -29,6 +29,7 @@ import com.example.haru.view.sns.OnPostClickListener
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.SnsViewModel
 import de.hdodenhof.circleimageview.CircleImageView
+import kakao.k.p
 import kotlinx.coroutines.*
 import org.w3c.dom.Text
 
@@ -135,11 +136,7 @@ class SnsPostAdapter(val context: Context,
     }
 
     fun newPage(post: ArrayList<Post>){
-
-        for(p in post) {
-            if (!itemList.contains(p))
-                itemList.add(p)
-        }
+        itemList.addAll(post)
         notifyDataSetChanged()
     }
 

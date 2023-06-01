@@ -142,12 +142,12 @@ class PostRepository() {
     }
 
     //피드
-    suspend fun getMyFeed(page:String, targetId:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+    suspend fun getMyFeed(targetId:String, lastCreatedAt: String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getMyFeed(
             userId,
             targetId,
-            page
+            lastCreatedAt
         ).execute()
         val posts: ArrayList<Post>
         val data: PostResponse
@@ -162,12 +162,53 @@ class PostRepository() {
         callback(posts)
     }
 
+    suspend fun getFirstMyFeed(targetId:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstMyFeed(
+            userId,
+            targetId,
+        ).execute()
+        val posts: ArrayList<Post>
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get posts")
+            data = response.body()!!
+            posts = data.data!!
+        } else{
+            Log.d("TAG", "Fail to get posts")
+            posts = arrayListOf()
+        }
+        callback(posts)
+    }
+
+
+
     //미디어
     suspend fun getFirstMedia(targetId: String, callback: (medias : MediaResponse) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getFirstMedia(
             userId,
             targetId
+        ).execute()
+
+        val medias: MediaResponse
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            medias = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            medias = MediaResponse(false, arrayListOf(), pagination())
+        }
+        callback(medias)
+    }
+
+    suspend fun getFirstMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getMedia(
+            userId,
+            targetId,
+            lastCreatedAt
         ).execute()
 
         val medias: MediaResponse
