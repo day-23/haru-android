@@ -18,7 +18,13 @@
             android:layout_weight="1"
             android:layout_marginStart="30dp"
             android:theme="@style/ThemeOverlay.NumberPicker"/>
-
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="년"
+            android:textSize="20sp" />
         <NumberPicker
             android:id="@+id/np_hour_pick"
             android:layout_width="0dp"
@@ -32,23 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="시"
+            android:text="월"
             android:textSize="20sp" />
-
-        <NumberPicker
-            android:id="@+id/np_minute_pick"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:theme="@style/ThemeOverlay.NumberPicker"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="분"
-            android:textSize="20sp" />
-
     </LinearLayout>
 </LinearLayout>

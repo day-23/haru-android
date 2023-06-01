@@ -432,6 +432,7 @@ class CalendarViewModel : ViewModel() {
                                 }
                             } else {
                                 today = schedule.repeatStart!!
+                                val starttime = serverformat.parse(schedule.repeatStart!!)
                                 val endtime = serverformat.parse(schedule.repeatEnd!!)
                                 todayDate = serverformat.parse(today)
 
@@ -504,11 +505,21 @@ class CalendarViewModel : ViewModel() {
                                         startdateFormat
                                     ) == 0
                                 ) {
-                                    schedule.startTime = todayDate
+                                    todayDate.hours = starttime.hours
+                                    todayDate.minutes = starttime.minutes
+                                    todayDate.seconds = starttime.seconds
+
+                                    Log.d("반복이슈", todayDate.toString())
+
+                                    schedule.startTime = todayDate.clone() as Date
+
                                     todayDate.hours = endtime.hours
                                     todayDate.minutes = endtime.minutes
                                     todayDate.seconds = endtime.seconds
-                                    schedule.endTime = todayDate
+
+                                    Log.d("반복이슈", todayDate.toString())
+
+                                    schedule.endTime = todayDate.clone() as Date
                                     scheduleList.add(schedule.copy())
                                 }
                             }
