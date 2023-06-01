@@ -14,8 +14,7 @@ import com.example.haru.view.timetable.TimetableDraglistener
 import kotlin.collections.ArrayList
 
 
-class TimetableAdapter(val context: Context,
-                       private var itemList: ArrayList<timetable_data>) : RecyclerView.Adapter<TimetableAdapter.TimetableViewHolder>() {
+class TimetableAdapter(val context: Context, private var itemList: ArrayList<timetable_data>) : RecyclerView.Adapter<TimetableAdapter.TimetableViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimetableViewHolder {
         val view = LayoutInflater.from(context)
@@ -23,74 +22,76 @@ class TimetableAdapter(val context: Context,
         return TimetableViewHolder(view)
     }
 
+
+    /* 꾹 눌러서 새로 일정 만드는 애 */
     override fun onBindViewHolder(holder: TimetableViewHolder, position: Int) {
-        holder.timetable_time.text = itemList[position].time
-        val draglistener = TimetableDraglistener()
-
-        holder.timetable_sun.setOnDragListener(draglistener)
-        holder.timetable_mon.setOnDragListener(draglistener)
-        holder.timetable_tue.setOnDragListener(draglistener)
-        holder.timetable_wed.setOnDragListener(draglistener)
-        holder.timetable_thu.setOnDragListener(draglistener)
-        holder.timetable_fri.setOnDragListener(draglistener)
-        holder.timetable_sat.setOnDragListener(draglistener)
-
-        holder.timetable_sun.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View): Boolean {
-                val data = ClipData.newPlainText("", "")
-                val shadowBuilder = View.DragShadowBuilder(v)
-                v.startDrag(data, shadowBuilder, v, 0)
-                return true
-            }
-        })
-        holder.timetable_mon.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View): Boolean {
-                val data = ClipData.newPlainText("", "")
-                val shadowBuilder = View.DragShadowBuilder(v)
-                v.startDrag(data, shadowBuilder, v, 0)
-                return true
-            }
-        })
-        holder.timetable_tue.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View): Boolean {
-                val data = ClipData.newPlainText("", "")
-                val shadowBuilder = View.DragShadowBuilder(v)
-                v.startDrag(data, shadowBuilder, v, 0)
-                return true
-            }
-        })
-        holder.timetable_wed.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View): Boolean {
-                val data = ClipData.newPlainText("", "")
-                val shadowBuilder = View.DragShadowBuilder(v)
-                v.startDrag(data, shadowBuilder, v, 0)
-                return true
-            }
-        })
-        holder.timetable_thu.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View): Boolean {
-                val data = ClipData.newPlainText("", "")
-                val shadowBuilder = View.DragShadowBuilder(v)
-                v.startDrag(data, shadowBuilder, v, 0)
-                return true
-            }
-        })
-        holder.timetable_fri.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View): Boolean {
-                val data = ClipData.newPlainText("", "")
-                val shadowBuilder = View.DragShadowBuilder(v)
-                v.startDrag(data, shadowBuilder, v, 0)
-                return true
-            }
-        })
-        holder.timetable_sat.setOnLongClickListener(object : View.OnLongClickListener {
-            override fun onLongClick(v: View): Boolean {
-                val data = ClipData.newPlainText("", "")
-                val shadowBuilder = View.DragShadowBuilder(v)
-                v.startDrag(data, shadowBuilder, v, 0)
-                return true
-            }
-        })
+//        holder.timetable_time.text = itemList[position].time -> 이제 frameLayout에서 그림
+//        val draglistener = TimetableDraglistener()
+//
+//        holder.timetable_sun.setOnDragListener(draglistener)
+//        holder.timetable_mon.setOnDragListener(draglistener)
+//        holder.timetable_tue.setOnDragListener(draglistener)
+//        holder.timetable_wed.setOnDragListener(draglistener)
+//        holder.timetable_thu.setOnDragListener(draglistener)
+//        holder.timetable_fri.setOnDragListener(draglistener)
+//        holder.timetable_sat.setOnDragListener(draglistener)
+//
+//        holder.timetable_sun.setOnLongClickListener(object : View.OnLongClickListener {
+//            override fun onLongClick(v: View): Boolean {
+//                val data = ClipData.newPlainText("", "")
+//                val shadowBuilder = View.DragShadowBuilder(v)
+//                v.startDrag(data, shadowBuilder, v, 0)
+//                return true
+//            }
+//        })
+//        holder.timetable_mon.setOnLongClickListener(object : View.OnLongClickListener {
+//            override fun onLongClick(v: View): Boolean {
+//                val data = ClipData.newPlainText("", "")
+//                val shadowBuilder = View.DragShadowBuilder(v)
+//                v.startDrag(data, shadowBuilder, v, 0)
+//                return true
+//            }
+//        })
+//        holder.timetable_tue.setOnLongClickListener(object : View.OnLongClickListener {
+//            override fun onLongClick(v: View): Boolean {
+//                val data = ClipData.newPlainText("", "")
+//                val shadowBuilder = View.DragShadowBuilder(v)
+//                v.startDrag(data, shadowBuilder, v, 0)
+//                return true
+//            }
+//        })
+//        holder.timetable_wed.setOnLongClickListener(object : View.OnLongClickListener {
+//            override fun onLongClick(v: View): Boolean {
+//                val data = ClipData.newPlainText("", "")
+//                val shadowBuilder = View.DragShadowBuilder(v)
+//                v.startDrag(data, shadowBuilder, v, 0)
+//                return true
+//            }
+//        })
+//        holder.timetable_thu.setOnLongClickListener(object : View.OnLongClickListener {
+//            override fun onLongClick(v: View): Boolean {
+//                val data = ClipData.newPlainText("", "")
+//                val shadowBuilder = View.DragShadowBuilder(v)
+//                v.startDrag(data, shadowBuilder, v, 0)
+//                return true
+//            }
+//        })
+//        holder.timetable_fri.setOnLongClickListener(object : View.OnLongClickListener {
+//            override fun onLongClick(v: View): Boolean {
+//                val data = ClipData.newPlainText("", "")
+//                val shadowBuilder = View.DragShadowBuilder(v)
+//                v.startDrag(data, shadowBuilder, v, 0)
+//                return true
+//            }
+//        })
+//        holder.timetable_sat.setOnLongClickListener(object : View.OnLongClickListener {
+//            override fun onLongClick(v: View): Boolean {
+//                val data = ClipData.newPlainText("", "")
+//                val shadowBuilder = View.DragShadowBuilder(v)
+//                v.startDrag(data, shadowBuilder, v, 0)
+//                return true
+//            }
+//        })
     }
 
     override fun getItemCount(): Int {
@@ -103,7 +104,7 @@ class TimetableAdapter(val context: Context,
     }
 
     inner class TimetableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var timetable_time = itemView.findViewById<TextView>(R.id.tv_timetable_time)
+//        var timetable_time = itemView.findViewById<TextView>(R.id.tv_timetable_time)
         var timetable_sun = itemView.findViewById<ImageView>(R.id.tv_timetable_sun)
         var timetable_mon = itemView.findViewById<ImageView>(R.id.tv_timetable_mon)
         var timetable_tue = itemView.findViewById<ImageView>(R.id.tv_timetable_tue)

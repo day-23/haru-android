@@ -1,33 +1,27 @@
 package com.example.haru.viewmodel
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
-import android.provider.ContactsContract.RawContacts.Data
 import android.util.Log
 import android.util.Log.d
 import android.view.View
 import android.widget.DatePicker
-import android.widget.FrameLayout
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide.init
+import androidx.lifecycle.*
 import com.example.haru.data.model.*
+import com.example.haru.data.repository.CategoryRepository
 import com.example.haru.data.repository.ScheduleRepository
-import com.example.haru.data.repository.TodoRepository
+import com.example.haru.utils.FormatDate
+import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.*
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class TimetableViewModel(val context : Context): ViewModel() {
     private val scheduleRepository = ScheduleRepository()
+    private val categoryRepository = CategoryRepository()
 
     private val _Dates = MutableLiveData<ArrayList<String>>()
     val Dates : LiveData<ArrayList<String>>
@@ -45,13 +39,31 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val Colors : LiveData<ArrayList<String>>
         get() = _Colors
 
+    private val _liveCategoryList = MutableLiveData<List<Category>>()
+    val liveCategoryList: MutableLiveData<List<Category>> get() = _liveCategoryList
+
     private val _Schedules = MutableLiveData<ArrayList<ArrayList<Schedule>>>()
     val Schedules : LiveData<ArrayList<ArrayList<Schedule>>>
         get() = _Schedules
 
-    private val _SchedulesAllday = MutableLiveData<ArrayList<Schedule>>()
-    val SchedulesAllday: LiveData<ArrayList<Schedule>>
+    private val _SchedulesAllday = MutableLiveData<ArrayList<ScheduleCalendarData>>()
+    val SchedulesAllday: LiveData<ArrayList<ScheduleCalendarData>>
         get() = _SchedulesAllday
+
+    val categoryAndSchedulesCombinedData: LiveData<Pair<List<Category>?, ArrayList<ArrayList<Schedule>>>> =
+        Transformations.switchMap(_liveCategoryList) { categoryList: List<Category>? ->
+            Transformations.map(_Schedules) { schedules ->
+                Pair(categoryList, schedules)
+            }
+        }
+
+    val categoryAndSchedulesAlldayCombinedData: LiveData<Pair<List<Category>?, ArrayList<ScheduleCalendarData>>> =
+        Transformations.switchMap(_liveCategoryList) { categoryList: List<Category>? ->
+            Transformations.map(_SchedulesAllday) { schedulesAllday ->
+                Pair(categoryList, schedulesAllday)
+            }
+        }
+
 
     private val _TodayDay = MutableLiveData<String>()
     val TodayDay : LiveData<String>
@@ -70,7 +82,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
     var dayslist: ArrayList<String> = ArrayList()
     var Datelist: ArrayList<String> = ArrayList()
     var IndexList: ArrayList<ArrayList<Schedule>> = ArrayList()
-    var IndexList_allday: ArrayList<Schedule> = ArrayList()
+    var IndexList_allday: ArrayList<ScheduleCalendarData> = ArrayList()
     var timetable_today = ""
     init {
         timetable_today = SimpleDateFormat("yyyyMMdd").format(Date(calendar.get(Calendar.YEAR) - 1900, calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)))
@@ -87,6 +99,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
         _Colors.value = colorlist
         _Dates.value = Datelist
         _Schedules.value = IndexList
+
+        getCategories()
     }
 
     //날짜정보//
@@ -191,7 +205,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                 else colorlist.add("#BBE7FF")
             }
             //토요일 푸른색
-            else if(d == addday) colorlist.add("#191919") // 일반 검정색
+            else if(d == addday) colorlist.add("#646464") // 일반 검정색
             else colorlist.add("#DBDBDB") //지난달 다음달 회색
 
             //선택한 날짜 '년월일', '7일' 형식 리스트 작성
@@ -202,48 +216,71 @@ class TimetableViewModel(val context : Context): ViewModel() {
         getSchedule(Datelist)
     }
 
-    //스케줄 쿼리문 전송
+    //스케줄 쿼리문 전송 - 반복 적용 전 함수 - date : 20230528
     fun getSchedule(date : ArrayList<String>){
         viewModelScope.launch {
-            val emptyschedule = Schedule(0,"", "dummy", "", false, "", "", "", "" , "", Category("","","",false), emptyList(), null, null,)
             IndexList = arrayListOf( arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),)
             val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
-            val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
+            val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T23:59:59+09:00"
             val body = ScheduleRequest(startDate, endDate)
-            scheduleRepository.getScheduleByDates(date[0], date[6], body) {
-                val TodoList = it
 
-                //내용 추출
-                for(data in TodoList.schedules){
-                    val year_start = data.repeatStart?.slice(IntRange(0,3))
-                    val month_start = data.repeatStart?.slice(IntRange(5,6))
-                    val day_start = data.repeatStart?.slice(IntRange(8,9))
-                    val result_start = year_start+month_start+day_start
+            scheduleRepository.getScheduleByDates(body) { data ->
+                /* repeat data parsing */
+                val parsedScheduleList = parseRepeatSchedule(data.schedules, startDate, endDate)
 
-                    val year_end = data.repeatEnd?.slice(IntRange(0,3))
-                    val month_end = data.repeatEnd?.slice(IntRange(5,6))
-                    val day_end = data.repeatEnd?.slice(IntRange(8,9))
-                    val result_end = year_end+month_end+day_end
-                    Log.d("ALLDAYsss", "$data")
+                for(parsedSchedule in parsedScheduleList){
+                    val (schedule, position, cnt, timeInterval) = parsedSchedule
 
-                    if(data.repeatStart?.slice(IntRange(11,15)) != data.repeatEnd?.slice(IntRange(11,15)) && result_start == result_end){ //하루치 일정
-                        when(result_start){
-                            date[0] -> IndexList[0].add(data)
-                            date[1] -> IndexList[1].add(data)
-                            date[2] -> IndexList[2].add(data)
-                            date[3] -> IndexList[3].add(data)
-                            date[4] -> IndexList[4].add(data)
-                            date[5] -> IndexList[5].add(data)
-                            date[6] -> IndexList[6].add(data)
-                        }
+                    /* 상록이 코드 기준 데이터 포맷 맞추기 */
+                    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+                    val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
+
+                    var startDate = schedule.repeatStart!!
+                    var endDate = schedule.repeatEnd!!
+
+                    schedule.repeatStart = serverFormatter.format(format.parse(startDate))
+                    schedule.repeatEnd = serverFormatter.format(format.parse(endDate))
+                    /* 상록이 코드 기준 데이터 포맷 맞추기 끝 */
+
+
+                    //format ex 20230531 20230601
+                    val scheduleStartDate = schedule.repeatStart?.slice(IntRange(0,3)) + schedule.repeatStart?.slice(IntRange(5,6)) + schedule.repeatStart?.slice(IntRange(8,9))
+                    val scheduleEndDate = schedule.repeatEnd?.slice(IntRange(0,3)) + schedule.repeatEnd?.slice(IntRange(5,6)) + schedule.repeatEnd?.slice(IntRange(8,9))
+
+
+                    d("parsedSchedule", "${schedule.content}, ${scheduleStartDate}, ${scheduleEndDate}, ${schedule.isAllDay}, ${schedule.repeatOption}, ${position}:")
+
+                    /* 일정이 하루 종일이거나, 반복 일정이 아니면서 시작 날짜와 끝 날짜가 다를 경우. */
+                    if(schedule.isAllDay || schedule.repeatOption == null && scheduleStartDate != scheduleEndDate){
+                        IndexList_allday.add(parsedSchedule)
+                        continue
                     }
-                    else{
-                        IndexList_allday.add(data)// 하루종일 or 하루이상 일정
+
+                    /* 일정이 반복 일정일 경우 */
+                    if(schedule.repeatOption != null && schedule.repeatValue != null) {
+                        if (schedule.repeatValue[0] != 'T'){/* 단일 날짜 일정 */
+                            IndexList[position].add(schedule)
+
+                        }else {/* 2일 연속 일정 timeInterval 존재하면 무조건 연속된 일정 */
+                            d("parsedSchedule", "getSchedule: timeInterval: ${timeInterval}")
+                            IndexList_allday.add(parsedSchedule)
+                        }
+
+                        continue
+                    }
+
+                    when (scheduleStartDate) { /* 하루치 일정 */
+                        date[0] -> IndexList[0].add(schedule)
+                        date[1] -> IndexList[1].add(schedule)
+                        date[2] -> IndexList[2].add(schedule)
+                        date[3] -> IndexList[3].add(schedule)
+                        date[4] -> IndexList[4].add(schedule)
+                        date[5] -> IndexList[5].add(schedule)
+                        date[6] -> IndexList[6].add(schedule)
                     }
                 }
-                Log.d("ALLDAYsss", "index : $IndexList")
-                Log.d("ALLDAYsss", "index : $IndexList_allday")
             }
+
             _Schedules.value = IndexList
             _SchedulesAllday.value = IndexList_allday
         }
@@ -305,70 +342,391 @@ class TimetableViewModel(val context : Context): ViewModel() {
     }
 
     fun scheduleMoved(margin : Int, view: View, index: Int){
-        val hour = (margin / 120).toInt()
-        val min = (( margin % 120) / 2).toInt()
-        var stringHour = ""
-        var stringMin = ""
-        if(hour > 9) stringHour = hour.toString()
-        else stringHour = "0"+hour.toString()
-        if(min > 9) stringMin = min.toString()
-        else stringMin = "0" + min.toString()
+        val hour = (margin / 72).toInt()
+        val min = ((margin % 72) / 6) * 5.toInt()
 
+        val stringHour = "%02d".format(hour)
+        val stringMin = "%02d".format(min)
+
+        //moveDate ex: 20230530
         val moveDate = Datelist[index]
+
         //"2023-04-01T00:00:00.000Z"
-        val newDate = "${moveDate.slice(IntRange(0,3))}-${moveDate.slice(IntRange(4, 5))}-${moveDate.slice(IntRange(6, 7))}T"
-        val newTime = "$stringHour:$stringMin:00.000Z"
-        val newDateInfo = newDate + newTime // 수정 돼야할 시간정보
+        val year = moveDate.substring(0, 4)
+        val month = moveDate.substring(4, 6)
+        val day = moveDate.substring(6, 8)
+
+        val newDateInfo = "${year}-${month}-${day}T${stringHour}:${stringMin}:00+09:00"
 
         _MoveDate.value = newDateInfo
         _MoveView.value = view
     }
 
-    fun patchMoved(start: String , end: String, data: Schedule){
-        val moveview = data
-        //"2023-03-07T18:30:00.000Z" 11 12 14 15
-        //repeatend 값을 바뀐 repeatstart에 맞추어 수정
-        val nowStartHour = start.slice(IntRange(11,12)).toInt()
-        val nowStartMin = start.slice(IntRange(14,15)).toInt()
-        val pastStartHour = moveview.repeatStart!!.slice(IntRange(11, 12)).toInt()
-        val pastStartMin = moveview.repeatStart!!.slice(IntRange(14, 15)).toInt()
-        val pastEndHour = moveview.repeatEnd!!.slice(IntRange(11, 12)).toInt()
-        val pastEndMin = moveview.repeatEnd!!.slice(IntRange(14, 15)).toInt()
-        var periodHour = pastEndHour - pastStartHour
-        var periodMin = pastEndMin - pastStartMin
+    suspend fun patchMoved(newRepeatStart: String, preScheduleData: Schedule){
+        //"2023-03-07T18:30:00.000Z" X -> "2023-05-07T00:00:00+09:00"
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
-        if(periodMin < 0 ){
-            periodHour -= 1
-            periodMin += 60
-        }
-        periodHour += nowStartHour
-        periodMin += nowStartMin
+        // Parse the strings to ZonedDateTime instances
+        val preRepeatStart = ZonedDateTime.parse(preScheduleData.repeatStart, formatter)
+        val preRepeatEnd = ZonedDateTime.parse(preScheduleData.repeatEnd, formatter)
 
-        if(periodMin > 59){
-            periodHour += 1
-            periodMin -= 60
-        }
-        var fixedHour = ""
-        var fixedMin = ""
+        // Calculate the difference (offset) between the two dates
+        val diff = Duration.between(preRepeatStart, preRepeatEnd)
 
-        if(periodHour < 10) fixedHour = "0"+periodHour.toString()
-        else fixedHour = periodHour.toString()
-        if(periodMin < 10) fixedMin = "0"+periodMin.toString()
-        else fixedMin = periodMin.toString()
-        val endDate = end.slice(IntRange(0,9))
-        val endTime = "T$fixedHour:$fixedMin:00.000Z"
+        // calculate the offset in seconds
+        val offsetInSeconds = diff.seconds
+        val movedStartSeconds = ZonedDateTime.parse(newRepeatStart, formatter).toEpochSecond()
+        val newDateSeconds = movedStartSeconds + offsetInSeconds
 
-        Log.d("DRAGGED", "$start, ${endDate+endTime}")
+        // convert the new date seconds to ZonedDateTime with the time zone "Asia/Seoul"
+        val newRepeatEndTime = ZonedDateTime.ofInstant(Instant.ofEpochSecond(newDateSeconds), ZoneId.of("Asia/Seoul"))
+        val newRepeatEnd = newRepeatEndTime.format(formatter)
+
+        //기존 데이터 제거
         for(lists in IndexList){
-            if(lists.contains(data)){
-                lists.remove(data)
+            if(lists.contains(preScheduleData)){
+                lists.remove(preScheduleData)
                 break
             }
         }
 
-        data.repeatStart = start
-        data.repeatEnd = endDate+endTime
-        sortSchedule(data)
+        preScheduleData.repeatStart = newRepeatStart
+        preScheduleData.repeatEnd = newRepeatEnd
+
+        sortSchedule(preScheduleData)
         _Schedules.value = IndexList
+
+        val body = PostSchedule(
+            preScheduleData.content,
+            preScheduleData.memo,
+            preScheduleData.isAllDay,
+            preScheduleData.repeatStart!!,
+            preScheduleData.repeatEnd,
+            preScheduleData.repeatOption,
+            preScheduleData.repeatValue,
+            preScheduleData.category?.id,
+            emptyList()
+        )
+        scheduleRepository.submitSchedule(preScheduleData.id, body) {}
+    }
+
+    fun getCategories(){
+        viewModelScope.launch {
+            categoryRepository.getCategories {
+                _liveCategoryList.postValue(it)
+            }
+        }
+    }
+
+    private fun zuluTimeStringToKoreaTimeString(dateTimeStr : String) : String{
+        val korFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+
+        // Parse the date/time string to an Instant instance
+        val dateTimeInstant = Instant.parse(dateTimeStr)
+
+        // Convert the Instant to a ZonedDateTime at "+09:00" timezone
+        val korDateTime = dateTimeInstant.atZone(ZoneId.of("Asia/Seoul"))
+
+        // Format the date/time as a string
+        val korDateTimeStr = korDateTime.format(korFormatter)
+
+        return korDateTimeStr
+    }
+
+    private fun date_comparison(first_date: Date, second_date: Date): Int{
+        first_date.hours = 0
+        first_date.minutes = 0
+        first_date.seconds = 0
+
+        second_date.hours = 0
+        second_date.minutes = 0
+        second_date.seconds = 0
+
+        return first_date.compareTo(second_date)
+    }
+
+
+    private fun parseRepeatSchedule(schedules : List<Schedule>, startDate : String, endDate : String) : ArrayList<ScheduleCalendarData>{
+        val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+        val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
+
+        val parsedScheduleList = ArrayList<ScheduleCalendarData>()
+
+        for (schedule in schedules) {
+            /* 기존 상록이 코드 */
+            schedule.repeatStart = FormatDate.calendarFormat(schedule.repeatStart!!)
+            schedule.repeatEnd = FormatDate.calendarFormat(schedule.repeatEnd!!)
+
+
+            var repeatStart: Date? = null
+            var repeatEnd: Date? = null
+
+            val repeatOption = schedule.repeatOption
+            val repeatValue = schedule.repeatValue
+
+            repeatEnd = schedule.repeatEnd?.let { serverformat.parse(it) }
+            repeatStart = schedule.repeatStart?.let { serverformat.parse(it) }
+
+
+            if (repeatOption != null && repeatValue != null) {
+                if(!repeatValue.contains("T")) {
+                    val calendar = Calendar.getInstance()
+
+                    when (repeatOption) {
+                        "매일" -> {
+                            Log.d("매일","개수")
+                            var cnt = 0
+
+                            calendar.time = dateformat.parse(startDate) as Date
+
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, 1))
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+
+                        "매주" -> {
+                            var weeklycnt = 0
+                            var cnt = 0
+
+                            calendar.time = dateformat.parse(startDate)
+
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
+                                    if (repeatValue[weeklycnt] == '1') {
+                                        parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, 1))
+                                    }
+                                }
+
+                                weeklycnt++
+                                cnt++
+
+                                if (weeklycnt == 7) weeklycnt = 0
+
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+
+                        "격주" -> {
+                            var weeklycnt = 0
+                            var cnt = 0
+                            var twoweek = true
+
+                            calendar.time = dateformat.parse(startDate)
+
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
+                                    if (repeatValue[weeklycnt] == '1' && twoweek) {
+                                        parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, 1))
+                                    }
+                                }
+
+                                cnt++
+                                weeklycnt++
+
+                                if (weeklycnt == 7) {
+                                    weeklycnt = 0
+                                    twoweek = !twoweek
+                                }
+
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+
+                        "매달" -> {
+                            var cnt = 0
+                            calendar.time = dateformat.parse(startDate)
+
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
+                                    if (repeatValue[calendar.time.date - 1] == '1') {
+                                        parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, 1))
+                                    }
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+
+                        "매년" -> {
+                            var cnt = 0
+
+                            val tempStartDate = dateformat.parse(startDate)
+
+                            calendar.time = tempStartDate
+
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+
+                                if (date_comparison(calendar.time, repeatStart!!) >= 0) {
+                                    if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
+                                        if (calendar.get(Calendar.DAY_OF_MONTH) == repeatStart.date)
+                                            parsedScheduleList.add(ScheduleCalendarData(
+                                                schedule.copy(),
+                                                cnt,
+                                                1
+                                            ))
+                                    }
+                                }
+
+                                cnt++
+
+                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                            }
+                        }
+                    }
+                } else {
+                    val newRepeatValue = repeatValue.replace("T","")
+                    val repeatstart = serverformat.parse(schedule.repeatStart)
+                    val calendar = Calendar.getInstance()
+
+                    calendar.time = repeatstart
+
+                    calendar.add(Calendar.MILLISECOND, newRepeatValue.toInt())
+
+                    val intervaldate = calendar.timeInMillis - repeatstart.time
+
+                    when (repeatOption) {
+                        "매주"->{
+                            var cnt = 0
+                            val tempStartDate = dateformat.parse(startDate)
+                            calendar.time = tempStartDate
+
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
+
+                                val startCalendar = Calendar.getInstance()
+                                startCalendar.time = repeatStart
+
+                                while (date_comparison(startCalendar.time, calendar.time) < 0){
+                                    startCalendar.add(Calendar.DAY_OF_MONTH, 7)
+                                }
+
+                                if (date_comparison(calendar.time, startCalendar.time) == 0){
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, null, intervaldate.toInt()))
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH,1)
+                            }
+                        }
+
+                        "격주"->{
+                            var cnt = 0
+                            val tempStartDate = dateformat.parse(startDate)
+                            calendar.time = tempStartDate
+
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
+
+                                val startCalendar = Calendar.getInstance()
+                                startCalendar.time = repeatStart
+
+                                while (date_comparison(startCalendar.time, calendar.time) < 0){
+                                    startCalendar.add(Calendar.DAY_OF_MONTH, 14)
+                                }
+
+                                if (date_comparison(calendar.time, startCalendar.time!!) == 0){
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, null, intervaldate.toInt()))
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH,1)
+                            }
+                        }
+
+                        "매달"->{
+                            var cnt = 0
+                            val tempStartDate = dateformat.parse(startDate)
+                            calendar.time = tempStartDate
+
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
+
+                                val startCalendar = Calendar.getInstance()
+                                startCalendar.time = repeatStart
+
+                                while (date_comparison(startCalendar.time, calendar.time) < 0){
+                                    startCalendar.add(Calendar.MONTH, 1)
+                                }
+
+                                if (date_comparison(calendar.time, startCalendar.time!!) == 0){
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, null, intervaldate.toInt()))
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH,1)
+                            }
+                        }
+
+                        "매년"->{
+                            var cnt = 0
+                            val tempStartDate = dateformat.parse(startDate)
+                            calendar.time = tempStartDate
+
+                            while ((repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0){
+
+                                val startCalendar = Calendar.getInstance()
+                                startCalendar.time = repeatStart
+
+                                while (date_comparison(startCalendar.time, calendar.time) < 0){
+                                    startCalendar.add(Calendar.YEAR, 1)
+                                }
+
+                                if (date_comparison(calendar.time, startCalendar.time!!) == 0){
+                                    parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), cnt, null, intervaldate.toInt()))
+                                }
+
+                                cnt++
+                                calendar.add(Calendar.DAY_OF_MONTH,1)
+                            }
+                        }
+                    }
+                }
+            } else {
+                var start = false
+                val calendar = Calendar.getInstance()
+
+                var startcnt = 0
+                var daycnt = 0
+                var cnt = 0
+                val tempStartDate = dateformat.parse(startDate)
+                calendar.time = tempStartDate
+
+                while (date_comparison(calendar.time, dateformat.parse(endDate)) <= 0) {
+                    if (date_comparison(calendar.time, repeatStart!!) >= 0
+                        && (repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)) {
+                        if(!start) {
+                            startcnt = cnt
+                            start = true
+                        }
+
+                        daycnt++
+                    }
+
+                    cnt++
+
+                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                }
+
+                parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), startcnt, daycnt))
+            }
+        }
+
+        return parsedScheduleList
     }
 }
