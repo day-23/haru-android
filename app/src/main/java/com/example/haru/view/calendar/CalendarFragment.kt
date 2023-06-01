@@ -28,6 +28,8 @@ import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.view.adapter.CategoryAdapter
 import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.view.checklist.ChecklistInputFragment
+import com.example.haru.view.customDialog.CustomMonthDialog
+import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.CheckListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -477,22 +479,26 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         //달 선택 버튼
         calendarMonthChooseLayout.setOnClickListener {
-            val today = GregorianCalendar()
-            val year: Int = today.get(Calendar.YEAR)
-            val month: Int = today.get(Calendar.MONTH)
-            val date: Int = today.get(Calendar.DATE)
+            val arrowImv = calendarMonthChooseLayout.getChildAt(2) as ImageView
+            val today = Calendar.getInstance()
+            val timePicker = CustomMonthDialog(calendar.time)
 
-            val dlg = DatePickerDialog(view.context, object : DatePickerDialog.OnDateSetListener {
-                override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-                    calendar.time = Date()
-
-                    val diffCalendar = (year-calendar.get(Calendar.YEAR)) * 12 +
-                            (month-calendar.get(Calendar.MONTH))
+            timePicker.monthPickerClick = object:CustomMonthDialog.MonthPickerClickListener{
+                override fun onClick(
+                    yearNumberPicker: NumberPicker,
+                    monthNumberPicker: NumberPicker
+                ) {
+                    arrowImv.rotation = 0f
+                    val diffCalendar = (yearNumberPicker.value+1923-today.get(Calendar.YEAR)) * 12 +
+                            (monthNumberPicker.value-today.get(Calendar.MONTH))
 
                     month_viewpager.setCurrentItem(Int.MAX_VALUE / 2 + diffCalendar, false)
                 }
-            }, year, month, date)
-            dlg.show()
+
+            }
+
+            timePicker.show(parentFragmentManager, null)
+            arrowImv.rotation = 90f
         }
         
         //오늘 날짜 버튼
