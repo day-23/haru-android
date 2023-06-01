@@ -76,8 +76,13 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         }
         selectedTag?.tag?.setBackgroundResource(R.drawable.tag_btn_custom)
         selectedTag?.tag?.setTextColor(Color.parseColor("#191919"))
-        selectedTag = holder
 
+        if(holder == selectedTag){
+            mypageViewModel.getFirstMedia(userId)
+            selectedTag = null
+        }else {
+            selectedTag = holder
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,27 +110,11 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         savedInstanceState: Bundle?
     ): View? {
         Log.d("TAG", "MyPageFragment - onCreateView() called")
-
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
-        mypageViewModel.init_page()
 
+        initProfile()
         mypageViewModel.getFirstMedia(userId)
         mypageViewModel.getUserTags(userId)
-
-        if(userId == com.example.haru.utils.User.id){
-            isMyPage = true
-            binding.editProfile.text = "프로필 편집"
-            binding.profileShare.visibility = View.VISIBLE
-            binding.myPageMyRecord.visibility = View.GONE
-            mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
-        }else{
-            hideMytitle()
-            showFriendTitle()
-            isMyPage = false
-            binding.editProfile.text = "친구 신청"
-            binding.profileShare.visibility = View.GONE
-            mypageViewModel.getUserInfo(userId)
-        }
 
         mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
             binding.profileName.text = user.name
@@ -335,6 +324,23 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         binding.feedUnderline.setBackgroundColor(Color.parseColor("#fdfdfd"))
         binding.mediaText.setTextColor(Color.parseColor("#1DAFFF"))
         binding.feedText.setTextColor(Color.parseColor("#acacac"))
+    }
+
+    fun initProfile(){
+        if(userId == com.example.haru.utils.User.id){
+            isMyPage = true
+            binding.editProfile.text = "프로필 편집"
+            binding.profileShare.visibility = View.VISIBLE
+            binding.myPageMyRecord.visibility = View.GONE
+            mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
+        }else{
+            hideMytitle()
+            showFriendTitle()
+            isMyPage = false
+            binding.editProfile.text = "친구 신청"
+            binding.profileShare.visibility = View.GONE
+            mypageViewModel.getUserInfo(userId)
+        }
     }
 
     fun mediaLayout(){

@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import BaseActivity
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -16,16 +17,28 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.databinding.FragmentWriteAddTagBinding
 import com.example.haru.view.adapter.TemplateAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
-class WriteHaruTagFragment : Fragment() {
+interface onTemplateListener{
+
+    fun onTemplateClicked(url : String)
+}
+
+class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
     lateinit var binding : FragmentWriteAddTagBinding
     lateinit var templateViewModel : MyPageViewModel
     lateinit var templateAdapter: TemplateAdapter
+    var toggle = true
 
+    override fun onTemplateClicked(url: String) {
+        Glide.with(requireContext())
+            .load(url)
+            .into(binding.writeHaruImages)
+    }
     override fun onResume() {
         super.onResume()
         (activity as BaseActivity).adjustTopMargin(binding.writeTagHeaderTitle.id)
@@ -47,20 +60,24 @@ class WriteHaruTagFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentWriteAddTagBinding.inflate(inflater, container, false)
-        val addPostRecycler = binding.writeHaryTemplates
-        templateAdapter = TemplateAdapter(requireContext(), arrayListOf())
+        val addPostRecycler = binding.writeHaruTemplates
+        templateAdapter = TemplateAdapter(requireContext(), arrayListOf(),this)
         addPostRecycler.adapter = templateAdapter
         addPostRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         templateViewModel.getTemplates()
-
+        binding.writeTagContent.text = content
         templateViewModel.Templates.observe(viewLifecycleOwner){ templates ->
             Log.d("20191668", "$templates")
             templateAdapter.addTemplate(templates)
        }
 
-        binding.addtagCancel.setOnClickListener {
+        binding.writeHaruCancel.setOnClickListener {
             val fragmentManager = parentFragmentManager
             fragmentManager.popBackStack()
+        }
+
+        binding.templateToggle.setOnClickListener {
+            toggleClicked()
         }
 
         templateViewModel.PostTagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -124,6 +141,43 @@ class WriteHaruTagFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    fun toggleClicked(){
+        val layoutparam = binding.popupTemplate.layoutParams
+        val startHeight = layoutparam.height
+        //dp into px
+        val density = resources.displayMetrics.density
+        val pixels = (279 * density).toInt()
+
+        if (!toggle) {
+            layoutparam.height = pixels
+            toggle = true
+            binding.templateToggle.rotation = 270f
+            binding.writeHaruTemplates.visibility = View.VISIBLE
+            binding.setTextBlack.visibility = View.VISIBLE
+            binding.setTextWhite.visibility = View.VISIBLE
+        } else {
+            layoutparam.height = 0
+            toggle = false
+            binding.templateToggle.rotation = 90f
+            binding.writeHaruTemplates.visibility = View.GONE
+            binding.setTextBlack.visibility = View.GONE
+            binding.setTextWhite.visibility = View.GONE
+        }
+        val targetHeight = layoutparam.height
+
+        val animator = ValueAnimator.ofInt(startHeight, targetHeight)
+        val duration = 200
+
+        animator.addUpdateListener { valueAnimator ->
+            val animatedValue = valueAnimator.animatedValue as Int
+            layoutparam.height = animatedValue
+            binding.popupTemplate.layoutParams = layoutparam
+        }
+
+        animator.duration = duration.toLong()
+        animator.start()
     }
 
 }

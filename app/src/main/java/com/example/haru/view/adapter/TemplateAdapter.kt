@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Profile
+import com.example.haru.view.sns.onTemplateListener
 import kotlinx.coroutines.NonDisposableHandle.parent
 
 class TemplateAdapter(val context: Context,
-                      private var itemList : ArrayList<com.example.haru.data.model.Profile> = arrayListOf()) : RecyclerView.Adapter<TemplateAdapter.TemplateViewHolder>(){
+                      private var itemList : ArrayList<com.example.haru.data.model.Profile> = arrayListOf(),
+                      val listener : onTemplateListener) : RecyclerView.Adapter<TemplateAdapter.TemplateViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TemplateAdapter.TemplateViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_template_image, parent, false)
@@ -25,6 +27,10 @@ class TemplateAdapter(val context: Context,
         Glide.with(context)
             .load(itemList[position].url)
             .into(holder.template)
+
+        holder.template.setOnClickListener {
+            listener.onTemplateClicked(itemList[position].url)
+        }
     }
 
     override fun getItemCount(): Int {

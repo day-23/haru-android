@@ -112,13 +112,9 @@ class MyPageViewModel(): ViewModel() {
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
 
-    init{
+    init {
         _SelectedImage.value = -1
         _SelectedPosition.value = arrayListOf()
-    }
-
-    fun init_page(){
-        _Page.value = 1
     }
 
     fun loadGallery(images: ArrayList<ExternalImages>) {

@@ -80,11 +80,16 @@ class WriteHaruFragment : Fragment() ,PostInterface{
         }
 
         binding.writeHaruApply.setOnClickListener {
-            val newFrag = WriteHaruTagFragment()
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            transaction.addToBackStack(null)
-            transaction.commit()
+
+            if(binding.writeHaruContent.text.toString() != "") {
+                val newFrag = WriteHaruTagFragment(binding.writeHaruContent.text.toString())
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragments_frame, newFrag)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }else{
+                Toast.makeText(requireContext(), "텍스트를 입력해주세요", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return binding.root
