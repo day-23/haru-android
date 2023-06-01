@@ -165,18 +165,17 @@
     <LinearLayout
         android:id="@+id/post_text_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="16dp"
         app:layout_constraintTop_toBottomOf="@id/post_interaction"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:paddingHorizontal="10dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="15dp">
 
         <TextView
             android:id="@+id/post_contents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="14sp"
-            android:text="Draw Of MOMO"
             android:textColor="#191919"/>
     </LinearLayout>
 

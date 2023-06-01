@@ -45,17 +45,25 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     override fun onCommentClick(postitem: Post) {
         mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
 
-        mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
-            val newFrag = AddCommentFragment(postitem,user)
+        if(postitem.isTemplatePost) {
+            val newFrag = CommentsFragment(postitem, com.example.haru.utils.User.id)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             transaction.addToBackStack("snsmypage")
             transaction.commit()
+        }else{
+            mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
+                val newFrag = AddCommentFragment(postitem,user)
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragments_frame, newFrag)
+                transaction.addToBackStack("snsmypage")
+                transaction.commit()
+            }
         }
     }
 
     override fun onTotalCommentClick(post: Post) {
-        val newFrag = CommentsFragment(post)
+        val newFrag = CommentsFragment(post, com.example.haru.utils.User.id)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         transaction.addToBackStack("snsmypage")

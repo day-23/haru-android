@@ -47,7 +47,6 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
     override fun onCommentClick(postitem: Post) {
         profileViewModel.getUserInfo(User.id)
-
         profileViewModel.UserInfo.observe(viewLifecycleOwner){user ->
             val newFrag = AddCommentFragment(postitem, user)
             val transaction = parentFragmentManager.beginTransaction()
@@ -59,7 +58,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
         }
     }
     override fun onTotalCommentClick(post : Post) {
-        val newFrag = CommentsFragment(post)
+        val newFrag = CommentsFragment(post, User.id)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
