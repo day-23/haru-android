@@ -1,6 +1,7 @@
 package com.example.haru.view.adapter
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.VectorDrawable
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Schedule
+import com.example.haru.databinding.FragmentSearchScheduleBinding
 import com.example.haru.databinding.FragmentSearchScheduleHeaderBinding
 import com.example.haru.databinding.ListItemSimpleScheduleBinding
 
@@ -44,7 +46,7 @@ class SearchScheduleAdapter(val context: Context) : RecyclerView.Adapter<Recycle
             )
 
             item -> ScheduleViewHolder(
-                ListItemSimpleScheduleBinding.inflate(
+                FragmentSearchScheduleBinding.inflate(
                     LayoutInflater.from(context),
                     parent,
                     false
@@ -66,15 +68,15 @@ class SearchScheduleAdapter(val context: Context) : RecyclerView.Adapter<Recycle
         }
     }
 
-    inner class ScheduleViewHolder(val binding : ListItemSimpleScheduleBinding) :
+    inner class ScheduleViewHolder(val binding : FragmentSearchScheduleBinding) :
             RecyclerView.ViewHolder(binding.root) {
                 fun bind(item : Schedule){
                     Log.e("20191627", "$item")
 
-                    binding.detailScheduleContentTv.text = item.content
+                    binding.tvScheduleContent.text = item.content
 
                     if (item.isAllDay)
-                        binding.detailScheduleTimeTv.text = "하루종일"
+                        binding.tvScheduleTime.text = "하루종일"
                     else{
 //                        var scheduleTime = ""
 //                        scheduleTime += (item.startTime!!.month+1).toString()+"월 " + item.startTime!!.date.toString()+"일 "
@@ -103,16 +105,20 @@ class SearchScheduleAdapter(val context: Context) : RecyclerView.Adapter<Recycle
 //                            if (item.endTime!!.minutes < 10) "0"+item.endTime!!.minutes.toString()
 //                            else item.endTime!!.minutes.toString()
 
-                        binding.detailScheduleTimeTv.text = "test"
+                        binding.tvScheduleTime.text = "test"
 //                            scheduleTime
                     }
 
                     if(item.category == null){
-                        val drawable = binding.detailScheduleCategoryImv.background as VectorDrawable
-                        drawable.setColorFilter(Color.parseColor("#1DAFFF"), PorterDuff.Mode.SRC_ATOP)
+                        binding.ivCategoryColor.backgroundTintList =
+                            ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
+//                        val drawable = binding.ivCategoryColor.background as VectorDrawable
+//                        drawable.setColorFilter(Color.parseColor("#1DAFFF"), PorterDuff.Mode.SRC_ATOP)
                     } else {
-                        val drawable = binding.detailScheduleCategoryImv.background as VectorDrawable
-                        drawable.setColorFilter(Color.parseColor(item.category.color), PorterDuff.Mode.SRC_ATOP)
+                        binding.ivCategoryColor.backgroundTintList =
+                            ColorStateList.valueOf(Color.parseColor(item.category.color))
+//                        val drawable = binding.ivCategoryColor.background as VectorDrawable
+//                        drawable.setColorFilter(Color.parseColor(item.category.color), PorterDuff.Mode.SRC_ATOP)
                     }
                 }
             }
@@ -122,6 +128,7 @@ class SearchScheduleAdapter(val context: Context) : RecyclerView.Adapter<Recycle
     fun setDataList(dataList : List<Schedule>?){
         if (dataList == null)
             return
+        Log.e("20191627", dataList.toString())
         diffUtil.submitList(dataList as MutableList<Schedule>)
     }
 }
