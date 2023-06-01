@@ -12,19 +12,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp">
-
-            <TextView
-                android:id="@+id/tv_timetable_time"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:gravity="right"
-                android:layout_weight="1"
-                android:textSize="10dp"
-                android:paddingRight="4dp"
-                android:textColor="#191919"
-                android:background="#FDFDFD"
-                android:text="1\n오전" />
+            android:layout_height="72dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -33,9 +21,14 @@
                 android:background="@drawable/timetable_line">
 
                 <View
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:background="#FDFDFD" />
+
+                <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#EDEDED" />
+                    android:background="#DBDBDB" />
 
                 <ImageView
                     android:id="@+id/tv_timetable_sun"
@@ -46,7 +39,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#EDEDED" />
+                    android:background="#DBDBDB" />
 
                 <ImageView
                     android:id="@+id/tv_timetable_mon"
@@ -57,7 +50,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#EDEDED" />
+                    android:background="#DBDBDB" />
 
                 <ImageView
                     android:id="@+id/tv_timetable_tue"
@@ -68,7 +61,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#EDEDED" />
+                    android:background="#DBDBDB" />
 
                 <ImageView
                     android:id="@+id/tv_timetable_wed"
@@ -79,7 +72,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#EDEDED" />
+                    android:background="#DBDBDB" />
 
                 <ImageView
                     android:id="@+id/tv_timetable_thu"
@@ -90,7 +83,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#EDEDED" />
+                    android:background="#DBDBDB" />
 
                 <ImageView
                     android:id="@+id/tv_timetable_fri"
@@ -101,7 +94,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#EDEDED" />
+                    android:background="#DBDBDB" />
 
                 <ImageView
                     android:id="@+id/tv_timetable_sat"
@@ -112,7 +105,13 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#EDEDED" />
+                    android:background="#DBDBDB" />
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:background="#FDFDFD" />
+
             </LinearLayout>
         </LinearLayout>
 

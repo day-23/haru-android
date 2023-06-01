@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -11,248 +10,198 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/timetable_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FDFDFD"
-        >
+        android:background="#FDFDFD">
 
         <LinearLayout
-            android:id="@+id/timetable_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FDFDFD"
-            android:paddingStart="10dp"
-            android:paddingEnd="20dp"
+            android:orientation="vertical"
             tools:ignore="MissingConstraints">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="#FDFDFD"
-                >
-                <ImageView
-                    android:id="@+id/timetable_haru_title"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/haru_logo"
-                    android:layout_marginTop="2dp"
-                    android:textStyle="bold"
-                    android:textColor="#191919"
-                    android:layout_alignParentTop="true"
-                    />
-                <ImageView
-                    android:id="@+id/timetable_search_button"
-                    android:layout_marginTop="3dp"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/search_icon"/>
-            </RelativeLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:background="#FDFDFD"
-            app:layout_constraintTop_toBottomOf="@id/timetable_header">
-
+            <!-- 헤더 -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginBottom="20dp"
-                android:gravity="center">
+                android:layout_height="34dp"
+                android:layout_marginBottom="13dp"
+                android:gravity="center"
+                android:paddingStart="33dp"
+                android:paddingRight="20dp">
 
                 <TextView
                     android:id="@+id/timetable_year"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="0"
-                    android:textSize="28dp"
-                    android:textStyle="bold"
-                    android:textColor="#191919"
-                    android:text="@{viewModel.Selected.year}"
                     android:gravity="center"
-                    android:hint="2023년"/>
+                    android:hint="2023년"
+                    android:text="@{viewModel.Selected.year}"
+                    android:textColor="#191919"
+                    android:textSize="28dp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/timetable_month"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="0"
                     android:layout_marginLeft="10dp"
-                    android:text="@{viewModel.Selected.month}"
-                    android:textSize="28dp"
-                    android:textColor="#191919"
-                    android:textStyle="bold"
+                    android:layout_weight="0"
                     android:gravity="center"
-                    android:hint="3월"/>
+                    android:hint="3월"
+                    android:text="@{viewModel.Selected.month}"
+                    android:textColor="#191919"
+                    android:textSize="28dp"
+                    android:textStyle="bold" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="0"
                     android:layout_marginHorizontal="10dp"
-                    android:src="@drawable/___20513"
+                    android:layout_weight="0"
                     android:background="#00000000"
-                    android:onClick="@{() -> viewModel.buttonClick()}"/>
+                    android:onClick="@{() -> viewModel.buttonClick()}"
+                    android:src="@drawable/___20513" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="10"/>
+                    android:layout_weight="10" />
 
                 <LinearLayout
                     android:layout_width="28dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="28dp"
                     android:orientation="vertical">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"/>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="2"
                         android:background="@drawable/calendar_today_background_image">
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="#00000000"
                             android:gravity="center"
+                            android:hint="1"
+                            android:onClick="@{() -> viewModel.todayClick()}"
                             android:text="@{viewModel.todayDay}"
                             android:textColor="#2CA4FF"
-                            android:hint="1"
-                            android:textStyle="bold"
                             android:textSize="12dp"
-                            android:background="#00000000"
-                            android:onClick="@{() -> viewModel.todayClick()}"
-                            />
+                            android:textStyle="bold" />
                     </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"/>
                 </LinearLayout>
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
+
                 <ImageButton
                     android:id="@+id/todolist_change"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="0"
-                    android:gravity ="right"
-                    android:src="@drawable/___20565"
-                    android:background="#00000000"/>
-
-
+                    android:background="#00000000"
+                    android:gravity="right"
+                    android:src="@drawable/___20565" />
             </LinearLayout>
 
+            <!-- 일월화수목금토 표시 -->
             <LinearLayout
                 android:id="@+id/layout_date_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_marginBottom="9dp">
+                    android:layout_height="20dp"
+                    android:gravity="center">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:text=""
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.2"
                         android:text="일"
-                        android:textSize="12dp"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:textColor="#F71E58"/>
+                        android:textColor="#F71E58"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
+                        android:gravity="center"
                         android:text="월"
-                        android:textSize="12dp"
-                        android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
+                        android:gravity="center"
                         android:text="화"
-                        android:textSize="12dp"
-                        android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
+                        android:gravity="center"
                         android:text="수"
-                        android:textSize="12dp"
-                        android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
+                        android:gravity="center"
                         android:text="목"
-                        android:textSize="12dp"
-                        android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
+                        android:gravity="center"
                         android:text="금"
-                        android:textSize="12dp"
-                        android:gravity="center"
-                        android:textColor="#191919"/>
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:text="토"
-                        android:textSize="12dp"
                         android:gravity="center"
-                        android:textColor="#1DAFFF" />
+                        android:text="토"
+                        android:textColor="#1DAFFF"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#DBDBDB"
-                    android:layout_marginLeft="28dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_marginBottom="7dp" />
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="#DBDBDB" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="5dp"
                     android:gravity="center">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"/>
 
                     <TextView
                         android:id="@+id/sun_btn"
@@ -260,9 +209,9 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
-                        android:textColor="#F71E58"
+                        android:hint="1"
                         android:text="@{viewModel.days.get(0)}"
-                        android:hint="1"/>
+                        android:textColor="#F71E58" />
 
                     <TextView
                         android:id="@+id/mon_btn"
@@ -270,9 +219,9 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
+                        android:hint="2"
                         android:text="@{viewModel.days.get(1)}"
-                        android:textColor="#191919"
-                        android:hint="2"/>
+                        android:textColor="#646464" />
 
                     <TextView
                         android:id="@+id/tue_btn"
@@ -280,9 +229,9 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
+                        android:hint="3"
                         android:text="@{viewModel.days.get(2)}"
-                        android:textColor="#191919"
-                        android:hint="3"/>
+                        android:textColor="#646464" />
 
                     <TextView
                         android:id="@+id/wed_btn"
@@ -290,9 +239,9 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
+                        android:hint="4"
                         android:text="@{viewModel.days.get(3)}"
-                        android:textColor="#191919"
-                        android:hint="4"/>
+                        android:textColor="#646464" />
 
                     <TextView
                         android:id="@+id/thu_btn"
@@ -300,9 +249,9 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
+                        android:hint="5"
                         android:text="@{viewModel.days.get(4)}"
-                        android:textColor="#191919"
-                        android:hint="5"/>
+                        android:textColor="#646464" />
 
                     <TextView
                         android:id="@+id/fri_btn"
@@ -310,9 +259,9 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
+                        android:hint="6"
                         android:text="@{viewModel.days.get(5)}"
-                        android:textColor="#191919"
-                        android:hint="6"/>
+                        android:textColor="#646464" />
 
                     <TextView
                         android:id="@+id/sat_btn"
@@ -320,134 +269,164 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center_horizontal"
-                        android:textColor="#1DAFFF"
+                        android:hint="7"
                         android:text="@{viewModel.days.get(6)}"
-                        android:hint="7"/>
+                        android:textColor="#1DAFFF" />
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- 하루종일 일정 -->
             <LinearLayout
+                android:id="@+id/daysTable"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-
-                <LinearLayout
-                    android:id="@+id/daysTable"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="14"
-                    android:orientation="vertical"
-
-                    >
-                </LinearLayout>
-
-
-
-
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="vertical" />
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/timetable_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FDFDFD">
+                android:background="#FDFDFD"
+                >
 
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     >
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="#DBDBDB" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/timetable_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
                         android:layout_weight="1"
-                        tools:listitem="@layout/items_timetable"
-                        />
+                        tools:listitem="@layout/items_timetable" />
 
                     <!--요일별 그리드-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginBottom="80dp"
                         >
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"/>
+                            android:id="@+id/left_time_textview_layout"
+                            android:layout_width="20dp"
+                            android:layout_height="1748dp"
+                            android:layout_marginTop="1dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginTop="62dp"
+                                android:gravity="top|end"
+                                android:paddingEnd="2dp"
+                                android:text="1"
+                                android:textColor="#191919"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/left_time_textview"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_marginTop="52dp"
+                                android:gravity="top|end"
+                                android:paddingEnd="2dp"
+                                android:text="2"
+                                android:textColor="#191919"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1727dp"
+                            />
 
                         <FrameLayout
                             android:id="@+id/sun_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical"
-                            >
-
-                        </FrameLayout>
-
+                            android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1727dp"
+                            />
                         <FrameLayout
                             android:id="@+id/mon_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical">
-
-                        </FrameLayout>
-
+                            android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1727dp"
+                            />
                         <FrameLayout
                             android:id="@+id/tue_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical">
-                        </FrameLayout>
-
+                            android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1727dp"
+                            />
                         <FrameLayout
                             android:id="@+id/wed_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical">
-
-                        </FrameLayout>
-
+                            android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1727dp"
+                            />
                         <FrameLayout
                             android:id="@+id/thu_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical">
-                        </FrameLayout>
-
+                            android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1727dp"
+                            />
                         <FrameLayout
                             android:id="@+id/fri_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical">
-
-                        </FrameLayout>
-
+                            android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1727dp"
+                            />
                         <FrameLayout
                             android:id="@+id/sat_table"
                             android:layout_width="0dp"
-                            android:layout_height="match_parent"
+                            android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical">
-                        </FrameLayout>
-
+                            android:orientation="vertical"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="1727dp"
+                            />
+                        <LinearLayout
+                            android:layout_width="20dp"
+                            android:layout_height="match_parent" />
                     </LinearLayout>
-
                 </FrameLayout>
-
             </androidx.core.widget.NestedScrollView>
-
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
