@@ -75,6 +75,8 @@ class AdapterSimpleTodo(
         val detailTodoFlagImv = holder.itemView.findViewById<ImageView>(R.id.detail_todo_flag_imv)
         val todoCorrectionBtn = holder.itemView.findViewById<LinearLayout>(R.id.todo_correction_btn)
 
+        Log.d("투두플래그", todo.completed.toString())
+
         if (todo.completed) {
             detailTodoComplete.setBackgroundResource(R.drawable.circle_check)
             detailTodoContentTv.setPaintFlags(detailTodoContentTv.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
@@ -218,6 +220,7 @@ class AdapterSimpleTodo(
             val checkListViewModel = CheckListViewModel()
             checkListViewModel.updateFlag(Flag(!todo.flag), todo.id) { flag, successData ->}
 
+            Log.d("투두플래그", todos[position].completed.toString())
             todos[position].flag = !todos[position].flag
 
             notifyItemChanged(position)
