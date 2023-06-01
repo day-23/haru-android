@@ -202,7 +202,13 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
         //둘러보기 클릭
         binding.lookAround.setOnClickListener {
-
+            val newFrag = LookAroundFragment()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
+            transaction.commit()
         }
 
         val retrofit = Retrofit.Builder()

@@ -31,6 +31,10 @@ class SnsViewModel: ViewModel() {
     val Comments : LiveData<ArrayList<Comments>>
         get() = _Comments
 
+    private val _HotTags = MutableLiveData<ArrayList<Tag>>()
+    val HotTags : LiveData<ArrayList<Tag>>
+        get() = _HotTags
+
     private val _TotalComments = MutableLiveData<Int>()
     val TotalComments: LiveData<Int>
         get() = _TotalComments
@@ -114,6 +118,17 @@ class SnsViewModel: ViewModel() {
             }
             _FirstComments.value = comments
             _TotalComments.value = total
+        }
+    }
+
+    fun getHotTags(){
+        var tags = arrayListOf<Tag>()
+
+        viewModelScope.launch {
+            PostRepository.getHotTags(){
+                tags = it
+            }
+            _HotTags.value = tags
         }
     }
 

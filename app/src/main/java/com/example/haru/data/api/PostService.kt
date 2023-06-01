@@ -95,6 +95,11 @@ interface PostService {
         @Path("targetId") targetId: String
     ): Call<TagResponse>
 
+    @GET("post/{userId}/hashtags/")
+    fun getHotTags(
+        @Path("userId") userId: String
+    ): Call<TagResponse>
+
     @GET("post/{userId}/posts/user/{targetId}/media/hashtag/{tagId}?page=1")
     fun getFirstTagMedia(
         @Path("userId") userId: String,

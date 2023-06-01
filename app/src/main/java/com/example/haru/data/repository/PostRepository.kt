@@ -280,6 +280,24 @@ class PostRepository() {
         callback(tags)
     }
 
+    suspend fun getHotTags(callback: (tags : ArrayList<Tag>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getHotTags(
+            userId
+        ).execute()
+
+        val tags: ArrayList<Tag>
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get HotTags")
+            tags = ArrayList(response.body()!!.data)
+        }else{
+            Log.d("TAG", "Fail to get HotTags")
+            tags = arrayListOf()
+        }
+        callback(tags)
+    }
+
     //미디어
     suspend fun getMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
         Dispatchers.IO){
