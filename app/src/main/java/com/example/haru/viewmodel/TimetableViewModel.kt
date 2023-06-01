@@ -6,11 +6,13 @@ import android.util.Log.d
 import android.view.View
 import android.widget.DatePicker
 import androidx.lifecycle.*
+import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.CategoryRepository
 import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
+import com.example.haru.view.calendar.CalendarItemFragment
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.*
@@ -153,6 +155,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
         dialog.show()
     }
 
+    private val zuluFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+    private val koreaFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
+
     fun Daylist(year: Int, month: Int, day: Int) {
         val dayList = ArrayList<String>()
         var d = day
@@ -226,29 +231,16 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
             scheduleRepository.getScheduleByDates(body) { data ->
                 /* repeat data parsing */
-                val parsedScheduleList = parseRepeatSchedule(data.schedules, startDate, endDate)
+                val parsedScheduleList = parseRepeatSchedule(data.schedules, body.startDate, startDate, endDate)
 
                 for(parsedSchedule in parsedScheduleList){
                     val (schedule, position, cnt, timeInterval) = parsedSchedule
-
-                    /* 상록이 코드 기준 데이터 포맷 맞추기 */
-                    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
-                    val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
-
-                    var startDate = schedule.repeatStart!!
-                    var endDate = schedule.repeatEnd!!
-
-                    schedule.repeatStart = serverFormatter.format(format.parse(startDate))
-                    schedule.repeatEnd = serverFormatter.format(format.parse(endDate))
-                    /* 상록이 코드 기준 데이터 포맷 맞추기 끝 */
-
 
                     //format ex 20230531 20230601
                     val scheduleStartDate = schedule.repeatStart?.slice(IntRange(0,3)) + schedule.repeatStart?.slice(IntRange(5,6)) + schedule.repeatStart?.slice(IntRange(8,9))
                     val scheduleEndDate = schedule.repeatEnd?.slice(IntRange(0,3)) + schedule.repeatEnd?.slice(IntRange(5,6)) + schedule.repeatEnd?.slice(IntRange(8,9))
 
-
-                    d("parsedSchedule", "${schedule.content}, ${scheduleStartDate}, ${scheduleEndDate}, ${schedule.isAllDay}, ${schedule.repeatOption}, ${position}:")
+                    d("getSchedule", "${schedule.content}, ${scheduleStartDate}, ${scheduleEndDate}, ${schedule.isAllDay}, ${schedule.repeatOption}, ${position}: ${koreaFormatter.parse(schedule.repeatStart)}, ${schedule.location}")
 
                     /* 일정이 하루 종일이거나, 반복 일정이 아니면서 시작 날짜와 끝 날짜가 다를 경우. */
                     if(schedule.isAllDay || schedule.repeatOption == null && scheduleStartDate != scheduleEndDate){
@@ -390,25 +382,134 @@ class TimetableViewModel(val context : Context): ViewModel() {
             }
         }
 
-        preScheduleData.repeatStart = newRepeatStart
-        preScheduleData.repeatEnd = newRepeatEnd
+        /* api 호출 */
+        if(preScheduleData.repeatOption == null){ /* 단일 일정인 경우 */
+            /* 시간 변경 */
+            preScheduleData.repeatStart = newRepeatStart
+            preScheduleData.repeatEnd = newRepeatEnd
+
+            val body = PostSchedule(
+                preScheduleData.content,
+                preScheduleData.memo,
+                preScheduleData.isAllDay,
+                preScheduleData.repeatStart!!,
+                preScheduleData.repeatEnd,
+                preScheduleData.repeatOption,
+                preScheduleData.repeatValue,
+                preScheduleData.category?.id,
+                emptyList()
+            )
+            scheduleRepository.submitSchedule(preScheduleData.id, body) {}
+        }else{ /* 반복 일정인 경우 */
+
+            val schedule = preScheduleData
+            val todayTodo = newRepeatStart
+
+            /* 로케이션 계산 */
+            calculateLocation(schedule, todayTodo)
+
+        }
 
         sortSchedule(preScheduleData)
         _Schedules.value = IndexList
-
-        val body = PostSchedule(
-            preScheduleData.content,
-            preScheduleData.memo,
-            preScheduleData.isAllDay,
-            preScheduleData.repeatStart!!,
-            preScheduleData.repeatEnd,
-            preScheduleData.repeatOption,
-            preScheduleData.repeatValue,
-            preScheduleData.category?.id,
-            emptyList()
-        )
-        scheduleRepository.submitSchedule(preScheduleData.id, body) {}
     }
+
+
+    private fun calculateLocation(schedule: Schedule, todayTodo: String){
+        d("20191630", "calculateLocation: ${schedule.repeatStart}, ${schedule.repeatStart}, ${schedule.content}")
+        if(schedule.repeatValue != null && schedule.repeatValue.contains("T")){
+            val startDate = koreaFormatter.parse(schedule.repeatStart)
+            val scheduleCalendar = Calendar.getInstance()
+            scheduleCalendar.time = startDate
+
+            scheduleCalendar.add(
+                Calendar.MILLISECOND,
+                schedule.repeatValue.replace("T","").toInt()
+            )
+
+            // 2023-05-28T00:00:00+09:00
+            val today = koreaFormatter.parse(todayTodo)
+
+            // startDate - today - scheduleCalendar -> 이땐 프론트
+            if(date_comparison(startDate, today)<=0 &&
+                date_comparison(scheduleCalendar.time, today) >= 0){
+                schedule.location = 0
+                Log.d("20191630", "스케줄 프론트 here")
+
+                return
+            }
+        } else {
+            val startDate = koreaFormatter.parse(schedule.repeatStart)
+            val today = koreaFormatter.parse(todayTodo)
+
+            if (startDate.year == today.year &&
+                startDate.month == today.month &&
+                startDate.date == today.date
+            ) {
+                schedule.location = 0
+                Log.d("20191630", "스케줄 프론트 here")
+
+                return
+            }
+        }
+
+        val repeatEndDate = koreaFormatter.parse(schedule.repeatEnd)
+
+        if(schedule.repeatOption != null && schedule.repeatValue != null && repeatEndDate.year < 200) {
+            var nextData: Date? = null
+
+            when (schedule.repeatOption) {
+                "매일" -> {
+                    nextData = FormatDate.nextStartDate(todayTodo, schedule.repeatEnd!!)
+                }
+
+                "매주" -> {
+                    nextData = FormatDate.nextStartDateEveryWeek(
+                        schedule.repeatValue,
+                        1,
+                        todayTodo,
+                        schedule.repeatEnd!!)
+                }
+
+                "격주" -> {
+                    nextData = FormatDate.nextStartDateEveryWeek(
+                        schedule.repeatValue,
+                        2,
+                        todayTodo,
+                        schedule.repeatEnd!!)
+                }
+
+                "매달" -> {
+                    nextData = FormatDate.nextStartDateEveryMonth(
+                        schedule.repeatValue,
+                        todayTodo,
+                        schedule.repeatEnd!!)
+                }
+
+                "매년" -> {
+                    nextData = FormatDate.nextStartDateEveryYear(
+                        schedule.repeatValue,
+                        todayTodo,
+                        schedule.repeatEnd!!)
+                }
+            }
+
+            Log.d("20191630", "nextData:"+nextData.toString())
+
+            if(nextData == null){
+                schedule.location = 2
+                Log.d("20191630","스케줄 백")
+
+                return
+            }
+        }
+
+        schedule.location = 1
+        Log.d("20191630","스케줄 미들")
+        return
+    }
+
+
 
     fun getCategories(){
         viewModelScope.launch {
@@ -445,8 +546,72 @@ class TimetableViewModel(val context : Context): ViewModel() {
         return first_date.compareTo(second_date)
     }
 
+    fun dateDifference(d1: Date, d2: Date): Int{
+        // Create calendar objects
+        val calendar1 = Calendar.getInstance()
+        val calendar2 = Calendar.getInstance()
 
-    private fun parseRepeatSchedule(schedules : List<Schedule>, startDate : String, endDate : String) : ArrayList<ScheduleCalendarData>{
+        calendar1.time = d1
+        calendar2.time = d2
+
+        // Set the dates for the calendar objects
+        calendar1.apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+
+        calendar2.apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+
+        val differenceInMillis = Math.abs(calendar2.timeInMillis - calendar1.timeInMillis)
+
+        val differenceInDays = differenceInMillis / (1000 * 60 * 60 * 24)
+
+        return differenceInDays.toInt()
+    }
+
+
+
+
+    private fun calculateScheduleLocation(schedule : Schedule, searchDate : String){
+        val startDate = koreaFormatter.parse(schedule.repeatStart)
+        val today = koreaFormatter.parse(searchDate)
+        val repeatEndDate = koreaFormatter.parse(schedule.repeatEnd)
+
+        d("getSchedule", "calculateScheduleLocation: $startDate, $today, $repeatEndDate,   origin : ${schedule.repeatStart}, ${searchDate}, ${schedule.repeatEnd} ")
+
+        if(schedule.repeatValue != null && schedule.repeatValue.contains("T")){
+            val scheduleCalendar = Calendar.getInstance()
+            scheduleCalendar.time = startDate
+            scheduleCalendar.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+
+            val today = koreaFormatter.parse(searchDate)
+            if(date_comparison(startDate, today)<=0 && date_comparison(scheduleCalendar.time, today) >= 0) {
+                schedule.location = 0
+                Log.d("20191630", "스케줄 프론트")
+                return
+            }
+        } else {
+            if (startDate.year == today.year && startDate.month == today.month && startDate.date == today.date) {
+                schedule.location = 0
+                Log.d("20191630", "스케줄 프론트")
+                return
+            }
+        }
+
+        if(schedule.repeatOption != null && schedule.repeatValue != null && repeatEndDate.year < 200) {
+            schedule.location = 2
+            return
+        }
+
+        schedule.location = 1
+    }
+
+    private fun parseRepeatSchedule(schedules : List<Schedule>, searchDate:String, startDate : String, endDate : String) : ArrayList<ScheduleCalendarData>{
         val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
         val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
 
@@ -725,6 +890,16 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
                 parsedScheduleList.add(ScheduleCalendarData(schedule.copy(), startcnt, daycnt))
             }
+        }
+
+        /* 시간 잘못 변환한거 올바르게 재변환 */
+        for(scheduleCalendarData in parsedScheduleList){
+            val schedule = scheduleCalendarData.schedule
+            var startDate = schedule.repeatStart!!
+            var endDate = schedule.repeatEnd!!
+
+            schedule.repeatStart = koreaFormatter.format(zuluFormat.parse(startDate))
+            schedule.repeatEnd = koreaFormatter.format(zuluFormat.parse(endDate))
         }
 
         return parsedScheduleList
