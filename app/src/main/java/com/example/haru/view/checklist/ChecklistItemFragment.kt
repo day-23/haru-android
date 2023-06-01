@@ -179,7 +179,6 @@ class ChecklistItemFragment(
                 todoAddViewModel.setYearHeight(binding.infoGridYear.height)
                 binding.infoGridYear.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 binding.infoGridYear.visibility = View.GONE
-
             }
         })
 
@@ -190,6 +189,15 @@ class ChecklistItemFragment(
                 todoAddViewModel.setRepeatEndDateH(binding.infoRepeatEndDateLayout.height)
                 binding.infoRepeatEndDateLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 binding.infoRepeatEndDateLayout.visibility = View.GONE
+
+                Log.e("20191627", todoAddViewModel.endTimeLayoutHeight.toString())
+                Log.e("20191627", todoAddViewModel.repeatSetLayoutHeight.toString())
+                Log.e("20191627", todoAddViewModel.repeatEndDateHeight.toString())
+                Log.e("20191627", todoAddViewModel.repeatOptionHeight.toString())
+                Log.e("20191627", todoAddViewModel.gridMonthHeight.toString())
+                Log.e("20191627", todoAddViewModel.gridYearHeight.toString())
+                Log.e("20191627", todoAddViewModel.repeatWeekHeight.toString())
+
 
                 binding.infoRepeatEndDateLayout.post {
                     // flag 관련 UI Update

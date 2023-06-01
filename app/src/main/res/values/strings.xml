@@ -53,7 +53,7 @@
     <string name="delete">삭제</string>
 
     <string name="todoDelete">할일 삭제하기</string>
-    <string name="tagDelete">태그 삭제하기</string>
+    <string name="tagDelete">태그 삭제</string>
     <string name="save">저장</string>
 
     <string name="done">완료</string>
