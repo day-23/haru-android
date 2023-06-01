@@ -80,35 +80,15 @@ class SearchScheduleAdapter(val context: Context) :
             if (item.isAllDay)
                 binding.tvScheduleTime.text = "하루종일"
             else {
-//                        var scheduleTime = ""
-//                        scheduleTime += (item.startTime!!.month+1).toString()+"월 " + item.startTime!!.date.toString()+"일 "
-//                        scheduleTime += if(item.startTime!!.hours < 12) "오전 " else "오후 "
-//                        scheduleTime +=
-//                            if (item.startTime!!.hours == 0 || item.startTime!!.hours == 12) "12"
-//                            else if (item.startTime!!.hours > 12) (item.startTime!!.hours-12).toString()
-//                            else item.startTime!!.hours.toString()
-//
-//                        scheduleTime += ":"
-//                        scheduleTime +=
-//                            if (item.startTime!!.minutes < 10) "0"+item.startTime!!.minutes.toString()
-//                            else item.startTime!!.minutes.toString()
-//
-//                        scheduleTime += " - "
-//
-//                        scheduleTime += (item.endTime!!.month+1).toString()+"월 " + item.endTime!!.date.toString()+"일 "
-//                        scheduleTime += if(item.endTime!!.hours < 12) "오전 " else "오후 "
-//                        scheduleTime +=
-//                            if (item.endTime!!.hours == 0 || item.endTime!!.hours == 12) "12"
-//                            else if (item.endTime!!.hours > 12) (item.endTime!!.hours-12).toString()
-//                            else item.endTime!!.hours.toString()
-//
-//                        scheduleTime += ":"
-//                        scheduleTime +=
-//                            if (item.endTime!!.minutes < 10) "0"+item.endTime!!.minutes.toString()
-//                            else item.endTime!!.minutes.toString()
+                if (item.repeatOption == null && item.repeatValue == ""){
+                    val startDate = FormatDate.strToDate(item.repeatStart)!!
+                    val endDate = FormatDate.strToDate(item.repeatEnd)!!
 
-                binding.tvScheduleTime.text = "test"
-//                            scheduleTime
+                    val startDateStr = FormatDate.simpleCalendarToStr(startDate)
+                    val endDateStr = FormatDate.simpleCalendarToStr(endDate)
+                    binding.tvScheduleTime.text = "$startDateStr - $endDateStr"
+                } else binding.tvScheduleTime.text = "test"
+
             }
 
             if (item.category == null) {

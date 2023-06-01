@@ -16,6 +16,7 @@ object FormatDate {
     //24시간으로 할지 아니면 오전, 오후로 12시간제로 하는지
     private val localTimeFormatter = DateTimeFormatter.ofPattern("a h:mm까지")
     private val localDateFormatter = DateTimeFormatter.ofPattern("M월dd일까지")
+
     private val calendarDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
 
     //// DatePicker와 TimePicker로 받는 값들은 Date이므로 SimpleDateFormat으로 서버로 보낼 형식으로 변환하는 formatter
@@ -25,6 +26,9 @@ object FormatDate {
     private val simpleFormatterTime = SimpleDateFormat("a h:mm", Locale.KOREA)
 
     private val simpleFormatterKorea = SimpleDateFormat("M월 dd일 E요일", Locale.KOREA)
+
+    private val simpleFormatterCalendar = SimpleDateFormat("M월 d일 a h:mm", Locale.KOREA)
+
 
     val cal = Calendar.getInstance()
 
@@ -107,6 +111,10 @@ object FormatDate {
 
     fun simpleTodayToStr(date: Date): String {
         return simpleFormatterKorea.format(date)
+    }
+
+    fun simpleCalendarToStr(date : Date) : String{
+        return simpleFormatterCalendar.format(date)
     }
 
     // String으로 된 날짜 정보에 local Date와 그리니치 시간대의 차이를 더해서 Date 타입으로 반환
