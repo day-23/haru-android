@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.DragEvent
 import android.view.View
 
+/* 꾹 눌러서 새로 일정 만드는 애 드래그 리스너 */
 class TimetableDraglistener () : View.OnDragListener{
-
     override fun onDrag(view: View, event: DragEvent): Boolean {
         val viewSource = event.localState as View
         var selected  = false

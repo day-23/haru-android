@@ -432,6 +432,7 @@ class CalendarViewModel : ViewModel() {
                                 }
                             } else {
                                 today = schedule.repeatStart!!
+                                val starttime = serverformat.parse(schedule.repeatStart!!)
                                 val endtime = serverformat.parse(schedule.repeatEnd!!)
                                 todayDate = serverformat.parse(today)
 
@@ -504,11 +505,21 @@ class CalendarViewModel : ViewModel() {
                                         startdateFormat
                                     ) == 0
                                 ) {
-                                    schedule.startTime = todayDate
+                                    todayDate.hours = starttime.hours
+                                    todayDate.minutes = starttime.minutes
+                                    todayDate.seconds = starttime.seconds
+
+                                    Log.d("반복이슈", todayDate.toString())
+
+                                    schedule.startTime = todayDate.clone() as Date
+
                                     todayDate.hours = endtime.hours
                                     todayDate.minutes = endtime.minutes
                                     todayDate.seconds = endtime.seconds
-                                    schedule.endTime = todayDate
+
+                                    Log.d("반복이슈", todayDate.toString())
+
+                                    schedule.endTime = todayDate.clone() as Date
                                     scheduleList.add(schedule.copy())
                                 }
                             }
@@ -557,7 +568,6 @@ class CalendarViewModel : ViewModel() {
 
                         if (todo.endDate != null) {
                             serverendDate = serverformat.parse(todo.endDate)
-                            Log.d("serverendDate", serverendDate.toString())
                         }
 
                         if (repeatOption != null) {
@@ -703,8 +713,8 @@ class CalendarViewModel : ViewModel() {
                                             ) >= 0
                                         ){
                                             if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
-                                                if (calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day) repeatDate[cnt] =
-                                                    true
+                                                if (calendar.get(Calendar.DAY_OF_MONTH) == serverendDate.date)
+                                                    repeatDate[cnt] = true
                                             }
                                         }
 
@@ -730,12 +740,10 @@ class CalendarViewModel : ViewModel() {
                                         calendar.time, serverendDate
                                 ) == 0
                                 ) {
-                                    Log.d("endDate 날짜","가져 옴")
                                     repeatDate[cnt] = true
                                 } else if (date_comparison(
                                         calendar.time, Date()
                                 ) == 0) {
-                                    Log.d("endDate 날짜", "못 가져옴")
                                     repeatDate[cnt] = true
                                 }
 
@@ -781,7 +789,6 @@ class CalendarViewModel : ViewModel() {
 
                                 when (repeatOption) {
                                     "매일" -> {
-                                        Log.d("매일","개수")
                                         var cnt = 0
 
                                         calendar.time = dateformat.parse(startDate)
@@ -941,12 +948,15 @@ class CalendarViewModel : ViewModel() {
                                                 ) >= 0
                                             ) {
                                                 if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
-                                                    if (calendar.get(Calendar.DAY_OF_MONTH) == tempStartDate.day)
-                                                        scheduleList.add(ScheduleCalendarData(
-                                                            schedule.copy(),
-                                                            cnt,
-                                                            1
-                                                        ))
+                                                    if (calendar.get(Calendar.DAY_OF_MONTH) == repeatStart.date) {
+                                                        scheduleList.add(
+                                                            ScheduleCalendarData(
+                                                                schedule.copy(),
+                                                                cnt,
+                                                                1
+                                                            )
+                                                        )
+                                                    }
                                                 }
                                             }
 

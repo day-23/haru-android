@@ -21,7 +21,7 @@ import com.example.haru.databinding.CustomTimePickerBinding
 import com.example.haru.utils.FormatDate
 import java.util.*
 
-class CustomTimeDialog(date: Date? = null) : DialogFragment() {
+class CustomMonthDialog(date: Date? = null) : DialogFragment() {
     private lateinit var binding: CustomTimePickerBinding
     private var hourList: Array<String> = Array(12) { "" }
     private var minuteList: Array<String> = Array(12) { "" }
@@ -163,7 +163,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         val width = 0.7f
-        val height = 0.4f
+        val height = 0.3f
         if (Build.VERSION.SDK_INT < 30) {
 
             val display = windowManager.defaultDisplay

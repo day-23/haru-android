@@ -27,18 +27,13 @@ class UpdateOptionScheduleFragment(val sizeOption: Int, val callback: (Int) -> U
     init {
         ratio = when (sizeOption) {
             // 취소 버튼 제외하고 선택지가 1개인 경우
-            0,1,2,3 -> {
+            0,1,2,3,6 -> {
                 27
             }
 
             // 취소 버튼 제외하고 선택지가 2개인 경우
-            4,5 -> {
-                35
-            }
-
-            // 취소 버튼 제외하고 선택지가 3개인 경우
             else -> {
-                43
+                35
             }
         }
     }
@@ -88,7 +83,7 @@ class UpdateOptionScheduleFragment(val sizeOption: Int, val callback: (Int) -> U
             binding.layoutParentBtnUpdate.layoutParams as LinearLayout.LayoutParams
 
         params.weight = when (sizeOption) {
-            0 -> {
+            0 -> { // 단일 일정
                 binding.textViewUpdateInfo.text =
                     getString(R.string.updateDescription).substring(0, 12)
                 binding.layoutParentBtnUpdate.apply {
@@ -98,48 +93,52 @@ class UpdateOptionScheduleFragment(val sizeOption: Int, val callback: (Int) -> U
                 }
                 2f
             }
-            1 -> { // 이 할일만 수정 (마감일 수정, 반복 옵션 수정X)
+            1 -> { // 모든 일정 수정 (반복옵션 수정) front
                 binding.layoutParentBtnUpdate.apply {
-                    removeView(binding.btnOptionAllUpdate)
-                    removeView(binding.btnOptionAfterUpdate)
-                    removeView(binding.btnOptionSave)
-                }
-                2f
-            }
-            2 -> { // 이 할일만 수정
-                binding.layoutParentBtnUpdate.apply {
-                    removeView(binding.btnOptionAllUpdate)
-                    removeView(binding.btnOptionAfterUpdate)
-                    removeView(binding.btnOptionSave)
-                }
-                2f
-            }
-            3 -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
-                binding.layoutParentBtnUpdate.apply {
+//                    removeView(binding.btnOptionAllUpdate)
                     removeView(binding.btnOptionOneUpdate)
                     removeView(binding.btnOptionAfterUpdate)
                     removeView(binding.btnOptionSave)
                 }
                 2f
             }
-            4 -> { // 전체 할일 수정, 이 할일부터 수정
+            2,3,6 -> { // 이 이벤트부터 수정(반복옵션 수정) middle, back
                 binding.layoutParentBtnUpdate.apply {
+                    removeView(binding.btnOptionAllUpdate)
+//                    removeView(binding.btnOptionAfterUpdate)
                     removeView(binding.btnOptionOneUpdate)
                     removeView(binding.btnOptionSave)
                 }
+                2f
+            }
+//            3 -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
+//                binding.layoutParentBtnUpdate.apply {
+//                    removeView(binding.btnOptionOneUpdate)
+//                    removeView(binding.btnOptionAfterUpdate)
+//                    removeView(binding.btnOptionSave)
+//                }
+//                2f
+//            }
+            4 -> { // 디폴트(반복옵션 수정x) front
+                binding.layoutParentBtnUpdate.apply {
+//                    removeView(binding.btnOptionOneUpdate)
+                    removeView(binding.btnOptionSave)
+                    removeView(binding.btnOptionAfterUpdate)
+                }
                 3f
             }
-            5 -> { // 전체 할일 수정, 이 할일만 수정
+            else -> { // 디폴트(반복옵션 수정x) middle
                 binding.layoutParentBtnUpdate.apply {
-                    removeView(binding.btnOptionAfterUpdate)
+//                    removeView(binding.btnOptionAfterUpdate)
+                    removeView(binding.btnOptionAllUpdate)
                     removeView(binding.btnOptionSave)
                 }
                 3f
             }
-            else -> { // 모든 옵션을 보여주는 상황
-                binding.layoutParentBtnUpdate.removeView(binding.btnOptionSave)
-                4f
-            }
+//            else -> { // 모든 옵션을 보여주는 상황
+//                binding.layoutParentBtnUpdate.removeView(binding.btnOptionSave)
+//                4f
+//            }
         }
 
         binding.layoutParentBtnUpdate.apply {
