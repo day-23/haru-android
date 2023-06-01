@@ -84,6 +84,9 @@ class MyPageViewModel(): ViewModel() {
     private val _FriendRequest = MutableLiveData<Boolean>()
     val FriendRequest: LiveData<Boolean> = _FriendRequest
 
+    private val _PostRequest = MutableLiveData<Boolean>()
+    val PostRequest : LiveData<Boolean> = _PostRequest
+
     private val _Friends = MutableLiveData<FriendsResponse>()
     val Friends: LiveData<FriendsResponse> = _Friends
 
@@ -276,10 +279,26 @@ class MyPageViewModel(): ViewModel() {
         viewModelScope.launch {
             PostRepository.addPost(post) {
                 if (it.id != "") { //get success
-                    Log.d("TAG", "Success to Post!!")
+                    Log.d("TAG", "Success to Post")
                 }
             }
             _PostDone.value = true
+        }
+    }
+
+    fun templateRequest(templateBody : Template){
+        var postResult = false
+
+        viewModelScope.launch {
+            PostRepository.addTemplate(templateBody){
+                if(it){
+                    Log.d("TAG", "Success to post Template")
+                    postResult = it
+                }else{
+                    Log.d("TAG", "Fail to post Template")
+                }
+            }
+            _PostRequest.value = postResult
         }
     }
 

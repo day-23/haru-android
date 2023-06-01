@@ -51,6 +51,13 @@ interface PostService {
         @Part("content") content: RequestBody,
         @PartMap hashTags: Map<String, @JvmSuppressWildcards RequestBody>
     ): Call<AddPostResponse>
+
+    @POST("post/{userId}/template")
+    fun addTemplate(
+        @Path("userId") userId: String,
+        @Body body:Template
+    ): Call<AddPostResponse>
+
     @POST("comment/{userId}/{postId}/{imageId}")
     fun writeComments(
         @Path("userId") userId: String,

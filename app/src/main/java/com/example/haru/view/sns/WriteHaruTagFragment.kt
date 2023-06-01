@@ -4,6 +4,8 @@ import BaseActivity
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,20 +14,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.haru.R
+import com.example.haru.data.model.Template
 import com.example.haru.databinding.FragmentWriteAddTagBinding
 import com.example.haru.view.adapter.TemplateAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
 interface onTemplateListener{
 
-    fun onTemplateClicked(url : String)
+    fun onTemplateClicked(url : String, holder:TemplateAdapter.TemplateViewHolder)
 }
 
 class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
@@ -33,11 +39,17 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
     lateinit var templateViewModel : MyPageViewModel
     lateinit var templateAdapter: TemplateAdapter
     var toggle = true
+    var selectedHolder: TemplateAdapter.TemplateViewHolder? = null
+    var id : String = ""
 
-    override fun onTemplateClicked(url: String) {
+    override fun onTemplateClicked(url: String, holder: TemplateAdapter.TemplateViewHolder) {
+        this.id = url
         Glide.with(requireContext())
             .load(url)
             .into(binding.writeHaruImages)
+        selectedHolder?.template?.setColorFilter(null)
+        holder.template.setColorFilter(Color.parseColor("#80808080"), PorterDuff.Mode.SRC_ATOP)
+        selectedHolder = holder
     }
     override fun onResume() {
         super.onResume()
@@ -78,6 +90,40 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
 
         binding.templateToggle.setOnClickListener {
             toggleClicked()
+        }
+
+        binding.setTextWhite.setOnClickListener {
+            binding.writeTagContent.setTextColor(Color.parseColor("#fdfdfd"))
+        }
+
+        binding.setTextBlack.setOnClickListener {
+            binding.writeTagContent.setTextColor(Color.parseColor("#191919"))
+        }
+
+        binding.writeHaruApply.setOnClickListener {
+            binding.writeHaruApply.isClickable = false
+            Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
+            val hashtag = templateViewModel.getTagList()
+            if(id != "")
+                templateViewModel.templateRequest(Template(id, content, ArrayList(hashtag)))
+            else{
+                Toast.makeText(requireContext(), "템플릿을 선택해 주세요", Toast.LENGTH_SHORT).show()
+                binding.writeHaruApply.isClickable = true
+            }
+
+            templateViewModel.PostRequest.observe(viewLifecycleOwner) { done ->
+                if(done) {
+                    val fragmentManager = parentFragmentManager
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    val fragment = SnsFragment()
+                    val transaction = parentFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragments_frame, fragment)
+                    transaction.commit()
+                }else{
+                    binding.writeHaruApply.isClickable = true
+                    Toast.makeText(requireContext(), "게시글 등록에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         templateViewModel.PostTagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {

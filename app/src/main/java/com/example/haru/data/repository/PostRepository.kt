@@ -51,6 +51,20 @@ class PostRepository() {
         callback(postInfo)
     }
 
+    suspend fun addTemplate(template: Template, callback: (result: Boolean) -> Unit) = withContext(Dispatchers.IO) {
+        val call = postService.addTemplate(userId, template)
+        val response = call.execute()
+
+        var result = false
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to post")
+            result = response.body()!!.success
+        } else {
+            Log.d("TAG", "Fail to post")
+        }
+        callback(result)
+    }
+
     //게시글 삭제
     suspend fun deletePost(postId: String, callback: (delete: Boolean) -> Unit) = withContext(Dispatchers.IO) {
         val call = postService.deletePost(userId, postId)

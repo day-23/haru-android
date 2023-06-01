@@ -67,7 +67,7 @@ class AddTagFragment(
         val adapter = AddTagPagerAdapter(requireContext(), Uris)
         binding.addtagImages.adapter = adapter
         binding.addTagContent.text = content
-        var hashtag: List<String> //TODO:하드코딩 동적으로 바꾸어야함
+        var hashtag: List<String>
 
         binding.addtagCancel.setOnClickListener {
             fragmentManager.popBackStack()

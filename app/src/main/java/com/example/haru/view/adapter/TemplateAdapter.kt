@@ -29,7 +29,7 @@ class TemplateAdapter(val context: Context,
             .into(holder.template)
 
         holder.template.setOnClickListener {
-            listener.onTemplateClicked(itemList[position].url)
+            listener.onTemplateClicked(itemList[position].id, holder)
         }
     }
 
