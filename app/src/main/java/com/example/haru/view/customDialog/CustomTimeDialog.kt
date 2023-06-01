@@ -163,7 +163,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         val width = 0.7f
-        val height = 0.3f
+        val height = 0.4f
         if (Build.VERSION.SDK_INT < 30) {
 
             val display = windowManager.defaultDisplay
