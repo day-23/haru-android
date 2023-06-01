@@ -198,7 +198,6 @@ class ChecklistItemFragment(
                 Log.e("20191627", todoAddViewModel.gridYearHeight.toString())
                 Log.e("20191627", todoAddViewModel.repeatWeekHeight.toString())
 
-
                 binding.infoRepeatEndDateLayout.post {
                     // flag 관련 UI Update
                     todoAddViewModel.setClickTodo(id, todo)
