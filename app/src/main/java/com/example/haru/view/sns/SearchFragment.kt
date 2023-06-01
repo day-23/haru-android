@@ -146,5 +146,4 @@ class SearchFragment(val viewModel: Any) : Fragment() {
             }
         }
     }
-
 }

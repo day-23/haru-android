@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#FDFDFD"
-                android:paddingStart="10dp"
+                android:paddingStart="25dp"
                 android:paddingEnd="20dp">
 
                 <RelativeLayout
@@ -34,11 +34,11 @@
 
                     <ImageView
                         android:id="@+id/checklist_haru_title"
-                        android:layout_width="60dp"
-                        android:layout_height="30dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_marginTop="2dp"
-                        android:src="@drawable/haru_logo"
+                        android:src="@drawable/small_haru_title"
                         android:textColor="#191919"
                         android:textStyle="bold" />
 
