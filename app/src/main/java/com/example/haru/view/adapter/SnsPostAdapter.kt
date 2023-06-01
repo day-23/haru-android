@@ -47,9 +47,13 @@ class SnsPostAdapter(val context: Context,
 
     override fun onBindViewHolder(holder: SnsPostViewHolder, position: Int) {
         val adapter = PicturesPagerAdapter(holder.itemView.context, itemList[position].images)
+        if(itemList[position].isTemplatePost){
+            holder.templateText.text = itemList[position].content
+        }else{
+            holder.content.text = itemList[position].content
+        }
         holder.picture.adapter = adapter
         holder.userid.text = itemList[position].user.name
-        holder.content.text = itemList[position].content
         holder.likedcount.text = itemList[position].likedCount.toString()
         holder.commentcount.text = itemList[position].commentCount.toString()
 
@@ -69,6 +73,7 @@ class SnsPostAdapter(val context: Context,
         val pictureIndex = adapter.itemCount
         val text = "${position + 1}/${pictureIndex}"
         holder.index.text = text
+
 
         holder.picture.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -158,5 +163,6 @@ class SnsPostAdapter(val context: Context,
         var comment = itemView.findViewById<ImageView>(R.id.button_comment)
         var setup = itemView.findViewById<ImageView>(R.id.post_setup)
         var totalcomment = itemView.findViewById<ImageView>(R.id.post_total_comment)
+        var templateText = itemView.findViewById<TextView>(R.id.template_text)
     }
 }

@@ -72,6 +72,20 @@
             android:orientation="horizontal"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/template_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/post_picture_layout"
+        app:layout_constraintBottom_toBottomOf="@id/post_picture_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="20dp"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="#191919"/>
+
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="56dp"
         android:layout_height="28dp"
