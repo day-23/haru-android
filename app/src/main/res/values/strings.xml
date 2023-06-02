@@ -43,11 +43,11 @@
     <string name="Saturday">토</string>
     <string name="Sunday">일</string>
 
-    <string name="SNS">SNS</string>
-    <string name="TODO">TODO</string>
-    <string name="CAL">CAL</string>
-    <string name="T.T">T.T</string>
-    <string name="MY">MY</string>
+    <string name="SNS">기록</string>
+    <string name="TODO">할일</string>
+    <string name="CAL">일정</string>
+    <string name="T.T">주간</string>
+    <string name="MY">마이</string>
 
 
     <string name="delete">삭제</string>
