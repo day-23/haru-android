@@ -75,6 +75,10 @@ class TimetableViewModel(val context : Context): ViewModel() {
     val MoveDate: LiveData<String>
         get() = _MoveDate
 
+    private val _PreMoveDate = MutableLiveData<String>()
+    val PreMoveDate: LiveData<String>
+        get() = _PreMoveDate
+
     private val _MoveView = MutableLiveData<View>()
     val MoveView: LiveData<View>
         get() = _MoveView
@@ -333,7 +337,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
         return timetable_today
     }
 
-    fun scheduleMoved(margin : Int, view: View, index: Int){
+    fun scheduleMoved(margin : Int, view: View, index: Int, preIndex: Int){
         val hour = (margin / 72).toInt()
         val min = ((margin % 72) / 6) * 5.toInt()
 
@@ -350,6 +354,15 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
         val newDateInfo = "${year}-${month}-${day}T${stringHour}:${stringMin}:00+09:00"
 
+        val preMoveDate = Datelist[preIndex]
+        val preYear = preMoveDate.substring(0, 4)
+        val preMonth = preMoveDate.substring(4, 6)
+        val preDay = preMoveDate.substring(6, 8)
+        val preDateInfo = "${preYear}-${preMonth}-${preDay}T00:00:00+09:00"
+
+        d("20191630", "scheduleMoved:${preIndex} ${preDateInfo}, ${newDateInfo})")
+
+        _PreMoveDate.value = preDateInfo
         _MoveDate.value = newDateInfo
         _MoveView.value = view
     }
@@ -409,8 +422,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
             calculateLocation(schedule, todayTodo)
 
             //시간 변경
-            callUpdateRepeatScheduleAPI(schedule, newRepeatStart, newRepeatEnd, "여기 오늘 날짜 넣어야함")
-
+            callUpdateRepeatScheduleAPI(schedule, PreMoveDate.value!!, newRepeatStart, newRepeatEnd)
         }
 
         sortSchedule(preScheduleData)
