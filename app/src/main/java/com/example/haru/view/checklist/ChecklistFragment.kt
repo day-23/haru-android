@@ -2,6 +2,7 @@ package com.example.haru.view.checklist
 
 import BaseActivity
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
@@ -24,10 +25,13 @@ import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
+import com.example.haru.view.sns.SearchFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.CheckListViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
 class ChecklistFragment : Fragment(), LifecycleObserver {
@@ -65,14 +69,31 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
 
+        val naviView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+
         initTagList()
         initTodoList()
 
+        binding.ivChecklistSearch.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .addToBackStack(null)
+                .commit()
+        }
+
         binding.ivTagEtc.setOnClickListener {
-            if (!binding.drawableLayout.isDrawerOpen(Gravity.RIGHT))
+            if (!binding.drawableLayout.isDrawerOpen(Gravity.RIGHT)) {
                 binding.drawableLayout.openDrawer(Gravity.RIGHT)
-            else
+//                naviView.backgroundTintList =
+//                    ColorStateList.valueOf(
+//                        ContextCompat.getColor(
+//                            requireContext(),
+//                            R.color.dialog_bg
+//                        )
+//                    )
+            } else {
                 binding.drawableLayout.closeDrawer(Gravity.RIGHT)
+            }
         }
 
         binding.tagEtcLayout.ivTagAdd.setOnClickListener {
@@ -121,11 +142,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         })
 
         binding.btnAddTodo.setOnClickListener {
-            val text = binding.etSimpleAddTodo.text.toString()
-
+            val text = binding.etSimpleAddTodo.text.toString().trim()
             if (text.replace(" ", "") == "") {
                 val todoInput = ChecklistInputFragment(checkListViewModel)
                 todoInput.show(parentFragmentManager, todoInput.tag)
+                binding.etSimpleAddTodo.setText("")
+                binding.etSimpleAddTodo.clearFocus()
             } else {
                 val todo = TodoRequest(
                     content = text,
@@ -145,6 +167,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     imm.hideSoftInputFromWindow(binding.etSimpleAddTodo.windowToken, 0)
                 }
             }
+        }
+
+        binding.etSimpleAddTodo.setOnKeyListener { view, keyCode, keyEvent ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+                binding.btnAddTodo.performClick()
+                return@setOnKeyListener true
+            }
+
+            return@setOnKeyListener false
         }
 
         binding.todayTodoLayout.setOnClickListener {
@@ -405,7 +436,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
 
         todoListView.adapter = todoAdapter
-        todoListView.layoutManager = WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        todoListView.layoutManager =
+            WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
 //        todoListView.itemAnimator = null
 

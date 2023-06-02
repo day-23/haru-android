@@ -113,8 +113,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         _selectedDate.value = date
     }
 
-    fun setToday(today : Boolean?) {
-        if (today == true){
+    fun setToday(today: Boolean?) {
+        if (today == true) {
             _endDateSwitch.value = true
             _todayTodo.value = true
         }
@@ -154,7 +154,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             _endDate.value = FormatDate.strToDate(clickedTodo!!.endDate!!)
             Log.d("20191627", endDate.value.toString())
             _endDateSwitch.value = true
-        } else _endDateSwitch.value = false
+        }
+//        else
+//            _endDateSwitch.value = false
 
         if (isSelectedEndDateTime.value!!)
             _endTime.value = FormatDate.strToDate(clickedTodo!!.endDate!!)
@@ -171,7 +173,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             _repeatSwitch.value = true
             _repeatOption.value = repeatOptionList.indexOf(clickedTodo!!.repeatOption)
             _repeatValue.value = clickedTodo!!.repeatValue
-        } else _repeatSwitch.value = false
+        }
+//        else _repeatSwitch.value = false
 
         if (clickedTodo!!.repeatEnd != null) {
             _repeatEndDateSwitch.value = true

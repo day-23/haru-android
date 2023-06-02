@@ -22,26 +22,31 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingVertical="14dp"
-            android:paddingStart="20dp">
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
 
             <ImageView
                 android:id="@+id/iv_back_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/arrow"
-                android:backgroundTint="@color/black"
-                android:rotation="180" />
+                android:background="@drawable/back_arrow"
+                android:backgroundTint="@color/black"/>
 
-            <View
+            <TextView
+                android:id="@+id/tv_view_description"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/todo_description"
+                android:gravity="center_horizontal"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="할 일 수정"/>
 
             <ImageView
                 android:id="@+id/btn_info_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
                 android:background="@drawable/check_icon"
                 android:backgroundTint="@color/todo_description" />
         </LinearLayout>

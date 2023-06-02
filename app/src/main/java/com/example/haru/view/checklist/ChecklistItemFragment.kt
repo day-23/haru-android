@@ -179,7 +179,6 @@ class ChecklistItemFragment(
                 todoAddViewModel.setYearHeight(binding.infoGridYear.height)
                 binding.infoGridYear.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 binding.infoGridYear.visibility = View.GONE
-
             }
         })
 
@@ -191,6 +190,14 @@ class ChecklistItemFragment(
                 binding.infoRepeatEndDateLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 binding.infoRepeatEndDateLayout.visibility = View.GONE
 
+                Log.e("20191627", todoAddViewModel.endTimeLayoutHeight.toString())
+                Log.e("20191627", todoAddViewModel.repeatSetLayoutHeight.toString())
+                Log.e("20191627", todoAddViewModel.repeatEndDateHeight.toString())
+                Log.e("20191627", todoAddViewModel.repeatOptionHeight.toString())
+                Log.e("20191627", todoAddViewModel.gridMonthHeight.toString())
+                Log.e("20191627", todoAddViewModel.gridYearHeight.toString())
+                Log.e("20191627", todoAddViewModel.repeatWeekHeight.toString())
+
                 binding.infoRepeatEndDateLayout.post {
                     // flag 관련 UI Update
                     todoAddViewModel.setClickTodo(id, todo)
@@ -201,6 +208,9 @@ class ChecklistItemFragment(
 
                     if (todoAddViewModel.clickedTodo!!.completed) {
                         binding.infoSubTodoAddLayout.visibility = View.GONE
+                        binding.btnInfoSave.visibility = View.INVISIBLE
+                        binding.btnInfoSave.isClickable = false
+                        binding.tvViewDescription.text = "완료한 일"
                     }
 
                     Log.d("20191627", todoAddViewModel.clickedTodo.toString())
@@ -216,7 +226,7 @@ class ChecklistItemFragment(
                         viewLifecycleOwner,
                         androidx.lifecycle.Observer {
                             val color = if (it) R.color.light_gray else R.color.todo_description
-                            binding.btnInfoSave.visibility = if (it) View.GONE else View.VISIBLE
+                            binding.btnInfoSave.visibility = if (it) View.INVISIBLE else View.VISIBLE
                             binding.etInfoContent.setTextColor(
                                 ContextCompat.getColor(
                                     requireContext(),
