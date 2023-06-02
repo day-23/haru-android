@@ -36,6 +36,9 @@ class CalendarViewModel : ViewModel() {
     val _liveScheduleList = MutableLiveData<List<Schedule>>()
     val liveScheduleList: MutableLiveData<List<Schedule>> get() = _liveScheduleList
 
+    val _liveHolidaysList = MutableLiveData<List<Holiday>>()
+    val liveHolidaysList: MutableLiveData<List<Holiday>> get() = _liveHolidaysList
+
     fun completeNotRepeatTodo(todoId: String,
                               completed: Completed,
                               callback: () -> Unit){
@@ -334,7 +337,7 @@ class CalendarViewModel : ViewModel() {
                                         "매주" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -359,7 +362,7 @@ class CalendarViewModel : ViewModel() {
                                         "격주" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -384,7 +387,7 @@ class CalendarViewModel : ViewModel() {
                                         "매달" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -408,7 +411,7 @@ class CalendarViewModel : ViewModel() {
                                         "매년" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -973,7 +976,7 @@ class CalendarViewModel : ViewModel() {
 
                                 calendar.time = repeatstart
 
-                                calendar.add(Calendar.MILLISECOND, newRepeatValue.toInt())
+                                calendar.add(Calendar.SECOND, newRepeatValue.toInt())
 
                                 val intervaldate = calendar.timeInMillis - repeatstart.time
 
@@ -1165,6 +1168,7 @@ class CalendarViewModel : ViewModel() {
                         }
                     }
 
+                    _liveHolidaysList.postValue(it.holidays)
                     _liveTodoCalendarList.postValue(todoList)
                     _liveScheduleCalendarList.postValue(scheduleList)
                 }

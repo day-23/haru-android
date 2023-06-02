@@ -135,7 +135,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                     scheduleCalendar.time = startDate
 
                     scheduleCalendar.add(
-                        Calendar.MILLISECOND,
+                        Calendar.SECOND,
                         schedule.repeatValue.replace("T","").toInt()
                     )
 
@@ -144,7 +144,6 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                     if(date_comparison(startDate, today)<=0 &&
                             date_comparison(scheduleCalendar.time, today) >= 0){
                         schedule.location = 0
-                        Log.d("20191630", "스케줄 프론트")
 
                         activity.supportFragmentManager.beginTransaction()
                             .replace(
@@ -166,7 +165,6 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                         startDate.date == today.date
                     ) {
                         schedule.location = 0
-                        Log.d("20191630", "스케줄 프론트")
 
                         activity.supportFragmentManager.beginTransaction()
                             .replace(
@@ -222,11 +220,8 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                         }
                     }
 
-                    Log.d("20191630", "nextData:"+nextData.toString())
-                    
                     if(nextData == null){
                         schedule.location = 2
-                        Log.d("20191630","스케줄 백")
 
                         activity.supportFragmentManager.beginTransaction()
                             .replace(
@@ -242,7 +237,6 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                 }
 
                 schedule.location = 1
-                Log.d("20191630","스케줄 미들")
 
                 activity.supportFragmentManager.beginTransaction()
                     .replace(

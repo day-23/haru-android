@@ -699,7 +699,7 @@ class TimetableViewModel(val context: Context) : ViewModel() {
 
                     calendar.time = repeatstart
 
-                    calendar.add(Calendar.MILLISECOND, newRepeatValue.toInt())
+                    calendar.add(Calendar.SECOND, newRepeatValue.toInt())
 
                     val intervaldate = calendar.timeInMillis - repeatstart.time
 

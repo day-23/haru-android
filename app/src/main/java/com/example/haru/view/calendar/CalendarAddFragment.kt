@@ -109,19 +109,19 @@ class CalendarAddFragment(private val activity: Activity,
             repeatStartCalendar.set(Calendar.MINUTE, 30)
         } else {
             repeatStartCalendar.set(Calendar.MINUTE, 0)
-            repeatStartCalendar.add(Calendar.HOUR, 1)
+            repeatStartCalendar.add(Calendar.HOUR_OF_DAY, 1)
         }
 
         if(repeatStartCalendar.time.month == repeatEndCalendar.time.month &&
                 repeatStartCalendar.time.date == repeatEndCalendar.time.date){
             repeatEndCalendar.time = repeatStartCalendar.time.clone() as Date
-            repeatEndCalendar.add(Calendar.HOUR, 1)
+            repeatEndCalendar.add(Calendar.HOUR_OF_DAY, 1)
         } else {
             if (repeatEndCalendar.time.minutes < 30){
                 repeatEndCalendar.set(Calendar.MINUTE, 30)
             } else {
                 repeatEndCalendar.set(Calendar.MINUTE, 0)
-                repeatEndCalendar.add(Calendar.HOUR, 1)
+                repeatEndCalendar.add(Calendar.HOUR_OF_DAY, 1)
             }
         }
 
@@ -158,7 +158,10 @@ class CalendarAddFragment(private val activity: Activity,
                                 binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatStartCalendar.time)
                             }
 
-                            if(flag) return
+                            if(flag) {
+                                optionChange(binding)
+                                return
+                            }
 
                             if(repeatOption == 0) repeatOption = -1
 
@@ -455,7 +458,7 @@ class CalendarAddFragment(private val activity: Activity,
         binding.btnSubmitSchedule.setOnClickListener {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
             val repeatEndDateBtnFormat = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
-            val timeFormat = SimpleDateFormat("a HH:mm", Locale.KOREA)
+            val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
             val timeFormat2 = SimpleDateFormat("HH:mm", Locale.KOREA)
 
             var repeatStartDate = ""
@@ -480,7 +483,7 @@ class CalendarAddFragment(private val activity: Activity,
                             timeFormat2.format(startTime)+
                             ":00+09:00"
                     val calendarClone = repeatStartCalendar.clone() as Calendar
-                    calendarClone.add(Calendar.YEAR,100)
+                    calendarClone.set(Calendar.YEAR,2200)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) +
                             "T" +
@@ -500,9 +503,6 @@ class CalendarAddFragment(private val activity: Activity,
                             timeFormat2.format(endTime)+
                             ":00+09:00"
                 }
-
-                Log.d("반복 일정", repeatStartDate)
-                Log.d("반복 일정", repeatEndDate)
             } else {
                 if(!binding.repeatSwitchSchedule.isChecked) {
                     repeatStartDate =
@@ -512,7 +512,7 @@ class CalendarAddFragment(private val activity: Activity,
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
 
                     val calendarClone = repeatEndCalendar.clone() as Calendar
-                    calendarClone.add(Calendar.YEAR,100)
+                    calendarClone.set(Calendar.YEAR,2200)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) + "T23:59:55+09:00"
                 } else {
@@ -523,8 +523,6 @@ class CalendarAddFragment(private val activity: Activity,
                             binding.btnRepeatEndDateSchedule.text.toString()
                         )
                     )+ "T23:59:55+09:00"
-
-                    Log.d("20191630",repeatEndDate)
                 }
             }
 
@@ -573,44 +571,53 @@ class CalendarAddFragment(private val activity: Activity,
                 }
             } else {
                 if(binding.alldaySwitch.isChecked){
-                    repeatEndCalendar.apply {
-                        set(Calendar.HOUR_OF_DAY, 23)
-                        set(Calendar.MINUTE, 59)
-                        set(Calendar.SECOND, 55)
+                    if(option != null) {
+                        repeatEndCalendar.apply {
+                            set(Calendar.HOUR_OF_DAY, 23)
+                            set(Calendar.MINUTE, 59)
+                            set(Calendar.SECOND, 55)
+                        }
+                        repeatvalue =
+                            "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
+                                .toString()
+                    } else {
+                        repeatvalue = null
                     }
-                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt().toString()
                 } else {
-                    val startTime = timeFormat.parse(binding.repeatStartTimeBtn.text.toString())
-                    val endTime = timeFormat.parse(binding.repeatEndTimeBtn.text.toString())
+                    if (option != null) {
+                        val startTime = timeFormat.parse(binding.repeatStartTimeBtn.text.toString())
+                        val endTime = timeFormat.parse(binding.repeatEndTimeBtn.text.toString())
 
-                    repeatStartCalendar.set(
-                        Calendar.HOUR_OF_DAY,
-                        startTime.hours
-                    )
+                        repeatStartCalendar.set(
+                            Calendar.HOUR_OF_DAY,
+                            startTime.hours
+                        )
 
-                    repeatStartCalendar.set(
-                        Calendar.MINUTE,
-                        startTime.minutes
-                    )
+                        repeatStartCalendar.set(
+                            Calendar.MINUTE,
+                            startTime.minutes
+                        )
 
-                    repeatEndCalendar.set(
-                        Calendar.HOUR_OF_DAY,
-                        endTime.hours
-                    )
+                        repeatEndCalendar.set(
+                            Calendar.HOUR_OF_DAY,
+                            endTime.hours
+                        )
 
-                    repeatEndCalendar.set(
-                        Calendar.MINUTE,
-                        endTime.minutes
-                    )
+                        repeatEndCalendar.set(
+                            Calendar.MINUTE,
+                            endTime.minutes
+                        )
 
-                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt().toString()
+                        repeatvalue =
+                            "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
+                                .toString()
+                    } else {
+                        repeatvalue = null
+                    }
                 }
             }
 
             val calendarViewModel = CalendarViewModel()
-
-            Log.d("20191630", repeatStartDate)
-            Log.d("20191630", repeatEndDate)
 
             calendarViewModel.postSchedule(
                 PostSchedule(
