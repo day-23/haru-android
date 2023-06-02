@@ -116,7 +116,7 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
                 )
                 binding.tvTitle.text = span
             } else binding.tvTitle.text = item.content
-            
+
 //            if (todoClick != null) {
 //                binding.ClickLayout.setOnClickListener {
 //                    todoClick?.onClick(it, item.id)

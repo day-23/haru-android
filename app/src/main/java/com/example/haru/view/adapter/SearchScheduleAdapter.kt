@@ -29,7 +29,7 @@ class SearchScheduleAdapter(val context: Context) :
     private val header = 0
     private val item = 1
 
-    var content : String? = null
+    var content: String? = null
 
     private val diffCallback = object : DiffUtil.ItemCallback<Schedule>() {
         override fun areItemsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
@@ -87,7 +87,14 @@ class SearchScheduleAdapter(val context: Context) :
                 val start = item.content.indexOf(content!!, ignoreCase = true)
                 val end = start + content!!.length
                 val span = SpannableString(item.content)
-                span.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.highlight)), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                span.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.highlight
+                        )
+                    ), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
                 binding.tvScheduleContent.text = span
             } else
                 binding.tvScheduleContent.text = item.content
@@ -117,15 +124,15 @@ class SearchScheduleAdapter(val context: Context) :
                         endDate = rangeDate.second
                     } else {
                         // 반복하는 일정인데 인터벌이 아닌경우
-                        when (item.repeatOption) {
-                            "매일" -> {}
-                            "매주" -> {}
-                            "격주" -> {}
-                            "매달" -> {}
-                            "매년" -> {}
-                        }
-                        startDate = Date()
-                        endDate = Date()
+                        val rangeDate = FormatDate.nextStartSchedule(
+                            repeatOption = item.repeatOption!!,
+                            repeatValue = item.repeatValue!!,
+                            repeatStartStr = item.repeatStart!!,
+                            repeatEndDateStr = item.repeatEnd!!,
+                            today = today
+                        )
+                        startDate = rangeDate.first
+                        endDate = rangeDate.second
                     }
                 }
 
