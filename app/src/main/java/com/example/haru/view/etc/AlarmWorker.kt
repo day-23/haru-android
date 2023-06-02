@@ -292,7 +292,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         "매주" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -317,7 +317,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         "격주" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -342,7 +342,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         "매달" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -366,7 +366,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         "매년" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
