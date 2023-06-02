@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountDeleteBinding
 import com.example.haru.viewmodel.EtcViewModel
@@ -40,6 +42,12 @@ class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
         super.onResume()
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
 
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+
         etcViewModel.email.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.tvEmail.text = it
         })
@@ -47,11 +55,15 @@ class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
         etcViewModel.name.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.tvAccountName.text = it
         })
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        etcViewModel.profileImage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it == "" || it == null)
+                binding.ivProfileDelete.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.haru_fighting)
+            else Glide.with(this)
+                .load(it)
+                .into(binding.ivProfileDelete)
+        })
 
         binding.btnAccountDelete.setOnClickListener(ClickListener())
         binding.ivBackIconAccountDelete.setOnClickListener(ClickListener())
@@ -66,7 +78,10 @@ class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
                 binding.btnAccountDelete.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AccountDeleteDoubleCheckFragment(etcViewModel))
+                        .replace(
+                            R.id.fragments_frame,
+                            AccountDeleteDoubleCheckFragment(etcViewModel)
+                        )
                         .addToBackStack(null)
                         .commit()
                 }

@@ -33,6 +33,6 @@
         android:id="@+id/iv_set_tag_etc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/set_icon" />
+        android:background="@drawable/update_icon" />
 
 </LinearLayout>

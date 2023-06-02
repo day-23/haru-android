@@ -3,9 +3,6 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
-import com.example.haru.data.retrofit.RetrofitClient.profileService
-import com.example.haru.data.retrofit.RetrofitClient.userService
-import com.kakao.sdk.talk.model.Friend
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

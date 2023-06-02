@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,12 +21,12 @@
 
             <ImageView
                 android:id="@+id/etc_haru_title"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="2dp"
-                android:src="@drawable/haru_logo"
-                android:textColor="#191919"
+                android:background="@drawable/small_haru_title"
+                android:backgroundTint="@color/white"
                 android:textStyle="bold" />
 
             <ImageView
@@ -97,6 +97,7 @@
                     android:paddingEnd="20dp">
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_profile_edit"
                         style="@style/minSize"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -107,19 +108,6 @@
                         android:paddingEnd="12dp"
                         android:paddingBottom="6dp"
                         android:text="프로필 편집"
-                        android:textColor="@color/date_text"
-                        android:textSize="16sp" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        style="@style/minSize"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/btn_group_custom"
-                        android:paddingStart="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingEnd="12dp"
-                        android:paddingBottom="6dp"
-                        android:text="프로필 공유"
                         android:textColor="@color/date_text"
                         android:textSize="16sp" />
 
@@ -151,7 +139,6 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tv_friend_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="하루"
@@ -161,6 +148,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/layout_friend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -168,6 +156,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_friend_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="25"
@@ -212,6 +201,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/___20513"
+                    android:backgroundTint="@color/light_gray"
                     android:rotation="90" />
 
                 <TextView
@@ -230,6 +220,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/___20513"
+                    android:backgroundTint="@color/light_gray"
                     android:rotation="-90" />
 
             </LinearLayout>
@@ -313,12 +304,12 @@
                     android:layout_width="123dp"
                     android:layout_height="123dp"
                     android:progress="30"
-                    app:trackCornerRadius="10dp"
-                    app:indicatorSize="123dp"
-                    app:trackThickness="10dp"
-                    app:trackColor="@color/circle_progressbar_bg"
                     app:indicatorColor="@color/highlight"
-                    app:indicatorDirectionCircular="clockwise"/>
+                    app:indicatorDirectionCircular="clockwise"
+                    app:indicatorSize="123dp"
+                    app:trackColor="@color/circle_progressbar_bg"
+                    app:trackCornerRadius="10dp"
+                    app:trackThickness="10dp" />
             </RelativeLayout>
 
             <View
@@ -366,8 +357,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="21dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="21dp"
                 android:background="@drawable/haru_fighting" />
         </LinearLayout>
 

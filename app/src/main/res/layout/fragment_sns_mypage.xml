@@ -10,7 +10,7 @@
         android:id="@+id/sns_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="10dp"
+        android:paddingStart="25dp"
         android:paddingEnd="20dp"
         tools:ignore="MissingConstraints"
         android:background="@drawable/todo_table_selected">
@@ -21,12 +21,11 @@
             >
             <ImageView
                 android:id="@+id/sns_haru_title"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:src="@drawable/haru_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/small_haru_title"
                 android:layout_marginTop="2dp"
-                android:textStyle="bold"
-                android:textColor="#191919"
+                android:backgroundTint="@color/white"
                 android:layout_alignParentTop="true"
                 />
             <ImageView

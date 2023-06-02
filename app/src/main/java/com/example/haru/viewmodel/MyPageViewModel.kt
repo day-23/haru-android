@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build.VERSION_CODES.P
 import android.provider.ContactsContract.Profile
 import android.provider.MediaStore
+import android.security.KeyChainAliasCallback
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,7 +24,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 
-class MyPageViewModel(): ViewModel() {
+class MyPageViewModel() : ViewModel() {
     private val ProfileRepository = ProfileRepository()
     private val PostRepository = PostRepository()
     private val UserRepository = UserRepository()
@@ -85,7 +86,7 @@ class MyPageViewModel(): ViewModel() {
     val FriendRequest: LiveData<Boolean> = _FriendRequest
 
     private val _PostRequest = MutableLiveData<Boolean>()
-    val PostRequest : LiveData<Boolean> = _PostRequest
+    val PostRequest: LiveData<Boolean> = _PostRequest
 
     private val _Friends = MutableLiveData<FriendsResponse>()
     val Friends: LiveData<FriendsResponse> = _Friends
@@ -143,11 +144,11 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun getFirstFeed(targetId: String){
+    fun getFirstFeed(targetId: String) {
         var initPost: ArrayList<Post> = arrayListOf()
         viewModelScope.launch {
-            PostRepository.getFirstMyFeed(targetId){
-                if(it.size > 0){
+            PostRepository.getFirstMyFeed(targetId) {
+                if (it.size > 0) {
                     initPost = it
                 }
             }
@@ -155,7 +156,7 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun getFirstMedia(targetId: String){
+    fun getFirstMedia(targetId: String) {
         var newMedia = MediaResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
             PostRepository.getFirstMedia(targetId) {
@@ -163,13 +164,13 @@ class MyPageViewModel(): ViewModel() {
                     newMedia = it
                 }
             }
-            if(newMedia.success){
+            if (newMedia.success) {
                 _FirstMedia.value = newMedia
             }
         }
     }
 
-    fun getMedia(targetId: String, lastCreatedAt: String){
+    fun getMedia(targetId: String, lastCreatedAt: String) {
         var newMedia = MediaResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
             PostRepository.getMedia(targetId, lastCreatedAt) {
@@ -177,13 +178,13 @@ class MyPageViewModel(): ViewModel() {
                     newMedia = it
                 }
             }
-            if(newMedia.success){
+            if (newMedia.success) {
                 _FirstMedia.value = newMedia
             }
         }
     }
 
-    fun getFirstTagMedia(targetId: String, tagId:String){
+    fun getFirstTagMedia(targetId: String, tagId: String) {
         var newMedia = MediaResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
             PostRepository.getFirstTagMedia(targetId, tagId) {
@@ -191,28 +192,29 @@ class MyPageViewModel(): ViewModel() {
                     newMedia = it
                 }
             }
-            if(newMedia.success){
+            if (newMedia.success) {
                 _FirstMedia.value = newMedia
             }
         }
     }
 
-    fun getTemplates(){
+    fun getTemplates() {
         var templates = arrayListOf<com.example.haru.data.model.Profile>()
         viewModelScope.launch {
             PostRepository.getTemplates {
-                if(it.size > 0){
+                if (it.size > 0) {
                     templates = it
                 }
             }
             _Templates.value = templates
         }
     }
-    fun getUserInfo(targetId: String){
-        var user = User("","","","",0,0,0,false)
+
+    fun getUserInfo(targetId: String) {
+        var user = User("", "", "", "", 0, 0, 0, false)
         viewModelScope.launch {
-            ProfileRepository.getUserInfo(targetId){
-                if(it.id != ""){
+            ProfileRepository.getUserInfo(targetId) {
+                if (it.id != "") {
                     user = it
                 }
             }
@@ -228,22 +230,23 @@ class MyPageViewModel(): ViewModel() {
         else newlist = arrayListOf(i)
         _SelectedPosition.value = newlist!!
     }
+
     fun delSelected(i: Int) {
         var newlist = _SelectedPosition.value
         newlist?.remove(i)
         _SelectedPosition.value = newlist!!
     }
 
-    fun resetSelection(){
+    fun resetSelection() {
         _SelectedImage.value = -1
         _SelectedPosition.value = arrayListOf()
         lastImageIndex = -1
     }
 
     //커스텀 갤러리 단일 사진 선택을 위한 함수
-    fun selectOnePicture(i : Int){
+    fun selectOnePicture(i: Int) {
         lastImageIndex = SelectedImage.value ?: -1
-        _SelectedImage. value = i
+        _SelectedImage.value = i
     }
 
     fun getLastImage(): Int {
@@ -256,11 +259,11 @@ class MyPageViewModel(): ViewModel() {
         val indexSet = _SelectedPosition.value
         val indexOne = _SelectedImage.value
         val totalImage = _StoredImages.value
-        if(indexSet!!.size > 0 && totalImage != null) {
+        if (indexSet!!.size > 0 && totalImage != null) {
             for (i in indexSet) {
                 images.add(totalImage.get(i))
             }
-        }else if(indexOne != null && indexOne != -1 && totalImage != null){
+        } else if (indexOne != null && indexOne != -1 && totalImage != null) {
             images.add(totalImage.get(indexOne))
         }
 
@@ -289,11 +292,15 @@ class MyPageViewModel(): ViewModel() {
     }
 
     //선택한 사진들의 내부저장소 정보를 얻어옴
-    fun getSelectImages() : ArrayList<ExternalImages>{
+    fun getSelectImages(): ArrayList<ExternalImages> {
         return _SelectedUri.value ?: arrayListOf()
     }
 
-    fun postRequest(images: MutableList<MultipartBody.Part>, content: String, hashtags: List<String>){
+    fun postRequest(
+        images: MutableList<MultipartBody.Part>,
+        content: String,
+        hashtags: List<String>
+    ) {
         val post = AddPost(images, content, hashtags)
 
         viewModelScope.launch {
@@ -306,15 +313,15 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun templateRequest(templateBody : Template){
+    fun templateRequest(templateBody: Template) {
         var postResult = false
 
         viewModelScope.launch {
-            PostRepository.addTemplate(templateBody){
-                if(it){
+            PostRepository.addTemplate(templateBody) {
+                if (it) {
                     Log.d("TAG", "Success to post Template")
                     postResult = it
-                }else{
+                } else {
                     Log.d("TAG", "Fail to post Template")
                 }
             }
@@ -322,40 +329,49 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun editProfile(image: MultipartBody.Part, name: String, introduction: String){
-        var user = User("","","","",0,0,0,false)
+    fun editProfile(
+        image: MultipartBody.Part,
+        name: String,
+        introduction: String,
+        callback: () -> Unit
+    ) {
+        var user = User("", "", "", "", 0, 0, 0, false)
         viewModelScope.launch {
-            ProfileRepository.editProfile(image, name, introduction){
-                if(it.id != "") {
+            ProfileRepository.editProfile(image, name, introduction) {
+                if (it.id != "") {
                     user = it
                     Log.d("TAG", "Success to Edit!")
                 }
+                _UserInfo.postValue(user)
+                callback()
             }
-            _UserInfo.value = user
+//            _UserInfo.value = user
         }
     }
 
-    fun editProfileName(name:String, introduction: String){
-        var user = User("","","","",0,0,0,false)
+    fun editProfileName(name: String, introduction: String, callback: () -> Unit) {
+        var user = User("", "", "", "", 0, 0, 0, false)
         viewModelScope.launch {
-            ProfileRepository.editProfileName(name, introduction){
-                if(it.id != ""){
+            ProfileRepository.editProfileName(name, introduction) {
+                if (it.id != "") {
                     user = it
                     Log.d("TAG", "Success to EditName!")
-                }
-                else{
+                } else {
                     Log.d("TAG", "Fail to Edit name")
                 }
+                _UserInfo.postValue(user)
+                callback()
             }
-            _UserInfo.value = user
+//            _UserInfo.value = user
         }
     }
 
-    fun selectProfile(part: MultipartBody.Part, absuri: Uri){
+    fun selectProfile(part: MultipartBody.Part, absuri: Uri) {
         _EditImage.value = part
         _EditUri.value = absuri
     }
-    fun resetValue(){
+
+    fun resetValue() {
         _SelectedPosition.value = arrayListOf()
         _StoredImages.value = arrayListOf()
         _SelectedUri.value = arrayListOf()
@@ -363,44 +379,44 @@ class MyPageViewModel(): ViewModel() {
         _PostTagLiveData.value = arrayListOf()
     }
 
-    fun requestFriend(body: Followbody){
+    fun requestFriend(body: Followbody) {
         var result = false
         viewModelScope.launch {
-            UserRepository.requestFriend(body){
-                if(it){
-                    Log.d("TAG","Success to request Friend")
+            UserRepository.requestFriend(body) {
+                if (it) {
+                    Log.d("TAG", "Success to request Friend")
                     result = it
-                }else{
-                    Log.d("TAG","Fail to request Friend")
+                } else {
+                    Log.d("TAG", "Fail to request Friend")
                 }
             }
             _FriendRequest.value = result
         }
     }
 
-    fun requestUnFriend(targetId: String, body: UnFollowbody){
+    fun requestUnFriend(targetId: String, body: UnFollowbody) {
         var result = false
         viewModelScope.launch {
-            UserRepository.requestunFriend(targetId ,body){
-                if(it){
-                    Log.d("TAG","Success to request UnFriend")
+            UserRepository.requestunFriend(targetId, body) {
+                if (it) {
+                    Log.d("TAG", "Success to request UnFriend")
                     result = it
-                }else{
-                    Log.d("TAG","Fail to request UnFriend")
+                } else {
+                    Log.d("TAG", "Fail to request UnFriend")
                 }
             }
             _FriendRequest.value = result
         }
     }
 
-    fun requestDelFriend(body: DelFriendBody){
+    fun requestDelFriend(body: DelFriendBody) {
         var result = false
         viewModelScope.launch {
-            UserRepository.requestDelFriend(body){
-                if(it){
+            UserRepository.requestDelFriend(body) {
+                if (it) {
                     Log.d("TAG", "Success to request Delete Friend")
                     result = it
-                }else{
+                } else {
                     Log.d("TAG", "Fail to request Delete Friend")
                 }
             }
@@ -408,14 +424,14 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun requestAccpet(body: Friendbody){
+    fun requestAccpet(body: Friendbody) {
         var result = false
         viewModelScope.launch {
-            UserRepository.acceptFriend(body){
-                if(it){
+            UserRepository.acceptFriend(body) {
+                if (it) {
                     Log.d("TAG", "Success to accept Friend")
                     result = it
-                }else{
+                } else {
                     Log.d("TAG", "Fail to accept Friend")
                 }
             }
@@ -423,14 +439,14 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun blockUser(body: BlockBody){
+    fun blockUser(body: BlockBody) {
         var result = false
         viewModelScope.launch {
-            UserRepository.blockUser(body){
-                if(it){
+            UserRepository.blockUser(body) {
+                if (it) {
                     Log.d("TAG", "Success to block User")
                     result = it
-                }else{
+                } else {
                     Log.d("TAG", "Fail to block User")
                 }
             }
@@ -438,11 +454,11 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun getFriendsList(targetId: String, lastCreatedAt:String){
+    fun getFriendsList(targetId: String, lastCreatedAt: String) {
         var Friends = FriendsResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
-            UserRepository.requestFriendsList(targetId,lastCreatedAt){
-                if(it.success){
+            UserRepository.requestFriendsList(targetId, lastCreatedAt) {
+                if (it.success) {
                     Friends = it
                 }
             }
@@ -450,11 +466,11 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun getFirstFriendsList(targetId: String){
+    fun getFirstFriendsList(targetId: String) {
         var Friends = FriendsResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
-            UserRepository.requestFirstFriendsList(targetId){
-                if(it.success){
+            UserRepository.requestFirstFriendsList(targetId) {
+                if (it.success) {
                     Friends = it
                 }
             }
@@ -462,11 +478,11 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun getFirstFriendsRequestList(targetId: String){
+    fun getFirstFriendsRequestList(targetId: String) {
         var Requests = FriendsResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
-            UserRepository.getFirstRequestList(targetId){
-                if(it.success){
+            UserRepository.getFirstRequestList(targetId) {
+                if (it.success) {
                     Requests = it
                 }
             }
@@ -474,11 +490,11 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
-    fun getFriendsRequestList(targetId: String, lastCreatedAt: String){
+    fun getFriendsRequestList(targetId: String, lastCreatedAt: String) {
         var Requests = FriendsResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
-            UserRepository.getRequestList(targetId, lastCreatedAt){
-                if(it.success){
+            UserRepository.getRequestList(targetId, lastCreatedAt) {
+                if (it.success) {
                     Requests = it
                 }
             }
@@ -487,11 +503,11 @@ class MyPageViewModel(): ViewModel() {
     }
 
     //미디어 태그 구하기
-    fun getUserTags(targetId: String){
+    fun getUserTags(targetId: String) {
         var tags = listOf<Tag>()
         viewModelScope.launch {
-            PostRepository.getUserTags(targetId){
-                if(it.size > 0){
+            PostRepository.getUserTags(targetId) {
+                if (it.size > 0) {
                     tags = it
                 }
             }
@@ -513,10 +529,10 @@ class MyPageViewModel(): ViewModel() {
         return true
     }
 
-    fun getTagList(): List<String>{
+    fun getTagList(): List<String> {
         val tags = _PostTagLiveData.value
-        if(tags != null){
-            if(tags.size > 0)
+        if (tags != null) {
+            if (tags.size > 0)
                 return tags
         }
 
