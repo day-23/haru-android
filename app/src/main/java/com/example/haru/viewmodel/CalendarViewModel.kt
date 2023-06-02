@@ -225,7 +225,6 @@ class CalendarViewModel : ViewModel() {
                                 it.todos[i].repeatOption == "매일" ){
                                 todoList.add(it.todos[i].copy())
                             } else {
-                                Log.d("반복투두", it.todos[i].toString())
                                 while (todayDate != null && date_comparison(todayDate, startdateFormat) < 0) {
                                     when (it.todos[i].repeatOption) {
                                         "매주" -> {
@@ -319,7 +318,7 @@ class CalendarViewModel : ViewModel() {
                                 today = schedule.repeatStart!!
                                 todayDate = serverformat.parse(today)
 
-                                schedule.startTime = todayDate
+                                schedule.startTime = todayDate.clone() as Date
                                 todayDate.hours = endtime.hours
                                 todayDate.minutes = endtime.minutes
                                 todayDate.seconds = endtime.seconds
@@ -978,7 +977,7 @@ class CalendarViewModel : ViewModel() {
 
                                 calendar.add(Calendar.SECOND, newRepeatValue.toInt())
 
-                                val intervaldate = calendar.timeInMillis - repeatstart.time
+                                val intervaldate = (calendar.timeInMillis - repeatstart.time)/1000
 
                                 when (repeatOption) {
                                     "매주"->{

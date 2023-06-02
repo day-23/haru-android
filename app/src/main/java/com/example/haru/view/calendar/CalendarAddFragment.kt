@@ -409,14 +409,14 @@ class CalendarAddFragment(private val activity: Activity,
         }
 
         binding.categoryChooseIv.setOnClickListener {
-            val dlg = CategoryChooseDialog(this)
-
-            dlg.show(categories){
+            val dlg = CategoryChooseDialog(this, null, categories){
                 category = it
 
                 val drawable = binding.categoryChooseIv.background as VectorDrawable
                 drawable.setColorFilter(Color.parseColor(it.color),PorterDuff.Mode.SRC_ATOP)
             }
+
+            dlg.show(parentFragmentManager, null)
         }
 
         binding.btnRepeatEndDateSchedule.setOnClickListener {

@@ -436,14 +436,14 @@ class CalendarItemFragment(val schedule: Schedule,
         }
 
         binding.categoryChooseIv.setOnClickListener {
-            val dlg = CategoryChooseDialog(null, this)
-
-            dlg.show(categories) {
+            val dlg = CategoryChooseDialog(null, this, categories){
                 category = it
 
                 val drawable = binding.categoryChooseIv.background as VectorDrawable
                 drawable.setColorFilter(Color.parseColor(it.color), PorterDuff.Mode.SRC_ATOP)
             }
+
+            dlg.show(parentFragmentManager, null)
         }
 
         binding.btnRepeatEndDateSchedule.setOnClickListener {
@@ -1593,7 +1593,7 @@ class CalendarItemFragment(val schedule: Schedule,
         val drawable = binding.categoryChooseIv.background as VectorDrawable
 
         if (schedule.category == null) {
-            drawable.setColorFilter(Color.parseColor("#1DAFFF"), PorterDuff.Mode.SRC_ATOP)
+            drawable.setColorFilter(Color.parseColor("#AAD7FF"), PorterDuff.Mode.SRC_ATOP)
         } else {
             drawable.setColorFilter(
                 Color.parseColor(schedule.category.color),
