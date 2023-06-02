@@ -485,31 +485,6 @@ class AdapterMonth(val activity: Activity,
 
         layoutParams.verticalBias = vertical
 
-//        if(size == 4) {
-//            if(line == 4) {
-//                layoutParams.bottomToTop = lastView.id
-//            } else {
-//                layoutParams.bottomToTop = layoutList[line+1].id
-//            }
-//            if(count == 4){
-//                layoutParams.verticalBias = 0.95f
-//            } else {
-//                layoutParams.verticalBias = count / 3f
-//            }
-//        } else {
-//            if(line == 5) {
-//                layoutParams.bottomToTop = lastView.id
-//            } else {
-//                layoutParams.bottomToTop = layoutList[line+1].id
-//            }
-//
-//            if(count == 3){
-//                layoutParams.verticalBias = 0.95f
-//            } else {
-//                layoutParams.verticalBias = count / 4f
-//            }
-//        }
-
         testView.setBackgroundResource(R.drawable.calendar_textview_border)
         val drawable = testView.background as GradientDrawable
         drawable.setColorFilter(color,PorterDuff.Mode.SRC_ATOP)
@@ -784,8 +759,7 @@ class AdapterMonth(val activity: Activity,
                                     val repeatStart = format.parse(content.schedule.repeatStart)
                                     val calendar2 = Calendar.getInstance()
                                     calendar2.time = repeatStart
-                                    calendar2.add(Calendar.MILLISECOND, content.timeInterval!!)
-
+                                    calendar2.add(Calendar.SECOND, content.timeInterval!!)
 
                                     repeatStart.hours = 0
                                     repeatStart.minutes = 0
@@ -805,12 +779,13 @@ class AdapterMonth(val activity: Activity,
                                         if (content.position == contentPosition) {
                                             cloneLiveSchedule.remove(content)
 
-                                            var color =
-                                                Color.parseColor(content.schedule.category!!.color)
+                                            val color =
+                                                Color.parseColor(content.schedule.category.color)
 
                                             if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
-                                                val overflowvalue =
-                                                    contentPosition + interval - (contentPosition + interval) / 7 * 7
+                                                val overflowvalue = contentPosition + interval - (contentPosition/7+1)*7
+//                                                    contentPosition + interval - (contentPosition + interval) / 7 * 7
+                                                //overflowvalue = 26 + 9 - (26+9)
                                                 saveCntList.add(overflowvalue)
                                                 saveScheduleList.add(content.schedule)
                                                 saveLineList.add(contentLine)
@@ -865,8 +840,7 @@ class AdapterMonth(val activity: Activity,
                                             var color = Color.rgb(0x1D, 0xAF, 0xFF)
 
                                             if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
-                                                val overflowvalue =
-                                                    contentPosition + interval - (contentPosition + interval) / 7 * 7
+                                                val overflowvalue = contentPosition + interval - (contentPosition/7+1)*7
                                                 saveCntList.add(overflowvalue)
                                                 saveScheduleList.add(content.schedule)
                                                 saveLineList.add(contentLine)
@@ -988,7 +962,7 @@ class AdapterMonth(val activity: Activity,
                                         val calendar2 = Calendar.getInstance()
                                         calendar2.time = repeatStart
                                         calendar2.add(
-                                            Calendar.MILLISECOND,
+                                            Calendar.SECOND,
                                             cloneLiveSchedule[k].timeInterval!!
                                         )
 
@@ -1027,7 +1001,7 @@ class AdapterMonth(val activity: Activity,
                                         val calendar2 = Calendar.getInstance()
                                         calendar2.time = repeatStart
                                         calendar2.add(
-                                            Calendar.MILLISECOND,
+                                            Calendar.SECOND,
                                             cloneLiveSchedule[k].timeInterval!!
                                         )
 

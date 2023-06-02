@@ -135,7 +135,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                     scheduleCalendar.time = startDate
 
                     scheduleCalendar.add(
-                        Calendar.MILLISECOND,
+                        Calendar.SECOND,
                         schedule.repeatValue.replace("T","").toInt()
                     )
 

@@ -39,7 +39,7 @@ class CalendarItemFragment(val schedule: Schedule,
     private val calendarDateFormatter =
         SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREA)
     private val dateformat = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
-    val timeParser = SimpleDateFormat("aa hh:mm", Locale.KOREAN)
+    val timeParser = SimpleDateFormat("a h:mm", Locale.KOREAN)
 
     private val repeatStartCalendar = Calendar.getInstance()
     private val repeatEndCalendar = Calendar.getInstance()
@@ -839,7 +839,7 @@ class CalendarItemFragment(val schedule: Schedule,
         binding.btnSubmitSchedule.setOnClickListener {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
             val repeatEndDateBtnFormat = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
-            val timeFormat = SimpleDateFormat("a HH:mm", Locale.KOREA)
+            val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
             val timeFormat2 = SimpleDateFormat("HH:mm", Locale.KOREA)
 
             var repeatStartDate = ""
@@ -864,7 +864,7 @@ class CalendarItemFragment(val schedule: Schedule,
                             timeFormat2.format(startTime)+
                             ":00+09:00"
                     val calendarClone = repeatStartCalendar.clone() as Calendar
-                    calendarClone.add(Calendar.YEAR, 100)
+                    calendarClone.set(Calendar.YEAR, 2200)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) +
                             "T" +
@@ -894,7 +894,7 @@ class CalendarItemFragment(val schedule: Schedule,
                         dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
 
                     val calendarClone = repeatEndCalendar.clone() as Calendar
-                    calendarClone.add(Calendar.YEAR, 100)
+                    calendarClone.set(Calendar.YEAR, 2200)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) + "T23:59:55+09:00"
                 } else {
@@ -953,40 +953,50 @@ class CalendarItemFragment(val schedule: Schedule,
                 }
             } else {
                 if (binding.alldaySwitch.isChecked) {
-                    repeatEndCalendar.apply {
-                        set(Calendar.HOUR_OF_DAY, 23)
-                        set(Calendar.MINUTE, 59)
-                        set(Calendar.SECOND, 55)
+                    if(option != null) {
+                        repeatEndCalendar.apply {
+                            set(Calendar.HOUR_OF_DAY, 23)
+                            set(Calendar.MINUTE, 59)
+                            set(Calendar.SECOND, 55)
+                        }
+
+                        repeatvalue =
+                            "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
+                                .toString()
+                    } else {
+                        repeatvalue = null
                     }
-
-                    repeatvalue =
-                        "T" + (repeatEndCalendar.time.time - repeatStartCalendar.time.time).toString()
                 } else {
-                    val startTime = timeFormat.parse(binding.repeatStartTimeBtn.text.toString())
-                    val endTime = timeFormat.parse(binding.repeatEndTimeBtn.text.toString())
+                    if(option != null) {
+                        val startTime = timeFormat.parse(binding.repeatStartTimeBtn.text.toString())
+                        val endTime = timeFormat.parse(binding.repeatEndTimeBtn.text.toString())
 
-                    repeatStartCalendar.set(
-                        Calendar.HOUR_OF_DAY,
-                        startTime.hours
-                    )
+                        repeatStartCalendar.set(
+                            Calendar.HOUR_OF_DAY,
+                            startTime.hours
+                        )
 
-                    repeatStartCalendar.set(
-                        Calendar.MINUTE,
-                        startTime.minutes
-                    )
+                        repeatStartCalendar.set(
+                            Calendar.MINUTE,
+                            startTime.minutes
+                        )
 
-                    repeatEndCalendar.set(
-                        Calendar.HOUR_OF_DAY,
-                        endTime.hours
-                    )
+                        repeatEndCalendar.set(
+                            Calendar.HOUR_OF_DAY,
+                            endTime.hours
+                        )
 
-                    repeatEndCalendar.set(
-                        Calendar.MINUTE,
-                        endTime.minutes
-                    )
+                        repeatEndCalendar.set(
+                            Calendar.MINUTE,
+                            endTime.minutes
+                        )
 
-                    repeatvalue =
-                        "T" + (repeatEndCalendar.time.time - repeatStartCalendar.time.time).toString()
+                        repeatvalue =
+                            "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
+                                .toString()
+                    } else {
+                        repeatvalue = null
+                    }
                 }
             }
 
@@ -1128,40 +1138,21 @@ class CalendarItemFragment(val schedule: Schedule,
 
                                     val calendarviewmodel = CalendarViewModel()
 
-                                    if (category != null) {
-                                        calendarviewmodel.submitScheduleFront(
-                                            schedule.id, PostScheduleFront(
-                                                binding.scheduleContentEt.text.toString(),
-                                                binding.etMemoSchedule.text.toString(),
-                                                category!!.id,
-                                                emptyList(),
-                                                isAllday,
-                                                null,
-                                                null,
-                                                serverFormatter.format(schedule.startTime),
-                                                serverFormatter.format(schedule.endTime),
-                                                serverFormatter.format(nextDate)
-                                            )
-                                        ) {
-                                            requireActivity().supportFragmentManager.popBackStack()
-                                        }
-                                    } else {
-                                        calendarviewmodel.submitScheduleFront(
-                                            schedule.id, PostScheduleFront(
-                                                binding.scheduleContentEt.text.toString(),
-                                                binding.etMemoSchedule.text.toString(),
-                                                null,
-                                                emptyList(),
-                                                isAllday,
-                                                null,
-                                                null,
-                                                serverFormatter.format(schedule.startTime),
-                                                serverFormatter.format(schedule.endTime),
-                                                serverFormatter.format(nextDate)
-                                            )
-                                        ) {
-                                            requireActivity().supportFragmentManager.popBackStack()
-                                        }
+                                    calendarviewmodel.submitScheduleFront(
+                                        schedule.id, PostScheduleFront(
+                                            binding.scheduleContentEt.text.toString(),
+                                            binding.etMemoSchedule.text.toString(),
+                                            category?.id,
+                                            emptyList(),
+                                            isAllday,
+                                            null,
+                                            null,
+                                            serverFormatter.format(schedule.startTime),
+                                            serverFormatter.format(schedule.endTime),
+                                            serverFormatter.format(nextDate)
+                                        )
+                                    ) {
+                                        requireActivity().supportFragmentManager.popBackStack()
                                     }
                                 } else {
                                     val calendarviewmodel = CalendarViewModel()
@@ -1640,7 +1631,7 @@ class CalendarItemFragment(val schedule: Schedule,
                 calendar.time = repeatstart
 
                 calendar.add(
-                    Calendar.MILLISECOND,
+                    Calendar.SECOND,
                     schedule.repeatValue.replace("T", "").toInt()
                 )
 
@@ -1659,19 +1650,26 @@ class CalendarItemFragment(val schedule: Schedule,
                 }
 
                 repeatStartCalendar.time = repeatstart
-                binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
+                binding.repeatStartDateBtn.text = dateformat.format(schedule.startTime)
 
                 repeatEndCalendar.time = repeatend
-                binding.repeatEndDateBtn.text = dateformat.format(repeatend)
+                binding.repeatEndDateBtn.text = dateformat.format(schedule.endTime)
             } else { // 반복이지만 하루 일정일 때
                 val repeatstart = calendarDateFormatter.parse(schedule.repeatStart!!)
                 val repeatend = calendarDateFormatter.parse(schedule.repeatEnd!!)
 
                 repeatStartCalendar.time = repeatstart
-                binding.repeatStartDateBtn.text = dateformat.format(repeatstart)
+                binding.repeatStartDateBtn.text = dateformat.format(schedule.startTime)
 
                 repeatEndCalendar.time = repeatstart
-                binding.repeatEndDateBtn.text = dateformat.format(repeatstart)
+
+                repeatEndCalendar.apply {
+                    set(Calendar.HOUR_OF_DAY, repeatend.hours)
+                    set(Calendar.MINUTE, repeatend.minutes)
+                    set(Calendar.SECOND, repeatend.seconds)
+                }
+
+                binding.repeatEndDateBtn.text = dateformat.format(schedule.endTime)
 
                 if (repeatend.year < 200) {
                     binding.repeatEndDateSwitchSchedule.isChecked = true
@@ -1850,5 +1848,9 @@ class CalendarItemFragment(val schedule: Schedule,
         initIsAllday = binding.alldaySwitch.isChecked
 
         initRepeatSwitch = binding.repeatSwitchSchedule.isChecked
+
+        binding.repeatStartTimeBtn.text = timeParser.format(repeatStartCalendar.time)
+        binding.repeatEndTimeBtn.text = timeParser.format(repeatEndCalendar.time)
+        Log.d("캘린더오류", repeatEndCalendar.time.toString())
     }
 }

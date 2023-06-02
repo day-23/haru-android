@@ -68,37 +68,54 @@ class MainActivity : BaseActivity(){
             val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
             val intent = Intent(this, AlarmWorker::class.java)
+            val intent2 = Intent(this, AlarmWorker::class.java)
             if (User.id != "") {
                 intent.putExtra("userId", User.id)
+                intent.putExtra("requestCode", "0")
                 val pendingIntent = PendingIntent.getBroadcast(
                     this, 0, intent,
                     PendingIntent.FLAG_MUTABLE
                 )
 
+//                intent2.putExtra("requestCode", "1")
+//
+//                val pendingIntent2 = PendingIntent.getBroadcast(
+//                    this, 1, intent2,
+//                    PendingIntent.FLAG_MUTABLE
+//                )
+
                 val calendar = Calendar.getInstance()
-                val todaytime = calendar.time
+//                val todaytime = calendar.time
+//
+//                todaytime.hours = 9
+//                todaytime.minutes = 0
+//                todaytime.seconds = 0
+//
+//                if (calendar.time.after(todaytime)){
+//                    calendar.add(Calendar.DATE, 1)
+//                }
+//
+//                calendar.apply {
+//                    set(Calendar.HOUR_OF_DAY, 9)
+//                    set(Calendar.MINUTE, 0)
+//                    set(Calendar.SECOND, 0)
+//                }
 
-                todaytime.hours = 9
-                todaytime.minutes = 0
-                todaytime.seconds = 0
-
-                if (calendar.time.after(todaytime)){
-                    calendar.add(Calendar.DATE, 1)
-                }
-
-                calendar.apply {
-                    set(Calendar.HOUR_OF_DAY, 9)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
-                }
-
-//                calendar.add(Calendar.SECOND, 20)
+                calendar.add(Calendar.SECOND, 5)
 
                 alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     calendar.timeInMillis,
                     pendingIntent
                 )
+
+//                calendar.add(Calendar.SECOND, 5)
+//
+//                alarmManager.setExactAndAllowWhileIdle(
+//                    AlarmManager.RTC_WAKEUP,
+//                    calendar.timeInMillis,
+//                    pendingIntent2
+//                )
             }
         } else {
             val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
