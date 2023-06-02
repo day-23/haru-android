@@ -2,6 +2,7 @@ package com.example.haru.view.checklist
 
 import BaseActivity
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
@@ -30,6 +31,7 @@ import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.view.sns.SearchFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.CheckListViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
 class ChecklistFragment : Fragment(), LifecycleObserver {
@@ -67,6 +69,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
 
+        val naviView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+
         initTagList()
         initTodoList()
 
@@ -78,10 +82,16 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         }
 
         binding.ivTagEtc.setOnClickListener {
-            if (!binding.drawableLayout.isDrawerOpen(Gravity.RIGHT)){
+            if (!binding.drawableLayout.isDrawerOpen(Gravity.RIGHT)) {
                 binding.drawableLayout.openDrawer(Gravity.RIGHT)
-            }
-            else{
+//                naviView.backgroundTintList =
+//                    ColorStateList.valueOf(
+//                        ContextCompat.getColor(
+//                            requireContext(),
+//                            R.color.dialog_bg
+//                        )
+//                    )
+            } else {
                 binding.drawableLayout.closeDrawer(Gravity.RIGHT)
             }
         }
