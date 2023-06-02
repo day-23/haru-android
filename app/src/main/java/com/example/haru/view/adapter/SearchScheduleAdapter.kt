@@ -5,12 +5,17 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.VectorDrawable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.R
 import com.example.haru.data.model.Schedule
 import com.example.haru.databinding.FragmentSearchScheduleBinding
 import com.example.haru.databinding.FragmentSearchScheduleHeaderBinding
@@ -23,6 +28,8 @@ class SearchScheduleAdapter(val context: Context) :
 
     private val header = 0
     private val item = 1
+
+    var content : String? = null
 
     private val diffCallback = object : DiffUtil.ItemCallback<Schedule>() {
         override fun areItemsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
@@ -76,7 +83,14 @@ class SearchScheduleAdapter(val context: Context) :
         fun bind(item: Schedule) {
             Log.e("20191627", "$item")
 
-            binding.tvScheduleContent.text = item.content
+            if (content != null) {
+                val start = item.content.indexOf(content!!, ignoreCase = true)
+                val end = start + content!!.length
+                val span = SpannableString(item.content)
+                span.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.highlight)), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                binding.tvScheduleContent.text = span
+            } else
+                binding.tvScheduleContent.text = item.content
 
             if (item.isAllDay)
                 binding.tvScheduleTime.text = "하루종일"
@@ -127,7 +141,6 @@ class SearchScheduleAdapter(val context: Context) :
             } else {
                 binding.ivCategoryColor.backgroundTintList =
                     ColorStateList.valueOf(Color.parseColor(item.category.color))
-
             }
         }
     }

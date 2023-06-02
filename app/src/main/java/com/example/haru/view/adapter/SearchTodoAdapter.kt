@@ -1,6 +1,9 @@
 package com.example.haru.view.adapter
 
 import android.content.Context
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +26,8 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
     private val divider = 0
     private val header = 1
     private val item = 2
+
+    var content: String? = null
 
     private val diffCallback = object : DiffUtil.ItemCallback<Todo>() {
         override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
@@ -96,7 +101,22 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
                 return
 
             binding.todo = item
-            binding.tvTitle.text = item.content
+
+            if (content != null) {
+                val start = item.content.indexOf(content!!, ignoreCase = false)
+                val end = start + content!!.length
+                val span = SpannableString(item.content)
+                span.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.highlight
+                        )
+                    ), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                binding.tvTitle.text = span
+            } else binding.tvTitle.text = item.content
+            
 //            if (todoClick != null) {
 //                binding.ClickLayout.setOnClickListener {
 //                    todoClick?.onClick(it, item.id)

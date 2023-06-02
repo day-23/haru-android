@@ -78,6 +78,11 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                 binding.emptyLayout.visibility =
                     if (it.first == null && it.second == null) View.VISIBLE else View.GONE
 
+                if (it.first == null && it.second == null) {
+                    scheduleAdapter.content = null
+                    todoAdapter.content = null
+                }
+
                 scheduleAdapter.setDataList(it.first)
                 todoAdapter.setDataList(it.second)
             })
@@ -87,6 +92,8 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     val content = binding.etSearchContent.text.toString().trim()
                     if (content != "") {
                         viewModel.getScheduleTodoSearch(content = content)
+                        scheduleAdapter.content = content
+                        todoAdapter.content = content
                     }
                     binding.etSearchContent.setText("")
                     binding.etSearchContent.clearFocus()
