@@ -217,7 +217,7 @@
                     android:layout_marginBottom="15dp"
                     android:visibility="invisible"
                     app:borderWidth="0dp"
-                    app:elevation="10dp"
+                    app:elevation="0dp"
                     app:maxImageSize="56dp"
                     app:srcCompat="@drawable/calendar_todo_add_btn"
                     app:tint="@null" />
@@ -229,13 +229,13 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginRight="20dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="10dp"
                     app:borderWidth="0dp"
-                    app:elevation="10dp"
+                    app:elevation="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:maxImageSize="56dp"
-                    app:srcCompat="@drawable/calendar_add_btn"
+                    app:srcCompat="@drawable/fab"
                     app:tint="@null" />
             </RelativeLayout>
 
