@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import BaseActivity
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -38,21 +39,31 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     var isMyPage = false
     var friendStatus = 0
     var selectedTag: MediaTagAdapter.MediaTagViewHolder? = null
+    var lastDate = ""
+    var index = 0
 
     override fun onCommentClick(postitem: Post) {
         mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
 
-        mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
-            val newFrag = AddCommentFragment(postitem,user)
+        if(postitem.isTemplatePost) {
+            val newFrag = CommentsFragment(postitem, com.example.haru.utils.User.id)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             transaction.addToBackStack("snsmypage")
             transaction.commit()
+        }else{
+            mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
+                val newFrag = AddCommentFragment(postitem,user)
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragments_frame, newFrag)
+                transaction.addToBackStack("snsmypage")
+                transaction.commit()
+            }
         }
     }
 
     override fun onTotalCommentClick(post: Post) {
-        val newFrag = CommentsFragment(post)
+        val newFrag = CommentsFragment(post, com.example.haru.utils.User.id)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         transaction.addToBackStack("snsmypage")
@@ -68,14 +79,19 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     override fun onTagClicked(tag: Tag, holder : MediaTagAdapter.MediaTagViewHolder) {
-        if(selectedTag != holder) {
-            selectedTag = holder
-            holder.tag.setBackgroundResource(R.drawable.tag_btn_clicked)
+        holder.tag.setBackgroundResource(R.drawable.tag_btn_clicked)
+        holder.tag.setTextColor(Color.parseColor("#fdfdfd"))
+        if(holder != selectedTag) {
             mypageViewModel.getFirstTagMedia(userId, tag.id)
-        }else{
-            selectedTag = null
-            holder.tag.setBackgroundResource(R.drawable.tag_btn_custom)
+        }
+        selectedTag?.tag?.setBackgroundResource(R.drawable.tag_btn_custom)
+        selectedTag?.tag?.setTextColor(Color.parseColor("#191919"))
+
+        if(holder == selectedTag){
             mypageViewModel.getFirstMedia(userId)
+            selectedTag = null
+        }else {
+            selectedTag = holder
         }
     }
 
@@ -104,27 +120,12 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         savedInstanceState: Bundle?
     ): View? {
         Log.d("TAG", "MyPageFragment - onCreateView() called")
-
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
-        mypageViewModel.init_page()
 
+        initProfile()
+        mypageViewModel.getFirstFeed(userId)
         mypageViewModel.getFirstMedia(userId)
         mypageViewModel.getUserTags(userId)
-
-        if(userId == com.example.haru.utils.User.id){
-            isMyPage = true
-            binding.editProfile.text = "프로필 편집"
-            binding.profileShare.visibility = View.VISIBLE
-            binding.myPageMyRecord.visibility = View.GONE
-            mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
-        }else{
-            hideMytitle()
-            showFriendTitle()
-            isMyPage = false
-            binding.editProfile.text = "친구 신청"
-            binding.profileShare.visibility = View.GONE
-            mypageViewModel.getUserInfo(userId)
-        }
 
         mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
             binding.profileName.text = user.name
@@ -167,30 +168,51 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         tagRecyclerView.adapter = tagAdapter
         tagRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        mypageViewModel.Page.observe(viewLifecycleOwner){page ->
-            val page = page.toString()
-            mypageViewModel.getFeed(page, userId)
+        mypageViewModel.InitFeed.observe(viewLifecycleOwner){feeds ->
+            if(feeds.size > 0) {
+                index = feeds.size - 1
+                lastDate = feeds[index].createdAt
+                feedAdapter.initList(feeds)
+            }
         }
 
         mypageViewModel.NewFeed.observe(viewLifecycleOwner){feeds ->
-            feedAdapter.newPage(feeds)
-            if(feeds.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+            if(feeds.size > 0) {
+                index = feeds.size - 1
+                lastDate = feeds[index].createdAt
+                feedAdapter.newPage(feeds)
+            }else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
         mypageViewModel.FirstMedia.observe(viewLifecycleOwner){medias ->
-            mediaAdapter.firstPage(medias.data)
+            if(medias.data.size > 0) {
+                index = medias.data.size - 1
+                lastDate = medias.data[index].createdAt
+                mediaAdapter.firstPage(medias.data)
+            }
+        }
+
+        mypageViewModel.Media.observe(viewLifecycleOwner){medias ->
+            if(medias.data.size > 0){
+                index = medias.data.size - 1
+                lastDate = medias.data[index].createdAt
+                mediaAdapter.newPage(medias.data)
+            }
         }
 
         mypageViewModel.Tags.observe(viewLifecycleOwner){tags ->
             tagAdapter.newPage(ArrayList(tags))
         }
+
         val scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!feedRecyclerView.canScrollVertically(1)) {
-                    mypageViewModel.addPage()
-                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT)
+                    mypageViewModel.getFeed(userId, lastDate)
+                }else if(!mediaRecyclerView.canScrollVertically(1)){
+                    mypageViewModel.getMedia(userId, lastDate)
                 }
+                Toast.makeText(requireContext(), "새 게시글 불러오는 중 ", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -224,13 +246,11 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         }
 
         binding.mypageShowFeed.setOnClickListener {
-            binding.feedRecycler.visibility = View.VISIBLE
-            binding.mediaContainer.visibility = View.GONE
+            feedClicked()
         }
 
         binding.mypageShowMedia.setOnClickListener {
-            binding.feedRecycler.visibility = View.GONE
-            binding.mediaContainer.visibility = View.VISIBLE
+            mediaClicked()
         }
 
         mypageViewModel.FriendRequest.observe(viewLifecycleOwner){ result ->
@@ -318,6 +338,41 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         binding.snsMenu.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
         binding.mypageBack.visibility = View.VISIBLE
         binding.mypageSetup.visibility = View.VISIBLE
+    }
+
+    fun feedClicked(){
+        binding.feedRecycler.visibility = View.VISIBLE
+        binding.mediaContainer.visibility = View.GONE
+        binding.feedUnderline.setBackgroundResource(R.drawable.todo_table_selected)
+        binding.mediaUnderline.setBackgroundColor(Color.parseColor("#fdfdfd"))
+        binding.feedText.setTextColor(Color.parseColor("#1DAFFF"))
+        binding.mediaText.setTextColor(Color.parseColor("#acacac"))
+    }
+
+    fun mediaClicked(){
+        binding.feedRecycler.visibility = View.GONE
+        binding.mediaContainer.visibility = View.VISIBLE
+        binding.mediaUnderline.setBackgroundResource(R.drawable.todo_table_selected)
+        binding.feedUnderline.setBackgroundColor(Color.parseColor("#fdfdfd"))
+        binding.mediaText.setTextColor(Color.parseColor("#1DAFFF"))
+        binding.feedText.setTextColor(Color.parseColor("#acacac"))
+    }
+
+    fun initProfile(){
+        if(userId == com.example.haru.utils.User.id){
+            isMyPage = true
+            binding.editProfile.text = "프로필 편집"
+            binding.profileShare.visibility = View.VISIBLE
+            binding.myPageMyRecord.visibility = View.GONE
+            mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
+        }else{
+            hideMytitle()
+            showFriendTitle()
+            isMyPage = false
+            binding.editProfile.text = "친구 신청"
+            binding.profileShare.visibility = View.GONE
+            mypageViewModel.getUserInfo(userId)
+        }
     }
 
     fun mediaLayout(){

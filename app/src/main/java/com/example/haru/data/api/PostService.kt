@@ -8,16 +8,27 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface PostService {
-    @GET("post/{userId}/posts/all")
-    fun getPosts(@Path("userId") userId: String, @Query("lastCreatedAt") lastCreatedAt:String) : Call<PostResponse>
+    @GET("post/{userId}/posts/all/")
+    fun getPosts(@Path("userId") userId: String,
+                 @Query("lastCreatedAt") lastCreatedAt:String) : Call<PostResponse>
 
     @GET("post/{userId}/posts/all?page=1")
     fun getFirstPosts(@Path("userId") userId: String) : Call<PostResponse>
 
-    @GET("post/{userId}/posts/user/{targetId}/feed") //TODO:lastCreatedAt 처리 해주어야함
+    @GET("post/{userId}/posts/hashtag/{tagId}?page=1")
+    fun getFirstHotPosts(@Path("userId") userId: String, @Path("tagId")tagId: String) : Call<PostResponse>
+
+    @GET("post/{userId}/posts/hashtag/{tagId}")
+    fun getHotPosts(@Path("userId") userId: String, @Path("tagId")tagId: String, @Query("lastCreatedAt") lastCreatedAt: String) : Call<PostResponse>
+
+    @GET("post/{userId}/posts/user/{targetId}/feed/all") //TODO:lastCreatedAt 처리 해주어야함
     fun getMyFeed(@Path("userId") userId: String,
                   @Path("targetId") targetId : String,
-                  @Query("page") page:String) : Call<PostResponse>
+                  @Query("lastCreatedAt") lastCreatedAt: String) : Call<PostResponse>
+
+    @GET("post/{userId}/posts/user/{targetId}/feed?page=1")
+    fun getFirstMyFeed(@Path("userId") userId: String,
+                  @Path("targetId") targetId : String,) : Call<PostResponse>
 
     @GET("post/{userId}/posts/user/{targetId}/media?page=1")
     fun getFirstMedia(@Path("userId") userId: String, @Path("targetId") targetId: String) : Call<MediaResponse>
@@ -51,6 +62,13 @@ interface PostService {
         @Part("content") content: RequestBody,
         @PartMap hashTags: Map<String, @JvmSuppressWildcards RequestBody>
     ): Call<AddPostResponse>
+
+    @POST("post/{userId}/template")
+    fun addTemplate(
+        @Path("userId") userId: String,
+        @Body body:Template
+    ): Call<AddPostResponse>
+
     @POST("comment/{userId}/{postId}/{imageId}")
     fun writeComments(
         @Path("userId") userId: String,
@@ -84,11 +102,21 @@ interface PostService {
         @Path("targetId") targetId: String
     ): Call<TagResponse>
 
+    @GET("post/{userId}/hashtags/")
+    fun getHotTags(
+        @Path("userId") userId: String
+    ): Call<TagResponse>
+
     @GET("post/{userId}/posts/user/{targetId}/media/hashtag/{tagId}?page=1")
     fun getFirstTagMedia(
         @Path("userId") userId: String,
         @Path("targetId") targetId: String,
         @Path("tagId") tagId: String
     ) : Call<MediaResponse>
+
+    @GET("post/{userId}/template")
+    fun getTemplates(
+        @Path("userId") userId: String,
+    ) : Call<ProfileListResponse>
 
 }
