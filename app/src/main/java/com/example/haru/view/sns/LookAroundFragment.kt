@@ -109,7 +109,7 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked{
 
         snsViewModel.Posts.observe(viewLifecycleOwner){posts ->
             if(posts.isNotEmpty()) {
-                postAdapter.newPage(posts)
+                postAdapter.firstPage(posts)
                 getLastDate(posts)
             }
         }
@@ -120,7 +120,7 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked{
 
         snsViewModel.HotFirstPosts.observe(viewLifecycleOwner){posts ->
             if(posts.isNotEmpty()) {
-                postAdapter.newPage(posts)
+                postAdapter.firstPage(posts)
                 getLastDate(posts)
             }
         }
