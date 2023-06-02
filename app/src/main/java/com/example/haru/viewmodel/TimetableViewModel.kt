@@ -279,6 +279,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
 
             _Schedules.value = IndexList
             _SchedulesAllday.value = IndexList_allday
+
+
+            d("20191630", "after getSchedule: ${IndexList}")
         }
     }
 
@@ -367,15 +370,17 @@ class TimetableViewModel(val context : Context): ViewModel() {
         _MoveView.value = view
     }
 
+    /*TODO 로케이션 계산, 시간 계산 확인 */
     suspend fun patchMoved(newRepeatStart: String, preScheduleData: Schedule){
         //"2023-03-07T18:30:00.000Z" X -> "2023-05-07T00:00:00+09:00"
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
         // Parse the strings to ZonedDateTime instances
-        val preRepeatStart = ZonedDateTime.parse(preScheduleData.repeatStart, formatter)
-        val preRepeatEnd = ZonedDateTime.parse(preScheduleData.repeatEnd, formatter)
+        val preRepeatStart = ZonedDateTime.parse(preScheduleData.repeatStart, formatter).toLocalTime()
+        val preRepeatEnd = ZonedDateTime.parse(preScheduleData.repeatEnd, formatter).toLocalTime()
 
-        // Calculate the difference (offset) between the two dates
+
+        // Calculate the difference (offset) between the two dates -> 새로운 repeatEnd를 구하기 위함
         val diff = Duration.between(preRepeatStart, preRepeatEnd)
 
         // calculate the offset in seconds
@@ -395,6 +400,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
             }
         }
 
+        d("20191630", "patchMoved: preMoveDate : ${PreMoveDate.value}, newRepeatStart : ${newRepeatStart}, newRepeatEnd : ${newRepeatEnd}")
         /* api 호출 */
         if(preScheduleData.repeatOption == null){ /* 단일 일정인 경우 */
             /* 시간 변경 */
@@ -414,22 +420,30 @@ class TimetableViewModel(val context : Context): ViewModel() {
             )
             scheduleRepository.submitSchedule(preScheduleData.id, body) {}
         }else{ /* 반복 일정인 경우 */
-
             val schedule = preScheduleData
-            val todayTodo = newRepeatStart
+            val preDate = PreMoveDate.value!!
 
             /* 로케이션 계산 */
-            calculateLocation(schedule, todayTodo)
+            calculateLocation(schedule, preDate)
+
+            d("20191630", "patchMoved: ${schedule.location}, ${newRepeatStart}, ${newRepeatEnd}")
 
             //시간 변경
-            callUpdateRepeatScheduleAPI(schedule, PreMoveDate.value!!, newRepeatStart, newRepeatEnd)
+            callUpdateRepeatScheduleAPI(schedule, preDate, newRepeatStart, newRepeatEnd){
+                getSchedule(Datelist)
+
+                d("20191630", "patchMoved: callUpdateRepeatScheduleAPI ${IndexList}")
+            }
         }
 
+        d("20191630", "patchMoved: ${IndexList}")
         sortSchedule(preScheduleData)
         _Schedules.value = IndexList
+
+//        getSchedule(Datelist)
     }
 
-    private fun callUpdateRepeatScheduleAPI(schedule : Schedule, preChangedDateString : String, newRepeatStart : String, newRepeatEnd : String){
+    private fun callUpdateRepeatScheduleAPI(schedule : Schedule, preChangedDateString : String, newRepeatStart : String, newRepeatEnd : String, callback:(Boolean) -> Unit){
         val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
 
         var preChangedDate = koreaFormatter.parse((preChangedDateString))
@@ -537,11 +551,13 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             schedule.isAllDay,
                             null,
                             null,
-                            serverFormatter.format(schedule.startTime),
-                            serverFormatter.format(schedule.endTime),
+                            newRepeatStart,
+                            newRepeatEnd,
                             serverFormatter.format(nextDate)
                         )
-                    ) {}
+                    ) {
+                        callback(true)
+                    }
                 } else {
                     val calendarviewmodel = CalendarViewModel()
 
@@ -557,7 +573,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             schedule.category?.id,
                             emptyList()
                         )
-                    ) {}
+                    ) {
+                        callback(true)
+                    }
                 }
             }
 
@@ -690,12 +708,14 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             schedule.isAllDay,
                             null,
                             null,
-                            serverFormatter.format(newRepeatStart),
-                            serverFormatter.format(newRepeatEnd),
+                            newRepeatStart,
+                            newRepeatEnd,
                             serverFormatter.format(preChangedDate),
                             serverFormatter.format(nextDate)
                         )
-                    ) {}
+                    ) {
+                        callback(true)
+                    }
                 }
             }
 
@@ -760,17 +780,17 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             schedule.isAllDay,
                             null,
                             null,
-                            serverFormatter.format(newRepeatStart),
-                            serverFormatter.format(newRepeatEnd),
+                            newRepeatStart,
+                            newRepeatEnd,
                             serverFormatter.format(preDate)
                         )
-                    ) {}
+                    ) {
+                        callback(true)
+                    }
                 }
             }
         }
     }
-
-
 
 
 
