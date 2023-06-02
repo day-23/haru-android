@@ -21,7 +21,7 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
 ) : View.OnDragListener{
     val layoutIndex = layoutIndex
     val shadowView = Button(context)
-    private val moveOffset = 20
+    private val moveOffset = 5
     private val moveThreshold = 50
     private var isRunning = false
     private var preIndex = -1

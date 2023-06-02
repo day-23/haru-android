@@ -536,6 +536,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                     }
 
                     val calendarviewmodel = CalendarViewModel()
+
+                    d("20191630", "callUpdateRepeatScheduleAPI: ${addTimeOfFirstDateStringToNextDate(schedule.repeatStart!!, nextDate!!)}, $nextDate")
                     calendarviewmodel.submitScheduleFront(
                         schedule.id, PostScheduleFront(
                             schedule.content,
@@ -547,7 +549,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             null,
                             newRepeatStart,
                             newRepeatEnd,
-                            serverFormatter.format(nextDate)
+                            addTimeOfFirstDateStringToNextDate(schedule.repeatStart!!, nextDate!!)
                         )
                     ) {
                         callback(true)
@@ -576,6 +578,9 @@ class TimetableViewModel(val context : Context): ViewModel() {
             1->{//middle
                 var next = koreaFormatter.format(preChangedDate)
                 var nextDate:Date? = null
+
+
+                d("20191630", "callUpdateRepeatScheduleAPI: before ${preChangedDate}")
 
                 when(schedule.repeatOption){
                     "매일"->{
@@ -691,6 +696,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                         }
                     }
 
+                    d("20191630", "callUpdateRepeatScheduleAPI: after ${preChangedDate}")
+
                     val calendarviewmodel = CalendarViewModel()
 
                     calendarviewmodel.submitScheduleMiddle(
@@ -704,7 +711,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             null,
                             newRepeatStart,
                             newRepeatEnd,
-                            serverFormatter.format(preChangedDate),
+                            addTimeOfFirstDateStringToNextDate(schedule.repeatStart!!, preChangedDate),
                             addTimeOfFirstDateStringToNextDate(schedule.repeatStart!!, nextDate!!)
                         )
                     ) {
