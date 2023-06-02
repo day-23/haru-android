@@ -13,43 +13,49 @@
         android:textSize="30sp"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/parent_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingHorizontal="30dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/shape_rect_radius_10"
+                android:backgroundTint="@color/dateBtn_bg" />
+        </FrameLayout>
 
         <NumberPicker
             android:id="@+id/time_division"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/np_hour_pick"
             android:theme="@style/ThemeOverlay.NumberPicker" />
 
         <NumberPicker
             android:id="@+id/np_hour_pick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:theme="@style/ThemeOverlay.NumberPicker" />
 
         <NumberPicker
             android:id="@+id/np_minute_pick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/np_hour_pick"
             android:theme="@style/ThemeOverlay.NumberPicker" />
 
-<!--        <FrameLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content">-->
-
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="50dp"-->
-<!--                android:background="@drawable/shape_rect_radius_10"-->
-<!--                android:backgroundTint="@color/dateBtn_bg"/>-->
-<!--        </FrameLayout>-->
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
