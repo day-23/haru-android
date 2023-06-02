@@ -533,7 +533,7 @@ class TimetableFragment : Fragment() {
         val gd = GradientDrawable()
 
         if(color == null){
-            gd.setColor(Color.parseColor("#1DAFFF")) // Initial color
+            gd.setColor(Color.parseColor("#AAD7FF")) // Initial color
         }else{
             gd.setColor(Color.parseColor(color))
         }
