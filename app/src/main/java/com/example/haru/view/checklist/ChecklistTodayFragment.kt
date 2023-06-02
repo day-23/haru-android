@@ -54,7 +54,7 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
 
     override fun onDestroyView() {
         super.onDestroyView()
-        MainActivity.hideNavi(true)
+        MainActivity.hideNavi(false)
     }
 
     override fun onDestroy() {

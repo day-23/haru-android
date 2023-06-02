@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,7 +90,7 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
 
     inner class TodoViewHolder(val binding: FragmentChecklistItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        var complete = false
+//        var complete = false
 
         fun bind(item: Todo) {
             binding.checklistItem.layoutParams = if (item.visibility) LinearLayout.LayoutParams(
@@ -103,7 +104,8 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
             binding.todo = item
 
             if (content != null) {
-                val start = item.content.indexOf(content!!, ignoreCase = false)
+                val start = item.content.indexOf(content!!, ignoreCase = true)
+                Log.e("20191627", "$start")
                 val end = start + content!!.length
                 val span = SpannableString(item.content)
                 span.setSpan(
@@ -213,10 +215,10 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
             }
 
 
-            complete = item.completed
-
-            binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
-            binding.tvTitle.text = item.content
+//            complete = item.completed
+//
+//            binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
+//            binding.tvTitle.text = item.content
 
 
             binding.subTodoItemLayout.removeAllViews()
