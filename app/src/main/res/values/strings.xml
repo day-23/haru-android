@@ -43,17 +43,17 @@
     <string name="Saturday">토</string>
     <string name="Sunday">일</string>
 
-    <string name="SNS">SNS</string>
-    <string name="TODO">TODO</string>
-    <string name="CAL">CAL</string>
-    <string name="T.T">T.T</string>
-    <string name="MY">MY</string>
+    <string name="SNS">기록</string>
+    <string name="TODO">할일</string>
+    <string name="CAL">일정</string>
+    <string name="T.T">주간</string>
+    <string name="MY">마이</string>
 
 
     <string name="delete">삭제</string>
 
     <string name="todoDelete">할일 삭제하기</string>
-    <string name="tagDelete">태그 삭제하기</string>
+    <string name="tagDelete">태그 삭제</string>
     <string name="save">저장</string>
 
     <string name="done">완료</string>
@@ -100,6 +100,8 @@
 
     <string name="logoutDescription">%1s 계정에서 로그아웃 할까요?</string>
     <string name="logout">로그아웃</string>
+
+    <string name="searchDescription">검색어를 입력하세요</string>
 
     <string name="notAllow">허용 안함</string>
     <string name="onlyFriend">친구만</string>

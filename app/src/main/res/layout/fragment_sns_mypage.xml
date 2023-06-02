@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fdfdfd"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/sns_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="10dp"
+        android:paddingStart="25dp"
         android:paddingEnd="20dp"
         tools:ignore="MissingConstraints"
         android:background="@drawable/todo_table_selected">
@@ -20,12 +21,11 @@
             >
             <ImageView
                 android:id="@+id/sns_haru_title"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:src="@drawable/haru_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/small_haru_title"
                 android:layout_marginTop="2dp"
-                android:textStyle="bold"
-                android:textColor="#191919"
+                android:backgroundTint="@color/white"
                 android:layout_alignParentTop="true"
                 />
             <ImageView
@@ -307,6 +307,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/feed_text"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -316,6 +317,7 @@
                 android:gravity="center"
                 android:layout_marginBottom="7dp"/>
             <View
+                android:id="@+id/feed_underline"
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
                 android:background="@drawable/todo_table_selected"/>
@@ -329,19 +331,21 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/media_text"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="미디어"
-                android:textColor="#191919"
+                android:textColor="#acacac"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_marginBottom="7dp"/>
 
             <View
+                android:id="@+id/media_underline"
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
-                android:background="#F8F8FA"/>
+                android:background="#fdfdfd"/>
         </LinearLayout>
 
     </LinearLayout>

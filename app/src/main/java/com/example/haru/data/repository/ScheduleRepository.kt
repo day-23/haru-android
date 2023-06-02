@@ -3,35 +3,60 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.User
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ScheduleRepository() {
     private val scheduleService = RetrofitClient.scheduleService
 
-    suspend fun getScheduleByDates(startDate:String, endDate:String, body: ScheduleRequest, callback:(todoData : ScheduleByDateResponse) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun getScheduleTodoSearch(
+        content: String,
+        callback: (searchData: GetSearchResponse?) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val response = scheduleService.getScheduleTodoSearch(User.id, content).execute()
+        var data = response.body()
+
+        val searchData: GetSearchResponse? = if (response.isSuccessful) {
+            Log.d("TAG", "Success to get SearchData")
+            data
+        } else {
+            Log.d("TAG", "Fail to get SearchData")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, GetSearchResponse::class.java)
+            data
+        }
+        callback(searchData)
+    }
+
+    suspend fun getScheduleByDates(
+        body: ScheduleRequest,
+        callback: (todoData: ScheduleByDateResponse) -> Unit
+    ) = withContext(Dispatchers.IO) {
         val response = scheduleService.getScheduleDates(
-            com.example.haru.utils.User.id,
+            User.id,
             body,
         ).execute()
         val data: GetScheduleResponse
-        val todoData: ScheduleByDateResponse
+        val scheduleData: ScheduleByDateResponse
 
         if (response.isSuccessful) {
             Log.d("TAG", "Success to get todos")
             data = response.body()!!
-            todoData = data.data
+            scheduleData = data.data
         } else {
             Log.d("TAG", "Fail to get todos")
-            todoData = ScheduleByDateResponse(emptyList(), emptyList())
+            scheduleData = ScheduleByDateResponse(emptyList(), emptyList())
         }
-        callback(todoData)
+        callback(scheduleData)
     }
 
-    suspend fun postSchedule(body: PostSchedule, callback: () -> Unit){
+    suspend fun postSchedule(body: PostSchedule, callback: () -> Unit) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.createSchedule(
-                    com.example.haru.utils.User.id,
+                User.id,
                 body
             ).execute()
 
@@ -52,10 +77,10 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun deleteSchedule(scheduleId: String, callback: () -> Unit){
+    suspend fun deleteSchedule(scheduleId: String, callback: () -> Unit) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteSchedule(
-                    com.example.haru.utils.User.id,
+                User.id,
                 scheduleId
             ).execute()
 
@@ -71,10 +96,14 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun frontDeleteSchedule(scheduleId: String, frontDelete: ScheduleFrontDelete, callback: () -> Unit){
+    suspend fun frontDeleteSchedule(
+        scheduleId: String,
+        frontDelete: ScheduleFrontDelete,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteScheduleFront(
-                com.example.haru.utils.User.id,
+                User.id,
                 scheduleId,
                 frontDelete
             ).execute()
@@ -91,10 +120,14 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun middleDeleteSchedule(scheduleId: String, middleDelete: ScheduleMiddleDelete, callback: () -> Unit){
+    suspend fun middleDeleteSchedule(
+        scheduleId: String,
+        middleDelete: ScheduleMiddleDelete,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteScheduleMiddle(
-                com.example.haru.utils.User.id,
+                User.id,
                 scheduleId,
                 middleDelete
             ).execute()
@@ -111,10 +144,14 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun backDeleteSchedule(scheduleId: String, backDelete: ScheduleBackDelete, callback: () -> Unit){
+    suspend fun backDeleteSchedule(
+        scheduleId: String,
+        backDelete: ScheduleBackDelete,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.deleteScheduleBack(
-                com.example.haru.utils.User.id,
+                User.id,
                 scheduleId,
                 backDelete
             ).execute()
@@ -131,16 +168,18 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit){
+    suspend fun submitSchedule(scheduleId: String, postBody: PostSchedule, callback: () -> Unit) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.submitSchedule(
-                com.example.haru.utils.User.id,
+                User.id,
                 scheduleId,
                 postBody
             ).execute()
 
             if (response.isSuccessful) {
                 Log.d("TAG", "Success to submit schedule")
+
+
             } else {
                 Log.d("TAG", "Fail to submit schedule")
             }
@@ -148,13 +187,20 @@ class ScheduleRepository() {
             withContext(Dispatchers.Main) {
                 callback()
             }
+//            }catch (e: Exception){
+//                Log.d("TAG", "Fail to submit schedule")
+//            }
         }
     }
 
-    suspend fun submitScheduleFront(scheduleId: String, postBodyFront: PostScheduleFront, callback: () -> Unit){
+    suspend fun submitScheduleFront(
+        scheduleId: String,
+        postBodyFront: PostScheduleFront,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.submitScheduleFront(
-                com.example.haru.utils.User.id,
+                User.id,
                 scheduleId,
                 postBodyFront
             ).execute()
@@ -171,10 +217,14 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun submitScheduleMiddle(scheduleId: String, postBodyMiddle: PostScheduleMiddle, callback: () -> Unit){
+    suspend fun submitScheduleMiddle(
+        scheduleId: String,
+        postBodyMiddle: PostScheduleMiddle,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.submitScheduleMiddle(
-                com.example.haru.utils.User.id,
+                User.id,
                 scheduleId,
                 postBodyMiddle
             ).execute()
@@ -191,10 +241,14 @@ class ScheduleRepository() {
         }
     }
 
-    suspend fun submitScheduleBack(scheduleId: String, postBodyBack: PostScheduleBack, callback: () -> Unit){
+    suspend fun submitScheduleBack(
+        scheduleId: String,
+        postBodyBack: PostScheduleBack,
+        callback: () -> Unit
+    ) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.submitScheduleBack(
-                com.example.haru.utils.User.id,
+                User.id,
                 scheduleId,
                 postBodyBack
             ).execute()

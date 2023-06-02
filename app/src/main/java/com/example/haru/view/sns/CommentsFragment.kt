@@ -24,6 +24,7 @@ import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.FragmentCommentsBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
 import com.example.haru.databinding.PopupSnsCommentDeleteBinding
+import com.example.haru.utils.User
 import com.example.haru.view.adapter.CommentsAdapter
 import com.example.haru.viewmodel.SnsViewModel
 import org.w3c.dom.Comment
@@ -37,7 +38,7 @@ interface onCommentClick{
     fun onPopupSelect(position: Int)
 }
 
-class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
+class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onCommentClick{
     lateinit var binding : FragmentCommentsBinding
     lateinit var commentsRecyclerView: RecyclerView
     lateinit var snsViewModel: SnsViewModel
@@ -96,6 +97,11 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCommentsBinding.inflate(inflater, container, false)
+        if(User.id != userId ){
+            binding.totalCommentEdit.visibility = View.GONE
+            binding.totalCommentEdit.visibility = View.GONE
+        }
+
         commentsRecyclerView = binding.commentRecycler
         adapter = CommentsAdapter(requireContext(), arrayListOf(), this)
         commentsRecyclerView.adapter = adapter
@@ -182,7 +188,7 @@ class CommentsFragment(postitem: Post) : Fragment(), onCommentClick{
 
         binding.commentBackbutton.setOnClickListener {
             val fragmentManager = parentFragmentManager
-            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            fragmentManager.popBackStack()
         }
 
         snsViewModel.ChangeResult.observe(viewLifecycleOwner){result ->

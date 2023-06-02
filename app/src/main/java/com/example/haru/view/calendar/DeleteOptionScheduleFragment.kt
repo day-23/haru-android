@@ -3,6 +3,7 @@ package com.example.haru.view.calendar
 import android.app.Dialog
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,8 @@ class DeleteOptionScheduleFragment(val location:Int?, val callback: (Int) -> Uni
 
     init {
         ratio = when (location) {
-            0,1,2 -> 35
+            1 -> 43
+            0,2 -> 35
             else -> 27
         }
     }
@@ -75,13 +77,27 @@ class DeleteOptionScheduleFragment(val location:Int?, val callback: (Int) -> Uni
             binding.layoutParentBtnDelete.layoutParams as LinearLayout.LayoutParams
 
         params.weight = when (location) {
-            0,1,2 -> {
+            1 -> {
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
+                4f
+            }
+
+            0-> {
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionAfterDelete)
                 3f
             }
+
+            2->{
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionAfterDelete)
+                3f
+            }
+
             else -> {
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionAllDelete)
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionOneDelete)
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionAfterDelete)
                 binding.textViewDeleteInfo.text = "이 일정을 삭제할까요?"
                 2f
             }
@@ -95,25 +111,32 @@ class DeleteOptionScheduleFragment(val location:Int?, val callback: (Int) -> Uni
         binding.btnOptionAllDelete.setOnClickListener(ButtonClickListener())
         binding.btnOptionDeleteCancel.setOnClickListener(ButtonClickListener())
         binding.btnOptionDelete.setOnClickListener(ButtonClickListener())
+        binding.btnOptionAfterDelete.setOnClickListener(ButtonClickListener())
     }
 
     inner class ButtonClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
-                binding.btnOptionOneDelete.id -> {
+                binding.btnOptionOneDelete.id -> {//하나 삭제
                     binding.btnOptionOneDelete.isClickable = false
                     callback(1)
                     dismiss()
                 }
 
-                binding.btnOptionAllDelete.id -> {
+                binding.btnOptionAllDelete.id -> {//모두 삭제
                     binding.btnOptionAllDelete.isClickable = false
                     callback(2)
                     dismiss()
                 }
-                binding.btnOptionDelete.id -> {
+                binding.btnOptionDelete.id -> {//삭제
                     binding.btnOptionDelete.isClickable = false
                     callback(0)
+                    dismiss()
+                }
+
+                binding.btnOptionAfterDelete.id ->{
+                    binding.btnOptionAfterDelete.isClickable = false
+                    callback(3)
                     dismiss()
                 }
 

@@ -1,5 +1,6 @@
 package com.example.haru.view.checklist
 
+import BaseActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,7 @@ class TagManagementFragment(checkListViewModel: CheckListViewModel, val tag: Tag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.tagManagementHeader.id)
 
         binding.etTagContent.setText(tag.content)
 
@@ -68,7 +70,10 @@ class TagManagementFragment(checkListViewModel: CheckListViewModel, val tag: Tag
                 requireActivity().supportFragmentManager.popBackStack()
             }
         }
+    }
 
-
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.tagManagementHeader.id)
     }
 }

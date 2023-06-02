@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tag_management_header"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="17dp"
+        android:orientation="horizontal"
         android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:paddingTop="3dp"
-        android:orientation="horizontal">
+        android:paddingEnd="20dp"
+        android:paddingBottom="17dp">
 
         <ImageView
             android:id="@+id/iv_back_icon_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/arrow"
-            android:backgroundTint="@color/todo_description"
-            android:rotation="180"/>
+            android:background="@drawable/back_arrow"
+            android:backgroundTint="@color/todo_description" />
 
-        <View
+        <TextView
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="태그 수정"
+            android:textColor="@color/todo_description"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/iv_submit_icon_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/todo_description"
-            android:background="@drawable/check_icon"/>
+            android:background="@drawable/check_icon"
+            android:backgroundTint="@color/todo_description" />
 
     </LinearLayout>
 
@@ -41,8 +46,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingStart="34dp"
-        android:paddingEnd="20dp"
         android:paddingTop="10dp"
+        android:paddingEnd="20dp"
         android:paddingBottom="15dp">
 
         <EditText
@@ -51,10 +56,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:textColor="@color/todo_description"
-            android:maxLength="10"
             android:hint="Test"
-            android:textSize="24dp"
+            android:maxLength="10"
+            android:textColor="@color/todo_description"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -68,47 +73,15 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider"/>
+        android:background="@color/divider" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingStart="34dp"
-        android:paddingEnd="20dp"
         android:paddingTop="14dp"
-        android:paddingBottom="15dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/todoAlarmText"
-            android:textColor="@color/todo_description"
-            android:textSize="14dp"/>
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/todo_alarm_switch"
-            style="@style/minSize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:thumb="@drawable/custom_switch_thumb"
-            app:track="@drawable/custom_switch" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="34dp"
         android:paddingEnd="20dp"
-        android:paddingTop="14dp"
         android:paddingBottom="15dp">
 
         <TextView
@@ -117,22 +90,22 @@
             android:layout_weight="1"
             android:text="@string/relatedTodoText"
             android:textColor="@color/todo_description"
-            android:textSize="14dp"/>
+            android:textSize="14dp" />
 
         <TextView
             android:id="@+id/tv_related_todo_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="24개"
-            android:textSize="16dp"
-            android:textColor="@color/date_text"/>
+            android:textColor="@color/date_text"
+            android:textSize="16dp" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/divider"/>
+        android:background="@color/divider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -140,8 +113,8 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:paddingStart="34dp"
-        android:paddingEnd="20dp"
         android:paddingTop="14dp"
+        android:paddingEnd="20dp"
         android:paddingBottom="15dp">
 
         <TextView
@@ -150,7 +123,7 @@
             android:layout_weight="1"
             android:text="@string/TopTagFerment"
             android:textColor="@color/todo_description"
-            android:textSize="14dp"/>
+            android:textSize="14dp" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switch_tag_visibility"
@@ -169,8 +142,8 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:paddingTop="10dp"
         android:paddingHorizontal="20dp"
+        android:paddingTop="10dp"
         android:paddingBottom="38dp">
 
         <TextView
@@ -178,14 +151,14 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:text="@string/tagDelete"
-            android:textSize="20sp"
-            android:textColor="@color/delete_red"/>
+            android:textColor="@color/delete_red"
+            android:textSize="20sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/big_delete_icon"
-            android:backgroundTint="@color/delete_red"/>
+            android:backgroundTint="@color/delete_red" />
     </LinearLayout>
 
 </LinearLayout>

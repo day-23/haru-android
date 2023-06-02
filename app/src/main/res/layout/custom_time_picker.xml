@@ -13,53 +13,49 @@
         android:textSize="30sp"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/parent_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingHorizontal="30dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/shape_rect_radius_10"
+                android:backgroundTint="@color/dateBtn_bg" />
+        </FrameLayout>
 
         <NumberPicker
             android:id="@+id/time_division"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="30dp"
-            android:theme="@style/ThemeOverlay.NumberPicker"/>
+            android:layout_toStartOf="@id/np_hour_pick"
+            android:theme="@style/ThemeOverlay.NumberPicker" />
 
         <NumberPicker
             android:id="@+id/np_hour_pick"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:theme="@style/ThemeOverlay.NumberPicker"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="시"
-            android:textSize="20sp" />
+            android:layout_centerHorizontal="true"
+            android:theme="@style/ThemeOverlay.NumberPicker" />
 
         <NumberPicker
             android:id="@+id/np_minute_pick"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:theme="@style/ThemeOverlay.NumberPicker"/>
+            android:layout_toEndOf="@id/np_hour_pick"
+            android:theme="@style/ThemeOverlay.NumberPicker" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="분"
-            android:textSize="20sp" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,16 +66,20 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_positive"
+            style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="확인"
+            android:visibility="invisible"
+            android:clickable="false"
             android:textColor="@color/todo_description" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_negative"
+            style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="취소"
+            android:visibility="invisible"
+            android:clickable="false"
             android:textColor="@color/delete_red" />
     </LinearLayout>
 

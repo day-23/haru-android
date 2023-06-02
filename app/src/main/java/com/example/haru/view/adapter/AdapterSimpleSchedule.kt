@@ -75,6 +75,9 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
         if(schedule.isAllDay){
             detailScheduleTimeTv.text = "하루종일"
         } else {
+            Log.d("반복이슈", schedule.startTime.toString())
+            Log.d("반복이슈", schedule.endTime.toString())
+
             var scheduleTime = ""
             scheduleTime += (schedule.startTime!!.month+1).toString()+"월 " + schedule.startTime!!.date.toString()+"일 "
             scheduleTime += if(schedule.startTime!!.hours < 12) "오전 " else "오후 "
@@ -107,7 +110,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
 
         if(schedule.category == null){
             val drawable = detailScheduleCategoryImv.background as VectorDrawable
-            drawable.setColorFilter(Color.parseColor("#1DAFFF"), PorterDuff.Mode.SRC_ATOP)
+            drawable.setColorFilter(Color.parseColor("#AAD7FF"), PorterDuff.Mode.SRC_ATOP)
         } else {
             val drawable = detailScheduleCategoryImv.background as VectorDrawable
             drawable.setColorFilter(Color.parseColor(schedule.category.color), PorterDuff.Mode.SRC_ATOP)
@@ -132,7 +135,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                     scheduleCalendar.time = startDate
 
                     scheduleCalendar.add(
-                        Calendar.MILLISECOND,
+                        Calendar.SECOND,
                         schedule.repeatValue.replace("T","").toInt()
                     )
 
@@ -141,7 +144,6 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                     if(date_comparison(startDate, today)<=0 &&
                             date_comparison(scheduleCalendar.time, today) >= 0){
                         schedule.location = 0
-                        Log.d("20191630", "스케줄 프론트")
 
                         activity.supportFragmentManager.beginTransaction()
                             .replace(
@@ -163,7 +165,6 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                         startDate.date == today.date
                     ) {
                         schedule.location = 0
-                        Log.d("20191630", "스케줄 프론트")
 
                         activity.supportFragmentManager.beginTransaction()
                             .replace(
@@ -219,11 +220,8 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                         }
                     }
 
-                    Log.d("20191630", "nextData:"+nextData.toString())
-                    
                     if(nextData == null){
                         schedule.location = 2
-                        Log.d("20191630","스케줄 백")
 
                         activity.supportFragmentManager.beginTransaction()
                             .replace(
@@ -239,7 +237,6 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                 }
 
                 schedule.location = 1
-                Log.d("20191630","스케줄 미들")
 
                 activity.supportFragmentManager.beginTransaction()
                     .replace(

@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
+import android.content.res.ColorStateList
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,6 +17,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.view.calendar.CalendarFragment
@@ -32,7 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : BaseActivity(){
+class MainActivity : BaseActivity() {
     private val fragments = arrayOfNulls<Fragment>(5)
 
     private lateinit var sharedPreference: SharedPreferences
@@ -62,40 +64,74 @@ class MainActivity : BaseActivity(){
         super.onPause()
     }
 
-    fun initAlarm(){
-        if(User.alarmAprove) {
+    fun initAlarm() {
+        if (User.alarmAprove) {
             Log.d("알람", "알람 설정")
             val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
             val intent = Intent(this, AlarmWorker::class.java)
+            val intent2 = Intent(this, AlarmWorker::class.java)
             if (User.id != "") {
                 intent.putExtra("userId", User.id)
+                intent.putExtra("requestCode", "0")
                 val pendingIntent = PendingIntent.getBroadcast(
                     this, 0, intent,
                     PendingIntent.FLAG_MUTABLE
                 )
 
+//                intent2.putExtra("requestCode", "1")
+//
+//                val pendingIntent2 = PendingIntent.getBroadcast(
+//                    this, 1, intent2,
+//                    PendingIntent.FLAG_MUTABLE
+//                )
+
                 val calendar = Calendar.getInstance()
-                calendar.apply {
-                    set(Calendar.HOUR_OF_DAY, 9)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
-                }
+//                val todaytime = calendar.time
+//
+//                todaytime.hours = 9
+//                todaytime.minutes = 0
+//                todaytime.seconds = 0
+//
+//                if (calendar.time.after(todaytime)){
+//                    calendar.add(Calendar.DATE, 1)
+//                }
+//
+//                calendar.apply {
+//                    set(Calendar.HOUR_OF_DAY, 9)
+//                    set(Calendar.MINUTE, 0)
+//                    set(Calendar.SECOND, 0)
+//                }
+
+                calendar.add(Calendar.SECOND, 5)
 
                 alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     calendar.timeInMillis,
                     pendingIntent
                 )
+
+//                calendar.add(Calendar.SECOND, 5)
+//
+//                alarmManager.setExactAndAllowWhileIdle(
+//                    AlarmManager.RTC_WAKEUP,
+//                    calendar.timeInMillis,
+//                    pendingIntent2
+//                )
             }
         } else {
             val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
             val intent = Intent(baseContext, AlarmWorker::class.java)
 
-            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-                PendingIntent.getBroadcast(baseContext,0,intent,PendingIntent.FLAG_IMMUTABLE)
-            }else{
-                PendingIntent.getBroadcast(baseContext,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getBroadcast(baseContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            } else {
+                PendingIntent.getBroadcast(
+                    baseContext,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
             }
 
             alarmManager.cancel(pendingIntent)
@@ -196,7 +232,7 @@ class MainActivity : BaseActivity(){
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        while(supportFragmentManager.backStackEntryCount > 0){
+        while (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStackImmediate()
         }
         supportFragmentManager.beginTransaction()

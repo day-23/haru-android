@@ -117,7 +117,7 @@ class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFr
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         val width = 0.7f
-        val height = 0.45f
+        val height = 0.55f
         if (Build.VERSION.SDK_INT < 30) {
 
             val display = windowManager.defaultDisplay
@@ -304,6 +304,4 @@ class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFr
             }
         }
     }
-
-
 }

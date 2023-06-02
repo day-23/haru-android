@@ -51,6 +51,20 @@ class PostRepository() {
         callback(postInfo)
     }
 
+    suspend fun addTemplate(template: Template, callback: (result: Boolean) -> Unit) = withContext(Dispatchers.IO) {
+        val call = postService.addTemplate(userId, template)
+        val response = call.execute()
+
+        var result = false
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to post")
+            result = response.body()!!.success
+        } else {
+            Log.d("TAG", "Fail to post")
+        }
+        callback(result)
+    }
+
     //게시글 삭제
     suspend fun deletePost(postId: String, callback: (delete: Boolean) -> Unit) = withContext(Dispatchers.IO) {
         val call = postService.deletePost(userId, postId)
@@ -67,7 +81,7 @@ class PostRepository() {
     }
 
 
-    //전체 게시글
+    //전체 게시글(둘러보기)
     suspend fun getPost(lastCreatedAt:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getPosts(
@@ -107,6 +121,49 @@ class PostRepository() {
         callback(posts)
     }
 
+    //둘러보기 태그 선택
+    suspend fun getFirstHotPosts(tagId: String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstHotPosts(
+            userId,
+            tagId
+        ).execute()
+
+        var posts: ArrayList<Post> = arrayListOf()
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get posts")
+            data = response.body()!!
+            if(!(data.data).isNullOrEmpty())
+                posts = data.data
+        } else{
+            Log.d("TAG", "Fail to get posts")
+        }
+        callback(posts)
+    }
+
+    suspend fun getHotPosts(tagId: String,lastCreatedAt: String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getHotPosts(
+            userId,
+            tagId,
+            lastCreatedAt
+        ).execute()
+
+        var posts: ArrayList<Post> = arrayListOf()
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get posts")
+            data = response.body()!!
+            if(!(data.data).isNullOrEmpty())
+                posts = data.data
+        } else{
+            Log.d("TAG", "Fail to get posts")
+            posts = arrayListOf()
+        }
+        callback(posts)
+    }
+
     //좋아요
     suspend fun postLike(id:String, callback: (liked: Boolean) -> Unit) = withContext(
         Dispatchers.IO){
@@ -128,12 +185,12 @@ class PostRepository() {
     }
 
     //피드
-    suspend fun getMyFeed(page:String, targetId:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+    suspend fun getMyFeed(targetId:String, lastCreatedAt: String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getMyFeed(
             userId,
             targetId,
-            page
+            lastCreatedAt
         ).execute()
         val posts: ArrayList<Post>
         val data: PostResponse
@@ -148,12 +205,53 @@ class PostRepository() {
         callback(posts)
     }
 
+    suspend fun getFirstMyFeed(targetId:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstMyFeed(
+            userId,
+            targetId,
+        ).execute()
+        val posts: ArrayList<Post>
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get posts")
+            data = response.body()!!
+            posts = data.data!!
+        } else{
+            Log.d("TAG", "Fail to get posts")
+            posts = arrayListOf()
+        }
+        callback(posts)
+    }
+
+
+
     //미디어
     suspend fun getFirstMedia(targetId: String, callback: (medias : MediaResponse) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getFirstMedia(
             userId,
             targetId
+        ).execute()
+
+        val medias: MediaResponse
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get Medias")
+            medias = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get Medias")
+            medias = MediaResponse(false, arrayListOf(), pagination())
+        }
+        callback(medias)
+    }
+
+    suspend fun getMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getMedia(
+            userId,
+            targetId,
+            lastCreatedAt
         ).execute()
 
         val medias: MediaResponse
@@ -188,6 +286,24 @@ class PostRepository() {
         callback(medias)
     }
 
+    suspend fun getTemplates(callback: (templates: ArrayList<Profile>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getTemplates(
+            userId
+        ).execute()
+
+        val templates: ArrayList<Profile>
+
+        if(response.isSuccessful){
+            Log.d("TAG", "Success to get templates")
+            templates = response.body()!!.data
+        }else{
+            Log.d("TAG", "Fail to get templates")
+            templates = arrayListOf()
+        }
+        callback(templates)
+    }
+
     suspend fun getUserTags(targetId: String, callback: (tags : List<Tag>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getUserTags(
@@ -207,26 +323,24 @@ class PostRepository() {
         callback(tags)
     }
 
-    //미디어
-    suspend fun getMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+    suspend fun getHotTags(callback: (tags : ArrayList<Tag>) -> Unit) = withContext(
         Dispatchers.IO){
-        val response = postService.getMedia(
-            userId,
-            targetId,
-            lastCreatedAt
+        val response = postService.getHotTags(
+            userId
         ).execute()
 
-        val medias: MediaResponse
+        val tags: ArrayList<Tag>
 
         if(response.isSuccessful){
-            Log.d("TAG", "Success to get Medias")
-            medias = response.body()!!
+            Log.d("TAG", "Success to get HotTags")
+            tags = ArrayList(response.body()!!.data)
         }else{
-            Log.d("TAG", "Fail to get Medias")
-            medias = MediaResponse(false, arrayListOf(), pagination())
+            Log.d("TAG", "Fail to get HotTags")
+            tags = arrayListOf()
         }
-        callback(medias)
+        callback(tags)
     }
+
     //전체 댓글
     suspend fun getComment(postId: String, imageId: String, lastCreatedAt: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
         Dispatchers.IO){
