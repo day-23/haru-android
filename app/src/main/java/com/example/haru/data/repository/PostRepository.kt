@@ -150,12 +150,13 @@ class PostRepository() {
             lastCreatedAt
         ).execute()
 
-        val posts: ArrayList<Post>
+        var posts: ArrayList<Post> = arrayListOf()
         val data: PostResponse
         if (response.isSuccessful) {
             Log.d("TAG", "Success to get posts")
             data = response.body()!!
-            posts = data.data!!
+            if(!(data.data).isNullOrEmpty())
+                posts = data.data
         } else{
             Log.d("TAG", "Fail to get posts")
             posts = arrayListOf()

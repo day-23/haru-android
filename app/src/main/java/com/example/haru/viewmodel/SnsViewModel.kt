@@ -60,6 +60,7 @@ class SnsViewModel: ViewModel() {
         get() = _ChangeResult
 
     fun getPosts(lastCreatedAt: String){
+        Log.d("20191668", "$lastCreatedAt")
         var newPost: ArrayList<Post> = arrayListOf()
         viewModelScope.launch {
             PostRepository.getPost(lastCreatedAt) {

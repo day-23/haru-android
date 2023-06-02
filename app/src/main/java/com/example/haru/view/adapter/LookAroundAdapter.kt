@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Media
 import com.example.haru.data.model.SnsPost
+import kakao.k.p
 
 class LookAroundAdapter (val context: Context,
                          private var itemList: ArrayList<Post>): RecyclerView.Adapter<LookAroundAdapter.LookAroundViewHolder>(){
