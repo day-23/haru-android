@@ -896,7 +896,7 @@ object FormatDate {
 
         if (today < cal.time) {
             val startDate = cal.time
-            cal.add(Calendar.MILLISECOND, interval)
+            cal.add(Calendar.SECOND, interval)
             Log.e("20191627", "1startDate : $startDate, endDAte : ${cal.time}")
             return Pair(startDate, cal.time)
         }
@@ -922,7 +922,7 @@ object FormatDate {
         }
         if (cal.time < repeatEnd) {
             val startDate = cal.time
-            cal.add(Calendar.MILLISECOND, interval)
+            cal.add(Calendar.SECOND, interval)
             Log.e("20191627", "2startDate : $startDate, endDAte : ${cal.time}")
             return Pair(startDate, cal.time)
         }
@@ -945,7 +945,7 @@ object FormatDate {
         }
 
         val startDate = cal.time
-        cal.add(Calendar.MILLISECOND, interval)
+        cal.add(Calendar.SECOND, interval)
         Log.e("20191627", "3startDate : $startDate, endDAte : ${cal.time}")
         return Pair(startDate, cal.time)
     }
