@@ -12,10 +12,28 @@ import com.example.haru.R
 class AdapterCalendarTouch(val size: Int, val touchList: ArrayList<Boolean>) : RecyclerView.Adapter<AdapterCalendarTouch.TouchView>(){
     inner class TouchView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    fun itemChange(index: Int, value: Boolean){
-        touchList[index] = value
+    fun itemChange(startIndex: Int, index: Int, value: Boolean){
+        for (i in 0 until touchList.size){
+            touchList[i] = false
+        }
 
-        notifyItemChanged(index)
+        for(i in startIndex..index){
+            touchList[i] = value
+        }
+
+        notifyDataSetChanged()
+
+//        var indexList = ArrayList<Int>()
+//        for (i in 0 until touchList.size){
+//            if ()
+//            touchList[i] = false
+//        }
+//
+//        for(i in startIndex..index){
+//            touchList[i] = value
+//        }
+//
+//        notifyItemChanged(index)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterCalendarTouch.TouchView {

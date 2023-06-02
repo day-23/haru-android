@@ -34,6 +34,7 @@ import com.example.haru.view.calendar.TouchEventDecoration
 import com.example.haru.view.calendar.calendarMainData
 import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.viewmodel.CalendarViewModel
+import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.time.Month
 import java.util.*
@@ -349,11 +350,13 @@ class AdapterMonth(val activity: Activity,
                             endPosition = tmp
                         }
 
-                        for(i in startPosition..endPosition){
-                            if(!adapter.touchList[i]) {
-                                adapter.itemChange(i, true)
-                            }
-                        }
+                        adapter.itemChange(startPosition, endPosition, true)
+
+//                        for(i in startPosition..endPosition){
+//                            if(!adapter.touchList[i]) {
+//                                adapter.itemChange(i, true)
+//                            }
+//                        }
                     }
                     true
                 }
@@ -372,11 +375,13 @@ class AdapterMonth(val activity: Activity,
                                 endPosition = tmp
                             }
 
-                            for(i in startPosition..endPosition){
-                                if(adapter.touchList[i]) {
-                                    adapter.itemChange(i, false)
-                                }
-                            }
+                            adapter.itemChange(startPosition, endPosition, false)
+
+//                            for(i in startPosition..endPosition){
+//                                if(adapter.touchList[i]) {
+//                                    adapter.itemChange(i, false)
+//                                }
+//                            }
 
                             val scheduleInput = CalendarAddFragment(
                                 activity,
@@ -425,7 +430,8 @@ class AdapterMonth(val activity: Activity,
                         size: Int,
                         layoutInterval: Int,
                         maxTextCount: Int,
-                        thisMonth:Boolean = true){
+                        contentPosition: Int,
+                        startDate: Date){
         val parentConstraintLayout = holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
 
         val dateLayoutOne = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_one)
@@ -494,9 +500,12 @@ class AdapterMonth(val activity: Activity,
         testView.setText(textViewText)
         testView.setTextSize(Dimension.SP,12.0f)
 
-        if(!thisMonth){
-            testView.alpha = 0.7f
-        }
+        val calendar = Calendar.getInstance()
+        calendar.time = startDate.clone() as Date
+        calendar.add(Calendar.DATE, contentPosition)
+        val start = calendar.time.clone() as Date
+
+        calendar.add(Calendar.DATE, width-1)
 
         if(colors.indexOf(color) in listOf(
                 0,1,2,6,7,8,12,13,14,15,
@@ -511,6 +520,12 @@ class AdapterMonth(val activity: Activity,
         if(completed){
             testView.alpha = 0.7f
             testView.setPaintFlags(testView.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
+        } else {
+            if (Date().month != calendar.time.month && Date().month != start.month){
+                testView.alpha = 0.7f
+            } else {
+                testView.alpha = 1f
+            }
         }
 
         testView.layoutParams = layoutParams
@@ -611,20 +626,14 @@ class AdapterMonth(val activity: Activity,
         }
     }
 
+    //레이아웃이 완전히 확립이 안됐을 때 실행이 돼
     fun setView(holder:MonthView, position: Int){
         val calendar = Calendar.getInstance()
 
         var calendarviewModel = CalendarViewModel()
 
-//        val calendar_recyclerview = holder.itemView.findViewById<RecyclerView>(R.id.calendar_recyclerview)
-
         calendar.time = Date()
         calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
-
-//        val todoAdapter = AdapterDay()
-//        calendar_recyclerview.adapter = todoAdapter
-//        calendar_recyclerview.setHasFixedSize(true)
-//        calendar_recyclerview.setRecycledViewPool(recyclerviewPool)
 
         var startDate = Date()
 
@@ -634,7 +643,7 @@ class AdapterMonth(val activity: Activity,
 
         calendarviewModel.liveTodoCalendarList.observe(lifecycleOwner) { livetodo ->
             calendarviewModel.liveScheduleCalendarList.observe(lifecycleOwner) { liveschedule ->
-                calendarviewModel.liveHolidaysList.observe(lifecycleOwner) {liveholiday->
+                calendarviewModel.liveHolidaysList.observe(lifecycleOwner) { liveholiday ->
                     setHoliDays(holder, startDate, liveholiday, calendar.get(Calendar.MONTH))
 
                     val dateLayoutOne =
@@ -642,329 +651,130 @@ class AdapterMonth(val activity: Activity,
                     val dateLayoutTwo =
                         holder.itemView.findViewById<LinearLayout>(R.id.date_layout_two)
 
-                    //레이아웃 사이 거리 변수 /15 할 시 몇 개의 TextView가 들어갈 수 있는지 구할 수 있음
-                    val locationInterval = pxToDp(dateLayoutTwo.y - dateLayoutOne.y) - 28
-                    val maxTextCount = locationInterval / 15
+                    dateLayoutTwo.post{
+                        //레이아웃 사이 거리 변수 /15 할 시 몇 개의 TextView가 들어갈 수 있는지 구할 수 있음
+                        val locationInterval = pxToDp(dateLayoutTwo.y - dateLayoutOne.y) - 28
+                        val maxTextCount = locationInterval / 15
 
-                    var cloneLiveTodo = livetodo as ArrayList
-                    var cloneLiveSchedule = liveschedule as ArrayList
+                        var cloneLiveTodo = livetodo as ArrayList
+                        var cloneLiveSchedule = liveschedule as ArrayList
 
-                    var spanList = ArrayList<Int>()
+                        var spanList = ArrayList<Int>()
 
-                    var cntlist = ArrayList<Int>()
-                    var positionplus = 0
+                        var cntlist = ArrayList<Int>()
+                        var positionplus = 0
 
-                    var saveLineList = ArrayList<Int>()
-                    var saveCntList = ArrayList<Int>()
-                    var saveScheduleList = ArrayList<Schedule>()
+                        var saveLineList = ArrayList<Int>()
+                        var saveCntList = ArrayList<Int>()
+                        var saveScheduleList = ArrayList<Schedule>()
 
-                    var position2 = -1
-                    loop@ while (true) {
-                        position2++
-                        val newpostion = positionplus + position2
+                        var position2 = -1
 
-                        if (newpostion >= (maxTextCount + 1) * (size + 1) * 7) break
+                        loop@ while (true) {
+                            position2++
+                            val newpostion = positionplus + position2
 
-                        if ((newpostion / 7) % (maxTextCount + 1) == 0) continue
+                            if (newpostion >= (maxTextCount + 1) * (size + 1) * 7) break
 
-                        val cyclevalue = newpostion / ((maxTextCount + 1) * 7) * 7
+                            if ((newpostion / 7) % (maxTextCount + 1) == 0) continue
 
-                        var contentPosition = cyclevalue + newpostion % 7
-                        var contentLine = (newpostion / 7) % (maxTextCount + 1) - 1
+                            val cyclevalue = newpostion / ((maxTextCount + 1) * 7) * 7
 
-                        if (contentLine >= maxTextCount - 1) continue
+                            var contentPosition = cyclevalue + newpostion % 7
+                            var contentLine = (newpostion / 7) % (maxTextCount + 1) - 1
 
-                        if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
-                            val index = saveLineList.indexOf(contentLine)
+                            if (contentLine >= maxTextCount - 1) continue
 
-                            if (saveCntList[index] > 7) {
-                                saveCntList[index] -= 7
-                                positionplus += 6
-                                spanList.add(7)
+                            if (newpostion % 7 == 0 && saveLineList.contains(contentLine)) {
+                                val index = saveLineList.indexOf(contentLine)
 
-                                var color = Color.rgb(0xBB, 0xE7, 0xFF)
+                                if (saveCntList[index] > 7) {
+                                    saveCntList[index] -= 7
+                                    positionplus += 6
+                                    spanList.add(7)
 
-                                if (saveScheduleList[index].category != null &&
-                                    saveScheduleList[index].category!!.color != null
-                                ) {
-                                    color =
-                                        Color.parseColor(saveScheduleList[index].category!!.color)
-                                }
+                                    var color = Color.rgb(0x1D, 0xAF, 0xFF)
 
-                                addViewFunction(
-                                    holder,
-                                    "",
-                                    0f,
-                                    contentPosition / 7,
-                                    contentLine,
-                                    7,
-                                    color,
-                                    false,
-                                    size,
-                                    locationInterval,
-                                    maxTextCount
-                                )
-
-                                continue
-                            } else {
-                                val returncnt = saveCntList[index]
-
-                                var color = Color.rgb(0xBB, 0xE7, 0xFF)
-
-                                if (saveScheduleList[index].category != null &&
-                                    saveScheduleList[index].category!!.color != null
-                                ) {
-                                    color =
-                                        Color.parseColor(saveScheduleList[index].category!!.color)
-                                }
-
-                                saveCntList.removeAt(index)
-                                saveScheduleList.removeAt(index)
-                                saveLineList.removeAt(index)
-
-                                positionplus += returncnt - 1
-                                spanList.add(returncnt)
-
-                                addViewFunction(
-                                    holder,
-                                    "",
-                                    0f,
-                                    contentPosition / 7,
-                                    contentLine,
-                                    returncnt,
-                                    color,
-                                    false,
-                                    size,
-                                    locationInterval,
-                                    maxTextCount
-                                )
-
-                                continue
-                            }
-                        }
-
-                        var returnvalue = 1
-
-                        if (calendarMainData.scheduleApply) {
-                            for (content in cloneLiveSchedule) {
-                                var interval = 0
-
-                                if (content.cnt != null) {
-                                    interval = content.cnt!!
-                                } else {
-                                    val format = SimpleDateFormat(
-                                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-                                        Locale.KOREAN
-                                    )
-                                    val repeatStart = format.parse(content.schedule.repeatStart)
-                                    val calendar2 = Calendar.getInstance()
-                                    calendar2.time = repeatStart
-                                    calendar2.add(Calendar.SECOND, content.timeInterval!!)
-
-                                    repeatStart.hours = 0
-                                    repeatStart.minutes = 0
-                                    repeatStart.seconds = 0
-
-                                    calendar2.time.hours = 0
-                                    calendar2.time.minutes = 0
-                                    calendar2.time.seconds = 0
-
-                                    val dateminus =
-                                        (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
-                                    interval = dateminus.toInt() + 1
-                                }
-
-                                if (content.schedule.category != null) {
-                                    if (content.schedule.category.isSelected) {
-                                        if (content.position == contentPosition) {
-                                            cloneLiveSchedule.remove(content)
-
-                                            val color =
-                                                Color.parseColor(content.schedule.category.color)
-
-                                            if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
-                                                val overflowvalue = contentPosition + interval - (contentPosition/7+1)*7
-//                                                    contentPosition + interval - (contentPosition + interval) / 7 * 7
-                                                //overflowvalue = 26 + 9 - (26+9)
-                                                saveCntList.add(overflowvalue)
-                                                saveScheduleList.add(content.schedule)
-                                                saveLineList.add(contentLine)
-
-                                                positionplus += interval - overflowvalue - 1
-                                                returnvalue = interval - overflowvalue
-                                                cntlist.add(returnvalue)
-
-                                                addViewFunction(
-                                                    holder,
-                                                    content.schedule.content,
-                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                    contentPosition / 7,
-                                                    contentLine,
-                                                    returnvalue,
-                                                    color,
-                                                    false,
-                                                    size,
-                                                    locationInterval,
-                                                    maxTextCount
-                                                )
-
-                                                continue@loop
-                                            }
-
-                                            positionplus += interval - 1
-                                            returnvalue = interval
-                                            cntlist.add(returnvalue)
-
-                                            addViewFunction(
-                                                holder,
-                                                content.schedule.content,
-                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                contentPosition / 7,
-                                                contentLine,
-                                                returnvalue,
-                                                color,
-                                                false,
-                                                size,
-                                                locationInterval,
-                                                maxTextCount
-                                            )
-
-                                            continue@loop
-                                        }
+                                    if (saveScheduleList[index].category != null &&
+                                        saveScheduleList[index].category!!.color != null
+                                    ) {
+                                        color =
+                                            Color.parseColor(saveScheduleList[index].category!!.color)
                                     }
-                                } else {
-                                    if (calendarMainData.unclassifiedCategory) {
-                                        if (content.position == contentPosition) {
-                                            cloneLiveSchedule.remove(content)
 
-                                            var color = Color.rgb(0x1D, 0xAF, 0xFF)
-
-                                            if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
-                                                val overflowvalue = contentPosition + interval - (contentPosition/7+1)*7
-                                                saveCntList.add(overflowvalue)
-                                                saveScheduleList.add(content.schedule)
-                                                saveLineList.add(contentLine)
-
-                                                positionplus += interval - overflowvalue - 1
-                                                returnvalue = interval - overflowvalue
-                                                cntlist.add(returnvalue)
-
-                                                addViewFunction(
-                                                    holder,
-                                                    content.schedule.content,
-                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                    contentPosition / 7,
-                                                    contentLine,
-                                                    returnvalue,
-                                                    color,
-                                                    false,
-                                                    size,
-                                                    locationInterval,
-                                                    maxTextCount
-                                                )
-
-                                                continue@loop
-                                            }
-
-                                            positionplus += interval - 1
-                                            returnvalue = interval
-                                            cntlist.add(returnvalue)
-
-                                            addViewFunction(
-                                                holder,
-                                                content.schedule.content,
-                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
-                                                contentPosition / 7,
-                                                contentLine,
-                                                returnvalue,
-                                                color,
-                                                false,
-                                                size,
-                                                locationInterval,
-                                                maxTextCount
-                                            )
-
-                                            continue@loop
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (calendarMainData.todoApply) {
-                            if (cloneLiveTodo[contentPosition].todos.size > 0) {
-                                if ((cloneLiveTodo[contentPosition].todos[0].completed &&
-                                            calendarMainData.todoComplete) ||
-                                    (!cloneLiveTodo[contentPosition].todos[0].completed &&
-                                            calendarMainData.todoInComplete)
-                                ) {
                                     addViewFunction(
                                         holder,
-                                        cloneLiveTodo[contentPosition].todos[0].content,
-                                        (contentPosition % 7) / 6f,
+                                        "",
+                                        0f,
                                         contentPosition / 7,
                                         contentLine,
-                                        1,
-                                        Color.rgb(0xED, 0xED, 0xED),
-                                        cloneLiveTodo[contentPosition].todos[0].completed,
+                                        7,
+                                        color,
+                                        false,
                                         size,
                                         locationInterval,
-                                        maxTextCount
+                                        maxTextCount,
+                                        contentPosition,
+                                        startDate
                                     )
 
-                                    cloneLiveTodo[contentPosition].todos.removeAt(0)
+                                    continue
+                                } else {
+                                    val returncnt = saveCntList[index]
+
+                                    var color = Color.rgb(0x1D, 0xAF, 0xFF)
+
+                                    if (saveScheduleList[index].category != null &&
+                                        saveScheduleList[index].category!!.color != null
+                                    ) {
+                                        color =
+                                            Color.parseColor(saveScheduleList[index].category!!.color)
+                                    }
+
+                                    saveCntList.removeAt(index)
+                                    saveScheduleList.removeAt(index)
+                                    saveLineList.removeAt(index)
+
+                                    positionplus += returncnt - 1
+                                    spanList.add(returncnt)
+
+                                    addViewFunction(
+                                        holder,
+                                        "",
+                                        0f,
+                                        contentPosition / 7,
+                                        contentLine,
+                                        returncnt,
+                                        color,
+                                        false,
+                                        size,
+                                        locationInterval,
+                                        maxTextCount,
+                                        contentPosition,
+                                        startDate
+                                    )
+
+                                    continue
                                 }
                             }
-                        }
-                    }
 
-                    var allCntList = ArrayList<Int>()
+                            var returnvalue = 1
 
-                    if (size == 4) {
-                        for (i in 0..34) {
-                            allCntList.add(0)
-                        }
-                    } else if (size == 5) {
-                        for (i in 0..41) {
-                            allCntList.add(0)
-                        }
-                    }
-
-                    if (calendarMainData.todoApply) {
-                        for (i in 0 until cloneLiveTodo.size) {
-                            for (j in 0 until cloneLiveTodo[i].todos.size) {
-                                if ((cloneLiveTodo[i].todos[j].completed &&
-                                            calendarMainData.todoComplete) ||
-                                    (!cloneLiveTodo[i].todos[j].completed &&
-                                            calendarMainData.todoInComplete)
-                                ) {
-                                    allCntList[i] += 1
-                                }
-                            }
-                        }
-                    }
-
-                    if (calendarMainData.scheduleApply) {
-                        for (k in 0 until cloneLiveSchedule.size) {
-                            if (cloneLiveSchedule[k].schedule.category != null) {
-                                if (cloneLiveSchedule[k].schedule.category!!.isSelected) {
+                            if (calendarMainData.scheduleApply) {
+                                for (content in cloneLiveSchedule) {
                                     var interval = 0
 
-                                    if (cloneLiveSchedule[k].cnt != null) {
-                                        interval = cloneLiveSchedule[k].cnt!!
+                                    if (content.cnt != null) {
+                                        interval = content.cnt!!
                                     } else {
                                         val format = SimpleDateFormat(
                                             "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
                                             Locale.KOREAN
                                         )
-                                        val repeatStart =
-                                            format.parse(cloneLiveSchedule[k].schedule.repeatStart)
+                                        val repeatStart = format.parse(content.schedule.repeatStart)
                                         val calendar2 = Calendar.getInstance()
                                         calendar2.time = repeatStart
-                                        calendar2.add(
-                                            Calendar.SECOND,
-                                            cloneLiveSchedule[k].timeInterval!!
-                                        )
+                                        calendar2.add(Calendar.SECOND, content.timeInterval!!)
 
                                         repeatStart.hours = 0
                                         repeatStart.minutes = 0
@@ -979,85 +789,307 @@ class AdapterMonth(val activity: Activity,
                                         interval = dateminus.toInt() + 1
                                     }
 
-                                    for (j in cloneLiveSchedule[k].position until cloneLiveSchedule[k].position + interval) {
-                                        if (allCntList.size <= j) break
+                                    if (content.schedule.category != null) {
+                                        if (content.schedule.category.isSelected) {
+                                            if (content.position == contentPosition) {
+                                                cloneLiveSchedule.remove(content)
 
-                                        allCntList[j]++
+                                                val color =
+                                                    Color.parseColor(content.schedule.category.color)
+
+                                                if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
+                                                    val overflowvalue =
+                                                        contentPosition + interval - (contentPosition / 7 + 1) * 7
+//                                                    contentPosition + interval - (contentPosition + interval) / 7 * 7
+                                                    //overflowvalue = 26 + 9 - (26+9)
+                                                    saveCntList.add(overflowvalue)
+                                                    saveScheduleList.add(content.schedule)
+                                                    saveLineList.add(contentLine)
+
+                                                    positionplus += interval - overflowvalue - 1
+                                                    returnvalue = interval - overflowvalue
+                                                    cntlist.add(returnvalue)
+
+                                                    addViewFunction(
+                                                        holder,
+                                                        content.schedule.content,
+                                                        (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                        contentPosition / 7,
+                                                        contentLine,
+                                                        returnvalue,
+                                                        color,
+                                                        false,
+                                                        size,
+                                                        locationInterval,
+                                                        maxTextCount,
+                                                        contentPosition,
+                                                        startDate
+                                                    )
+
+                                                    continue@loop
+                                                }
+
+                                                positionplus += interval - 1
+                                                returnvalue = interval
+                                                cntlist.add(returnvalue)
+
+                                                addViewFunction(
+                                                    holder,
+                                                    content.schedule.content,
+                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                    contentPosition / 7,
+                                                    contentLine,
+                                                    returnvalue,
+                                                    color,
+                                                    false,
+                                                    size,
+                                                    locationInterval,
+                                                    maxTextCount,
+                                                    contentPosition,
+                                                    startDate
+                                                )
+
+                                                continue@loop
+                                            }
+                                        }
+                                    } else {
+                                        if (calendarMainData.unclassifiedCategory) {
+                                            if (content.position == contentPosition) {
+                                                cloneLiveSchedule.remove(content)
+
+                                                var color = Color.rgb(0x1D, 0xAF, 0xFF)
+
+                                                if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
+                                                    val overflowvalue =
+                                                        contentPosition + interval - (contentPosition / 7 + 1) * 7
+                                                    saveCntList.add(overflowvalue)
+                                                    saveScheduleList.add(content.schedule)
+                                                    saveLineList.add(contentLine)
+
+                                                    positionplus += interval - overflowvalue - 1
+                                                    returnvalue = interval - overflowvalue
+                                                    cntlist.add(returnvalue)
+
+                                                    addViewFunction(
+                                                        holder,
+                                                        content.schedule.content,
+                                                        (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                        contentPosition / 7,
+                                                        contentLine,
+                                                        returnvalue,
+                                                        color,
+                                                        false,
+                                                        size,
+                                                        locationInterval,
+                                                        maxTextCount,
+                                                        contentPosition,
+                                                        startDate
+                                                    )
+
+                                                    continue@loop
+                                                }
+
+                                                positionplus += interval - 1
+                                                returnvalue = interval
+                                                cntlist.add(returnvalue)
+
+                                                addViewFunction(
+                                                    holder,
+                                                    content.schedule.content,
+                                                    (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                    contentPosition / 7,
+                                                    contentLine,
+                                                    returnvalue,
+                                                    color,
+                                                    false,
+                                                    size,
+                                                    locationInterval,
+                                                    maxTextCount,
+                                                    contentPosition,
+                                                    startDate
+                                                )
+
+                                                continue@loop
+                                            }
+                                        }
                                     }
                                 }
-                            } else {
-                                if (calendarMainData.unclassifiedCategory) {
-                                    var interval = 0
+                            }
 
-                                    if (cloneLiveSchedule[k].cnt != null) {
-                                        interval = cloneLiveSchedule[k].cnt!!
-                                    } else {
-                                        val format = SimpleDateFormat(
-                                            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-                                            Locale.KOREAN
+                            if (calendarMainData.todoApply) {
+                                if (cloneLiveTodo[contentPosition].todos.size > 0) {
+                                    if ((cloneLiveTodo[contentPosition].todos[0].completed &&
+                                                calendarMainData.todoComplete) ||
+                                        (!cloneLiveTodo[contentPosition].todos[0].completed &&
+                                                calendarMainData.todoInComplete)
+                                    ) {
+                                        addViewFunction(
+                                            holder,
+                                            cloneLiveTodo[contentPosition].todos[0].content,
+                                            (contentPosition % 7) / 6f,
+                                            contentPosition / 7,
+                                            contentLine,
+                                            1,
+                                            Color.rgb(0xED, 0xED, 0xED),
+                                            cloneLiveTodo[contentPosition].todos[0].completed,
+                                            size,
+                                            locationInterval,
+                                            maxTextCount,
+                                            contentPosition,
+                                            startDate
                                         )
-                                        val repeatStart =
-                                            format.parse(cloneLiveSchedule[k].schedule.repeatStart)
-                                        val calendar2 = Calendar.getInstance()
-                                        calendar2.time = repeatStart
-                                        calendar2.add(
-                                            Calendar.SECOND,
-                                            cloneLiveSchedule[k].timeInterval!!
-                                        )
 
-                                        repeatStart.hours = 0
-                                        repeatStart.minutes = 0
-                                        repeatStart.seconds = 0
-
-                                        calendar2.time.hours = 0
-                                        calendar2.time.minutes = 0
-                                        calendar2.time.seconds = 0
-
-                                        val dateminus =
-                                            (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
-                                        interval = dateminus.toInt()
-                                    }
-
-                                    for (j in cloneLiveSchedule[k].position until cloneLiveSchedule[k].position + interval) {
-                                        if (allCntList.size <= j) break
-
-                                        allCntList[j]++
+                                        cloneLiveTodo[contentPosition].todos.removeAt(0)
                                     }
                                 }
                             }
                         }
-                    }
 
-                    for (i in 0 until allCntList.size) {
-                        if (allCntList[i] > 0) {
-                            if (size == 5) {
-                                addViewFunction(
-                                    holder,
-                                    "+" + allCntList[i].toString(),
-                                    (i % 7) / 6f,
-                                    i / 7,
-                                    maxTextCount - 1,
-                                    1,
-                                    Color.rgb(0xED, 0xED, 0xED),
-                                    false,
-                                    size,
-                                    locationInterval,
-                                    maxTextCount
-                                )
-                            } else if (size == 4) {
-                                addViewFunction(
-                                    holder,
-                                    "+" + allCntList[i].toString(),
-                                    (i % 7) / 6f,
-                                    i / 7,
-                                    maxTextCount - 1,
-                                    1,
-                                    Color.rgb(0xED, 0xED, 0xED),
-                                    false,
-                                    size,
-                                    locationInterval,
-                                    maxTextCount
-                                )
+                        var allCntList = ArrayList<Int>()
+
+                        if (size == 4) {
+                            for (i in 0..34) {
+                                allCntList.add(0)
+                            }
+                        } else if (size == 5) {
+                            for (i in 0..41) {
+                                allCntList.add(0)
+                            }
+                        }
+
+                        if (calendarMainData.todoApply) {
+                            for (i in 0 until cloneLiveTodo.size) {
+                                for (j in 0 until cloneLiveTodo[i].todos.size) {
+                                    if ((cloneLiveTodo[i].todos[j].completed &&
+                                                calendarMainData.todoComplete) ||
+                                        (!cloneLiveTodo[i].todos[j].completed &&
+                                                calendarMainData.todoInComplete)
+                                    ) {
+                                        allCntList[i] += 1
+                                    }
+                                }
+                            }
+                        }
+
+                        if (calendarMainData.scheduleApply) {
+                            for (k in 0 until cloneLiveSchedule.size) {
+                                if (cloneLiveSchedule[k].schedule.category != null) {
+                                    if (cloneLiveSchedule[k].schedule.category!!.isSelected) {
+                                        var interval = 0
+
+                                        if (cloneLiveSchedule[k].cnt != null) {
+                                            interval = cloneLiveSchedule[k].cnt!!
+                                        } else {
+                                            val format = SimpleDateFormat(
+                                                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                                                Locale.KOREAN
+                                            )
+                                            val repeatStart =
+                                                format.parse(cloneLiveSchedule[k].schedule.repeatStart)
+                                            val calendar2 = Calendar.getInstance()
+                                            calendar2.time = repeatStart
+                                            calendar2.add(
+                                                Calendar.SECOND,
+                                                cloneLiveSchedule[k].timeInterval!!
+                                            )
+
+                                            repeatStart.hours = 0
+                                            repeatStart.minutes = 0
+                                            repeatStart.seconds = 0
+
+                                            calendar2.time.hours = 0
+                                            calendar2.time.minutes = 0
+                                            calendar2.time.seconds = 0
+
+                                            val dateminus =
+                                                (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
+                                            interval = dateminus.toInt() + 1
+                                        }
+
+                                        for (j in cloneLiveSchedule[k].position until cloneLiveSchedule[k].position + interval) {
+                                            if (allCntList.size <= j) break
+
+                                            allCntList[j]++
+                                        }
+                                    }
+                                } else {
+                                    if (calendarMainData.unclassifiedCategory) {
+                                        var interval = 0
+
+                                        if (cloneLiveSchedule[k].cnt != null) {
+                                            interval = cloneLiveSchedule[k].cnt!!
+                                        } else {
+                                            val format = SimpleDateFormat(
+                                                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                                                Locale.KOREAN
+                                            )
+                                            val repeatStart =
+                                                format.parse(cloneLiveSchedule[k].schedule.repeatStart)
+                                            val calendar2 = Calendar.getInstance()
+                                            calendar2.time = repeatStart
+                                            calendar2.add(
+                                                Calendar.SECOND,
+                                                cloneLiveSchedule[k].timeInterval!!
+                                            )
+
+                                            repeatStart.hours = 0
+                                            repeatStart.minutes = 0
+                                            repeatStart.seconds = 0
+
+                                            calendar2.time.hours = 0
+                                            calendar2.time.minutes = 0
+                                            calendar2.time.seconds = 0
+
+                                            val dateminus =
+                                                (calendar2.time.time - repeatStart.time) / (60 * 60 * 24 * 1000)
+                                            interval = dateminus.toInt()
+                                        }
+
+                                        for (j in cloneLiveSchedule[k].position until cloneLiveSchedule[k].position + interval) {
+                                            if (allCntList.size <= j) break
+
+                                            allCntList[j]++
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        for (i in 0 until allCntList.size) {
+                            if (allCntList[i] > 0) {
+                                if (size == 5) {
+                                    addViewFunction(
+                                        holder,
+                                        "+" + allCntList[i].toString(),
+                                        (i % 7) / 6f,
+                                        i / 7,
+                                        maxTextCount - 1,
+                                        1,
+                                        Color.rgb(0xED, 0xED, 0xED),
+                                        false,
+                                        size,
+                                        locationInterval,
+                                        maxTextCount,
+                                        i,
+                                        startDate
+                                    )
+                                } else if (size == 4) {
+                                    addViewFunction(
+                                        holder,
+                                        "+" + allCntList[i].toString(),
+                                        (i % 7) / 6f,
+                                        i / 7,
+                                        maxTextCount - 1,
+                                        1,
+                                        Color.rgb(0xED, 0xED, 0xED),
+                                        false,
+                                        size,
+                                        locationInterval,
+                                        maxTextCount,
+                                        i,
+                                        startDate
+                                    )
+                                }
                             }
                         }
                     }

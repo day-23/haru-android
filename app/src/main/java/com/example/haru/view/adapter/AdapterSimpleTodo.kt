@@ -75,14 +75,14 @@ class AdapterSimpleTodo(
         val detailTodoFlagImv = holder.itemView.findViewById<ImageView>(R.id.detail_todo_flag_imv)
         val todoCorrectionBtn = holder.itemView.findViewById<LinearLayout>(R.id.todo_correction_btn)
 
-        Log.d("투두플래그", todo.completed.toString())
-
         if (todo.completed) {
             detailTodoComplete.setBackgroundResource(R.drawable.circle_check)
-            detailTodoContentTv.setPaintFlags(detailTodoContentTv.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
-
-            detailTodoContentTv.setTextColor(Color.parseColor("#F1F1F5"))
-            detailTodoTagsTv.setTextColor(Color.parseColor("#F1F1F5"))
+//            detailTodoContentTv.setPaintFlags(detailTodoContentTv.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
+//
+//            detailTodoContentTv.setTextColor(Color.parseColor("#F1F1F5"))
+//            detailTodoTagsTv.setTextColor(Color.parseColor("#F1F1F5"))
+        } else {
+            detailTodoComplete.setBackgroundResource(R.drawable.circle_uncheck)
         }
 
         detailTodoContentTv.text = todo.content
@@ -105,6 +105,8 @@ class AdapterSimpleTodo(
 
         if(todo.flag){
             detailTodoFlagImv.setBackgroundResource(R.drawable.star_check)
+        } else {
+            detailTodoFlagImv.setBackgroundResource(R.drawable.star_uncheck)
         }
 
         detailTodoComplete.setOnClickListener {
@@ -220,7 +222,6 @@ class AdapterSimpleTodo(
             val checkListViewModel = CheckListViewModel()
             checkListViewModel.updateFlag(Flag(!todo.flag), todo.id) { flag, successData ->}
 
-            Log.d("투두플래그", todos[position].completed.toString())
             todos[position].flag = !todos[position].flag
 
             notifyItemChanged(position)
@@ -275,11 +276,7 @@ class AdapterSimpleTodo(
                 val today = todayDateFormat.parse(todayTodo)
 
                 if (end.year == today.year && end.month == today.month && end.date == today.date) {
-                    Log.d("todoLocation", "front")
                     todo.location = 0 // front
-                    Log.d("20191630", "front")
-                    Log.d("20191630", todo.endDate.toString())
-
                     todo.endDate = todoendDate
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
@@ -334,8 +331,6 @@ class AdapterSimpleTodo(
                 }
 
                 if(preData == null && nextData == null){
-                    Log.d("20191630", "location 예외처리 항목")
-
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
@@ -399,10 +394,7 @@ class AdapterSimpleTodo(
 
                 if (nextData == null) {
                     todo.location = 2
-                    Log.d("todoLocation", "back")
                     todo.endDate = todoendDate
-                    Log.d("20191630", "back")
-                    Log.d("20191630", todo.endDate.toString())
 
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
@@ -418,11 +410,8 @@ class AdapterSimpleTodo(
             }
 
             if (todo.repeatOption != null) {
-                Log.d("todoLocation", "middle")
                 todo.location = 1 // middle
                 todo.endDate = todoendDate
-                Log.d("20191630", "middle")
-                Log.d("20191630", todo.endDate.toString())
 
                 activity.supportFragmentManager.beginTransaction()
                     .replace(

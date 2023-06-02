@@ -254,22 +254,22 @@ object FormatDate {
             val preStartDate = when(repeatOption){
                 "매주"->{
                     cal.add(Calendar.DATE, -7)
-                    cal.time
+                    cal.time.clone() as Date
                 }
 
                 "격주"->{
                     cal.add(Calendar.DATE, -14)
-                    cal.time
+                    cal.time.clone() as Date
                 }
 
                 "매달"->{
                     cal.add(Calendar.MONTH, -1)
-                    cal.time
+                    cal.time.clone() as Date
                 }
 
                 "매년"->{
                     cal.add(Calendar.YEAR, -1)
-                    cal.time
+                    cal.time.clone() as Date
                 }
 
                 else -> {null}
@@ -282,7 +282,7 @@ object FormatDate {
             val preEndDate = when (repeatOption) {
                 "매일" -> { // 매일
                     cal.add(Calendar.DATE, -1)
-                    cal.time
+                    cal.time.clone() as Date
                 }
                 "매주", "격주" -> { // 매주
                     val nWeek = cal.get(Calendar.DAY_OF_WEEK) // endDate가 해당하는 주차의 요일
@@ -315,7 +315,7 @@ object FormatDate {
                                 break
                             }
                     }
-                    cal.time
+                    cal.time.clone() as Date
                 }
                 "매달" -> { // 매달
                     // 0 ~ 30
@@ -347,7 +347,7 @@ object FormatDate {
                             cal.add(Calendar.MONTH, -1)
                     }
                     cal.set(Calendar.DAY_OF_MONTH, days)
-                    cal.time
+                    cal.time.clone() as Date
                 }
                 "매년" -> { // 매년
                     val idx = cal.get(Calendar.MONTH)
@@ -382,7 +382,7 @@ object FormatDate {
                             }
                         }
                     }
-                    cal.time
+                    cal.time.clone() as Date
                 }
                 else -> {
                     null
@@ -604,19 +604,19 @@ object FormatDate {
 
     //이 다음 4개의 next 함수는 스케줄 용입니다.
     fun nextStartDate(endDateStr: String, repeatEndDateStr: String?): Date? {
-        val endDate = strToDate(endDateStr)
+        val endDate = strToDatecalendar(endDateStr)
         val calendar = Calendar.getInstance()
 
         calendar.apply {
             time = endDate!!
             add(Calendar.DATE, 1)
         }
-        val nextEndDate = calendar.time
+        val nextEndDate = calendar.time.clone() as Date
 
         if(repeatEndDateStr == null) return  nextEndDate
 
         calendar.apply {
-            time = strToDate(repeatEndDateStr)!!
+            time = strToDatecalendar(repeatEndDateStr)!!
             set(Calendar.HOUR_OF_DAY, 23)
             set(Calendar.MINUTE, 59)
             set(Calendar.SECOND, 59)
@@ -661,7 +661,7 @@ object FormatDate {
                         break
                     }
             }
-            val nextEndDate = calendar.time
+            val nextEndDate = calendar.time.clone() as Date
 
             if(repeatEndDateStr == null) return  nextEndDate
 
@@ -685,7 +685,7 @@ object FormatDate {
                 calendar.add(Calendar.DAY_OF_MONTH, 14)
             }
 
-            val nextStartDate = calendar.time
+            val nextStartDate = calendar.time.clone() as Date
 
             calendar.apply {
                 time = strToDatecalendar(repeatEndDateStr)
@@ -714,7 +714,6 @@ object FormatDate {
             val idxPlus = 1
             var flag = false
             var days = 32
-            Log.d("반복투두", (idx+idxPlus).toString())
 
             for (i in idx + idxPlus until 31)
                 if (repeatValue[i] == '1') {
@@ -752,7 +751,7 @@ object FormatDate {
                 }
                 calendar.set(Calendar.DAY_OF_MONTH, days)
             }
-            val nextEndDate = calendar.time
+            val nextEndDate = calendar.time.clone() as Date
 
             Log.d("반복투두", nextEndDate.toString())
 
@@ -775,7 +774,7 @@ object FormatDate {
 
             calendar.add(Calendar.MONTH, 1)
 
-            val nextStartDate = calendar.time
+            val nextStartDate = calendar.time.clone() as Date
 
             calendar.apply {
                 time = strToDatecalendar(repeatEndDateStr)
@@ -802,7 +801,6 @@ object FormatDate {
         if(!repeatValue.contains("T")) {
             calendar.time = strToDatecalendar(endDateStr)
 
-            Log.d("20191627", "day : $day")
             val idx = calendar.get(Calendar.MONTH)
             val idxPlus = 1
             val days = day ?: calendar.get(Calendar.DAY_OF_MONTH)
@@ -835,7 +833,7 @@ object FormatDate {
                     }
                 }
             }
-            val nextEndDate = calendar.time
+            val nextEndDate = calendar.time.clone() as Date
 
             if(repeatEndDateStr == null) return nextEndDate
 
@@ -856,7 +854,7 @@ object FormatDate {
 
             calendar.add(Calendar.YEAR, 1)
 
-            val nextStartDate = calendar.time
+            val nextStartDate = calendar.time.clone() as Date
 
             calendar.apply {
                 time = strToDatecalendar(repeatEndDateStr)
