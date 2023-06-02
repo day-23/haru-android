@@ -693,7 +693,7 @@ class AdapterMonth(val activity: Activity,
                                     positionplus += 6
                                     spanList.add(7)
 
-                                    var color = Color.rgb(0x1D, 0xAF, 0xFF)
+                                    var color = Color.rgb(0xAA, 0xD7, 0xFF)
 
                                     if (saveScheduleList[index].category != null &&
                                         saveScheduleList[index].category!!.color != null
@@ -722,7 +722,7 @@ class AdapterMonth(val activity: Activity,
                                 } else {
                                     val returncnt = saveCntList[index]
 
-                                    var color = Color.rgb(0x1D, 0xAF, 0xFF)
+                                    var color = Color.rgb(0xAA, 0xD7, 0xFF)
 
                                     if (saveScheduleList[index].category != null &&
                                         saveScheduleList[index].category!!.color != null
@@ -857,7 +857,7 @@ class AdapterMonth(val activity: Activity,
                                             if (content.position == contentPosition) {
                                                 cloneLiveSchedule.remove(content)
 
-                                                var color = Color.rgb(0x1D, 0xAF, 0xFF)
+                                                var color = Color.rgb(0xAA, 0xD7, 0xFF)
 
                                                 if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
                                                     val overflowvalue =
