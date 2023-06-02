@@ -119,16 +119,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="4dp"
             android:text="라이트"
-            android:textColor="@color/date_text"
+            android:textColor="@color/highlight"
             android:textSize="14sp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/arrow" />
 
     </LinearLayout>
 
@@ -155,16 +150,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="4dp"
             android:text="한국어"
-            android:textColor="@color/date_text"
+            android:textColor="@color/highlight"
             android:textSize="14sp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/arrow" />
 
     </LinearLayout>
 

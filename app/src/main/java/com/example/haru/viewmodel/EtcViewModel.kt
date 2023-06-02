@@ -80,9 +80,6 @@ class EtcViewModel : ViewModel() {
         _isAllowFeedLike.value = User.isAllowFeedLike
         _isAllowFeedComment.value = User.isAllowFeedComment
         _isAllowSearch.value = User.isAllowSearch
-
-        setTodayYearMonth()
-        calculateWithHaru()
     }
 
     // itemCount에 값 넣어주는 함수
@@ -101,24 +98,29 @@ class EtcViewModel : ViewModel() {
 
     // ProfileRepository
     // MypageViewModel -> getUserInfo
-    private fun getSnsInfo() {
+    fun getSnsInfo() {
         viewModelScope.launch {
             profileRepository.getUserInfo(User.id){
+                Log.e("20191627", it.toString())
                 if (it.id != ""){
                     _name.postValue(it.name)
                     _introduction.postValue(it.introduction)
                     _profileImage.postValue(it.profileImage)
                     _postCount.postValue(it.postCount)
-//                    _friendCount.postValue(it.)
+                    _friendCount.postValue(it.friendCount)
                 } else {
-                    //실패한 경우
+                    Log.e("20191627", "Fail to getSnsInfo")
+                    _introduction.postValue("소개를 작성해주세요")
+                    _postCount.postValue(0)
+                    _friendCount.postValue(0)
+                    _profileImage.postValue("")
                 }
             }
         }
     }
 
     // 오늘 날짜 설정
-    private fun setTodayYearMonth() {
+    fun setTodayYearMonth() {
         val startDate: Date
         val endDate: Date
         FormatDate.cal.apply {
@@ -177,7 +179,7 @@ class EtcViewModel : ViewModel() {
     }
 
     // 하루와 함께한 날짜 계산
-    private fun calculateWithHaru() {
+    fun calculateWithHaru() {
 
         val startDate = FormatDate.cal.apply {
             time = FormatDate.strToDate(User.createdAt)!!
