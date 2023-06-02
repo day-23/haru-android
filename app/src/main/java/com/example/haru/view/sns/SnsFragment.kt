@@ -44,6 +44,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
     private lateinit var binding: FragmentSnsBinding
     private var click = false
     private lateinit var snsPostAdapter: SnsPostAdapter
+    var lastDate = ""
 
     override fun onCommentClick(postitem: Post) {
         profileViewModel.getUserInfo(User.id)
@@ -136,8 +137,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!postRecycler.canScrollVertically(1)) {
-                    snsViewModel.getPosts()
-                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT).show()
+                    snsViewModel.getPosts(lastDate)
                 }
             }
         }
@@ -151,13 +151,17 @@ class SnsFragment : Fragment(), OnPostClickListener {
         }
 
         snsViewModel.newPost.observe(viewLifecycleOwner){newPost ->
-            snsPostAdapter.newPage(newPost)
-            if(newPost.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+            if(newPost.isNotEmpty()) {
+                snsPostAdapter.newPage(newPost)
+                getLastDate(newPost)
+            }else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
         snsViewModel.Posts.observe(viewLifecycleOwner){post ->
-            snsPostAdapter.initList(post)
-            if(post.size == 0) Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
+            if(post.isNotEmpty()){
+                snsPostAdapter.initList(post)
+                getLastDate(post)
+            } else Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
         }
 
         binding.writeHaru.setOnClickListener {
@@ -238,6 +242,11 @@ class SnsFragment : Fragment(), OnPostClickListener {
             }
         }
         return false
+    }
+
+    fun getLastDate(items : ArrayList<Post>){
+        val index = items.size - 1
+        lastDate = items[index].createdAt
     }
 
 }

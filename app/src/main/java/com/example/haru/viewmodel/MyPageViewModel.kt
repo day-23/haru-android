@@ -130,9 +130,6 @@ class MyPageViewModel(): ViewModel() {
         Log.d("Image", "download -------------------$images")
         return images
     }
-    fun addPage() {
-        _Page.value = _Page.value?.plus(1)
-    }
 
     fun getFeed(targetId: String, lastCreatedAt: String) {
         var newPost: ArrayList<Post> = arrayListOf()
@@ -175,7 +172,7 @@ class MyPageViewModel(): ViewModel() {
     fun getMedia(targetId: String, lastCreatedAt: String){
         var newMedia = MediaResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
-            PostRepository.getFirstMedia(targetId, lastCreatedAt) {
+            PostRepository.getMedia(targetId, lastCreatedAt) {
                 if (it.data.size > 0) { //get success
                     newMedia = it
                 }

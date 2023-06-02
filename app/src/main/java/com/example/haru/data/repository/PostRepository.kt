@@ -81,7 +81,7 @@ class PostRepository() {
     }
 
 
-    //전체 게시글
+    //전체 게시글(둘러보기)
     suspend fun getPost(lastCreatedAt:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getPosts(
@@ -106,6 +106,48 @@ class PostRepository() {
         Dispatchers.IO){
         val response = postService.getFirstPosts(
             userId,
+        ).execute()
+
+        val posts: ArrayList<Post>
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get posts")
+            data = response.body()!!
+            posts = data.data!!
+        } else{
+            Log.d("TAG", "Fail to get posts")
+            posts = arrayListOf()
+        }
+        callback(posts)
+    }
+
+    //둘러보기 태그 선택
+    suspend fun getFirstHotPosts(tagId: String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstHotPosts(
+            userId,
+            tagId
+        ).execute()
+
+        var posts: ArrayList<Post> = arrayListOf()
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get posts")
+            data = response.body()!!
+            if(!(data.data).isNullOrEmpty())
+                posts = data.data
+        } else{
+            Log.d("TAG", "Fail to get posts")
+        }
+        callback(posts)
+    }
+
+    suspend fun getHotPosts(tagId: String,lastCreatedAt: String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getHotPosts(
+            userId,
+            tagId,
+            lastCreatedAt
         ).execute()
 
         val posts: ArrayList<Post>
@@ -203,7 +245,7 @@ class PostRepository() {
         callback(medias)
     }
 
-    suspend fun getFirstMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
+    suspend fun getMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.getMedia(
             userId,
@@ -298,26 +340,6 @@ class PostRepository() {
         callback(tags)
     }
 
-    //미디어
-    suspend fun getMedia(targetId: String, lastCreatedAt: String, callback: (medias : MediaResponse) -> Unit) = withContext(
-        Dispatchers.IO){
-        val response = postService.getMedia(
-            userId,
-            targetId,
-            lastCreatedAt
-        ).execute()
-
-        val medias: MediaResponse
-
-        if(response.isSuccessful){
-            Log.d("TAG", "Success to get Medias")
-            medias = response.body()!!
-        }else{
-            Log.d("TAG", "Fail to get Medias")
-            medias = MediaResponse(false, arrayListOf(), pagination())
-        }
-        callback(medias)
-    }
     //전체 댓글
     suspend fun getComment(postId: String, imageId: String, lastCreatedAt: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
         Dispatchers.IO){
