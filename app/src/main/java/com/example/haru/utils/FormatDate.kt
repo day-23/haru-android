@@ -889,8 +889,76 @@ object FormatDate {
         repeatStartStr: String,
         repeatEndDateStr: String,
         repeatOption: String,
-        today : Date
-    ) : Pair<Date, Date> {
+        today: Date
+    ): Pair<Date, Date> {
+        val repeatStart = dateFormatterToServer.parse(repeatStartStr)!!
+        val repeatEnd = dateFormatterToServer.parse(repeatEndDateStr)!!
+
+        cal.time = repeatStart
+
+        if (today < cal.time) {
+            val startDate = cal.time
+            cal.add(Calendar.MILLISECOND, interval)
+            Log.e("20191627", "1startDate : $startDate, endDAte : ${cal.time}")
+            return Pair(startDate, cal.time)
+        }
+
+        while (today > cal.time) {
+
+            when (repeatOption) {
+                "매주" -> cal.add(Calendar.DAY_OF_MONTH, 7)
+                "격주" -> cal.add(Calendar.DAY_OF_MONTH, 14)
+                "매달" -> {
+                    val day = cal.get(Calendar.DAY_OF_MONTH)
+                    cal.set(Calendar.DAY_OF_MONTH, 1)
+                    cal.add(Calendar.MONTH, 1)
+                    var maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+                    while (day > maxDay) {
+                        cal.add(Calendar.MONTH, 1)
+                        maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+                    }
+                    cal.set(Calendar.DAY_OF_MONTH, day)
+                }
+                "매년" -> cal.add(Calendar.YEAR, 1)
+            }
+        }
+        if (cal.time < repeatEnd) {
+            val startDate = cal.time
+            cal.add(Calendar.MILLISECOND, interval)
+            Log.e("20191627", "2startDate : $startDate, endDAte : ${cal.time}")
+            return Pair(startDate, cal.time)
+        }
+
+        when (repeatOption) {
+            "매주" -> cal.add(Calendar.DAY_OF_MONTH, -7)
+            "격주" -> cal.add(Calendar.DAY_OF_MONTH, -14)
+            "매달" -> {
+                val day = cal.get(Calendar.DAY_OF_MONTH)
+                cal.set(Calendar.DAY_OF_MONTH, 1)
+                cal.add(Calendar.MONTH, -1)
+                var maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+                while (day > maxDay) {
+                    cal.add(Calendar.MONTH, -1)
+                    maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+                }
+                cal.set(Calendar.DAY_OF_MONTH, day)
+            }
+            "매년" -> cal.add(Calendar.YEAR, -1)
+        }
+
+        val startDate = cal.time
+        cal.add(Calendar.MILLISECOND, interval)
+        Log.e("20191627", "3startDate : $startDate, endDAte : ${cal.time}")
+        return Pair(startDate, cal.time)
+    }
+
+    fun nextStartSchedule(
+        repeatOption: String,
+        repeatValue: String,
+        repeatStartStr: String,
+        repeatEndDateStr: String,
+        today: Date
+    ): Pair<Date, Date> {
         val repeatStart = dateFormatterToServer.parse(repeatStartStr)!!
         val repeatEnd = dateFormatterToServer.parse(repeatEndDateStr)!!
 
@@ -900,51 +968,96 @@ object FormatDate {
 
         cal.time = repeatStart
 
-        if (today < cal.time){
+        if (today < cal.time) {
             val startDate = cal.time
             cal.apply {
-                add(Calendar.MILLISECOND, interval)
-                Log.e("20191627", "1startDate : $startDate, endDAte : $time")
                 set(Calendar.HOUR_OF_DAY, endHour)
                 set(Calendar.MINUTE, endMinute)
             }
             return Pair(startDate, cal.time)
         }
 
-        while(today < cal.time) {
-            when(repeatOption){
-                "매주" -> cal.add(Calendar.DAY_OF_MONTH, 7)
-                "격주" -> cal.add(Calendar.DAY_OF_MONTH, 14)
-                "매달" -> cal.add(Calendar.MONTH, 1)
-                "매년" -> cal.add(Calendar.YEAR, 1)
+        while (today > cal.time) {
+            when (repeatOption) {
+                "매일" -> {
+                    cal.add(Calendar.DAY_OF_MONTH, 1)
+                }
+                "매주" -> {
+                    val idx = cal.get(Calendar.DAY_OF_WEEK) - 1
+                    for (i in idx until 7) {
+                        if (repeatValue[i] == '1')
+                            if (today < cal.time)
+                                break
+                        cal.add(Calendar.DAY_OF_MONTH, 1)
+                    }
+                }
+                "격주" -> {
+                    val idx = cal.get(Calendar.DAY_OF_WEEK) - 1
+                    var flag = false
+                    for (i in idx until 7) {
+                        if (repeatValue[i] == '1')
+                            if (today < cal.time) {
+                                flag = true
+                                break
+                            }
+                        cal.add(Calendar.DAY_OF_MONTH, 1)
+                    }
+                    if (!flag)
+                        cal.add(Calendar.DAY_OF_MONTH, 7)
+                }
+                "매달" -> {
+                    val idx = cal.get(Calendar.DAY_OF_MONTH) - 1
+                    val endIdx = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+                    for (i in idx until endIdx) {
+                        if (repeatValue[i] == '1')
+                            if (today < cal.time)
+                                break
+                        cal.add(Calendar.DAY_OF_MONTH, 1)
+                    }
+                }
+                "매년" -> {
+                    val idx = cal.get(Calendar.MONTH)
+                    val day = cal.get(Calendar.DAY_OF_MONTH)
+                    cal.set(Calendar.DAY_OF_MONTH, 1)
+                    for (i in idx until 12) {
+                        val maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+                        if (repeatValue[i] == '1') {
+                            if (today < cal.time) {
+                                if (day <= maxDay)
+                                    break
+                            }
+                        }
+                        cal.add(Calendar.MONTH, 1)
+                    }
+                    cal.set(Calendar.DAY_OF_MONTH, day)
+                }
             }
         }
-        if (cal.time < repeatEnd){
+
+        if (cal.time < repeatEnd) {
             val startDate = cal.time
             cal.apply {
-                add(Calendar.MILLISECOND, interval)
-                Log.e("20191627", "2startDate : $startDate, endDAte : $time")
                 set(Calendar.HOUR_OF_DAY, endHour)
                 set(Calendar.MINUTE, endMinute)
             }
             return Pair(startDate, cal.time)
         }
 
-        when(repeatOption){
-            "매주" -> cal.add(Calendar.DAY_OF_MONTH, -7)
-            "격주" -> cal.add(Calendar.DAY_OF_MONTH, -14)
-            "매달" -> cal.add(Calendar.MONTH, -1)
-            "매년" -> cal.add(Calendar.YEAR, -1)
+        when (repeatOption) {
+            "매일" -> cal.add(Calendar.DAY_OF_MONTH, -1)
+            "매주" -> { // 여기부터 시작
+                val idx = cal.get(Calendar.DAY_OF_WEEK) - 1
+                for (i in idx downTo 0) {
+                    if (repeatValue[i] == '1')
+                        if (today < cal.time)
+                            break
+                    cal.add(Calendar.DAY_OF_MONTH, 1)
+                }
+            }
         }
 
-        val startDate = cal.time
-        cal.apply {
-            add(Calendar.MILLISECOND, interval)
-            Log.e("20191627", "3startDate : $startDate, endDAte : $time")
-            set(Calendar.HOUR_OF_DAY, endHour)
-            set(Calendar.MINUTE, endMinute)
-        }
-        return Pair(startDate, cal.time)
+
+        return Pair(Date(), Date())
     }
 
 }

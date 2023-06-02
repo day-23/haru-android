@@ -81,14 +81,16 @@ class SearchScheduleAdapter(val context: Context) :
             if (item.isAllDay)
                 binding.tvScheduleTime.text = "하루종일"
             else {
-                val startDate : Date
-                val endDate : Date
-                if (item.repeatOption == null && (item.repeatValue == "" || item.repeatValue?.contains('T') == true)) {
+                val startDate: Date
+                val endDate: Date
+                if (item.repeatOption == null && item.repeatValue == null) {
+                    // repeatOption, repeatValue 가 null이면 반복하지 않는 일정
                     startDate = FormatDate.strToDate(item.repeatStart)!!
                     endDate = FormatDate.strToDate(item.repeatEnd)!!
-                } else {
+                } else { // 둘중 하나라도 null이 아니면 반복하는 일정
                     val today = Date()
-                    if (item.repeatValue!![0] == 'T') {
+                    if (item.repeatValue?.contains('T') == true) {
+                        // interval을 가지는 반복하는 일정
                         val interval = item.repeatValue.substring(1).toInt()
                         val rangeDate = FormatDate.getIntervalDate(
                             interval,
@@ -100,6 +102,14 @@ class SearchScheduleAdapter(val context: Context) :
                         startDate = rangeDate.first
                         endDate = rangeDate.second
                     } else {
+                        // 반복하는 일정인데 인터벌이 아닌경우
+                        when (item.repeatOption) {
+                            "매일" -> {}
+                            "매주" -> {}
+                            "격주" -> {}
+                            "매달" -> {}
+                            "매년" -> {}
+                        }
                         startDate = Date()
                         endDate = Date()
                     }
@@ -114,13 +124,10 @@ class SearchScheduleAdapter(val context: Context) :
             if (item.category == null) {
                 binding.ivCategoryColor.backgroundTintList =
                     ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
-//                        val drawable = binding.ivCategoryColor.background as VectorDrawable
-//                        drawable.setColorFilter(Color.parseColor("#1DAFFF"), PorterDuff.Mode.SRC_ATOP)
             } else {
                 binding.ivCategoryColor.backgroundTintList =
                     ColorStateList.valueOf(Color.parseColor(item.category.color))
-//                        val drawable = binding.ivCategoryColor.background as VectorDrawable
-//                        drawable.setColorFilter(Color.parseColor(item.category.color), PorterDuff.Mode.SRC_ATOP)
+
             }
         }
     }

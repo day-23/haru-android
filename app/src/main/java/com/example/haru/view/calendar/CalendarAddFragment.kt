@@ -113,7 +113,7 @@ class CalendarAddFragment(private val activity: Activity,
         }
 
         if(repeatStartCalendar.time.month == repeatEndCalendar.time.month &&
-                repeatEndCalendar.time.date == repeatEndCalendar.time.date){
+                repeatStartCalendar.time.date == repeatEndCalendar.time.date){
             repeatEndCalendar.time = repeatStartCalendar.time.clone() as Date
             repeatEndCalendar.add(Calendar.HOUR, 1)
         } else {
