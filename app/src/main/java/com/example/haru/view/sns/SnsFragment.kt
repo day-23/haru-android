@@ -44,10 +44,10 @@ class SnsFragment : Fragment(), OnPostClickListener {
     private lateinit var binding: FragmentSnsBinding
     private var click = false
     private lateinit var snsPostAdapter: SnsPostAdapter
+    var lastDate = ""
 
     override fun onCommentClick(postitem: Post) {
         profileViewModel.getUserInfo(User.id)
-
         profileViewModel.UserInfo.observe(viewLifecycleOwner){user ->
             val newFrag = AddCommentFragment(postitem, user)
             val transaction = parentFragmentManager.beginTransaction()
@@ -59,7 +59,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
         }
     }
     override fun onTotalCommentClick(post : Post) {
-        val newFrag = CommentsFragment(post)
+        val newFrag = CommentsFragment(post, User.id)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
@@ -137,8 +137,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!postRecycler.canScrollVertically(1)) {
-                    snsViewModel.getPosts()
-                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT).show()
+                    snsViewModel.getPosts(lastDate)
                 }
             }
         }
@@ -152,13 +151,28 @@ class SnsFragment : Fragment(), OnPostClickListener {
         }
 
         snsViewModel.newPost.observe(viewLifecycleOwner){newPost ->
-            snsPostAdapter.newPage(newPost)
-            if(newPost.size == 0) Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+            if(newPost.isNotEmpty()) {
+                snsPostAdapter.newPage(newPost)
+                getLastDate(newPost)
+            }else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
         snsViewModel.Posts.observe(viewLifecycleOwner){post ->
-            snsPostAdapter.initList(post)
-            if(post.size == 0) Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
+            if(post.isNotEmpty()){
+                snsPostAdapter.initList(post)
+                getLastDate(post)
+            } else Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.writeHaru.setOnClickListener {
+            val newFrag = WriteHaruFragment()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
+            transaction.commit()
+
         }
 
         //하루 옆 메뉴 클릭
@@ -192,7 +206,13 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
         //둘러보기 클릭
         binding.lookAround.setOnClickListener {
-
+            val newFrag = LookAroundFragment()
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("snsmain")
+            transaction.commit()
         }
 
         val retrofit = Retrofit.Builder()
@@ -222,6 +242,11 @@ class SnsFragment : Fragment(), OnPostClickListener {
             }
         }
         return false
+    }
+
+    fun getLastDate(items : ArrayList<Post>){
+        val index = items.size - 1
+        lastDate = items[index].createdAt
     }
 
 }

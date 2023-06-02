@@ -15,11 +15,11 @@ import okhttp3.MultipartBody
 class SnsViewModel: ViewModel() {
     private val PostRepository = PostRepository()
 
-    private val _Posts = MutableLiveData<ArrayList<Post>>()//요청한 게시글 전체
+    private val _Posts = MutableLiveData<ArrayList<Post>>()//요청한 게시글 첫번째 페이지
     val Posts : LiveData<ArrayList<Post>>
         get() = _Posts
 
-    private val _newPost = MutableLiveData<ArrayList<Post>>()//새로 요청한 페이지
+    private val _newPost = MutableLiveData<ArrayList<Post>>()//이후 페이지
     val newPost : LiveData<ArrayList<Post>>
         get() = _newPost
 
@@ -31,6 +31,18 @@ class SnsViewModel: ViewModel() {
     val Comments : LiveData<ArrayList<Comments>>
         get() = _Comments
 
+    private val _HotTags = MutableLiveData<ArrayList<Tag>>()
+    val HotTags : LiveData<ArrayList<Tag>>
+        get() = _HotTags
+
+    private val _HotFirstPosts = MutableLiveData<ArrayList<Post>>()
+    val HotFirstPosts : LiveData<ArrayList<Post>>
+        get() = _HotFirstPosts
+
+    private val _HotPosts = MutableLiveData<ArrayList<Post>>()
+    val HotPosts : LiveData<ArrayList<Post>>
+        get() = _HotPosts
+
     private val _TotalComments = MutableLiveData<Int>()
     val TotalComments: LiveData<Int>
         get() = _TotalComments
@@ -38,10 +50,6 @@ class SnsViewModel: ViewModel() {
     private val _FirstComments = MutableLiveData<ArrayList<Comments>>()
     val FirstComments : LiveData<ArrayList<Comments>>
         get() = _FirstComments
-
-    private val _CurrentPost = MutableLiveData<String>()
-    val CurrentPost : LiveData<String>
-        get() = _CurrentPost
 
     private val _DeleteResult = MutableLiveData<Boolean>()
     val DeleteResult : LiveData<Boolean>
@@ -51,21 +59,17 @@ class SnsViewModel: ViewModel() {
     val ChangeResult : LiveData<Boolean>
         get() = _ChangeResult
 
-    fun getPosts(){
+    fun getPosts(lastCreatedAt: String){
+        Log.d("20191668", "$lastCreatedAt")
         var newPost: ArrayList<Post> = arrayListOf()
-        val posts = _Posts.value
-        if(posts != null)
-            if(posts.size > 0) {
-                val lastCreatedAt = posts[posts.size-1].createdAt
-                viewModelScope.launch {
-                    PostRepository.getPost(lastCreatedAt) {
-                        if (it.size > 0) { //get success
-                            newPost = it
-                        }
-                    }
-                    _newPost.value = newPost // 두번째 페이지일 경우
+        viewModelScope.launch {
+            PostRepository.getPost(lastCreatedAt) {
+                if (it.size > 0){
+                    newPost = it
                 }
             }
+        _newPost.value = newPost
+        }
     }
     fun getFirstPosts(){
         var newPost: ArrayList<Post> = arrayListOf()
@@ -76,6 +80,28 @@ class SnsViewModel: ViewModel() {
                 }
             }
             _Posts.value = newPost // 첫번째 페이지일 경우
+        }
+    }
+    //태그선택 둘러보기
+    fun getFirstHotPosts(tagId:String){
+        var firstPost = arrayListOf<Post>()
+        viewModelScope.launch {
+            PostRepository.getFirstHotPosts(tagId){
+                if(it.isNotEmpty())
+                    firstPost = ArrayList(it)
+            }
+            _HotFirstPosts.value = firstPost
+        }
+    }
+
+    fun getHotPosts(tagId: String, lastCreatedAt: String){
+        var post = arrayListOf<Post>()
+        viewModelScope.launch {
+            PostRepository.getHotPosts(tagId, lastCreatedAt){
+                if(it.isNotEmpty())
+                    post = it
+            }
+            _HotPosts.value = post
         }
     }
 
@@ -114,6 +140,17 @@ class SnsViewModel: ViewModel() {
             }
             _FirstComments.value = comments
             _TotalComments.value = total
+        }
+    }
+
+    fun getHotTags(){
+        var tags = arrayListOf<Tag>()
+
+        viewModelScope.launch {
+            PostRepository.getHotTags(){
+                tags = it
+            }
+            _HotTags.value = tags
         }
     }
 

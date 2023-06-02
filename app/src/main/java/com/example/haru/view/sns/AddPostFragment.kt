@@ -215,8 +215,6 @@ class AddPostFragment : Fragment(), PostInterface{
                 val transaction = fragmentManager.beginTransaction()
                 transaction.add(R.id.add_post_anchor, fragment)
                 transaction.commit()
-
-
             }
 
             binding.galleyToggle.setOnClickListener {

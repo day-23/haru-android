@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -28,6 +29,7 @@ import com.example.haru.databinding.FragmentEditProfileBinding
 import com.example.haru.utils.User
 import com.example.haru.view.adapter.GalleryAdapter
 import com.example.haru.viewmodel.MyPageViewModel
+import okhttp3.internal.wait
 
 class EditProfileFragment(userId: String): Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
@@ -88,6 +90,7 @@ class EditProfileFragment(userId: String): Fragment() {
         }
 
         binding.editProfileApply.setOnClickListener {
+            binding.editProfileApply.isClickable = false
             val multipart = profileViewModel.EditImage.value
             val name = binding.editName.text.toString()
             val introduction = binding.editIntroduction.text.toString()
@@ -97,16 +100,17 @@ class EditProfileFragment(userId: String): Fragment() {
                 profileViewModel.editProfileName(name, introduction)
             }
 
-            val fragmentManager = parentFragmentManager
-            if (fragmentManager.backStackEntryCount > 0) {
-                // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-                fragmentManager.popBackStack()
+            profileViewModel.UserInfo.observe(viewLifecycleOwner) {User->
+                if(User.id != "") {
+                    val fragmentManager = parentFragmentManager
+                    if (fragmentManager.backStackEntryCount > 0) {
+                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+                        fragmentManager.popBackStack()
+                    }
+                }else{
+                    Toast.makeText(requireContext(),"프로필 업데이트에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                }
             }
-
-//            val newFrag = MyPageFragment(userId)
-//            val transaction = parentFragmentManager.beginTransaction()
-//            transaction.replace(R.id.fragments_frame, newFrag)
-//            transaction.commit()
         }
 
         // 이미지 선택 버튼에 클릭 이벤트 리스너 등록
