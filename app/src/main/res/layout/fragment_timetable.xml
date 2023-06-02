@@ -344,6 +344,7 @@
                                 android:text="2"
                                 android:textColor="#191919"
                                 android:textSize="12sp" />
+
                         </LinearLayout>
 
                         <View

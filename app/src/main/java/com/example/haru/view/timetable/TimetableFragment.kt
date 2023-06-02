@@ -480,13 +480,16 @@ class TimetableFragment : Fragment() {
                     standardTextView.layoutParams.height
                 ).apply {
                     if (standardTextView.layoutParams is ViewGroup.MarginLayoutParams) {
+
+
+                        val marginPx = (context.resources.displayMetrics.density * 52).toInt()
                         val params =
                             standardTextView.layoutParams as ViewGroup.MarginLayoutParams
                         setMargins(
-                            params.leftMargin,
-                            params.topMargin,
-                            params.rightMargin,
-                            params.bottomMargin
+                            0,
+                            marginPx,
+                            0,
+                            0
                         )
                     }
                 }
