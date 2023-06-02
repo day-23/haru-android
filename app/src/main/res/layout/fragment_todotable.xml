@@ -99,12 +99,11 @@
 
                 <ImageButton
                     android:id="@+id/todolist_change"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_weight="0"
                     android:background="#00000000"
-                    android:gravity="right"
-                    android:src="@drawable/___20565" />
+                    android:src="@drawable/timetable_top_asset2" />
             </LinearLayout>
 
             <LinearLayout

@@ -104,7 +104,7 @@
                     android:layout_weight="0"
                     android:background="#00000000"
                     android:gravity="right"
-                    android:src="@drawable/___20565" />
+                    android:src="@drawable/timetable_top_asset" />
             </LinearLayout>
 
             <!-- 일월화수목금토 표시 -->
