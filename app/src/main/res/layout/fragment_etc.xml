@@ -201,6 +201,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/___20513"
+                    android:backgroundTint="@color/light_gray"
                     android:rotation="90" />
 
                 <TextView
@@ -219,6 +220,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/___20513"
+                    android:backgroundTint="@color/light_gray"
                     android:rotation="-90" />
 
             </LinearLayout>
