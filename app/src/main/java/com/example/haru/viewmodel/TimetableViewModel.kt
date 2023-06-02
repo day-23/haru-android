@@ -6,13 +6,10 @@ import android.util.Log.d
 import android.view.View
 import android.widget.DatePicker
 import androidx.lifecycle.*
-import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.CategoryRepository
 import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.utils.FormatDate
-import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
-import com.example.haru.view.calendar.CalendarItemFragment
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.*
@@ -431,22 +428,19 @@ class TimetableViewModel(val context : Context): ViewModel() {
             //시간 변경
             callUpdateRepeatScheduleAPI(schedule, preDate, newRepeatStart, newRepeatEnd){
                 getSchedule(Datelist)
-
-                d("20191630", "patchMoved: callUpdateRepeatScheduleAPI ${IndexList}")
             }
         }
 
-        d("20191630", "patchMoved: ${IndexList}")
         sortSchedule(preScheduleData)
         _Schedules.value = IndexList
-
-//        getSchedule(Datelist)
     }
 
     private fun callUpdateRepeatScheduleAPI(schedule : Schedule, preChangedDateString : String, newRepeatStart : String, newRepeatEnd : String, callback:(Boolean) -> Unit){
         val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
 
         var preChangedDate = koreaFormatter.parse((preChangedDateString))
+
+        d("20191630", "callUpdateRepeatScheduleAPI: schedule.location ${schedule.location} ")
 
         when(schedule.location){
             0->{//front
@@ -568,8 +562,8 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             schedule.isAllDay,
                             newRepeatStart,
                             newRepeatEnd,
-                            schedule.repeatOption,
-                            schedule.repeatValue,
+                            null,
+                            null,
                             schedule.category?.id,
                             emptyList()
                         )
@@ -711,7 +705,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             newRepeatStart,
                             newRepeatEnd,
                             serverFormatter.format(preChangedDate),
-                            serverFormatter.format(nextDate)
+                            addTimeOfFirstDateStringToNextDate(schedule.repeatStart!!, nextDate!!)
                         )
                     ) {
                         callback(true)
@@ -782,7 +776,7 @@ class TimetableViewModel(val context : Context): ViewModel() {
                             null,
                             newRepeatStart,
                             newRepeatEnd,
-                            serverFormatter.format(preDate)
+                            addTimeOfFirstDateStringToNextDate(schedule.repeatEnd!!, preDate!!)
                         )
                     ) {
                         callback(true)
@@ -792,6 +786,21 @@ class TimetableViewModel(val context : Context): ViewModel() {
         }
     }
 
+    private fun addTimeOfFirstDateStringToNextDate(repeatStart: String, nextDate:Date): String{
+        val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
+        val firstDateString = repeatStart
+        val secondDateString = serverFormatter.format(nextDate)
+
+        // Parse them into ZonedDateTime instances
+        val firstDateTime = ZonedDateTime.parse(firstDateString)
+        val secondDateTime = ZonedDateTime.parse(secondDateString)
+
+        // Get the time of the first date
+        val firstTime = firstDateTime.toLocalTime()
+
+        // Create a new ZonedDateTime instance with the date of the second instance and time of the first instance
+        return ZonedDateTime.of(secondDateTime.toLocalDate(), firstTime, secondDateTime.zone).toString()
+    }
 
 
     private fun calculateLocation(schedule: Schedule, todayTodo: String){
