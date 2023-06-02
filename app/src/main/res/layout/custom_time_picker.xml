@@ -66,16 +66,20 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_positive"
+            style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="확인"
+            android:visibility="invisible"
+            android:clickable="false"
             android:textColor="@color/todo_description" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_negative"
+            style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="취소"
+            android:visibility="invisible"
+            android:clickable="false"
             android:textColor="@color/delete_red" />
     </LinearLayout>
 

@@ -2,6 +2,7 @@ package com.example.haru.view.customDialog
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
@@ -90,6 +91,18 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
         isCancelable = true
     }
 
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        if (timePickerClick != null) {
+            timePickerClick?.onClick(
+                binding.timeDivision,
+                binding.npHourPick,
+                binding.npMinutePick
+            )
+            dismiss()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -150,20 +163,20 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             displayedValues = minuteList
         }
 
-        binding.btnPositive.setOnClickListener {
-            if (timePickerClick != null) {
-                timePickerClick?.onClick(
-                    binding.timeDivision,
-                    binding.npHourPick,
-                    binding.npMinutePick
-                )
-                dismiss()
-            }
-        }
-
-        binding.btnNegative.setOnClickListener {
-            dismiss()
-        }
+//        binding.btnPositive.setOnClickListener {
+//            if (timePickerClick != null) {
+//                timePickerClick?.onClick(
+//                    binding.timeDivision,
+//                    binding.npHourPick,
+//                    binding.npMinutePick
+//                )
+//                dismiss()
+//            }
+//        }
+//
+//        binding.btnNegative.setOnClickListener {
+//            dismiss()
+//        }
     }
 
     override fun onResume() {
