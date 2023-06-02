@@ -42,13 +42,7 @@
                     android:textColor="#191919"
                     android:layout_alignParentTop="true"
                     />
-                <ImageView
-                    android:id="@+id/todotable_search_button"
-                    android:layout_marginTop="3dp"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/search_icon"/>
+
             </RelativeLayout>
         </LinearLayout>
 
@@ -104,10 +98,18 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="10"/>
+                    <ImageView
+                        android:id="@+id/todotable_search_button"
+                        android:layout_marginTop="3dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/search_icon"/>
                     <LinearLayout
                         android:layout_width="28dp"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
+
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
