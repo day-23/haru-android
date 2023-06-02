@@ -17,47 +17,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:gravity="center_vertical"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <NumberPicker
             android:id="@+id/time_division"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="30dp"
-            android:theme="@style/ThemeOverlay.NumberPicker"/>
+            android:theme="@style/ThemeOverlay.NumberPicker" />
 
         <NumberPicker
             android:id="@+id/np_hour_pick"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:theme="@style/ThemeOverlay.NumberPicker"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="시"
-            android:textSize="20sp" />
+            android:theme="@style/ThemeOverlay.NumberPicker" />
 
         <NumberPicker
             android:id="@+id/np_minute_pick"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:theme="@style/ThemeOverlay.NumberPicker"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="분"
-            android:textSize="20sp" />
+            android:theme="@style/ThemeOverlay.NumberPicker" />
 
     </LinearLayout>
 

@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : BaseActivity(){
+class MainActivity : BaseActivity() {
     private val fragments = arrayOfNulls<Fragment>(5)
 
     private lateinit var sharedPreference: SharedPreferences
@@ -40,10 +40,10 @@ class MainActivity : BaseActivity(){
 
     companion object {
         private lateinit var binding: ActivityMainBinding
-        fun hideNavi(state: Boolean) {
-            if (state)
+        fun hideNavi(state: Boolean?) {
+            if (state == true)
                 binding.bottomNav.visibility = View.GONE
-            else binding.bottomNav.visibility = View.VISIBLE
+            else if (state == false) binding.bottomNav.visibility = View.VISIBLE
         }
     }
 
@@ -62,8 +62,8 @@ class MainActivity : BaseActivity(){
         super.onPause()
     }
 
-    fun initAlarm(){
-        if(User.alarmAprove) {
+    fun initAlarm() {
+        if (User.alarmAprove) {
             Log.d("알람", "알람 설정")
             val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
@@ -104,10 +104,15 @@ class MainActivity : BaseActivity(){
             val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
             val intent = Intent(baseContext, AlarmWorker::class.java)
 
-            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-                PendingIntent.getBroadcast(baseContext,0,intent,PendingIntent.FLAG_IMMUTABLE)
-            }else{
-                PendingIntent.getBroadcast(baseContext,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.getBroadcast(baseContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            } else {
+                PendingIntent.getBroadcast(
+                    baseContext,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
             }
 
             alarmManager.cancel(pendingIntent)
@@ -208,7 +213,7 @@ class MainActivity : BaseActivity(){
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        while(supportFragmentManager.backStackEntryCount > 0){
+        while (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStackImmediate()
         }
         supportFragmentManager.beginTransaction()

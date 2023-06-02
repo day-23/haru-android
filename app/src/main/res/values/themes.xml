@@ -21,12 +21,14 @@
         <item name="android:editTextStyle">@style/customEditTextFontStyle</item>
         <item name="android:radioButtonStyle">@style/customRadioButtonFontStyle</item>
         <item name="android:checkboxStyle">@style/customCheckBoxFontStyle</item>
-<!--        <item name="android:fontFamily">@font/pretendardvariable</item>-->
+        <!--        <item name="android:fontFamily">@font/pretendardvariable</item>-->
 
     </style>
-    
+
     <style name="ThemeOverlay.NumberPicker" parent="Theme.Haru">
         <item name="colorControlNormal">@color/white</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:editTextColor">@color/date_text</item>
     </style>
 
     <style name="Theme.Splash" parent="Theme.AppCompat.Light.NoActionBar">
