@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fdfdfd"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -306,6 +307,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/feed_text"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -315,6 +317,7 @@
                 android:gravity="center"
                 android:layout_marginBottom="7dp"/>
             <View
+                android:id="@+id/feed_underline"
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
                 android:background="@drawable/todo_table_selected"/>
@@ -328,19 +331,21 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/media_text"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="미디어"
-                android:textColor="#191919"
+                android:textColor="#acacac"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_marginBottom="7dp"/>
 
             <View
+                android:id="@+id/media_underline"
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
-                android:background="#F8F8FA"/>
+                android:background="#fdfdfd"/>
         </LinearLayout>
 
     </LinearLayout>

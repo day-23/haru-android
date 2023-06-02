@@ -34,9 +34,9 @@ class MyPageViewModel(): ViewModel() {
     val Profile: LiveData<com.example.haru.data.model.Profile>
         get() = _Profile
 
-    private val _Feed = MutableLiveData<ArrayList<Post>>()
-    val MyFeed: LiveData<ArrayList<Post>>
-        get() = _Feed
+    private val _InitFeed = MutableLiveData<ArrayList<Post>>()
+    val InitFeed: LiveData<ArrayList<Post>>
+        get() = _InitFeed
 
     private val _NewFeed = MutableLiveData<ArrayList<Post>>()
     val NewFeed: LiveData<ArrayList<Post>>
@@ -84,6 +84,9 @@ class MyPageViewModel(): ViewModel() {
     private val _FriendRequest = MutableLiveData<Boolean>()
     val FriendRequest: LiveData<Boolean> = _FriendRequest
 
+    private val _PostRequest = MutableLiveData<Boolean>()
+    val PostRequest : LiveData<Boolean> = _PostRequest
+
     private val _Friends = MutableLiveData<FriendsResponse>()
     val Friends: LiveData<FriendsResponse> = _Friends
 
@@ -105,17 +108,16 @@ class MyPageViewModel(): ViewModel() {
     private val _Tags = MutableLiveData<List<Tag>>()
     val Tags: LiveData<List<Tag>> = _Tags
 
+    private val _Templates = MutableLiveData<ArrayList<com.example.haru.data.model.Profile>>()
+    val Templates: LiveData<ArrayList<com.example.haru.data.model.Profile>> = _Templates
+
 
     //단일 사진 선택시 지난 사진의 인덱스
     private var lastImageIndex = -1
 
-    init{
+    init {
         _SelectedImage.value = -1
         _SelectedPosition.value = arrayListOf()
-    }
-
-    fun init_page(){
-        _Page.value = 1
     }
 
     fun loadGallery(images: ArrayList<ExternalImages>) {
@@ -128,22 +130,28 @@ class MyPageViewModel(): ViewModel() {
         Log.d("Image", "download -------------------$images")
         return images
     }
-    fun addPage() {
-        _Page.value = _Page.value?.plus(1)
-    }
 
-    fun getFeed(page: String, targetId:String) {
+    fun getFeed(targetId: String, lastCreatedAt: String) {
         var newPost: ArrayList<Post> = arrayListOf()
-        var allPost = _Feed.value ?: arrayListOf()
         viewModelScope.launch {
-            PostRepository.getMyFeed(page, targetId) {
+            PostRepository.getMyFeed(targetId, lastCreatedAt) {
                 if (it.size > 0) { //get success
                     newPost = it
-                    allPost.addAll(it)
                 }
             }
             _NewFeed.value = newPost
-            _Feed.value = allPost
+        }
+    }
+
+    fun getFirstFeed(targetId: String){
+        var initPost: ArrayList<Post> = arrayListOf()
+        viewModelScope.launch {
+            PostRepository.getFirstMyFeed(targetId){
+                if(it.size > 0){
+                    initPost = it
+                }
+            }
+            _InitFeed.value = initPost
         }
     }
 
@@ -151,6 +159,20 @@ class MyPageViewModel(): ViewModel() {
         var newMedia = MediaResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
             PostRepository.getFirstMedia(targetId) {
+                if (it.data.size > 0) { //get success
+                    newMedia = it
+                }
+            }
+            if(newMedia.success){
+                _FirstMedia.value = newMedia
+            }
+        }
+    }
+
+    fun getMedia(targetId: String, lastCreatedAt: String){
+        var newMedia = MediaResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            PostRepository.getMedia(targetId, lastCreatedAt) {
                 if (it.data.size > 0) { //get success
                     newMedia = it
                 }
@@ -175,6 +197,17 @@ class MyPageViewModel(): ViewModel() {
         }
     }
 
+    fun getTemplates(){
+        var templates = arrayListOf<com.example.haru.data.model.Profile>()
+        viewModelScope.launch {
+            PostRepository.getTemplates {
+                if(it.size > 0){
+                    templates = it
+                }
+            }
+            _Templates.value = templates
+        }
+    }
     fun getUserInfo(targetId: String){
         var user = User("","","","",0,0,0,false)
         viewModelScope.launch {
@@ -266,10 +299,26 @@ class MyPageViewModel(): ViewModel() {
         viewModelScope.launch {
             PostRepository.addPost(post) {
                 if (it.id != "") { //get success
-                    Log.d("TAG", "Success to Post!!")
+                    Log.d("TAG", "Success to Post")
                 }
             }
             _PostDone.value = true
+        }
+    }
+
+    fun templateRequest(templateBody : Template){
+        var postResult = false
+
+        viewModelScope.launch {
+            PostRepository.addTemplate(templateBody){
+                if(it){
+                    Log.d("TAG", "Success to post Template")
+                    postResult = it
+                }else{
+                    Log.d("TAG", "Fail to post Template")
+                }
+            }
+            _PostRequest.value = postResult
         }
     }
 

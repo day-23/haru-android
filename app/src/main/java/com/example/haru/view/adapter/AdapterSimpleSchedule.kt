@@ -110,7 +110,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
 
         if(schedule.category == null){
             val drawable = detailScheduleCategoryImv.background as VectorDrawable
-            drawable.setColorFilter(Color.parseColor("#1DAFFF"), PorterDuff.Mode.SRC_ATOP)
+            drawable.setColorFilter(Color.parseColor("#AAD7FF"), PorterDuff.Mode.SRC_ATOP)
         } else {
             val drawable = detailScheduleCategoryImv.background as VectorDrawable
             drawable.setColorFilter(Color.parseColor(schedule.category.color), PorterDuff.Mode.SRC_ATOP)

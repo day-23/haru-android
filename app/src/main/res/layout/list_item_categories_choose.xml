@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="40sp"
+    android:layout_height="37dp"
     android:orientation="horizontal">
 
     <FrameLayout
-        android:layout_width="28sp"
-        android:layout_height="34sp">
+        android:layout_width="28dp"
+        android:layout_height="34dp">
         <ImageView
             android:id="@+id/category_Color_post"
             android:background="@drawable/category_image"
-            android:layout_marginTop="6sp"
+            android:layout_marginTop="6dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
         <ImageView
             android:id="@+id/category_Color_outside_post"
             android:background="@drawable/category_image_outside"
-            android:layout_marginTop="6sp"
+            android:layout_marginTop="6dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </FrameLayout>
 
     <TextView
-        android:textColor="#191919"
+        android:textColor="#ACACAC"
         android:id="@+id/category_name_post"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="14dp"
         android:text="test"
-        android:textSize="20dp"
+        android:textSize="16sp"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

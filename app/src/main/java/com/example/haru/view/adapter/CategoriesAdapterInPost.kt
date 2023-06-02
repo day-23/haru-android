@@ -61,11 +61,15 @@ class CategoriesAdapterInPost(val categories: List<Category?>, val listener: (Ca
                     Color.parseColor(categories[newposition]!!.color),
                     PorterDuff.Mode.SRC_ATOP
                 )
+
+                categoryNamePost.setTextColor(Color.parseColor("#191919"))
             } else {
                 drawable.setColorFilter(
                     Color.WHITE,
                     PorterDuff.Mode.SRC_ATOP
                 )
+
+                categoryNamePost.setTextColor(Color.parseColor("#ACACAC"))
             }
 
             categoryColorPost.setOnClickListener {

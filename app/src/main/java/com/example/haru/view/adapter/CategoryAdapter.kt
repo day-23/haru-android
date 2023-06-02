@@ -134,7 +134,7 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
             if (calendarMainData.unclassifiedCategory) {
                 if (calendarMainData.scheduleApply) {
                     drawable.setColorFilter(
-                        Color.parseColor("#1DAFFF"),
+                        Color.parseColor("#AAD7FF"),
                         PorterDuff.Mode.SRC_ATOP
                     )
                 } else {
@@ -169,7 +169,7 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
                 cateogryName.setTextColor(Color.parseColor("#BABABA"))
             } else {
                 drawable2.setColorFilter(
-                    Color.parseColor("#1DAFFF"),
+                    Color.parseColor("#AAD7FF"),
                     PorterDuff.Mode.SRC_ATOP
                 )
 
