@@ -9,11 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Switch
-import android.widget.TextView
+import android.widget.*
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +38,7 @@ class CategoryAddActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         intent.putExtra("status", "back")
         setResult(Activity.RESULT_OK, intent)
@@ -69,6 +66,11 @@ class CategoryAddActivity : AppCompatActivity() {
         }
 
         addCheckImageview.setOnClickListener {
+            if(addScheduleName.text.toString().replace(" ", "") == ""){
+                Toast.makeText(this, "카테고리명을 입력해 주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             content = addScheduleName.text.toString()
 
             val calendarviewmodel = CalendarViewModel()

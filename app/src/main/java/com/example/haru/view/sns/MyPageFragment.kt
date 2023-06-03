@@ -381,7 +381,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         if(userId == com.example.haru.utils.User.id){
             isMyPage = true
             binding.editProfile.text = "프로필 편집"
-            binding.profileShare.visibility = View.VISIBLE
+//            binding.profileShare.visibility = View.VISIBLE
             binding.myPageMyRecord.visibility = View.GONE
             mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
         }else{
@@ -389,7 +389,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             showFriendTitle()
             isMyPage = false
             binding.editProfile.text = "친구 신청"
-            binding.profileShare.visibility = View.GONE
+//            binding.profileShare.visibility = View.GONE
             mypageViewModel.getUserInfo(userId)
         }
     }

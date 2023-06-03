@@ -81,46 +81,6 @@
                 <TextView
                     android:layout_marginTop="14dp"
                     android:layout_marginLeft="14dp"
-                    android:text="이벤트 알림"
-                    android:textSize="14sp"
-                    android:textColor="#646464"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="right">
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        style="@style/minSize"
-                        android:id="@+id/correction_event_alarm_switch"
-                        android:layout_marginTop="5dp"
-                        android:layout_width="58dp"
-                        android:layout_height="match_parent"
-                        android:thumb="@drawable/custom_switch_thumb"
-                        app:track="@drawable/custom_switch"
-                        tools:ignore="UseSwitchCompatOrMaterialXml" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#DBDBDB"/>
-
-            <LinearLayout
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_marginTop="14dp"
-                    android:layout_marginLeft="14dp"
                     android:text="색상 선택"
                     android:textSize="14sp"
                     android:textColor="#646464"

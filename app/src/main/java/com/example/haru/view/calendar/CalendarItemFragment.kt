@@ -958,10 +958,6 @@ class CalendarItemFragment(val schedule: Schedule,
                                 else repeatvalue += "0"
                             }
                         }
-
-                        else -> {
-                            repeatvalue = null
-                        }
                     }
                 }
             } else {
@@ -976,8 +972,6 @@ class CalendarItemFragment(val schedule: Schedule,
                         repeatvalue =
                             "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
                                 .toString()
-                    } else {
-                        repeatvalue = null
                     }
                 } else {
                     if(option != null) {
@@ -1007,11 +1001,11 @@ class CalendarItemFragment(val schedule: Schedule,
                         repeatvalue =
                             "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
                                 .toString()
-                    } else {
-                        repeatvalue = null
                     }
                 }
             }
+
+            if(repeatvalue == "") repeatvalue = null
 
             var sizeOption = 0
 
