@@ -501,11 +501,17 @@ class AdapterMonth(val activity: Activity,
         testView.setTextSize(Dimension.SP,12.0f)
 
         val calendar = Calendar.getInstance()
+        val thisMonth = Calendar.getInstance()
+        thisMonth.time = startDate.clone() as Date
         calendar.time = startDate.clone() as Date
         calendar.add(Calendar.DATE, contentPosition)
         val start = calendar.time.clone() as Date
 
         calendar.add(Calendar.DATE, width-1)
+
+        while (thisMonth.time.date != 1){
+            thisMonth.add(Calendar.DATE, 1)
+        }
 
         if(colors.indexOf(color) in listOf(
                 0,1,2,6,7,8,12,13,14,15,
@@ -521,7 +527,7 @@ class AdapterMonth(val activity: Activity,
             testView.alpha = 0.7f
             testView.setPaintFlags(testView.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
         } else {
-            if (Date().month != calendar.time.month && Date().month != start.month){
+            if (thisMonth.time.month != calendar.time.month && thisMonth.time.month != start.month){
                 testView.alpha = 0.7f
             } else {
                 testView.alpha = 1f
@@ -592,10 +598,10 @@ class AdapterMonth(val activity: Activity,
         }
 
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 2)
 
         val holidaysList = holidays as ArrayList
         calendar.time = start
+        calendar.set(Calendar.HOUR_OF_DAY, 2)
 
         var i = 0
 

@@ -49,6 +49,13 @@ class SnsPostAdapter(val context: Context,
 
     override fun onBindViewHolder(holder: SnsPostViewHolder, position: Int) {
         val adapter = PicturesPagerAdapter(holder.itemView.context, itemList[position].images)
+
+        if(itemList[position].user.id != User.id){
+            holder.totalcomment.visibility = View.GONE
+        }else{
+            holder.totalcomment.visibility = View.VISIBLE
+        }
+
         if(itemList[position].isTemplatePost != null){
             holder.content.text = ""
             holder.templateText.text = itemList[position].content
@@ -57,6 +64,7 @@ class SnsPostAdapter(val context: Context,
             holder.templateText.text = ""
             holder.content.text = itemList[position].content
         }
+
         holder.picture.adapter = adapter
         holder.userid.text = itemList[position].user.name
         holder.likedcount.text = itemList[position].likedCount.toString()
