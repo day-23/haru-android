@@ -228,6 +228,36 @@ class CalendarItemFragment(val schedule: Schedule,
                             val repeatEndDateCalendar = Calendar.getInstance()
                             repeatEndDateCalendar.time = dateFormat.parse(repeatEndDateText)
 
+                            val startDate = repeatStartCalendar.time.clone() as Date
+                            startDate.hours = 0
+                            startDate.minutes = 0
+                            startDate.seconds = 0
+
+                            val endDate = repeatEndCalendar.time.clone() as Date
+                            endDate.hours = 0
+                            endDate.minutes = 0
+                            endDate.seconds = 0
+
+                            //일주일 이상 차이나면 반복 해제
+                            if((endDate.time - startDate.time)/(1000 * 60 * 60 * 24) > 6){
+                                binding.repeatSwitchSchedule.isChecked = false
+                                binding.repeatSwitchSchedule.isClickable = false
+
+                                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                                binding.repeatIvSchedule.backgroundTintList =
+                                    ColorStateList.valueOf(Color.LTGRAY)
+
+                                binding.repeatOptionSelectSchedule.visibility = View.GONE
+                                binding.repeatEndLayout.visibility = View.GONE
+                                binding.everyWeekLayout.visibility = View.GONE
+                                binding.gridMonthSchedule.visibility = View.GONE
+                                binding.gridYearSchedule.visibility = View.GONE
+                                repeatOption = -1
+                                return
+                            } else {
+                                binding.repeatSwitchSchedule.isClickable = true
+                            }
+
                             if(repeatStartCalendar.time.after(repeatEndDateCalendar.time)){
                                 binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatStartCalendar.time)
                             }
@@ -310,6 +340,36 @@ class CalendarItemFragment(val schedule: Schedule,
 
                             if(repeatEndCalendar.time.after(repeatEndDateCalendar.time)){
                                 binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
+                            }
+
+                            val startDate = repeatStartCalendar.time.clone() as Date
+                            startDate.hours = 0
+                            startDate.minutes = 0
+                            startDate.seconds = 0
+
+                            val endDate = repeatEndCalendar.time.clone() as Date
+                            endDate.hours = 0
+                            endDate.minutes = 0
+                            endDate.seconds = 0
+
+                            //일주일 이상 차이나면 반복 해제
+                            if((endDate.time - startDate.time)/(1000 * 60 * 60 * 24) > 6){
+                                binding.repeatSwitchSchedule.isChecked = false
+                                binding.repeatSwitchSchedule.isClickable = false
+
+                                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                                binding.repeatIvSchedule.backgroundTintList =
+                                    ColorStateList.valueOf(Color.LTGRAY)
+
+                                binding.repeatOptionSelectSchedule.visibility = View.GONE
+                                binding.repeatEndLayout.visibility = View.GONE
+                                binding.everyWeekLayout.visibility = View.GONE
+                                binding.gridMonthSchedule.visibility = View.GONE
+                                binding.gridYearSchedule.visibility = View.GONE
+                                repeatOption = -1
+                                return
+                            } else {
+                                binding.repeatSwitchSchedule.isClickable = true
                             }
 
                             if(repeatOption == 0) repeatOption = -1
