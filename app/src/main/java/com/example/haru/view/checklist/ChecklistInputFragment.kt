@@ -34,7 +34,8 @@ import java.util.*
 class ChecklistInputFragment(
     checkListViewModel: CheckListViewModel,
     val adapter: AdapterMonth? = null,
-    val today: Boolean? = null
+    val today: Boolean? = null,
+    val isTimeTable: Boolean? = null,
 ) : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
     private var todoAddViewModel: TodoAddViewModel
@@ -189,6 +190,12 @@ class ChecklistInputFragment(
                     "repeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString()
                 )
                 binding.repeatEndDateLayout.visibility = View.GONE
+
+                binding.repeatEndDateLayout.post {
+                    if (isTimeTable == true){
+                        todoAddViewModel.setEndDateSwitch()
+                    }
+                }
             }
         })
 

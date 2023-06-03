@@ -82,7 +82,7 @@ class TodotableFragment : Fragment() {
         val rootView = binding.root
 
         binding.btnAddTodo.setOnClickListener {
-            val todoInput = ChecklistInputFragment(checkListViewModel)
+            val todoInput = ChecklistInputFragment(checkListViewModel,null, false, true)
             todoInput.show(parentFragmentManager, todoInput.tag)
             todoreviewModel.getTodo(timetableviewModel.Dates.value!!)
         }
