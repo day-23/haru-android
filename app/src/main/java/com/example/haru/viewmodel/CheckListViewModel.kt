@@ -260,7 +260,7 @@ class CheckListViewModel() :
                         todoList.addAll(
                             listOf(
                                 Todo(
-                                    type = 1,
+                                    type = 4,
                                     content = "태그"
                                 )
                             ) + it.data.taggedTodos + listOf(Todo(type = 3))
@@ -275,7 +275,7 @@ class CheckListViewModel() :
                         todoList.addAll(
                             listOf(
                                 Todo(
-                                    type = 1,
+                                    type = 4,
                                     content = "태그 없음"
                                 )
                             ) + it.data.untaggedTodos + listOf(Todo(type = 3))
@@ -290,7 +290,7 @@ class CheckListViewModel() :
                         todoList.addAll(
                             listOf(
                                 Todo(
-                                    type = 1,
+                                    type = 4,
                                     content = "완료"
                                 )
                             ) + it.data.completedTodos + listOf(Todo(type = 6))
@@ -392,16 +392,23 @@ class CheckListViewModel() :
                     1 -> {
                         todoRepository.getTodoByComplete {
                             if (it?.success == true) {
-                                this.addAll(
-                                    listOf(
-                                        Todo(
-                                            type = 4,
-                                            content = todoByTagItem!!
+                                if (it.data!!.isNotEmpty())
+                                    this.addAll(
+                                        listOf(
+                                            Todo(
+                                                type = 4,
+                                                content = todoByTagItem!!
+                                            )
+                                        ) + it.data
+                                    )
+                                else
+                                    this.addAll(
+                                        listOf(
+                                            Todo(type = 1, content = todoByTagItem!!),
+                                            Todo(type = 5, content = "모든 할 일을 마쳤습니다!")
                                         )
-                                    ) + it.data!!
-                                )
-                                if (it.data.isEmpty())
-                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                                    )
+
                             }
                         }
                     }
@@ -426,16 +433,22 @@ class CheckListViewModel() :
                                 else this.add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
                                 this.add(Todo(type = 3))
 
-                                this.add(Todo(type = 4, content = todoByTagItem!!))
-                                if (it.data.unFlaggedTodos.isNotEmpty())
+                                if (it.data.unFlaggedTodos.isNotEmpty()) {
+                                    this.add(Todo(type = 4, content = todoByTagItem!!))
                                     this.addAll(it.data.unFlaggedTodos)
-                                else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                                } else {
+                                    this.add(Todo(type = 1, content = todoByTagItem!!))
+                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                                }
                                 this.add(Todo(type = 3))
 
-                                this.add(Todo(type = 1, content = "완료"))
-                                if (it.data.completedTodos.isNotEmpty())
+                                if (it.data.completedTodos.isNotEmpty()) {
+                                    this.add(Todo(type = 4, content = "완료"))
                                     this.addAll(it.data.completedTodos)
-                                else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
+                                } else {
+                                    this.add(Todo(type = 1, content = "완료"))
+                                    this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
+                                }
                             }
                         }
                     }
