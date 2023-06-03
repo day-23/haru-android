@@ -382,13 +382,14 @@ class TodoAdapter(val context: Context) :
 
     inner class EmptyViewHolder(val binding: ChecklistEmptyBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: Todo) {
             binding.tvTodoEmpty.text = item.content
-            binding.tvTodoEmpty.visibility = if (item.visibility) View.VISIBLE else View.GONE
-            binding.tvTodoEmpty.layoutParams = if (item.visibility) LinearLayout.LayoutParams(
+            binding.emptyItem.layoutParams = if (item.visibility) LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ) else LinearLayout.LayoutParams(0, 0)
+            binding.emptyItem.visibility = if (item.visibility) View.VISIBLE else View.GONE
             if (!item.visibility)
                 return
         }

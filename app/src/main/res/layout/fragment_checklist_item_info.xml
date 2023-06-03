@@ -676,8 +676,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingBottom="36dp">
+            android:paddingBottom="70dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_info_delete"
@@ -693,7 +693,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/big_delete_icon"
                 android:backgroundTint="@color/delete_red" />
-
 
         </LinearLayout>
 
