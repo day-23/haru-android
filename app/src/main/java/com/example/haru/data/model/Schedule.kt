@@ -3,6 +3,7 @@ package com.example.haru.data.model
 import java.util.*
 
 data class Schedule(
+    val searchType : Int = 1,
     val type: Int = 2,
     val id: String = "",
     val content: String = "",

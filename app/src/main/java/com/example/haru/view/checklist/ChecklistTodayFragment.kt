@@ -15,6 +15,7 @@ import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentChecklistTodayBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.CheckListViewModel
@@ -36,6 +37,11 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         this.checkListViewModel = checkListVewModel
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MainActivity.hideNavi(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,6 +50,11 @@ class ChecklistTodayFragment(checkListVewModel: CheckListViewModel) : Fragment()
         binding = FragmentChecklistTodayBinding.inflate(inflater)
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        MainActivity.hideNavi(false)
     }
 
     override fun onDestroy() {

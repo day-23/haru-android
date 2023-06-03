@@ -30,11 +30,13 @@ class AlarmWorker : BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d("알람","알람 받음")
         val userId = intent?.getStringExtra("userId")
+        val requestCode = intent?.getStringExtra("requestCode")
+
         notificationManager = context!!.getSystemService(
             Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        createNotificationChannel()
-        deliverNotification(context, userId)
+        createNotificationChannel(requestCode)
+        deliverNotification(context, userId, requestCode)
     }
 
     fun date_comparison(first_date: Date, second_date: Date): Int{
@@ -49,11 +51,11 @@ class AlarmWorker : BroadcastReceiver(){
         return first_date.compareTo(second_date)
     }
 
-    fun createNotificationChannel(){
+    fun createNotificationChannel(requestCode: String?){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
-                "notification_channel", // 채널의 아이디
-                "오늘의 하루 알람", // 채널의 이름
+                requestCode, // 채널의 아이디
+                requestCode, // 채널의 이름
                 NotificationManager.IMPORTANCE_HIGH
                 /*
                 1. IMPORTANCE_HIGH = 알림음이 울리고 헤드업 알림으로 표시
@@ -73,7 +75,7 @@ class AlarmWorker : BroadcastReceiver(){
         }
     }
 
-    private fun deliverNotification(context: Context, userId: String?){
+    private fun deliverNotification(context: Context, userId: String?, requestCode: String?){
         val contentIntent = Intent(context, MainActivity::class.java)
         val contentPendingIntent = PendingIntent.getActivity(
             context,
@@ -86,27 +88,27 @@ class AlarmWorker : BroadcastReceiver(){
 
         val intent2 = Intent(context, AlarmWorker::class.java)
 
-        if (userId != "") {
-            intent2.putExtra("userId", userId)
-            val pendingIntent = PendingIntent.getBroadcast(
-                context, 0, intent2,
-                PendingIntent.FLAG_MUTABLE
-            )
-
-            val calendar = Calendar.getInstance()
-            calendar.apply {
-                set(Calendar.HOUR_OF_DAY, 9)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                add(Calendar.DATE, 1)
-            }
-
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        }
+//        if (userId != "") {
+//            intent2.putExtra("userId", userId)
+//            val pendingIntent = PendingIntent.getBroadcast(
+//                context, 0, intent2,
+//                PendingIntent.FLAG_MUTABLE
+//            )
+//
+//            val calendar = Calendar.getInstance()
+//            calendar.apply {
+//                set(Calendar.HOUR_OF_DAY, 9)
+//                set(Calendar.MINUTE, 0)
+//                set(Calendar.SECOND, 0)
+//                add(Calendar.HOUR_OF_DAY, 12)
+//            }
+//
+//            alarmManager.setExactAndAllowWhileIdle(
+//                AlarmManager.RTC_WAKEUP,
+//                calendar.timeInMillis,
+//                pendingIntent
+//            )
+//        }
 
         Thread(Runnable {
             if(userId != null) {
@@ -290,7 +292,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         "매주" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -315,7 +317,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         "격주" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -340,7 +342,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         "매달" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -364,7 +366,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         "매년" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -460,7 +462,7 @@ class AlarmWorker : BroadcastReceiver(){
                                         startdateFormat
                                     ) == 0
                                 ) {
-                                    schedule.startTime = todayDate
+                                    schedule.startTime = todayDate.clone() as Date
                                     todayDate.hours = endtime.hours
                                     todayDate.minutes = endtime.minutes
                                     todayDate.seconds = endtime.seconds
@@ -471,9 +473,7 @@ class AlarmWorker : BroadcastReceiver(){
                         }
                     }
 
-                    Log.d("알람", alldoData.toString())
-
-                    val builder = NotificationCompat.Builder(context, "notification_channel")
+                    val builder = NotificationCompat.Builder(context, requestCode!!)
                         .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
                         .setContentTitle("오늘의 하루") // 제목
                         .setContentText(result) // 내용

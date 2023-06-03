@@ -2,6 +2,7 @@ package com.example.haru.view.customDialog
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
@@ -31,7 +32,11 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
     private var flag = 1   // 0이면 오전, 1이면 오후
 
     interface TimePickerClickListener {
-        fun onClick(timeDivider : NumberPicker, hourNumberPicker: NumberPicker, minuteNumberPicker: NumberPicker)
+        fun onClick(
+            timeDivider: NumberPicker,
+            hourNumberPicker: NumberPicker,
+            minuteNumberPicker: NumberPicker
+        )
     }
 
     var timePickerClick: TimePickerClickListener? = null
@@ -69,19 +74,33 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
         timeList[1] = "오후"
 
         for (i in 0 until 12) {
-            val hour = (i + 1).toString()
-            hourList[i] = if (hour.length < 2) "0$hour" else hour
+            val hour = "${(i + 1)}시"
+            hourList[i] = hour
+//                if (hour.length < 2) "${hour}시" else hour
         }
 
         for (i in 0 until 12) {
-            val minute = (i * 5).toString()
-            minuteList[i] = if (minute.length < 2) "0$minute" else minute
+            val minute = "${(i * 5)}분"
+            minuteList[i] = minute
+//                if (minute.length < 2) "0$minute" else minute
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = true
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        if (timePickerClick != null) {
+            timePickerClick?.onClick(
+                binding.timeDivision,
+                binding.npHourPick,
+                binding.npMinutePick
+            )
+            dismiss()
+        }
     }
 
     override fun onCreateView(
@@ -119,7 +138,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             value = startHour
             displayedValues = hourList
             setOnValueChangedListener { numberPicker, oldVal, newVal ->
-                if ((oldVal == 0 && newVal == 11) || (oldVal == 11 && newVal == 0)){
+                if ((oldVal == 0 && newVal == 11) || (oldVal == 11 && newVal == 0)) {
                     if (binding.timeDivision.value == 1)
                         binding.timeDivision.value = 0
                     else binding.timeDivision.value = 1
@@ -144,16 +163,20 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             displayedValues = minuteList
         }
 
-        binding.btnPositive.setOnClickListener {
-            if (timePickerClick != null) {
-                timePickerClick?.onClick(binding.timeDivision, binding.npHourPick, binding.npMinutePick)
-                dismiss()
-            }
-        }
-
-        binding.btnNegative.setOnClickListener {
-            dismiss()
-        }
+//        binding.btnPositive.setOnClickListener {
+//            if (timePickerClick != null) {
+//                timePickerClick?.onClick(
+//                    binding.timeDivision,
+//                    binding.npHourPick,
+//                    binding.npMinutePick
+//                )
+//                dismiss()
+//            }
+//        }
+//
+//        binding.btnNegative.setOnClickListener {
+//            dismiss()
+//        }
     }
 
     override fun onResume() {
@@ -163,7 +186,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         val width = 0.7f
-        val height = 0.3f
+        val height = 0.4f
         if (Build.VERSION.SDK_INT < 30) {
 
             val display = windowManager.defaultDisplay

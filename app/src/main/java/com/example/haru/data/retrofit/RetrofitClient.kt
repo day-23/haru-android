@@ -28,6 +28,7 @@ object RetrofitClient {
 //                .build()
 //            chain.proceed(newRequest)
 //        }
+        .addInterceptor(NetworkErrorInterceptor(App.instance))
         .connectTimeout(100, TimeUnit.SECONDS)
         .followRedirects(true)
         .followSslRedirects(true)

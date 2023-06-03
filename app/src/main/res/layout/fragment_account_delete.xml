@@ -51,10 +51,10 @@
         android:paddingTop="20dp"
         android:paddingBottom="20dp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profile_delete"
             android:layout_width="62dp"
-            android:layout_height="62dp"
-            android:background="@drawable/user_icon" />
+            android:layout_height="62dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -2,24 +2,36 @@ package com.example.haru.view.timetable
 
 import BaseActivity
 import android.content.ClipData
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Category
 import com.example.haru.data.model.Schedule
+import com.example.haru.data.model.ScheduleCalendarData
 import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
+import kotlinx.coroutines.launch
+import java.time.*
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 //드래그 앤 드롭 그림자 없어지게 하는 클래스
 class EmptyShadowBuilder(view: View) : View.DragShadowBuilder(view) {
@@ -32,11 +44,12 @@ class TimetableFragment : Fragment() {
     private lateinit var reviewModel: TimeTableRecyclerViewModel
     private lateinit var timetableAdapter: TimetableAdapter
     var timeList: ArrayList<timetable_data> = ArrayList()
-    lateinit var recyclerView1: RecyclerView
-    private lateinit var scheduleDrag: ScheduleDraglistener
+    lateinit var timeTableRecyclerView: RecyclerView
+    private lateinit var scheduleDrag: TimeTableScheduleDragListener
     val scheduleViewList: ArrayList<View> = ArrayList<View>()
     val scheduleMap = mutableMapOf<View, Schedule>()
     val layoutId: ArrayList<Int> = ArrayList<Int>()
+    private lateinit var displayMetrics: DisplayMetrics
 
     companion object {
         const val TAG: String = "로그"
@@ -59,6 +72,7 @@ class TimetableFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        displayMetrics = resources.displayMetrics
         (activity as BaseActivity).adjustTopMargin(binding.timetableHeader.id)
     }
 
@@ -72,15 +86,18 @@ class TimetableFragment : Fragment() {
         val rootView = binding.root
         timetableviewModel = TimetableViewModel(requireContext())
         binding.viewModel = timetableviewModel
+
         reviewModel.init_value()
+
         timetableAdapter =
             TimetableAdapter(requireContext(), reviewModel.TimeList.value ?: timeList)
-        recyclerView1 = binding.timetableRecyclerview
-        recyclerView1.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView1.adapter = timetableAdapter
+        timeTableRecyclerView = binding.timetableRecyclerview
+        timeTableRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        timeTableRecyclerView.adapter = timetableAdapter
         timetableviewModel.init_value()
 
-        //타임테이블 프래그먼트 아이디 값
+
+        //타임테이블 frameLayout 프래그먼트 아이디 값
         layoutId.add(binding.sunTable.id)
         layoutId.add(binding.monTable.id)
         layoutId.add(binding.tueTable.id)
@@ -89,7 +106,7 @@ class TimetableFragment : Fragment() {
         layoutId.add(binding.friTable.id)
         layoutId.add(binding.satTable.id)
 
-        scheduleDrag = ScheduleDraglistener(timetableviewModel, layoutId, requireContext())
+        scheduleDrag = TimeTableScheduleDragListener(timetableviewModel, layoutId, requireContext(), binding.timetableScroll)
 
         //각 레이아웃에 드래그 앤 드롭을 위한 리스너 등록
         binding.sunTable.setOnDragListener(scheduleDrag)
@@ -100,10 +117,10 @@ class TimetableFragment : Fragment() {
         binding.friTable.setOnDragListener(scheduleDrag)
         binding.satTable.setOnDragListener(scheduleDrag)
 
-        binding.timetableScroll.setOnDragListener{ _, event ->
+        binding.timetableScroll.setOnDragListener { _, event ->
             val boxesLayoutCoords = intArrayOf(0, 0)
             binding.timetableScroll.getLocationInWindow(boxesLayoutCoords)
-            when(event.action){
+            when (event.action) {
                 DragEvent.ACTION_DRAG_LOCATION -> {
                     checkForScroll(event.y, boxesLayoutCoords[1])
                     true
@@ -113,14 +130,14 @@ class TimetableFragment : Fragment() {
         }
 
         //타임테이블 리사이클러뷰 실행
-        reviewModel.TimeList.observe(viewLifecycleOwner) { times ->
-            timetableAdapter.setData(times)
+        reviewModel.TimeList.observe(viewLifecycleOwner) { schedule ->
+            timetableAdapter.setData(schedule)
             scroll() // 화면에 오후 12시가 중앙에 오도록
             timetableAdapter.notifyDataSetChanged()
         }
 
         //날짜가 바뀌면 12시를 화면 중앙에 두도록
-        timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
+        timetableviewModel.Selected.observe(viewLifecycleOwner) { schedule ->
             scroll()
         }
         //지난달 다음달을 구분해주는 색 바인딩
@@ -137,47 +154,44 @@ class TimetableFragment : Fragment() {
         timetableviewModel.Days.observe(viewLifecycleOwner) { days ->
             binding.invalidateAll()
         }
-        //스케줄을 타임테이블에 바인딩
-        timetableviewModel.Schedules.observe(viewLifecycleOwner) { schedule ->
-            scheduleMap.clear()
 
-            binding.sunTable.removeAllViews()
-            Drawtimes(binding.sunTable, schedule[0])
-
-            binding.monTable.removeAllViews()
-            Drawtimes(binding.monTable, schedule[1])
-
-            binding.tueTable.removeAllViews()
-            Drawtimes(binding.tueTable, schedule[2])
-
-            binding.wedTable.removeAllViews()
-            Drawtimes(binding.wedTable, schedule[3])
-
-            binding.thuTable.removeAllViews()
-            Drawtimes(binding.thuTable, schedule[4])
-
-            binding.friTable.removeAllViews()
-            Drawtimes(binding.friTable, schedule[5])
-
-            binding.satTable.removeAllViews()
-            Drawtimes(binding.satTable, schedule[6])
-
+        timetableviewModel.liveCategoryList.observe(viewLifecycleOwner){
+            Log.d(TAG, "onCreateView: ${it}")
         }
+
+        //그리드에 그려지는 스케줄을 타임테이블에 바인딩
+        timetableviewModel.categoryAndSchedulesCombinedData.observe(viewLifecycleOwner) { (categories, schedules) ->
+            scheduleMap.clear()
+            binding.sunTable.removeAllViews()
+            binding.monTable.removeAllViews()
+            binding.tueTable.removeAllViews()
+            binding.wedTable.removeAllViews()
+            binding.thuTable.removeAllViews()
+            binding.friTable.removeAllViews()
+            binding.satTable.removeAllViews()
+            drawTimesSchedules(binding.sunTable, categories, schedules[0])
+            drawTimesSchedules(binding.monTable, categories, schedules[1])
+            drawTimesSchedules(binding.tueTable, categories, schedules[2])
+            drawTimesSchedules(binding.wedTable, categories, schedules[3])
+            drawTimesSchedules(binding.thuTable, categories, schedules[4])
+            drawTimesSchedules(binding.friTable, categories, schedules[5])
+            drawTimesSchedules(binding.satTable, categories, schedules[6])
+        }
+
         //하루종일 or 2일이상 일정을 바인딩
-        timetableviewModel.SchedulesAllday.observe(viewLifecycleOwner) { days ->
+        timetableviewModel.categoryAndSchedulesAlldayCombinedData.observe(viewLifecycleOwner) { (categories, scheduleCalendarData) ->
             binding.daysTable.removeAllViews()
-            Log.d("ALLDAYsss", "$days")
-            DrawDays(binding.daysTable, days,timetableviewModel.getDates())
+            drawDaysSchedule(binding.daysTable, categories, scheduleCalendarData, timetableviewModel.getDates())
         }
 
         //드래그 앤 드랍시 이동한 뷰의 정보
         timetableviewModel.MoveView.observe(viewLifecycleOwner) { view ->
-            val movedData = scheduleMap[view]
-            val start = timetableviewModel.MoveDate.value
-            val endDate = start!!.slice(IntRange(0, 9))
-            val endTime = movedData!!.repeatEnd!!.slice(IntRange(10, 23))
-            val end = endDate + endTime
-            timetableviewModel.patchMoved(start!!, end, movedData)
+            val movedData = scheduleMap[view]!!
+            val start = timetableviewModel.MoveDate.value!!
+
+            timetableviewModel.viewModelScope.launch {
+                timetableviewModel.patchMoved(start, movedData)
+            }
         }
 
         binding.todolistChange.setOnClickListener {
@@ -188,11 +202,16 @@ class TimetableFragment : Fragment() {
             transaction.commit()
             true
         }
+
+        //타임테이블 왼쪽 1시부터 24시 시간 표기
+        drawLeftTime()
+
         return rootView
     }
 
+
     fun scroll() {
-        val child = recyclerView1.getChildAt(8)
+        val child = timeTableRecyclerView.getChildAt(8)
         val originalPos = IntArray(2)
         if (child != null) {
             child.getLocationInWindow(originalPos)
@@ -202,171 +221,340 @@ class TimetableFragment : Fragment() {
     }
 
     //하루이상의 할일을 동적으로 바인딩
-    fun DrawDays(table: ViewGroup, days: ArrayList<Schedule>, dates: ArrayList<String>){
+    private fun drawDaysSchedule(table: ViewGroup, categories: List<Category>?, scheduleCalendarDataList: ArrayList<ScheduleCalendarData>, dates: ArrayList<String>) {
         val displayMetrics = resources.displayMetrics
-        val deleteSchedule = ArrayList<Schedule>()
-        while(days.size > 0){
+        val deleteSchedule = ArrayList<ScheduleCalendarData>()
+
+        while (scheduleCalendarDataList.size > 0) {
             val layout1 = FrameLayout(requireContext())
             val rowParams1 = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, Math.round(18 * displayMetrics.density))
-
             layout1.layoutParams = rowParams1
 
             var occupied = 0
             deleteSchedule.clear()
 
-            for(day in days){
-                val startDate = day.repeatStart?.slice(IntRange(0,3)) + day.repeatStart?.slice(IntRange(5,6)) + day.repeatStart?.slice(IntRange(8,9))
-                val endDate = day.repeatEnd?.slice(IntRange(0,3)) + day.repeatEnd?.slice(IntRange(5,6)) + day.repeatEnd?.slice(IntRange(8,9))
-                if(startDate.toInt() > occupied) {
-                    val layout2 = LinearLayout(requireContext())
-                    val rowParams2 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
-                    layout2.layoutParams = rowParams2
-                    deleteSchedule.add(day)
+            for (scheduleCalendarData in scheduleCalendarDataList) {
+                val schedule = scheduleCalendarData.schedule
+                /* 반복 일정이 아닌 경우 */
+
+                var startDate = schedule.repeatStart?.slice(IntRange(0, 3)) + schedule.repeatStart?.slice(IntRange(5, 6)) + schedule.repeatStart?.slice(IntRange(8, 9))
+                var endDate = schedule.repeatEnd?.slice(IntRange(0, 3)) + schedule.repeatEnd?.slice(IntRange(5, 6)) + schedule.repeatEnd?.slice(IntRange(8, 9))
+
+                // 반복 일정인 경우 -> startDate, endDate를 다시 구하기
+                if(!schedule.repeatValue.isNullOrEmpty()){
+                    scheduleCalendarData.position
+
+                    /* 반복 옵션의 현재 week에서 시작 날짜 구하기 */
+                    val currentWeekValue = timetableviewModel.Selected.value
+                    val year = currentWeekValue?.year?.dropLast(1).toString().padStart(4, '0')
+                    val week = currentWeekValue?.month?.dropLast(1).toString().padStart(2, '0')
+                    val date = timetableviewModel.Days.value?.get(scheduleCalendarData.position)?.padStart(2, '0')
+
+                    startDate = year+week+date
+
+                    // Reformat newDate to match the format in the originalDateTime
+                    val reformattedNewDate = "${year}-${week}-${date}"
+                    val newDateTime = "${reformattedNewDate}${schedule.repeatStart?.substring(10)}" // "2024-05-12T21:00:00+09:00"
+                    val originalDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxx")
+                    val originalDateTime = OffsetDateTime.parse(newDateTime, originalDateTimeFormatter)
+
+                    // Add seconds
+                    val newEndDateTime = schedule.repeatValue.drop(1).toLong().let { originalDateTime.plusSeconds(it/1000) }
+
+                    // Convert new date-time back to string
+                    val newDateTimeString = newEndDateTime?.format(originalDateTimeFormatter)
+                    endDate = newDateTimeString?.slice(IntRange(0, 3)) + newDateTimeString?.slice(IntRange(5, 6)) + newDateTimeString?.slice(IntRange(8, 9))
+                }
+
+                if (startDate.toInt() > occupied) {
                     val period = (dates.indexOf(endDate) - dates.indexOf(startDate)) + 1
                     val position = dates.indexOf(startDate)
 
-                    val view = TextView(requireContext())
-                    view.text = day.content
-                    view.textSize = (10).toFloat()
-                    view.gravity = Gravity.CENTER
-                    view.setPadding(2,2,2,2)
-                    view.maxLines = 1
-                    view.setBackgroundResource(R.drawable.timetable_schedule_allday)
-                    val frontPadding = View(requireContext())
-                    val backPadding = View(requireContext())
-                    view.setOnClickListener {
-                        Toast.makeText(requireContext(), "${day.content}", Toast.LENGTH_SHORT).show()
-                    }
-
-                    val frontParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, position.toFloat())
-                    val backParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, (7 - (position + period).toFloat()))
-                    val itemParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, period.toFloat())
-
-                    view.layoutParams = itemParams
-                    frontPadding.layoutParams = frontParams
-                    backPadding.layoutParams = backParams
-                    layout2.addView(frontPadding)
-                    layout2.addView(view)
-                    layout2.addView(backPadding)
+                    layout1.addView(makeInnerLinearLayoutInDrawDaySchedules(schedule, categories, position, period))
+                    deleteSchedule.add(scheduleCalendarData)
                     occupied = endDate.toInt()
-                    layout1.addView(layout2)
                 }
             }
-            for(item in deleteSchedule){
-                days.remove(item)
+
+            for (item in deleteSchedule) {
+//                Log.d(TAG, "DrawDays: ${item.repeatStart}")
+                scheduleCalendarDataList.remove(item)
             }
             table.addView(layout1)
         }
-
     }
-    //하루치 일정을 동적으로 바인딩
-    fun Drawtimes(table: ViewGroup, times: ArrayList<Schedule>) {
-        var past_start = 0
-        var past_end = 2359
-        val UnionList = ArrayList<ArrayList<Schedule>>()
-        var overlapList = ArrayList<Schedule>()
-        Log.d("DRAGGED", "${times}")
-        for (times in times) {
-            val start = times.repeatStart?.slice(IntRange(11, 12)) + times.repeatStart?.slice(
-                IntRange(
-                    14,
-                    15
-                )
-            )
-            val end =
-                times.repeatEnd?.slice(IntRange(11, 12)) + times.repeatEnd?.slice(IntRange(14, 15))
 
-            if (start.toInt() in past_start..past_end-1) {
-                overlapList.add(times)
+    private fun makeInnerLinearLayoutInDrawDaySchedules(day : Schedule, categories: List<Category>?, position:Int, period : Int): LinearLayout{
+        val layout2 = LinearLayout(requireContext())
+        val rowParams2 = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        layout2.layoutParams = rowParams2
+
+        val view = TextView(requireContext())
+        view.text = day.content
+        view.textSize = 12f
+        view.gravity = Gravity.CENTER
+        view.setPadding(2, 2, 2, 2)
+        view.maxLines = 1
+
+        // 카테고리, 글자색 색칠하기
+        colorCategoryAndTextColorOnScheduleView(view, day, categories, 2, 4)
+
+        val frontPadding = View(requireContext())
+        val backPadding = View(requireContext())
+        view.setOnClickListener {
+            Toast.makeText(requireContext(), "${day.content}", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        val frontParams = LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            position.toFloat()
+        )
+        val backParams = LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            (7 - (position + period).toFloat())
+        )
+        val itemParams = LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            period.toFloat()
+        )
+
+        view.layoutParams = itemParams
+        frontPadding.layoutParams = frontParams
+        backPadding.layoutParams = backParams
+        layout2.addView(frontPadding)
+        layout2.addView(view)
+        layout2.addView(backPadding)
+
+        return layout2
+    }
+
+
+    //하나의 날짜내에서 그려지는 시간 일정을 동적으로 바인딩
+    private fun drawTimesSchedules(table: ViewGroup, categories: List<Category>?, schedules: ArrayList<Schedule>) {
+        var pastStart = 0
+        var pastEnd = 2400
+        val unionList = ArrayList<ArrayList<Schedule>>()
+        val overlapList = ArrayList<Schedule>()
+
+        /* 겹쳐지는 일정들 unionList로 만들기 */
+        for (schedule in schedules) {
+            val repeatStart = schedule.repeatStart!!
+            val repeatEnd = schedule.repeatEnd!!
+
+
+
+            val startTime = (repeatStart.slice(IntRange(11, 12)) + repeatStart.slice(IntRange(14, 15))).toInt()
+            val endTime = (repeatEnd.slice(IntRange(11, 12)) + repeatEnd.slice(IntRange(14, 15))).toInt()
+
+            Log.d("drawTimesSchedules", "drawTimesSchedules: ${repeatStart} ${repeatEnd} ${schedule.content} ${startTime} ${endTime}")
+            if (startTime in pastStart until pastEnd) {
+                overlapList.add(schedule)
             } else {
-                val arraylist = ArrayList<Schedule>()
-                for (i in overlapList) {
-                    arraylist.add(i)
-                }
+                unionList.add(ArrayList(overlapList))
                 overlapList.clear()
-                overlapList.add(times)
-                UnionList.add(arraylist)
+                overlapList.add(schedule)
             }
 
-            past_start = start.toInt()
-            past_end = end.toInt()
+            pastStart = startTime
+            pastEnd = endTime
         }
-        UnionList.add(overlapList)
-        for (union in UnionList) {
-            val layout = LinearLayout(requireContext())
+        unionList.add(overlapList)
+
+        for (union in unionList) {
+            /* 부모 리니어 레이아웃 */
+            val unionLinearLayout = LinearLayout(requireContext())
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            layout.layoutParams = layoutParams
+            unionLinearLayout.layoutParams = layoutParams
+//            unionLinearLayout.setBackgroundColor(Color.parseColor("#FF0000"))
 
-            for (time in union) {
-                val union_start_hour = time.repeatStart?.slice(IntRange(11, 12))
-                val union_start_min = time.repeatStart?.slice(IntRange(14, 15))
-                val union_end_hour = time.repeatEnd?.slice(IntRange(11, 12))
-                val union_end_min = time.repeatEnd?.slice(IntRange(14, 15))
-                val start_hour = union_start_hour!!.toInt()
-                val start_min = union_start_min!!.toInt()
-                val end_hour = union_end_hour!!.toInt()
-                val end_min = union_end_min!!.toInt()
+            for (schedule in union) {
+                val scheduleView = makeScheduleViewInDrawTimesSchedule(schedule, categories)
+                scheduleViewList.add(scheduleView)
+                scheduleMap.put(scheduleView, schedule)
+                unionLinearLayout.addView(scheduleView)
+            }
 
-                var hour = end_hour - start_hour
-                var min = end_min - start_min
-                if (min < 0) {
-                    hour -= 1
-                    min += 60
+            table.addView(unionLinearLayout)
+        }
+    }
+
+    /* 시간표에 표시되는 일정 textView를 만드는 함수 */
+    private fun makeScheduleViewInDrawTimesSchedule(schedule: Schedule, categories: List<Category>?) : TextView{
+        val scheduleView = TextView(requireContext())
+
+        val (scheduleCalculatedValue, margin) = getHeightAndMarginOfLinearLayout(schedule.repeatStart!!, schedule.repeatEnd!!)
+        val scheduleViewLayoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            Math.round((scheduleCalculatedValue) * displayMetrics.density),
+            1f
+        ).apply {
+            topMargin = Math.round(margin * displayMetrics.density)
+            gravity = (Gravity.TOP)
+        }
+        scheduleView.layoutParams = scheduleViewLayoutParams
+        scheduleView.text = schedule.content
+        scheduleView.textSize = 12f
+        scheduleView.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+        scheduleView.gravity = Gravity.TOP
+
+        val spacingInPxFromXD = 18f  // Adobe XD에서 제공하는 행간
+        val spacingInDp = spacingInPxFromXD / resources.displayMetrics.density
+        val spacingInPx = spacingInDp * resources.displayMetrics.density
+        scheduleView.setLineSpacing(spacingInPx,1f)
+
+        val paddingValue = 4 * displayMetrics.density.toInt()
+        scheduleView.setPadding(paddingValue, paddingValue, paddingValue, paddingValue)
+
+        scheduleView.setOnClickListener {
+            Toast.makeText(requireContext(), "${schedule.content}", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+        scheduleView.setOnLongClickListener { view ->
+            val data = ClipData.newPlainText("", "")
+            val shadowBuilder = EmptyShadowBuilder(view)
+            view?.startDragAndDrop(data, shadowBuilder, view, 0)
+            false
+        }
+
+        // 카테고리, 글자색 색칠하기
+        colorCategoryAndTextColorOnScheduleView(scheduleView, schedule, categories, 0, 10)
+        return scheduleView
+    }
+
+
+    private fun checkForScroll(pointerY: Float, startOfScrollView: Int) {
+        val lowerLimForScroll = (Resources.getSystem().displayMetrics.heightPixels * 0.8).toInt()
+        /* if the upper limit is passed, meaning a pixel height, scroll up */
+        Log.d("DRAGGED", "$pointerY, $startOfScrollView, $lowerLimForScroll")
+        if (pointerY < 100) {
+            binding.timetableScroll.smoothScrollBy(0, -20)
+            Log.d("DRAGGED", "up")
+        }
+        /* if the lower limit is passed, meaning a pixel height, scroll down */
+        else if (pointerY > lowerLimForScroll) {
+            binding.timetableScroll.smoothScrollBy(0, 15)
+            Log.d("DRAGGED", "down")
+        }
+    }
+
+
+
+    private fun colorCategoryAndTextColorOnScheduleView(scheduleView: TextView, schedule:Schedule, categories: List<Category>?, padding: Int, cornerRadius: Int) {
+        val category = categories?.find { it.id == schedule.category?.id }
+        scheduleView.background = makeShapeDrawable(category?.color, padding, cornerRadius)
+        if(colorList.indexOf(category?.color) in listOf(
+                0,1,2,6,7,8,12,13,14,15,
+                18,19,20,24,25,26,27,30,31,32,
+                36,37,38
+            )){
+            scheduleView.setTextColor(Color.parseColor("#FDFDFD"))
+        } else{
+            scheduleView.setTextColor(Color.parseColor("#191919"))
+        }
+    }
+
+
+    //타임테이블 왼쪽 1시부터 24시 시간 표기
+    private fun drawLeftTime() {
+        val standardTextView = binding.leftTimeTextview
+        for (num in 3..24) {
+            val newTextView = TextView(context).apply {
+                text = num.toString()
+                textSize = 12f  // 12sp
+                setTextColor(standardTextView.currentTextColor)
+                typeface = standardTextView.typeface
+                gravity = standardTextView.gravity
+                layoutParams = LinearLayout.LayoutParams(
+                    standardTextView.layoutParams.width,
+                    standardTextView.layoutParams.height
+                ).apply {
+                    if (standardTextView.layoutParams is ViewGroup.MarginLayoutParams) {
+                        val params =
+                            standardTextView.layoutParams as ViewGroup.MarginLayoutParams
+                        setMargins(
+                            params.leftMargin,
+                            params.topMargin,
+                            params.rightMargin,
+                            params.bottomMargin
+                        )
+                    }
                 }
-                val displayMetrics = resources.displayMetrics
-                val itemparams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    Math.round((hour * 120 + min * 2) * displayMetrics.density),
-                    1f
+                setPadding(
+                    standardTextView.paddingLeft, standardTextView.paddingTop,
+                    standardTextView.paddingRight, standardTextView.paddingBottom
                 )
-                val margin = start_hour * 120 + start_min * 2
-                Log.d("Schedules", "times : $hour and $min $margin ${time.content}")
-                itemparams.topMargin = Math.round(margin * displayMetrics.density)
-                itemparams.rightMargin = 1
-                itemparams.gravity = (Gravity.TOP)
-                val Schedule_View = TextView(requireContext())
-                scheduleMap.put(Schedule_View, time)
-
-                Schedule_View.setOnLongClickListener { view ->
-                    val data = ClipData.newPlainText("", "")
-                    val shadowBuilder = EmptyShadowBuilder(view)
-                    view?.startDragAndDrop(data, shadowBuilder, view, 0)
-                    false
-                }
-
-                scheduleViewList.add(Schedule_View)
-                Schedule_View.layoutParams = itemparams
-                Schedule_View.setText(time.content)
-                Schedule_View.setLineSpacing((0).toFloat(), (1).toFloat())
-                Schedule_View.setPadding(4,4,4,4)
-                Schedule_View.setOnClickListener {
-                    Toast.makeText(requireContext(), "${time.content}", Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-                Schedule_View.setBackgroundResource(R.drawable.timetable_schedule)
-                layout.addView(Schedule_View)
             }
-                table.addView(layout)
-            }
+            binding.leftTimeTextviewLayout.addView(newTextView)
         }
+    }
 
-        fun checkForScroll(pointerY: Float, startOfScrollView: Int) {
-            val lowerLimForScroll = (Resources.getSystem().displayMetrics.heightPixels * 0.8).toInt()
-            /* if the upper limit is passed, meaning a pixel height, scroll up */
-            Log.d("DRAGGED", "$pointerY $startOfScrollView, $lowerLimForScroll")
-            if ( pointerY < 100) {
-                binding.timetableScroll.smoothScrollBy(0, -20)
-                Log.d("DRAGGED", "up")
-            }
-            /* if the lower limit is passed, meaning a pixel height, scroll down */
-            else if (pointerY > lowerLimForScroll) {
-                binding.timetableScroll.smoothScrollBy(0, 15)
-                Log.d("DRAGGED", "down")
-            }
+
+    private fun getHeightAndMarginOfLinearLayout(repeatStart : String, repeatEnd : String): Pair<Int, Int>{
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+
+        // Parse the strings to ZonedDateTime instances
+        val preRepeatStart = ZonedDateTime.parse(repeatStart, formatter)
+        val preRepeatEnd = ZonedDateTime.parse(repeatEnd, formatter)
+
+        // Calculate the difference (offset) between the two dates
+        val diff = Duration.between(preRepeatStart, preRepeatEnd)
+
+
+        // Get only the time part
+        val timeOfRepeatStart = LocalTime.parse(repeatStart.substring(11, 16))
+        val timeOfRepeatEnd = LocalTime.parse(repeatEnd.substring(11, 16))
+        val offsetInMinutes = ChronoUnit.MINUTES.between(timeOfRepeatStart, timeOfRepeatEnd).let { if (it < 0) it + 24 * 60 else it }
+
+        val startHour = preRepeatStart.hour
+        val startMin = preRepeatStart.minute
+
+        val scheduleCalculatedValue = (offsetInMinutes / 5 * 6).toInt()
+        val margin = (startHour * 72 + startMin / 5 * 6)
+
+        return Pair(scheduleCalculatedValue, margin)
+    }
+
+
+    private fun makeShapeDrawable(color : String?, padding: Int, cornerRadius: Int): LayerDrawable {
+        val gd = GradientDrawable()
+
+        if(color == null){
+            gd.setColor(Color.parseColor("#1DAFFF")) // Initial color
+        }else{
+            gd.setColor(Color.parseColor(color))
         }
+        gd.cornerRadius = cornerRadius * displayMetrics.density
 
+        // Create another GradientDrawable as background
+        val bg = GradientDrawable()
+//        bg.setColor(Color.WHITE) // Set the color to white
+        bg.cornerRadius = cornerRadius * displayMetrics.density
+
+        // Use a LayerDrawable to put two drawables together
+        val ld = LayerDrawable(arrayOf(bg, gd))
+        ld.setLayerInset(1, padding, padding, padding, padding) // This is equivalent to padding 1dp to gd
+
+        return ld
+    }
+
+    private val colorList = listOf(
+        "#2E2E2E", "#656565", "#818181", "#9D9D9D", "#B9B9B9", "#D5D5D5",
+        "#FF0959", "#FF509C", "#FF5AB6", "#FE7DCD", "#FFAAE5", "#FFBDFB",
+        "#B237BB", "#C93DEB", "#B34CED", "#9D5BE3", "#BB93F8", "#C6B2FF",
+        "#4C45FF", "#2E57FF", "#4D8DFF", "#45BDFF", "#6DDDFF", "#65F4FF",
+        "#FE7E7E", "#FF572E", "#C22E2E", "#A07553", "#E3942E", "#E8A753",
+        "#FF892E", "#FFAB4C", "#FFD166", "#FFDE2E", "#CFE855", "#B9D32E",
+        "#105C08", "#39972E", "#3EDB67", "#55E1B6", "#69FFD0", "#05C5C0",
+    )
 }

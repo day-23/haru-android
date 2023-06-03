@@ -3,6 +3,7 @@ package com.example.haru.view.calendar
 import android.app.Dialog
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,11 +82,18 @@ class DeleteOptionScheduleFragment(val location:Int?, val callback: (Int) -> Uni
                 3f
             }
 
-            0,2 -> {
+            0-> {
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionAfterDelete)
                 2f
             }
+
+            2->{
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
+                binding.layoutParentBtnDelete.removeView(binding.btnOptionAfterDelete)
+                2f
+            }
+
             else -> {
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionAllDelete)
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionOneDelete)

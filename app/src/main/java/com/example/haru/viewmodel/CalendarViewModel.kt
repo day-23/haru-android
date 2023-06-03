@@ -36,6 +36,9 @@ class CalendarViewModel : ViewModel() {
     val _liveScheduleList = MutableLiveData<List<Schedule>>()
     val liveScheduleList: MutableLiveData<List<Schedule>> get() = _liveScheduleList
 
+    val _liveHolidaysList = MutableLiveData<List<Holiday>>()
+    val liveHolidaysList: MutableLiveData<List<Holiday>> get() = _liveHolidaysList
+
     fun completeNotRepeatTodo(todoId: String,
                               completed: Completed,
                               callback: () -> Unit){
@@ -222,7 +225,6 @@ class CalendarViewModel : ViewModel() {
                                 it.todos[i].repeatOption == "매일" ){
                                 todoList.add(it.todos[i].copy())
                             } else {
-                                Log.d("반복투두", it.todos[i].toString())
                                 while (todayDate != null && date_comparison(todayDate, startdateFormat) < 0) {
                                     when (it.todos[i].repeatOption) {
                                         "매주" -> {
@@ -316,7 +318,7 @@ class CalendarViewModel : ViewModel() {
                                 today = schedule.repeatStart!!
                                 todayDate = serverformat.parse(today)
 
-                                schedule.startTime = todayDate
+                                schedule.startTime = todayDate.clone() as Date
                                 todayDate.hours = endtime.hours
                                 todayDate.minutes = endtime.minutes
                                 todayDate.seconds = endtime.seconds
@@ -334,7 +336,7 @@ class CalendarViewModel : ViewModel() {
                                         "매주" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -359,7 +361,7 @@ class CalendarViewModel : ViewModel() {
                                         "격주" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -384,7 +386,7 @@ class CalendarViewModel : ViewModel() {
                                         "매달" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -408,7 +410,7 @@ class CalendarViewModel : ViewModel() {
                                         "매년" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate
-                                            scheduleT.add(Calendar.MILLISECOND, schedule.repeatValue.replace("T","").toInt())
+                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
                                                 date_comparison(scheduleT.time, startdateFormat) >= 0){
@@ -973,9 +975,9 @@ class CalendarViewModel : ViewModel() {
 
                                 calendar.time = repeatstart
 
-                                calendar.add(Calendar.MILLISECOND, newRepeatValue.toInt())
+                                calendar.add(Calendar.SECOND, newRepeatValue.toInt())
 
-                                val intervaldate = calendar.timeInMillis - repeatstart.time
+                                val intervaldate = (calendar.timeInMillis - repeatstart.time)/1000
 
                                 when (repeatOption) {
                                     "매주"->{
@@ -1165,6 +1167,7 @@ class CalendarViewModel : ViewModel() {
                         }
                     }
 
+                    _liveHolidaysList.postValue(it.holidays)
                     _liveTodoCalendarList.postValue(todoList)
                     _liveScheduleCalendarList.postValue(scheduleList)
                 }

@@ -24,6 +24,7 @@ import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddpostAddtagBinding
 import com.example.haru.view.adapter.AddTagPagerAdapter
+import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import kakao.k.p
 import okhttp3.MultipartBody
@@ -67,23 +68,28 @@ class AddTagFragment(
         val adapter = AddTagPagerAdapter(requireContext(), Uris)
         binding.addtagImages.adapter = adapter
         binding.addTagContent.text = content
-        var hashtag: List<String> //TODO:하드코딩 동적으로 바꾸어야함
+        var hashtag: List<String>
 
         binding.addtagCancel.setOnClickListener {
             fragmentManager.popBackStack()
         }
 
         binding.addpostApply.setOnClickListener {
+            binding.addpostApply.isClickable = false
             Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
             hashtag = galleryViewmodel.getTagList()
             galleryViewmodel.postRequest(images, content, hashtag)
 
             galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                val fragment = SnsFragment()
-                val transaction = parentFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragments_frame, fragment)
-                transaction.commit()
+                if(done) {
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    val fragment = SnsFragment()
+                    val transaction = parentFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragments_frame, fragment)
+                    transaction.commit()
+                }else{
+                    Toast.makeText(requireContext(),"게시글 업로드 실패", Toast.LENGTH_SHORT).show()
+                }
             }
         }
         binding.addTagPictureIndex.text = "1/${Uris.size}"

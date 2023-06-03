@@ -1,16 +1,13 @@
 package com.example.haru.view.checklist
 
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.VectorDrawable
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -18,27 +15,24 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.GridLayout
+import android.widget.NumberPicker
 import android.widget.TextView
-import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import com.example.haru.R
-import com.example.haru.data.model.CalendarDate
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.PostSchedule
 import com.example.haru.databinding.FragmentCalendarInputBinding
+import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AdapterMonth
-import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
 import com.example.haru.view.calendar.CategoryChooseDialog
+import com.example.haru.view.customDialog.CustomCalendarDialog
+import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.CalendarViewModel
-import com.example.haru.viewmodel.CheckListViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -93,150 +87,207 @@ class CalendarAddFragment(private val activity: Activity,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = FragmentCalendarInputBinding.inflate(inflater)
-
-        repeatStartCalendar.set(Calendar.HOUR, 0)
-        repeatStartCalendar.set(Calendar.MINUTE, 0)
-        repeatStartCalendar.set(Calendar.SECOND,0)
-
-        repeatEndCalendar.set(Calendar.HOUR, 0)
-        repeatEndCalendar.set(Calendar.MINUTE, 0)
-        repeatEndCalendar.set(Calendar.SECOND,0)
 
         val dateParser = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
         val timeParser = SimpleDateFormat("aa hh:mm", Locale.KOREAN)
 
         if(initStartDate != null && initEndDate != null){
-            repeatStartCalendar.time = initStartDate
-            repeatEndCalendar.time = initEndDate
+            repeatStartCalendar.set(initStartDate.year+1900, initStartDate.month, initStartDate.date)
+            repeatEndCalendar.set(initEndDate.year+1900, initEndDate.month, initEndDate.date)
         }
 
         binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
         binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+        binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
 
         if(binding.repeatStartDateBtn.text != binding.repeatEndDateBtn.text){
             binding.btnEveryDaySchedule.visibility = View.GONE
+        }
+
+        if (repeatStartCalendar.time.minutes < 30){
+            repeatStartCalendar.set(Calendar.MINUTE, 30)
+        } else {
+            repeatStartCalendar.set(Calendar.MINUTE, 0)
+            repeatStartCalendar.add(Calendar.HOUR_OF_DAY, 1)
+        }
+
+        if(repeatStartCalendar.time.month == repeatEndCalendar.time.month &&
+                repeatStartCalendar.time.date == repeatEndCalendar.time.date){
+            repeatEndCalendar.time = repeatStartCalendar.time.clone() as Date
+            repeatEndCalendar.add(Calendar.HOUR_OF_DAY, 1)
+        } else {
+            if (repeatEndCalendar.time.minutes < 30){
+                repeatEndCalendar.set(Calendar.MINUTE, 30)
+            } else {
+                repeatEndCalendar.set(Calendar.MINUTE, 0)
+                repeatEndCalendar.add(Calendar.HOUR_OF_DAY, 1)
+            }
         }
 
         binding.repeatStartTimeBtn.text = timeParser.format(repeatStartCalendar.time)
         binding.repeatEndTimeBtn.text = timeParser.format(repeatEndCalendar.time)
 
         binding.repeatStartDateBtn.setOnClickListener {
-            val year = repeatStartCalendar.get(Calendar.YEAR)
-            val month = repeatStartCalendar.get(Calendar.MONTH)
-            val day = repeatStartCalendar.get(Calendar.DAY_OF_MONTH)
+            val datePicker = CustomCalendarDialog(repeatStartCalendar.time)
+            datePicker.calendarClick =
+                object : CustomCalendarDialog.CalendarClickListener {
+                    override fun onClick(view: View, year: Int, month: Int, day: Int) {
+                        repeatStartCalendar.set(year, month, day)
 
-            val datePickerDialog = DatePickerDialog(
-                requireContext(),
-                { view, year2, month2, dayOfMonth ->
-                    repeatStartCalendar.set(Calendar.YEAR, year2)
-                    repeatStartCalendar.set(Calendar.MONTH, month2)
-                    repeatStartCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                        binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
 
-                    binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
+                        if(binding.repeatStartDateBtn.text.toString() != binding.repeatEndDateBtn.text.toString()){
+                            var flag = false
+                            if (repeatStartCalendar.time.after(repeatEndCalendar.time)){
+                                repeatEndCalendar.set(year,month,day)
+                                binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+                                flag = true
+                            }
 
-                    if(binding.repeatStartDateBtn.text.toString() != binding.repeatEndDateBtn.text.toString()){
-                        if(repeatOption == 0) repeatOption = -1
+                            val repeatEndDateText = binding.btnRepeatEndDateSchedule.text.toString().substring(
+                                0,
+                                binding.btnRepeatEndDateSchedule.text.toString().length-2
+                            )
 
-                        binding.btnEveryDaySchedule.visibility = View.GONE
-                        binding.everyWeekLayout.visibility = View.GONE
-                        binding.gridMonthSchedule.visibility = View.GONE
+                            val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+                            val repeatEndDateCalendar = Calendar.getInstance()
+                            repeatEndDateCalendar.time = dateFormat.parse(repeatEndDateText)
 
-                        if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
-                                binding.repeatEndDateBtn.text.toString().substring(5,7)) {
-                            binding.gridYearSchedule.visibility = View.GONE
-                        } else if(repeatOption == 4){
-                            binding.gridYearSchedule.visibility = View.VISIBLE
+                            if(repeatStartCalendar.time.after(repeatEndDateCalendar.time)){
+                                binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatStartCalendar.time)
+                            }
+
+                            if(flag) {
+                                optionChange(binding)
+                                return
+                            }
+
+                            if(repeatOption == 0) repeatOption = -1
+
+                            binding.btnEveryDaySchedule.visibility = View.GONE
+                            binding.everyWeekLayout.visibility = View.GONE
+                            binding.gridMonthSchedule.visibility = View.GONE
+
+                            if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
+                                    binding.repeatEndDateBtn.text.toString().substring(5,7)) {
+                                binding.gridYearSchedule.visibility = View.GONE
+                            } else if(repeatOption == 4){
+                                binding.gridYearSchedule.visibility = View.VISIBLE
+                            }
+                        } else {
+                            optionChange(binding)
                         }
-                    } else {
-                        optionChange(binding)
                     }
-                },
-                year,
-                month,
-                day
-            )
-
-            datePickerDialog.show()
+                }
+            datePicker.show(parentFragmentManager, null)
         }
 
         binding.repeatStartTimeBtn.setOnClickListener {
-            val hour = repeatStartCalendar.get(Calendar.HOUR)
-            val minute = repeatStartCalendar.get(Calendar.MINUTE)
+            val timePicker = CustomTimeDialog(repeatStartCalendar.time)
+            timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener {
+                override fun onClick(
+                    timeDivider: NumberPicker,
+                    hourNumberPicker: NumberPicker,
+                    minuteNumberPicker: NumberPicker
+                ) {
+                    val timeDivision = timeDivider.value
+                    var hour = hourNumberPicker.value
+                    val minute = minuteNumberPicker.value
+                    if (timeDivision == 0) {
+                        if (hour == 11)
+                            hour = 0
+                        else hour++
+                    } else {
+                        if (hour == 11)
+                            hour++
+                        else hour += 13
+                    }
 
-            val timePickerDialog = TimePickerDialog(
-                requireContext(),
-                { view, hourOfDay, minute2 ->
-                    repeatStartCalendar.set(Calendar.HOUR, hourOfDay)
-                    repeatStartCalendar.set(Calendar.MINUTE, minute2)
+                    repeatStartCalendar.apply {
+                        set(Calendar.HOUR_OF_DAY, hour)
+                        set(Calendar.MINUTE, minute * 5)
+                    }
 
                     binding.repeatStartTimeBtn.text = timeParser.format(repeatStartCalendar.time)
-                },
-                hour,
-                minute,
-                false
-            )
-
-            timePickerDialog.show()
+                }
+            }
+            timePicker.show(parentFragmentManager, null)
         }
 
         binding.repeatEndDateBtn.setOnClickListener {
-            val year = repeatEndCalendar.get(Calendar.YEAR)
-            val month = repeatEndCalendar.get(Calendar.MONTH)
-            val day = repeatEndCalendar.get(Calendar.DAY_OF_MONTH)
+            val datePicker = CustomCalendarDialog(repeatEndCalendar.time, repeatStartCalendar.time)
+            datePicker.calendarClick =
+                object : CustomCalendarDialog.CalendarClickListener {
+                    override fun onClick(view: View, year: Int, month: Int, day: Int) {
+                        repeatEndCalendar.set(year, month, day)
 
-            val datePickerDialog = DatePickerDialog(
-                requireContext(),
-                { view, year2, month2, dayOfMonth ->
-                    repeatEndCalendar.set(Calendar.YEAR, year2)
-                    repeatEndCalendar.set(Calendar.MONTH, month2)
-                    repeatEndCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                        binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
 
-                    binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+                        if(binding.repeatStartDateBtn.text.toString() != binding.repeatEndDateBtn.text.toString()){
+                            val repeatEndDateText = binding.btnRepeatEndDateSchedule.text.toString().substring(
+                                0,
+                                binding.btnRepeatEndDateSchedule.text.toString().length-2
+                            )
 
-                    if(binding.repeatStartDateBtn.text.toString() != binding.repeatEndDateBtn.text.toString()){
-                        if(repeatOption == 0) repeatOption = -1
-                        binding.btnEveryDaySchedule.visibility = View.GONE
-                        binding.everyWeekLayout.visibility = View.GONE
-                        binding.gridMonthSchedule.visibility = View.GONE
+                            val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+                            val repeatEndDateCalendar = Calendar.getInstance()
+                            repeatEndDateCalendar.time = dateFormat.parse(repeatEndDateText)
 
-                        if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
-                            binding.repeatEndDateBtn.text.toString().substring(5,7)) {
-                            binding.gridYearSchedule.visibility = View.GONE
-                        } else if(repeatOption == 4){
-                            binding.gridYearSchedule.visibility = View.VISIBLE
+                            if(repeatEndCalendar.time.after(repeatEndDateCalendar.time)){
+                                binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
+                            }
+
+                            if(repeatOption == 0) repeatOption = -1
+
+                            binding.btnEveryDaySchedule.visibility = View.GONE
+                            binding.everyWeekLayout.visibility = View.GONE
+                            binding.gridMonthSchedule.visibility = View.GONE
+
+                            if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
+                                binding.repeatEndDateBtn.text.toString().substring(5,7)) {
+                                binding.gridYearSchedule.visibility = View.GONE
+                            } else if(repeatOption == 4){
+                                binding.gridYearSchedule.visibility = View.VISIBLE
+                            }
+                        } else {
+                            optionChange(binding)
                         }
-                    } else {
-                        optionChange(binding)
                     }
-                },
-                year,
-                month,
-                day
-            )
-
-            datePickerDialog.show()
+                }
+            datePicker.show(parentFragmentManager, null)
         }
 
         binding.repeatEndTimeBtn.setOnClickListener {
-            val hour = repeatEndCalendar.get(Calendar.HOUR)
-            val minute = repeatEndCalendar.get(Calendar.MINUTE)
+            val timePicker = CustomTimeDialog(repeatEndCalendar.time)
+            timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener {
+                override fun onClick(
+                    timeDivider: NumberPicker,
+                    hourNumberPicker: NumberPicker,
+                    minuteNumberPicker: NumberPicker
+                ) {
+                    val timeDivision = timeDivider.value
+                    var hour = hourNumberPicker.value
+                    val minute = minuteNumberPicker.value
+                    if (timeDivision == 0) {
+                        if (hour == 11)
+                            hour = 0
+                        else hour++
+                    } else {
+                        if (hour == 11)
+                            hour++
+                        else hour += 13
+                    }
 
-            val timePickerDialog = TimePickerDialog(
-                requireContext(),
-                { view, hourOfDay, minute2 ->
-                    repeatEndCalendar.set(Calendar.HOUR, hourOfDay)
-                    repeatEndCalendar.set(Calendar.MINUTE, minute2)
+                    repeatEndCalendar.apply {
+                        set(Calendar.HOUR_OF_DAY, hour)
+                        set(Calendar.MINUTE, minute * 5)
+                    }
 
                     binding.repeatEndTimeBtn.text = timeParser.format(repeatEndCalendar.time)
-                },
-                hour,
-                minute,
-                false
-            )
-
-            timePickerDialog.show()
+                }
+            }
+            timePicker.show(parentFragmentManager, null)
         }
 
         binding.btnCloseSchedule.setOnClickListener { dismiss() }
@@ -358,14 +409,14 @@ class CalendarAddFragment(private val activity: Activity,
         }
 
         binding.categoryChooseIv.setOnClickListener {
-            val dlg = CategoryChooseDialog(this)
-
-            dlg.show(categories){
+            val dlg = CategoryChooseDialog(this, null, categories){
                 category = it
 
                 val drawable = binding.categoryChooseIv.background as VectorDrawable
                 drawable.setColorFilter(Color.parseColor(it.color),PorterDuff.Mode.SRC_ATOP)
             }
+
+            dlg.show(parentFragmentManager, null)
         }
 
         binding.btnRepeatEndDateSchedule.setOnClickListener {
@@ -378,27 +429,16 @@ class CalendarAddFragment(private val activity: Activity,
             val repeatEndDateCalendar = Calendar.getInstance()
             repeatEndDateCalendar.time = dateFormat.parse(repeatEndDateText)
 
-            val year = repeatEndDateCalendar.get(Calendar.YEAR)
-            val month = repeatEndDateCalendar.get(Calendar.MONTH)
-            val day = repeatEndDateCalendar.get(Calendar.DAY_OF_MONTH)
-
-            val datePickerDialog = DatePickerDialog(
-                requireContext(),
-                { view, year2, month2, dayOfMonth ->
-                    val calendar = Calendar.getInstance()
-
-                    calendar.set(Calendar.YEAR, year2)
-                    calendar.set(Calendar.MONTH, month2)
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-                    binding.btnRepeatEndDateSchedule.text = dateParser.format(calendar.time)
-                },
-                year,
-                month,
-                day
-            )
-
-            datePickerDialog.show()
+            val datePicker = CustomCalendarDialog(repeatEndDateCalendar.time, repeatEndCalendar.time)
+            datePicker.calendarClick =
+                object : CustomCalendarDialog.CalendarClickListener {
+                    override fun onClick(view: View, year: Int, month: Int, day: Int) {
+                        val calendar = Calendar.getInstance()
+                        calendar.set(year, month, day)
+                        binding.btnRepeatEndDateSchedule.text = dateParser.format(calendar.time)
+                    }
+                }
+            datePicker.show(parentFragmentManager, null)
         }
 
         for(i in 0..6){
@@ -418,7 +458,7 @@ class CalendarAddFragment(private val activity: Activity,
         binding.btnSubmitSchedule.setOnClickListener {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
             val repeatEndDateBtnFormat = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
-            val timeFormat = SimpleDateFormat("a HH:mm", Locale.KOREA)
+            val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
             val timeFormat2 = SimpleDateFormat("HH:mm", Locale.KOREA)
 
             var repeatStartDate = ""
@@ -431,28 +471,28 @@ class CalendarAddFragment(private val activity: Activity,
                 if(!binding.repeatSwitchSchedule.isChecked) {
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) +
                             "T" +
-                            timeFormat2.format(startTime)
+                            timeFormat2.format(startTime)+
                             ":00+09:00"
                     repeatEndDate = dateFormat.format(repeatEndCalendar.time) +
                             "T" +
-                            timeFormat2.format(endTime)
+                            timeFormat2.format(endTime)+
                             ":00+09:00"
                 } else if(!binding.repeatEndDateSwitchSchedule.isChecked){
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) +
                             "T" +
-                            timeFormat2.format(startTime)
+                            timeFormat2.format(startTime)+
                             ":00+09:00"
                     val calendarClone = repeatStartCalendar.clone() as Calendar
-                    calendarClone.add(Calendar.YEAR,100)
+                    calendarClone.set(Calendar.YEAR,2200)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) +
                             "T" +
-                            timeFormat2.format(endTime)
+                            timeFormat2.format(endTime)+
                             ":00+09:00"
                 } else {
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) +
                             "T" +
-                            timeFormat2.format(startTime)
+                            timeFormat2.format(startTime)+
                             ":00+09:00"
                     repeatEndDate = dateFormat.format(
                         repeatEndDateBtnFormat.parse(
@@ -460,12 +500,9 @@ class CalendarAddFragment(private val activity: Activity,
                         )
                     ) +
                             "T" +
-                            timeFormat2.format(endTime)
+                            timeFormat2.format(endTime)+
                             ":00+09:00"
                 }
-
-                Log.d("반복 일정", repeatStartDate)
-                Log.d("반복 일정", repeatEndDate)
             } else {
                 if(!binding.repeatSwitchSchedule.isChecked) {
                     repeatStartDate =
@@ -475,7 +512,7 @@ class CalendarAddFragment(private val activity: Activity,
                     repeatStartDate = dateFormat.format(repeatStartCalendar.time) + "T00:00:00+09:00"
 
                     val calendarClone = repeatEndCalendar.clone() as Calendar
-                    calendarClone.add(Calendar.YEAR,100)
+                    calendarClone.set(Calendar.YEAR,2200)
 
                     repeatEndDate = dateFormat.format(calendarClone.time) + "T23:59:55+09:00"
                 } else {
@@ -486,8 +523,6 @@ class CalendarAddFragment(private val activity: Activity,
                             binding.btnRepeatEndDateSchedule.text.toString()
                         )
                     )+ "T23:59:55+09:00"
-
-                    Log.d("20191630",repeatEndDate)
                 }
             }
 
@@ -536,44 +571,53 @@ class CalendarAddFragment(private val activity: Activity,
                 }
             } else {
                 if(binding.alldaySwitch.isChecked){
-                    repeatEndCalendar.apply {
-                        set(Calendar.HOUR_OF_DAY, 23)
-                        set(Calendar.MINUTE, 59)
-                        set(Calendar.SECOND, 55)
+                    if(option != null) {
+                        repeatEndCalendar.apply {
+                            set(Calendar.HOUR_OF_DAY, 23)
+                            set(Calendar.MINUTE, 59)
+                            set(Calendar.SECOND, 55)
+                        }
+                        repeatvalue =
+                            "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
+                                .toString()
+                    } else {
+                        repeatvalue = null
                     }
-                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt().toString()
                 } else {
-                    val startTime = timeFormat.parse(binding.repeatStartTimeBtn.text.toString())
-                    val endTime = timeFormat.parse(binding.repeatEndTimeBtn.text.toString())
+                    if (option != null) {
+                        val startTime = timeFormat.parse(binding.repeatStartTimeBtn.text.toString())
+                        val endTime = timeFormat.parse(binding.repeatEndTimeBtn.text.toString())
 
-                    repeatStartCalendar.set(
-                        Calendar.HOUR_OF_DAY,
-                        startTime.hours
-                    )
+                        repeatStartCalendar.set(
+                            Calendar.HOUR_OF_DAY,
+                            startTime.hours
+                        )
 
-                    repeatStartCalendar.set(
-                        Calendar.MINUTE,
-                        startTime.minutes
-                    )
+                        repeatStartCalendar.set(
+                            Calendar.MINUTE,
+                            startTime.minutes
+                        )
 
-                    repeatEndCalendar.set(
-                        Calendar.HOUR_OF_DAY,
-                        endTime.hours
-                    )
+                        repeatEndCalendar.set(
+                            Calendar.HOUR_OF_DAY,
+                            endTime.hours
+                        )
 
-                    repeatEndCalendar.set(
-                        Calendar.MINUTE,
-                        endTime.minutes
-                    )
+                        repeatEndCalendar.set(
+                            Calendar.MINUTE,
+                            endTime.minutes
+                        )
 
-                    repeatvalue = "T"+(repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt().toString()
+                        repeatvalue =
+                            "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
+                                .toString()
+                    } else {
+                        repeatvalue = null
+                    }
                 }
             }
 
             val calendarViewModel = CalendarViewModel()
-
-            Log.d("20191630", repeatStartDate)
-            Log.d("20191630", repeatEndDate)
 
             calendarViewModel.postSchedule(
                 PostSchedule(
