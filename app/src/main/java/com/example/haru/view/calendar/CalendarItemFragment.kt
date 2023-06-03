@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.NumberPicker
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.haru.R
 import com.example.haru.data.model.*
@@ -850,6 +851,16 @@ class CalendarItemFragment(val schedule: Schedule,
         }
 
         binding.btnSubmitSchedule.setOnClickListener {
+            if(binding.scheduleContentEt.text.toString().replace(" ","") == ""){
+                Toast.makeText(requireContext(), "일정을 입력해 주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if(repeatEndCalendar.time.time - repeatStartCalendar.time.time < 1000*60*30){
+                Toast.makeText(requireContext(),"일정은 30분 이상 차이나야 합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
             val repeatEndDateBtnFormat = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
             val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
