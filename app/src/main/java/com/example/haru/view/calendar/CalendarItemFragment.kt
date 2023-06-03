@@ -228,6 +228,12 @@ class CalendarItemFragment(val schedule: Schedule,
                             val repeatEndDateCalendar = Calendar.getInstance()
                             repeatEndDateCalendar.time = dateFormat.parse(repeatEndDateText)
 
+                            if (repeatStartCalendar.time.month != repeatEndCalendar.time.month){
+                                binding.gridMonthSchedule.visibility = View.GONE
+                                binding.btnEveryMonthSchedule.visibility = View.GONE
+                                if(repeatOption == -3) repeatOption = -1
+                            }
+
                             val startDate = repeatStartCalendar.time.clone() as Date
                             startDate.hours = 0
                             startDate.minutes = 0
@@ -340,6 +346,12 @@ class CalendarItemFragment(val schedule: Schedule,
 
                             if(repeatEndCalendar.time.after(repeatEndDateCalendar.time)){
                                 binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
+                            }
+
+                            if (repeatStartCalendar.time.month != repeatEndCalendar.time.month){
+                                binding.gridMonthSchedule.visibility = View.GONE
+                                binding.btnEveryMonthSchedule.visibility = View.GONE
+                                if(repeatOption == -3) repeatOption = -1
                             }
 
                             val startDate = repeatStartCalendar.time.clone() as Date
@@ -472,6 +484,9 @@ class CalendarItemFragment(val schedule: Schedule,
                 binding.everyWeekLayout.visibility = View.GONE
                 binding.gridMonthSchedule.visibility = View.GONE
                 binding.gridYearSchedule.visibility = View.GONE
+
+                repeatOption = -1
+                onOptionClick(-1)
             }
         }
 
