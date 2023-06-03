@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="78dp"
+    android:layout_width="76dp"
     android:layout_height="match_parent"
     android:gravity="center"
     >
@@ -10,14 +10,14 @@
         android:layout_width="68dp"
         android:layout_height="62dp"
         android:paddingHorizontal="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="4dp"
-        android:text="빨래\n하기"
-        android:textSize="14dp"
+        android:text="가나다라마바.."
+        android:textSize="16sp"
         android:background="@drawable/todotable_item_border"
         android:textColor="#191919"
         android:maxLines="2"
         android:ellipsize="end"
         android:gravity="center"
+        android:textStyle="bold"
+        android:layout_marginRight="8dp"
         />
 </LinearLayout>

@@ -1,480 +1,449 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="viewModel"
             type="com.example.haru.viewmodel.TimetableViewModel" />
+
         <variable
             name="reviewModel"
             type="com.example.haru.viewmodel.TodoTableRecyclerViewmodel" />
     </data>
 
     <LinearLayout
+        android:id="@+id/todotable_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/todotable_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="#FDFDFD"
-            android:paddingStart="10dp"
-            android:paddingEnd="20dp"
-            tools:ignore="MissingConstraints">
-
-            <RelativeLayout
+            android:orientation="vertical">
+            <!-- 헤더 -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="#FDFDFD"
-                >
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+
+                <TextView
+                    android:id="@+id/timetable_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+
+                    android:hint="2023년"
+                    android:text="@{viewModel.Selected.year}"
+                    android:textColor="#191919"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/timetable_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="0"
+                    android:gravity="center"
+                    android:hint="3월"
+                    android:text="@{viewModel.Selected.month}"
+                    android:textColor="#191919"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
                 <ImageView
-                    android:id="@+id/todotable_haru_title"
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/haru_logo"
-                    android:layout_marginTop="2dp"
-                    android:layout_alignParentTop="true"
-                    />
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_weight="0"
+                    android:background="@drawable/calendar_month_choose_btn"
+                    android:onClick="@{() -> viewModel.buttonClick()}" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="10" />
+
                 <ImageView
-                    android:id="@+id/todotable_search_button"
-                    android:layout_marginTop="3dp"
+                    android:id="@+id/timetable_search_button"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_alignParentEnd="true"
-                    android:src="@drawable/search_icon"/>
-            </RelativeLayout>
-        </LinearLayout>
+                    android:src="@drawable/search_icon" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/calendar_today_date"
+                    android:gravity="center"
+                    android:hint="1"
+                    android:onClick="@{() -> viewModel.todayClick()}"
+                    android:text="@{viewModel.todayDay}"
+                    android:textColor="#2CA4FF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent" />
+
+                <ImageButton
+                    android:id="@+id/todolist_change"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_weight="0"
+                    android:background="#00000000"
+                    android:src="@drawable/timetable_top_asset2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sun_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="7dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="20dp"
+                    android:layout_height="46dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="14dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/sunday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="6dp"
+                        android:text="일"
+                        android:textAlignment="center"
+                        android:textColor="#F71E58"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/todo_sun_date"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:hint="1"
+                        android:text="@{viewModel.days.get(6)}"
+                        android:textAlignment="center"
+                        android:textColor="#F71E58"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sun_todos_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="62dp"
+                    android:layout_gravity="center"
+                    tools:listitem="@layout/items_todotable_todo" />
+            </LinearLayout>
 
 
             <LinearLayout
+                android:id="@+id/mon_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#FDFDFD"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:paddingVertical="7dp"
+                >
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_width="20dp"
+                    android:layout_height="46dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="14dp"
                     android:gravity="center"
-                    android:paddingHorizontal="10dp">
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/timetable_year"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:gravity="center"
-                        android:textSize="28dp"
-                        android:textStyle="bold"
-                        android:textColor="#191919"
-                        android:text="@{viewModel.Selected.year}"
-                        android:hint="2023년"/>
+                        android:id="@+id/monday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="6dp"
+                        android:text="월"
+                        android:textAlignment="center"
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/timetable_month"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:layout_marginLeft="10dp"
-                        android:text="@{viewModel.Selected.month}"
-                        android:textSize="28dp"
+                        android:id="@+id/todo_mon_date"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:hint="2"
+                        android:text="@{viewModel.days.get(6)}"
+                        android:textAlignment="center"
                         android:textColor="#191919"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:hint="3월"/>
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0"
-                        android:src="@drawable/___20513"
-                        android:background="#00000000"
-                        android:layout_marginHorizontal="10dp"
-                        android:onClick="@{() -> viewModel.buttonClick()}"
-                        />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="10"/>
-                    <LinearLayout
-                        android:layout_width="28dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"/>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="2"
-                            android:background="@drawable/calendar_today_background_image">
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:text="@{viewModel.todayDay}"
-                                android:textColor="#2CA4FF"
-                                android:hint="1"
-                                android:textStyle="bold"
-                                android:textSize="12dp"
-                                android:background="#00000000"
-                                android:onClick="@{() -> viewModel.todayClick()}"
-                                />
-                        </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"/>
-                    <ImageButton
-                        android:id="@+id/todolist_change"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/___20565"
-                        android:layout_weight="0"
-                        android:layout_gravity="center_horizontal"
-                        android:background="#00000000" />
-
-
-
+                        android:textSize="14sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/sun_layout"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/mon_todos_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_height="62dp"
+                    android:layout_gravity="center"
+                    tools:listitem="@layout/items_todotable_todo" />
+            </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
 
-                        <TextView
-                            android:id="@+id/sunday"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="일"
-                            android:textSize="12dp"
-                            android:textStyle="bold"
-                            android:textColor= "#F71E58"
-                            android:layout_marginBottom="7dp"/>
+            <LinearLayout
+                android:id="@+id/tue_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="7dp"
+                >
 
-                        <TextView
-                            android:id="@+id/todo_sun_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.days.get(0)}"
-                            android:gravity="center"
-                            android:textSize="12dp"
-                            android:hint="1"
-                            android:textColor="#F71E58"/>
+                <LinearLayout
+                    android:layout_width="20dp"
+                    android:layout_height="46dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="14dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tueday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="6dp"
+                        android:text="화"
+                        android:textAlignment="center"
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/sun_todos_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:scrollbars="none"
-                        tools:listitem="@layout/items_todotable_todo"
-                        />
+                    <TextView
+                        android:id="@+id/todo_tue_date"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:hint="3"
+                        android:text="@{viewModel.days.get(6)}"
+                        android:textAlignment="center"
+                        android:textColor="#191919"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/mon_layout"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/tue_todos_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_height="62dp"
+                    android:layout_gravity="center"
+                    tools:listitem="@layout/items_todotable_todo" />
+            </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        >
+            <LinearLayout
+                android:id="@+id/wed_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="7dp"
+                >
 
-                        <TextView
-                            android:id="@+id/monday"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="월"
-                            android:textSize="12dp"
-                            android:textStyle="bold"
-                            android:textColor="#191919"
-                            android:layout_marginBottom="7dp"/>
+                <LinearLayout
+                    android:layout_width="20dp"
+                    android:layout_height="46dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="14dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/todo_mon_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.days.get(1)}"
-                            android:textSize="12dp"
-                            android:hint="2"
-                            android:gravity="center"
-                            android:textColor="#191919"/>
+                    <TextView
+                        android:id="@+id/wedday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="6dp"
+                        android:text="수"
+                        android:textAlignment="center"
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/mon_todos_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scrollbars="none"
-                        tools:listitem="@layout/items_todotable_todo"/>
+                    <TextView
+                        android:id="@+id/todo_wed_date"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:hint="4"
+                        android:text="@{viewModel.days.get(6)}"
+                        android:textAlignment="center"
+                        android:textColor="#191919"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/tue_layout"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/wed_todos_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_height="62dp"
+                    android:layout_gravity="center"
+                    tools:listitem="@layout/items_todotable_todo" />
+            </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        >
+            <LinearLayout
+                android:id="@+id/thu_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="7dp"
+                >
 
-                        <TextView
-                            android:id="@+id/tueday"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="화"
-                            android:textSize="12dp"
-                            android:textStyle="bold"
-                            android:textColor="#191919"
-                            android:layout_marginBottom="7dp"/>
+                <LinearLayout
+                    android:layout_width="20dp"
+                    android:layout_height="46dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="14dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/todo_tue_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.days.get(2)}"
-                            android:textSize="12dp"
-                            android:hint="3"
-                            android:gravity="center"
-                            android:textColor="#191919"/>
+                    <TextView
+                        android:id="@+id/thuday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="6dp"
+                        android:text="목"
+                        android:textAlignment="center"
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/tue_todos_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scrollbars="none"
-                        tools:listitem="@layout/items_todotable_todo"/>
+                    <TextView
+                        android:id="@+id/todo_thu_date"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:hint="5"
+                        android:text="@{viewModel.days.get(6)}"
+                        android:textAlignment="center"
+                        android:textColor="#191919"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/wed_layout"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/thu_todos_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_height="62dp"
+                    android:layout_gravity="center"
+                    tools:listitem="@layout/items_todotable_todo" />
+            </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        >
+            <LinearLayout
+                android:id="@+id/fri_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="7dp"
+                >
 
-                        <TextView
-                            android:id="@+id/wedday"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="수"
-                            android:textSize="12dp"
-                            android:textStyle="bold"
-                            android:textColor="#191919"
-                            android:layout_marginBottom="7dp"/>
 
-                        <TextView
-                            android:id="@+id/todo_wed_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.days.get(3)}"
-                            android:textSize="12dp"
-                            android:gravity="center"
-                            android:hint="4"
-                            android:textColor="#191919"/>
+                <LinearLayout
+                    android:layout_width="20dp"
+                    android:layout_height="46dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="14dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/friday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="6dp"
+                        android:text="금"
+                        android:textAlignment="center"
+                        android:textColor="#ACACAC"
+                        android:textSize="14sp" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/wed_todos_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scrollbars="none"
-                        tools:listitem="@layout/items_todotable_todo"/>
+                    <TextView
+                        android:id="@+id/todo_fri_date"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:hint="6"
+                        android:text="@{viewModel.days.get(6)}"
+                        android:textAlignment="center"
+                        android:textColor="#191919"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/thu_layout"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/fri_todos_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_height="62dp"
+                    android:layout_gravity="center"
+                    tools:listitem="@layout/items_todotable_todo" />
+            </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        >
+            <LinearLayout
+                android:id="@+id/sat_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="7dp">
 
-                        <TextView
-                            android:id="@+id/thuday"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="목"
-                            android:textSize="12dp"
-                            android:textStyle="bold"
-                            android:textColor="#191919"
-                            android:layout_marginBottom="7dp"/>
+                <LinearLayout
+                    android:layout_width="20dp"
+                    android:layout_height="46dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginEnd="14dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/todo_thu_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.days.get(4)}"
-                            android:textSize="12dp"
-                            android:gravity="center"
-                            android:hint="5"
-                            android:textColor="#191919"/>
+                    <TextView
+                        android:id="@+id/satday"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="6dp"
+                        android:text="토"
+                        android:textAlignment="center"
+                        android:textColor="#1DAFFF"
+                        android:textSize="14sp" />
 
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/thu_todos_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scrollbars="none"
-                        tools:listitem="@layout/items_todotable_todo"/>
+                    <TextView
+                        android:id="@+id/todo_sat_date"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:hint="7"
+                        android:text="@{viewModel.days.get(6)}"
+                        android:textAlignment="center"
+                        android:textColor="#1DAFFF"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/fri_layout"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sat_todos_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_height="62dp"
+                    android:layout_gravity="center"
+                    tools:listitem="@layout/items_todotable_todo" />
+            </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        >
-
-                        <TextView
-                            android:id="@+id/friday"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="금"
-                            android:textSize="12dp"
-                            android:textStyle="bold"
-                            android:textColor="#191919"
-                            android:layout_marginBottom="7dp"/>
-
-                        <TextView
-                            android:id="@+id/todo_fri_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.days.get(5)}"
-                            android:textSize="12dp"
-                            android:gravity="center"
-                            android:hint="6"
-                            android:textColor="#191919"/>
-
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/fri_todos_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scrollbars="none"
-                        tools:listitem="@layout/items_todotable_todo"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/sat_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <LinearLayout
-                        android:layout_width="48dp"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        >
-                        <TextView
-                            android:id="@+id/satday"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="토"
-                            android:textSize="12dp"
-                            android:textStyle="bold"
-                            android:textColor="#1DAFFF"
-                            android:layout_marginBottom="7dp"/>
-
-                        <TextView
-                            android:id="@+id/todo_sat_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.days.get(6)}"
-                            android:textSize="12dp"
-                            android:gravity="center"
-                            android:hint="7"
-                            android:textColor="#1DAFFF"/>
-
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/sat_todos_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        tools:listitem="@layout/items_todotable_todo"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="right">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="right">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/btn_add_todo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|bottom"
-                    android:layout_margin="8dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="20dp"
                     android:clickable="true"
                     app:borderWidth="0dp"
                     app:elevation="0dp"
                     app:maxImageSize="56dp"
                     app:srcCompat="@drawable/fab"
                     app:tint="@null" />
-                </LinearLayout>
-
-    </LinearLayout>
-
-
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </layout>
