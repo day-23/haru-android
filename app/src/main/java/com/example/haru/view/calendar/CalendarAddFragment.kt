@@ -634,10 +634,6 @@ class CalendarAddFragment(private val activity: Activity,
                                 else repeatvalue += "0"
                             }
                         }
-
-                        else -> {
-                            repeatvalue = null
-                        }
                     }
                 }
             } else {
@@ -651,8 +647,6 @@ class CalendarAddFragment(private val activity: Activity,
                         repeatvalue =
                             "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
                                 .toString()
-                    } else {
-                        repeatvalue = null
                     }
                 } else {
                     if (option != null) {
@@ -682,10 +676,12 @@ class CalendarAddFragment(private val activity: Activity,
                         repeatvalue =
                             "T" + ((repeatEndCalendar.time.time - repeatStartCalendar.time.time).toInt()/1000)
                                 .toString()
-                    } else {
-                        repeatvalue = null
                     }
                 }
+            }
+
+            if(repeatvalue == ""){
+                repeatvalue = null
             }
 
             val calendarViewModel = CalendarViewModel()
