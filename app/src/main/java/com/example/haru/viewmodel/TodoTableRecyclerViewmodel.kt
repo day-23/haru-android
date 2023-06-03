@@ -52,7 +52,7 @@ class TodoTableRecyclerViewmodel : ViewModel() {
             val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
             val body = ScheduleRequest(startDate, endDate)
             //GET 쿼리 전송
-            todoRepository.getTodoDates(date[0], date[6], body) {
+            todoRepository.getTodoDates(body) {
                 val TodoList = it
                 Log.d("GET1", "${TodoList}, ${date[0]}, ${date[6]} ")
 
