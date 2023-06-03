@@ -70,6 +70,11 @@ class CategoryAddActivity : AppCompatActivity() {
                 Toast.makeText(this, "카테고리명을 입력해 주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            
+            if(color == ""){
+                Toast.makeText(this, "색상을 선택해 주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             content = addScheduleName.text.toString()
 
