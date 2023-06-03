@@ -34,6 +34,7 @@
                 android:backgroundTint="@color/dateBtn_bg" />
         </FrameLayout>
 
+<!--        컬러 색깔 지정하기-->
         <NumberPicker
             android:id="@+id/time_division"
             android:layout_width="wrap_content"

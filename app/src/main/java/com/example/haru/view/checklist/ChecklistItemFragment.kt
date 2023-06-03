@@ -1073,6 +1073,7 @@ class ChecklistItemFragment(
                         option.dismissEvent = object : UpdateOptionDialogFragment.DismissEvent {
                             override fun onDismiss() {
                                 binding.btnInfoSave.isClickable = true
+                                // 해결해야됨
                             }
                         }
                         option.show(parentFragmentManager, option.tag)

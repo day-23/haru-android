@@ -104,7 +104,8 @@ class SearchScheduleAdapter(val context: Context) :
             else {
                 val startDate: Date
                 val endDate: Date
-                if (item.repeatOption == null && item.repeatValue == null) {
+//                 && item.repeatValue == null
+                if (item.repeatOption == null) {
                     // repeatOption, repeatValue 가 null이면 반복하지 않는 일정
                     startDate = FormatDate.strToDate(item.repeatStart)!!
                     endDate = FormatDate.strToDate(item.repeatEnd)!!
