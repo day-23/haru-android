@@ -30,8 +30,7 @@ import com.example.haru.view.adapter.TemplateAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
 interface onTemplateListener{
-
-    fun onTemplateClicked(url : String, holder:TemplateAdapter.TemplateViewHolder)
+    fun onTemplateClicked(url : String, id : String, holder:TemplateAdapter.TemplateViewHolder)
 }
 
 class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
@@ -41,9 +40,10 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
     var toggle = true
     var selectedHolder: TemplateAdapter.TemplateViewHolder? = null
     var id : String = ""
+    var color = "#191919"
 
-    override fun onTemplateClicked(url: String, holder: TemplateAdapter.TemplateViewHolder) {
-        this.id = url
+    override fun onTemplateClicked(url: String, id: String, holder: TemplateAdapter.TemplateViewHolder) {
+        this.id = id
         Glide.with(requireContext())
             .load(url)
             .into(binding.writeHaruImages)
@@ -79,7 +79,6 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
         templateViewModel.getTemplates()
         binding.writeTagContent.text = content
         templateViewModel.Templates.observe(viewLifecycleOwner){ templates ->
-            Log.d("20191668", "$templates")
             templateAdapter.addTemplate(templates)
        }
 
@@ -94,10 +93,12 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
 
         binding.setTextWhite.setOnClickListener {
             binding.writeTagContent.setTextColor(Color.parseColor("#fdfdfd"))
+            color = "#fdfdfd"
         }
 
         binding.setTextBlack.setOnClickListener {
             binding.writeTagContent.setTextColor(Color.parseColor("#191919"))
+            color = "#191919"
         }
 
         binding.writeHaruApply.setOnClickListener {
@@ -105,7 +106,7 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
             Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
             val hashtag = templateViewModel.getTagList()
             if(id != "")
-                templateViewModel.templateRequest(Template(id, content, ArrayList(hashtag)))
+                templateViewModel.templateRequest(Template(id, color, content, ArrayList(hashtag)))
             else{
                 Toast.makeText(requireContext(), "템플릿을 선택해 주세요", Toast.LENGTH_SHORT).show()
                 binding.writeHaruApply.isClickable = true

@@ -21,9 +21,10 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
 ) : View.OnDragListener{
     val layoutIndex = layoutIndex
     val shadowView = Button(context)
-    private val moveOffset = 20
+    private val moveOffset = 5
     private val moveThreshold = 50
     private var isRunning = false
+    private var preIndex = -1
 
     /* 드래그 이벤트 중 스크롤뷰의 스크롤을 위한 코드 */
     private val handler = Handler(Looper.getMainLooper())
@@ -44,6 +45,7 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
         when (event.action) {
             DragEvent.ACTION_DRAG_STARTED -> {
                 isRunning = true
+                preIndex = -1
                 handler.post(runnable)  // Start the recurring task
             }
             DragEvent.ACTION_DROP -> {
@@ -85,13 +87,26 @@ class TimeTableScheduleDragListener(private val timetableViewModel: TimetableVie
                 break
             }
         }
+        Log.d("20191630", "handleDropAction: $index")
         sourceLayout.removeView(draggedView)
 
         if(y <= 0) y = 0
-        timetableViewModel.scheduleMoved(y, draggedView, index)
+        timetableViewModel.scheduleMoved(y, draggedView, index, preIndex)
     }
 
     private fun handleDragLocationAction(targetFrameLayout: FrameLayout, draggedView: TextView, event: DragEvent) {
+        //시작 지점 구하기
+        if(preIndex == -1){
+            for (i: Int in 0..6) {
+                if (targetFrameLayout.id == layoutIndex[i]) {
+                    preIndex = i
+                    break
+                }
+            }
+            Log.d("20191630", "handleDragLocationAction 이전 위치: $preIndex")
+        }
+
+
         shadowView.apply {
             layoutParams = FrameLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, draggedView.height)
             background = draggedView.background

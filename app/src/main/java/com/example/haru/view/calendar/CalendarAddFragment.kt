@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.NumberPicker
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.haru.R
 import com.example.haru.data.model.Category
@@ -97,10 +98,6 @@ class CalendarAddFragment(private val activity: Activity,
             repeatEndCalendar.set(initEndDate.year+1900, initEndDate.month, initEndDate.date)
         }
 
-        binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
-        binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
-        binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
-
         if(binding.repeatStartDateBtn.text != binding.repeatEndDateBtn.text){
             binding.btnEveryDaySchedule.visibility = View.GONE
         }
@@ -124,6 +121,10 @@ class CalendarAddFragment(private val activity: Activity,
                 repeatEndCalendar.add(Calendar.HOUR_OF_DAY, 1)
             }
         }
+
+        binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
+        binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+        binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
 
         binding.repeatStartTimeBtn.text = timeParser.format(repeatStartCalendar.time)
         binding.repeatEndTimeBtn.text = timeParser.format(repeatEndCalendar.time)
@@ -456,6 +457,16 @@ class CalendarAddFragment(private val activity: Activity,
         }
 
         binding.btnSubmitSchedule.setOnClickListener {
+            if(binding.scheduleContentEt.text.toString().replace(" ","") == ""){
+                Toast.makeText(requireContext(), "일정을 입력해 주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if(repeatEndCalendar.time.time - repeatStartCalendar.time.time < 1000*60*30){
+                Toast.makeText(requireContext(),"일정은 30분 이상 차이나야 합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN)
             val repeatEndDateBtnFormat = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
             val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
