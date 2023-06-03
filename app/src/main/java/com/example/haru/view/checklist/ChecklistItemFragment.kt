@@ -982,7 +982,9 @@ class ChecklistItemFragment(
                     val option = DeleteOptionDialogFragment(todoAddViewModel, type)
                     option.dismissEvent = object : DeleteOptionDialogFragment.DismissEvent{
                         override fun onDismiss() {
-                            binding.btnInfoDelete.isClickable = true
+                            activity?.runOnUiThread {
+                                binding.btnInfoDelete.isClickable = true
+                            }
                         }
                     }
                     option.show(parentFragmentManager, option.tag)
@@ -1063,7 +1065,9 @@ class ChecklistItemFragment(
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
                         option.dismissEvent = object : UpdateOptionDialogFragment.DismissEvent {
                             override fun onDismiss() {
-                                binding.btnInfoSave.isClickable = true
+                                activity?.runOnUiThread {
+                                    binding.btnInfoSave.isClickable = true
+                                }
                             }
                         }
                         option.show(parentFragmentManager, option.tag)
@@ -1072,7 +1076,9 @@ class ChecklistItemFragment(
                         val option = UpdateOptionDialogFragment(todoAddViewModel, type)
                         option.dismissEvent = object : UpdateOptionDialogFragment.DismissEvent {
                             override fun onDismiss() {
-                                binding.btnInfoSave.isClickable = true
+                                activity?.runOnUiThread {
+                                    binding.btnInfoSave.isClickable = true
+                                }
                                 // 해결해야됨
                             }
                         }
