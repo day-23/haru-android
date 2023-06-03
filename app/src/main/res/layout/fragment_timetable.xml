@@ -28,7 +28,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="13dp"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="20dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="20dp"
                 >
 
                 <TextView
