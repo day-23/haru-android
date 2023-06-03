@@ -79,19 +79,19 @@ class DeleteOptionScheduleFragment(val location:Int?, val callback: (Int) -> Uni
         params.weight = when (location) {
             1 -> {
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
-                4f
+                3f
             }
 
             0-> {
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionAfterDelete)
-                3f
+                2f
             }
 
             2->{
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionDelete)
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionAfterDelete)
-                3f
+                2f
             }
 
             else -> {
@@ -99,7 +99,7 @@ class DeleteOptionScheduleFragment(val location:Int?, val callback: (Int) -> Uni
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionOneDelete)
                 binding.layoutParentBtnDelete.removeView(binding.btnOptionAfterDelete)
                 binding.textViewDeleteInfo.text = "이 일정을 삭제할까요?"
-                2f
+                1f
             }
         }
         binding.layoutParentBtnDelete.apply {
