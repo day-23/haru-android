@@ -24,6 +24,7 @@ import com.example.haru.view.adapter.MediaAdapter
 import com.example.haru.view.adapter.MediaTagAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
+import com.example.haru.viewmodel.SnsViewModel
 
 class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaTagClicked{
     private lateinit var binding: FragmentSnsMypageBinding
@@ -34,6 +35,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     private lateinit var mediaAdapter: MediaAdapter
     private lateinit var tagAdapter: MediaTagAdapter
     private lateinit var mypageViewModel: MyPageViewModel
+    private lateinit var snsViewModel : SnsViewModel
     private var click = false
     val userId = userId
     var isMyPage = false
@@ -75,7 +77,16 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     override fun onSetupClick(userId: String, postId: String, item: Post) {
-        TODO("Not yet implemented")
+        Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+
+        snsViewModel.deletePost(postId)
+
+        snsViewModel.DeleteResult.observe(viewLifecycleOwner){ result ->
+            if(result)
+                feedAdapter.deletePost(item)
+            else
+                Toast.makeText(requireContext(), "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onTagClicked(tag: Tag, holder : MediaTagAdapter.MediaTagViewHolder) {
@@ -99,6 +110,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         super.onCreate(savedInstanceState)
         Log.d("TAG", "MypageFragment - onCreate() called")
         mypageViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
+        snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
     }
 
     // status bar height 조정
