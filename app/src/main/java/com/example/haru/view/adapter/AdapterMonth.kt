@@ -598,10 +598,10 @@ class AdapterMonth(val activity: Activity,
         }
 
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.HOUR_OF_DAY, 2)
 
         val holidaysList = holidays as ArrayList
         calendar.time = start
+        calendar.set(Calendar.HOUR_OF_DAY, 2)
 
         var i = 0
 
