@@ -7,8 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.ScheduleRequest
 import com.example.haru.data.model.Todo
+import com.example.haru.data.model.TodoList
 import com.example.haru.data.model.TodoTable_data
 import com.example.haru.data.repository.TodoRepository
+import com.example.haru.utils.FormatDate
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -51,18 +53,29 @@ class TodoTableRecyclerViewmodel : ViewModel() {
             val startDate = "${date[0].slice(IntRange(0, 3))}" + "-" + "${date[0].slice(IntRange(4,5))}" + "-" + "${date[0].slice(IntRange(6,7))}" + "T00:00:00+09:00"
             val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
             val body = ScheduleRequest(startDate, endDate)
+
+            Log.d("GET1 1 231", "$body, ${date[0]}, ${date[6]}")
             //GET 쿼리 전송
             todoRepository.getTodoDates(body) {
                 val TodoList = it
-                Log.d("GET1", "${TodoList}, ${date[0]}, ${date[6]} ")
+                Log.d("GET1", "${TodoList}, ${date[0]}, ${date[6]}")
 
                 //내용 추출
                 for(data in TodoList){
+                    val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+                    val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
+
+                    Log.d("GET1", "before : ${TodoList}, ${date[0]}, ${date[6]}, ${data.endDate}")
+                    data.endDate = FormatDate.calendarFormat(data.endDate!!)
+                    Log.d("GET1", "after : ${TodoList}, ${date[0]}, ${date[6]} ${data.endDate}")
+
                     val year = data.endDate?.slice(IntRange(0,3))
                     val month = data.endDate?.slice(IntRange(5,6))
                     val day = data.endDate?.slice(IntRange(8,9))
                     val result = year+month+day
 
+
+                    Log.d("GET1", "${result}, ${data.content}")
                     if(data.endDate != null){ //날짜 정보가 있는 경우만 담음
 
                         when(result){

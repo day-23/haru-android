@@ -1031,7 +1031,6 @@ class TimetableViewModel(val context: Context) : ViewModel() {
             schedule.repeatStart = FormatDate.calendarFormat(schedule.repeatStart!!)
             schedule.repeatEnd = FormatDate.calendarFormat(schedule.repeatEnd!!)
 
-
             var repeatStart: Date? = null
             var repeatEnd: Date? = null
 

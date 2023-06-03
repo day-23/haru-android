@@ -83,8 +83,12 @@ class TodotableFragment : Fragment() {
 
         binding.btnAddTodo.setOnClickListener {
             val todoInput = ChecklistInputFragment(checkListViewModel,null, false, true)
+            todoInput.onDismissListener = object : ChecklistInputFragment.OnDismissListener {
+                override fun onDismiss() {
+                    todoreviewModel.getTodo(timetableviewModel.Dates.value!!)
+                }
+            }
             todoInput.show(parentFragmentManager, todoInput.tag)
-            todoreviewModel.getTodo(timetableviewModel.Dates.value!!)
         }
 
         timetableviewModel = TimetableViewModel(requireContext())
@@ -140,6 +144,8 @@ class TodotableFragment : Fragment() {
         sat_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         sat_todorecyclerView.setOnDragListener(dragListener)
 
+
+        /* 현재 고른 날짜에 따라서 색칠이 되고 있는데 오늘날짜로만 바꾸기 */
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             val year = times.year.slice(0..times.year.length - 2)
             val month = times.month.slice(0..times.month.length - 2)
@@ -164,6 +170,7 @@ class TodotableFragment : Fragment() {
             }
             binding.invalidateAll()
         }
+
 
         timetableviewModel.Colors.observe(viewLifecycleOwner) { colors ->
             val date = timetableviewModel.getDates()
@@ -200,6 +207,7 @@ class TodotableFragment : Fragment() {
             binding.todoFriDate.setBackgroundColor((Color.parseColor("#00000000")))
             binding.todoSatDate.setBackgroundColor((Color.parseColor("#00000000")))
 
+            /* 오늘 날짜에 해당되면 동그라미 */
             when(today){
                 date[0] -> {
                     binding.todoSunDate.setTextColor(Color.parseColor("#2CA4FF"))
@@ -245,6 +253,8 @@ class TodotableFragment : Fragment() {
             todoreviewModel.getTodo(Dates)
         }
 
+
+        /* 투두 리스트에서 나갈 때 타임테이블로 돌아감 */
         binding.todolistChange.setOnClickListener{
             Log.d("Frag", "changed")
             val newFrag = TimetableFragment.newInstance()
