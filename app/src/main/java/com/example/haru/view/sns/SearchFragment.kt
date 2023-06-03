@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.databinding.FragmentSearchBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SearchScheduleAdapter
 import com.example.haru.view.adapter.SearchTodoAdapter
 import com.example.haru.view.checklist.ChecklistFragment
@@ -38,10 +39,9 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
         binding = FragmentSearchBinding.inflate(inflater)
 
-
-
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
