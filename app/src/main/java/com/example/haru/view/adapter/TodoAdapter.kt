@@ -202,6 +202,7 @@ class TodoAdapter(val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.str = item
+            binding.ivStar.visibility = if (item == "중요") View.VISIBLE else View.INVISIBLE
             if (sectionToggleClick != null)
                 binding.ivSectionArrow.setOnClickListener {
                     binding.ivSectionArrow.isSelected = !it.isSelected
