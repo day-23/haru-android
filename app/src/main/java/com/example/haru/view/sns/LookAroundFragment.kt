@@ -9,7 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.ViewCompat.animate
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +40,7 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked{
     var lastDate = ""
     var isTagSelected = false
     var tagId = ""
+    var click = false
 
     val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -140,6 +143,27 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked{
             }
         }
 
+        binding.lookAroundButton.setOnClickListener{
+           toggleClicked()
+        }
+
+        binding.friendFeed.setOnClickListener {
+            val fragmentManager = parentFragmentManager
+            if (fragmentManager.backStackEntryCount > 0) {
+                fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
+        }
+
+        binding.lookAroundMyRecords.setOnClickListener {
+            val newFrag = MyPageFragment(User.id)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "lookaround")
+            if(!isSnsMainInBackStack)
+                transaction.addToBackStack("lookaround")
+            transaction.commit()
+        }
+
         return binding.root
     }
 
@@ -155,6 +179,19 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked{
         snsViewModel.HotTags.observe(viewLifecycleOwner){tags ->
             tagAdapter.newPage(tags)
             lookAroundTags.adapter = tagAdapter
+        }
+    }
+
+    fun toggleClicked(){
+        if(click == false){
+            binding.lookAroundButtons.visibility = View.VISIBLE
+            binding.lookAroundButton.animate().rotation(0f)
+            click = true
+        }
+        else{
+            binding.lookAroundButtons.visibility = View.GONE
+            binding.lookAroundButton.animate().rotation(-90f)
+            click = false
         }
     }
 
@@ -196,5 +233,15 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked{
                 else outRect.set(0,0,3,3)
             }
         })
+    }
+
+    fun isFragmentInBackStack(fragmentManager: FragmentManager, tag: String): Boolean {
+        for (i in 0 until fragmentManager.backStackEntryCount) {
+            val backStackEntry = fragmentManager.getBackStackEntryAt(i)
+            if (backStackEntry.name == tag) {
+                return true
+            }
+        }
+        return false
     }
 }

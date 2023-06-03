@@ -47,7 +47,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     override fun onCommentClick(postitem: Post) {
         mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
 
-        if(postitem.isTemplatePost) {
+        if(postitem.isTemplatePost != null) {
             val newFrag = CommentsFragment(postitem, com.example.haru.utils.User.id)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
@@ -223,8 +223,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                     mypageViewModel.getFeed(userId, lastDate)
                 }else if(!mediaRecyclerView.canScrollVertically(1)){
                     mypageViewModel.getMedia(userId, lastDate)
+                    Toast.makeText(requireContext(), "새 게시글 불러오는 중 ", Toast.LENGTH_SHORT).show()
                 }
-                Toast.makeText(requireContext(), "새 게시글 불러오는 중 ", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -295,6 +295,13 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             val fragmentManager = parentFragmentManager
             if (fragmentManager.backStackEntryCount > 0) {
                 fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
+        }
+
+        binding.lookAround.setOnClickListener {
+            val fragmentManager = parentFragmentManager
+            if (fragmentManager.backStackEntryCount > 0) {
+                fragmentManager.popBackStack("lookaround", FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
         }
 
