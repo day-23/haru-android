@@ -27,7 +27,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="2dp"
-                android:layout_marginStart="25dp"
+                android:layout_marginStart="15dp"
                 />
             <ImageView
                 android:id="@+id/look_around_button"
