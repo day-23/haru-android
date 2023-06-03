@@ -49,8 +49,9 @@
         <ImageView
             android:id="@+id/post_setup"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/change_category"
+            android:layout_height="wrap_content"
+            android:background="@drawable/change_category"
+            android:backgroundTint="#646464"
             android:layout_gravity="right"/>
 
     </LinearLayout>
@@ -130,7 +131,8 @@
             android:layout_height="match_parent"
             android:text="0"
             android:textStyle="bold"
-            android:textSize="14dp"
+            android:textSize="14sp"
+            android:textColor="#191919"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="50dp"
             android:gravity="center"/>
@@ -146,7 +148,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textSize="14dp"
+            android:textSize="14sp"
+            android:textColor="#191919"
             android:textStyle="bold"
             android:layout_marginLeft="95dp"
             app:layout_constraintLeft_toLeftOf="parent"
