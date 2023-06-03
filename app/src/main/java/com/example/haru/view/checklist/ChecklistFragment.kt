@@ -232,7 +232,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             for (i in binding.tagEtcLayout.tagLayout.childCount - 1 downTo 1)
                 binding.tagEtcLayout.tagLayout.removeViewAt(i)
 
-            for (i in 2 until checkListViewModel.tagDataList.value!!.size) {
+            for (i in 1 until checkListViewModel.tagDataList.value!!.size) {
                 val layoutInflater =
                     requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.tag_example_layout, null)

@@ -14,6 +14,7 @@ import com.example.haru.R
 import com.example.haru.databinding.FragmentSettingBinding
 import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
 import com.example.haru.viewmodel.EtcViewModel
 
@@ -28,12 +29,15 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
         }
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(EtcFragment.TAG, "SettingFragment - onCreate() called")
+        MainActivity.hideNavi(true)
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        MainActivity.hideNavi(false)
     }
 
     override fun onCreateView(
