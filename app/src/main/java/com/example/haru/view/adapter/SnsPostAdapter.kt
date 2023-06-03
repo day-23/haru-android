@@ -3,6 +3,7 @@ package com.example.haru.view.adapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import com.example.haru.R
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.model.timetable_data
+import com.example.haru.utils.User
 import com.example.haru.view.sns.CommentsFragment
 import com.example.haru.view.sns.MyPageFragment
 import com.example.haru.view.sns.OnPostClickListener
@@ -47,9 +49,12 @@ class SnsPostAdapter(val context: Context,
 
     override fun onBindViewHolder(holder: SnsPostViewHolder, position: Int) {
         val adapter = PicturesPagerAdapter(holder.itemView.context, itemList[position].images)
-        if(itemList[position].isTemplatePost){
+        if(itemList[position].isTemplatePost != null){
+            holder.content.text = ""
             holder.templateText.text = itemList[position].content
+            holder.templateText.setTextColor(Color.parseColor(itemList[position].isTemplatePost))
         }else{
+            holder.templateText.text = ""
             holder.content.text = itemList[position].content
         }
         holder.picture.adapter = adapter
@@ -57,17 +62,9 @@ class SnsPostAdapter(val context: Context,
         holder.likedcount.text = itemList[position].likedCount.toString()
         holder.commentcount.text = itemList[position].commentCount.toString()
 
-        //TODO:(sns삭제버튼)나중에 계정정보 동적으로 변경해야함
-        if(itemList[position].user.id != "jts"){
-            holder.setup.visibility = View.GONE
-        }else
-            holder.setup.visibility = View.VISIBLE
-
-        //TODO:(sns삭제버튼)계정정보 동적할당 필요
-        //TODO:(sns삭제버튼)삭제시 position 사용하지 않도록 수정해야함
         holder.setup.setOnClickListener {
             Log.d("20191668", "set up")
-            listener.onSetupClick("jts", itemList[position].id, itemList[position])
+            listener.onSetupClick(User.id, itemList[position].id, itemList[position])
         }
 
         val pictureIndex = adapter.itemCount
@@ -140,6 +137,7 @@ class SnsPostAdapter(val context: Context,
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun newPage(post: ArrayList<Post>){
         itemList.addAll(post)
         notifyDataSetChanged()
