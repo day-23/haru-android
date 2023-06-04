@@ -425,9 +425,33 @@ class CalendarAddFragment(private val activity: Activity,
                 if(!monthsValue[i-1]){
                     textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                     monthsValue[i-1] = true
+
+                    var repeatvalue = ""
+                    for (i in 0 until monthsValue.size){
+                        repeatvalue += if(monthsValue[i]) "1" else "0"
+                    }
+
+                    val startDate = FormatDate.nextStartDateEveryMonth(repeatvalue)
+                    repeatStartCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+                    repeatEndCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+
+                    binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
+                    binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
                     monthsValue[i-1] = false
+
+                    var repeatvalue = ""
+                    for (i in 0 until monthsValue.size){
+                        repeatvalue += if(monthsValue[i]) "1" else "0"
+                    }
+
+                    val startDate = FormatDate.nextStartDateEveryMonth(repeatvalue)
+                    repeatStartCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+                    repeatEndCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+
+                    binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
+                    binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
                 }
             }
 
@@ -451,9 +475,33 @@ class CalendarAddFragment(private val activity: Activity,
                 if(!yearsValue[i-1]){
                     textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                     yearsValue[i-1] = true
+
+                    var repeatvalue = ""
+                    for (i in 0 until yearsValue.size){
+                        repeatvalue += if(yearsValue[i]) "1" else "0"
+                    }
+
+                    val startDate = FormatDate.nextStartDateEveryYear(repeatvalue)
+                    repeatStartCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+                    repeatEndCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+
+                    binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
+                    binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
                     yearsValue[i-1] = false
+
+                    var repeatvalue = ""
+                    for (i in 0 until yearsValue.size){
+                        repeatvalue += if(yearsValue[i]) "1" else "0"
+                    }
+
+                    val startDate = FormatDate.nextStartDateEveryYear(repeatvalue)
+                    repeatStartCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+                    repeatEndCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+
+                    binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
+                    binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
                 }
             }
 
@@ -516,9 +564,33 @@ class CalendarAddFragment(private val activity: Activity,
                 if(!weeksValue[i]){
                     weeksValue[i] = true
                     view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+
+                    var repeatvalue = ""
+                    for (i in 0 until weeksValue.size){
+                        repeatvalue += if(weeksValue[i]) "1" else "0"
+                    }
+
+                    val startDate = FormatDate.nextStartDateEveryWeek(repeatvalue, repeatOption)
+                    repeatStartCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+                    repeatEndCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+
+                    binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
+                    binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
                 } else {
                     weeksValue[i] = false
                     view.setTextColor(Color.LTGRAY)
+
+                    var repeatvalue = ""
+                    for (i in 0 until weeksValue.size){
+                        repeatvalue += if(weeksValue[i]) "1" else "0"
+                    }
+
+                    val startDate = FormatDate.nextStartDateEveryWeek(repeatvalue, repeatOption)
+                    repeatStartCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+                    repeatEndCalendar.set(startDate!!.year+1900, startDate!!.month, startDate!!.date)
+
+                    binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
+                    binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
                 }
             }
         }
