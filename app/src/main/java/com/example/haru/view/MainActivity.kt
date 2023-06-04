@@ -59,7 +59,7 @@ class MainActivity : BaseActivity() {
         editor.putBoolean("alarmAprove", User.alarmAprove)
         editor.apply()
 
-        initAlarm()
+//        initAlarm()
 
         super.onPause()
     }

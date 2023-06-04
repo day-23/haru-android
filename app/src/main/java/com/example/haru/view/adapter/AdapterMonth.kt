@@ -249,9 +249,9 @@ class AdapterMonth(val activity: Activity,
                     }
                     else -> {
                         if(calendar.get(Calendar.MONTH) != month) {
-                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xBA,0xBA,0xBA))
+                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xEB,0xEB,0xEB))
                         } else {
-                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0x70,0x70,0x70))
+                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0x64,0x64,0x64))
                         }
                     }
                 }
@@ -517,7 +517,7 @@ class AdapterMonth(val activity: Activity,
                 0,1,2,6,7,8,12,13,14,15,
                 18,19,20,24,25,26,27,30,31,32,
                 36,37,38
-        )){
+        ) || color == Color.parseColor("#F71E58")){
             testView.setTextColor(Color.parseColor("#FDFDFD"))
         } else{
             testView.setTextColor(Color.parseColor("#191919"))
@@ -599,13 +599,18 @@ class AdapterMonth(val activity: Activity,
 
         val calendar = Calendar.getInstance()
 
-        val holidaysList = holidays as ArrayList
+        val holidaysList = ArrayList<Holiday>()
+
+        for (holiday in holidays){
+            holidaysList.add(holiday.copy())
+        }
+
         calendar.time = start
         calendar.set(Calendar.HOUR_OF_DAY, 2)
 
         var i = 0
 
-        while (holidays.size > 0 && i < 42){
+        while (holidaysList.size > 0 && i < 42){
             val holiday = holidaysList[0]
             val repeatStart = FormatDate.strToDate(holiday.repeatStart)
             repeatStart!!.hours = 0
@@ -664,6 +669,7 @@ class AdapterMonth(val activity: Activity,
 
                         var cloneLiveTodo = livetodo as ArrayList
                         var cloneLiveSchedule = liveschedule as ArrayList
+                        val cloneLiveHoliday = liveholiday as ArrayList
 
                         var spanList = ArrayList<Int>()
 
@@ -672,7 +678,7 @@ class AdapterMonth(val activity: Activity,
 
                         var saveLineList = ArrayList<Int>()
                         var saveCntList = ArrayList<Int>()
-                        var saveScheduleList = ArrayList<Schedule>()
+                        var saveScheduleList = ArrayList<Schedule?>()
 
                         var position2 = -1
 
@@ -701,11 +707,15 @@ class AdapterMonth(val activity: Activity,
 
                                     var color = Color.rgb(0xAA, 0xD7, 0xFF)
 
-                                    if (saveScheduleList[index].category != null &&
-                                        saveScheduleList[index].category!!.color != null
-                                    ) {
-                                        color =
-                                            Color.parseColor(saveScheduleList[index].category!!.color)
+                                    if(saveScheduleList[index] == null){
+                                        color = Color.rgb(0xF7, 0x1E, 0x58)
+                                    } else {
+                                        if (saveScheduleList[index]!!.category != null &&
+                                            saveScheduleList[index]!!.category!!.color != null
+                                        ) {
+                                            color =
+                                                Color.parseColor(saveScheduleList[index]!!.category!!.color)
+                                        }
                                     }
 
                                     addViewFunction(
@@ -730,11 +740,15 @@ class AdapterMonth(val activity: Activity,
 
                                     var color = Color.rgb(0xAA, 0xD7, 0xFF)
 
-                                    if (saveScheduleList[index].category != null &&
-                                        saveScheduleList[index].category!!.color != null
-                                    ) {
-                                        color =
-                                            Color.parseColor(saveScheduleList[index].category!!.color)
+                                    if(saveScheduleList[index] == null){
+                                        color = Color.rgb(0xF7, 0x1E, 0x58)
+                                    } else {
+                                        if (saveScheduleList[index]!!.category != null &&
+                                            saveScheduleList[index]!!.category!!.color != null
+                                        ) {
+                                            color =
+                                                Color.parseColor(saveScheduleList[index]!!.category!!.color)
+                                        }
                                     }
 
                                     saveCntList.removeAt(index)
@@ -765,6 +779,90 @@ class AdapterMonth(val activity: Activity,
                             }
 
                             var returnvalue = 1
+
+                            if (calendarMainData.holidayCategory && calendarMainData.scheduleApply && contentLine == 0) {
+                                for (content in cloneLiveHoliday) {
+                                    val format = SimpleDateFormat(
+                                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                                        Locale.KOREAN
+                                    )
+
+                                    val repeatStart = format.parse(content.repeatStart)
+                                    val repeatEnd = format.parse(content.repeatEnd)
+
+                                    val dateminus = (repeatEnd.time - repeatStart.time) / (60 * 60 * 24 * 1000)
+                                    val interval = dateminus.toInt() + 1
+
+                                    startDate.hours = repeatStart.hours
+                                    startDate.minutes = repeatStart.minutes
+                                    startDate.seconds = repeatStart.seconds
+
+                                    var holidayPosition = (repeatStart.time - startDate.time) / (60 * 60 * 24 * 1000)+1
+
+                                    if(repeatStart.time - startDate.time < 0) holidayPosition = -1
+                                    else if(repeatStart.time - startDate.time < 10000) holidayPosition = 0
+
+                                    if (holidayPosition.toInt() == contentPosition) {
+                                        cloneLiveHoliday.remove(content)
+
+                                        val color =
+                                            Color.parseColor("#F71E58")
+
+                                        if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
+                                            val overflowvalue =
+                                                contentPosition + interval - (contentPosition / 7 + 1) * 7
+
+                                            saveCntList.add(overflowvalue)
+                                            saveScheduleList.add(null)
+                                            saveLineList.add(contentLine)
+
+                                            positionplus += interval - overflowvalue - 1
+                                            returnvalue = interval - overflowvalue
+                                            cntlist.add(returnvalue)
+
+                                            addViewFunction(
+                                                holder,
+                                                content.content,
+                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                contentPosition / 7,
+                                                contentLine,
+                                                returnvalue,
+                                                color,
+                                                false,
+                                                size,
+                                                locationInterval,
+                                                maxTextCount,
+                                                contentPosition,
+                                                startDate
+                                            )
+
+                                            continue@loop
+                                        }
+
+                                        positionplus += interval - 1
+                                        returnvalue = interval
+                                        cntlist.add(returnvalue)
+
+                                        addViewFunction(
+                                            holder,
+                                            content.content,
+                                            (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                            contentPosition / 7,
+                                            contentLine,
+                                            returnvalue,
+                                            color,
+                                            false,
+                                            size,
+                                            locationInterval,
+                                            maxTextCount,
+                                            contentPosition,
+                                            startDate
+                                        )
+
+                                        continue@loop
+                                    }
+                                }
+                            }
 
                             if (calendarMainData.scheduleApply) {
                                 for (content in cloneLiveSchedule) {
