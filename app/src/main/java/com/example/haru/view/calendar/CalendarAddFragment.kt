@@ -37,8 +37,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarAddFragment(private val activity: Activity,
-                          private val categories: List<Category?>,
+class CalendarAddFragment(private val categories: List<Category?>,
                           private val adapter: AdapterMonth,
                           private val initStartDate: Date?=null,
                           private val initEndDate:Date?=null) :
@@ -74,8 +73,8 @@ class CalendarAddFragment(private val activity: Activity,
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(activity: Activity, categories: List<Category?>, adapter: AdapterMonth): CalendarAddFragment {
-            return CalendarAddFragment(activity, categories, adapter)
+        fun newInstance(categories: List<Category?>, adapter: AdapterMonth): CalendarAddFragment {
+            return CalendarAddFragment(categories, adapter)
         }
     }
 
