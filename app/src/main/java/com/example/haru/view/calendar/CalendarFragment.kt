@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.drawerlayout.widget.DrawerLayout
@@ -49,25 +50,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
     private var fabMain_status = false
 
-    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val status = result.data?.getSerializableExtra("status") as String
-
-        if (result.resultCode == Activity.RESULT_OK) {
-            if(status == "update") {
-                val index = result.data?.getSerializableExtra("index") as Int
-                val data = result.data?.getSerializableExtra("category2") as Category
-
-                categoryAdapter.dataChanged(index, data)
-            } else if(status == "delete"){
-                val index = result.data?.getSerializableExtra("index") as Int
-
-                categoryAdapter.dataDelete(index)
-            } else if(status == "post"){
-                val data = result.data?.getSerializableExtra("category2") as Category
-                categoryAdapter.dataAdd(data)
-            }
-        }
-    }
+    private var resultLauncher: ActivityResultLauncher<Intent>? = null
 
     companion object{
         const val TAG : String = "로그"
@@ -77,11 +60,37 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        resultLauncher = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "CalendarFragment - onCreate() called")
 
         checkListViewModel = CheckListViewModel()
+
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val status = result.data?.getSerializableExtra("status") as String
+
+            if (result.resultCode == Activity.RESULT_OK) {
+                if(status == "update") {
+                    val index = result.data?.getSerializableExtra("index") as Int
+                    val data = result.data?.getSerializableExtra("category2") as Category
+
+                    categoryAdapter.dataChanged(index, data)
+                } else if(status == "delete"){
+                    val index = result.data?.getSerializableExtra("index") as Int
+
+                    categoryAdapter.dataDelete(index)
+                } else if(status == "post"){
+                    val data = result.data?.getSerializableExtra("category2") as Category
+                    categoryAdapter.dataAdd(data)
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -432,17 +441,22 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     changeStatus = true
                 }
 
+                calendarMainData.holidayCategory = false
+                calendarMainData.unclassifiedCategory = false
                 calendarMainData.todoApply = false
                 calendarMainData.scheduleApply = false
 
                 if (changeStatus) {
-                    categoryAdapter.dataAllChanged()
+                    categoryAdapter.dataAllBlind()
                 }
 
                 allBlindTv.text = "모두 표시"
                 allBlindTv.setTextColor(Color.parseColor("#1DAFFF"))
             } else{
+                calendarMainData.holidayCategory = true
+                calendarMainData.unclassifiedCategory = true
                 calendarMainData.scheduleApply = true
+                calendarMainData.todoApply = true
 
                 scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
 
@@ -450,9 +464,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     Color.parseColor("#1DAFFF")
                 )
 
-                categoryAdapter.dataAllChanged()
-
-                calendarMainData.todoApply = true
+                categoryAdapter.dataAllVisible()
 
                 todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
 
@@ -522,13 +534,16 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         //카테고리 추가 버튼
         categoryAddImage.setOnClickListener{
             val intent = Intent(view.context, CategoryAddActivity::class.java)
-            resultLauncher.launch(intent)
+            resultLauncher?.launch(intent)
         }
         
         //추가 버튼 2개
         btnAddMainInCalendar.setOnClickListener {
             if (fabMain_status) {
-                val scheduleInput = CalendarAddFragment(activity, categoryAdapter.categoryList, adapterMonth)
+                val scheduleInput = CalendarAddFragment(categoryAdapter.categoryList){
+                    adapterMonth.notifyDataSetChanged()
+                }
+
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
 
                 binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
@@ -592,13 +607,14 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
             var categoryArrayList = ArrayList<Category?>()
             categoryArrayList.add(null)
+            categoryArrayList.add(null)
             categoryArrayList.addAll(it)
 
             categoryAdapter = CategoryAdapter(categoryArrayList){ category,index ->
                 val intent = Intent(view.context, CategoryCorrectionActivity::class.java)
                 intent.putExtra("category", category)
                 intent.putExtra("index", index)
-                resultLauncher.launch(intent)
+                resultLauncher?.launch(intent)
             }
 
             categoryRecyclerView.adapter = categoryAdapter
