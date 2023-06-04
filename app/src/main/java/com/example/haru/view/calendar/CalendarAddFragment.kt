@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarAddFragment(private val categories: List<Category?>,
-                          private val adapter: AdapterMonth,
+                          private val adapter: AdapterMonth?,
                           private val initStartDate: Date?=null,
                           private val initEndDate:Date?=null) :
     BottomSheetDialogFragment() {
@@ -73,7 +73,7 @@ class CalendarAddFragment(private val categories: List<Category?>,
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(categories: List<Category?>, adapter: AdapterMonth): CalendarAddFragment {
+        fun newInstance(categories: List<Category?>, adapter: AdapterMonth?): CalendarAddFragment {
             return CalendarAddFragment(categories, adapter)
         }
     }
@@ -837,7 +837,7 @@ class CalendarAddFragment(private val categories: List<Category?>,
                         emptyList()
                     )
                 ) {
-                    adapter.notifyDataSetChanged()
+                    adapter?.notifyDataSetChanged()
                     dismiss()
                 }
 

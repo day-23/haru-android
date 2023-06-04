@@ -384,7 +384,6 @@ class AdapterMonth(val activity: Activity,
 //                            }
 
                             val scheduleInput = CalendarAddFragment(
-                                activity,
                                 categories,
                                 this,
                                 dateArrayList[startPosition],
