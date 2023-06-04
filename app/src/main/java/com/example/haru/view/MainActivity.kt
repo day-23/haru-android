@@ -164,6 +164,12 @@ class MainActivity : BaseActivity() {
         calendarMainData.todoComplete = sharedPreference.getBoolean("todoComplete", true)
         calendarMainData.todoInComplete = sharedPreference.getBoolean("todoInComplete", true)
         User.alarmAprove = sharedPreference.getBoolean("alarmAprove", true)
+
+        val calendar = Calendar.getInstance()
+        calendar.set(2023,4,31)
+        Log.d("캘린더", calendar.time.toString())
+        calendar.add(Calendar.MONTH, 2)
+        Log.d("캘린더", calendar.time.toString())
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

@@ -36,8 +36,8 @@ class CalendarViewModel : ViewModel() {
     val _liveScheduleList = MutableLiveData<List<Schedule>>()
     val liveScheduleList: MutableLiveData<List<Schedule>> get() = _liveScheduleList
 
-    val _liveHolidaysList = MutableLiveData<List<Holiday>>()
-    val liveHolidaysList: MutableLiveData<List<Holiday>> get() = _liveHolidaysList
+    val _liveHolidaysList = MutableLiveData<List<HolidayData>>()
+    val liveHolidaysList: MutableLiveData<List<HolidayData>> get() = _liveHolidaysList
 
     fun completeNotRepeatTodo(todoId: String,
                               completed: Completed,
@@ -260,7 +260,6 @@ class CalendarViewModel : ViewModel() {
                                         }
 
                                         "매달" -> {
-                                            Log.d("반복투두", todayDate.toString())
                                             todayDate = FormatDate.nextStartDateEveryMonth(
                                                 it.todos[i].repeatValue!!,
                                                 today,
@@ -543,6 +542,7 @@ class CalendarViewModel : ViewModel() {
                 if(it != null){
                     val todoList = ArrayList<CalendarTodo>()
                     val scheduleList = ArrayList<ScheduleCalendarData>()
+                    val holidayList = ArrayList<HolidayData>()
 
                     val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
                     val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
@@ -979,7 +979,7 @@ class CalendarViewModel : ViewModel() {
 
                                 calendar.add(Calendar.SECOND, newRepeatValue.toInt())
 
-                                val intervaldate = (calendar.timeInMillis - repeatstart.time)/1000
+                                var intervaldate = (calendar.timeInMillis - repeatstart.time)/1000
 
                                 when (repeatOption) {
                                     "매주"->{
@@ -1077,7 +1077,7 @@ class CalendarViewModel : ViewModel() {
                                             }
 
                                             if (date_comparison(
-                                                    calendar.time, startCalendar.time!!
+                                                    calendar.time, startCalendar.time
                                                 ) == 0
                                             ){
                                                 scheduleList.add(ScheduleCalendarData(
@@ -1169,9 +1169,52 @@ class CalendarViewModel : ViewModel() {
                         }
                     }
 
-                    _liveHolidaysList.postValue(it.holidays)
+                    for (holiday in it.holidays){
+                        var start = false
+                        val calendar = Calendar.getInstance()
+                        val repeatStart = serverformat.parse(holiday.repeatStart)
+                        val repeatEnd = serverformat.parse(holiday.repeatEnd)
+
+                        var startcnt = 0
+                        var daycnt = 0
+                        var cnt = 0
+                        val tempStartDate = dateformat.parse(startDate)
+                        calendar.time = tempStartDate
+
+                        while (date_comparison(calendar.time, dateformat.parse(
+                                endDate
+                            )) <= 0) {
+                            if (date_comparison(
+                                    calendar.time, repeatStart!!
+                                ) >= 0 && (repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                            ) {
+                                if(!start) {
+                                    startcnt = cnt
+                                    start = true
+                                }
+
+                                daycnt++
+                            } else {
+                                if(start){
+                                    holidayList.add(HolidayData(
+                                        holiday.copy(),
+                                        startcnt,
+                                        daycnt
+                                    ))
+
+                                    break
+                                }
+                            }
+
+                            cnt++
+
+                            calendar.add(Calendar.DAY_OF_MONTH, 1)
+                        }
+                    }
+
                     _liveTodoCalendarList.postValue(todoList)
                     _liveScheduleCalendarList.postValue(scheduleList)
+                    _liveHolidaysList.postValue(holidayList)
                 }
             }
         }
