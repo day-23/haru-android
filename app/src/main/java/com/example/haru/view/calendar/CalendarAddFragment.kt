@@ -437,6 +437,7 @@ class CalendarAddFragment(private val activity: Activity,
 
                     binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
                     binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+                    binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
                     monthsValue[i-1] = false
@@ -452,6 +453,7 @@ class CalendarAddFragment(private val activity: Activity,
 
                     binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
                     binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+                    binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 }
             }
 
@@ -487,6 +489,7 @@ class CalendarAddFragment(private val activity: Activity,
 
                     binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
                     binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+                    binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 } else {
                     textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
                     yearsValue[i-1] = false
@@ -502,6 +505,7 @@ class CalendarAddFragment(private val activity: Activity,
 
                     binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
                     binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+                    binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 }
             }
 
@@ -576,6 +580,7 @@ class CalendarAddFragment(private val activity: Activity,
 
                     binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
                     binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+                    binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 } else {
                     weeksValue[i] = false
                     view.setTextColor(Color.LTGRAY)
@@ -591,6 +596,7 @@ class CalendarAddFragment(private val activity: Activity,
 
                     binding.repeatStartDateBtn.text = dateParser.format(repeatStartCalendar.time)
                     binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
+                    binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 }
             }
         }
