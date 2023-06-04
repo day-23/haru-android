@@ -192,6 +192,8 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         val calendarViewModel = CalendarViewModel()
 
+        Log.d("캘린더오류", "확인")
+
         calendar.time = Date()
 
         itemYearBtn.text = "${calendar.get(Calendar.YEAR)}년"
