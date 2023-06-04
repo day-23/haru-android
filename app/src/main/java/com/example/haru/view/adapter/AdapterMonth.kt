@@ -204,7 +204,7 @@ class AdapterMonth(val activity: Activity,
 
                 if(i >= 4 && k == 0 && calendar.get(Calendar.MONTH) != month){
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
-                    endDate = format.format(calendar.time)+"T00:00:00+09:00"
+                    endDate = format.format(calendar.time)+"T23:59:59+09:00"
                     maxi = 4
                     breakOption = true
                 }
@@ -220,7 +220,7 @@ class AdapterMonth(val activity: Activity,
                 }
 
                 if(i == 5 && k == 6){
-                    endDate = format.format(calendar.time)+"T00:00:00+09:00"
+                    endDate = format.format(calendar.time)+"T23:59:59+09:00"
                 }
 
                 dateTextViews[i*7 + k].text = calendar.time.date.toString()
