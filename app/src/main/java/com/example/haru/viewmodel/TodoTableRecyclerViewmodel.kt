@@ -39,6 +39,19 @@ class TodoTableRecyclerViewmodel : ViewModel() {
         getTodo(dayslist)
     }
 
+
+    fun date_comparison(first_date: Date, second_date: Date): Int{
+        first_date.hours = 0
+        first_date.minutes = 0
+        first_date.seconds = 0
+
+        second_date.hours = 0
+        second_date.minutes = 0
+        second_date.seconds = 0
+
+        return first_date.compareTo(second_date)
+    }
+
     fun getTodo(date : ArrayList<String>){
         viewModelScope.launch {
             var IndexList: ArrayList<ArrayList<Todo>> = arrayListOf(
@@ -54,42 +67,252 @@ class TodoTableRecyclerViewmodel : ViewModel() {
             val endDate = "${date[6].slice(IntRange(0, 3))}" + "-" + "${date[6].slice(IntRange(4,5))}" + "-" + "${date[6].slice(IntRange(6,7))}" + "T00:00:00+09:00"
             val body = ScheduleRequest(startDate, endDate)
 
-            Log.d("GET1 1 231", "$body, ${date[0]}, ${date[6]}")
+            val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+            val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
+
             //GET 쿼리 전송
             todoRepository.getTodoDates(body) {
                 val TodoList = it
                 Log.d("GET1", "${TodoList}, ${date[0]}, ${date[6]}")
 
-                //내용 추출
-                for(data in TodoList){
-                    val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
-                    val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
+                for (todo in TodoList) {
+                    if (todo.endDate != null){
+                        Log.d("데이터 포맷", "날짜 바뀌기 전: "+todo.endDate!!)
+                        todo.endDate = FormatDate.calendarFormat(todo.endDate!!)
+                        Log.d("데이터 포맷", "날짜 바뀐 후: "+todo.endDate!!)
+                    }
 
-                    Log.d("GET1", "before : ${TodoList}, ${date[0]}, ${date[6]}, ${data.endDate}")
-                    data.endDate = FormatDate.calendarFormat(data.endDate!!)
-                    Log.d("GET1", "after : ${TodoList}, ${date[0]}, ${date[6]} ${data.endDate}")
+                    if(todo.repeatEnd != null){
+                        todo.repeatEnd = FormatDate.calendarFormat(todo.repeatEnd!!)
+                    }
 
-                    val year = data.endDate?.slice(IntRange(0,3))
-                    val month = data.endDate?.slice(IntRange(5,6))
-                    val day = data.endDate?.slice(IntRange(8,9))
-                    val result = year+month+day
+                    val repeatDate = Array((1) * 7) { false }
+
+                    var serverendDate: Date? = null
+                    var repeateEnd: Date? = null
+
+                    val repeatOption = todo.repeatOption
+                    var repeatValue = ""
+
+                    if (todo.endDate != null) {
+                        serverendDate = serverformat.parse(todo.endDate)
+                    }
+
+                    if (repeatOption != null) {
+                        if (todo.repeatEnd != null) {
+                            repeateEnd = serverformat.parse(todo.repeatEnd)
+                        }
+
+                        repeatValue = todo.repeatValue!!
+
+                        val calendar = Calendar.getInstance()
+
+                        when (repeatOption) {
+                            "매일" -> {
+                                var cnt = 0
+                                calendar.time = dateformat.parse(startDate)
+
+                                while ((repeateEnd == null || date_comparison(
+                                        calendar.time,repeateEnd
+                                    ) <= 0) && date_comparison(
+                                        calendar.time, dateformat.parse(
+                                            endDate
+                                        )
+                                    ) <= 0
+                                ) {
+                                    if (date_comparison(
+                                            calendar.time, serverendDate!!
+                                        ) >= 0
+                                    ) {
+                                        repeatDate[cnt] = true
+                                    }
+
+                                    cnt++
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+
+                            "매주" -> {
+                                var weeklycnt = 0
+                                var cnt = 0
+
+                                calendar.time = dateformat.parse(startDate)
+
+                                while ((repeateEnd == null || date_comparison(
+                                        calendar.time, repeateEnd
+                                    ) <= 0) && date_comparison(
+                                        calendar.time, dateformat.parse(
+                                            endDate
+                                        )) <= 0
+                                ) {
+                                    if (date_comparison(
+                                            calendar.time, serverendDate!!
+                                        ) >= 0
+                                    ){
+                                        if (repeatValue[weeklycnt] == '1') {
+                                            repeatDate[cnt] = true
+                                        }
+                                    }
+
+                                    weeklycnt++
+                                    cnt++
+
+                                    if (weeklycnt == 7) weeklycnt = 0
+
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+
+                            "격주" -> {
+                                var weeklycnt = 0
+                                var cnt = 0
+                                var twoweek = true
+
+                                calendar.time = dateformat.parse(startDate)
 
 
-                    Log.d("GET1", "${result}, ${data.content}")
-                    if(data.endDate != null){ //날짜 정보가 있는 경우만 담음
+                                while ((repeateEnd == null || date_comparison(
+                                        calendar.time, repeateEnd
+                                    ) <= 0) && date_comparison(
+                                        calendar.time, dateformat.parse(endDate)) <= 0
+                                ) {
+                                    if (date_comparison(
+                                            calendar.time, serverendDate!!
+                                        ) >= 0
+                                    ){
+                                        if (repeatValue[weeklycnt] == '1' && twoweek) {
+                                            repeatDate[cnt] = true
+                                        }
+                                    }
 
-                        when(result){
-                            date[0] -> IndexList[0].add(data)
-                            date[1] -> IndexList[1].add(data)
-                            date[2] -> IndexList[2].add(data)
-                            date[3] -> IndexList[3].add(data)
-                            date[4] -> IndexList[4].add(data)
-                            date[5] -> IndexList[5].add(data)
-                            date[6] -> IndexList[6].add(data)
+                                    cnt++
+                                    weeklycnt++
+
+                                    if (weeklycnt == 7) {
+                                        weeklycnt = 0
+                                        twoweek = !twoweek
+                                    }
+
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+
+                            "매달" -> {
+                                var cnt = 0
+
+                                calendar.time = dateformat.parse(startDate)
+
+                                while ((repeateEnd == null || date_comparison(
+                                        calendar.time, repeateEnd
+                                    ) <= 0) && date_comparison(
+                                        calendar.time, dateformat.parse(endDate)) <= 0
+                                ) {
+                                    if (date_comparison(
+                                            calendar.time, serverendDate!!
+                                        ) >= 0
+                                    ){
+                                        if (repeatValue[calendar.time.date - 1] == '1') {
+                                            repeatDate[cnt] = true
+                                        }
+                                    }
+
+                                    cnt++
+
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+
+                            "매년" -> {
+                                var cnt = 0
+
+                                val tempStartDate = dateformat.parse(startDate)
+
+                                calendar.time = tempStartDate
+
+                                while ((repeateEnd == null || date_comparison(
+                                        calendar.time, repeateEnd
+                                    ) <= 0) && date_comparison(
+                                        calendar.time, dateformat.parse(
+                                            endDate
+                                        )
+                                    ) <= 0) {
+                                    if (date_comparison(
+                                            calendar.time, serverendDate!!
+                                        ) >= 0
+                                    ){
+                                        if (repeatValue[calendar.get(Calendar.MONTH)] == '1') {
+                                            if (calendar.get(Calendar.DAY_OF_MONTH) == serverendDate.date)
+                                                repeatDate[cnt] = true
+                                        }
+                                    }
+
+                                    cnt++
+
+                                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                }
+                            }
+                        }
+                    } else {
+                        val calendar = Calendar.getInstance()
+
+                        var cnt = 0
+                        val tempStartDate = dateformat.parse(startDate)
+                        calendar.time = tempStartDate
+
+                        while (date_comparison(
+                                calendar.time, dateformat.parse(
+                                    endDate
+                                )
+                            ) <= 0) {
+                            if (serverendDate != null && date_comparison(
+                                    calendar.time, serverendDate
+                                ) == 0
+                            ) {
+                                repeatDate[cnt] = true
+                            } else if (date_comparison(
+                                    calendar.time, Date()
+                                ) == 0) {
+                                repeatDate[cnt] = true
+                            }
+
+                            cnt++
+
+                            calendar.add(Calendar.DAY_OF_MONTH, 1)
                         }
                     }
+
+//                    for (i in 0 until repeatDate.size) {
+//                        if (repeatDate[i]) {
+//                            todoList[i].todos.add(todo.copy())
+//                        }
+
+                        val year = todo.endDate?.slice(IntRange(0,3))
+                        val month = todo.endDate?.slice(IntRange(5,6))
+                        val day = todo.endDate?.slice(IntRange(8,9))
+                        val result = year+month+day
+
+
+                        Log.d("GET1", "${result}, ${todo.content}, ${todo}")
+                        if(todo.endDate != null){ //날짜 정보가 있는 경우만 담음
+
+                            when(result){
+                                date[0] -> IndexList[0].add(todo)
+                                date[1] -> IndexList[1].add(todo)
+                                date[2] -> IndexList[2].add(todo)
+                                date[3] -> IndexList[3].add(todo)
+                                date[4] -> IndexList[4].add(todo)
+                                date[5] -> IndexList[5].add(todo)
+                                date[6] -> IndexList[6].add(todo)
+                            }
+                        }
+//                    }
                 }
             }
+
+
+
+
+
             _TodoDataList.postValue(IndexList)
         }
     }

@@ -98,21 +98,22 @@ class TodotableFragment : Fragment() {
 
         todoreviewModel.TodoDataList.observe(viewLifecycleOwner) { contents ->
             val date = timetableviewModel.getDates()
-            sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ?: todoList,date[0] ,Todo_draglistener())
+            sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ,date[0] ,Todo_draglistener())
             sun_todorecyclerView.adapter = sun_todotableAdapter
-            mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ?: todoList,date[1],Todo_draglistener())
+            mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ,date[1],Todo_draglistener())
             mon_todorecyclerView.adapter = mon_todotableAdapter
-            tue_todotableAdapter = TodotableAdapter(requireContext(), contents[2] ?: todoList,date[2],Todo_draglistener())
+            tue_todotableAdapter = TodotableAdapter(requireContext(), contents[2] ,date[2],Todo_draglistener())
             tue_todorecyclerView.adapter = tue_todotableAdapter
-            wed_todotableAdapter = TodotableAdapter(requireContext(), contents[3] ?: todoList,date[3],Todo_draglistener())
+            wed_todotableAdapter = TodotableAdapter(requireContext(), contents[3] ,date[3],Todo_draglistener())
             wed_todorecyclerView.adapter = wed_todotableAdapter
-            thu_todotableAdapter = TodotableAdapter(requireContext(), contents[4] ?: todoList,date[4],Todo_draglistener())
+            thu_todotableAdapter = TodotableAdapter(requireContext(), contents[4] ,date[4],Todo_draglistener())
             thu_todorecyclerView.adapter = thu_todotableAdapter
-            fri_todotableAdapter = TodotableAdapter(requireContext(), contents[5] ?: todoList,date[5],Todo_draglistener())
+            fri_todotableAdapter = TodotableAdapter(requireContext(), contents[5] ,date[5],Todo_draglistener())
             fri_todorecyclerView.adapter = fri_todotableAdapter
-            sat_todotableAdapter = TodotableAdapter(requireContext(), contents[6] ?: todoList,date[6],Todo_draglistener())
+            sat_todotableAdapter = TodotableAdapter(requireContext(), contents[6] ,date[6],Todo_draglistener())
             sat_todorecyclerView.adapter = sat_todotableAdapter
         }
+
 
         val dragListener = Todo_draglistener()
         //리사이클러뷰 요일별 바인딩

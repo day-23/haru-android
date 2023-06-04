@@ -21,7 +21,6 @@ class Todo_draglistener () : View.OnDragListener {
         val sourceRecyclerView: RecyclerView = viewSource.parent.parent as RecyclerView
 
         if (event.action == DragEvent.ACTION_DROP) {
-
             try {
                 targetRecyclerView = view.parent.parent as RecyclerView
             }
