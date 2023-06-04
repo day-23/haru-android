@@ -40,6 +40,7 @@ import java.util.*
 class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayout.DrawerListener {
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var adapterMonth: AdapterMonth
+    private var lastIndex = -1
     private lateinit var categoryAdapter: CategoryAdapter
 
     private lateinit var categoryDrawerLayout: DrawerLayout
@@ -191,6 +192,8 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         val calendar = Calendar.getInstance()
 
         val calendarViewModel = CalendarViewModel()
+
+        Log.d("캘린더오류", "확인")
 
         calendar.time = Date()
 
@@ -588,6 +591,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             override fun onPageSelected(pos: Int) {
                 super.onPageSelected(pos)
 
+                lastIndex = pos
                 calendar.time = Date()
                 calendar.add(Calendar.MONTH, pos - Int.MAX_VALUE / 2)
 
@@ -598,7 +602,11 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         month_viewpager.registerOnPageChangeCallback(callback)
 
-        month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
+        if(lastIndex != -1) {
+            month_viewpager.setCurrentItem(lastIndex, false)
+        } else {
+            month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
+        }
         month_viewpager.offscreenPageLimit = 1
 
         calendarViewModel.getCategories()

@@ -620,14 +620,14 @@ class AdapterMonth(val activity: Activity,
                                 calendar.time.month != Date().month ||
                                 calendar.time.date != Date().date
                             ) {
-                                dateTextViews[i].setTextColor(Color.rgb(0xFD, 0xBB, 0xCD))
+                                dateTextViews[i+z].setTextColor(Color.rgb(0xFD, 0xBB, 0xCD))
                             }
                         } else {
                             if (calendar.time.year != Date().year ||
                                 calendar.time.month != Date().month ||
                                 calendar.time.date != Date().date
                             ) {
-                                dateTextViews[i].setTextColor(Color.rgb(0xF7, 0x1E, 0x58))
+                                dateTextViews[i+z].setTextColor(Color.rgb(0xF7, 0x1E, 0x58))
                             }
                         }
                     }
