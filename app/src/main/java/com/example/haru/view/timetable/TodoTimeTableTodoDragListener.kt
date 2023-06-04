@@ -56,11 +56,6 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                 targetAdapter?.setItem(todo)
 
 
-
-                Log.d("dragTodo", "onDrag: ${todo}")
-                Log.d("dragTodo", "onDrag: ${targetAdapter?.curDate}")
-
-
                 /* nextEndDate, location 구분 */
                 val afterMoveDate = targetAdapter?.curDate!!
                 val preMoveDate = sourceAdapter?.curDate!!
@@ -70,7 +65,14 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                 val preDay = preMoveDate.substring(6, 8)
                 val preDateInfo = "${preYear}-${preMonth}-${preDay}T00:00:00+09:00"
 
-                calculateTodoNextEndDateAndLocation(todo, preDateInfo)
+                Log.d("dragTodo", "onDrag: ${todo.content}, ${todo.endDate?.substring(11,19)} ${afterMoveDate} ${preDateInfo}, ${todo.repeatEnd} ${todo}")
+
+                val endDateTime = todo.endDate?.substring(11,19)
+                val afterYear = afterMoveDate.substring(0, 4)
+                val afterMonth = afterMoveDate.substring(4, 6)
+                val afterDay = afterMoveDate.substring(6, 8)
+
+                val newEndDate = "${afterYear}-${afterMonth}-${afterDay}T${endDateTime}+09:00"
 
                 /* 수정 api 쏘기 */
                 if(todo.repeatOption == null){
@@ -80,7 +82,7 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                         todo.todayTodo,
                         todo.flag,
                         todo.isAllDay,
-                        todo.endDate,
+                        newEndDate,
                         todo.repeatEnd,
                         todo.completed,
                         todo.subTodos.map { it.completed },
@@ -96,6 +98,9 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                     ){
                         todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
                     }
+                }else{
+                    calculateTodoNextEndDateAndLocation(todo, preDateInfo)
+
                 }
 
 
