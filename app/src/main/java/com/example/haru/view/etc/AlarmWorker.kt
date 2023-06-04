@@ -70,8 +70,7 @@ class AlarmWorker : BroadcastReceiver(){
             notificationChannel.enableVibration(true) // 진동 여부
             notificationChannel.description = "하루" //채널정보
 
-            notificationManager.createNotificationChannel(
-                notificationChannel)
+            notificationManager.createNotificationChannel(notificationChannel)
         }
     }
 
@@ -79,15 +78,15 @@ class AlarmWorker : BroadcastReceiver(){
         val contentIntent = Intent(context, MainActivity::class.java)
         val contentPendingIntent = PendingIntent.getActivity(
             context,
-            0, // requestCode
+            requestCode!!.toInt(), // requestCode
             contentIntent, // 알림 클릭 시 이동할 인텐트
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_MUTABLE
         )
 
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        val intent2 = Intent(context, AlarmWorker::class.java)
-
+//        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//
+//        val intent2 = Intent(context, AlarmWorker::class.java)
+//
 //        if (userId != "") {
 //            intent2.putExtra("userId", userId)
 //            val pendingIntent = PendingIntent.getBroadcast(
@@ -482,7 +481,7 @@ class AlarmWorker : BroadcastReceiver(){
                         .setAutoCancel(true)
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
 
-                    notificationManager.notify(0, builder.build())
+                    notificationManager.notify(requestCode!!.toInt(), builder.build())
                 } else {
                     Log.d("알람", "null")
                 }
