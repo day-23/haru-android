@@ -1724,6 +1724,8 @@ class CalendarItemFragment(val schedule: Schedule,
     fun initView() {
         //내용 가져오기
         binding.scheduleContentEt.setText(schedule.content)
+        binding.gridMonthSchedule.visibility = View.GONE
+        binding.gridYearSchedule.visibility = View.GONE
 
         //카테고리 가져오기
         val drawable = binding.categoryChooseIv.background as VectorDrawable
