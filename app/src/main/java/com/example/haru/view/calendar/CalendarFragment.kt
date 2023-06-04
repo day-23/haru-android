@@ -601,6 +601,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
             var categoryArrayList = ArrayList<Category?>()
             categoryArrayList.add(null)
+            categoryArrayList.add(null)
             categoryArrayList.addAll(it)
 
             categoryAdapter = CategoryAdapter(categoryArrayList){ category,index ->

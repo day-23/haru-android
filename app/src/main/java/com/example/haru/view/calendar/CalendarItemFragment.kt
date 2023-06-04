@@ -184,9 +184,7 @@ class CalendarItemFragment(val schedule: Schedule,
             binding.everyWeekLayout.visibility = View.GONE
             binding.gridMonthSchedule.visibility = View.GONE
 
-            if (binding.repeatStartDateBtn.text.substring(5, 7) ==
-                binding.repeatEndDateBtn.text.substring(5, 7)
-            ) {
+            if (binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text){
                 binding.gridYearSchedule.visibility = View.VISIBLE
             }
         } else {
@@ -278,13 +276,7 @@ class CalendarItemFragment(val schedule: Schedule,
                             binding.btnEveryDaySchedule.visibility = View.GONE
                             binding.everyWeekLayout.visibility = View.GONE
                             binding.gridMonthSchedule.visibility = View.GONE
-
-                            if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
-                                binding.repeatEndDateBtn.text.toString().substring(5,7)) {
-                                binding.gridYearSchedule.visibility = View.GONE
-                            } else if(repeatOption == 4){
-                                binding.gridYearSchedule.visibility = View.VISIBLE
-                            }
+                            binding.gridYearSchedule.visibility = View.GONE
                         } else {
                             optionChange()
                         }
@@ -292,6 +284,8 @@ class CalendarItemFragment(val schedule: Schedule,
                 }
             datePicker.show(parentFragmentManager, null)
         }
+
+
 
         binding.repeatStartTimeBtn.setOnClickListener {
             val timePicker = CustomTimeDialog(repeatStartCalendar.time)
@@ -324,6 +318,8 @@ class CalendarItemFragment(val schedule: Schedule,
             }
             timePicker.show(parentFragmentManager, null)
         }
+
+
 
         binding.repeatEndDateBtn.setOnClickListener {
             val datePicker = CustomCalendarDialog(repeatEndCalendar.time, repeatStartCalendar.time)
@@ -389,13 +385,7 @@ class CalendarItemFragment(val schedule: Schedule,
                             binding.btnEveryDaySchedule.visibility = View.GONE
                             binding.everyWeekLayout.visibility = View.GONE
                             binding.gridMonthSchedule.visibility = View.GONE
-
-                            if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
-                                binding.repeatEndDateBtn.text.toString().substring(5,7)) {
-                                binding.gridYearSchedule.visibility = View.GONE
-                            } else if(repeatOption == 4){
-                                binding.gridYearSchedule.visibility = View.VISIBLE
-                            }
+                            binding.gridYearSchedule.visibility = View.GONE
                         } else {
                             optionChange()
                         }
@@ -403,6 +393,8 @@ class CalendarItemFragment(val schedule: Schedule,
                 }
             datePicker.show(parentFragmentManager, null)
         }
+
+
 
         binding.repeatEndTimeBtn.setOnClickListener {
             val timePicker = CustomTimeDialog(repeatEndCalendar.time)
@@ -458,6 +450,8 @@ class CalendarItemFragment(val schedule: Schedule,
             }
         }
 
+
+
         binding.repeatSwitchSchedule.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 binding.repeatTvSchedule.setTextColor(Color.parseColor("#191919"))
@@ -490,15 +484,13 @@ class CalendarItemFragment(val schedule: Schedule,
             }
         }
 
+
+
         binding.btnEveryDaySchedule.setOnClickListener { onOptionClick(0) }
         binding.btnEveryWeekSchedule.setOnClickListener { onOptionClick(1) }
         binding.btnEvery2WeekSchedule.setOnClickListener { onOptionClick(2) }
         binding.btnEveryMonthSchedule.setOnClickListener { onOptionClick(3) }
         binding.btnEveryYearSchedule.setOnClickListener { onOptionClick(4) }
-
-        binding.gridMonthSchedule.visibility = View.GONE
-
-        binding.gridYearSchedule.visibility = View.GONE
 
         binding.repeatEndDateSwitchSchedule.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -521,6 +513,8 @@ class CalendarItemFragment(val schedule: Schedule,
 
             dlg.show(parentFragmentManager, null)
         }
+
+
 
         binding.btnRepeatEndDateSchedule.setOnClickListener {
             val repeatEndDateText = binding.btnRepeatEndDateSchedule.text.toString().substring(
@@ -924,6 +918,8 @@ class CalendarItemFragment(val schedule: Schedule,
 
             deleteDialg.show(parentFragmentManager, deleteDialg.tag)
         }
+
+
 
         binding.btnSubmitSchedule.setOnClickListener {
             if(binding.scheduleContentEt.text.toString().replace(" ","") == ""){
@@ -1934,5 +1930,10 @@ class CalendarItemFragment(val schedule: Schedule,
 
         binding.repeatStartTimeBtn.text = timeParser.format(repeatStartCalendar.time)
         binding.repeatEndTimeBtn.text = timeParser.format(repeatEndCalendar.time)
+
+        if (repeatStartCalendar.time.month != repeatEndCalendar.time.month){
+            binding.gridMonthSchedule.visibility = View.GONE
+            binding.btnEveryMonthSchedule.visibility = View.GONE
+        }
     }
 }

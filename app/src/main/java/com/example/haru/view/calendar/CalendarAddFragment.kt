@@ -205,13 +205,7 @@ class CalendarAddFragment(private val activity: Activity,
                             binding.btnEveryDaySchedule.visibility = View.GONE
                             binding.everyWeekLayout.visibility = View.GONE
                             binding.gridMonthSchedule.visibility = View.GONE
-
-                            if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
-                                    binding.repeatEndDateBtn.text.toString().substring(5,7)) {
-                                binding.gridYearSchedule.visibility = View.GONE
-                            } else if(repeatOption == 4){
-                                binding.gridYearSchedule.visibility = View.VISIBLE
-                            }
+                            binding.gridYearSchedule.visibility = View.GONE
                         } else {
                             optionChange(binding)
                         }
@@ -316,13 +310,7 @@ class CalendarAddFragment(private val activity: Activity,
                             binding.btnEveryDaySchedule.visibility = View.GONE
                             binding.everyWeekLayout.visibility = View.GONE
                             binding.gridMonthSchedule.visibility = View.GONE
-
-                            if(binding.repeatStartDateBtn.text.toString().substring(5,7) !=
-                                binding.repeatEndDateBtn.text.toString().substring(5,7)) {
-                                binding.gridYearSchedule.visibility = View.GONE
-                            } else if(repeatOption == 4){
-                                binding.gridYearSchedule.visibility = View.VISIBLE
-                            }
+                            binding.gridYearSchedule.visibility = View.GONE
                         } else {
                             optionChange(binding)
                         }

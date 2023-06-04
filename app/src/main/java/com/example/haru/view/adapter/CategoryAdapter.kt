@@ -131,57 +131,107 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
             }
         } else {
             cateogryCorrection.visibility = View.INVISIBLE
-            if (calendarMainData.unclassifiedCategory) {
-                if (calendarMainData.scheduleApply) {
-                    drawable.setColorFilter(
-                        Color.parseColor("#AAD7FF"),
-                        PorterDuff.Mode.SRC_ATOP
-                    )
+            if (position == 0) {
+                if (calendarMainData.unclassifiedCategory) {
+                    if (calendarMainData.scheduleApply) {
+                        drawable.setColorFilter(
+                            Color.parseColor("#AAD7FF"),
+                            PorterDuff.Mode.SRC_ATOP
+                        )
+                    } else {
+                        drawable.setColorFilter(
+                            Color.parseColor("#BABABA"),
+                            PorterDuff.Mode.SRC_ATOP
+                        )
+                    }
                 } else {
                     drawable.setColorFilter(
+                        Color.parseColor("#FFFFFF"),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
+                }
+
+                categoryColor.setOnClickListener {
+                    if (calendarMainData.scheduleApply) {
+                        calendarMainData.unclassifiedCategory =
+                            !calendarMainData.unclassifiedCategory
+
+                        notifyItemChanged(position)
+                    }
+                }
+
+                val drawable2 = categoryColorOutside.background as VectorDrawable
+
+                if (!calendarMainData.scheduleApply) {
+                    drawable2.setColorFilter(
                         Color.parseColor("#BABABA"),
                         PorterDuff.Mode.SRC_ATOP
                     )
+
+                    cateogryName.setTextColor(Color.parseColor("#BABABA"))
+                } else {
+                    drawable2.setColorFilter(
+                        Color.parseColor("#AAD7FF"),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
+
+                    cateogryName.setTextColor(Color.parseColor("#191919"))
                 }
+
+                cateogryName.text = "미분류"
             } else {
-                drawable.setColorFilter(
-                    Color.parseColor("#FFFFFF"),
-                    PorterDuff.Mode.SRC_ATOP
-                )
-            }
-
-            categoryColor.setOnClickListener {
-                if (calendarMainData.scheduleApply) {
-                    calendarMainData.unclassifiedCategory = !calendarMainData.unclassifiedCategory
-
-                    notifyItemChanged(position)
+                if (calendarMainData.holidayCategory) {
+                    if (calendarMainData.scheduleApply) {
+                        drawable.setColorFilter(
+                            Color.parseColor("#F71E58"),
+                            PorterDuff.Mode.SRC_ATOP
+                        )
+                    } else {
+                        drawable.setColorFilter(
+                            Color.parseColor("#BABABA"),
+                            PorterDuff.Mode.SRC_ATOP
+                        )
+                    }
+                } else {
+                    drawable.setColorFilter(
+                        Color.parseColor("#FFFFFF"),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
                 }
+
+                categoryColor.setOnClickListener {
+                    if (calendarMainData.scheduleApply) {
+                        calendarMainData.holidayCategory =
+                            !calendarMainData.holidayCategory
+
+                        notifyItemChanged(position)
+                    }
+                }
+
+                val drawable2 = categoryColorOutside.background as VectorDrawable
+
+                if (!calendarMainData.scheduleApply) {
+                    drawable2.setColorFilter(
+                        Color.parseColor("#BABABA"),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
+
+                    cateogryName.setTextColor(Color.parseColor("#BABABA"))
+                } else {
+                    drawable2.setColorFilter(
+                        Color.parseColor("#F71E58"),
+                        PorterDuff.Mode.SRC_ATOP
+                    )
+
+                    cateogryName.setTextColor(Color.parseColor("#191919"))
+                }
+
+                cateogryName.text = "공휴일"
             }
-
-            val drawable2 = categoryColorOutside.background as VectorDrawable
-
-            if (!calendarMainData.scheduleApply) {
-                drawable2.setColorFilter(
-                    Color.parseColor("#BABABA"),
-                    PorterDuff.Mode.SRC_ATOP
-                )
-
-                cateogryName.setTextColor(Color.parseColor("#BABABA"))
-            } else {
-                drawable2.setColorFilter(
-                    Color.parseColor("#AAD7FF"),
-                    PorterDuff.Mode.SRC_ATOP
-                )
-
-                cateogryName.setTextColor(Color.parseColor("#191919"))
-            }
-
-            cateogryName.text = "미분류"
         }
     }
 
     override fun getItemCount(): Int {
-        Log.d("카테고리", categoryList.toString())
         return categoryList.size
     }
 }
