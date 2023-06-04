@@ -15,6 +15,7 @@ import com.example.haru.view.adapter.TodotableAdapter
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TimetableViewModel
+import com.example.haru.viewmodel.TodoAddViewModel
 import com.example.haru.viewmodel.TodoTableRecyclerViewmodel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,6 +26,7 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
     val checkListViewModel = CheckListViewModel()
     val todoRecyclerViewModel = todoreviewModel
     val timeTableViewModel = timetableviewModel
+    val todoAddViewmodel = TodoAddViewModel(checkListViewModel)
 
     override fun onDrag(view: View, event: DragEvent): Boolean {
         val matrix = ColorMatrix()
@@ -100,6 +102,27 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                     calculateTodoNextEndDateAndLocation(todo, preDateInfo)
                     /* nextEndDate 구해서 API 호출하기 */
 
+                    todoAddViewmodel.setClickTodo(todo = todo)
+                    todoAddViewmodel.readyToSubmit()
+                    todoAddViewmodel.setStr(newEndDate)
+
+                    when(todo.location){
+                        0 -> { //front
+                            todoAddViewmodel.updateRepeatFrontTodo {
+                                todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
+                            }
+                        }
+                        1 -> { //middle
+                            todoAddViewmodel.updateRepeatMiddleTodo{
+                                todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
+                            }
+                        }
+                        2-> {//back
+                            todoAddViewmodel.updateRepeatBackTodo{
+                                todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
+                            }
+                        }
+                    }
                 }
 
 
