@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.CategoriesUpdate
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.Schedule
 import com.example.haru.view.calendar.CategoryCorrectionActivity
@@ -31,6 +32,50 @@ import java.util.Vector
 class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItemClicked: (Category, Int) -> Unit) : RecyclerView.Adapter<CategoryAdapter.CategoryView>() {
 
     inner class CategoryView(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    fun dataAllBlind(){
+        val calendarViewModel = CalendarViewModel()
+        val ids = ArrayList<String>()
+        val selected = ArrayList<Boolean>()
+
+        for(i in 2 until categoryList.size){
+            if(categoryList[i]!!.isSelected){
+                categoryList[i]!!.isSelected = false
+                ids.add(categoryList[i]!!.id)
+                selected.add(false)
+            }
+        }
+
+        calendarViewModel.selectedCategories(
+            CategoriesUpdate(
+                ids,selected
+            )
+        )
+
+        notifyDataSetChanged()
+    }
+
+    fun dataAllVisible(){
+        val calendarViewModel = CalendarViewModel()
+        val ids = ArrayList<String>()
+        val selected = ArrayList<Boolean>()
+
+        for(i in 2 until categoryList.size){
+            if(!categoryList[i]!!.isSelected){
+                categoryList[i]!!.isSelected = true
+                ids.add(categoryList[i]!!.id)
+                selected.add(true)
+            }
+        }
+
+        calendarViewModel.selectedCategories(
+            CategoriesUpdate(
+                ids,selected
+            )
+        )
+
+        notifyDataSetChanged()
+    }
 
     fun dataChanged(index: Int, category: Category){
         categoryList[index] = category

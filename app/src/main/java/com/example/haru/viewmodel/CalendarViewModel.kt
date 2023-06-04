@@ -173,6 +173,12 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
+    fun selectedCategories(categoryBody:CategoriesUpdate){
+        viewModelScope.launch {
+            categoryRepository.selectedCategories(categoryBody){}
+        }
+    }
+
     fun deleteCategory(categoryId: String){
         viewModelScope.launch {
             categoryRepository.deleteCategory(categoryId){}

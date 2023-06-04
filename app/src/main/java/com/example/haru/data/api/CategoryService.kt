@@ -16,4 +16,7 @@ interface CategoryService {
 
     @HTTP(method = "DELETE", path="category/{userId}/categories", hasBody = true)
     fun deleteCategory(@Path("userId") userId: String, @Body categoryIds: CategoryDelete) : Call<SuccessFail>
+
+    @PATCH("category/{userId}/order/categories")
+    fun selectedCategories(@Path("userId") userId: String, @Body categoryBody: CategoriesUpdate): Call<SuccessFail>
 }

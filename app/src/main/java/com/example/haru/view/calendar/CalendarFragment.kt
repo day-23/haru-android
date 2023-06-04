@@ -441,17 +441,22 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     changeStatus = true
                 }
 
+                calendarMainData.holidayCategory = false
+                calendarMainData.unclassifiedCategory = false
                 calendarMainData.todoApply = false
                 calendarMainData.scheduleApply = false
 
                 if (changeStatus) {
-                    categoryAdapter.dataAllChanged()
+                    categoryAdapter.dataAllBlind()
                 }
 
                 allBlindTv.text = "모두 표시"
                 allBlindTv.setTextColor(Color.parseColor("#1DAFFF"))
             } else{
+                calendarMainData.holidayCategory = true
+                calendarMainData.unclassifiedCategory = true
                 calendarMainData.scheduleApply = true
+                calendarMainData.todoApply = true
 
                 scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
 
@@ -459,9 +464,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     Color.parseColor("#1DAFFF")
                 )
 
-                categoryAdapter.dataAllChanged()
-
-                calendarMainData.todoApply = true
+                categoryAdapter.dataAllVisible()
 
                 todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
 
