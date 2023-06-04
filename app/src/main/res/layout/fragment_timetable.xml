@@ -126,7 +126,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:lineSpacingMultiplier="1.2"
                         android:text="일"
                         android:textColor="#F71E58"
                         android:textSize="14sp" />

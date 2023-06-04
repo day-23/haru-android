@@ -1216,7 +1216,7 @@ class TimetableViewModel(val context: Context) : ViewModel() {
 
                     calendar.add(Calendar.SECOND, newRepeatValue.toInt())
 
-                    val intervaldate = calendar.timeInMillis - repeatstart.time
+                    var intervaldate = newRepeatValue.toInt()
 
                     when (repeatOption) {
                         "매주" -> {
@@ -1289,38 +1289,50 @@ class TimetableViewModel(val context: Context) : ViewModel() {
                             }
                         }
 
-                        "매달" -> {
+                        "매달"->{
                             var cnt = 0
                             val tempStartDate = dateformat.parse(startDate)
                             calendar.time = tempStartDate
 
                             while ((repeatEnd == null || date_comparison(
-                                    calendar.time,
-                                    repeatEnd
-                                ) <= 0)
-                                && date_comparison(calendar.time, dateformat.parse(endDate)) <= 0
-                            ) {
-
-                                val startCalendar = Calendar.getInstance()
-                                startCalendar.time = repeatStart
-
-                                while (date_comparison(startCalendar.time, calendar.time) < 0) {
-                                    startCalendar.add(Calendar.MONTH, 1)
-                                }
-
-                                if (date_comparison(calendar.time, startCalendar.time!!) == 0) {
-                                    parsedScheduleList.add(
-                                        ScheduleCalendarData(
-                                            schedule.copy(),
-                                            cnt,
-                                            null,
-                                            intervaldate.toInt()
-                                        )
+                                    calendar.time, repeatEnd
+                                ) <= 0) && date_comparison(
+                                    calendar.time, dateformat.parse(
+                                        endDate
                                     )
+                                ) <= 0
+                            ){
+                                val comparisonDate = Calendar.getInstance()
+                                comparisonDate.time = repeatStart!!.clone() as Date
+                                comparisonDate.add(Calendar.MONTH, month_comparison(
+                                    repeatstart, calendar.time
+                                ))
+                                if (date_comparison(
+                                        calendar.time,
+                                        repeatStart
+                                    ) >= 0 && date_comparison(
+                                        comparisonDate.time,
+                                        calendar.time
+                                    ) == 0){
+                                    val intervalDate = Calendar.getInstance()
+                                    intervalDate.time = calendar.time.clone() as Date
+                                    intervalDate.add(Calendar.SECOND, intervaldate.toInt())
+
+                                    while (intervalDate.time.month != calendar.time.month){
+                                        intervaldate -= 60*60*24
+                                        intervalDate.add(Calendar.DATE, -1)
+                                    }
+
+                                    parsedScheduleList.add(ScheduleCalendarData(
+                                        schedule.copy(),
+                                        cnt,
+                                        null,
+                                        intervaldate.toInt()
+                                    ))
                                 }
 
                                 cnt++
-                                calendar.add(Calendar.DAY_OF_MONTH, 1)
+                                calendar.add(Calendar.DAY_OF_MONTH,1)
                             }
                         }
 
@@ -1402,5 +1414,10 @@ class TimetableViewModel(val context: Context) : ViewModel() {
         }
 
         return parsedScheduleList
+    }
+
+
+    fun month_comparison(first_date: Date, second_date: Date): Int{
+        return (second_date.year * 12 + second_date.month) - (first_date.year * 12 + first_date.month)
     }
 }
