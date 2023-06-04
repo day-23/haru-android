@@ -55,6 +55,7 @@ class MainActivity : BaseActivity() {
         editor.putBoolean("unclassifiedCategory", calendarMainData.unclassifiedCategory)
         editor.putBoolean("todoComplete", calendarMainData.todoComplete)
         editor.putBoolean("todoInComplete", calendarMainData.todoInComplete)
+        editor.putBoolean("holidayCategory", calendarMainData.holidayCategory)
         editor.putString("userId", User.id)
         editor.putBoolean("alarmAprove", User.alarmAprove)
         editor.apply()
@@ -163,6 +164,7 @@ class MainActivity : BaseActivity() {
             sharedPreference.getBoolean("unclassifiedCategory", true)
         calendarMainData.todoComplete = sharedPreference.getBoolean("todoComplete", true)
         calendarMainData.todoInComplete = sharedPreference.getBoolean("todoInComplete", true)
+        calendarMainData.holidayCategory = sharedPreference.getBoolean("holidayCategory", true)
         User.alarmAprove = sharedPreference.getBoolean("alarmAprove", true)
     }
 

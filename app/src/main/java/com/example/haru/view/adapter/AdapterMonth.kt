@@ -204,7 +204,7 @@ class AdapterMonth(val activity: Activity,
 
                 if(i >= 4 && k == 0 && calendar.get(Calendar.MONTH) != month){
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
-                    endDate = format.format(calendar.time)+"T00:00:00+09:00"
+                    endDate = format.format(calendar.time)+"T23:59:59+09:00"
                     maxi = 4
                     breakOption = true
                 }
@@ -220,7 +220,7 @@ class AdapterMonth(val activity: Activity,
                 }
 
                 if(i == 5 && k == 6){
-                    endDate = format.format(calendar.time)+"T00:00:00+09:00"
+                    endDate = format.format(calendar.time)+"T23:59:59+09:00"
                 }
 
                 dateTextViews[i*7 + k].text = calendar.time.date.toString()
@@ -545,7 +545,7 @@ class AdapterMonth(val activity: Activity,
         return (px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
     }
 
-    fun setHoliDays(holder: MonthView, start: Date, holidays: List<Holiday>, month: Int){
+    fun setHoliDays(holder: MonthView, start: Date, holidays: List<HolidayData>, month: Int){
         val dateTextViewList = listOf(
             R.id.date_text_one,
             R.id.date_text_two,
@@ -599,7 +599,7 @@ class AdapterMonth(val activity: Activity,
 
         val calendar = Calendar.getInstance()
 
-        val holidaysList = ArrayList<Holiday>()
+        val holidaysList = ArrayList<HolidayData>()
 
         for (holiday in holidays){
             holidaysList.add(holiday.copy())
@@ -608,32 +608,34 @@ class AdapterMonth(val activity: Activity,
         calendar.time = start
         calendar.set(Calendar.HOUR_OF_DAY, 2)
 
-        var i = 0
+        for (i in 0 until  42){
+            if(holidaysList.size == 0) break
 
-        while (holidaysList.size > 0 && i < 42){
-            val holiday = holidaysList[0]
-            val repeatStart = FormatDate.strToDate(holiday.repeatStart)
-            repeatStart!!.hours = 0
-
-            val repeatEnd = FormatDate.strToDate(holiday.repeatEnd)
-            repeatEnd!!.hours = 23
-
-            if (repeatStart!!.before(calendar.time) && repeatEnd!!.after(calendar.time)){
-                if(calendar.get(Calendar.MONTH) != month) {
-                    dateTextViews[i].setTextColor(Color.rgb(0xFD,0xBB,0xCD))
-                } else {
-                    if(calendar.time.year != Date().year ||
-                        calendar.time.month != Date().month ||
-                        calendar.time.date != Date().date) {
-                        dateTextViews[i].setTextColor(Color.rgb(0xF7, 0x1E, 0x58))
+            for(holiday in holidaysList) {
+                if(holiday.position == i){
+                    for(z in 0 until holiday.cnt) {
+                        if (calendar.get(Calendar.MONTH) != month) {
+                            if (calendar.time.year != Date().year ||
+                                calendar.time.month != Date().month ||
+                                calendar.time.date != Date().date
+                            ) {
+                                dateTextViews[i].setTextColor(Color.rgb(0xFD, 0xBB, 0xCD))
+                            }
+                        } else {
+                            if (calendar.time.year != Date().year ||
+                                calendar.time.month != Date().month ||
+                                calendar.time.date != Date().date
+                            ) {
+                                dateTextViews[i].setTextColor(Color.rgb(0xF7, 0x1E, 0x58))
+                            }
+                        }
                     }
+
+                    break
                 }
-            } else if (repeatEnd!!.before(calendar.time)){
-                holidaysList.removeAt(0)
             }
 
             calendar.add(Calendar.DATE, 1)
-            i++
         }
     }
 
@@ -670,6 +672,8 @@ class AdapterMonth(val activity: Activity,
                         var cloneLiveTodo = livetodo as ArrayList
                         var cloneLiveSchedule = liveschedule as ArrayList
                         val cloneLiveHoliday = liveholiday as ArrayList
+
+                        Log.d("공휴일", cloneLiveHoliday.toString())
 
                         var spanList = ArrayList<Int>()
 
@@ -780,31 +784,12 @@ class AdapterMonth(val activity: Activity,
 
                             var returnvalue = 1
 
-                            if (calendarMainData.holidayCategory && calendarMainData.scheduleApply && contentLine == 0) {
+                            if (calendarMainData.holidayCategory && calendarMainData.scheduleApply) {
                                 for (content in cloneLiveHoliday) {
-                                    val format = SimpleDateFormat(
-                                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-                                        Locale.KOREAN
-                                    )
+                                    val interval = content.cnt
 
-                                    val repeatStart = format.parse(content.repeatStart)
-                                    val repeatEnd = format.parse(content.repeatEnd)
-
-                                    val dateminus = (repeatEnd.time - repeatStart.time) / (60 * 60 * 24 * 1000)
-                                    val interval = dateminus.toInt() + 1
-
-                                    startDate.hours = repeatStart.hours
-                                    startDate.minutes = repeatStart.minutes
-                                    startDate.seconds = repeatStart.seconds
-
-                                    var holidayPosition = (repeatStart.time - startDate.time) / (60 * 60 * 24 * 1000)+1
-
-                                    if(repeatStart.time - startDate.time < 0) holidayPosition = -1
-                                    else if(repeatStart.time - startDate.time < 10000) holidayPosition = 0
-
-                                    if (holidayPosition.toInt() == contentPosition) {
+                                    if (content.position == contentPosition) {
                                         cloneLiveHoliday.remove(content)
-
                                         val color =
                                             Color.parseColor("#F71E58")
 
@@ -822,7 +807,7 @@ class AdapterMonth(val activity: Activity,
 
                                             addViewFunction(
                                                 holder,
-                                                content.content,
+                                                content.holiday.content,
                                                 (contentPosition % 7) / (7 - returnvalue).toFloat(),
                                                 contentPosition / 7,
                                                 contentLine,
@@ -845,7 +830,7 @@ class AdapterMonth(val activity: Activity,
 
                                         addViewFunction(
                                             holder,
-                                            content.content,
+                                            content.holiday.content,
                                             (contentPosition % 7) / (7 - returnvalue).toFloat(),
                                             contentPosition / 7,
                                             contentLine,

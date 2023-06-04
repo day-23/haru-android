@@ -540,7 +540,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         //추가 버튼 2개
         btnAddMainInCalendar.setOnClickListener {
             if (fabMain_status) {
-                val scheduleInput = CalendarAddFragment(activity, categoryAdapter.categoryList, adapterMonth)
+                val scheduleInput = CalendarAddFragment(categoryAdapter.categoryList, adapterMonth)
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
 
                 binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
