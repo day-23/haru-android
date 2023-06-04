@@ -39,7 +39,7 @@ import java.util.*
 
 class CalendarAddFragment(private val activity: Activity,
                           private val categories: List<Category?>,
-                          private val adapter: AdapterMonth,
+                          private val adapter: AdapterMonth?,
                           private val initStartDate: Date?=null,
                           private val initEndDate:Date?=null) :
     BottomSheetDialogFragment() {
@@ -74,7 +74,7 @@ class CalendarAddFragment(private val activity: Activity,
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(activity: Activity, categories: List<Category?>, adapter: AdapterMonth): CalendarAddFragment {
+        fun newInstance(activity: Activity, categories: List<Category?>, adapter: AdapterMonth?): CalendarAddFragment {
             return CalendarAddFragment(activity, categories, adapter)
         }
     }
@@ -702,7 +702,7 @@ class CalendarAddFragment(private val activity: Activity,
                     emptyList()
                 )
             ) {
-                adapter.notifyDataSetChanged()
+                adapter?.notifyDataSetChanged()
                 dismiss()
             }
         }

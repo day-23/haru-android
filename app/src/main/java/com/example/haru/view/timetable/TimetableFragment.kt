@@ -26,6 +26,8 @@ import com.example.haru.data.model.ScheduleCalendarData
 import com.example.haru.data.model.timetable_data
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.view.adapter.TimetableAdapter
+import com.example.haru.view.checklist.CalendarAddFragment
+import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import kotlinx.coroutines.launch
@@ -205,6 +207,21 @@ class TimetableFragment : Fragment() {
 
         //타임테이블 왼쪽 1시부터 24시 시간 표기
         drawLeftTime()
+
+
+
+        binding.btnAddSchedule.setOnClickListener {
+            val calendarViewModel = CalendarViewModel()
+
+            calendarViewModel.getCategories()
+
+            calendarViewModel.liveCategoryList.observe(viewLifecycleOwner){
+                Log.d(TAG, "onCreateView: ${it}")
+                val scheduleInput = CalendarAddFragment(it , null)
+                scheduleInput.show(parentFragmentManager, scheduleInput.tag)
+                
+            }
+        }
 
         return rootView
     }

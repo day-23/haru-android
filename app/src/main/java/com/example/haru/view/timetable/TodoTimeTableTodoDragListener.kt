@@ -65,13 +65,11 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                 val preDay = preMoveDate.substring(6, 8)
                 val preDateInfo = "${preYear}-${preMonth}-${preDay}T00:00:00+09:00"
 
-                Log.d("dragTodo", "onDrag: ${todo.content}, ${todo.endDate?.substring(11,19)} ${afterMoveDate} ${preDateInfo}, ${todo.repeatEnd} ${todo}")
 
                 val endDateTime = todo.endDate?.substring(11,19)
                 val afterYear = afterMoveDate.substring(0, 4)
                 val afterMonth = afterMoveDate.substring(4, 6)
                 val afterDay = afterMoveDate.substring(6, 8)
-
                 val newEndDate = "${afterYear}-${afterMonth}-${afterDay}T${endDateTime}+09:00"
 
                 /* 수정 api 쏘기 */
@@ -100,6 +98,7 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                     }
                 }else{
                     calculateTodoNextEndDateAndLocation(todo, preDateInfo)
+                    /* nextEndDate 구해서 API 호출하기 */
 
                 }
 
