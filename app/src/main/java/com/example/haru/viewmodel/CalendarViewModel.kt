@@ -173,6 +173,12 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
+    fun selectedCategories(categoryBody:CategoriesUpdate){
+        viewModelScope.launch {
+            categoryRepository.selectedCategories(categoryBody){}
+        }
+    }
+
     fun deleteCategory(categoryId: String){
         viewModelScope.launch {
             categoryRepository.deleteCategory(categoryId){}
@@ -335,7 +341,7 @@ class CalendarViewModel : ViewModel() {
                                     when (schedule.repeatOption) {
                                         "매주" -> {
                                             val scheduleT = Calendar.getInstance()
-                                            scheduleT.time = todayDate
+                                            scheduleT.time = todayDate!!.clone() as Date
                                             scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
@@ -360,7 +366,7 @@ class CalendarViewModel : ViewModel() {
 
                                         "격주" -> {
                                             val scheduleT = Calendar.getInstance()
-                                            scheduleT.time = todayDate
+                                            scheduleT.time = todayDate!!.clone() as Date
                                             scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
@@ -385,7 +391,7 @@ class CalendarViewModel : ViewModel() {
 
                                         "매달" -> {
                                             val scheduleT = Calendar.getInstance()
-                                            scheduleT.time = todayDate
+                                            scheduleT.time = todayDate!!.clone() as Date
                                             scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
@@ -409,7 +415,7 @@ class CalendarViewModel : ViewModel() {
 
                                         "매년" -> {
                                             val scheduleT = Calendar.getInstance()
-                                            scheduleT.time = todayDate
+                                            scheduleT.time = todayDate!!.clone() as Date
                                             scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
                                             if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
@@ -511,15 +517,11 @@ class CalendarViewModel : ViewModel() {
                                     todayDate.minutes = starttime.minutes
                                     todayDate.seconds = starttime.seconds
 
-                                    Log.d("반복이슈", todayDate.toString())
-
                                     schedule.startTime = todayDate.clone() as Date
 
                                     todayDate.hours = endtime.hours
                                     todayDate.minutes = endtime.minutes
                                     todayDate.seconds = endtime.seconds
-
-                                    Log.d("반복이슈", todayDate.toString())
 
                                     schedule.endTime = todayDate.clone() as Date
                                     scheduleList.add(schedule.copy())

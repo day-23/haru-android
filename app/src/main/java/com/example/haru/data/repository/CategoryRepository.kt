@@ -91,4 +91,21 @@ class CategoryRepository {
             callback(false)
         }
     }
+
+    suspend fun selectedCategories(categoryBody:CategoriesUpdate, callback:(Success: Boolean) -> Unit) = withContext(
+        Dispatchers.IO) {
+        val response = CategoryService.selectedCategories(
+            com.example.haru.utils.User.id,
+//            "005224c0-eec1-4638-9143-58cbfc9688c5"
+            categoryBody
+        ).execute()
+
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to update category")
+            callback(true)
+        } else {
+            Log.d("TAG", "Fail to update category")
+            callback(false)
+        }
+    }
 }
