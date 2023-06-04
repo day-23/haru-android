@@ -217,7 +217,9 @@ class TimetableFragment : Fragment() {
 
             calendarViewModel.liveCategoryList.observe(viewLifecycleOwner){
                 Log.d(TAG, "onCreateView: ${it}")
-                val scheduleInput = CalendarAddFragment(it , null)
+                val scheduleInput = CalendarAddFragment(it , null){
+                    timetableviewModel.getSchedule(timetableviewModel.Datelist)
+                }
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
             }
         }
