@@ -36,8 +36,8 @@ class CalendarViewModel : ViewModel() {
     val _liveScheduleList = MutableLiveData<List<Schedule>>()
     val liveScheduleList: MutableLiveData<List<Schedule>> get() = _liveScheduleList
 
-    val _liveHolidaysList = MutableLiveData<List<Holiday>>()
-    val liveHolidaysList: MutableLiveData<List<Holiday>> get() = _liveHolidaysList
+    val _liveHolidaysList = MutableLiveData<List<HolidayData>>()
+    val liveHolidaysList: MutableLiveData<List<HolidayData>> get() = _liveHolidaysList
 
     fun completeNotRepeatTodo(todoId: String,
                               completed: Completed,
@@ -191,6 +191,10 @@ class CalendarViewModel : ViewModel() {
 //        getSchedule(startDate, endDate, maxi)
     }
 
+    fun month_comparison(first_date: Date, second_date: Date): Int{
+        return (second_date.year * 12 + second_date.month) - (first_date.year * 12 + first_date.month)
+    }
+
     fun date_comparison(first_date: Date, second_date: Date): Int{
         first_date.hours = 0
         first_date.minutes = 0
@@ -260,7 +264,6 @@ class CalendarViewModel : ViewModel() {
                                         }
 
                                         "매달" -> {
-                                            Log.d("반복투두", todayDate.toString())
                                             todayDate = FormatDate.nextStartDateEveryMonth(
                                                 it.todos[i].repeatValue!!,
                                                 today,
@@ -392,25 +395,30 @@ class CalendarViewModel : ViewModel() {
                                         "매달" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate!!.clone() as Date
-                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
-                                            if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
-                                                date_comparison(scheduleT.time, startdateFormat) >= 0){
-                                                schedule.startTime = todayDate
-                                                schedule.endTime = scheduleT.time
-                                                scheduleList.add(schedule.copy())
-                                                break
-                                            }
-
-                                            todayDate = FormatDate.nextStartDateEveryMonth(
-                                                schedule.repeatValue,
-                                                today,
-                                                schedule.repeatEnd!!
+                                            scheduleT.add(Calendar.MONTH, month_comparison(
+                                                scheduleT.time, startdateFormat)
                                             )
 
-                                            if (todayDate == null) break
+                                            val intervalDate = Calendar.getInstance()
+                                            var intervaldate = schedule.repeatValue.replace("T","").toInt()
+                                            intervalDate.time = scheduleT.time.clone() as Date
 
-                                            today = serverformat.format(todayDate)
+                                            intervalDate.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
+
+                                            while (intervalDate.time.month != scheduleT.time.month){
+                                                intervaldate -= 60*60*24
+                                                intervalDate.add(Calendar.DATE, -1)
+                                            }
+
+                                            if(date_comparison(scheduleT.time, startdateFormat) <= 0 &&
+                                                date_comparison(intervalDate.time, startdateFormat) >= 0){
+                                                schedule.startTime = scheduleT.time
+                                                schedule.endTime = intervalDate.time
+                                                scheduleList.add(schedule.copy())
+                                            }
+
+                                            break
                                         }
 
                                         "매년" -> {
@@ -543,6 +551,7 @@ class CalendarViewModel : ViewModel() {
                 if(it != null){
                     val todoList = ArrayList<CalendarTodo>()
                     val scheduleList = ArrayList<ScheduleCalendarData>()
+                    val holidayList = ArrayList<HolidayData>()
 
                     val serverformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
                     val dateformat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.KOREAN)
@@ -979,7 +988,7 @@ class CalendarViewModel : ViewModel() {
 
                                 calendar.add(Calendar.SECOND, newRepeatValue.toInt())
 
-                                val intervaldate = (calendar.timeInMillis - repeatstart.time)/1000
+                                var intervaldate = newRepeatValue.toInt()
 
                                 when (repeatOption) {
                                     "매주"->{
@@ -1069,17 +1078,27 @@ class CalendarViewModel : ViewModel() {
                                                 )
                                             ) <= 0
                                         ){
-                                            val startCalendar = Calendar.getInstance()
-                                            startCalendar.time = repeatStart
-
-                                            while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                                startCalendar.add(Calendar.MONTH, 1)
-                                            }
-
+                                            val comparisonDate = Calendar.getInstance()
+                                            comparisonDate.time = repeatStart!!.clone() as Date
+                                            comparisonDate.add(Calendar.MONTH, month_comparison(
+                                                repeatstart, calendar.time
+                                            ))
                                             if (date_comparison(
-                                                    calendar.time, startCalendar.time!!
-                                                ) == 0
-                                            ){
+                                                    calendar.time,
+                                                    repeatStart
+                                            ) >= 0 && date_comparison(
+                                                    comparisonDate.time,
+                                                    calendar.time
+                                            ) == 0){
+                                                val intervalDate = Calendar.getInstance()
+                                                intervalDate.time = calendar.time.clone() as Date
+                                                intervalDate.add(Calendar.SECOND, intervaldate.toInt())
+
+                                                while (intervalDate.time.month != calendar.time.month){
+                                                    intervaldate -= 60*60*24
+                                                    intervalDate.add(Calendar.DATE, -1)
+                                                }
+
                                                 scheduleList.add(ScheduleCalendarData(
                                                     schedule.copy(),
                                                     cnt,
@@ -1169,9 +1188,52 @@ class CalendarViewModel : ViewModel() {
                         }
                     }
 
-                    _liveHolidaysList.postValue(it.holidays)
+                    for (holiday in it.holidays){
+                        var start = false
+                        val calendar = Calendar.getInstance()
+                        val repeatStart = serverformat.parse(holiday.repeatStart)
+                        val repeatEnd = serverformat.parse(holiday.repeatEnd)
+
+                        var startcnt = 0
+                        var daycnt = 0
+                        var cnt = 0
+                        val tempStartDate = dateformat.parse(startDate)
+                        calendar.time = tempStartDate
+
+                        while (date_comparison(calendar.time, dateformat.parse(
+                                endDate
+                            )) <= 0) {
+                            if (date_comparison(
+                                    calendar.time, repeatStart!!
+                                ) >= 0 && (repeatEnd == null || date_comparison(calendar.time, repeatEnd) <= 0)
+                            ) {
+                                if(!start) {
+                                    startcnt = cnt
+                                    start = true
+                                }
+
+                                daycnt++
+                            } else {
+                                if(start){
+                                    holidayList.add(HolidayData(
+                                        holiday.copy(),
+                                        startcnt,
+                                        daycnt
+                                    ))
+
+                                    break
+                                }
+                            }
+
+                            cnt++
+
+                            calendar.add(Calendar.DAY_OF_MONTH, 1)
+                        }
+                    }
+
                     _liveTodoCalendarList.postValue(todoList)
                     _liveScheduleCalendarList.postValue(scheduleList)
+                    _liveHolidaysList.postValue(holidayList)
                 }
             }
         }

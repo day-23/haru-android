@@ -230,6 +230,8 @@ class CalendarItemFragment(val schedule: Schedule,
                                 binding.gridMonthSchedule.visibility = View.GONE
                                 binding.btnEveryMonthSchedule.visibility = View.GONE
                                 if(repeatOption == -3) repeatOption = -1
+                            } else {
+                                binding.btnEveryMonthSchedule.visibility = View.VISIBLE
                             }
 
                             val startDate = repeatStartCalendar.time.clone() as Date
@@ -348,6 +350,8 @@ class CalendarItemFragment(val schedule: Schedule,
                                 binding.gridMonthSchedule.visibility = View.GONE
                                 binding.btnEveryMonthSchedule.visibility = View.GONE
                                 if(repeatOption == -3) repeatOption = -1
+                            } else {
+                                binding.btnEveryMonthSchedule.visibility = View.VISIBLE
                             }
 
                             val startDate = repeatStartCalendar.time.clone() as Date
