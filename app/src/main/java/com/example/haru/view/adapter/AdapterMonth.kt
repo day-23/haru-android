@@ -258,12 +258,13 @@ class AdapterMonth(val activity: Activity,
 
                 if(calendar.time.year == Date().year &&
                     calendar.time.month == Date().month &&
-                    calendar.time.date == Date().date){
-                    dateTextViews[i*7 + k].setTypeface(dateTextViews[i*7 + k].typeface, Typeface.BOLD)
+                    calendar.time.date == Date().date
+                ){
+                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.BOLD)
                     dateTextViews[i*7 + k].setTextColor(Color.parseColor("#1DAFFF"))
                     dateLayoutViews[i*7 + k].background = ContextCompat.getDrawable(parentFragment.requireContext(),R.drawable.calendar_in_today_image)
                 } else {
-                    dateTextViews[i*7 + k].setTypeface(dateTextViews[i*7 + k].typeface, Typeface.NORMAL)
+                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.NORMAL)
                     dateLayoutViews[i*7 + k].background = ContextCompat.getDrawable(parentFragment.requireContext(),R.color.white)
                 }
             }
@@ -285,8 +286,8 @@ class AdapterMonth(val activity: Activity,
             }
         }
 
-        while (parentConstraintLayout.get(parentConstraintLayout.childCount-2).id != R.id.date_layout_end) {
-            parentConstraintLayout.removeViewAt(parentConstraintLayout.childCount-2)
+        while (parentConstraintLayout.get(0).id != R.id.date_layout_start) {
+            parentConstraintLayout.removeViewAt(0)
         }
 
         val touchList = ArrayList<Boolean>()
@@ -537,7 +538,7 @@ class AdapterMonth(val activity: Activity,
 
         testView.layoutParams = layoutParams
 
-        parentConstraintLayout.addView(testView, parentConstraintLayout.childCount-1)
+        parentConstraintLayout.addView(testView, 0)
     }
 
     fun pxToDp(px: Float): Int {
