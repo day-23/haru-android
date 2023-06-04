@@ -54,6 +54,9 @@ class CheckListViewModel() :
     var tagInputString: String = ""
 
     init {
+    }
+
+    fun dataInit(){
         getTodoMain {
             _todoDataList.postValue(todoList)
         }

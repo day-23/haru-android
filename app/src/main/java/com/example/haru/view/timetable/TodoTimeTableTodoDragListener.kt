@@ -9,16 +9,23 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Todo
+import com.example.haru.data.model.UpdateTodo
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TodotableAdapter
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CheckListViewModel
+import com.example.haru.viewmodel.TimetableViewModel
+import com.example.haru.viewmodel.TodoTableRecyclerViewmodel
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-class TodoTimeTableTodoDragListener () : View.OnDragListener {
+class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel, timetableviewModel:TimetableViewModel) : View.OnDragListener {
+    val checkListViewModel = CheckListViewModel()
+    val todoRecyclerViewModel = todoreviewModel
+    val timeTableViewModel = timetableviewModel
+
     override fun onDrag(view: View, event: DragEvent): Boolean {
         val matrix = ColorMatrix()
         matrix.setSaturation(0f)
@@ -65,6 +72,34 @@ class TodoTimeTableTodoDragListener () : View.OnDragListener {
 
                 calculateTodoNextEndDateAndLocation(todo, preDateInfo)
 
+                /* 수정 api 쏘기 */
+                if(todo.repeatOption == null){
+                    val updateTodo = UpdateTodo(
+                        todo.content,
+                        todo.memo,
+                        todo.todayTodo,
+                        todo.flag,
+                        todo.isAllDay,
+                        todo.endDate,
+                        todo.repeatEnd,
+                        todo.completed,
+                        todo.subTodos.map { it.completed },
+                        todo.subTodos.map{ it.content },
+                        todo.alarms.map { it.time },
+                        todo.repeatOption,
+                        todo.repeatValue,
+                        todo.tags.map{it.content}
+                    )
+                    checkListViewModel.updateTodo(
+                        todo.id,
+                        updateTodo
+                    ){
+                        todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
+                    }
+                }
+
+
+
                 Log.d("dragTodo", "onDragEnd, location: ${todo}")
 
             }
@@ -96,7 +131,6 @@ class TodoTimeTableTodoDragListener () : View.OnDragListener {
 
 
     private fun calculateTodoNextEndDateAndLocation(todo: Todo, todayTodo : String){
-        val checklistviewmodel = CheckListViewModel()
         val serverDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
         val todayDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
         val koreaFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
