@@ -5,10 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.haru.data.model.ScheduleRequest
-import com.example.haru.data.model.Todo
-import com.example.haru.data.model.TodoList
-import com.example.haru.data.model.TodoTable_data
+import com.example.haru.data.model.*
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
 import kotlinx.coroutines.launch
@@ -75,6 +72,12 @@ class TodoTableRecyclerViewmodel : ViewModel() {
                 val TodoList = it
                 Log.d("GET1", "${TodoList}, ${date[0]}, ${date[6]}")
 
+                val todoList = ArrayList<CalendarTodo>()
+
+                for (i in 0 until 7){
+                    todoList.add(CalendarTodo(ArrayList()))
+                }
+
                 for (todo in TodoList) {
                     if (todo.endDate != null){
                         Log.d("데이터 포맷", "날짜 바뀌기 전: "+todo.endDate!!)
@@ -86,7 +89,7 @@ class TodoTableRecyclerViewmodel : ViewModel() {
                         todo.repeatEnd = FormatDate.calendarFormat(todo.repeatEnd!!)
                     }
 
-                    val repeatDate = Array((1) * 7) { false }
+                    val repeatDate = Array( 7) { false }
 
                     var serverendDate: Date? = null
                     var repeateEnd: Date? = null
@@ -281,38 +284,18 @@ class TodoTableRecyclerViewmodel : ViewModel() {
                         }
                     }
 
-//                    for (i in 0 until repeatDate.size) {
-//                        if (repeatDate[i]) {
-//                            todoList[i].todos.add(todo.copy())
-//                        }
 
-                        val year = todo.endDate?.slice(IntRange(0,3))
-                        val month = todo.endDate?.slice(IntRange(5,6))
-                        val day = todo.endDate?.slice(IntRange(8,9))
-                        val result = year+month+day
-
-
-                        Log.d("GET1", "${result}, ${todo.content}, ${todo}")
-                        if(todo.endDate != null){ //날짜 정보가 있는 경우만 담음
-
-                            when(result){
-                                date[0] -> IndexList[0].add(todo)
-                                date[1] -> IndexList[1].add(todo)
-                                date[2] -> IndexList[2].add(todo)
-                                date[3] -> IndexList[3].add(todo)
-                                date[4] -> IndexList[4].add(todo)
-                                date[5] -> IndexList[5].add(todo)
-                                date[6] -> IndexList[6].add(todo)
-                            }
+                    Log.d("GET1", "getTodo: -------------------------------------- ")
+                    for (i in 0 until repeatDate.size) {
+                        Log.d("GET1", "$i, ${repeatDate[i]} ${todo.content} ${todo}")
+                        if (repeatDate[i] && todo.endDate != null) {
+                            IndexList[i].add(todo.copy())
                         }
-//                    }
+                    }
+
+                    Log.d("GET1", "getTodo: -------------------------------------- ")
                 }
             }
-
-
-
-
-
             _TodoDataList.postValue(IndexList)
         }
     }
