@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat
 import com.example.haru.R
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.PostSchedule
+import com.example.haru.data.model.User
 import com.example.haru.databinding.FragmentCalendarInputBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
@@ -38,9 +39,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarAddFragment(private val categories: List<Category?>,
-                          private val adapter: AdapterMonth?,
                           private val initStartDate: Date?=null,
-                          private val initEndDate:Date?=null) :
+                          private val initEndDate:Date?=null,
+                          private val callback:() -> Unit) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentCalendarInputBinding
 
@@ -73,8 +74,8 @@ class CalendarAddFragment(private val categories: List<Category?>,
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(categories: List<Category?>, adapter: AdapterMonth?): CalendarAddFragment {
-            return CalendarAddFragment(categories, adapter)
+        fun newInstance(categories: List<Category?>): CalendarAddFragment {
+            return CalendarAddFragment(categories){}
         }
     }
 
@@ -837,7 +838,7 @@ class CalendarAddFragment(private val categories: List<Category?>,
                         emptyList()
                     )
                 ) {
-                    adapter?.notifyDataSetChanged()
+                    callback()
                     dismiss()
                 }
 
