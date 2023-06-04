@@ -952,10 +952,15 @@ class CalendarItemFragment(val schedule: Schedule,
             var flag = false
 
             while(true) {
+                val realEndDate = repeatEndDateBtnFormat.parse(
+                    binding.btnRepeatEndDateSchedule.text.toString()
+                )!!
+
+                realEndDate.hours = 23
+                realEndDate.minutes = 59
+
                 if(binding.repeatEndDateSwitchSchedule.isChecked &&
-                    repeatEndDateBtnFormat.parse(
-                        binding.btnRepeatEndDateSchedule.text.toString()
-                    )!!.before(repeatStartCalendar.time)){
+                    realEndDate.before(repeatStartCalendar.time)){
                     repeatStartCalendar.time = initRepeatStartDate
                     repeatEndCalendar.time = initRepeatEndDate
 

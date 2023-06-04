@@ -623,10 +623,15 @@ class CalendarAddFragment(private val categories: List<Category?>,
                 val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
                 val timeFormat2 = SimpleDateFormat("HH:mm", Locale.KOREA)
 
+                val realEndDate = repeatEndDateBtnFormat.parse(
+                    binding.btnRepeatEndDateSchedule.text.toString()
+                )!!
+
+                realEndDate.hours = 23
+                realEndDate.minutes = 59
+
                 if(binding.repeatEndDateSwitchSchedule.isChecked &&
-                    repeatEndDateBtnFormat.parse(
-                        binding.btnRepeatEndDateSchedule.text.toString()
-                )!!.before(repeatStartCalendar.time)){
+                    realEndDate.before(repeatStartCalendar.time)){
                     repeatStartCalendar.time = initRepeatStartDate
                     repeatEndCalendar.time = initRepeatEndDate
 
