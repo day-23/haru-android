@@ -789,6 +789,7 @@ class AdapterMonth(val activity: Activity,
                                     val interval = content.cnt
 
                                     if (content.position == contentPosition) {
+                                        cloneLiveHoliday.remove(content)
                                         val color =
                                             Color.parseColor("#F71E58")
 

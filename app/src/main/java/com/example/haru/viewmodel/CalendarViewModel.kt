@@ -191,6 +191,10 @@ class CalendarViewModel : ViewModel() {
 //        getSchedule(startDate, endDate, maxi)
     }
 
+    fun month_comparison(first_date: Date, second_date: Date): Int{
+        return (second_date.year * 12 + second_date.month) - (first_date.year * 12 + first_date.month)
+    }
+
     fun date_comparison(first_date: Date, second_date: Date): Int{
         first_date.hours = 0
         first_date.minutes = 0
@@ -391,25 +395,30 @@ class CalendarViewModel : ViewModel() {
                                         "매달" -> {
                                             val scheduleT = Calendar.getInstance()
                                             scheduleT.time = todayDate!!.clone() as Date
-                                            scheduleT.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
 
-                                            if(date_comparison(todayDate!!, startdateFormat) <= 0 &&
-                                                date_comparison(scheduleT.time, startdateFormat) >= 0){
-                                                schedule.startTime = todayDate
-                                                schedule.endTime = scheduleT.time
-                                                scheduleList.add(schedule.copy())
-                                                break
-                                            }
-
-                                            todayDate = FormatDate.nextStartDateEveryMonth(
-                                                schedule.repeatValue,
-                                                today,
-                                                schedule.repeatEnd!!
+                                            scheduleT.add(Calendar.MONTH, month_comparison(
+                                                scheduleT.time, startdateFormat)
                                             )
 
-                                            if (todayDate == null) break
+                                            val intervalDate = Calendar.getInstance()
+                                            var intervaldate = schedule.repeatValue.replace("T","").toInt()
+                                            intervalDate.time = scheduleT.time.clone() as Date
 
-                                            today = serverformat.format(todayDate)
+                                            intervalDate.add(Calendar.SECOND, schedule.repeatValue.replace("T","").toInt())
+
+                                            while (intervalDate.time.month != scheduleT.time.month){
+                                                intervaldate -= 60*60*24
+                                                intervalDate.add(Calendar.DATE, -1)
+                                            }
+
+                                            if(date_comparison(scheduleT.time, startdateFormat) <= 0 &&
+                                                date_comparison(intervalDate.time, startdateFormat) >= 0){
+                                                schedule.startTime = scheduleT.time
+                                                schedule.endTime = intervalDate.time
+                                                scheduleList.add(schedule.copy())
+                                            }
+
+                                            break
                                         }
 
                                         "매년" -> {
@@ -979,7 +988,7 @@ class CalendarViewModel : ViewModel() {
 
                                 calendar.add(Calendar.SECOND, newRepeatValue.toInt())
 
-                                var intervaldate = (calendar.timeInMillis - repeatstart.time)/1000
+                                var intervaldate = newRepeatValue.toInt()
 
                                 when (repeatOption) {
                                     "매주"->{
@@ -1069,17 +1078,27 @@ class CalendarViewModel : ViewModel() {
                                                 )
                                             ) <= 0
                                         ){
-                                            val startCalendar = Calendar.getInstance()
-                                            startCalendar.time = repeatStart
-
-                                            while (date_comparison(startCalendar.time, calendar.time) < 0){
-                                                startCalendar.add(Calendar.MONTH, 1)
-                                            }
-
+                                            val comparisonDate = Calendar.getInstance()
+                                            comparisonDate.time = repeatStart!!.clone() as Date
+                                            comparisonDate.add(Calendar.MONTH, month_comparison(
+                                                repeatstart, calendar.time
+                                            ))
                                             if (date_comparison(
-                                                    calendar.time, startCalendar.time
-                                                ) == 0
-                                            ){
+                                                    calendar.time,
+                                                    repeatStart
+                                            ) >= 0 && date_comparison(
+                                                    comparisonDate.time,
+                                                    calendar.time
+                                            ) == 0){
+                                                val intervalDate = Calendar.getInstance()
+                                                intervalDate.time = calendar.time.clone() as Date
+                                                intervalDate.add(Calendar.SECOND, intervaldate.toInt())
+
+                                                while (intervalDate.time.month != calendar.time.month){
+                                                    intervaldate -= 60*60*24
+                                                    intervalDate.add(Calendar.DATE, -1)
+                                                }
+
                                                 scheduleList.add(ScheduleCalendarData(
                                                     schedule.copy(),
                                                     cnt,
