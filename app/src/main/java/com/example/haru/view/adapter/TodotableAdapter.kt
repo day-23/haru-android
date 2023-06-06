@@ -11,13 +11,14 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Todo
-import com.example.haru.view.timetable.Todo_draglistener
+import com.example.haru.view.timetable.TodoTimeTableTodoDragListener
 
 class TodotableAdapter(val context: Context,
                        private var itemList: ArrayList<Todo>,
                        private val Date: String,
-                       private val dragListener: Todo_draglistener
+                       private val dragListener: TodoTimeTableTodoDragListener
 ) : RecyclerView.Adapter<TodotableAdapter.TodotableViewHolder>(){
+        val curDate = Date
 
         var animation = -1
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodotableViewHolder {

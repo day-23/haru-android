@@ -249,7 +249,7 @@ class AdapterMonth(val activity: Activity,
                     }
                     else -> {
                         if(calendar.get(Calendar.MONTH) != month) {
-                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xEB,0xEB,0xEB))
+                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xDB,0xDB,0xDB))
                         } else {
                             dateTextViews[i*7 + k].setTextColor(Color.rgb(0x64,0x64,0x64))
                         }

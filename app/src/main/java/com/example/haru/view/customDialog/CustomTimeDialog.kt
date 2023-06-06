@@ -163,6 +163,10 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             displayedValues = minuteList
         }
 
+        binding.emptyLayout.setOnClickListener{
+            dismiss()
+        }
+
 //        binding.btnPositive.setOnClickListener {
 //            if (timePickerClick != null) {
 //                timePickerClick?.onClick(
