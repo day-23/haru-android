@@ -151,7 +151,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.calendarHeader.id)
+        (activity as BaseActivity).adjustTopMargin(binding.calendarFragmentParentLayout.id)
     }
 
     fun initAlarm(){
@@ -335,7 +335,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as BaseActivity).adjustTopMargin(binding.calendarHeader.id)
+        (activity as BaseActivity).adjustTopMargin(binding.calendarFragmentParentLayout.id)
 
         parentView = view.findViewById<RelativeLayout>(R.id.calendar_fragment_parent_layout)
 

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountDeleteBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.viewmodel.EtcViewModel
 
 class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
@@ -27,6 +28,7 @@ class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "AccountDeleteFragment - onCreate() called")
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(

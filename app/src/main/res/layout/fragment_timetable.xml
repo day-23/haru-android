@@ -28,7 +28,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="13dp"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="20dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="20dp"
                 >
 
                 <TextView
@@ -125,7 +126,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:gravity="center"
-                        android:lineSpacingMultiplier="1.2"
                         android:text="일"
                         android:textColor="#F71E58"
                         android:textSize="14sp" />
@@ -434,7 +434,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_add_todo"
+                android:id="@+id/btn_add_schedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"

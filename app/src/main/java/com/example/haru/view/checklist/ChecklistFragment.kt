@@ -51,6 +51,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         Log.d(TAG, "ChecklistFragment - onCreate() called")
 
         checkListViewModel = CheckListViewModel()
+        checkListViewModel.dataInit()
     }
 
     override fun onCreateView(
@@ -73,6 +74,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         initTagList()
         initTodoList()
+
 
         binding.ivChecklistSearch.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
@@ -232,7 +234,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             for (i in binding.tagEtcLayout.tagLayout.childCount - 1 downTo 1)
                 binding.tagEtcLayout.tagLayout.removeViewAt(i)
 
-            for (i in 2 until checkListViewModel.tagDataList.value!!.size) {
+            for (i in 1 until checkListViewModel.tagDataList.value!!.size) {
                 val layoutInflater =
                     requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.tag_example_layout, null)

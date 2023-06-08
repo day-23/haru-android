@@ -16,10 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#DBDBDB"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/date_layout_one"/>
+            tools:ignore="MissingConstraints" />
 
         <LinearLayout
             android:id="@+id/date_layout_one"
@@ -44,8 +41,9 @@
                     <TextView
                         android:id="@+id/date_text_one"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -64,9 +62,10 @@
                     <TextView
                         android:id="@+id/date_text_two"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:textColor="#646464"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:textSize="14sp" />
                 </FrameLayout>
             </FrameLayout>
@@ -84,9 +83,10 @@
                     <TextView
                         android:id="@+id/date_text_three"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:textColor="#646464"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:textSize="14sp" />
                 </FrameLayout>
             </FrameLayout>
@@ -104,8 +104,9 @@
                     <TextView
                         android:id="@+id/date_text_four"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:textColor="#646464"
+                        android:gravity="center"
                         android:layout_height="wrap_content"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -124,7 +125,8 @@
                     <TextView
                         android:id="@+id/date_text_five"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:layout_height="wrap_content"
                         android:textSize="14sp" />
@@ -144,7 +146,8 @@
                     <TextView
                         android:id="@+id/date_text_six"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:layout_height="wrap_content"
                         android:textSize="14sp" />
@@ -164,7 +167,8 @@
                     <TextView
                         android:id="@+id/date_text_seven"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
                         android:layout_height="wrap_content"
                         android:textColor="#646464"
                         android:textSize="14sp" />
@@ -205,7 +209,8 @@
                     <TextView
                         android:id="@+id/date_text_eight"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
                         android:layout_height="wrap_content"
                         android:textColor="#646464"
                         android:textSize="14sp" />
@@ -225,7 +230,8 @@
                     <TextView
                         android:id="@+id/date_text_nine"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
                         android:layout_height="wrap_content"
                         android:textColor="#646464"
                         android:textSize="14sp" />
@@ -245,7 +251,8 @@
                     <TextView
                         android:id="@+id/date_text_ten"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
                         android:layout_height="wrap_content"
                         android:textColor="#646464"
                         android:textSize="14sp" />
@@ -265,7 +272,8 @@
                     <TextView
                         android:id="@+id/date_text_eleven"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
                         android:layout_height="wrap_content"
                         android:textColor="#646464"
                         android:textSize="14sp" />
@@ -285,7 +293,8 @@
                     <TextView
                         android:id="@+id/date_text_twelve"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
                         android:layout_height="wrap_content"
                         android:textColor="#646464"
                         android:textSize="14sp" />
@@ -305,7 +314,8 @@
                     <TextView
                         android:id="@+id/date_text_thirteen"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
                         android:layout_height="wrap_content"
                         android:textColor="#646464"
                         android:textSize="14sp" />
@@ -324,9 +334,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_fourteen"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -365,9 +376,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_fifteen"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -385,9 +397,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_sixteen"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -405,9 +418,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_seventeen"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -425,9 +439,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_eighteen"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -445,9 +460,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_nineteen"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -465,9 +481,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twenty"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -485,9 +502,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twentyone"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -525,9 +543,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twentytwo"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -545,9 +564,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twentythree"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -565,9 +585,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twentyfour"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -585,9 +606,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twentyfive"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -605,9 +627,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twentysix"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -625,9 +648,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twentyseven"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -645,9 +669,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twentyeight"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -685,9 +710,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_twentynine"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -705,9 +731,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirty"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -725,9 +752,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirtyone"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -745,9 +773,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirtytwo"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -765,9 +794,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirtythree"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -785,9 +815,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirtyfour"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -805,9 +836,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirtyfive"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -846,9 +878,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirtysix"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -867,9 +900,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirtyseven"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -887,9 +921,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirtyeight"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -907,9 +942,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_thirtynine"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -927,9 +963,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_fourty"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -947,9 +984,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_fourtyone"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>
@@ -967,9 +1005,10 @@
                     android:layout_gravity="center">
                     <TextView
                         android:id="@+id/date_text_fourtytwo"
-                        android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </FrameLayout>

@@ -3,6 +3,7 @@ package com.example.haru.view.checklist
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Bundle
@@ -34,14 +35,20 @@ import java.util.*
 class ChecklistInputFragment(
     checkListViewModel: CheckListViewModel,
     val adapter: AdapterMonth? = null,
-    val today: Boolean? = null
+    val today: Boolean? = null,
+    val isTimeTable: Boolean? = null,
 ) : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentChecklistInputBinding
     private var todoAddViewModel: TodoAddViewModel
 
-    private var onDismissListener: (() -> Unit)? = null
 
     private var lastClickTime = SystemClock.elapsedRealtime()
+
+    interface OnDismissListener {
+        fun onDismiss()
+    }
+
+    var onDismissListener: OnDismissListener? = null
 
     init {
         todoAddViewModel = TodoAddViewModel(checkListViewModel)
@@ -58,6 +65,11 @@ class ChecklistInputFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "ChecklistInputFragment - onCreate() called")
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismissListener?.onDismiss()
     }
 
     override fun onCreateView(
@@ -189,6 +201,12 @@ class ChecklistInputFragment(
                     "repeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString()
                 )
                 binding.repeatEndDateLayout.visibility = View.GONE
+
+                binding.repeatEndDateLayout.post {
+                    if (isTimeTable == true){
+                        todoAddViewModel.setEndDateSwitch()
+                    }
+                }
             }
         })
 
@@ -722,11 +740,6 @@ class ChecklistInputFragment(
         Log.e("20191627", "onStart")
     }
 
-    override fun dismiss() {
-        onDismissListener?.invoke()
-        super.dismiss()
-    }
-
     fun View.animateViewHeight(duration: Long, startHeight: Int, endHeight: Int) {
         val animation = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
@@ -860,7 +873,15 @@ class ChecklistInputFragment(
                                 Log.d("20191627", "dismiss")
                                 dismiss()
                             }
-                        } else {
+                        } else if(isTimeTable == true){
+                            todoAddViewModel.addTodo(true) {
+                                adapter.notifyDataSetChanged()
+
+                                Log.d("20191627", "dismiss")
+                                dismiss()
+                            }
+                        }
+                        else{
                             todoAddViewModel.addTodo(true) {
                                 adapter.notifyDataSetChanged()
                                 Log.d("20191627", "dismiss")

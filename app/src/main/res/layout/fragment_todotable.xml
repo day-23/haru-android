@@ -37,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-
+                    android:paddingLeft="10dp"
                     android:hint="2023년"
                     android:text="@{viewModel.Selected.year}"
                     android:textColor="#191919"
@@ -137,7 +137,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:hint="1"
-                        android:text="@{viewModel.days.get(6)}"
+                        android:text="@{viewModel.days.get(0)}"
                         android:textAlignment="center"
                         android:textColor="#F71E58"
                         android:textSize="14sp" />
@@ -183,7 +183,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:hint="2"
-                        android:text="@{viewModel.days.get(6)}"
+                        android:text="@{viewModel.days.get(1)}"
                         android:textAlignment="center"
                         android:textColor="#191919"
                         android:textSize="14sp" />
@@ -229,7 +229,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:hint="3"
-                        android:text="@{viewModel.days.get(6)}"
+                        android:text="@{viewModel.days.get(2)}"
                         android:textAlignment="center"
                         android:textColor="#191919"
                         android:textSize="14sp" />
@@ -274,7 +274,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:hint="4"
-                        android:text="@{viewModel.days.get(6)}"
+                        android:text="@{viewModel.days.get(3)}"
                         android:textAlignment="center"
                         android:textColor="#191919"
                         android:textSize="14sp" />
@@ -319,7 +319,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:hint="5"
-                        android:text="@{viewModel.days.get(6)}"
+                        android:text="@{viewModel.days.get(4)}"
                         android:textAlignment="center"
                         android:textColor="#191919"
                         android:textSize="14sp" />
@@ -365,7 +365,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:hint="6"
-                        android:text="@{viewModel.days.get(6)}"
+                        android:text="@{viewModel.days.get(5)}"
                         android:textAlignment="center"
                         android:textColor="#191919"
                         android:textSize="14sp" />
@@ -445,5 +445,4 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
 </layout>

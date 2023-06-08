@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentTagManagementBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.viewmodel.CheckListViewModel
 
 class TagManagementFragment(checkListViewModel: CheckListViewModel, val tag: Tag, val cnt : Int?) : Fragment() {
@@ -25,6 +26,16 @@ class TagManagementFragment(checkListViewModel: CheckListViewModel, val tag: Tag
 
     init {
         this.checkListViewModel = checkListViewModel
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MainActivity.hideNavi(true)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        MainActivity.hideNavi(false)
     }
 
     override fun onCreateView(

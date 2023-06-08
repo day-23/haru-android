@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.databinding.FragmentInformationBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.viewmodel.EtcViewModel
 
 class InformationFragment(val etcViewModel: EtcViewModel) : Fragment() {
@@ -24,6 +25,7 @@ class InformationFragment(val etcViewModel: EtcViewModel) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(EtcFragment.TAG, "InformationFragment - onCreate() called")
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(
