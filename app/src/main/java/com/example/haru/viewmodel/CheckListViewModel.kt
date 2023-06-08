@@ -54,6 +54,9 @@ class CheckListViewModel() :
     var tagInputString: String = ""
 
     init {
+    }
+
+    fun dataInit(){
         getTodoMain {
             _todoDataList.postValue(todoList)
         }
@@ -480,13 +483,16 @@ class CheckListViewModel() :
     /* ------------------------------------할 일의 수정 기능--------------------------------- */
 
     // 반복하지 않는 Todo를 수정하거나, 반복하는 Todo의 전체를 수정하는 기능
-    fun updateTodo(todoId: String, todo: UpdateTodo, callback: () -> Unit) {
+    fun updateTodo(todoId: String, todo: UpdateTodo, atTodoTable: Boolean = false, callback: () -> Unit) {
         viewModelScope.launch {
             val updateTodo = todoRepository.updateTodo(todoId = todoId, todo = todo) {
                 if (it?.success == true) {
-                    getTag()
-                    checkTodayMode()
-                    withTagUpdate()
+                    if(!atTodoTable) {
+                        getTag()
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
+
                 } else {
                     Log.e("20191627", "CheckListViewModel -> UpdateTodo Fail")
                     Log.e("20191627", it.toString())
@@ -500,6 +506,7 @@ class CheckListViewModel() :
     fun updateRepeatFrontTodo(
         todoId: String,
         updateRepeatFrontTodo: UpdateRepeatFrontTodo,
+        atTodoTable: Boolean = false,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
@@ -507,7 +514,7 @@ class CheckListViewModel() :
                 todoId = todoId,
                 updateRepeatFrontTodo = updateRepeatFrontTodo
             ) {
-                if (it?.success == true) {
+                if (it?.success == true && !atTodoTable) {
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
@@ -523,6 +530,7 @@ class CheckListViewModel() :
     fun updateRepeatMiddleTodo(
         todoId: String,
         updateRepeatMiddleTodo: UpdateRepeatMiddleTodo,
+        atTodoTable: Boolean = false,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
@@ -530,7 +538,7 @@ class CheckListViewModel() :
                 todoId = todoId,
                 updateRepeatMiddleTodo = updateRepeatMiddleTodo
             ) {
-                if (it?.success == true) {
+                if (it?.success == true && !atTodoTable) {
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
@@ -547,6 +555,7 @@ class CheckListViewModel() :
 
     fun updateRepeatBackTodo(
         todoId: String,
+        atTodoTable: Boolean = false,
         updateRepeatBackTodo: UpdateRepeatBackTodo, callback: () -> Unit
     ) {
         viewModelScope.launch {
@@ -554,7 +563,7 @@ class CheckListViewModel() :
                 todoId = todoId,
                 updateRepeatBackTodo = updateRepeatBackTodo
             ) {
-                if (it?.success == true) {
+                if (it?.success == true && !atTodoTable) {
                     getTag()
                     checkTodayMode()
                     withTagUpdate()

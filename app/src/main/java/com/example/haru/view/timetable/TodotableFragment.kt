@@ -82,9 +82,13 @@ class TodotableFragment : Fragment() {
         val rootView = binding.root
 
         binding.btnAddTodo.setOnClickListener {
-            val todoInput = ChecklistInputFragment(checkListViewModel)
+            val todoInput = ChecklistInputFragment(checkListViewModel,null, false, true)
+            todoInput.onDismissListener = object : ChecklistInputFragment.OnDismissListener {
+                override fun onDismiss() {
+                    todoreviewModel.getTodo(timetableviewModel.Dates.value!!)
+                }
+            }
             todoInput.show(parentFragmentManager, todoInput.tag)
-            todoreviewModel.getTodo(timetableviewModel.Dates.value!!)
         }
 
         timetableviewModel = TimetableViewModel(requireContext())
@@ -94,23 +98,23 @@ class TodotableFragment : Fragment() {
 
         todoreviewModel.TodoDataList.observe(viewLifecycleOwner) { contents ->
             val date = timetableviewModel.getDates()
-            sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ?: todoList,date[0] ,Todo_draglistener())
+            sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ,date[0] ,TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
             sun_todorecyclerView.adapter = sun_todotableAdapter
-            mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ?: todoList,date[1],Todo_draglistener())
+            mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ,date[1],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
             mon_todorecyclerView.adapter = mon_todotableAdapter
-            tue_todotableAdapter = TodotableAdapter(requireContext(), contents[2] ?: todoList,date[2],Todo_draglistener())
+            tue_todotableAdapter = TodotableAdapter(requireContext(), contents[2] ,date[2],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
             tue_todorecyclerView.adapter = tue_todotableAdapter
-            wed_todotableAdapter = TodotableAdapter(requireContext(), contents[3] ?: todoList,date[3],Todo_draglistener())
+            wed_todotableAdapter = TodotableAdapter(requireContext(), contents[3] ,date[3],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
             wed_todorecyclerView.adapter = wed_todotableAdapter
-            thu_todotableAdapter = TodotableAdapter(requireContext(), contents[4] ?: todoList,date[4],Todo_draglistener())
+            thu_todotableAdapter = TodotableAdapter(requireContext(), contents[4] ,date[4],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
             thu_todorecyclerView.adapter = thu_todotableAdapter
-            fri_todotableAdapter = TodotableAdapter(requireContext(), contents[5] ?: todoList,date[5],Todo_draglistener())
+            fri_todotableAdapter = TodotableAdapter(requireContext(), contents[5] ,date[5],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
             fri_todorecyclerView.adapter = fri_todotableAdapter
-            sat_todotableAdapter = TodotableAdapter(requireContext(), contents[6] ?: todoList,date[6],Todo_draglistener())
+            sat_todotableAdapter = TodotableAdapter(requireContext(), contents[6] ,date[6],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
             sat_todorecyclerView.adapter = sat_todotableAdapter
         }
 
-        val dragListener = Todo_draglistener()
+        val dragListener = TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel)
         //리사이클러뷰 요일별 바인딩
         sun_todorecyclerView = binding.sunTodosRecycler
         sun_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -140,6 +144,8 @@ class TodotableFragment : Fragment() {
         sat_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         sat_todorecyclerView.setOnDragListener(dragListener)
 
+
+        /* 현재 고른 날짜에 따라서 색칠이 되고 있는데 오늘날짜로만 바꾸기 */
         timetableviewModel.Selected.observe(viewLifecycleOwner) { times ->
             val year = times.year.slice(0..times.year.length - 2)
             val month = times.month.slice(0..times.month.length - 2)
@@ -164,6 +170,7 @@ class TodotableFragment : Fragment() {
             }
             binding.invalidateAll()
         }
+
 
         timetableviewModel.Colors.observe(viewLifecycleOwner) { colors ->
             val date = timetableviewModel.getDates()
@@ -200,6 +207,7 @@ class TodotableFragment : Fragment() {
             binding.todoFriDate.setBackgroundColor((Color.parseColor("#00000000")))
             binding.todoSatDate.setBackgroundColor((Color.parseColor("#00000000")))
 
+            /* 오늘 날짜에 해당되면 동그라미 */
             when(today){
                 date[0] -> {
                     binding.todoSunDate.setTextColor(Color.parseColor("#2CA4FF"))
@@ -245,6 +253,8 @@ class TodotableFragment : Fragment() {
             todoreviewModel.getTodo(Dates)
         }
 
+
+        /* 투두 리스트에서 나갈 때 타임테이블로 돌아감 */
         binding.todolistChange.setOnClickListener{
             Log.d("Frag", "changed")
             val newFrag = TimetableFragment.newInstance()

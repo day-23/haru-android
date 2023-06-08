@@ -84,4 +84,12 @@
             android:textColor="@color/delete_red" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:layout_weight="1"/>
+
 </LinearLayout>

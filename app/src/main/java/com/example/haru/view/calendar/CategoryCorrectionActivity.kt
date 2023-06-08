@@ -10,12 +10,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Switch
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
@@ -27,7 +24,6 @@ import com.example.haru.viewmodel.CalendarViewModel
 class CategoryCorrectionActivity : AppCompatActivity() {
     private var content: String = ""
     private var color: String? = ""
-    private var isSelected: Boolean = false
 
     val colorsList = listOf(
         "#2E2E2E", "#656565", "#818181", "#9D9D9D", "#B9B9B9", "#D5D5D5",
@@ -70,7 +66,6 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         val index = intent.getSerializableExtra("index") as Int
 
         val correctionScheduleName = findViewById<EditText>(R.id.correction_schedule_name)
-        val correctionSwitch = findViewById<SwitchCompat>(R.id.correction_event_alarm_switch)
         val categoriesRecyclerview = findViewById<RecyclerView>(R.id.categories_recyclerview)
         val correctionBackImageview = findViewById<ImageView>(R.id.correction_back_imageView)
         val correctionCheckImageview = findViewById<ImageView>(R.id.correction_check_imageView)
@@ -78,9 +73,6 @@ class CategoryCorrectionActivity : AppCompatActivity() {
 
         content = category.content
         correctionScheduleName.setText(content)
-
-        isSelected = category.isSelected
-        correctionSwitch.isChecked = isSelected
 
         categoriesRecyclerview.layoutManager = GridLayoutManager(this,6)
         categoriesRecyclerview.addItemDecoration(MyItemDecoration())
@@ -93,12 +85,15 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         }
 
         correctionCheckImageview.setOnClickListener {
+            if(correctionScheduleName.text.toString().replace(" ", "") == ""){
+                Toast.makeText(this, "카테고리명을 입력해 주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             content = correctionScheduleName.text.toString()
-            isSelected = correctionSwitch.isSelected
 
             category.color = color
             category.content = content
-            category.isSelected = isSelected
 
             val calendarviewmodel = CalendarViewModel()
 

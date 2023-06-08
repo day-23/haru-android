@@ -51,6 +51,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         Log.d(TAG, "ChecklistFragment - onCreate() called")
 
         checkListViewModel = CheckListViewModel()
+        checkListViewModel.dataInit()
     }
 
     override fun onCreateView(
@@ -73,6 +74,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         initTagList()
         initTodoList()
+
 
         binding.ivChecklistSearch.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()

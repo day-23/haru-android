@@ -45,6 +45,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
     var CommentIsVisible = true
     val myInfo = myInfo
     var onEdit = false
+    var ProfileImage = ""
 
     //사진위 댓글 값
     var onWrite = false
@@ -244,12 +245,12 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
             if(CommentIsVisible){
                 CommentIsVisible = false
                 commentContainer.visibility = View.INVISIBLE
-                binding.commentVisibility.setImageResource(R.drawable.comment_invisible)
+                binding.commentVisibility.setBackgroundResource(R.drawable.comment_invisible)
             }
             else{
                 CommentIsVisible = true
                 commentContainer.visibility = View.VISIBLE
-                binding.commentVisibility.setImageResource(R.drawable.comment)
+                binding.commentVisibility.setBackgroundResource(R.drawable.comment_white)
             }
         }
 
@@ -335,7 +336,8 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
 
         //작성자 정보를 위한 뷰
         val Name = comment.user!!.name
-        val ProfileImage = comment.user!!.profileImage
+        if(!comment.user.profileImage.isNullOrEmpty())
+            ProfileImage = comment.user.profileImage
         val Id = comment.user!!.id
 
         val writerView = inflater.inflate(R.layout.item_comment_on_picture_writer, null)
@@ -355,9 +357,13 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
         writerView.post {
             writerName.text = Name// 유저명
 
-            Glide.with(this)//프로필 사진
-                .load(ProfileImage)
-                .into(writerProfile)
+            if(ProfileImage.isNullOrEmpty()){
+                writerProfile.setBackgroundResource(R.drawable.haru_logo)
+            }else {
+                Glide.with(this)//프로필 사진
+                    .load(ProfileImage)
+                    .into(writerProfile)
+            }
 
             toUserPageBtn.setOnClickListener {// 유저페이지 이동
                 val newFrag = MyPageFragment(Id)

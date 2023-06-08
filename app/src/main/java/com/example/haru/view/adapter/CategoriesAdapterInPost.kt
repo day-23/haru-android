@@ -36,6 +36,7 @@ class CategoriesAdapterInPost(val categories: List<Category?>, val listener: (Ca
     }
 
     override fun onBindViewHolder(holder: CategoriesAdapterInPost.CategoryView, @SuppressLint("RecyclerView") position: Int) {
+        Log.d("categories", categories.toString())
         while(categories[position+plusIndex] == null){
             plusIndex++
         }
@@ -102,10 +103,7 @@ class CategoriesAdapterInPost(val categories: List<Category?>, val listener: (Ca
     }
 
     override fun getItemCount(): Int {
-        var size = categories.size
-        if(categories.contains(null)){
-            size -= 1
-        }
+        var size = categories.size - 2
         return size
     }
 }

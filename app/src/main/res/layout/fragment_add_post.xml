@@ -27,12 +27,12 @@
                 android:id="@+id/addpost_title_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="하루 쓰기"
+                android:text="하루 그리기"
                 android:gravity="center"
                 android:textColor="#191919"
                 android:textStyle="bold"
-                android:textSize="20dp"
-                android:layout_marginRight="10dp"
+                android:textSize="20sp"
+                android:layout_marginEnd="10dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"/>
 

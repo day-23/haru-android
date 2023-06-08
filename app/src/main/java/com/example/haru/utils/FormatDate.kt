@@ -615,7 +615,7 @@ object FormatDate {
     }
 
     //이 다음 4개의 next 함수는 스케줄 용입니다.
-    fun nextStartDate(endDateStr: String, repeatEndDateStr: String?): Date? {
+    fun nextStartDate(endDateStr: String, repeatEndDateStr: String? = null): Date? {
         val endDate = strToDatecalendar(endDateStr)
         val calendar = Calendar.getInstance()
 
@@ -642,16 +642,20 @@ object FormatDate {
     fun nextStartDateEveryWeek(
         repeatValue: String,
         repeatOption: Int,
-        endDateStr: String,
-        repeatEndDateStr: String?
+        endDateStr: String? = null,
+        repeatEndDateStr: String? = null
     ): Date? {
         val calendar = Calendar.getInstance()
 
         if (!repeatValue.contains("T")) {
             val plusValue = if (repeatOption == 2) 8 else 1
 
-            calendar.time =
-                strToDatecalendar(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
+            if(endDateStr != null) {
+                calendar.time =
+                    strToDatecalendar(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
+            } else {
+                calendar.time = Date()
+            }
 
             val nWeek = calendar.get(Calendar.DAY_OF_WEEK)
 
@@ -714,13 +718,19 @@ object FormatDate {
     }
 
     fun nextStartDateEveryMonth(
-        repeatValue: String, endDateStr: String,
-        repeatEndDateStr: String?
+        repeatValue: String, endDateStr: String? = null,
+        repeatEndDateStr: String? = null
     ): Date? {
         val calendar = Calendar.getInstance()
 
         if (!repeatValue.contains("T")) {
-            calendar.time = strToDatecalendar(endDateStr)
+
+            if(endDateStr != null) {
+                calendar.time =
+                    strToDatecalendar(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
+            } else {
+                calendar.time = Date()
+            }
 
             val idx = calendar.get(Calendar.DAY_OF_MONTH) - 1
             val idxPlus = 1
@@ -804,14 +814,19 @@ object FormatDate {
 
     fun nextStartDateEveryYear(
         repeatValue: String,
-        endDateStr: String,
-        repeatEndDateStr: String?,    // endDateStr을 하면 현재 시간으로 값을 정하지만 만약 사용자가 직접 날짜를 설정한다면????? 방법 강구하기
+        endDateStr: String? = null,
+        repeatEndDateStr: String? = null,    // endDateStr을 하면 현재 시간으로 값을 정하지만 만약 사용자가 직접 날짜를 설정한다면????? 방법 강구하기
         day: Int? = null
     ): Date? {                       // todoAddViewModel에 사용자가 직접 endDate를 설정한 것을 표시할 수 있는 값 만들기???
         val calendar = Calendar.getInstance()
 
         if (!repeatValue.contains("T")) {
-            calendar.time = strToDatecalendar(endDateStr)
+            if(endDateStr != null) {
+                calendar.time =
+                    strToDatecalendar(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
+            } else {
+                calendar.time = Date()
+            }
 
             val idx = calendar.get(Calendar.MONTH)
             val idxPlus = 1
