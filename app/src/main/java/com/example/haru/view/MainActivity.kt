@@ -56,72 +56,12 @@ class MainActivity : BaseActivity() {
         editor.putBoolean("todoComplete", calendarMainData.todoComplete)
         editor.putBoolean("todoInComplete", calendarMainData.todoInComplete)
         editor.putBoolean("holidayCategory", calendarMainData.holidayCategory)
+        editor.putInt("alarmCnt", calendarMainData.alarmCnt)
         editor.putString("userId", User.id)
         editor.putBoolean("alarmAprove", User.alarmAprove)
         editor.apply()
 
         super.onPause()
-    }
-
-    fun initAlarm(requestCode: Int) {
-        if (User.alarmAprove) {
-            Log.d("알람", "알람 설정")
-            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-
-            val intent = Intent(this, AlarmWorker::class.java)
-
-            if (User.id != "") {
-                intent.putExtra("userId", User.id)
-                intent.putExtra("requestCode", requestCode.toString())
-
-                val pendingIntent = PendingIntent.getBroadcast(
-                    this, requestCode, intent,
-                    PendingIntent.FLAG_MUTABLE
-                )
-
-                val calendar = Calendar.getInstance()
-
-//                val todaytime = calendar.time
-//
-//                todaytime.hours = 9
-//                todaytime.minutes = 0
-//                todaytime.seconds = 0
-//
-//                if (calendar.time.after(todaytime)){
-//                    calendar.add(Calendar.DATE, 1)
-//                }
-//
-//                calendar.apply {
-//                    set(Calendar.HOUR_OF_DAY, 9)
-//                    set(Calendar.MINUTE, 0)
-//                    set(Calendar.SECOND, 0)
-//                }
-
-                calendar.add(Calendar.SECOND, 5)
-
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
-            }
-        } else {
-            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-            val intent = Intent(baseContext, AlarmWorker::class.java)
-
-            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.getBroadcast(baseContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            } else {
-                PendingIntent.getBroadcast(
-                    baseContext,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            }
-
-            alarmManager.cancel(pendingIntent)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,6 +89,7 @@ class MainActivity : BaseActivity() {
         calendarMainData.todoComplete = sharedPreference.getBoolean("todoComplete", true)
         calendarMainData.todoInComplete = sharedPreference.getBoolean("todoInComplete", true)
         calendarMainData.holidayCategory = sharedPreference.getBoolean("holidayCategory", true)
+        calendarMainData.alarmCnt = sharedPreference.getInt("alarmCnt", 0)
         User.alarmAprove = sharedPreference.getBoolean("alarmAprove", true)
 
 //        initAlarm(0)

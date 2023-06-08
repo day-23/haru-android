@@ -221,30 +221,6 @@
                         android:textColor="@color/light_gray"
                         android:textSize="14sp" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_alarmDate_pick_schedule"
-                        style="@style/minSize"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
-                        android:background="@drawable/custom_btn_date"
-                        android:textColor="@color/date_text"
-                        android:textSize="14sp"
-                        android:visibility="invisible"
-                        app:backgroundTint="@null" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/btn_alarmTime_pick_schedule"
-                        style="@style/minSize"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
-                        android:background="@drawable/custom_btn_date"
-                        android:textColor="@color/date_text"
-                        android:textSize="14sp"
-                        android:visibility="invisible"
-                        app:backgroundTint="@null" />
-
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/alarm_switch_schedule"
                         style="@style/minSize"

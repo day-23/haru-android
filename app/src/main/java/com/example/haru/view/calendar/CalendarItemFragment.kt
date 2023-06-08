@@ -1297,7 +1297,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                             binding.scheduleContentEt.text.toString(),
                                             binding.etMemoSchedule.text.toString(),
                                             category?.id,
-                                            emptyList(),
+                                            if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                             isAllday,
                                             null,
                                             null,
@@ -1334,7 +1334,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                                 null,
                                                 null,
                                                 category!!.id,
-                                                emptyList()
+                                                if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList()
                                             )
                                         ) {
                                             requireActivity().supportFragmentManager.popBackStack()
@@ -1350,7 +1350,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                                 null,
                                                 null,
                                                 null,
-                                                emptyList()
+                                                if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList()
                                             )
                                         ) {
                                             requireActivity().supportFragmentManager.popBackStack()
@@ -1493,7 +1493,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                                 binding.scheduleContentEt.text.toString(),
                                                 binding.etMemoSchedule.text.toString(),
                                                 category!!.id,
-                                                emptyList(),
+                                                if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                                 isAllday,
                                                 null,
                                                 null,
@@ -1511,7 +1511,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                                 binding.scheduleContentEt.text.toString(),
                                                 binding.etMemoSchedule.text.toString(),
                                                 null,
-                                                emptyList(),
+                                                if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                                 isAllday,
                                                 null,
                                                 null,
@@ -1589,7 +1589,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                             binding.scheduleContentEt.text.toString(),
                                             binding.etMemoSchedule.text.toString(),
                                             category?.id,
-                                            emptyList(),
+                                            if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                             isAllday,
                                             null,
                                             null,
@@ -1619,7 +1619,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                     option,
                                     repeatvalue,
                                     category!!.id,
-                                    emptyList()
+                                    if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList()
                                 )
                             ) {
                                 requireActivity().supportFragmentManager.popBackStack()
@@ -1635,7 +1635,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                     option,
                                     repeatvalue,
                                     null,
-                                    emptyList()
+                                    if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList()
                                 )
                             ) {
                                 requireActivity().supportFragmentManager.popBackStack()
@@ -1705,7 +1705,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                     binding.scheduleContentEt.text.toString(),
                                     binding.etMemoSchedule.text.toString(),
                                     category?.id,
-                                    emptyList(),
+                                    if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                     isAllday,
                                     option,
                                     repeatvalue,

@@ -2,7 +2,9 @@ package com.example.haru.view.calendar
 
 import BaseActivity
 import android.app.Activity
-import android.app.DatePickerDialog
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.ColorMatrix
@@ -17,6 +19,8 @@ import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,16 +28,21 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.data.model.Category
+import com.example.haru.data.model.Schedule
+import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentCalendarBinding
+import com.example.haru.utils.FormatDate
+import com.example.haru.utils.User
 import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.view.adapter.CategoryAdapter
 import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.view.checklist.ChecklistInputFragment
 import com.example.haru.view.customDialog.CustomMonthDialog
-import com.example.haru.view.customDialog.CustomTimeDialog
+import com.example.haru.view.etc.AlarmWorker
 import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.CheckListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -145,6 +154,183 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         (activity as BaseActivity).adjustTopMargin(binding.calendarHeader.id)
     }
 
+    fun initAlarm(){
+        deleteAlarm()
+
+        val endcalendar = Calendar.getInstance()
+        endcalendar.time = Date()
+        endcalendar.add(Calendar.DATE, 34)
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
+        val startDate = dateFormat.format(Date())
+        val endDate = dateFormat.format(endcalendar.time)
+
+        val calendarViewModel = CalendarViewModel()
+        calendarViewModel.getAlldo(startDate, endDate, 4)
+
+        calendarViewModel.liveTodoCalendarList.observe(viewLifecycleOwner){livetodo->
+            calendarViewModel.liveScheduleCalendarList.observe(viewLifecycleOwner){liveschedule->
+                var todoIds = ArrayList<String>()
+
+                addAlarm()
+
+                for(todos in livetodo){
+                    for (todo in todos.todos){
+                        if(todo.alarms.size > 0 && !todoIds.contains(todo.id)){
+                            addAlarm(todo.copy())
+                        }
+                    }
+                }
+
+                for(schedule in liveschedule){
+                    if(schedule.schedule.alarms.size > 0){
+                        val calendar = Calendar.getInstance()
+                        val repeatstart = FormatDate.strToDatecalendar(schedule.schedule.repeatStart)
+                        calendar.time = Date()
+                        calendar.add(Calendar.DATE, schedule.position)
+
+                        calendar.apply {
+                            set(Calendar.HOUR_OF_DAY, repeatstart!!.hours)
+                            set(Calendar.MINUTE, repeatstart.minutes)
+                            set(Calendar.SECOND, repeatstart.seconds)
+                        }
+
+                        addAlarm(schedule.schedule.copy(), calendar.time.clone() as Date)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addAlarm(){
+        Log.d("알람", "알람 설정")
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(context, AlarmWorker::class.java)
+
+        if (User.id != "") {
+            intent.putExtra("userId", User.id)
+            intent.putExtra("requestCode", "0")
+            calendarMainData.alarmCnt++
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, 0, intent,
+                PendingIntent.FLAG_MUTABLE
+            )
+
+            val calendar = Calendar.getInstance()
+
+            val amTime = calendar.time
+            val pmTime = calendar.time
+
+            amTime.hours = 9
+            amTime.minutes = 0
+            amTime.seconds = 0
+
+            pmTime.hours = 21
+            pmTime.minutes = 0
+            pmTime.seconds = 0
+
+            if (calendar.time.after(amTime) && calendar.time.before(pmTime)){
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 21)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                }
+            } else {
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                }
+            }
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
+    private fun addAlarm(todo: Todo){
+        val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmWorker::class.java)
+
+        intent.putExtra("userId", User.id)
+        intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
+        calendarMainData.alarmCnt++
+
+        intent.putExtra("body", todo.content)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, calendarMainData.alarmCnt, intent,
+            PendingIntent.FLAG_MUTABLE
+        )
+
+        val calendar = Calendar.getInstance()
+        calendar.time = FormatDate.strToDate(todo.alarms[0].time)
+
+        if(calendar.time.after(Date())) {
+            Log.d("알람추가", calendar.time.toString())
+            Log.d("알람추가", todo.content)
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
+    private fun addAlarm(schedule: Schedule, date: Date){
+        val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmWorker::class.java)
+
+        intent.putExtra("userId", User.id)
+        intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
+        calendarMainData.alarmCnt++
+
+        intent.putExtra("body", schedule.content)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, calendarMainData.alarmCnt, intent,
+            PendingIntent.FLAG_MUTABLE
+        )
+
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+
+        if(calendar.time.after(Date())) {
+            Log.d("알람추가", calendar.time.toString())
+            Log.d("알람추가", schedule.content)
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
+    private fun deleteAlarm(){
+        val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmWorker::class.java)
+
+        for (i in 0 until  calendarMainData.alarmCnt-1) {
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, i, intent,
+                PendingIntent.FLAG_MUTABLE
+            )
+
+            if(pendingIntent != null){
+                alarmManager.cancel(pendingIntent)
+            }
+        }
+
+        calendarMainData.alarmCnt = 0
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -193,9 +379,9 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         val calendarViewModel = CalendarViewModel()
 
-        Log.d("캘린더오류", "확인")
-
         calendar.time = Date()
+
+        initAlarm()
 
         itemYearBtn.text = "${calendar.get(Calendar.YEAR)}년"
         itemMonthBtn.text = "${calendar.get(Calendar.MONTH) + 1}월"
@@ -545,6 +731,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             if (fabMain_status) {
                 val scheduleInput = CalendarAddFragment(categoryAdapter.categoryList){
                     adapterMonth.notifyDataSetChanged()
+                    initAlarm()
                 }
 
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)

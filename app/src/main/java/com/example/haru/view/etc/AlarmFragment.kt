@@ -44,6 +44,10 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val sharedPreference = requireContext().getSharedPreferences("ApplyData", 0)
+        val editor = sharedPreference.edit()
+
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
         binding.ivBackIconAlarm.setOnClickListener(ClickListener())
 
@@ -51,6 +55,7 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
         binding.commentAlarmSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             User.alarmAprove = isChecked
+            editor.putBoolean("alarmAprove", User.alarmAprove)
         }
     }
 
