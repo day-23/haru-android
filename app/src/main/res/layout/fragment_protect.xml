@@ -91,16 +91,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lineSpacingExtra="1.8dp"
             android:text="계정 공개 상태를 변경하여 나의 피드를 볼 수 있는 사람을 제한할 수 있습니다. 공개 계정일 경우 개별 카테고리에 대한 공개 설정은 카테고리 관리에서, 개별 게시글에 대한 공개 설정은 작성 시 설정할 수 있습니다."
-            android:textSize="12sp"
-            android:textColor="@color/light_gray"/>
+            android:textColor="@color/light_gray"
+            android:textSize="12sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="14dp"
             android:layout_marginBottom="14dp"
-            android:background="@color/divider"/>
+            android:background="@color/divider" />
 
         <TextView
             android:layout_width="match_parent"
@@ -185,16 +186,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:lineSpacingExtra="1.8dp"
+            android:text="나의 피드의 둘러보기 페이지 노출 여부를 선택할 수 있습니다. 피드에 좋아요와 코멘트를 남길 수 있는 대상 범위를 설정할 수 있습니다."
             android:textColor="@color/light_gray"
-            android:textSize="12sp"
-            android:text="나의 피드의 둘러보기 페이지 노출 여부를 선택할 수 있습니다. 피드에 좋아요와 코멘트를 남길 수 있는 대상 범위를 설정할 수 있습니다."/>
+            android:textSize="12sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="14dp"
             android:layout_marginBottom="14dp"
-            android:background="@color/divider"/>
+            android:background="@color/divider" />
 
         <TextView
             android:layout_width="match_parent"
@@ -232,9 +234,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:lineSpacingExtra="1.8dp"
+            android:text="둘러보기에서 나의 이메일 계정 검색을 제한할 수 있습니다. 이메일 검색이 제한되어도 계정 > 아이디 화면에서 설정된 아이디는 검색에 사용될 수 있습니다."
             android:textColor="@color/light_gray"
-            android:textSize="12sp"
-            android:text="둘러보기에서 나의 이메일 계정 검색을 제한할 수 있습니다. 이메일 검색이 제한되어도 계정 > 아이디 화면에서 설정된 아이디는 검색에 사용될 수 있습니다."/>
+            android:textSize="12sp" />
 
 
     </LinearLayout>
