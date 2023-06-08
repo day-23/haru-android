@@ -92,6 +92,10 @@ class CustomMonthDialog(date: Date? = null) : DialogFragment() {
             value = startMonth
             displayedValues = monthList
         }
+
+        binding.emptyView.setOnClickListener {
+            dismiss()
+        }
     }
 
     override fun onCancel(dialog: DialogInterface) {
