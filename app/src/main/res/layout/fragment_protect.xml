@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:text="계정 공개"
             android:textColor="@color/todo_description"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="계정을 비공개로 설정"
                 android:textColor="@color/date_text"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -107,7 +107,7 @@
             android:layout_height="wrap_content"
             android:text="게시물"
             android:textColor="@color/todo_description"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -122,7 +122,7 @@
                 android:layout_weight="1"
                 android:text="둘러보기 노출 허용"
                 android:textColor="@color/date_text"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_browsing_enabled"
@@ -146,7 +146,7 @@
                 android:layout_weight="1"
                 android:text="피드 댓글 허용"
                 android:textColor="@color/date_text"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_allow_feed_comment"
@@ -170,7 +170,7 @@
                 android:layout_weight="1"
                 android:text="피드 좋아요 허용"
                 android:textColor="@color/date_text"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_allow_feed_like"
@@ -201,7 +201,7 @@
             android:layout_height="wrap_content"
             android:text="검색"
             android:textColor="@color/todo_description"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -217,7 +217,7 @@
                 android:layout_weight="1"
                 android:text="이메일로 검색 허용"
                 android:textColor="@color/date_text"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_allow_search"
