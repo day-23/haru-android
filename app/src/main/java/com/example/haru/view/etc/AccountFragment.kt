@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.viewmodel.EtcViewModel
 
 class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
@@ -25,7 +26,9 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "AccountFragment - onCreate() called")
+        MainActivity.hideNavi(true)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

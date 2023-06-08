@@ -12,16 +12,17 @@ import androidx.fragment.app.Fragment
 import com.example.haru.App
 import com.example.haru.databinding.FragmentAccountDeleteDoubleCheckBinding
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
 import com.example.haru.viewmodel.EtcViewModel
 
 class AccountDeleteDoubleCheckFragment(val etcViewModel: EtcViewModel) : Fragment() {
-    private lateinit var binding : FragmentAccountDeleteDoubleCheckBinding
+    private lateinit var binding: FragmentAccountDeleteDoubleCheckBinding
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(etcViewModel: EtcViewModel) : AccountDeleteDoubleCheckFragment {
+        fun newInstance(etcViewModel: EtcViewModel): AccountDeleteDoubleCheckFragment {
             return AccountDeleteDoubleCheckFragment(etcViewModel)
         }
     }
@@ -29,7 +30,9 @@ class AccountDeleteDoubleCheckFragment(val etcViewModel: EtcViewModel) : Fragmen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "AccountDeleteDoubleCheckFragment - onCreate() called")
+        MainActivity.hideNavi(true)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,22 +56,26 @@ class AccountDeleteDoubleCheckFragment(val etcViewModel: EtcViewModel) : Fragmen
         binding.btnAccountDeleteComplete.setOnClickListener(ClickListener())
     }
 
-    inner class ClickListener : View.OnClickListener{
+    inner class ClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            when(v?.id){
+            when (v?.id) {
                 binding.ivCancelAccountDelete.id -> {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
 
                 binding.btnAccountDeleteComplete.id -> {
-                    etcViewModel.deleteUserAccount{
-                        if (it?.success == true){
+                    etcViewModel.deleteUserAccount {
+                        if (it?.success == true) {
                             SharedPrefsManager.clear(App.instance)
                             val intent = Intent(activity, LoginActivity::class.java)
                             startActivity(intent)
                             activity?.finish()
                         } else {
-                            Toast.makeText(requireContext(), "계정을 삭제하는데 실패하였습니다..", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "계정을 삭제하는데 실패하였습니다..",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             Log.e("20191627", "계정 삭제 실패")
                         }
                     }

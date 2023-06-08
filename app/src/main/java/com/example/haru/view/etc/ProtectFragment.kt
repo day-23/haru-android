@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.databinding.FragmentProtectBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.EtcViewModel
 
@@ -26,6 +27,7 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(EtcFragment.TAG, "ProtectFragment - onCreate() called")
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(

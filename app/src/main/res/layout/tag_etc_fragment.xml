@@ -32,7 +32,7 @@
                     android:layout_marginBottom="18dp"
                     android:text="태그 관리"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -62,14 +62,15 @@
 
                         <EditText
                             android:id="@+id/et_tag_input"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:hint="태그 추가"
                             android:maxLength="10"
                             android:singleLine="true"
                             android:textColor="@color/date_text"
-                            android:textSize="14sp" />
+                            android:textSize="16sp" />
 
                         <TextView
                             android:layout_width="0dp"
