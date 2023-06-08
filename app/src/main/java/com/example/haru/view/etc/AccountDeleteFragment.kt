@@ -54,6 +54,10 @@ class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
             binding.tvEmail.text = it
         })
 
+        etcViewModel.introduction.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvAccountIntroduction.text = it
+        })
+
         etcViewModel.name.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.tvAccountName.text = it
         })
