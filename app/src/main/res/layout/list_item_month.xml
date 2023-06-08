@@ -612,6 +612,14 @@
                         android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/touch_event_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:alpha="0.2">
+
+                    </androidx.recyclerview.widget.RecyclerView>
                 </FrameLayout>
             </FrameLayout>
             <FrameLayout
@@ -1024,13 +1032,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/touch_event_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.2">
-
-        </androidx.recyclerview.widget.RecyclerView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--<androidx.recyclerview.widget.RecyclerView
