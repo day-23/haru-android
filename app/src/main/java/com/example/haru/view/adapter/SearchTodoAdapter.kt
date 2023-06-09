@@ -51,10 +51,15 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
         fun onClick(view: View, subTodoPosition: Int)
     }
 
+    interface ToggleClick {
+        fun onClick(view: View, id: String)
+    }
+
     var todoClick: TodoClick? = null
     var flagClick: FlagClick? = null
     var completeClick: CompleteClick? = null
     var subTodoCompleteClick: SubTodoCompleteClick? = null
+    var toggleClick: ToggleClick? = null
 
     var subTodoClickId: String? = null
 
@@ -186,14 +191,14 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
                 }
             }
 //
-//            if (toggleClick != null) {
-//                binding.subTodoToggle.setOnClickListener {
-//                    binding.subTodoToggle.isSelected = !it.isSelected
-//                    binding.subTodoItemLayout.visibility =
-//                        if (it.isSelected) View.GONE else View.VISIBLE
-//                    toggleClick?.onClick(it, item.id)
-//                }
-//            }
+            if (toggleClick != null) {
+                binding.subTodoToggle.setOnClickListener {
+                    binding.subTodoToggle.isSelected = !it.isSelected
+                    binding.subTodoItemLayout.visibility =
+                        if (it.isSelected) View.GONE else View.VISIBLE
+                    toggleClick?.onClick(it, item.id)
+                }
+            }
 
             if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null) {
                 binding.blankView.visibility = View.VISIBLE

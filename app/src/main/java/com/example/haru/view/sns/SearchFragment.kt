@@ -16,10 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.model.Completed
-import com.example.haru.data.model.Flag
-import com.example.haru.data.model.FrontEndDate
-import com.example.haru.data.model.SuccessFail
+import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSearchBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
@@ -63,22 +60,15 @@ class SearchFragment(val viewModel: Any) : Fragment() {
             val scheduleListView: RecyclerView = binding.searchRecyclerOne
             val scheduleAdapter = SearchScheduleAdapter(requireContext())
 
-            val todoListView: RecyclerView = binding.searchRecyclerTwo
-            val todoAdapter = SearchTodoAdapter(requireContext())
-
             scheduleListView.adapter = scheduleAdapter
             scheduleListView.layoutManager = ChecklistFragment.WrapContentLinearLayoutManager(
                 requireContext(),
                 LinearLayoutManager.VERTICAL,
                 false
             )
-
-            todoListView.adapter = todoAdapter
-            todoListView.layoutManager = ChecklistFragment.WrapContentLinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.VERTICAL,
-                false
-            )
+            // -------------------------------------Todo 검색 결과를 맡은 RecyclerView---------------------------------------//
+            val todoListView: RecyclerView = binding.searchRecyclerTwo
+            val todoAdapter = SearchTodoAdapter(requireContext())
 
             todoAdapter.todoClick = object : SearchTodoAdapter.TodoClick {
                 override fun onClick(view: View, id: String) {
@@ -208,6 +198,20 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                 }
             }
 
+            todoAdapter.toggleClick = object : SearchTodoAdapter.ToggleClick {
+                override fun onClick(view: View, id: String) {
+                    val folded = if (view.isSelected) Folded(true) else Folded(false)
+                    viewModel.updateFolded(folded, id)
+                }
+            }
+
+            todoListView.adapter = todoAdapter
+            todoListView.layoutManager = ChecklistFragment.WrapContentLinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            // -------------------------------------------------------------------------------------------------------//
             viewModel.searchList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 binding.searchRecyclerOne.visibility =
                     if (it.first == null) View.GONE else View.VISIBLE
