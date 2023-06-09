@@ -64,12 +64,13 @@
                     android:layout_height="wrap_content"
                     app:cardElevation="0dp"
                     app:cardUseCompatPadding="true"
-                    app:contentPadding="20dp">
+                    app:contentPadding="10dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginLeft="10dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -94,7 +95,7 @@
                                     android:textStyle="bold"
                                     android:layout_gravity="center"
                                     android:textColor="#1DAFFF"
-                                    android:textSize="14sp" />
+                                    android:textSize="16sp" />
                             </LinearLayout>
                         </LinearLayout>
 
@@ -116,12 +117,13 @@
                     android:layout_height="wrap_content"
                     app:cardElevation="0dp"
                     app:cardUseCompatPadding="true"
-                    app:contentPadding="20sp">
+                    app:contentPadding="10dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginLeft="10dp">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -138,6 +140,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="할일"
                                 android:textStyle="bold"
+                                android:textSize="16sp"
                                 android:layout_marginLeft="6dp"
                                 android:layout_gravity="center"
                                 android:textColor="#1DAFFF" />
@@ -178,6 +181,8 @@
                     android:hint="3월 14일 일정 추가"
                     android:background="@android:color/transparent"
                     android:textColorHint="#646464"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
                     android:textColor="#191919" />
             </LinearLayout>
 

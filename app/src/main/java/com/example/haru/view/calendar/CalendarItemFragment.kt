@@ -1730,6 +1730,18 @@ class CalendarItemFragment(val schedule: Schedule,
 
             updateDialog.show(parentFragmentManager, updateDialog.tag)
         }
+
+        binding.alarmSwitchSchedule.setOnCheckedChangeListener { view, isChecked ->
+            if(isChecked){
+                binding.alarmTv.setTextColor(Color.parseColor("#191919"))
+                binding.alarmIv.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#191919"))
+            } else {
+                binding.alarmTv.setTextColor(Color.LTGRAY)
+                binding.alarmIv.backgroundTintList =
+                    ColorStateList.valueOf(Color.LTGRAY)
+            }
+        }
     }
 
     @SuppressLint("ResourceAsColor")

@@ -29,6 +29,7 @@
                     android:text="카테고리 관리"
                     android:layout_marginLeft="24dp"
                     android:layout_gravity="center"
+                    android:textStyle="bold"
                     android:textColor="#FDFDFD"
                     android:textSize="24sp"/>
             </LinearLayout>
