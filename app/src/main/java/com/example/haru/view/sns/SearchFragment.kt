@@ -82,13 +82,34 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     if (viewModel.searchList.value?.second?.find {
                             it.id == id
                         }?.type == 2) {
+
                         requireActivity().supportFragmentManager.beginTransaction()
-                            .replace(
+                            .add(
                                 R.id.fragments_frame,
                                 ChecklistItemFragment(viewModel, id)
                             )
                             .addToBackStack(null)
                             .commit()
+                    }
+                }
+            }
+
+            todoAdapter.flagClick = object : SearchTodoAdapter.FlagClick {
+                override fun onClick(
+                    view: View,
+                    id: String,
+                    callback: (flag: Flag, successData: SuccessFail?) -> Unit
+                ) {
+                    val flag =
+                        if (viewModel.searchList.value?.second?.find { it.id == id }!!.flag) Flag(
+                            false
+                        )
+                        else Flag(true)
+                    viewModel.updateFlag(
+                        flag,
+                        id
+                    ) { flag, successData ->
+                        callback(flag, successData)
                     }
                 }
             }

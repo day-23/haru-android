@@ -108,6 +108,10 @@ class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFr
             binding.tvDate.text = "${changedYear}년 ${changedMonth + 1}월"
         }
 
+        binding.emptyView.setOnClickListener {
+            dismiss()
+        }
+
     }
 
     override fun onResume() {
