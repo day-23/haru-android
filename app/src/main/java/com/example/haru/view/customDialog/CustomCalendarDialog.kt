@@ -99,7 +99,7 @@ class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Toast.makeText(requireContext(), "Custom Date Picker", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireContext(), "Custom Date Picker", Toast.LENGTH_SHORT).show()
 
         initCalendar()
 
