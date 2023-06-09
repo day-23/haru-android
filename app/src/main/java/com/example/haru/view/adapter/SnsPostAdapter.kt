@@ -24,6 +24,7 @@ import com.example.haru.R
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.model.timetable_data
+import com.example.haru.utils.GetPastDate
 import com.example.haru.utils.User
 import com.example.haru.view.sns.CommentsFragment
 import com.example.haru.view.sns.MyPageFragment
@@ -34,6 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import kakao.k.p
 import kotlinx.coroutines.*
 import org.w3c.dom.Text
+import java.text.SimpleDateFormat
 
 class SnsPostAdapter(val context: Context,
                      private var itemList: ArrayList<Post> = ArrayList(),
@@ -55,6 +57,8 @@ class SnsPostAdapter(val context: Context,
         }else{
             holder.totalcomment.visibility = View.VISIBLE
         }
+        val date = GetPastDate.getPastDate(itemList[position].createdAt)
+        holder.daysAgo.setText(date)
 
         if(itemList[position].isTemplatePost != null){
             holder.content.text = ""
@@ -160,6 +164,7 @@ class SnsPostAdapter(val context: Context,
     inner class SnsPostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var userid = itemView.findViewById<TextView>(R.id.user_id)
         var profileImg = itemView.findViewById<CircleImageView>(R.id.post_profile)
+        var daysAgo = itemView.findViewById<TextView>(R.id.days_ago)
         var picture = itemView.findViewById<ViewPager2>(R.id.post_picture)
         var content = itemView.findViewById<TextView>(R.id.post_contents)
         var likeBtn = itemView.findViewById<ImageView>(R.id.button_like)
