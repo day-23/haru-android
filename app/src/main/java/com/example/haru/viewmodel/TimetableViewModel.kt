@@ -99,17 +99,23 @@ class TimetableViewModel(val context: Context) : ViewModel() {
         _TodayDay.value = calendar.get(Calendar.DAY_OF_MONTH).toString()
     }
 
-    fun init_value() {
+    fun init_value(year:Int? = null, month: Int? = null, day: Int? = null) {
         _Selected.value = Timetable_date(
             calendar.get(Calendar.YEAR).toString() + "년",
             (calendar.get(Calendar.MONTH) + 1).toString() + "월",
             calendar.get(Calendar.DAY_OF_MONTH).toString()
         )
+
+        if(year == null){
         Daylist(
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
+        }else{
+            Daylist(year, month!!, day!!)
+        }
+
         _Days.value = dayslist
         _Colors.value = colorlist
         _Dates.value = Datelist
@@ -186,6 +192,7 @@ class TimetableViewModel(val context: Context) : ViewModel() {
         dayslist.clear()
         colorlist.clear()
         Datelist.clear()
+        IndexList.clear()
 
         calendar.set(year, month - 1, day)
         val lastOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)

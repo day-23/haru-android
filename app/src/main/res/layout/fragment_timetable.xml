@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.example.haru.viewmodel.TimetableViewModel" />
@@ -69,7 +68,7 @@
                         android:layout_marginHorizontal="4dp"
                         android:layout_weight="0"
                         android:background="@drawable/calendar_month_choose_btn"
-                        android:onClick="@{() -> viewModel.buttonClick()}" />
+                        />
 
                 </LinearLayout>
 

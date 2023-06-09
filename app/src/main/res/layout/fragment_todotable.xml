@@ -175,7 +175,7 @@
                         android:layout_marginBottom="6dp"
                         android:text="월"
                         android:textAlignment="center"
-                        android:textColor="#ACACAC"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
 
                     <TextView
@@ -185,7 +185,7 @@
                         android:hint="2"
                         android:text="@{viewModel.days.get(1)}"
                         android:textAlignment="center"
-                        android:textColor="#191919"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -221,7 +221,7 @@
                         android:layout_marginBottom="6dp"
                         android:text="화"
                         android:textAlignment="center"
-                        android:textColor="#ACACAC"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
 
                     <TextView
@@ -231,7 +231,7 @@
                         android:hint="3"
                         android:text="@{viewModel.days.get(2)}"
                         android:textAlignment="center"
-                        android:textColor="#191919"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -266,7 +266,7 @@
                         android:layout_marginBottom="6dp"
                         android:text="수"
                         android:textAlignment="center"
-                        android:textColor="#ACACAC"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
 
                     <TextView
@@ -276,7 +276,7 @@
                         android:hint="4"
                         android:text="@{viewModel.days.get(3)}"
                         android:textAlignment="center"
-                        android:textColor="#191919"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -311,7 +311,7 @@
                         android:layout_marginBottom="6dp"
                         android:text="목"
                         android:textAlignment="center"
-                        android:textColor="#ACACAC"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
 
                     <TextView
@@ -321,7 +321,7 @@
                         android:hint="5"
                         android:text="@{viewModel.days.get(4)}"
                         android:textAlignment="center"
-                        android:textColor="#191919"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -357,7 +357,7 @@
                         android:layout_marginBottom="6dp"
                         android:text="금"
                         android:textAlignment="center"
-                        android:textColor="#ACACAC"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
 
                     <TextView
@@ -367,7 +367,7 @@
                         android:hint="6"
                         android:text="@{viewModel.days.get(5)}"
                         android:textAlignment="center"
-                        android:textColor="#191919"
+                        android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
 

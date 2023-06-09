@@ -19,14 +19,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.App
 import com.example.haru.R
-import com.example.haru.data.model.Category
-import com.example.haru.data.model.Schedule
-import com.example.haru.data.model.ScheduleCalendarData
-import com.example.haru.data.model.timetable_data
+import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentTimetableBinding
+import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.view.checklist.CalendarAddFragment
+import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
@@ -222,6 +222,22 @@ class TimetableFragment : Fragment() {
                 }
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
             }
+        }
+
+
+        binding.timetableMonthChooseLayout.setOnClickListener {
+            val arrowImv = binding.timetableMonthChooseLayout.getChildAt(2) as ImageView
+            arrowImv.rotation = 90f
+
+            val datePicker = CustomCalendarDialog()
+            datePicker.calendarClick =
+                object : CustomCalendarDialog.CalendarClickListener {
+                    override fun onClick(view: View, year: Int, month: Int, day: Int) {
+                        timetableviewModel.init_value(year, month, day)
+                        arrowImv.rotation = 0f
+                    }
+                }
+            datePicker.show(parentFragmentManager, null)
         }
 
         return rootView
