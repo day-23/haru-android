@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Flag
+import com.example.haru.data.model.SuccessFail
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentChecklistDividerBinding
 import com.example.haru.databinding.FragmentChecklistItemBinding
@@ -23,6 +25,21 @@ import com.example.haru.databinding.FragmentSearchTodoHeaderBinding
 import com.example.haru.utils.FormatDate
 
 class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    interface TodoClick {
+        fun onClick(view: View, id: String)
+    }
+
+    interface FlagClick {
+        fun onClick(
+            view: View,
+            id: String,
+            callback: (flag: Flag, successData: SuccessFail?) -> Unit
+        )
+    }
+
+    var todoClick: TodoClick? = null
+    var flagClick: FlagClick? = null
 
     private val divider = 0
     private val header = 1
@@ -105,7 +122,6 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
 
             if (content != null) {
                 val start = item.content.indexOf(content!!, ignoreCase = true)
-                Log.e("20191627", "$start")
                 val end = start + content!!.length
                 val span = SpannableString(item.content)
                 span.setSpan(
@@ -119,22 +135,22 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
                 binding.tvTitle.text = span
             } else binding.tvTitle.text = item.content
 
-//            if (todoClick != null) {
-//                binding.ClickLayout.setOnClickListener {
-//                    todoClick?.onClick(it, item.id)
-//                }
-//            }
-//
-//            if (flagClick != null) {
-//                binding.checkFlag.setOnClickListener {
-//                    flagClick?.onClick(it, item.id){ flag, successData ->
-//                        if (successData == null)
-//                            binding.checkFlag.isChecked = !flag.flag
-//                        else if (!successData.success)
-//                            binding.checkFlag.isChecked = !flag.flag
-//                    }
-//                }
-//            }
+            if (todoClick != null) {
+                binding.ClickLayout.setOnClickListener {
+                    todoClick?.onClick(it, item.id)
+                }
+            }
+
+            if (flagClick != null) {
+                binding.checkFlag.setOnClickListener {
+                    flagClick?.onClick(it, item.id){ flag, successData ->
+                        if (successData == null)
+                            binding.checkFlag.isChecked = !flag.flag
+                        else if (!successData.success)
+                            binding.checkFlag.isChecked = !flag.flag
+                    }
+                }
+            }
 //
 //            if (completeClick != null) {
 //                binding.checkDone.setOnClickListener {

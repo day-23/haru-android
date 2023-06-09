@@ -21,9 +21,8 @@
                 android:id="@+id/iv_back_icon_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/arrow"
-                android:backgroundTint="@color/todo_description"
-                android:rotation="180" />
+                android:background="@drawable/back_arrow"
+                android:backgroundTint="@color/todo_description"/>
 
         </FrameLayout>
 
@@ -209,7 +208,7 @@
         android:id="@+id/logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="124dp"
         android:paddingStart="34dp"
         android:paddingTop="14dp"
         android:paddingBottom="14dp"

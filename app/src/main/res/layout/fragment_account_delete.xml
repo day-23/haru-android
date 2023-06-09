@@ -19,9 +19,8 @@
                 android:id="@+id/iv_back_icon_account_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/arrow"
-                android:backgroundTint="@color/todo_description"
-                android:rotation="180" />
+                android:background="@drawable/back_arrow"
+                android:backgroundTint="@color/todo_description"/>
 
         </FrameLayout>
 
@@ -87,18 +86,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/today_layout_gradient"
+        android:background="@color/dateBtn_bg"
         android:orientation="vertical"
-        android:paddingStart="29dp"
-        android:paddingTop="19dp"
-        android:paddingBottom="18dp">
+        android:paddingStart="34dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="34dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="연동된 이메일"
             android:textColor="@color/todo_description"
-            android:textSize="12sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_email"
@@ -143,16 +142,24 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_account_delete"
-        android:layout_width="wrap_content"
+        style="@style/minSize"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingHorizontal="30dp"
-        android:paddingBottom="20dp"
-        android:text="계정 삭제"
-        android:textColor="@color/delete_red"
-        android:textSize="20sp" />
+        android:layout_marginStart="39dp"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="75dp"
+        android:background="@drawable/shape_rect_radius_10"
+        android:backgroundTint="@color/delete_red"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="계정 삭제 완료"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
 
 
 </LinearLayout>

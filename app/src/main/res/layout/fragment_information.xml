@@ -21,9 +21,8 @@
                 android:id="@+id/iv_back_icon_information"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/arrow"
-                android:backgroundTint="@color/todo_description"
-                android:rotation="180" />
+                android:background="@drawable/back_arrow"
+                android:backgroundTint="@color/todo_description"/>
 
         </FrameLayout>
 
@@ -39,6 +38,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/terms_of_service"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -66,6 +66,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/privacy_policy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -93,32 +94,32 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/linear_border_up_bottom"
-        android:orientation="horizontal">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="20dp"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:background="@drawable/linear_border_up_bottom"-->
+<!--        android:orientation="horizontal">-->
 
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingStart="14dp"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
-            android:text="오픈 소스"
-            android:textColor="@color/todo_description"
-            android:textSize="14sp" />
+<!--        <TextView-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:paddingStart="14dp"-->
+<!--            android:paddingTop="14dp"-->
+<!--            android:paddingBottom="14dp"-->
+<!--            android:text="오픈 소스"-->
+<!--            android:textColor="@color/todo_description"-->
+<!--            android:textSize="14sp" />-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/arrow" />
+<!--        <ImageView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:background="@drawable/arrow" />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
 </LinearLayout>
