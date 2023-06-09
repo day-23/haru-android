@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentTodotableBinding
 import com.example.haru.view.adapter.TodotableAdapter
 import com.example.haru.view.checklist.ChecklistInputFragment
+import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import com.example.haru.viewmodel.TodoTableRecyclerViewmodel
@@ -159,15 +161,15 @@ class TodotableFragment : Fragment() {
             binding.friLayout.setBackgroundResource(R.color.white)
             binding.satLayout.setBackgroundResource(R.color.white)
 
-            when(day){
-                timetableviewModel.Days.value?.get(0)-> binding.sunLayout.setBackgroundResource(R.drawable.todo_table_selected)
-                timetableviewModel.Days.value?.get(1)-> binding.monLayout.setBackgroundResource(R.drawable.todo_table_selected)
-                timetableviewModel.Days.value?.get(2)-> binding.tueLayout.setBackgroundResource(R.drawable.todo_table_selected)
-                timetableviewModel.Days.value?.get(3)-> binding.wedLayout.setBackgroundResource(R.drawable.todo_table_selected)
-                timetableviewModel.Days.value?.get(4)-> binding.thuLayout.setBackgroundResource(R.drawable.todo_table_selected)
-                timetableviewModel.Days.value?.get(5)-> binding.friLayout.setBackgroundResource(R.drawable.todo_table_selected)
-                timetableviewModel.Days.value?.get(6)-> binding.satLayout.setBackgroundResource(R.drawable.todo_table_selected)
-            }
+//            when(day){
+//                timetableviewModel.Days.value?.get(0)-> binding.sunLayout.setBackgroundResource(R.drawable.todo_table_selected)
+//                timetableviewModel.Days.value?.get(1)-> binding.monLayout.setBackgroundResource(R.drawable.todo_table_selected)
+//                timetableviewModel.Days.value?.get(2)-> binding.tueLayout.setBackgroundResource(R.drawable.todo_table_selected)
+//                timetableviewModel.Days.value?.get(3)-> binding.wedLayout.setBackgroundResource(R.drawable.todo_table_selected)
+//                timetableviewModel.Days.value?.get(4)-> binding.thuLayout.setBackgroundResource(R.drawable.todo_table_selected)
+//                timetableviewModel.Days.value?.get(5)-> binding.friLayout.setBackgroundResource(R.drawable.todo_table_selected)
+//                timetableviewModel.Days.value?.get(6)-> binding.satLayout.setBackgroundResource(R.drawable.todo_table_selected)
+//            }
             binding.invalidateAll()
         }
 
@@ -213,39 +215,45 @@ class TodotableFragment : Fragment() {
                     binding.todoSunDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoSunDate.setTypeface(Typeface.DEFAULT_BOLD)
                     binding.todoSunDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.sunLayout.setBackgroundResource(R.drawable.todo_table_selected)
                     }
                 date[1] -> {
                     binding.todoMonDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoMonDate.setTypeface(Typeface.DEFAULT_BOLD)
                     binding.todoMonDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.monLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[2] -> {
                     binding.todoTueDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoTueDate.setTypeface(Typeface.DEFAULT_BOLD)
                     binding.todoTueDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.tueLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[3] -> {
                     binding.todoWedDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoWedDate.setTypeface(Typeface.DEFAULT_BOLD)
                     binding.todoWedDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.wedLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[4] -> {
                     binding.todoThuDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoThuDate.setTypeface(Typeface.DEFAULT_BOLD)
                     binding.todoThuDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.thuLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[5] -> {
                     binding.todoSatDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoSatDate.setTypeface(Typeface.DEFAULT_BOLD)
                     binding.todoFriDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.friLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[6] -> {
                     binding.todoSatDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoSatDate.setTypeface(Typeface.DEFAULT_BOLD)
                     binding.todoSatDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.satLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
             }
-
         }
 
         //투두 쿼리문 전송
@@ -264,6 +272,28 @@ class TodotableFragment : Fragment() {
             transaction.commit()
             true
         }
+
+        binding.todotableMonthChooseLayout.setOnClickListener {
+            val arrowImv = binding.todotableMonthChooseLayout.getChildAt(2) as ImageView
+            arrowImv.rotation = 90f
+
+            val datePicker = CustomCalendarDialog()
+            datePicker.calendarClick =
+                object : CustomCalendarDialog.CalendarClickListener {
+                    override fun onClick(view: View, year: Int, month: Int, day: Int) {
+                        timetableviewModel.init_value(year, month, day)
+                        arrowImv.rotation = 0f
+                    }
+                }
+            datePicker.cancelListener =
+                object : CustomCalendarDialog.CancelListener {
+                    override fun onClick() {
+                        arrowImv.rotation = 0f
+                    }
+                }
+            datePicker.show(parentFragmentManager, null)
+        }
+
 
         return rootView
     }
