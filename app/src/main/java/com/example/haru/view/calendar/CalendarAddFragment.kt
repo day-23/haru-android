@@ -454,6 +454,18 @@ class CalendarAddFragment(private val categories: List<Category?>,
         binding.btnEveryMonthSchedule.setOnClickListener{onOptionClick(binding, 3)}
         binding.btnEveryYearSchedule.setOnClickListener{onOptionClick(binding, 4)}
 
+        binding.alarmSwitchSchedule.setOnCheckedChangeListener { view, isChecked ->
+            if(isChecked){
+                binding.alarmTv.setTextColor(Color.parseColor("#191919"))
+                binding.alarmIv.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#191919"))
+            } else {
+                binding.alarmTv.setTextColor(Color.LTGRAY)
+                binding.alarmIv.backgroundTintList =
+                    ColorStateList.valueOf(Color.LTGRAY)
+            }
+        }
+
         for (i in 1..31) {
             val textView = TextView(requireContext())
             textView.text = getString(R.string.MonthDay, i)
