@@ -1,51 +1,51 @@
 package com.example.haru.view
 
 import BaseActivity
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
-import android.content.res.ColorStateList
+import android.graphics.Point
+import android.graphics.Rect
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
-import com.example.haru.view.calendar.CalendarFragment
-import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.databinding.ActivityMainBinding
 import com.example.haru.utils.User
+import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.calendar.calendarMainData
+import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.etc.AlarmWorker
 import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.view.timetable.TimetableFragment
-import com.example.haru.viewmodel.CalendarViewModel
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
+
 
 class MainActivity : BaseActivity() {
     private val fragments = arrayOfNulls<Fragment>(5)
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreference: SharedPreferences
     private lateinit var editor: Editor
 
     companion object {
-        private lateinit var binding: ActivityMainBinding
+        private var binding: ActivityMainBinding? = null
         fun hideNavi(state: Boolean) {
-            if (state)
-                binding.bottomNav.visibility = View.GONE
-            else binding.bottomNav.visibility = View.VISIBLE
+            binding?.bottomNav?.visibility = if (state) View.GONE else View.VISIBLE
+        }
+
+        fun setBinding(activityMainBinding: ActivityMainBinding) {
+            binding = activityMainBinding
         }
     }
 
@@ -95,7 +95,7 @@ class MainActivity : BaseActivity() {
                 todaytime.minutes = 0
                 todaytime.seconds = 0
 
-                if (calendar.time.after(todaytime)){
+                if (calendar.time.after(todaytime)) {
                     calendar.add(Calendar.DATE, 1)
                 }
 
@@ -146,6 +146,8 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setBinding(binding)
+
         initFragments()
         setDefaultFragment()
 
@@ -154,6 +156,33 @@ class MainActivity : BaseActivity() {
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             handleNavigation(menuItem.itemId)
         }
+
+        binding.fragmentsFrame.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+
+                val rect = Rect()
+                binding.fragmentsFrame.getWindowVisibleDisplayFrame(rect)
+                val screenHeight = binding.fragmentsFrame.height
+                val keyboardHeight = screenHeight - (rect.bottom - rect.top)
+                if (keyboardHeight > screenHeight * 0.15) {
+                    binding.fragmentsFrame.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+                Log.e("20191627", "----------------------")
+                Log.e("20191627", "Screen Height : $screenHeight")
+                Log.e("20191627", "Rect top: ${rect.top}")
+                Log.e("20191627", "Rect bottom: ${rect.bottom}")
+                Log.e("20191627", "keyboard Height : $keyboardHeight")
+                Log.e("20191627", "-----------------------")
+            }
+        })
+
+
+
+
+
+
+
 
         sharedPreference = getSharedPreferences("ApplyData", 0)
         editor = sharedPreference.edit()
