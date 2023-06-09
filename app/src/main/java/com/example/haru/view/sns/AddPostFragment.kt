@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.CommentBody
@@ -112,7 +114,6 @@ class AddPostFragment : Fragment(), PostInterface{
             binding = FragmentAddPostBinding.inflate(inflater, container, false)
             galleryRecyclerView = binding.addpostGalleryImage
 
-
             if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
                 &&
                 ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
@@ -192,16 +193,14 @@ class AddPostFragment : Fragment(), PostInterface{
             binding.addpostApply.setOnClickListener{
                 if(galleryViewmodel.SelectedImage.value != -1 || galleryViewmodel.SelectedPosition.value!!.size > 0) {
                     val converedImage = galleryViewmodel.convertMultiPart(requireContext())
-                    val content = binding.addpostContent.text.toString()
                     val selecteduri = galleryViewmodel.getSelectImages()
                     galleryViewmodel.resetValue()
 
-                    val newFrag = AddTagFragment(converedImage, content, selecteduri)
+                    val newFrag = AddContentFragment(converedImage, selecteduri)
                     val transaction = parentFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragments_frame, newFrag)
                     transaction.addToBackStack(null)
                     transaction.commit()
-
                 }else{
                     Toast.makeText(requireContext(), "사진을 선택해 주세요" ,Toast.LENGTH_SHORT).show()
                 }

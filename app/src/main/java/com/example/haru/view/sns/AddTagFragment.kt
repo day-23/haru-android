@@ -57,7 +57,6 @@ class AddTagFragment(
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
