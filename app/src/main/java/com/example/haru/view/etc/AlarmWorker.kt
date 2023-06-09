@@ -10,42 +10,44 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import com.example.haru.R
 import com.example.haru.data.model.AlldoBodyCategory
 import com.example.haru.data.model.AlldoData
 import com.example.haru.data.model.PostAllDoResponse
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.utils.FormatDate
-import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class AlarmWorker : BroadcastReceiver(){
     lateinit var notificationManager: NotificationManager
 
-    override fun onReceive(context: Context?, intent: Intent?) {
+    override fun onReceive(context: Context, intent: Intent) {
         Log.d("알람","알람 받음")
+
         val userId = intent?.getStringExtra("userId")
         val requestCode = intent?.getStringExtra("requestCode")
         var body: String? = null
 
-        val sharedPreference = context!!.getSharedPreferences("ApplyData", 0)
+        val sharedPreference = context.getSharedPreferences("ApplyData", 0)
         val editor = sharedPreference.edit()
 
         if(requestCode != null && requestCode.toInt() > 0){
             body = intent.getStringExtra("body")!!
         }
 
-        notificationManager = context!!.getSystemService(
-            Context.NOTIFICATION_SERVICE) as NotificationManager
+        if(requestCode != null) {
+            notificationManager = context.getSystemService(
+                Context.NOTIFICATION_SERVICE
+            ) as NotificationManager
 
-        if(sharedPreference.getBoolean("alarmAprove", true)) {
-            createNotificationChannel(requestCode)
-            deliverNotification(context, userId, requestCode, body)
+            if (sharedPreference.getBoolean("alarmAprove", true)) {
+                createNotificationChannel(requestCode)
+                deliverNotification(context, userId, requestCode, body)
+            }
         }
     }
 
@@ -177,7 +179,8 @@ class AlarmWorker : BroadcastReceiver(){
                         endDate = todayDateFormat.format(serverformat.parse(endDate))
 
                         val startdateFormat = todayDateFormat.parse(startDate)
-                        var result = ""
+                        var todoCnt = 0
+                        var scheduleCnt = 0
 
                         for (i in 0 until alldoData.todos.size) {
                             alldoData.todos[i].endDate =
@@ -196,7 +199,8 @@ class AlarmWorker : BroadcastReceiver(){
                                     alldoData.todos[i].repeatValue == null ||
                                     alldoData.todos[i].repeatOption == "매일"
                                 ) {
-                                    result += alldoData.todos[i].content + "\n"
+                                    todoCnt++
+//                                    result += alldoData.todos[i].content + "\n"
                                 } else {
                                     Log.d("반복투두", alldoData.todos[i].toString())
                                     while (todayDate != null && date_comparison(
@@ -267,11 +271,13 @@ class AlarmWorker : BroadcastReceiver(){
                                             startdateFormat
                                         ) == 0
                                     ) {
-                                        result += alldoData.todos[i].content + "\n"
+                                        todoCnt++
+//                                        result += alldoData.todos[i].content + "\n"
                                     }
                                 }
                             } else {
-                                result += alldoData.todos[i].content + "\n"
+                                todoCnt++
+//                                result += alldoData.todos[i].content + "\n"
                             }
                         }
 
@@ -308,7 +314,8 @@ class AlarmWorker : BroadcastReceiver(){
                                     schedule.endTime = todayDate
                                 }
 
-                                result += schedule.content + "\n"
+                                scheduleCnt++
+//                                result += schedule.content + "\n"
                             } else {
                                 if (schedule.repeatValue.contains("T")) {
                                     today = schedule.repeatStart!!
@@ -335,7 +342,8 @@ class AlarmWorker : BroadcastReceiver(){
                                                 ) {
                                                     schedule.startTime = todayDate
                                                     schedule.endTime = scheduleT.time
-                                                    result += schedule.content + "\n"
+                                                    scheduleCnt++
+//                                                    result += schedule.content + "\n"
                                                     break
                                                 }
 
@@ -370,7 +378,8 @@ class AlarmWorker : BroadcastReceiver(){
                                                 ) {
                                                     schedule.startTime = todayDate
                                                     schedule.endTime = scheduleT.time
-                                                    result += schedule.content + "\n"
+                                                    scheduleCnt++
+//                                                    result += schedule.content + "\n"
                                                     break
                                                 }
 
@@ -409,7 +418,8 @@ class AlarmWorker : BroadcastReceiver(){
                                                     date_comparison(intervalDate.time, startdateFormat) >= 0){
                                                     schedule.startTime = scheduleT.time
                                                     schedule.endTime = intervalDate.time
-                                                    result += schedule.content+"\n"
+                                                    scheduleCnt++
+//                                                    result += schedule.content+"\n"
                                                 }
 
                                                 break
@@ -434,7 +444,8 @@ class AlarmWorker : BroadcastReceiver(){
                                                 ) {
                                                     schedule.startTime = todayDate
                                                     schedule.endTime = scheduleT.time
-                                                    result += schedule.content + "\n"
+                                                    scheduleCnt++
+//                                                    result += schedule.content + "\n"
                                                     break
                                                 }
 
@@ -529,10 +540,23 @@ class AlarmWorker : BroadcastReceiver(){
                                         todayDate.minutes = endtime.minutes
                                         todayDate.seconds = endtime.seconds
                                         schedule.endTime = todayDate
-                                        result += schedule.content + "\n"
+                                        scheduleCnt++
+//                                        result += schedule.content + "\n"
                                     }
                                 }
                             }
+                        }
+
+                        var result: String = ""
+
+                        if(todoCnt == 0 && scheduleCnt == 0){
+                            result = "오늘 할일은 다 하셨나요?"
+                        } else if(todoCnt == 0){
+                            result = "오늘의 일정 ${scheduleCnt}개 남았습니다."
+                        } else if(scheduleCnt == 0){
+                            result = "오늘의 할일 ${todoCnt}개 남았습니다."
+                        } else {
+                            result = "오늘의 할일 ${todoCnt}개 일정 ${scheduleCnt}개 남았습니다."
                         }
 
                         val builder = NotificationCompat.Builder(context, requestCode)

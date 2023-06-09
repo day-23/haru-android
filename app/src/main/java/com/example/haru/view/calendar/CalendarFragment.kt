@@ -33,6 +33,7 @@ import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentCalendarBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.view.adapter.CategoryAdapter
 import com.example.haru.view.checklist.CalendarAddFragment
@@ -203,25 +204,26 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
     }
 
     private fun addAlarm(){
-        Log.d("알람", "알람 설정")
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        val intent = Intent(context, AlarmWorker::class.java)
+        val intent = Intent(requireContext(), AlarmWorker::class.java)
 
         if (User.id != "") {
+            Log.d("알람", "알람 설정")
             intent.putExtra("userId", User.id)
             intent.putExtra("requestCode", "0")
+
             calendarMainData.alarmCnt++
 
             val pendingIntent = PendingIntent.getBroadcast(
-                context, 0, intent,
-                PendingIntent.FLAG_MUTABLE
+                requireContext(), 0, intent,
+                PendingIntent.FLAG_IMMUTABLE
             )
 
             val calendar = Calendar.getInstance()
 
-            val amTime = calendar.time
-            val pmTime = calendar.time
+            val amTime = calendar.time.clone() as Date
+            val pmTime = calendar.time.clone() as Date
 
             amTime.hours = 9
             amTime.minutes = 0
@@ -231,7 +233,15 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             pmTime.minutes = 0
             pmTime.seconds = 0
 
-            if (calendar.time.after(amTime) && calendar.time.before(pmTime)){
+            if(calendar.time.after(pmTime)){
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    add(Calendar.DATE, 1)
+                }
+            }
+            else if (calendar.time.after(amTime)){
                 calendar.apply {
                     set(Calendar.HOUR_OF_DAY, 21)
                     set(Calendar.MINUTE, 0)
@@ -265,7 +275,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         val calendar = Calendar.getInstance()
@@ -295,7 +305,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         val calendar = Calendar.getInstance()
@@ -320,7 +330,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         for (i in 0 until  calendarMainData.alarmCnt-1) {
             val pendingIntent = PendingIntent.getBroadcast(
                 context, i, intent,
-                PendingIntent.FLAG_MUTABLE
+                PendingIntent.FLAG_IMMUTABLE
             )
 
             if(pendingIntent != null){
@@ -750,6 +760,13 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         
         btnAddTodoInCalendar.setOnClickListener{
             val todoInput = ChecklistInputFragment(checkListViewModel, adapterMonth)
+
+            todoInput.onSubmitListener = object : ChecklistInputFragment.OnSubmitListener{
+                override fun onSubmit() {
+                    initAlarm()
+                }
+            }
+
             todoInput.show(parentFragmentManager, todoInput.tag)
 
             binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)

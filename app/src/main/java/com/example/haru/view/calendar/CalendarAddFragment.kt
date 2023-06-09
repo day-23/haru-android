@@ -662,20 +662,27 @@ class CalendarAddFragment(private val categories: List<Category?>,
                 val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
                 val timeFormat2 = SimpleDateFormat("HH:mm", Locale.KOREA)
 
-                val realEndDate = repeatEndDateBtnFormat.parse(
-                    binding.btnRepeatEndDateSchedule.text.toString()
-                )!!
+                if(binding.repeatEndDateSwitchSchedule.isChecked) {
+                    val realEndDate = repeatEndDateBtnFormat.parse(
+                        binding.btnRepeatEndDateSchedule.text.toString()
+                    )!!
 
-                realEndDate.hours = 23
-                realEndDate.minutes = 59
+                    realEndDate.hours = 23
+                    realEndDate.minutes = 59
 
-                if(binding.repeatEndDateSwitchSchedule.isChecked &&
-                    realEndDate.before(repeatStartCalendar.time)){
-                    repeatStartCalendar.time = initRepeatStartDate
-                    repeatEndCalendar.time = initRepeatEndDate
+                    if (binding.repeatEndDateSwitchSchedule.isChecked &&
+                        realEndDate.before(repeatStartCalendar.time)
+                    ) {
+                        repeatStartCalendar.time = initRepeatStartDate
+                        repeatEndCalendar.time = initRepeatEndDate
 
-                    Toast.makeText(requireContext(),"반복 종료일은 반복시작일 이후여야 합니다.", Toast.LENGTH_SHORT).show()
-                    break
+                        Toast.makeText(
+                            requireContext(),
+                            "반복 종료일은 반복시작일 이후여야 합니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        break
+                    }
                 }
 
                 var repeatStartDate = ""
