@@ -422,8 +422,8 @@ class TimetableFragment : Fragment() {
         scheduleView.layoutParams = scheduleViewLayoutParams
         scheduleView.text = schedule.content
         scheduleView.textSize = 12f
-        scheduleView.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-        scheduleView.gravity = Gravity.TOP
+        scheduleView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        scheduleView.gravity = Gravity.CENTER
 
         val spacingInPxFromXD = 18f  // Adobe XD에서 제공하는 행간
         val spacingInDp = spacingInPxFromXD / resources.displayMetrics.density
