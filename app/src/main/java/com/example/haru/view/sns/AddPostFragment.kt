@@ -209,7 +209,6 @@ class AddPostFragment : Fragment(), PostInterface{
 
             binding.addpostCancel.setOnClickListener {
                 galleryViewmodel.resetValue()
-
                 val fragment = PopupPost(this)
                 val fragmentManager = childFragmentManager
                 val transaction = fragmentManager.beginTransaction()
@@ -221,12 +220,15 @@ class AddPostFragment : Fragment(), PostInterface{
                 val layoutparam = binding.popupGallery.layoutParams
                 val startHeight = layoutparam.height
                 if (!toggle) {
-                    layoutparam.height = ((binding.addpostRootView.measuredHeight - binding.addpostTitle.measuredHeight)*0.85).toInt()
+                    layoutparam.height = ((binding.addpostRootView.measuredHeight - binding.addpostTitle.measuredHeight)).toInt()
                     toggle = true
                     binding.galleyToggle.rotation = 270f
                     binding.imageMultiSelect.isClickable = true
                 } else {
-                    layoutparam.height = 0
+                    val density = resources.displayMetrics.density
+                    val pixels = 413
+                    val dp = (pixels * density).toInt()
+                    layoutparam.height = dp
                     toggle = false
                     binding.galleyToggle.rotation = 90f
                     binding.imageMultiSelect.isClickable = false
