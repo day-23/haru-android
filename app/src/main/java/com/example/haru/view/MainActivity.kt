@@ -157,26 +157,25 @@ class MainActivity : BaseActivity() {
             handleNavigation(menuItem.itemId)
         }
 
-        binding.fragmentsFrame.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-
-                val rect = Rect()
-                binding.fragmentsFrame.getWindowVisibleDisplayFrame(rect)
-                val screenHeight = binding.fragmentsFrame.height
-                val keyboardHeight = screenHeight - (rect.bottom - rect.top)
-                if (keyboardHeight > screenHeight * 0.15) {
-                    binding.fragmentsFrame.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-                Log.e("20191627", "----------------------")
-                Log.e("20191627", "Screen Height : $screenHeight")
-                Log.e("20191627", "Rect top: ${rect.top}")
-                Log.e("20191627", "Rect bottom: ${rect.bottom}")
-                Log.e("20191627", "keyboard Height : $keyboardHeight")
-                Log.e("20191627", "-----------------------")
-            }
-        })
-
+//        binding.fragmentsFrame.viewTreeObserver.addOnGlobalLayoutListener(object :
+//            ViewTreeObserver.OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//
+//                val rect = Rect()
+//                binding.root.getWindowVisibleDisplayFrame(rect)
+//                val screenHeight = binding.fragmentsFrame.height
+//                val keyboardHeight = screenHeight - (rect.bottom - rect.top)
+//                if (keyboardHeight > screenHeight * 0.15) {
+//                    binding.fragmentsFrame.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                }
+//                Log.e("20191627", "----------------------")
+//                Log.e("20191627", "Screen Height : $screenHeight")
+//                Log.e("20191627", "Rect top: ${rect.top}")
+//                Log.e("20191627", "Rect bottom: ${rect.bottom}")
+//                Log.e("20191627", "keyboard Height : $keyboardHeight")
+//                Log.e("20191627", "-----------------------")
+//            }
+//        })
 
 
 

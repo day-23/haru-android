@@ -3,6 +3,7 @@ package com.example.haru.view.checklist
 import BaseActivity
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
@@ -69,6 +70,28 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         super.onViewCreated(view, savedInstanceState)
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
+
+//        binding.drawableLayout.viewTreeObserver.addOnPreDrawListener(object :
+//            ViewTreeObserver.OnPreDrawListener {
+//            override fun onPreDraw(): Boolean {
+//                val rect = Rect()
+//                binding.drawableLayout.getWindowVisibleDisplayFrame(rect)
+//                val screenHeight = binding.drawableLayout.height
+//                val keyboardHeight = screenHeight - (rect.bottom - rect.top)
+//                if (keyboardHeight > screenHeight * 0.15) {
+//                    binding.drawableLayout.viewTreeObserver.removeOnPreDrawListener(this)
+//                }
+//                Log.e("20191627", "----------------------")
+//                Log.e("20191627", "Screen Height : $screenHeight")
+//                Log.e("20191627", "Rect top: ${rect.top}")
+//                Log.e("20191627", "Rect bottom: ${rect.bottom}")
+//                Log.e("20191627", "keyboard Height : $keyboardHeight")
+//                Log.e("20191627", "-----------------------")
+//
+//                // true를 반환하여 그림이 그려지도록 합니다.
+//                return true
+//            }
+//        })
 
         checkListViewModel.dataInit()
         initTagList()
@@ -241,7 +264,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     val textColor: Int
                     val drawable: Drawable?
                     if (!tag.isSelected) {
-                        textColor = ContextCompat.getColor(context, R.color.light_gray)
+                        textColor = ContextCompat.getColor(context, R.color.date_text)
                         drawable =
                             ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
                     } else {
@@ -264,6 +287,10 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         context,
                         R.drawable.unvisibility_icon
                     ) else ContextCompat.getDrawable(context, R.drawable.visibility_icon)
+                    this.background = drawable
+                }
+
+                addView.findViewById<ImageView>(R.id.iv_set_tag_etc).apply {
                     val color = if (!tag.isSelected) ColorStateList.valueOf(
                         ContextCompat.getColor(
                             context,
@@ -275,19 +302,17 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                             R.color.todo_description
                         )
                     )
-                    this.background = drawable
                     this.backgroundTintList = color
-                }
-
-                addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener {
-                    checkListViewModel.getRelatedTodoCount(tag.id) { cnt ->
-                        requireActivity().supportFragmentManager.beginTransaction()
-                            .replace(
-                                R.id.fragments_frame,
-                                TagManagementFragment(checkListViewModel, tag, cnt)
-                            )
-                            .addToBackStack(null)
-                            .commit()
+                    setOnClickListener {
+                        checkListViewModel.getRelatedTodoCount(tag.id) { cnt ->
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(
+                                    R.id.fragments_frame,
+                                    TagManagementFragment(checkListViewModel, tag, cnt)
+                                )
+                                .addToBackStack(null)
+                                .commit()
+                        }
                     }
                 }
 
