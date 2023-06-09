@@ -88,10 +88,6 @@ class CheckListViewModel() :
         todayList.clear()
     }
 
-    fun setSearch(content : String){
-        searchContent = content
-    }
-
     fun clearSearch() {
         _searchList.value = Pair(null, null)
         searchContent = null
@@ -106,7 +102,7 @@ class CheckListViewModel() :
         viewModelScope.launch {
             scheduleRepository.getScheduleTodoSearch(content) {
                 if (it?.success == true) {
-
+                    searchContent = content
                     val schedule = if (it.data?.schedules?.isNotEmpty() == true)
                         listOf(Schedule(searchType = 0)) + it.data.schedules
                     else null

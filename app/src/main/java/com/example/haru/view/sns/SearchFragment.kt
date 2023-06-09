@@ -93,6 +93,26 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                 }
             }
 
+            todoAdapter.flagClick = object : SearchTodoAdapter.FlagClick {
+                override fun onClick(
+                    view: View,
+                    id: String,
+                    callback: (flag: Flag, successData: SuccessFail?) -> Unit
+                ) {
+                    val flag =
+                        if (viewModel.searchList.value?.second?.find { it.id == id }!!.flag) Flag(
+                            false
+                        )
+                        else Flag(true)
+                    viewModel.updateFlag(
+                        flag,
+                        id
+                    ) { flag, successData ->
+                        callback(flag, successData)
+                    }
+                }
+            }
+
             viewModel.searchList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 binding.searchRecyclerOne.visibility =
                     if (it.first == null) View.GONE else View.VISIBLE
