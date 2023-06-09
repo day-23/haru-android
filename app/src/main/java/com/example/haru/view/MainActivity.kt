@@ -20,6 +20,7 @@ import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.databinding.ActivityMainBinding
+import com.example.haru.utils.HeightProvider
 import com.example.haru.utils.User
 import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.calendar.calendarMainData
@@ -156,32 +157,6 @@ class MainActivity : BaseActivity() {
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             handleNavigation(menuItem.itemId)
         }
-
-//        binding.fragmentsFrame.viewTreeObserver.addOnGlobalLayoutListener(object :
-//            ViewTreeObserver.OnGlobalLayoutListener {
-//            override fun onGlobalLayout() {
-//
-//                val rect = Rect()
-//                binding.root.getWindowVisibleDisplayFrame(rect)
-//                val screenHeight = binding.fragmentsFrame.height
-//                val keyboardHeight = screenHeight - (rect.bottom - rect.top)
-//                if (keyboardHeight > screenHeight * 0.15) {
-//                    binding.fragmentsFrame.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                }
-//                Log.e("20191627", "----------------------")
-//                Log.e("20191627", "Screen Height : $screenHeight")
-//                Log.e("20191627", "Rect top: ${rect.top}")
-//                Log.e("20191627", "Rect bottom: ${rect.bottom}")
-//                Log.e("20191627", "keyboard Height : $keyboardHeight")
-//                Log.e("20191627", "-----------------------")
-//            }
-//        })
-
-
-
-
-
-
 
         sharedPreference = getSharedPreferences("ApplyData", 0)
         editor = sharedPreference.edit()

@@ -29,7 +29,7 @@ import com.example.haru.viewmodel.CheckListViewModel
 
 class SearchFragment(val viewModel: Any) : Fragment() {
     lateinit var binding: FragmentSearchBinding
-
+    private lateinit var imm: InputMethodManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "SearchFragment - onCreate() called")
@@ -43,6 +43,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
         Log.d("TAG", "SearchFragment - onCreateView() called")
 
         binding = FragmentSearchBinding.inflate(inflater)
+        imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         return binding.root
     }
@@ -240,8 +241,8 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     }
                     binding.etSearchContent.setText("")
                     binding.etSearchContent.clearFocus()
-                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+//                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(binding.etSearchContent.windowToken, 0)
                     return@setOnKeyListener true
                 }

@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -26,18 +27,17 @@ import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
-import com.example.haru.view.MainActivity
+import com.example.haru.utils.HeightProvider
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.view.sns.SearchFragment
-import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.CheckListViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
 class ChecklistFragment : Fragment(), LifecycleObserver {
     private lateinit var binding: FragmentChecklistBinding
     private lateinit var checkListViewModel: CheckListViewModel
+    private lateinit var imm: InputMethodManager
 
     companion object {
         const val TAG: String = "로그"
@@ -50,7 +50,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "ChecklistFragment - onCreate() called")
-
+        imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         checkListViewModel = CheckListViewModel()
         checkListViewModel.dataInit()
     }
@@ -71,31 +71,18 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
 
-//        binding.drawableLayout.viewTreeObserver.addOnPreDrawListener(object :
-//            ViewTreeObserver.OnPreDrawListener {
-//            override fun onPreDraw(): Boolean {
-//                val rect = Rect()
-//                binding.drawableLayout.getWindowVisibleDisplayFrame(rect)
-//                val screenHeight = binding.drawableLayout.height
-//                val keyboardHeight = screenHeight - (rect.bottom - rect.top)
-//                if (keyboardHeight > screenHeight * 0.15) {
-//                    binding.drawableLayout.viewTreeObserver.removeOnPreDrawListener(this)
-//                }
-//                Log.e("20191627", "----------------------")
-//                Log.e("20191627", "Screen Height : $screenHeight")
-//                Log.e("20191627", "Rect top: ${rect.top}")
-//                Log.e("20191627", "Rect bottom: ${rect.bottom}")
-//                Log.e("20191627", "keyboard Height : $keyboardHeight")
-//                Log.e("20191627", "-----------------------")
-//
-//                // true를 반환하여 그림이 그려지도록 합니다.
-//                return true
-//            }
-//        })
-
         checkListViewModel.dataInit()
         initTagList()
         initTodoList()
+
+        HeightProvider(requireActivity()).init()
+            .setHeightListener(object : HeightProvider.HeightListener {
+                override fun onHeightChanged(height: Int, maxHeight: Int) {
+                    if (height > 200) {
+                        binding.simpleAddFabLayout.setPadding(0, 0, 0, height - 150)
+                    } else binding.simpleAddFabLayout.setPadding(0, 0, 0, 0)
+                }
+            })
 
 
         binding.ivChecklistSearch.setOnClickListener {
@@ -125,8 +112,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     checkListViewModel.createTag(Content(inputTag))
                     binding.tagEtcLayout.etTagInput.setText("")
                     binding.tagEtcLayout.etTagInput.clearFocus()
-                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+//                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(binding.tagEtcLayout.etTagInput.windowToken, 0)
                 }
             }
@@ -180,8 +167,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 checkListViewModel.addTodo(todo) {
                     binding.etSimpleAddTodo.setText("")
                     binding.etSimpleAddTodo.clearFocus()
-                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+//                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(binding.etSimpleAddTodo.windowToken, 0)
                 }
             }
@@ -530,5 +517,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             }
         }
     }
+
+    fun px2dp(px: Int, context: Context) =
+        px / ((context.resources.displayMetrics.densityDpi.toFloat()) / DisplayMetrics.DENSITY_DEFAULT)
 
 }
