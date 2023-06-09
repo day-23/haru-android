@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -22,9 +22,8 @@
                 android:id="@+id/iv_back_icon_alarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/arrow"
-                android:backgroundTint="@color/todo_description"
-                android:rotation="180" />
+                android:background="@drawable/back_arrow"
+                android:backgroundTint="@color/todo_description" />
 
         </FrameLayout>
 
@@ -39,26 +38,45 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
+        android:text="할 일, 일정 푸시 알림"
+        android:textColor="@color/todo_description"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="30dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/linear_border_up_bottom"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingStart="14dp"
-            android:paddingTop="21dp"
-            android:paddingBottom="14dp"
-            android:text="좋아요 알림"
+            android:text="할일 알림"
             android:textColor="@color/todo_description"
+            android:textSize="16sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/minSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/custom_btn_date"
+            android:text="오후 3:03"
+            android:textColor="@color/highlight"
             android:textSize="14sp" />
 
         <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/todo_alarm_switch"
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,9 +88,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="14dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/linear_border_up_bottom"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
 
@@ -80,12 +99,90 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingStart="14dp"
-            android:paddingTop="14dp"
-            android:paddingBottom="14dp"
+            android:text="일정 알림"
+            android:textColor="@color/todo_description"
+            android:textSize="16sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/minSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/custom_btn_date"
+            android:text="오후 3:03"
+            android:textColor="@color/highlight"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/schedule_alarm_switch"
+            style="@style/minSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/custom_switch_thumb"
+            app:track="@drawable/custom_switch" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/divider" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:text="SNS"
+        android:textColor="@color/todo_description"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="좋아요 알림"
+            android:textColor="@color/todo_description"
+            android:textSize="16sp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/like_alarm_switch"
+            style="@style/minSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/custom_switch_thumb"
+            app:track="@drawable/custom_switch" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="코멘트 알림"
             android:textColor="@color/todo_description"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/comment_alarm_switch"

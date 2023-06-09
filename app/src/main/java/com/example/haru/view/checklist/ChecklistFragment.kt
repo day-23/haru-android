@@ -70,8 +70,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
 
-        val naviView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-
+        checkListViewModel.dataInit()
         initTagList()
         initTodoList()
 
@@ -86,13 +85,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         binding.ivTagEtc.setOnClickListener {
             if (!binding.drawableLayout.isDrawerOpen(Gravity.RIGHT)) {
                 binding.drawableLayout.openDrawer(Gravity.RIGHT)
-//                naviView.backgroundTintList =
-//                    ColorStateList.valueOf(
-//                        ContextCompat.getColor(
-//                            requireContext(),
-//                            R.color.dialog_bg
-//                        )
-//                    )
+
             } else {
                 binding.drawableLayout.closeDrawer(Gravity.RIGHT)
             }
@@ -264,6 +257,26 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                             TagUpdate(this.text.toString(), !tag.isSelected)
                         ) {}
                     }
+                }
+
+                addView.findViewById<ImageView>(R.id.iv_visibility_icon).apply {
+                    val drawable = if (!tag.isSelected) ContextCompat.getDrawable(
+                        context,
+                        R.drawable.visibility_icon
+                    ) else ContextCompat.getDrawable(context, R.drawable.visibility_icon)
+                    val color = if (!tag.isSelected) ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.light_gray
+                        )
+                    ) else ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.todo_description
+                        )
+                    )
+                    this.background = drawable
+                    this.backgroundTintList = color
                 }
 
                 addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener {

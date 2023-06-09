@@ -15,11 +15,16 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.haru.R
+import com.example.haru.data.model.Flag
+import com.example.haru.data.model.SuccessFail
 import com.example.haru.databinding.FragmentSearchBinding
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SearchScheduleAdapter
 import com.example.haru.view.adapter.SearchTodoAdapter
+import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.view.checklist.ChecklistFragment
+import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CheckListViewModel
 
 class SearchFragment(val viewModel: Any) : Fragment() {
@@ -48,6 +53,8 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
         (activity as BaseActivity).adjustTopMargin(binding.searchHeader.id)
 
+        Log.e("20191627", "123")
+
         // checklist와 캘린더에서 접근한 검색 화면일 경우
         if (viewModel is CheckListViewModel) {
             val scheduleListView: RecyclerView = binding.searchRecyclerOne
@@ -69,6 +76,43 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                 LinearLayoutManager.VERTICAL,
                 false
             )
+
+            todoAdapter.todoClick = object : SearchTodoAdapter.TodoClick {
+                override fun onClick(view: View, id: String) {
+                    if (viewModel.searchList.value?.second?.find {
+                            it.id == id
+                        }?.type == 2) {
+
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .add(
+                                R.id.fragments_frame,
+                                ChecklistItemFragment(viewModel, id)
+                            )
+                            .addToBackStack(null)
+                            .commit()
+                    }
+                }
+            }
+
+            todoAdapter.flagClick = object : SearchTodoAdapter.FlagClick {
+                override fun onClick(
+                    view: View,
+                    id: String,
+                    callback: (flag: Flag, successData: SuccessFail?) -> Unit
+                ) {
+                    val flag =
+                        if (viewModel.searchList.value?.second?.find { it.id == id }!!.flag) Flag(
+                            false
+                        )
+                        else Flag(true)
+                    viewModel.updateFlag(
+                        flag,
+                        id
+                    ) { flag, successData ->
+                        callback(flag, successData)
+                    }
+                }
+            }
 
             viewModel.searchList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 binding.searchRecyclerOne.visibility =
