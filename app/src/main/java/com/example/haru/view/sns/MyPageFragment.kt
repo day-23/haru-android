@@ -37,6 +37,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     private lateinit var tagAdapter: MediaTagAdapter
     private lateinit var mypageViewModel: MyPageViewModel
     private lateinit var snsViewModel : SnsViewModel
+    private var isFeedClick = true
+    private var isFullLoaded = false //게시글 페이지네이션이 끝났는지
     private var click = false
     val userId = userId
     var isMyPage = false
@@ -169,11 +171,20 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         binding.select.bringToFront()
         binding.mypageScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             if (scrollY >= binding.select.top) {
-                Log.d("20191668", "${scrollY - binding.select.top}")
-                // Stick the header
                 binding.select.translationY = (scrollY - binding.select.top).toFloat()
             }else{
                 binding.select.translationY = 0f
+            }
+
+            //스크롤이 끝까지 닿으면
+            val isScrolledToBottom = scrollY >= binding.mypageScroll.getChildAt(0).measuredHeight - binding.mypageScroll.measuredHeight
+            if(isScrolledToBottom){
+                if(isFeedClick && !isFullLoaded){
+                    mypageViewModel.getFeed(userId, lastDate)
+                }else if(!isFeedClick && !isFullLoaded){
+                    mypageViewModel.getMedia(userId, lastDate)
+                }
+                Toast.makeText(requireContext(), "bottomed", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -207,7 +218,10 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 index = feeds.size - 1
                 lastDate = feeds[index].createdAt
                 feedAdapter.newPage(feeds)
-            }else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+            }else {
+                isFullLoaded = true
+                Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         mypageViewModel.FirstMedia.observe(viewLifecycleOwner){medias ->
@@ -223,26 +237,15 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 index = medias.data.size - 1
                 lastDate = medias.data[index].createdAt
                 mediaAdapter.newPage(medias.data)
+            }else{
+                isFullLoaded = true
+                Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
             }
         }
 
         mypageViewModel.Tags.observe(viewLifecycleOwner){tags ->
             tagAdapter.newPage(ArrayList(tags))
         }
-
-        val scrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (!feedRecyclerView.canScrollVertically(1)) {
-                    mypageViewModel.getFeed(userId, lastDate)
-                }else if(!mediaRecyclerView.canScrollVertically(1)){
-                    mypageViewModel.getMedia(userId, lastDate)
-                    Toast.makeText(requireContext(), "새 게시글 불러오는 중 ", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-        feedRecyclerView.addOnScrollListener(scrollListener)
 
         binding.menuButton.setOnClickListener {
             if(click == false){
@@ -374,6 +377,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     fun feedClicked(){
+        isFeedClick = true
+        isFullLoaded = false
         binding.feedRecycler.visibility = View.VISIBLE
         binding.mediaContainer.visibility = View.GONE
         binding.feedUnderline.setBackgroundResource(R.drawable.todo_table_selected)
@@ -383,6 +388,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     fun mediaClicked(){
+        isFeedClick = false
+        isFullLoaded = false
         binding.feedRecycler.visibility = View.GONE
         binding.mediaContainer.visibility = View.VISIBLE
         binding.mediaUnderline.setBackgroundResource(R.drawable.todo_table_selected)
