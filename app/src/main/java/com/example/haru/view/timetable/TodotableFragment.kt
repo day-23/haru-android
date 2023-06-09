@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentTodotableBinding
 import com.example.haru.view.adapter.TodotableAdapter
 import com.example.haru.view.checklist.ChecklistInputFragment
+import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import com.example.haru.viewmodel.TodoTableRecyclerViewmodel
@@ -252,7 +254,6 @@ class TodotableFragment : Fragment() {
                     binding.satLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
             }
-
         }
 
         //투두 쿼리문 전송
@@ -271,6 +272,28 @@ class TodotableFragment : Fragment() {
             transaction.commit()
             true
         }
+
+        binding.todotableMonthChooseLayout.setOnClickListener {
+            val arrowImv = binding.todotableMonthChooseLayout.getChildAt(2) as ImageView
+            arrowImv.rotation = 90f
+
+            val datePicker = CustomCalendarDialog()
+            datePicker.calendarClick =
+                object : CustomCalendarDialog.CalendarClickListener {
+                    override fun onClick(view: View, year: Int, month: Int, day: Int) {
+                        timetableviewModel.init_value(year, month, day)
+                        arrowImv.rotation = 0f
+                    }
+                }
+            datePicker.cancelListener =
+                object : CustomCalendarDialog.CancelListener {
+                    override fun onClick() {
+                        arrowImv.rotation = 0f
+                    }
+                }
+            datePicker.show(parentFragmentManager, null)
+        }
+
 
         return rootView
     }

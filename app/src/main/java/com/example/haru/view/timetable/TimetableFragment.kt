@@ -237,6 +237,12 @@ class TimetableFragment : Fragment() {
                         arrowImv.rotation = 0f
                     }
                 }
+            datePicker.cancelListener =
+                object : CustomCalendarDialog.CancelListener {
+                    override fun onClick() {
+                        arrowImv.rotation = 0f
+                    }
+                }
             datePicker.show(parentFragmentManager, null)
         }
 

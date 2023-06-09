@@ -2,6 +2,7 @@ package com.example.haru.view.customDialog
 
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Point
@@ -45,7 +46,11 @@ class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFr
     interface CalendarClickListener {
         fun onClick(view: View, year: Int, month: Int, day: Int)
     }
+    interface CancelListener {
+        fun onClick()
+    }
 
+    var cancelListener : CancelListener? = null
     var calendarClick: CalendarClickListener? = null
 
     init {
@@ -112,6 +117,16 @@ class CustomCalendarDialog(date: Date? = null, endDate: Date? = null) : DialogFr
             dismiss()
         }
 
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        cancelListener?.onClick()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        cancelListener?.onClick()
     }
 
     override fun onResume() {
