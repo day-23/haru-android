@@ -13,8 +13,14 @@ object GetPastDate {
         var past = date.replace("T", " ")
         past = past.substring(0, 19)
         val pastDate = dateFormat.parse(past)
+        val pastCal = Calendar.getInstance()
+
+        pastCal.time = pastDate
+        pastCal.add(Calendar.HOUR_OF_DAY, 9)
+        val korPastDate = pastCal.time //한국 현지화 시간
+
         val now = Calendar.getInstance()
-        val minutesDiff = TimeUnit.MILLISECONDS.toMinutes(now.timeInMillis - pastDate.time)
+        val minutesDiff = TimeUnit.MILLISECONDS.toMinutes(now.timeInMillis - korPastDate.time)
 
         var timeAgo = ""
         if(minutesDiff < 1)
