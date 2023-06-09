@@ -50,7 +50,8 @@
         android:id="@+id/days_parent_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/custom_calendar_tail"
+        android:backgroundTint="@color/white"
         android:orientation="vertical"
         android:paddingStart="28dp"
         android:paddingEnd="28dp"
@@ -129,11 +130,12 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <View
+        android:id="@+id/empty_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="26dp"
-        android:background="@drawable/custom_calendar_tail"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"/>
 
 
 </LinearLayout>

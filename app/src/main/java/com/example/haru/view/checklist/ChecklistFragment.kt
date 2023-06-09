@@ -72,6 +72,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         val naviView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
 
+        checkListViewModel.dataInit()
         initTagList()
         initTodoList()
 
