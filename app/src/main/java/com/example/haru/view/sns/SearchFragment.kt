@@ -82,8 +82,9 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     if (viewModel.searchList.value?.second?.find {
                             it.id == id
                         }?.type == 2) {
+
                         requireActivity().supportFragmentManager.beginTransaction()
-                            .replace(
+                            .add(
                                 R.id.fragments_frame,
                                 ChecklistItemFragment(viewModel, id)
                             )
