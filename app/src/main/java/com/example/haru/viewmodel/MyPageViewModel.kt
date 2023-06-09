@@ -149,6 +149,7 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             PostRepository.getFirstMyFeed(targetId) {
                 if (it.size > 0) {
+                    Log.d("20191668", "first feed $it")
                     initPost = it
                 }
             }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -160,6 +161,19 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 Glide.with(this)
                     .load(user.profileImage)
                     .into(binding.profileImage)
+            }
+        }
+
+        val initialHeaderTop = binding.select.top
+        val initialHeaderBottom = binding.select.bottom
+        binding.select.bringToFront()
+        binding.mypageScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            if (scrollY >= binding.select.top) {
+                Log.d("20191668", "${scrollY - binding.select.top}")
+                // Stick the header
+                binding.select.translationY = (scrollY - binding.select.top).toFloat()
+            }else{
+                binding.select.translationY = 0f
             }
         }
 
