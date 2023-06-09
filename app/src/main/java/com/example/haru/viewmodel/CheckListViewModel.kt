@@ -31,9 +31,7 @@ class CheckListViewModel() :
 
     private val _searchList = MutableLiveData<Pair<List<Schedule>?, List<Todo>?>>()
     val searchList: LiveData<Pair<List<Schedule>?, List<Todo>?>> get() = _searchList
-
-//    var searchScheduleData = mutableListOf<Schedule>()
-//    var searchTodoData = mutableListOf<Todo>()
+    private var searchContent : String? = null
 
     private val _todoByTag = MutableLiveData<Boolean>()
     val todoByTag: LiveData<Boolean> = _todoByTag
@@ -52,9 +50,6 @@ class CheckListViewModel() :
     var todoByTagItem: String? = null
 
     var tagInputString: String = ""
-
-    init {
-    }
 
     fun dataInit(){
         getTodoMain {
@@ -93,8 +88,13 @@ class CheckListViewModel() :
         todayList.clear()
     }
 
+    fun setSearch(content : String){
+        searchContent = content
+    }
+
     fun clearSearch() {
         _searchList.value = Pair(null, null)
+        searchContent = null
     }
 
     fun getTodoList(): List<Todo> {
@@ -748,8 +748,12 @@ class CheckListViewModel() :
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {
                     if (it?.success == true) {
-                        checkTodayMode()
-                        withTagUpdate()
+                        if (searchContent != null)
+                            getScheduleTodoSearch(searchContent!!)
+                        else{
+                            checkTodayMode()
+                            withTagUpdate()
+                        }
                     }
                     callback(flag, it)
                 }
