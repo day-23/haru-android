@@ -16,9 +16,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Completed
 import com.example.haru.data.model.Flag
+import com.example.haru.data.model.FrontEndDate
 import com.example.haru.data.model.SuccessFail
 import com.example.haru.databinding.FragmentSearchBinding
+import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SearchScheduleAdapter
 import com.example.haru.view.adapter.SearchTodoAdapter
@@ -111,6 +114,97 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     ) { flag, successData ->
                         callback(flag, successData)
                     }
+                }
+            }
+
+            todoAdapter.completeClick = object : SearchTodoAdapter.CompleteClick {
+                override fun onClick(
+                    view: View,
+                    id: String,
+                    callback: (completed: Completed, successData: SuccessFail?) -> Unit
+                ) {
+                    val todo = viewModel.searchList.value?.second?.find { it.id == id }!!
+                    val completed =
+                        if (todo.completed) Completed(
+                            false
+                        )
+                        else Completed(true)
+
+                    if (todo.completed || todo.repeatOption == null) // 완료된 Todo이거나 repeatOption이 null
+                        viewModel.completeNotRepeatTodo(
+                            completed,
+                            id
+                        ) { completed, successData ->
+                            callback(completed, successData)
+                        }
+                    else {
+                        val nextEndDate = when (todo.repeatOption) {
+                            "매일" -> {
+                                FormatDate.nextEndDate(todo.endDate, todo.repeatEnd)
+                            }
+                            "매주", "격주" -> {
+                                val repeatOption = if (todo.repeatOption == "매주") 1 else 2
+                                FormatDate.nextEndDateEveryWeek(
+                                    todo.repeatValue!!,
+                                    repeatOption,
+                                    todo.endDate,
+                                    todo.repeatEnd
+                                )
+                            }
+
+                            "매달" -> {
+                                FormatDate.nextEndDateEveryMonth(
+                                    todo.repeatValue!!,
+                                    todo.endDate,
+                                    todo.repeatEnd
+                                )
+                            }
+                            "매년" -> {
+                                FormatDate.nextEndDateEveryYear(
+                                    todo.repeatValue!!,
+                                    todo.endDate,
+                                    todo.repeatEnd
+                                )
+                            }
+                            else -> null
+                        }
+                        Log.d("20191627", nextEndDate.toString())
+                        if (nextEndDate != null) {
+                            val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
+                            viewModel.completeRepeatFrontTodo(
+                                id,
+                                FrontEndDate(nextEndDateStr!!)
+                            ) {
+                                callback(Completed(true), it)
+                            }
+                        } else
+                            viewModel.completeNotRepeatTodo(
+                                completed,
+                                id
+                            ) { completed, successData ->
+                                callback(completed, successData)
+                            }
+                    }
+
+                }
+            }
+
+            todoAdapter.subTodoCompleteClick = object : SearchTodoAdapter.SubTodoCompleteClick {
+                override fun onClick(view: View, subTodoPosition: Int) {
+                    val subTodo =
+                        viewModel.searchList.value?.second?.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
+                    val completed =
+                        if (subTodo.completed) Completed(
+                            false
+                        )
+                        else Completed(true)
+
+                    viewModel.completeSubTodo(
+                        completed,
+                        todoAdapter.subTodoClickId!!,
+                        subTodo.id,
+                        subTodoPosition
+                    )
                 }
             }
 
