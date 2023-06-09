@@ -262,7 +262,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 addView.findViewById<ImageView>(R.id.iv_visibility_icon).apply {
                     val drawable = if (!tag.isSelected) ContextCompat.getDrawable(
                         context,
-                        R.drawable.visibility_icon
+                        R.drawable.unvisibility_icon
                     ) else ContextCompat.getDrawable(context, R.drawable.visibility_icon)
                     val color = if (!tag.isSelected) ColorStateList.valueOf(
                         ContextCompat.getColor(
