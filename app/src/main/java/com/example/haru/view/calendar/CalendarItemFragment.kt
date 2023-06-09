@@ -952,20 +952,27 @@ class CalendarItemFragment(val schedule: Schedule,
             var flag = false
 
             while(true) {
-                val realEndDate = repeatEndDateBtnFormat.parse(
-                    binding.btnRepeatEndDateSchedule.text.toString()
-                )!!
+                if(binding.repeatEndDateSwitchSchedule.isChecked) {
+                    val realEndDate = repeatEndDateBtnFormat.parse(
+                        binding.btnRepeatEndDateSchedule.text.toString()
+                    )!!
 
-                realEndDate.hours = 23
-                realEndDate.minutes = 59
+                    realEndDate.hours = 23
+                    realEndDate.minutes = 59
 
-                if(binding.repeatEndDateSwitchSchedule.isChecked &&
-                    realEndDate.before(repeatStartCalendar.time)){
-                    repeatStartCalendar.time = initRepeatStartDate
-                    repeatEndCalendar.time = initRepeatEndDate
+                    if (binding.repeatEndDateSwitchSchedule.isChecked &&
+                        realEndDate.before(repeatStartCalendar.time)
+                    ) {
+                        repeatStartCalendar.time = initRepeatStartDate
+                        repeatEndCalendar.time = initRepeatEndDate
 
-                    Toast.makeText(requireContext(),"반복 종료일은 반복시작일 이후여야 합니다.", Toast.LENGTH_SHORT).show()
-                    break
+                        Toast.makeText(
+                            requireContext(),
+                            "반복 종료일은 반복시작일 이후여야 합니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        break
+                    }
                 }
 
                 if (!binding.alldaySwitch.isChecked) {
@@ -1297,7 +1304,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                             binding.scheduleContentEt.text.toString(),
                                             binding.etMemoSchedule.text.toString(),
                                             category?.id,
-                                            emptyList(),
+                                            if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                             isAllday,
                                             null,
                                             null,
@@ -1334,7 +1341,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                                 null,
                                                 null,
                                                 category!!.id,
-                                                emptyList()
+                                                if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList()
                                             )
                                         ) {
                                             requireActivity().supportFragmentManager.popBackStack()
@@ -1350,7 +1357,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                                 null,
                                                 null,
                                                 null,
-                                                emptyList()
+                                                if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList()
                                             )
                                         ) {
                                             requireActivity().supportFragmentManager.popBackStack()
@@ -1493,7 +1500,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                                 binding.scheduleContentEt.text.toString(),
                                                 binding.etMemoSchedule.text.toString(),
                                                 category!!.id,
-                                                emptyList(),
+                                                if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                                 isAllday,
                                                 null,
                                                 null,
@@ -1511,7 +1518,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                                 binding.scheduleContentEt.text.toString(),
                                                 binding.etMemoSchedule.text.toString(),
                                                 null,
-                                                emptyList(),
+                                                if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                                 isAllday,
                                                 null,
                                                 null,
@@ -1589,7 +1596,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                             binding.scheduleContentEt.text.toString(),
                                             binding.etMemoSchedule.text.toString(),
                                             category?.id,
-                                            emptyList(),
+                                            if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                             isAllday,
                                             null,
                                             null,
@@ -1619,7 +1626,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                     option,
                                     repeatvalue,
                                     category!!.id,
-                                    emptyList()
+                                    if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList()
                                 )
                             ) {
                                 requireActivity().supportFragmentManager.popBackStack()
@@ -1635,7 +1642,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                     option,
                                     repeatvalue,
                                     null,
-                                    emptyList()
+                                    if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList()
                                 )
                             ) {
                                 requireActivity().supportFragmentManager.popBackStack()
@@ -1705,7 +1712,7 @@ class CalendarItemFragment(val schedule: Schedule,
                                     binding.scheduleContentEt.text.toString(),
                                     binding.etMemoSchedule.text.toString(),
                                     category?.id,
-                                    emptyList(),
+                                    if(binding.alarmSwitchSchedule.isChecked) listOf(serverFormatter.format(Date())) else emptyList(),
                                     isAllday,
                                     option,
                                     repeatvalue,
@@ -1722,6 +1729,18 @@ class CalendarItemFragment(val schedule: Schedule,
             }
 
             updateDialog.show(parentFragmentManager, updateDialog.tag)
+        }
+
+        binding.alarmSwitchSchedule.setOnCheckedChangeListener { view, isChecked ->
+            if(isChecked){
+                binding.alarmTv.setTextColor(Color.parseColor("#191919"))
+                binding.alarmIv.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#191919"))
+            } else {
+                binding.alarmTv.setTextColor(Color.LTGRAY)
+                binding.alarmIv.backgroundTintList =
+                    ColorStateList.valueOf(Color.LTGRAY)
+            }
         }
     }
 
@@ -1846,7 +1865,65 @@ class CalendarItemFragment(val schedule: Schedule,
         }
 
         if (binding.repeatStartDateBtn.text != binding.repeatEndDateBtn.text) {
+            val dateParser = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
+
+            val repeatEndDateText = binding.btnRepeatEndDateSchedule.text.toString().substring(
+                0,
+                binding.btnRepeatEndDateSchedule.text.toString().length-2
+            )
+
+            val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+            val repeatEndDateCalendar = Calendar.getInstance()
+            repeatEndDateCalendar.time = dateFormat.parse(repeatEndDateText)
+
+            if(repeatEndCalendar.time.after(repeatEndDateCalendar.time)){
+                binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
+            }
+
+            if (repeatStartCalendar.time.month != repeatEndCalendar.time.month){
+                binding.gridMonthSchedule.visibility = View.GONE
+                binding.btnEveryMonthSchedule.visibility = View.GONE
+                if(repeatOption == -3) repeatOption = -1
+            } else {
+                binding.btnEveryMonthSchedule.visibility = View.VISIBLE
+            }
+
+            val startDate = repeatStartCalendar.time.clone() as Date
+            startDate.hours = 0
+            startDate.minutes = 0
+            startDate.seconds = 0
+
+            val endDate = repeatEndCalendar.time.clone() as Date
+            endDate.hours = 0
+            endDate.minutes = 0
+            endDate.seconds = 0
+
+            //일주일 이상 차이나면 반복 해제
+            if((endDate.time - startDate.time)/(1000 * 60 * 60 * 24) > 6){
+                binding.repeatSwitchSchedule.isChecked = false
+                binding.repeatSwitchSchedule.isClickable = false
+
+                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                binding.repeatIvSchedule.backgroundTintList =
+                    ColorStateList.valueOf(Color.LTGRAY)
+
+                binding.repeatOptionSelectSchedule.visibility = View.GONE
+                binding.repeatEndLayout.visibility = View.GONE
+                binding.everyWeekLayout.visibility = View.GONE
+                binding.gridMonthSchedule.visibility = View.GONE
+                binding.gridYearSchedule.visibility = View.GONE
+                repeatOption = -1
+                return
+            } else {
+                binding.repeatSwitchSchedule.isClickable = true
+            }
+
+            if(repeatOption == 0) repeatOption = -1
+
             binding.btnEveryDaySchedule.visibility = View.GONE
+            binding.everyWeekLayout.visibility = View.GONE
+            binding.gridMonthSchedule.visibility = View.GONE
+            binding.gridYearSchedule.visibility = View.GONE
         }
 
         //반복이 설정되어 있을 때

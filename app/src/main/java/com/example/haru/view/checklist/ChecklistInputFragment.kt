@@ -48,7 +48,12 @@ class ChecklistInputFragment(
         fun onDismiss()
     }
 
+    interface OnSubmitListener{
+        fun onSubmit()
+    }
+
     var onDismissListener: OnDismissListener? = null
+    var onSubmitListener: OnSubmitListener? = null
 
     init {
         todoAddViewModel = TodoAddViewModel(checkListViewModel)
@@ -870,13 +875,14 @@ class ChecklistInputFragment(
 
                         if (adapter == null) {
                             todoAddViewModel.addTodo {
+                                onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
                                 dismiss()
                             }
                         } else if(isTimeTable == true){
                             todoAddViewModel.addTodo(true) {
                                 adapter.notifyDataSetChanged()
-
+                                onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
                                 dismiss()
                             }
@@ -884,6 +890,7 @@ class ChecklistInputFragment(
                         else{
                             todoAddViewModel.addTodo(true) {
                                 adapter.notifyDataSetChanged()
+                                onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
                                 dismiss()
                             }
