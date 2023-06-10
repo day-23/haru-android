@@ -119,9 +119,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="#FDFDFD"
                         app:cardElevation="0dp"
                         app:cardUseCompatPadding="true"
-                        android:backgroundTint="#FDFDFD"
                         app:contentPadding="20dp">
 
                         <LinearLayout
@@ -156,7 +156,7 @@
                             <LinearLayout
                                 android:id="@+id/todo_incomplete_layout"
                                 android:layout_marginTop="15dp"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
                                 android:gravity="left">
@@ -178,11 +178,24 @@
                                     android:textSize="16sp"
                                     android:textStyle="bold"
                                     android:textColor="#191919" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="right">
+
+                                    <ImageView
+                                        android:id="@+id/unclassified_show_iv"
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:layout_marginRight="38dp"
+                                        android:background="@drawable/category_show_image"/>
+                                </LinearLayout>
                             </LinearLayout>
 
                             <LinearLayout
                                 android:id="@+id/todo_complete_layout"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="19dp"
                                 android:orientation="horizontal"
@@ -205,6 +218,19 @@
                                     android:textSize="16sp"
                                     android:textStyle="bold"
                                     android:textColor="#191919"/>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="right">
+
+                                    <ImageView
+                                        android:id="@+id/classified_show_iv"
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:layout_marginRight="38dp"
+                                        android:background="@drawable/category_show_image"/>
+                                </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
 

@@ -24,12 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/black"
-<<<<<<< HEAD
                 android:background="@drawable/back_arrow"/>
-=======
-                android:background="@drawable/back_arrow"
-                android:rotation="180"/>
->>>>>>> bccc533cb114d1742f24e622da86848ef5a6d111
 
             <View
                 android:layout_width="0dp"
