@@ -44,12 +44,9 @@ class HeightProvider(private val mActivity: Activity) : PopupWindow(mActivity),
     override fun onGlobalLayout() {
         val rect = Rect()
         rootView.getWindowVisibleDisplayFrame(rect)
-        Log.e("20191627", "rect bottom : ${rect.bottom}")
-        Log.e("20191627", "rect top : ${rect.top}")
         if (rect.bottom > heightMax) {
             heightMax = rect.bottom
         }
-        Log.e("20191627", "heightMax : ${heightMax}")
         val keyboardHeight: Int = heightMax - rect.bottom
         if (listener != null) {
             listener!!.onHeightChanged(keyboardHeight, heightMax)
