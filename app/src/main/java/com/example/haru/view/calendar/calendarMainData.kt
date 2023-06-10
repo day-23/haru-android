@@ -7,4 +7,5 @@ object calendarMainData {
     var scheduleApply = true
     var unclassifiedCategory = true
     var holidayCategory = true
+    var alarmCnt = 0
 }

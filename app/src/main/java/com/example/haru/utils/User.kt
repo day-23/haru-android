@@ -15,6 +15,7 @@ object User {
     var isAllowFeedLike: Int = 0
     var isAllowFeedComment: Int = 0
     var isAllowSearch: Boolean = true
+    var isMaliciousUser : Boolean = false
     var createdAt: String = ""
     var accessToken: String = ""
     var alarmAprove: Boolean = false
