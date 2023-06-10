@@ -44,23 +44,18 @@ class CustomMonthDialog(date: Date? = null) : DialogFragment() {
         }
 
         for (i in 0 until 200) {
-            val year = (i + 1923).toString()
+            val year = (i + 1923).toString()+"년"
             yearList[i] = year
         }
 
         for (i in 0 until 12) {
-            monthList[i] = (i+1).toString()
+            monthList[i] = (i+1).toString()+"월"
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = true
-
-        setStyle(
-            STYLE_NORMAL,
-            R.style.dialog_fullscreen
-        )
     }
 
     override fun onCreateView(
@@ -77,15 +72,6 @@ class CustomMonthDialog(date: Date? = null) : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        dialog?.window?.apply {
-            val layoutparams = attributes
-            layoutparams.y = -300
-            layoutparams.x = -100
-//            layoutparams.gravity = Gravity.TOP
-
-            attributes = layoutparams
-        }
 
         Toast.makeText(requireContext(), "Custom Month Picker", Toast.LENGTH_SHORT).show()
 
@@ -105,6 +91,10 @@ class CustomMonthDialog(date: Date? = null) : DialogFragment() {
             maxValue = 11
             value = startMonth
             displayedValues = monthList
+        }
+
+        binding.emptyView.setOnClickListener {
+            dismiss()
         }
     }
 

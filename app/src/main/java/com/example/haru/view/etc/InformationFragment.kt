@@ -7,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.haru.R
 import com.example.haru.databinding.FragmentInformationBinding
+import com.example.haru.view.MainActivity
+import com.example.haru.view.customDialog.CustomPolicyDialog
 import com.example.haru.viewmodel.EtcViewModel
 
 class InformationFragment(val etcViewModel: EtcViewModel) : Fragment() {
@@ -24,6 +27,7 @@ class InformationFragment(val etcViewModel: EtcViewModel) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(EtcFragment.TAG, "InformationFragment - onCreate() called")
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(
@@ -44,7 +48,8 @@ class InformationFragment(val etcViewModel: EtcViewModel) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
 
-
+        binding.termsOfService.setOnClickListener(ClickListener())
+        binding.privacyPolicy.setOnClickListener(ClickListener())
 
         binding.ivBackIconInformation.setOnClickListener(ClickListener())
     }
@@ -54,6 +59,22 @@ class InformationFragment(val etcViewModel: EtcViewModel) : Fragment() {
             when (v?.id) {
                 binding.ivBackIconInformation.id -> {
                     requireActivity().supportFragmentManager.popBackStack()
+                }
+
+                binding.termsOfService.id -> {
+                    requireActivity().supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragments_frame, CustomPolicyDialog(true))
+                        .addToBackStack(null)
+                        .commit()
+                }
+
+                binding.privacyPolicy.id -> {
+                    requireActivity().supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragments_frame, CustomPolicyDialog(false))
+                        .addToBackStack(null)
+                        .commit()
                 }
             }
         }

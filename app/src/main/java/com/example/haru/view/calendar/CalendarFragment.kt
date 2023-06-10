@@ -2,7 +2,9 @@ package com.example.haru.view.calendar
 
 import BaseActivity
 import android.app.Activity
-import android.app.DatePickerDialog
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.ColorMatrix
@@ -14,8 +16,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,22 +28,29 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.data.model.Category
+import com.example.haru.data.model.Schedule
+import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentCalendarBinding
+import com.example.haru.utils.FormatDate
+import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.view.adapter.CategoryAdapter
 import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.view.checklist.ChecklistInputFragment
 import com.example.haru.view.customDialog.CustomMonthDialog
-import com.example.haru.view.customDialog.CustomTimeDialog
+import com.example.haru.view.etc.AlarmWorker
 import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.CheckListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.text.SimpleDateFormat
 import java.util.*
 
 
 class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayout.DrawerListener {
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var adapterMonth: AdapterMonth
+    private var lastIndex = -1
     private lateinit var categoryAdapter: CategoryAdapter
 
     private lateinit var categoryDrawerLayout: DrawerLayout
@@ -49,25 +61,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
     private var fabMain_status = false
 
-    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val status = result.data?.getSerializableExtra("status") as String
-
-        if (result.resultCode == Activity.RESULT_OK) {
-            if(status == "update") {
-                val index = result.data?.getSerializableExtra("index") as Int
-                val data = result.data?.getSerializableExtra("category2") as Category
-
-                categoryAdapter.dataChanged(index, data)
-            } else if(status == "delete"){
-                val index = result.data?.getSerializableExtra("index") as Int
-
-                categoryAdapter.dataDelete(index)
-            } else if(status == "post"){
-                val data = result.data?.getSerializableExtra("category2") as Category
-                categoryAdapter.dataAdd(data)
-            }
-        }
-    }
+    private var resultLauncher: ActivityResultLauncher<Intent>? = null
 
     companion object{
         const val TAG : String = "로그"
@@ -77,11 +71,37 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        resultLauncher = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "CalendarFragment - onCreate() called")
 
         checkListViewModel = CheckListViewModel()
+
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val status = result.data?.getSerializableExtra("status") as String
+
+            if (result.resultCode == Activity.RESULT_OK) {
+                if(status == "update") {
+                    val index = result.data?.getSerializableExtra("index") as Int
+                    val data = result.data?.getSerializableExtra("category2") as Category
+
+                    categoryAdapter.dataChanged(index, data)
+                } else if(status == "delete"){
+                    val index = result.data?.getSerializableExtra("index") as Int
+
+                    categoryAdapter.dataDelete(index)
+                } else if(status == "post"){
+                    val data = result.data?.getSerializableExtra("category2") as Category
+                    categoryAdapter.dataAdd(data)
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -132,14 +152,200 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.calendarHeader.id)
+        (activity as BaseActivity).adjustTopMargin(binding.calendarFragmentParentLayout.id)
+    }
+
+    fun initAlarm(){
+        deleteAlarm()
+
+        val endcalendar = Calendar.getInstance()
+        endcalendar.time = Date()
+        endcalendar.add(Calendar.DATE, 34)
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
+        val startDate = dateFormat.format(Date())
+        val endDate = dateFormat.format(endcalendar.time)
+
+        val calendarViewModel = CalendarViewModel()
+        calendarViewModel.getAlldo(startDate, endDate, 4)
+
+        calendarViewModel.liveTodoCalendarList.observe(viewLifecycleOwner){livetodo->
+            calendarViewModel.liveScheduleCalendarList.observe(viewLifecycleOwner){liveschedule->
+                var todoIds = ArrayList<String>()
+
+                addAlarm()
+
+                for(todos in livetodo){
+                    for (todo in todos.todos){
+                        if(todo.alarms.size > 0 && !todoIds.contains(todo.id)){
+                            addAlarm(todo.copy())
+                        }
+                    }
+                }
+
+                for(schedule in liveschedule){
+                    if(schedule.schedule.alarms.size > 0){
+                        val calendar = Calendar.getInstance()
+                        val repeatstart = FormatDate.strToDatecalendar(schedule.schedule.repeatStart)
+                        calendar.time = Date()
+                        calendar.add(Calendar.DATE, schedule.position)
+
+                        calendar.apply {
+                            set(Calendar.HOUR_OF_DAY, repeatstart!!.hours)
+                            set(Calendar.MINUTE, repeatstart.minutes)
+                            set(Calendar.SECOND, repeatstart.seconds)
+                        }
+
+                        addAlarm(schedule.schedule.copy(), calendar.time.clone() as Date)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addAlarm(){
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(requireContext(), AlarmWorker::class.java)
+
+        if (User.id != "") {
+            Log.d("알람", "알람 설정")
+            intent.putExtra("userId", User.id)
+            intent.putExtra("requestCode", "0")
+
+            calendarMainData.alarmCnt++
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                requireContext(), 0, intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val calendar = Calendar.getInstance()
+
+            val amTime = calendar.time.clone() as Date
+            val pmTime = calendar.time.clone() as Date
+
+            amTime.hours = 9
+            amTime.minutes = 0
+            amTime.seconds = 0
+
+            pmTime.hours = 21
+            pmTime.minutes = 0
+            pmTime.seconds = 0
+
+            if(calendar.time.after(pmTime)){
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    add(Calendar.DATE, 1)
+                }
+            }
+            else if (calendar.time.after(amTime)){
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 21)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                }
+            } else {
+                calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 9)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                }
+            }
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
+    private fun addAlarm(todo: Todo){
+        val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmWorker::class.java)
+
+        intent.putExtra("userId", User.id)
+        intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
+        calendarMainData.alarmCnt++
+
+        intent.putExtra("body", todo.content)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, calendarMainData.alarmCnt, intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val calendar = Calendar.getInstance()
+        calendar.time = FormatDate.strToDate(todo.alarms[0].time)
+
+        if(calendar.time.after(Date())) {
+            Log.d("알람추가", calendar.time.toString())
+            Log.d("알람추가", todo.content)
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
+    private fun addAlarm(schedule: Schedule, date: Date){
+        val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmWorker::class.java)
+
+        intent.putExtra("userId", User.id)
+        intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
+        calendarMainData.alarmCnt++
+
+        intent.putExtra("body", schedule.content)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, calendarMainData.alarmCnt, intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+
+        if(calendar.time.after(Date())) {
+            Log.d("알람추가", calendar.time.toString())
+            Log.d("알람추가", schedule.content)
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
+    private fun deleteAlarm(){
+        val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmWorker::class.java)
+
+        for (i in 0 until  calendarMainData.alarmCnt-1) {
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, i, intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+
+            if(pendingIntent != null){
+                alarmManager.cancel(pendingIntent)
+            }
+        }
+
+        calendarMainData.alarmCnt = 0
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as BaseActivity).adjustTopMargin(binding.calendarHeader.id)
+        (activity as BaseActivity).adjustTopMargin(binding.calendarFragmentParentLayout.id)
 
         parentView = view.findViewById<RelativeLayout>(R.id.calendar_fragment_parent_layout)
 
@@ -184,6 +390,8 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         val calendarViewModel = CalendarViewModel()
 
         calendar.time = Date()
+
+        initAlarm()
 
         itemYearBtn.text = "${calendar.get(Calendar.YEAR)}년"
         itemMonthBtn.text = "${calendar.get(Calendar.MONTH) + 1}월"
@@ -432,17 +640,22 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     changeStatus = true
                 }
 
+                calendarMainData.holidayCategory = false
+                calendarMainData.unclassifiedCategory = false
                 calendarMainData.todoApply = false
                 calendarMainData.scheduleApply = false
 
                 if (changeStatus) {
-                    categoryAdapter.dataAllChanged()
+                    categoryAdapter.dataAllBlind()
                 }
 
                 allBlindTv.text = "모두 표시"
                 allBlindTv.setTextColor(Color.parseColor("#1DAFFF"))
             } else{
+                calendarMainData.holidayCategory = true
+                calendarMainData.unclassifiedCategory = true
                 calendarMainData.scheduleApply = true
+                calendarMainData.todoApply = true
 
                 scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
 
@@ -450,9 +663,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     Color.parseColor("#1DAFFF")
                 )
 
-                categoryAdapter.dataAllChanged()
-
-                calendarMainData.todoApply = true
+                categoryAdapter.dataAllVisible()
 
                 todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
 
@@ -522,13 +733,17 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         //카테고리 추가 버튼
         categoryAddImage.setOnClickListener{
             val intent = Intent(view.context, CategoryAddActivity::class.java)
-            resultLauncher.launch(intent)
+            resultLauncher?.launch(intent)
         }
         
         //추가 버튼 2개
         btnAddMainInCalendar.setOnClickListener {
             if (fabMain_status) {
-                val scheduleInput = CalendarAddFragment(activity, categoryAdapter.categoryList, adapterMonth)
+                val scheduleInput = CalendarAddFragment(categoryAdapter.categoryList){
+                    adapterMonth.notifyDataSetChanged()
+                    initAlarm()
+                }
+
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
 
                 binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
@@ -545,6 +760,13 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         
         btnAddTodoInCalendar.setOnClickListener{
             val todoInput = ChecklistInputFragment(checkListViewModel, adapterMonth)
+
+            todoInput.onSubmitListener = object : ChecklistInputFragment.OnSubmitListener{
+                override fun onSubmit() {
+                    initAlarm()
+                }
+            }
+
             todoInput.show(parentFragmentManager, todoInput.tag)
 
             binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
@@ -573,6 +795,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             override fun onPageSelected(pos: Int) {
                 super.onPageSelected(pos)
 
+                lastIndex = pos
                 calendar.time = Date()
                 calendar.add(Calendar.MONTH, pos - Int.MAX_VALUE / 2)
 
@@ -583,7 +806,11 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         month_viewpager.registerOnPageChangeCallback(callback)
 
-        month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
+        if(lastIndex != -1) {
+            month_viewpager.setCurrentItem(lastIndex, false)
+        } else {
+            month_viewpager.setCurrentItem(Int.MAX_VALUE / 2, false)
+        }
         month_viewpager.offscreenPageLimit = 1
 
         calendarViewModel.getCategories()
@@ -592,13 +819,14 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
             var categoryArrayList = ArrayList<Category?>()
             categoryArrayList.add(null)
+            categoryArrayList.add(null)
             categoryArrayList.addAll(it)
 
             categoryAdapter = CategoryAdapter(categoryArrayList){ category,index ->
                 val intent = Intent(view.context, CategoryCorrectionActivity::class.java)
                 intent.putExtra("category", category)
                 intent.putExtra("index", index)
-                resultLauncher.launch(intent)
+                resultLauncher?.launch(intent)
             }
 
             categoryRecyclerView.adapter = categoryAdapter

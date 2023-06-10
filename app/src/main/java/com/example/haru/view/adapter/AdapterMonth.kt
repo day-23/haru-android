@@ -42,17 +42,19 @@ import kotlin.collections.ArrayList
 
 
 //월간 달력 어뎁터
-class AdapterMonth(val activity: Activity,
-                   val fragment: FragmentActivity,
-                   val lifecycleOwner: LifecycleOwner,
-                   val thisViewPager: ViewPager2,
-                   val parentFragmentManager: FragmentManager,
-                   val parentFragment: CalendarFragment):
+class AdapterMonth(
+    val activity: Activity,
+    val fragment: FragmentActivity,
+    val lifecycleOwner: LifecycleOwner,
+    val thisViewPager: ViewPager2,
+    val parentFragmentManager: FragmentManager,
+    val parentFragment: CalendarFragment
+) :
     RecyclerView.Adapter<AdapterMonth.MonthView>() {
 
     private var categories: List<Category?> = emptyList()
 
-    fun setCategories(new_categories:List<Category?>){
+    fun setCategories(new_categories: List<Category?>) {
         categories = new_categories
     }
 
@@ -73,8 +75,10 @@ class AdapterMonth(val activity: Activity,
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun init_date(holder: MonthView, year:Int, month:Int, viewModel:CalendarViewModel,
-                  callback:(start : Date) -> Unit): Int{
+    fun init_date(
+        holder: MonthView, year: Int, month: Int, viewModel: CalendarViewModel,
+        callback: (start: Date) -> Unit
+    ): Int {
         val dateTextViewList = listOf(
             R.id.date_text_one,
             R.id.date_text_two,
@@ -168,7 +172,7 @@ class AdapterMonth(val activity: Activity,
         val dateTextViews = ArrayList<TextView>()
         val dateLayoutViews = ArrayList<FrameLayout>()
 
-        for(i in 0..41){
+        for (i in 0..41) {
             dateTextViews.add(holder.itemView.findViewById<TextView>(dateTextViewList[i]))
             dateLayoutViews.add(holder.itemView.findViewById<FrameLayout>(dateLayoutViewList[i]))
         }
@@ -184,13 +188,15 @@ class AdapterMonth(val activity: Activity,
         val dateLayoutFive = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_five)
         val dateLayoutSix = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_six)
 
-        val parentConstraintLayout = holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
+        val parentConstraintLayout =
+            holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
 
         val eraseableView = holder.itemView.findViewById<View>(R.id.eraseable_view)
 
         val dateLayoutEnd = holder.itemView.findViewById<View>(R.id.date_layout_end)
 
-        val touchEventRecyclerView = holder.itemView.findViewById<RecyclerView>(R.id.touch_event_recyclerview)
+        val touchEventRecyclerView =
+            holder.itemView.findViewById<RecyclerView>(R.id.touch_event_recyclerview)
 
         var dateArrayList = ArrayList<Date>()
 
@@ -198,80 +204,85 @@ class AdapterMonth(val activity: Activity,
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, 1)
 
-        for(i in 0..5) {
-            for(k in 0..6) {
-                calendar.add(Calendar.DAY_OF_MONTH, (1-calendar.get(Calendar.DAY_OF_WEEK)) + k)
+        for (i in 0..5) {
+            for (k in 0..6) {
+                calendar.add(Calendar.DAY_OF_MONTH, (1 - calendar.get(Calendar.DAY_OF_WEEK)) + k)
 
-                if(i >= 4 && k == 0 && calendar.get(Calendar.MONTH) != month){
+                if (i >= 4 && k == 0 && calendar.get(Calendar.MONTH) != month) {
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
-                    endDate = format.format(calendar.time)+"T00:00:00+09:00"
+                    endDate = format.format(calendar.time) + "T23:59:59+09:00"
                     maxi = 4
                     breakOption = true
                 }
 
-                if(breakOption){
-                    dateTextViews[i*7 + k].text = ""
+                if (breakOption) {
+                    dateTextViews[i * 7 + k].text = ""
                     continue
                 }
 
-                if(i == 0 && k == 0){
+                if (i == 0 && k == 0) {
                     callback(calendar.time)
-                    startDate = format.format(calendar.time)+"T00:00:00+09:00"
+                    startDate = format.format(calendar.time) + "T00:00:00+09:00"
                 }
 
-                if(i == 5 && k == 6){
-                    endDate = format.format(calendar.time)+"T00:00:00+09:00"
+                if (i == 5 && k == 6) {
+                    endDate = format.format(calendar.time) + "T23:59:59+09:00"
                 }
 
-                dateTextViews[i*7 + k].text = calendar.time.date.toString()
+                dateTextViews[i * 7 + k].text = calendar.time.date.toString()
                 dateArrayList.add(calendar.time)
 
-                if(calendar.time.month != month){
-                    dateTextViews[i*7 + k].setTextColor(Color.parseColor("#DBDBDB"))
+                if (calendar.time.month != month) {
+                    dateTextViews[i * 7 + k].setTextColor(Color.parseColor("#DBDBDB"))
                 } else {
-                    dateTextViews[i*7 + k].setTextColor(Color.parseColor("#646464"))
+                    dateTextViews[i * 7 + k].setTextColor(Color.parseColor("#646464"))
                 }
 
-                when(k % 7) {
+                when (k % 7) {
                     0 -> {
-                        if(calendar.get(Calendar.MONTH) != month) {
-                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xFD,0xBB,0xCD))
+                        if (calendar.get(Calendar.MONTH) != month) {
+                            dateTextViews[i * 7 + k].setTextColor(Color.rgb(0xFD, 0xBB, 0xCD))
                         } else {
-                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xF7,0x1E,0x58))
+                            dateTextViews[i * 7 + k].setTextColor(Color.rgb(0xF7, 0x1E, 0x58))
                         }
                     }
                     6 -> {
-                        if(calendar.get(Calendar.MONTH) != month) {
-                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xBB,0xE7,0xFF))
+                        if (calendar.get(Calendar.MONTH) != month) {
+                            dateTextViews[i * 7 + k].setTextColor(Color.rgb(0xBB, 0xE7, 0xFF))
                         } else {
-                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0x1D,0xAF,0xFF))
+                            dateTextViews[i * 7 + k].setTextColor(Color.rgb(0x1D, 0xAF, 0xFF))
                         }
                     }
                     else -> {
-                        if(calendar.get(Calendar.MONTH) != month) {
-                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0xBA,0xBA,0xBA))
+                        if (calendar.get(Calendar.MONTH) != month) {
+                            dateTextViews[i * 7 + k].setTextColor(Color.rgb(0xDB, 0xDB, 0xDB))
                         } else {
-                            dateTextViews[i*7 + k].setTextColor(Color.rgb(0x70,0x70,0x70))
+                            dateTextViews[i * 7 + k].setTextColor(Color.rgb(0x64, 0x64, 0x64))
                         }
                     }
                 }
 
-                if(calendar.time.year == Date().year &&
+                if (calendar.time.year == Date().year &&
                     calendar.time.month == Date().month &&
-                    calendar.time.date == Date().date){
-                    dateTextViews[i*7 + k].setTypeface(dateTextViews[i*7 + k].typeface, Typeface.BOLD)
-                    dateTextViews[i*7 + k].setTextColor(Color.parseColor("#1DAFFF"))
-                    dateLayoutViews[i*7 + k].background = ContextCompat.getDrawable(parentFragment.requireContext(),R.drawable.calendar_in_today_image)
-                } else {
-                    dateTextViews[i*7 + k].setTypeface(dateTextViews[i*7 + k].typeface, Typeface.NORMAL)
-                    dateLayoutViews[i*7 + k].background = ContextCompat.getDrawable(parentFragment.requireContext(),R.color.white)
+                    calendar.time.date == Date().date
+                ) {
+//                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.BOLD)
+                    dateTextViews[i * 7 + k].setTextColor(Color.parseColor("#1DAFFF"))
+                    dateLayoutViews[i * 7 + k].background = ContextCompat.getDrawable(
+                        parentFragment.requireContext(),
+                        R.drawable.calendar_in_today_image
+                    )
+                } else { // font 문제 해결
+//                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.NORMAL)
+                    dateLayoutViews[i * 7 + k].background =
+                        ContextCompat.getDrawable(parentFragment.requireContext(), R.color.white)
                 }
             }
 
             calendar.add(Calendar.WEEK_OF_MONTH, 1)
         }
 
-        if(maxi == 4){
+        if (maxi == 4) {
             eraseableView.setBackgroundResource(R.color.white)
 
             dateLayoutFive.updateLayoutParams<ConstraintLayout.LayoutParams> {
@@ -285,25 +296,25 @@ class AdapterMonth(val activity: Activity,
             }
         }
 
-        while (parentConstraintLayout.get(parentConstraintLayout.childCount-2).id != R.id.date_layout_end) {
-            parentConstraintLayout.removeViewAt(parentConstraintLayout.childCount-2)
+        while (parentConstraintLayout.get(0).id != R.id.date_layout_start) {
+            parentConstraintLayout.removeViewAt(0)
         }
 
         val touchList = ArrayList<Boolean>()
 
-        if(maxi == 4){
-            for(i in 0..34){
+        if (maxi == 4) {
+            for (i in 0..34) {
                 touchList.add(false)
             }
         } else {
-            for(i in 0..41){
+            for (i in 0..41) {
                 touchList.add(false)
             }
         }
 
         val adapter: AdapterCalendarTouch
 
-        if(maxi == 4){
+        if (maxi == 4) {
             touchEventRecyclerView.layoutManager = GridLayoutManager(holder.itemView.context, 7)
             touchEventRecyclerView.addItemDecoration(TouchEventDecoration(5))
 
@@ -323,9 +334,9 @@ class AdapterMonth(val activity: Activity,
         var startColumn = -1
         var startRow = -1
 
-        touchEventRecyclerView.setOnTouchListener{ v, event ->
-            val column = (event.x/(parentConstraintLayout.width/7)).toInt()
-            val row = (event.y/(parentConstraintLayout.height/(maxi+1))).toInt()
+        touchEventRecyclerView.setOnTouchListener { v, event ->
+            val column = (event.x / (parentConstraintLayout.width / 7)).toInt()
+            val row = (event.y / (parentConstraintLayout.height / (maxi + 1))).toInt()
 
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -333,18 +344,18 @@ class AdapterMonth(val activity: Activity,
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    if(!longPress && System.currentTimeMillis() - startTime > 1000){
+                    if (!longPress && System.currentTimeMillis() - startTime > 1000) {
                         thisViewPager.setUserInputEnabled(false)
                         longPress = true
                         startColumn = column
                         startRow = row
                     }
 
-                    if(longPress && startColumn != -1 && startRow != -1){
+                    if (longPress && startColumn != -1 && startRow != -1) {
                         var startPosition = startRow * 7 + startColumn
                         var endPosition = row * 7 + column
 
-                        if(startPosition > endPosition){
+                        if (startPosition > endPosition) {
                             val tmp = startPosition
                             startPosition = endPosition
                             endPosition = tmp
@@ -361,15 +372,15 @@ class AdapterMonth(val activity: Activity,
                     true
                 }
                 MotionEvent.ACTION_UP -> {
-                    if(longPress) {
+                    if (longPress) {
                         thisViewPager.setUserInputEnabled(true)
                         longPress = false
 
-                        if(startColumn != -1 && startRow != -1){
+                        if (startColumn != -1 && startRow != -1) {
                             var startPosition = startRow * 7 + startColumn
                             var endPosition = row * 7 + column
 
-                            if(startPosition > endPosition){
+                            if (startPosition > endPosition) {
                                 val tmp = startPosition
                                 startPosition = endPosition
                                 endPosition = tmp
@@ -384,11 +395,12 @@ class AdapterMonth(val activity: Activity,
 //                            }
 
                             val scheduleInput = CalendarAddFragment(
-                                activity,
                                 categories,
-                                this,
                                 dateArrayList[startPosition],
-                                dateArrayList[endPosition])
+                                dateArrayList[endPosition]
+                            ) {
+                                notifyDataSetChanged()
+                            }
 
                             scheduleInput.show(parentFragmentManager, scheduleInput.tag)
                         }
@@ -399,7 +411,7 @@ class AdapterMonth(val activity: Activity,
                         val detailDialog = CalendarDetailDialog(
                             holder.itemView.context,
                             lifecycleOwner,
-                            dateArrayList[row*7 + column],
+                            dateArrayList[row * 7 + column],
                             this,
                             fragment,
                             categories
@@ -414,25 +426,28 @@ class AdapterMonth(val activity: Activity,
             }
         }
 
-        viewModel.init_viewModel(startDate,endDate, maxi)
+        viewModel.init_viewModel(startDate, endDate, maxi)
 
         return maxi
     }
 
-    fun addViewFunction(holder: MonthView,
-                        textViewText: String,
-                        x:Float,
-                        line:Int,
-                        count:Int,
-                        width:Int,
-                        color:Int,
-                        completed:Boolean,
-                        size: Int,
-                        layoutInterval: Int,
-                        maxTextCount: Int,
-                        contentPosition: Int,
-                        startDate: Date){
-        val parentConstraintLayout = holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
+    fun addViewFunction(
+        holder: MonthView,
+        textViewText: String,
+        x: Float,
+        line: Int,
+        count: Int,
+        width: Int,
+        color: Int,
+        completed: Boolean,
+        size: Int,
+        layoutInterval: Int,
+        maxTextCount: Int,
+        contentPosition: Int,
+        startDate: Date
+    ) {
+        val parentConstraintLayout =
+            holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
 
         val dateLayoutOne = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_one)
         val dateLayoutTwo = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_two)
@@ -453,7 +468,7 @@ class AdapterMonth(val activity: Activity,
 
         val colors = ArrayList<Int>()
 
-        for (i in colorList){
+        for (i in colorList) {
             colors.add(Color.parseColor(i))
         }
 
@@ -471,8 +486,8 @@ class AdapterMonth(val activity: Activity,
         val testView = TextView(holder.itemView.context)
 
         val layoutParams = ConstraintLayout.LayoutParams(
-            parentConstraintLayout.width/7*width-2,
-            dateLayoutOne.height/2
+            parentConstraintLayout.width / 7 * width - 2,
+            dateLayoutOne.height / 2
         )
 
         layoutParams.leftToLeft = parentConstraintLayout.id
@@ -481,24 +496,24 @@ class AdapterMonth(val activity: Activity,
 
         layoutParams.topToBottom = layoutList[line].id
 
-        if(line == size) {
+        if (line == size) {
             layoutParams.bottomToTop = lastView.id
         } else {
-            layoutParams.bottomToTop = layoutList[line+1].id
+            layoutParams.bottomToTop = layoutList[line + 1].id
         }
 
-        val vertical = (count*15).toFloat()/(layoutInterval-15).toFloat()
+        val vertical = (count * 15).toFloat() / (layoutInterval - 15).toFloat()
 
         layoutParams.verticalBias = vertical
 
         testView.setBackgroundResource(R.drawable.calendar_textview_border)
         val drawable = testView.background as GradientDrawable
-        drawable.setColorFilter(color,PorterDuff.Mode.SRC_ATOP)
+        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
 
         testView.includeFontPadding = false
         testView.gravity = Gravity.CENTER
         testView.setText(textViewText)
-        testView.setTextSize(Dimension.SP,12.0f)
+        testView.setTextSize(Dimension.SP, 12.0f)
 
         val calendar = Calendar.getInstance()
         val thisMonth = Calendar.getInstance()
@@ -507,27 +522,28 @@ class AdapterMonth(val activity: Activity,
         calendar.add(Calendar.DATE, contentPosition)
         val start = calendar.time.clone() as Date
 
-        calendar.add(Calendar.DATE, width-1)
+        calendar.add(Calendar.DATE, width - 1)
 
-        while (thisMonth.time.date != 1){
+        while (thisMonth.time.date != 1) {
             thisMonth.add(Calendar.DATE, 1)
         }
 
-        if(colors.indexOf(color) in listOf(
-                0,1,2,6,7,8,12,13,14,15,
-                18,19,20,24,25,26,27,30,31,32,
-                36,37,38
-        )){
+        if (colors.indexOf(color) in listOf(
+                0, 1, 2, 6, 7, 8, 12, 13, 14, 15,
+                18, 19, 20, 24, 25, 26, 27, 30, 31, 32,
+                36, 37, 38
+            ) || color == Color.parseColor("#F71E58")
+        ) {
             testView.setTextColor(Color.parseColor("#FDFDFD"))
-        } else{
+        } else {
             testView.setTextColor(Color.parseColor("#191919"))
         }
 
-        if(completed){
+        if (completed) {
             testView.alpha = 0.7f
             testView.setPaintFlags(testView.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
         } else {
-            if (thisMonth.time.month != calendar.time.month && thisMonth.time.month != start.month){
+            if (thisMonth.time.month != calendar.time.month && thisMonth.time.month != start.month) {
                 testView.alpha = 0.7f
             } else {
                 testView.alpha = 1f
@@ -536,7 +552,7 @@ class AdapterMonth(val activity: Activity,
 
         testView.layoutParams = layoutParams
 
-        parentConstraintLayout.addView(testView, parentConstraintLayout.childCount-1)
+        parentConstraintLayout.addView(testView, 0)
     }
 
     fun pxToDp(px: Float): Int {
@@ -545,7 +561,7 @@ class AdapterMonth(val activity: Activity,
         return (px / (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
     }
 
-    fun setHoliDays(holder: MonthView, start: Date, holidays: List<Holiday>, month: Int){
+    fun setHoliDays(holder: MonthView, start: Date, holidays: List<HolidayData>, month: Int) {
         val dateTextViewList = listOf(
             R.id.date_text_one,
             R.id.date_text_two,
@@ -593,47 +609,54 @@ class AdapterMonth(val activity: Activity,
 
         val dateTextViews = ArrayList<TextView>()
 
-        for(i in 0..41){
+        for (i in 0..41) {
             dateTextViews.add(holder.itemView.findViewById<TextView>(dateTextViewList[i]))
         }
 
         val calendar = Calendar.getInstance()
+
+        val holidaysList = ArrayList<HolidayData>()
+
+        for (holiday in holidays) {
+            holidaysList.add(holiday.copy())
+        }
+
+        calendar.time = start
         calendar.set(Calendar.HOUR_OF_DAY, 2)
 
-        val holidaysList = holidays as ArrayList
-        calendar.time = start
+        for (i in 0 until 42) {
+            if (holidaysList.size == 0) break
 
-        var i = 0
-
-        while (holidays.size > 0 && i < 42){
-            val holiday = holidaysList[0]
-            val repeatStart = FormatDate.strToDate(holiday.repeatStart)
-            repeatStart!!.hours = 0
-
-            val repeatEnd = FormatDate.strToDate(holiday.repeatEnd)
-            repeatEnd!!.hours = 23
-
-            if (repeatStart!!.before(calendar.time) && repeatEnd!!.after(calendar.time)){
-                if(calendar.get(Calendar.MONTH) != month) {
-                    dateTextViews[i].setTextColor(Color.rgb(0xFD,0xBB,0xCD))
-                } else {
-                    if(calendar.time.year != Date().year ||
-                        calendar.time.month != Date().month ||
-                        calendar.time.date != Date().date) {
-                        dateTextViews[i].setTextColor(Color.rgb(0xF7, 0x1E, 0x58))
+            for (holiday in holidaysList) {
+                if (holiday.position == i) {
+                    for (z in 0 until holiday.cnt) {
+                        if (calendar.get(Calendar.MONTH) != month) {
+                            if (calendar.time.year != Date().year ||
+                                calendar.time.month != Date().month ||
+                                calendar.time.date != Date().date
+                            ) {
+                                dateTextViews[i + z].setTextColor(Color.rgb(0xFD, 0xBB, 0xCD))
+                            }
+                        } else {
+                            if (calendar.time.year != Date().year ||
+                                calendar.time.month != Date().month ||
+                                calendar.time.date != Date().date
+                            ) {
+                                dateTextViews[i + z].setTextColor(Color.rgb(0xF7, 0x1E, 0x58))
+                            }
+                        }
                     }
+
+                    break
                 }
-            } else if (repeatEnd!!.before(calendar.time)){
-                holidaysList.removeAt(0)
             }
 
             calendar.add(Calendar.DATE, 1)
-            i++
         }
     }
 
     //레이아웃이 완전히 확립이 안됐을 때 실행이 돼
-    fun setView(holder:MonthView, position: Int){
+    fun setView(holder: MonthView, position: Int) {
         val calendar = Calendar.getInstance()
 
         var calendarviewModel = CalendarViewModel()
@@ -643,7 +666,12 @@ class AdapterMonth(val activity: Activity,
 
         var startDate = Date()
 
-        var size = init_date(holder, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendarviewModel){
+        var size = init_date(
+            holder,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendarviewModel
+        ) {
             startDate = it
         }
 
@@ -657,13 +685,16 @@ class AdapterMonth(val activity: Activity,
                     val dateLayoutTwo =
                         holder.itemView.findViewById<LinearLayout>(R.id.date_layout_two)
 
-                    dateLayoutTwo.post{
+                    dateLayoutTwo.post {
                         //레이아웃 사이 거리 변수 /15 할 시 몇 개의 TextView가 들어갈 수 있는지 구할 수 있음
                         val locationInterval = pxToDp(dateLayoutTwo.y - dateLayoutOne.y) - 28
                         val maxTextCount = locationInterval / 15
 
                         var cloneLiveTodo = livetodo as ArrayList
                         var cloneLiveSchedule = liveschedule as ArrayList
+                        val cloneLiveHoliday = liveholiday as ArrayList
+
+                        Log.d("공휴일", cloneLiveHoliday.toString())
 
                         var spanList = ArrayList<Int>()
 
@@ -672,7 +703,7 @@ class AdapterMonth(val activity: Activity,
 
                         var saveLineList = ArrayList<Int>()
                         var saveCntList = ArrayList<Int>()
-                        var saveScheduleList = ArrayList<Schedule>()
+                        var saveScheduleList = ArrayList<Schedule?>()
 
                         var position2 = -1
 
@@ -701,11 +732,15 @@ class AdapterMonth(val activity: Activity,
 
                                     var color = Color.rgb(0xAA, 0xD7, 0xFF)
 
-                                    if (saveScheduleList[index].category != null &&
-                                        saveScheduleList[index].category!!.color != null
-                                    ) {
-                                        color =
-                                            Color.parseColor(saveScheduleList[index].category!!.color)
+                                    if (saveScheduleList[index] == null) {
+                                        color = Color.rgb(0xF7, 0x1E, 0x58)
+                                    } else {
+                                        if (saveScheduleList[index]!!.category != null &&
+                                            saveScheduleList[index]!!.category!!.color != null
+                                        ) {
+                                            color =
+                                                Color.parseColor(saveScheduleList[index]!!.category!!.color)
+                                        }
                                     }
 
                                     addViewFunction(
@@ -730,11 +765,15 @@ class AdapterMonth(val activity: Activity,
 
                                     var color = Color.rgb(0xAA, 0xD7, 0xFF)
 
-                                    if (saveScheduleList[index].category != null &&
-                                        saveScheduleList[index].category!!.color != null
-                                    ) {
-                                        color =
-                                            Color.parseColor(saveScheduleList[index].category!!.color)
+                                    if (saveScheduleList[index] == null) {
+                                        color = Color.rgb(0xF7, 0x1E, 0x58)
+                                    } else {
+                                        if (saveScheduleList[index]!!.category != null &&
+                                            saveScheduleList[index]!!.category!!.color != null
+                                        ) {
+                                            color =
+                                                Color.parseColor(saveScheduleList[index]!!.category!!.color)
+                                        }
                                     }
 
                                     saveCntList.removeAt(index)
@@ -765,6 +804,71 @@ class AdapterMonth(val activity: Activity,
                             }
 
                             var returnvalue = 1
+
+                            if (calendarMainData.holidayCategory && calendarMainData.scheduleApply) {
+                                for (content in cloneLiveHoliday) {
+                                    val interval = content.cnt
+
+                                    if (content.position == contentPosition) {
+                                        cloneLiveHoliday.remove(content)
+                                        val color =
+                                            Color.parseColor("#F71E58")
+
+                                        if ((contentPosition + interval - 1) / 7 != contentPosition / 7) {
+                                            val overflowvalue =
+                                                contentPosition + interval - (contentPosition / 7 + 1) * 7
+
+                                            saveCntList.add(overflowvalue)
+                                            saveScheduleList.add(null)
+                                            saveLineList.add(contentLine)
+
+                                            positionplus += interval - overflowvalue - 1
+                                            returnvalue = interval - overflowvalue
+                                            cntlist.add(returnvalue)
+
+                                            addViewFunction(
+                                                holder,
+                                                content.holiday.content,
+                                                (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                                contentPosition / 7,
+                                                contentLine,
+                                                returnvalue,
+                                                color,
+                                                false,
+                                                size,
+                                                locationInterval,
+                                                maxTextCount,
+                                                contentPosition,
+                                                startDate
+                                            )
+
+                                            continue@loop
+                                        }
+
+                                        positionplus += interval - 1
+                                        returnvalue = interval
+                                        cntlist.add(returnvalue)
+
+                                        addViewFunction(
+                                            holder,
+                                            content.holiday.content,
+                                            (contentPosition % 7) / (7 - returnvalue).toFloat(),
+                                            contentPosition / 7,
+                                            contentLine,
+                                            returnvalue,
+                                            color,
+                                            false,
+                                            size,
+                                            locationInterval,
+                                            maxTextCount,
+                                            contentPosition,
+                                            startDate
+                                        )
+
+                                        continue@loop
+                                    }
+                                }
+                            }
 
                             if (calendarMainData.scheduleApply) {
                                 for (content in cloneLiveSchedule) {

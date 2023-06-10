@@ -30,6 +30,13 @@
         android:layout_weight="1" />
 
     <ImageView
+        android:id="@+id/iv_visibility_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/visibility_icon"/>
+
+    <ImageView
         android:id="@+id/iv_set_tag_etc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

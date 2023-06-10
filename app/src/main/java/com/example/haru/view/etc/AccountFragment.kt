@@ -6,9 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.viewmodel.EtcViewModel
 
 class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
@@ -25,7 +28,9 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "AccountFragment - onCreate() called")
+        MainActivity.hideNavi(true)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,8 +62,25 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
             binding.tvHaruId.text = it
         })
 
+        etcViewModel.profileImage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it == "" || it == null)
+                binding.ivCircleProfileImage.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.haru_fighting)
+            else Glide.with(this)
+                .load(it)
+                .into(binding.ivCircleProfileImage)
+        })
+
+        etcViewModel.introduction.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvAccountIntroduction.text = it
+        })
+
+        etcViewModel.name.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            binding.tvAccountName.text = it
+        })
+
         binding.ivBackIconAccount.setOnClickListener(ClickListener())
-        binding.accountDelete.setOnClickListener(ClickListener())
+        binding.tvAccountDelete.setOnClickListener(ClickListener())
     }
 
     inner class ClickListener : View.OnClickListener {
@@ -68,7 +90,7 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     requireActivity().supportFragmentManager.popBackStack()
                 }
 
-                binding.accountDelete.id -> {
+                binding.tvAccountDelete.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.fragments_frame, AccountDeleteFragment(etcViewModel))
                         .addToBackStack(null)

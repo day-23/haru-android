@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.haru.databinding.FragmentAlarmBinding
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.viewmodel.EtcViewModel
 
 class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
@@ -25,7 +26,9 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(EtcFragment.TAG, "AlarmFragment - onCreate() called")
+        MainActivity.hideNavi(true)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +47,10 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val sharedPreference = requireContext().getSharedPreferences("ApplyData", 0)
+        val editor = sharedPreference.edit()
+
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
         binding.ivBackIconAlarm.setOnClickListener(ClickListener())
 
@@ -51,6 +58,7 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
         binding.commentAlarmSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             User.alarmAprove = isChecked
+            editor.putBoolean("alarmAprove", User.alarmAprove)
         }
     }
 

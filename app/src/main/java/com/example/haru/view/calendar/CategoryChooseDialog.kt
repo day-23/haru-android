@@ -48,7 +48,7 @@ class CategoryChooseDialog (private val context : CalendarAddFragment?,
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         val width = 0.7f
-        val height = 0.65f
+        val height = 0.7f
         if (Build.VERSION.SDK_INT < 30) {
 
             val display = windowManager.defaultDisplay
@@ -111,6 +111,10 @@ class CategoryChooseDialog (private val context : CalendarAddFragment?,
 //            dlg.setCancelable(true)
 //
 //            dlg.show()
+        }
+
+        binding.emptyView.setOnClickListener {
+            dismiss()
         }
     }
 }

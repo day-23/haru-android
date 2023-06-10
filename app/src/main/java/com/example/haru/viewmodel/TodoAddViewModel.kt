@@ -310,6 +310,10 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         repeatEndDateHeight = h
     }
 
+    fun setStr(str : String){
+        endDateStr = str
+    }
+
     fun readyToSubmit() {
         Log.d("20191627", subTodos.toString())
         for (i in 0 until subTodos.size)

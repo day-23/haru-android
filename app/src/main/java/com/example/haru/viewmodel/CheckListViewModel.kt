@@ -31,9 +31,7 @@ class CheckListViewModel() :
 
     private val _searchList = MutableLiveData<Pair<List<Schedule>?, List<Todo>?>>()
     val searchList: LiveData<Pair<List<Schedule>?, List<Todo>?>> get() = _searchList
-
-//    var searchScheduleData = mutableListOf<Schedule>()
-//    var searchTodoData = mutableListOf<Todo>()
+    private var searchContent : String? = null
 
     private val _todoByTag = MutableLiveData<Boolean>()
     val todoByTag: LiveData<Boolean> = _todoByTag
@@ -53,7 +51,7 @@ class CheckListViewModel() :
 
     var tagInputString: String = ""
 
-    init {
+    fun dataInit(){
         getTodoMain {
             _todoDataList.postValue(todoList)
         }
@@ -92,6 +90,7 @@ class CheckListViewModel() :
 
     fun clearSearch() {
         _searchList.value = Pair(null, null)
+        searchContent = null
     }
 
     fun getTodoList(): List<Todo> {
@@ -103,7 +102,7 @@ class CheckListViewModel() :
         viewModelScope.launch {
             scheduleRepository.getScheduleTodoSearch(content) {
                 if (it?.success == true) {
-
+                    searchContent = content
                     val schedule = if (it.data?.schedules?.isNotEmpty() == true)
                         listOf(Schedule(searchType = 0)) + it.data.schedules
                     else null
@@ -260,7 +259,7 @@ class CheckListViewModel() :
                         todoList.addAll(
                             listOf(
                                 Todo(
-                                    type = 1,
+                                    type = 4,
                                     content = "태그"
                                 )
                             ) + it.data.taggedTodos + listOf(Todo(type = 3))
@@ -275,7 +274,7 @@ class CheckListViewModel() :
                         todoList.addAll(
                             listOf(
                                 Todo(
-                                    type = 1,
+                                    type = 4,
                                     content = "태그 없음"
                                 )
                             ) + it.data.untaggedTodos + listOf(Todo(type = 3))
@@ -290,7 +289,7 @@ class CheckListViewModel() :
                         todoList.addAll(
                             listOf(
                                 Todo(
-                                    type = 1,
+                                    type = 4,
                                     content = "완료"
                                 )
                             ) + it.data.completedTodos + listOf(Todo(type = 6))
@@ -392,16 +391,23 @@ class CheckListViewModel() :
                     1 -> {
                         todoRepository.getTodoByComplete {
                             if (it?.success == true) {
-                                this.addAll(
-                                    listOf(
-                                        Todo(
-                                            type = 4,
-                                            content = todoByTagItem!!
+                                if (it.data!!.isNotEmpty())
+                                    this.addAll(
+                                        listOf(
+                                            Todo(
+                                                type = 4,
+                                                content = todoByTagItem!!
+                                            )
+                                        ) + it.data
+                                    )
+                                else
+                                    this.addAll(
+                                        listOf(
+                                            Todo(type = 1, content = todoByTagItem!!),
+                                            Todo(type = 5, content = "모든 할 일을 마쳤습니다!")
                                         )
-                                    ) + it.data!!
-                                )
-                                if (it.data.isEmpty())
-                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                                    )
+
                             }
                         }
                     }
@@ -426,16 +432,22 @@ class CheckListViewModel() :
                                 else this.add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
                                 this.add(Todo(type = 3))
 
-                                this.add(Todo(type = 4, content = todoByTagItem!!))
-                                if (it.data.unFlaggedTodos.isNotEmpty())
+                                if (it.data.unFlaggedTodos.isNotEmpty()) {
+                                    this.add(Todo(type = 4, content = todoByTagItem!!))
                                     this.addAll(it.data.unFlaggedTodos)
-                                else this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                                } else {
+                                    this.add(Todo(type = 1, content = todoByTagItem!!))
+                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
+                                }
                                 this.add(Todo(type = 3))
 
-                                this.add(Todo(type = 1, content = "완료"))
-                                if (it.data.completedTodos.isNotEmpty())
+                                if (it.data.completedTodos.isNotEmpty()) {
+                                    this.add(Todo(type = 4, content = "완료"))
                                     this.addAll(it.data.completedTodos)
-                                else this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
+                                } else {
+                                    this.add(Todo(type = 1, content = "완료"))
+                                    this.add(Todo(type = 5, content = "할일을 완료해 보세요!"))
+                                }
                             }
                         }
                     }
@@ -467,13 +479,16 @@ class CheckListViewModel() :
     /* ------------------------------------할 일의 수정 기능--------------------------------- */
 
     // 반복하지 않는 Todo를 수정하거나, 반복하는 Todo의 전체를 수정하는 기능
-    fun updateTodo(todoId: String, todo: UpdateTodo, callback: () -> Unit) {
+    fun updateTodo(todoId: String, todo: UpdateTodo, atTodoTable: Boolean = false, callback: () -> Unit) {
         viewModelScope.launch {
             val updateTodo = todoRepository.updateTodo(todoId = todoId, todo = todo) {
                 if (it?.success == true) {
-                    getTag()
-                    checkTodayMode()
-                    withTagUpdate()
+                    if(!atTodoTable) {
+                        getTag()
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
+
                 } else {
                     Log.e("20191627", "CheckListViewModel -> UpdateTodo Fail")
                     Log.e("20191627", it.toString())
@@ -487,6 +502,7 @@ class CheckListViewModel() :
     fun updateRepeatFrontTodo(
         todoId: String,
         updateRepeatFrontTodo: UpdateRepeatFrontTodo,
+        atTodoTable: Boolean = false,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
@@ -494,7 +510,7 @@ class CheckListViewModel() :
                 todoId = todoId,
                 updateRepeatFrontTodo = updateRepeatFrontTodo
             ) {
-                if (it?.success == true) {
+                if (it?.success == true && !atTodoTable) {
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
@@ -510,6 +526,7 @@ class CheckListViewModel() :
     fun updateRepeatMiddleTodo(
         todoId: String,
         updateRepeatMiddleTodo: UpdateRepeatMiddleTodo,
+        atTodoTable: Boolean = false,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
@@ -517,7 +534,7 @@ class CheckListViewModel() :
                 todoId = todoId,
                 updateRepeatMiddleTodo = updateRepeatMiddleTodo
             ) {
-                if (it?.success == true) {
+                if (it?.success == true && !atTodoTable) {
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
@@ -534,6 +551,7 @@ class CheckListViewModel() :
 
     fun updateRepeatBackTodo(
         todoId: String,
+        atTodoTable: Boolean = false,
         updateRepeatBackTodo: UpdateRepeatBackTodo, callback: () -> Unit
     ) {
         viewModelScope.launch {
@@ -541,7 +559,7 @@ class CheckListViewModel() :
                 todoId = todoId,
                 updateRepeatBackTodo = updateRepeatBackTodo
             ) {
-                if (it?.success == true) {
+                if (it?.success == true && !atTodoTable) {
                     getTag()
                     checkTodayMode()
                     withTagUpdate()
@@ -726,8 +744,12 @@ class CheckListViewModel() :
             val successData =
                 todoRepository.updateFlag(todoId = id, flag = flag) {
                     if (it?.success == true) {
-                        checkTodayMode()
-                        withTagUpdate()
+                        if (searchContent != null)
+                            getScheduleTodoSearch(searchContent!!)
+                        else{
+                            checkTodayMode()
+                            withTagUpdate()
+                        }
                     }
                     callback(flag, it)
                 }

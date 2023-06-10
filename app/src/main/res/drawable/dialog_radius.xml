@@ -2,5 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
+    <solid android:color="@android:color/transparent"/>
 <!--    밑에서 올라오는 모달창의 설정을 아무것도 없는 것으로 변경하기 위해서 생성-->
 </shape>

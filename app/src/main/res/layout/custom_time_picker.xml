@@ -34,6 +34,7 @@
                 android:backgroundTint="@color/dateBtn_bg" />
         </FrameLayout>
 
+<!--        컬러 색깔 지정하기-->
         <NumberPicker
             android:id="@+id/time_division"
             android:layout_width="wrap_content"
@@ -82,5 +83,13 @@
             android:clickable="false"
             android:textColor="@color/delete_red" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:layout_weight="1"/>
 
 </LinearLayout>

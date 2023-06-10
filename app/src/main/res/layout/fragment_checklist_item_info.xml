@@ -15,6 +15,7 @@
         android:id="@+id/headerTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <LinearLayout
@@ -30,18 +31,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/back_arrow"
-                android:backgroundTint="@color/black"/>
+                android:backgroundTint="@color/black" />
 
             <TextView
                 android:id="@+id/tv_view_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/todo_description"
                 android:gravity="center_horizontal"
-                android:textStyle="bold"
+                android:text="할 일 수정"
+                android:textColor="@color/todo_description"
                 android:textSize="20sp"
-                android:text="할 일 수정"/>
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/btn_info_save"
@@ -111,8 +112,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
-                            android:backgroundTint="@color/light_gray"
-                            android:background="@drawable/calendar_schedule_plus_image" />
+                            android:background="@drawable/calendar_schedule_plus_image"
+                            android:backgroundTint="@color/light_gray" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -259,8 +260,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:animateLayoutChanges="true"
-                        android:paddingTop="12dp"
-                        >
+                        android:paddingTop="12dp">
 
                         <TextView
                             android:id="@+id/tv_info_endTime_set"
@@ -405,8 +405,7 @@
                         android:id="@+id/info_repeatOptionLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="8dp"
-                        >
+                        android:paddingTop="8dp">
 
                         <LinearLayout
                             android:id="@+id/info_repeatOptionSelect"
@@ -495,8 +494,7 @@
                         android:layout_marginStart="35dp"
                         android:layout_marginEnd="55dp"
                         android:orientation="horizontal"
-                        android:paddingTop="8dp"
-                        >
+                        android:paddingTop="8dp">
 
                         <TextView
                             android:id="@+id/tv_info_sunday"
@@ -575,8 +573,7 @@
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
                         android:rowCount="5"
-                        android:useDefaultMargins="true"
-                         />
+                        android:useDefaultMargins="true" />
 
                     <GridLayout
                         android:id="@+id/info_gridYear"
@@ -589,16 +586,14 @@
                         android:orientation="horizontal"
                         android:paddingTop="8dp"
                         android:rowCount="2"
-                        android:useDefaultMargins="true"
-                         />
+                        android:useDefaultMargins="true" />
 
                     <LinearLayout
                         android:id="@+id/info_repeatEndDateLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:animateLayoutChanges="true"
-                        android:paddingTop="14dp"
-                        >
+                        android:paddingTop="14dp">
 
                         <TextView
                             android:id="@+id/tv_info_repeat_end"
@@ -628,7 +623,7 @@
                             style="@style/minSize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="28dp"
+                            android:layout_marginEnd="20dp"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
 
@@ -677,7 +672,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingBottom="36dp">
+            android:paddingBottom="70dp">
 
             <Button
                 android:id="@+id/btn_info_delete"
@@ -693,7 +688,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/big_delete_icon"
                 android:backgroundTint="@color/delete_red" />
-
 
         </LinearLayout>
 
