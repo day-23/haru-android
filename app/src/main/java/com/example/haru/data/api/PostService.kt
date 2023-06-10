@@ -28,7 +28,7 @@ interface PostService {
 
     @GET("post/{userId}/posts/user/{targetId}/feed?page=1")
     fun getFirstMyFeed(@Path("userId") userId: String,
-                  @Path("targetId") targetId : String,) : Call<PostResponse>
+                       @Path("targetId") targetId : String,) : Call<PostResponse>
 
     @GET("post/{userId}/posts/user/{targetId}/media?page=1")
     fun getFirstMedia(@Path("userId") userId: String, @Path("targetId") targetId: String) : Call<MediaResponse>
