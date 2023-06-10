@@ -1,51 +1,58 @@
 package com.example.haru.view
 
 import BaseActivity
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
-import android.content.res.ColorStateList
+import android.graphics.Point
+import android.graphics.Rect
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
+import com.example.haru.databinding.ActivityMainBinding
+import com.example.haru.utils.HeightProvider
+import com.example.haru.data.model.Schedule
+import com.example.haru.data.model.Todo
 import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.databinding.ActivityMainBinding
+import com.example.haru.utils.FormatDate
 import com.example.haru.utils.User
+import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.calendar.calendarMainData
+import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.etc.AlarmWorker
 import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.view.timetable.TimetableFragment
-import com.example.haru.viewmodel.CalendarViewModel
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
+
 
 class MainActivity : BaseActivity() {
     private val fragments = arrayOfNulls<Fragment>(5)
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreference: SharedPreferences
     private lateinit var editor: Editor
 
     companion object {
-        private lateinit var binding: ActivityMainBinding
+        private var binding: ActivityMainBinding? = null
         fun hideNavi(state: Boolean) {
-            if (state)
-                binding.bottomNav.visibility = View.GONE
-            else binding.bottomNav.visibility = View.VISIBLE
+            binding?.bottomNav?.visibility = if (state) View.GONE else View.VISIBLE
+        }
+
+        fun setBinding(activityMainBinding: ActivityMainBinding) {
+            binding = activityMainBinding
         }
     }
 
@@ -56,88 +63,12 @@ class MainActivity : BaseActivity() {
         editor.putBoolean("todoComplete", calendarMainData.todoComplete)
         editor.putBoolean("todoInComplete", calendarMainData.todoInComplete)
         editor.putBoolean("holidayCategory", calendarMainData.holidayCategory)
+        editor.putInt("alarmCnt", calendarMainData.alarmCnt)
         editor.putString("userId", User.id)
         editor.putBoolean("alarmAprove", User.alarmAprove)
         editor.apply()
 
-//        initAlarm()
-
         super.onPause()
-    }
-
-    fun initAlarm() {
-        if (User.alarmAprove) {
-            Log.d("알람", "알람 설정")
-            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-
-            val intent = Intent(this, AlarmWorker::class.java)
-            val intent2 = Intent(this, AlarmWorker::class.java)
-            if (User.id != "") {
-                intent.putExtra("userId", User.id)
-                intent.putExtra("requestCode", "0")
-                val pendingIntent = PendingIntent.getBroadcast(
-                    this, 0, intent,
-                    PendingIntent.FLAG_MUTABLE
-                )
-
-//                intent2.putExtra("requestCode", "1")
-//
-//                val pendingIntent2 = PendingIntent.getBroadcast(
-//                    this, 1, intent2,
-//                    PendingIntent.FLAG_MUTABLE
-//                )
-
-                val calendar = Calendar.getInstance()
-
-                val todaytime = calendar.time
-
-                todaytime.hours = 9
-                todaytime.minutes = 0
-                todaytime.seconds = 0
-
-                if (calendar.time.after(todaytime)){
-                    calendar.add(Calendar.DATE, 1)
-                }
-
-                calendar.apply {
-                    set(Calendar.HOUR_OF_DAY, 9)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
-                }
-
-//                calendar.add(Calendar.SECOND, 20)
-
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
-
-//                calendar.add(Calendar.SECOND, 5)
-//
-//                alarmManager.setExactAndAllowWhileIdle(
-//                    AlarmManager.RTC_WAKEUP,
-//                    calendar.timeInMillis,
-//                    pendingIntent2
-//                )
-            }
-        } else {
-            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-            val intent = Intent(baseContext, AlarmWorker::class.java)
-
-            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.getBroadcast(baseContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            } else {
-                PendingIntent.getBroadcast(
-                    baseContext,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-            }
-
-            alarmManager.cancel(pendingIntent)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -145,6 +76,8 @@ class MainActivity : BaseActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setBinding(binding)
 
         initFragments()
         setDefaultFragment()
@@ -165,7 +98,11 @@ class MainActivity : BaseActivity() {
         calendarMainData.todoComplete = sharedPreference.getBoolean("todoComplete", true)
         calendarMainData.todoInComplete = sharedPreference.getBoolean("todoInComplete", true)
         calendarMainData.holidayCategory = sharedPreference.getBoolean("holidayCategory", true)
+        calendarMainData.alarmCnt = sharedPreference.getInt("alarmCnt", 0)
         User.alarmAprove = sharedPreference.getBoolean("alarmAprove", true)
+
+//        initAlarm(0)
+//        initAlarm(1)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

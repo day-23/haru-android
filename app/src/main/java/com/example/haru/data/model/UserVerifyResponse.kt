@@ -16,6 +16,7 @@ data class UserVerify(
     val isAllowFeedLike: Int,
     val isAllowFeedComment: Int,
     val isAllowSearch: Boolean,
+    val isMaliciousUser: Boolean,
     val createdAt: String,
     val accessToken: String?
 )

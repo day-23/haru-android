@@ -31,7 +31,7 @@ class CheckListViewModel() :
 
     private val _searchList = MutableLiveData<Pair<List<Schedule>?, List<Todo>?>>()
     val searchList: LiveData<Pair<List<Schedule>?, List<Todo>?>> get() = _searchList
-    private var searchContent : String? = null
+    private var searchContent: String? = null
 
     private val _todoByTag = MutableLiveData<Boolean>()
     val todoByTag: LiveData<Boolean> = _todoByTag
@@ -51,7 +51,7 @@ class CheckListViewModel() :
 
     var tagInputString: String = ""
 
-    fun dataInit(){
+    fun dataInit() {
         getTodoMain {
             _todoDataList.postValue(todoList)
         }
@@ -88,10 +88,6 @@ class CheckListViewModel() :
         todayList.clear()
     }
 
-    fun setSearch(content : String){
-        searchContent = content
-    }
-
     fun clearSearch() {
         _searchList.value = Pair(null, null)
         searchContent = null
@@ -106,7 +102,7 @@ class CheckListViewModel() :
         viewModelScope.launch {
             scheduleRepository.getScheduleTodoSearch(content) {
                 if (it?.success == true) {
-
+                    searchContent = content
                     val schedule = if (it.data?.schedules?.isNotEmpty() == true)
                         listOf(Schedule(searchType = 0)) + it.data.schedules
                     else null
@@ -217,11 +213,6 @@ class CheckListViewModel() :
         getTodoMain {
             _todoByTag.postValue(false)
             todoByTagItem = null
-//            todoList.clear()
-//            flaggedTodos.value?.let { todoList.addAll(it) }
-//            taggedTodos.value?.let { todoList.addAll(it) }
-//            untaggedTodos.value?.let { todoList.addAll(it) }
-//            completedTodos.value?.let { todoList.addAll(it) }
             _todoDataList.postValue(todoList)
         }
     }
@@ -415,18 +406,6 @@ class CheckListViewModel() :
                             }
                         }
                     }
-//                    2 -> {
-//                        todoRepository.getTodoByUntag {
-//                            if (it?.success == true) {
-//                                this.addAll(
-//                                    listOf(Todo(type = 4, content = todoByTagItem!!))
-//                                            + it.data!!
-//                                )
-//                                if (it.data.isEmpty())
-//                                    this.add(Todo(type = 5, content = "모든 할 일을 마쳤습니다!"))
-//                            }
-//                        }
-//                    }
                     else -> {
                         todoRepository.getTodoByTag(tagDataList.value!![position - 1].id) {
                             if (it?.success == true) {
@@ -483,16 +462,22 @@ class CheckListViewModel() :
     /* ------------------------------------할 일의 수정 기능--------------------------------- */
 
     // 반복하지 않는 Todo를 수정하거나, 반복하는 Todo의 전체를 수정하는 기능
-    fun updateTodo(todoId: String, todo: UpdateTodo, atTodoTable: Boolean = false, callback: () -> Unit) {
+    fun updateTodo(
+        todoId: String,
+        todo: UpdateTodo,
+        atTodoTable: Boolean = false,
+        callback: () -> Unit
+    ) {
         viewModelScope.launch {
             val updateTodo = todoRepository.updateTodo(todoId = todoId, todo = todo) {
-                if (it?.success == true) {
-                    if(!atTodoTable) {
+                if (it?.success == true && !atTodoTable) {
+                    if (searchContent != null)
+                        getScheduleTodoSearch(searchContent!!)
+                    else {
                         getTag()
                         checkTodayMode()
                         withTagUpdate()
                     }
-
                 } else {
                     Log.e("20191627", "CheckListViewModel -> UpdateTodo Fail")
                     Log.e("20191627", it.toString())
@@ -515,9 +500,13 @@ class CheckListViewModel() :
                 updateRepeatFrontTodo = updateRepeatFrontTodo
             ) {
                 if (it?.success == true && !atTodoTable) {
-                    getTag()
-                    checkTodayMode()
-                    withTagUpdate()
+                    if (searchContent != null)
+                        getScheduleTodoSearch(searchContent!!)
+                    else {
+                        getTag()
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
                 } else {
                     Log.e("20191627", "CheckListViewModel -> UpdateRepeatFrontTodo Fail")
                     Log.e("20191627", it.toString())
@@ -586,8 +575,12 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData = todoRepository.deleteTodo(todoId = todoId) {
                 if (it?.success == true) {
-                    checkTodayMode()
-                    withTagUpdate()
+                    if (searchContent != null)
+                        getScheduleTodoSearch(searchContent!!)
+                    else {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
                 }
                 callback()
             }
@@ -603,8 +596,12 @@ class CheckListViewModel() :
         viewModelScope.launch {
             val successData = todoRepository.deleteRepeatFrontTodo(todoId, frontEndDate) {
                 if (it?.success == true) {
-                    checkTodayMode()
-                    withTagUpdate()
+                    if (searchContent != null)
+                        getScheduleTodoSearch(searchContent!!)
+                    else {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
                 } else {
                     Log.e("20191627", "CheckListViewModel -> DeleteRepeatFrontTodo Fail")
                     Log.e("20191627", it.toString())
@@ -665,8 +662,12 @@ class CheckListViewModel() :
                 completed = completed
             ) {
                 if (it?.success == true) {
-                    checkTodayMode()
-                    withTagUpdate()
+                    if (searchContent != null)
+                        getScheduleTodoSearch(searchContent!!)
+                    else {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
                 } else {
                     Log.e("20191627", "CheckListViewModel -> CompleteSubTodo Fail")
                     Log.e("20191627", it.toString())
@@ -688,8 +689,12 @@ class CheckListViewModel() :
             ) {
                 Log.e("20191627", it.toString())
                 if (it?.success == true) {
-                    checkTodayMode()
-                    withTagUpdate()
+                    if (searchContent != null)
+                        getScheduleTodoSearch(searchContent!!)
+                    else {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
                 }
                 callback(completed, it)
             }
@@ -706,8 +711,12 @@ class CheckListViewModel() :
             val successData =
                 todoRepository.completeRepeatFrontTodo(todoId = id, frontEndDate = frontEndDate) {
                     if (it?.success == true) {
-                        checkTodayMode()
-                        withTagUpdate()
+                        if (searchContent != null)
+                            getScheduleTodoSearch(searchContent!!)
+                        else {
+                            checkTodayMode()
+                            withTagUpdate()
+                        }
                     } else {
                         Log.e("20191627", "CheckListViewModel -> CompleteRepeatFrontTodo Fail")
                         Log.e("20191627", it.toString())
@@ -728,8 +737,12 @@ class CheckListViewModel() :
                 folded = folded
             ) {
                 if (it?.success == true) {
-                    checkTodayMode()
-                    withTagUpdate()
+                    if (searchContent != null)
+                        getScheduleTodoSearch(searchContent!!)
+                    else {
+                        checkTodayMode()
+                        withTagUpdate()
+                    }
                 } else {
                     Log.e("20191627", "CheckListViewModel -> UpdateFolded Fail")
                     Log.e("20191627", it.toString())
@@ -750,7 +763,7 @@ class CheckListViewModel() :
                     if (it?.success == true) {
                         if (searchContent != null)
                             getScheduleTodoSearch(searchContent!!)
-                        else{
+                        else {
                             checkTodayMode()
                             withTagUpdate()
                         }

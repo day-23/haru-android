@@ -45,28 +45,18 @@
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    
-    <EditText
-        android:id="@+id/addpost_content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:textColor="#191919"
-        android:layout_marginLeft="34dp"
-        android:layout_marginRight="34dp"
-        android:layout_marginTop="20dp"
-        android:hint="텍스트를 입력해주세요"
-        app:layout_constraintTop_toBottomOf="@+id/addpost_title"
-        app:layout_constraintBottom_toTopOf="@+id/popup_gallery"
-        android:gravity="top"
-        android:background="#00000000"/>
 
+    <ImageView
+        android:id="@+id/add_post_images"
+        android:layout_width="match_parent"
+        android:layout_height="390dp"
+        app:layout_constraintTop_toBottomOf="@id/addpost_title"
+        tools:ignore="MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/popup_gallery"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="413dp"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="horizontal"

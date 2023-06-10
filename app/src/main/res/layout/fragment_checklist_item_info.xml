@@ -15,6 +15,7 @@
         android:id="@+id/headerTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <LinearLayout
@@ -194,6 +195,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="20dp"
+                        android:background="@android:color/transparent"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
 
@@ -250,6 +252,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -290,6 +293,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
 
@@ -353,6 +357,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="20dp"
+                        android:background="@android:color/transparent"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
 
@@ -396,6 +401,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -623,6 +629,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
 

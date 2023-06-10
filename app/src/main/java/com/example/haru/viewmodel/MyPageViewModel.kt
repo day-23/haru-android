@@ -132,6 +132,11 @@ class MyPageViewModel() : ViewModel() {
         return images
     }
 
+    fun getImageInfo(index : Int) : ExternalImages {
+        val images = _StoredImages.value!!
+        return images[index]
+    }
+
     fun getFeed(targetId: String, lastCreatedAt: String) {
         var newPost: ArrayList<Post> = arrayListOf()
         viewModelScope.launch {
@@ -149,6 +154,7 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             PostRepository.getFirstMyFeed(targetId) {
                 if (it.size > 0) {
+                    Log.d("20191668", "first feed $it")
                     initPost = it
                 }
             }

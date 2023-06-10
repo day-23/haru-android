@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil.setContentView
 import com.example.haru.App
@@ -68,6 +69,7 @@ class SplashActivity : BaseActivity() {
                         User.isAllowFeedLike = response.body()?.data?.isAllowFeedLike!!
                         User.isAllowFeedComment = response.body()?.data?.isAllowFeedComment!!
                         User.isAllowSearch = response.body()?.data?.isAllowSearch!!
+                        User.isMaliciousUser = response.body()?.data?.isMaliciousUser!!
                         User.createdAt = response.body()?.data?.createdAt.toString()
                         User.accessToken = response.body()?.data?.accessToken.toString()
 
@@ -77,7 +79,13 @@ class SplashActivity : BaseActivity() {
                             commit()
                         }
 
-                        if(User.name== "" || User.haruId == "" ){
+
+                        if(User.isMaliciousUser){
+                            val intent = Intent(this@SplashActivity, LoginActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                        else if(User.name== "" || User.haruId == "" ){
                             val intent = Intent(this@SplashActivity, SignUpActivity::class.java)
                             startActivity(intent)
                             finish()

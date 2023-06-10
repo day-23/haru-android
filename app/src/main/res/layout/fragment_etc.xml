@@ -294,7 +294,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:text="30%"
                     android:textColor="@color/highlight"
                     android:textSize="30sp"
                     android:textStyle="bold" />
@@ -303,7 +302,6 @@
                     android:id="@+id/progressbar"
                     android:layout_width="123dp"
                     android:layout_height="123dp"
-                    android:progress="30"
                     app:indicatorColor="@color/highlight"
                     app:indicatorDirectionCircular="clockwise"
                     app:indicatorSize="123dp"

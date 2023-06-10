@@ -98,10 +98,6 @@ class CalendarAddFragment(private val categories: List<Category?>,
             repeatEndCalendar.set(initEndDate.year+1900, initEndDate.month, initEndDate.date)
         }
 
-        if(binding.repeatStartDateBtn.text != binding.repeatEndDateBtn.text){
-            binding.btnEveryDaySchedule.visibility = View.GONE
-        }
-
         if (repeatStartCalendar.time.minutes < 30){
             repeatStartCalendar.set(Calendar.MINUTE, 30)
         } else {
@@ -128,6 +124,49 @@ class CalendarAddFragment(private val categories: List<Category?>,
 
         binding.repeatStartTimeBtn.text = timeParser.format(repeatStartCalendar.time)
         binding.repeatEndTimeBtn.text = timeParser.format(repeatEndCalendar.time)
+
+        if(binding.repeatStartDateBtn.text != binding.repeatEndDateBtn.text){
+            if (repeatStartCalendar.time.month != repeatEndCalendar.time.month){
+                binding.gridMonthSchedule.visibility = View.GONE
+                binding.btnEveryMonthSchedule.visibility = View.GONE
+                if(repeatOption == -3) repeatOption = -1
+            } else {
+                binding.btnEveryMonthSchedule.visibility = View.VISIBLE
+            }
+
+            val startDate = repeatStartCalendar.time.clone() as Date
+            startDate.hours = 0
+            startDate.minutes = 0
+            startDate.seconds = 0
+
+            val endDate = repeatEndCalendar.time.clone() as Date
+            endDate.hours = 0
+            endDate.minutes = 0
+            endDate.seconds = 0
+
+            //일주일 이상 차이나면 반복 해제
+            if((endDate.time - startDate.time)/(1000 * 60 * 60 * 24) > 6){
+                binding.repeatSwitchSchedule.isChecked = false
+                binding.repeatSwitchSchedule.isClickable = false
+
+                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                binding.repeatIvSchedule.backgroundTintList =
+                    ColorStateList.valueOf(Color.LTGRAY)
+
+                binding.repeatOptionSelectSchedule.visibility = View.GONE
+                binding.repeatEndLayout.visibility = View.GONE
+                binding.everyWeekLayout.visibility = View.GONE
+                binding.gridMonthSchedule.visibility = View.GONE
+                binding.gridYearSchedule.visibility = View.GONE
+            } else {
+                binding.repeatSwitchSchedule.isClickable = true
+
+                binding.btnEveryDaySchedule.visibility = View.GONE
+                binding.everyWeekLayout.visibility = View.GONE
+                binding.gridMonthSchedule.visibility = View.GONE
+                binding.gridYearSchedule.visibility = View.GONE
+            }
+        }
 
         binding.repeatStartDateBtn.setOnClickListener {
             val datePicker = CustomCalendarDialog(repeatStartCalendar.time)
@@ -415,6 +454,18 @@ class CalendarAddFragment(private val categories: List<Category?>,
         binding.btnEveryMonthSchedule.setOnClickListener{onOptionClick(binding, 3)}
         binding.btnEveryYearSchedule.setOnClickListener{onOptionClick(binding, 4)}
 
+        binding.alarmSwitchSchedule.setOnCheckedChangeListener { view, isChecked ->
+            if(isChecked){
+                binding.alarmTv.setTextColor(Color.parseColor("#191919"))
+                binding.alarmIv.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#191919"))
+            } else {
+                binding.alarmTv.setTextColor(Color.LTGRAY)
+                binding.alarmIv.backgroundTintList =
+                    ColorStateList.valueOf(Color.LTGRAY)
+            }
+        }
+
         for (i in 1..31) {
             val textView = TextView(requireContext())
             textView.text = getString(R.string.MonthDay, i)
@@ -623,20 +674,27 @@ class CalendarAddFragment(private val categories: List<Category?>,
                 val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
                 val timeFormat2 = SimpleDateFormat("HH:mm", Locale.KOREA)
 
-                val realEndDate = repeatEndDateBtnFormat.parse(
-                    binding.btnRepeatEndDateSchedule.text.toString()
-                )!!
+                if(binding.repeatEndDateSwitchSchedule.isChecked) {
+                    val realEndDate = repeatEndDateBtnFormat.parse(
+                        binding.btnRepeatEndDateSchedule.text.toString()
+                    )!!
 
-                realEndDate.hours = 23
-                realEndDate.minutes = 59
+                    realEndDate.hours = 23
+                    realEndDate.minutes = 59
 
-                if(binding.repeatEndDateSwitchSchedule.isChecked &&
-                    realEndDate.before(repeatStartCalendar.time)){
-                    repeatStartCalendar.time = initRepeatStartDate
-                    repeatEndCalendar.time = initRepeatEndDate
+                    if (binding.repeatEndDateSwitchSchedule.isChecked &&
+                        realEndDate.before(repeatStartCalendar.time)
+                    ) {
+                        repeatStartCalendar.time = initRepeatStartDate
+                        repeatEndCalendar.time = initRepeatEndDate
 
-                    Toast.makeText(requireContext(),"반복 종료일은 반복시작일 이후여야 합니다.", Toast.LENGTH_SHORT).show()
-                    break
+                        Toast.makeText(
+                            requireContext(),
+                            "반복 종료일은 반복시작일 이후여야 합니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        break
+                    }
                 }
 
                 var repeatStartDate = ""
@@ -829,6 +887,7 @@ class CalendarAddFragment(private val categories: List<Category?>,
                 }
 
                 val calendarViewModel = CalendarViewModel()
+                val koreanFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
 
                 calendarViewModel.postSchedule(
                     PostSchedule(
@@ -840,7 +899,7 @@ class CalendarAddFragment(private val categories: List<Category?>,
                         option,
                         repeatvalue,
                         category?.id,
-                        emptyList()
+                        if(binding.alarmSwitchSchedule.isChecked) listOf(koreanFormat.format(Date())) else emptyList()
                     )
                 ) {
                     callback()

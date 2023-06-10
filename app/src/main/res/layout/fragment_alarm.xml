@@ -80,6 +80,7 @@
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:thumb="@drawable/custom_switch_thumb"
             app:track="@drawable/custom_switch" />
 
@@ -118,6 +119,7 @@
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:thumb="@drawable/custom_switch_thumb"
             app:track="@drawable/custom_switch" />
 
@@ -162,6 +164,7 @@
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:thumb="@drawable/custom_switch_thumb"
             app:track="@drawable/custom_switch" />
 
@@ -189,6 +192,7 @@
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:thumb="@drawable/custom_switch_thumb"
             app:track="@drawable/custom_switch" />
 
