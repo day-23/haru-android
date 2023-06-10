@@ -1,9 +1,11 @@
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.graphics.Color
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -11,7 +13,6 @@ import com.example.haru.R
 import kotlin.math.log
 
 open class BaseActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

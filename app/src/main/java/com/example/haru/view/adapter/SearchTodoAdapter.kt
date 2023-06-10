@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Completed
 import com.example.haru.data.model.Flag
 import com.example.haru.data.model.SuccessFail
 import com.example.haru.data.model.Todo
@@ -38,8 +39,29 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
         )
     }
 
+    interface CompleteClick {
+        fun onClick(
+            view: View,
+            id: String,
+            callback: (completed: Completed, successData: SuccessFail?) -> Unit
+        )
+    }
+
+    interface SubTodoCompleteClick {
+        fun onClick(view: View, subTodoPosition: Int)
+    }
+
+    interface ToggleClick {
+        fun onClick(view: View, id: String)
+    }
+
     var todoClick: TodoClick? = null
     var flagClick: FlagClick? = null
+    var completeClick: CompleteClick? = null
+    var subTodoCompleteClick: SubTodoCompleteClick? = null
+    var toggleClick: ToggleClick? = null
+
+    var subTodoClickId: String? = null
 
     private val divider = 0
     private val header = 1
@@ -152,31 +174,31 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
                 }
             }
 //
-//            if (completeClick != null) {
-//                binding.checkDone.setOnClickListener {
-//                    completeClick?.onClick(it, item.id){ completed, successData ->
-//                        if (successData == null)
-//                            binding.checkDone.isChecked = !completed.completed
-//                        else if (!successData.success)
-//                            binding.checkDone.isChecked = !completed.completed
-//                    }
-//                }
-//            }
+            if (completeClick != null) {
+                binding.checkDone.setOnClickListener {
+                    completeClick?.onClick(it, item.id){ completed, successData ->
+                        if (successData == null)
+                            binding.checkDone.isChecked = !completed.completed
+                        else if (!successData.success)
+                            binding.checkDone.isChecked = !completed.completed
+                    }
+                }
+            }
 //
-//            if (subTodoCompleteClick != null) {
-//                binding.subTodoItemLayout.setOnClickListener {
-//                    subTodoClickId = item.id
-//                }
-//            }
+            if (subTodoCompleteClick != null) {
+                binding.subTodoItemLayout.setOnClickListener {
+                    subTodoClickId = item.id
+                }
+            }
 //
-//            if (toggleClick != null) {
-//                binding.subTodoToggle.setOnClickListener {
-//                    binding.subTodoToggle.isSelected = !it.isSelected
-//                    binding.subTodoItemLayout.visibility =
-//                        if (it.isSelected) View.GONE else View.VISIBLE
-//                    toggleClick?.onClick(it, item.id)
-//                }
-//            }
+            if (toggleClick != null) {
+                binding.subTodoToggle.setOnClickListener {
+                    binding.subTodoToggle.isSelected = !it.isSelected
+                    binding.subTodoItemLayout.visibility =
+                        if (it.isSelected) View.GONE else View.VISIBLE
+                    toggleClick?.onClick(it, item.id)
+                }
+            }
 
             if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null) {
                 binding.blankView.visibility = View.VISIBLE
@@ -230,13 +252,6 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
                 }
             }
 
-
-//            complete = item.completed
-//
-//            binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
-//            binding.tvTitle.text = item.content
-
-
             binding.subTodoItemLayout.removeAllViews()
             if (item.subTodos.isEmpty()) {
                 binding.subTodoToggle.visibility = View.INVISIBLE
@@ -252,21 +267,19 @@ class SearchTodoAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVie
                 // subtodo completed 클릭 리스너
                 addView.findViewById<CheckBox>(R.id.cb_subTodo_complete).apply {
                     isChecked = item.subTodos[i].completed
-//                    if (subTodoCompleteClick != null) {
-//                        this.setOnClickListener {
-//                            binding.subTodoItemLayout.performClick()
-//                            subTodoCompleteClick?.onClick(
-//                                it,
-//                                binding.subTodoItemLayout.indexOfChild(addView)
-//                            )
-//                        }
-//                    }
+                    if (subTodoCompleteClick != null) {
+                        this.setOnClickListener {
+                            binding.subTodoItemLayout.performClick()
+                            subTodoCompleteClick?.onClick(
+                                it,
+                                binding.subTodoItemLayout.indexOfChild(addView)
+                            )
+                        }
+                    }
                 }
 
                 addView.findViewById<TextView>(R.id.tv_subTodo).apply {
                     text = item.subTodos[i].content
-//                    paintFlags =
-//                        if (item.subTodos[i].completed) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
                     if (item.subTodos[i].completed)
                         setTextColor(ContextCompat.getColor(context, R.color.light_gray))
                 }

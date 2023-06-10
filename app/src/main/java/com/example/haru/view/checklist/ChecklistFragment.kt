@@ -3,10 +3,12 @@ package com.example.haru.view.checklist
 import BaseActivity
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -25,18 +27,17 @@ import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
-import com.example.haru.view.MainActivity
+import com.example.haru.utils.HeightProvider
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.view.sns.SearchFragment
-import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.CheckListViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.*
 
 class ChecklistFragment : Fragment(), LifecycleObserver {
     private lateinit var binding: FragmentChecklistBinding
     private lateinit var checkListViewModel: CheckListViewModel
+    private lateinit var imm: InputMethodManager
 
     companion object {
         const val TAG: String = "로그"
@@ -49,7 +50,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "ChecklistFragment - onCreate() called")
-
+        imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         checkListViewModel = CheckListViewModel()
         checkListViewModel.dataInit()
     }
@@ -73,6 +74,15 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         checkListViewModel.dataInit()
         initTagList()
         initTodoList()
+
+        HeightProvider(requireActivity()).init()
+            .setHeightListener(object : HeightProvider.HeightListener {
+                override fun onHeightChanged(height: Int, maxHeight: Int) {
+                    if (height > 200) {
+                        binding.simpleAddFabLayout.setPadding(0, 0, 0, height - 150)
+                    } else binding.simpleAddFabLayout.setPadding(0, 0, 0, 0)
+                }
+            })
 
 
         binding.ivChecklistSearch.setOnClickListener {
@@ -102,8 +112,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     checkListViewModel.createTag(Content(inputTag))
                     binding.tagEtcLayout.etTagInput.setText("")
                     binding.tagEtcLayout.etTagInput.clearFocus()
-                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+//                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(binding.tagEtcLayout.etTagInput.windowToken, 0)
                 }
             }
@@ -157,8 +167,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 checkListViewModel.addTodo(todo) {
                     binding.etSimpleAddTodo.setText("")
                     binding.etSimpleAddTodo.clearFocus()
-                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
+//                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(binding.etSimpleAddTodo.windowToken, 0)
                 }
             }
@@ -241,7 +251,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     val textColor: Int
                     val drawable: Drawable?
                     if (!tag.isSelected) {
-                        textColor = ContextCompat.getColor(context, R.color.light_gray)
+                        textColor = ContextCompat.getColor(context, R.color.date_text)
                         drawable =
                             ContextCompat.getDrawable(context, R.drawable.tag_btn_un_selected)
                     } else {
@@ -262,8 +272,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 addView.findViewById<ImageView>(R.id.iv_visibility_icon).apply {
                     val drawable = if (!tag.isSelected) ContextCompat.getDrawable(
                         context,
-                        R.drawable.visibility_icon
+                        R.drawable.unvisibility_icon
                     ) else ContextCompat.getDrawable(context, R.drawable.visibility_icon)
+                    this.background = drawable
+                }
+
+                addView.findViewById<ImageView>(R.id.iv_set_tag_etc).apply {
                     val color = if (!tag.isSelected) ColorStateList.valueOf(
                         ContextCompat.getColor(
                             context,
@@ -275,19 +289,17 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                             R.color.todo_description
                         )
                     )
-                    this.background = drawable
                     this.backgroundTintList = color
-                }
-
-                addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener {
-                    checkListViewModel.getRelatedTodoCount(tag.id) { cnt ->
-                        requireActivity().supportFragmentManager.beginTransaction()
-                            .replace(
-                                R.id.fragments_frame,
-                                TagManagementFragment(checkListViewModel, tag, cnt)
-                            )
-                            .addToBackStack(null)
-                            .commit()
+                    setOnClickListener {
+                        checkListViewModel.getRelatedTodoCount(tag.id) { cnt ->
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(
+                                    R.id.fragments_frame,
+                                    TagManagementFragment(checkListViewModel, tag, cnt)
+                                )
+                                .addToBackStack(null)
+                                .commit()
+                        }
                     }
                 }
 
@@ -505,5 +517,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             }
         }
     }
+
+    fun px2dp(px: Int, context: Context) =
+        px / ((context.resources.displayMetrics.densityDpi.toFloat()) / DisplayMetrics.DENSITY_DEFAULT)
 
 }
