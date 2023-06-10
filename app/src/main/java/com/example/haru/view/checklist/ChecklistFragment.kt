@@ -70,7 +70,6 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
 
-        val naviView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
 
         initTagList()
         initTodoList()
@@ -271,19 +270,8 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         context,
                         R.drawable.visibility_icon
                     ) else ContextCompat.getDrawable(context, R.drawable.visibility_icon)
-                    val color = if (!tag.isSelected) ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.light_gray
-                        )
-                    ) else ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.todo_description
-                        )
-                    )
+
                     this.background = drawable
-                    this.backgroundTintList = color
                 }
 
                 addView.findViewById<ImageView>(R.id.iv_set_tag_etc).setOnClickListener {
