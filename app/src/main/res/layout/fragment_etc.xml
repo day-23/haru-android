@@ -183,6 +183,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="34dp">
 
@@ -193,7 +194,7 @@
                     android:layout_weight="1"
                     android:text="2023년 5월 나의 하루"
                     android:textColor="@color/todo_description"
-                    android:textSize="14sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <ImageView

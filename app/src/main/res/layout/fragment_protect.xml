@@ -9,9 +9,7 @@
         android:id="@+id/header_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/linear_border_up_bottom"
-        android:orientation="horizontal"
-        android:paddingBottom="20dp">
+        android:orientation="horizontal">
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -37,6 +35,12 @@
             android:textStyle="bold" />
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/divider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -81,10 +85,10 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_account_public"
-                android:background="@android:color/transparent"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:thumb="@drawable/custom_switch_thumb"
                 app:track="@drawable/custom_switch" />
         </LinearLayout>
@@ -128,10 +132,10 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_browsing_enabled"
-                android:background="@android:color/transparent"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:thumb="@drawable/custom_switch_thumb"
                 app:track="@drawable/custom_switch" />
         </LinearLayout>
@@ -225,10 +229,10 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_allow_search"
-                android:background="@android:color/transparent"
                 style="@style/minSize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:thumb="@drawable/custom_switch_thumb"
                 app:track="@drawable/custom_switch" />
         </LinearLayout>
