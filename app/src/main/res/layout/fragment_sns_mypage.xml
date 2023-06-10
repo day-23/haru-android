@@ -10,7 +10,7 @@
         android:id="@+id/sns_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/todo_table_selected"
+        android:background="#FDFDFD"
         android:paddingStart="15dp"
         android:paddingEnd="20dp"
         tools:ignore="MissingConstraints">
@@ -19,48 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="48dp">
 
-            <ImageView
-                android:id="@+id/sns_haru_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="2dp"
-                android:background="@drawable/small_haru_title"
-                android:backgroundTint="@color/white" />
-
-            <ImageView
-                android:id="@+id/menu_button"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignTop="@id/sns_haru_title"
-                android:layout_alignBottom="@id/sns_haru_title"
-                android:layout_toEndOf="@id/sns_haru_title"
-                android:rotation="-90"
-                android:src="@drawable/___20513" />
-
-            <TextView
-                android:id="@+id/my_page_my_record"
-                android:layout_width="70dp"
-                android:layout_height="32dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginHorizontal="11dp"
-                android:layout_toStartOf="@id/search_button"
-                android:background="@drawable/sns_my_record_selected"
-                android:gravity="center"
-                android:paddingHorizontal="11dp"
-                android:paddingVertical="5dp"
-                android:text="내 기록"
-                android:textColor="#FDFDFD"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/search_button"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="3dp"
-                android:src="@drawable/search_icon" />
 
             <ImageView
                 android:id="@+id/mypage_back"
@@ -70,8 +28,7 @@
                 android:layout_marginTop="2dp"
                 android:src="@drawable/back_image"
                 android:textColor="#191919"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                android:textStyle="bold"/>
 
             <ImageView
                 android:id="@+id/mypage_setup"

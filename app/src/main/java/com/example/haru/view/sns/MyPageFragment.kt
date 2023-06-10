@@ -247,19 +247,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             tagAdapter.newPage(ArrayList(tags))
         }
 
-        binding.menuButton.setOnClickListener {
-            if(click == false){
-                binding.snsButtons.visibility = View.VISIBLE
-                click = true
-                binding.menuButton.animate().rotation(0f)
-            }
-            else{
-                binding.snsButtons.visibility = View.GONE
-                click = false
-                binding.menuButton.animate().rotation(-90f)
-            }
-        }
-
         binding.editProfile.setOnClickListener {
             if(isMyPage) moveEditprofile(userId) // 내 페이지면 프로필 수정 이동
             else{ //타인 페이지라면 친구 작업
@@ -363,13 +350,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         mypageViewModel.requestDelFriend(DelFriendBody(userId))
     }
 
-    fun hideMytitle(){
-        binding.snsHaruTitle.visibility = View.GONE
-        binding.menuButton.visibility = View.GONE
-        binding.myPageMyRecord.visibility = View.GONE
-        binding.searchButton.visibility = View.GONE
-    }
-
     fun showFriendTitle(){
         binding.snsMenu.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
         binding.mypageBack.visibility = View.VISIBLE
@@ -402,10 +382,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         if(userId == com.example.haru.utils.User.id){
             isMyPage = true
             binding.editProfile.text = "프로필 편집"
-            binding.myPageMyRecord.visibility = View.GONE
             mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
         }else{
-            hideMytitle()
             showFriendTitle()
             isMyPage = false
             binding.editProfile.text = "친구 신청"
