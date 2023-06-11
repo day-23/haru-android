@@ -19,12 +19,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.example.haru.R
-import com.example.haru.databinding.ActivityMainBinding
 import com.example.haru.utils.HeightProvider
 import com.example.haru.data.model.Schedule
 import com.example.haru.data.model.Todo
-import com.example.haru.view.calendar.CalendarFragment
-import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.databinding.ActivityMainBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.User
