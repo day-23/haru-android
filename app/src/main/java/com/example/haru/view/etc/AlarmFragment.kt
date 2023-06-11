@@ -6,11 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import com.example.haru.databinding.FragmentAlarmBinding
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
+import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.EtcViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentAlarmBinding
@@ -51,14 +55,115 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
         val sharedPreference = requireContext().getSharedPreferences("ApplyData", 0)
         val editor = sharedPreference.edit()
 
+        val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
+
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
         binding.ivBackIconAlarm.setOnClickListener(ClickListener())
 
-        binding.commentAlarmSwitch.isChecked = User.alarmAprove
+        binding.amAlarmSwitch.isChecked = User.amAlarmAprove
+        binding.pmAlarmSwitch.isChecked = User.pmAlarmAprove
 
-        binding.commentAlarmSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            User.alarmAprove = isChecked
-            editor.putBoolean("alarmAprove", User.alarmAprove)
+        binding.amAlarmTime.text = User.amAlarmDate
+        binding.pmAlarmTime.text = User.pmAlarmDate
+
+        if(binding.amAlarmSwitch.isChecked){
+            binding.amAlarmTime.visibility = View.VISIBLE
+        }
+
+        if(binding.pmAlarmSwitch.isChecked){
+            binding.pmAlarmTime.visibility = View.VISIBLE
+        }
+
+        binding.amAlarmSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked) {
+                binding.amAlarmTime.visibility = View.VISIBLE
+            } else {
+                binding.amAlarmTime.visibility = View.GONE
+            }
+
+            User.amAlarmAprove = isChecked
+            editor.putBoolean("amAlarmAprove", User.amAlarmAprove)
+        }
+
+        binding.pmAlarmSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked) {
+                binding.pmAlarmTime.visibility = View.VISIBLE
+            } else {
+                binding.pmAlarmTime.visibility = View.GONE
+            }
+
+            User.pmAlarmAprove = isChecked
+            editor.putBoolean("pmAlarmAprove", User.pmAlarmAprove)
+        }
+
+        binding.amAlarmTime.setOnClickListener {
+            val timePicker = CustomTimeDialog(timeformatter.parse(binding.amAlarmTime.text.toString()))
+            timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener {
+                override fun onClick(
+                    timeDivider: NumberPicker,
+                    hourNumberPicker: NumberPicker,
+                    minuteNumberPicker: NumberPicker
+                ) {
+                    val timeDivision = timeDivider.value
+                    var hour = hourNumberPicker.value
+                    val minute = minuteNumberPicker.value
+                    if (timeDivision == 0) {
+                        if (hour == 11)
+                            hour = 0
+                        else hour++
+                    } else {
+                        if (hour == 11)
+                            hour++
+                        else hour += 13
+                    }
+
+                    val date = Date()
+                    date.hours = hour
+                    date.minutes = minute*5
+                    date.seconds = 0
+
+                    binding.amAlarmTime.text = timeformatter.format(date)
+                    User.amAlarmDate = binding.amAlarmTime.text.toString()
+                    editor.putString("amAlarmDate", User.amAlarmDate)
+                }
+            }
+            timePicker.show(parentFragmentManager, null)
+        }
+
+        binding.pmAlarmTime.setOnClickListener {
+            val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
+
+            val timePicker = CustomTimeDialog(timeformatter.parse(binding.pmAlarmTime.text.toString()))
+            timePicker.timePickerClick = object : CustomTimeDialog.TimePickerClickListener {
+                override fun onClick(
+                    timeDivider: NumberPicker,
+                    hourNumberPicker: NumberPicker,
+                    minuteNumberPicker: NumberPicker
+                ) {
+                    val timeDivision = timeDivider.value
+                    var hour = hourNumberPicker.value
+                    val minute = minuteNumberPicker.value
+                    if (timeDivision == 0) {
+                        if (hour == 11)
+                            hour = 0
+                        else hour++
+                    } else {
+                        if (hour == 11)
+                            hour++
+                        else hour += 13
+                    }
+
+                    val date = Date()
+                    date.hours = hour
+                    date.minutes = minute*5
+                    date.seconds = 0
+
+                    binding.pmAlarmTime.text = timeformatter.format(date)
+                    User.pmAlarmDate = binding.pmAlarmTime.text.toString()
+                    editor.putString("pmAlarmDate", User.pmAlarmDate)
+                }
+            }
+            timePicker.show(parentFragmentManager, null)
         }
     }
 

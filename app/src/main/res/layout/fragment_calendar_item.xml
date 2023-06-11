@@ -24,8 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/black"
-                android:background="@drawable/back_arrow"
-                android:rotation="180"/>
+                android:background="@drawable/back_arrow"/>
 
             <View
                 android:layout_width="0dp"
@@ -104,7 +103,7 @@
                             android:id="@+id/allday_iv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/big_today_icon" />
+                            android:background="@drawable/big_allday_iv" />
 
                         <TextView
                             android:id="@+id/allday_tv"
@@ -581,8 +580,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/big_delete_icon"
-                android:backgroundTint="@color/delete_red" />
+                android:background="@drawable/delete_icon"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

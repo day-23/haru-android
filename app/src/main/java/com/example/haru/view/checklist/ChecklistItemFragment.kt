@@ -39,7 +39,8 @@ class ChecklistItemFragment(
         FRONT_UPDATE_REPEAT, FRONT_NOT_UPDATE_REPEAT,
         MIDDLE_UPDATE_REPEAT, MIDDLE_NOT_UPDATE_REPEAT,
         BACK,
-//        FRONT_ONE, FRONT_TWO, FRONT_THREE,
+
+        //        FRONT_ONE, FRONT_TWO, FRONT_THREE,
 //        MIDDLE_ONE, MIDDLE_TWO, MIDDLE_THREE,
 //        BACK_ONE, BACK_TWO, BACK_THREE,
         NOT_REPEAT
@@ -226,7 +227,8 @@ class ChecklistItemFragment(
                         viewLifecycleOwner,
                         androidx.lifecycle.Observer {
                             val color = if (it) R.color.light_gray else R.color.todo_description
-                            binding.btnInfoSave.visibility = if (it) View.INVISIBLE else View.VISIBLE
+                            binding.btnInfoSave.visibility =
+                                if (it) View.INVISIBLE else View.VISIBLE
                             binding.etInfoContent.setTextColor(
                                 ContextCompat.getColor(
                                     requireContext(),
@@ -256,17 +258,23 @@ class ChecklistItemFragment(
                                             todoAddViewModel.deleteSubTodo()
                                         }
 
-                                    if (todoAddViewModel.subTodoCompleted.isNotEmpty() && i < todoAddViewModel.subTodoCompleted.size)
+                                    if (todoAddViewModel.subTodoCompleted.isNotEmpty() && i < todoAddViewModel.subTodoCompleted.size) {
+                                        val color = if (todoAddViewModel.subTodoCompleted[i])
+                                            ContextCompat.getColor(
+                                                requireContext(),
+                                                R.color.light_gray
+                                            )
+                                        else ContextCompat.getColor(
+                                            requireContext(),
+                                            R.color.todo_description
+                                        )
                                         addView.findViewById<EditText>(R.id.et_subTodo).apply {
                                             setText(todoAddViewModel.subTodos[i])
-                                            if (todoAddViewModel.subTodoCompleted[i]) setTextColor(
-                                                ContextCompat.getColor(
-                                                    requireContext(),
-                                                    R.color.light_gray
-                                                )
-                                            )
-
+                                            setTextColor(color)
                                         }
+                                        addView.findViewById<ImageView>(R.id.dot).backgroundTintList =
+                                            ColorStateList.valueOf(color)
+                                    }
                                     addView.findViewById<EditText>(R.id.et_subTodo)
                                         .addTextChangedListener(object :
                                             TextWatcher {
@@ -970,7 +978,7 @@ class ChecklistItemFragment(
 
                 binding.btnInfoDelete.id -> {
                     binding.btnInfoDelete.isClickable = false
-                        Log.d("20191627", "삭제")
+                    Log.d("20191627", "삭제")
 
                     Log.d("20191627", todoAddViewModel.clickedTodo.toString())
                     val type = when (todoAddViewModel.clickedTodo?.location) {
@@ -980,7 +988,7 @@ class ChecklistItemFragment(
                         else -> DeleteType.NOT_REPEAT
                     }
                     val option = DeleteOptionDialogFragment(todoAddViewModel, type)
-                    option.dismissEvent = object : DeleteOptionDialogFragment.DismissEvent{
+                    option.dismissEvent = object : DeleteOptionDialogFragment.DismissEvent {
                         override fun onDismiss() {
                             activity?.runOnUiThread {
                                 binding.btnInfoDelete.isClickable = true
@@ -991,7 +999,7 @@ class ChecklistItemFragment(
                 }
                 binding.btnInfoSave.id -> {
                     binding.btnInfoSave.isClickable = false
-                        Log.d("20191627", "저장")
+                    Log.d("20191627", "저장")
 
                     todoAddViewModel.readyToSubmit()
                     if (todoAddViewModel.clickedTodo!!.repeatOption != null) {
@@ -1006,9 +1014,9 @@ class ChecklistItemFragment(
 
                         val type = when (todoAddViewModel.clickedTodo?.location) {
                             0 -> { // front
-                                    if (checkRepeatData)
+                                if (checkRepeatData)
                                     UpdateType.FRONT_UPDATE_REPEAT
-                                    else UpdateType.FRONT_NOT_UPDATE_REPEAT
+                                else UpdateType.FRONT_NOT_UPDATE_REPEAT
 //                                val type = if (checkEndDate && checkRepeatData) {
 //                                    // 전체 이벤트 수정
 //                                    UpdateType.FRONT_ONE
@@ -1026,7 +1034,7 @@ class ChecklistItemFragment(
                             1 -> { // middle
                                 if (checkRepeatData)
                                     UpdateType.MIDDLE_UPDATE_REPEAT
-                                    else UpdateType.MIDDLE_NOT_UPDATE_REPEAT
+                                else UpdateType.MIDDLE_NOT_UPDATE_REPEAT
 //                                val type = if (checkEndDate && checkRepeatData) {
 //                                    // 전체 이벤트 수정, 이 이벤트부터 수정
 //                                    UpdateType.MIDDLE_ONE

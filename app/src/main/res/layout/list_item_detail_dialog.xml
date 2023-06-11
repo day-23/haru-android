@@ -7,13 +7,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/detail_dialog_radius">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:gravity="left"
-            android:orientation="horizontal"
-            android:background="@drawable/detail_dialog_radius">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/detail_day_tv"
@@ -32,19 +32,21 @@
                 android:gravity="right|center">
                 <ImageView
                     android:id="@+id/mini_back_imv"
-                    android:background="@drawable/mini_calendar_back_btn"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:background="@drawable/small_arrow_right"
+                    android:rotation="180"
                     android:layout_gravity="center"/>
 
                 <ImageView
                     android:id="@+id/mini_next_imv"
                     android:layout_marginRight="20dp"
-                    android:background="@drawable/mini_calendar_back_btn"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_gravity="center"
-                    android:rotation="180"/>
+                    android:backgroundTint="@color/white"
+                    android:background="@drawable/small_arrow_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -85,7 +87,7 @@
                                 <ImageView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:background="@drawable/calendar_schedule_image" />
+                                    android:background="@drawable/category_schedule" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -133,7 +135,7 @@
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/calendar_todo_image" />
+                                android:background="@drawable/category_todo" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -161,7 +163,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="#FDFDFD">
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/detail_dialog_radius_bottom">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -193,13 +196,8 @@
                 android:layout_height="31dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="17dp"
-                android:background="@drawable/fab"/>
+                android:background="@drawable/small_add_fab"/>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="26dp"
-            android:background="@drawable/detail_dialog_radius_bottom"/>
     </LinearLayout>
 
     <View

@@ -35,7 +35,7 @@
                 android:id="@+id/btn_submit_schedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/todo_description"
+                android:backgroundTint="#ACACAC"
                 android:background="@drawable/check_icon" />
 
         </LinearLayout>
@@ -104,7 +104,7 @@
                             android:id="@+id/allday_iv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/big_today_icon" />
+                            android:background="@drawable/gray_allday_icon" />
 
                         <TextView
                             android:id="@+id/allday_tv"

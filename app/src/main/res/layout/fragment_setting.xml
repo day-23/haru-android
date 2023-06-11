@@ -8,9 +8,7 @@
         android:id="@+id/header_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/linear_border_up_bottom"
-        android:orientation="horizontal"
-        android:paddingBottom="20dp">
+        android:orientation="horizontal">
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -22,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/back_arrow"
-                android:backgroundTint="@color/todo_description"/>
+                android:backgroundTint="@color/todo_description" />
 
         </FrameLayout>
 
@@ -37,6 +35,12 @@
 
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/divider" />
+
     <LinearLayout
         android:id="@+id/layout_account"
         android:layout_width="match_parent"
@@ -50,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="17dp"
-            android:background="@drawable/user_icon" />
+            android:background="@drawable/setting_user_icon" />
 
         <TextView
             android:layout_width="0dp"
@@ -61,13 +65,13 @@
             android:paddingBottom="14dp"
             android:text="계정"
             android:textColor="@color/todo_description"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:background="@drawable/arrow" />
+            android:background="@drawable/setting_detail_arrow" />
 
     </LinearLayout>
 
@@ -84,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/protect_icon" />
+            android:background="@drawable/setting_protect_icon" />
 
         <TextView
             android:layout_width="0dp"
@@ -95,13 +99,13 @@
             android:paddingBottom="14dp"
             android:text="개인정보 보호"
             android:textColor="@color/todo_description"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/arrow" />
+            android:background="@drawable/setting_detail_arrow" />
 
     </LinearLayout>
 
@@ -130,13 +134,13 @@
             android:paddingBottom="14dp"
             android:text="알림"
             android:textColor="@color/todo_description"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/arrow" />
+            android:background="@drawable/setting_detail_arrow" />
 
     </LinearLayout>
 
@@ -153,7 +157,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/information_icon" />
+            android:background="@drawable/setting_information_icon" />
 
         <TextView
             android:layout_width="0dp"
@@ -164,13 +168,13 @@
             android:paddingBottom="14dp"
             android:text="정보"
             android:textColor="@color/todo_description"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/arrow" />
+            android:background="@drawable/setting_detail_arrow" />
 
     </LinearLayout>
 
@@ -195,7 +199,7 @@
         android:paddingBottom="14dp"
         android:text="Version"
         android:textColor="@color/date_text"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
     <View
         android:layout_width="match_parent"
@@ -214,7 +218,7 @@
         android:paddingBottom="14dp"
         android:text="로그아웃"
         android:textColor="@color/date_text"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
 
 </LinearLayout>

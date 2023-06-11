@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/back_arrow"
-                android:backgroundTint="@color/todo_description"/>
+                android:backgroundTint="@color/todo_description" />
 
         </FrameLayout>
 
@@ -159,7 +159,6 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold" />
-
 
 
 </LinearLayout>

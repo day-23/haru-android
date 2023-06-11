@@ -128,7 +128,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 fabMain_status
             ) {
                 Log.d("touchedView","정상 진입")
-                binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
+                binding.btnAddMainIncalendar.setImageResource(R.drawable.big_add_fab)
                 binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
                 binding.btnAddTodoIncalendar.setClickable(false);
 
@@ -220,40 +220,39 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 PendingIntent.FLAG_IMMUTABLE
             )
 
+            val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
+
             val calendar = Calendar.getInstance()
 
-            val amTime = calendar.time.clone() as Date
-            val pmTime = calendar.time.clone() as Date
-
-            amTime.hours = 9
-            amTime.minutes = 0
-            amTime.seconds = 0
-
-            pmTime.hours = 21
-            pmTime.minutes = 0
-            pmTime.seconds = 0
+            val amTime = timeformatter.parse(User.amAlarmDate)
+            val pmTime = timeformatter.parse(User.pmAlarmDate)
 
             if(calendar.time.after(pmTime)){
                 calendar.apply {
-                    set(Calendar.HOUR_OF_DAY, 9)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
+                    time = Date()
+                    set(Calendar.HOUR_OF_DAY, amTime.hours)
+                    set(Calendar.MINUTE, amTime.minutes)
+                    set(Calendar.SECOND, amTime.seconds)
                     add(Calendar.DATE, 1)
                 }
             }
             else if (calendar.time.after(amTime)){
                 calendar.apply {
-                    set(Calendar.HOUR_OF_DAY, 21)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
+                    time = Date()
+                    set(Calendar.HOUR_OF_DAY, pmTime.hours)
+                    set(Calendar.MINUTE, pmTime.minutes)
+                    set(Calendar.SECOND, pmTime.seconds)
                 }
             } else {
                 calendar.apply {
-                    set(Calendar.HOUR_OF_DAY, 9)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
+                    time = Date()
+                    set(Calendar.HOUR_OF_DAY, amTime.hours)
+                    set(Calendar.MINUTE, amTime.minutes)
+                    set(Calendar.SECOND, amTime.seconds)
                 }
             }
+
+            Log.d("알람추가", calendar.time.toString())
 
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
@@ -371,11 +370,11 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         val todoApplyImv = view.findViewById<ImageView>(R.id.todo_apply_imv)
         val todoApplyTv = view.findViewById<TextView>(R.id.todo_apply_tv)
 
-        val todoIncompleteLayout = view.findViewById<LinearLayout>(R.id.todo_incomplete_layout)
+        val unclassifiedShowIv = view.findViewById<ImageView>(R.id.unclassified_show_iv)
         val todoIncompleteImv = view.findViewById<ImageView>(R.id.todo_incomplete_imv)
         val todoIncompleteTv = view.findViewById<TextView>(R.id.todo_incomplete_tv)
 
-        val todoCompleteLayout = view.findViewById<LinearLayout>(R.id.todo_complete_layout)
+        val classifiedShowIv = view.findViewById<ImageView>(R.id.classified_show_iv)
         val todoCompleteImv = view.findViewById<ImageView>(R.id.todo_complete_imv)
         val todoCompleteTv = view.findViewById<TextView>(R.id.todo_complete_tv)
 
@@ -397,7 +396,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         itemMonthBtn.text = "${calendar.get(Calendar.MONTH) + 1}월"
 
         if(calendarMainData.todoApply) {
-            todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
+            todoApplyImv.setBackgroundResource(R.drawable.category_todo)
 
             if(!calendarMainData.todoComplete){
                 val drawable = todoCompleteImv.background as VectorDrawable
@@ -451,7 +450,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             todoIncompleteTv.setTextColor(Color.parseColor("#BABABA"))
         }
 
-        todoCompleteLayout.setOnClickListener {
+        classifiedShowIv.setOnClickListener {
             if(calendarMainData.todoApply) {
                 val drawable = todoCompleteImv.background as VectorDrawable
                 if (calendarMainData.todoComplete) {
@@ -462,17 +461,19 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     drawable.setColorFilter(filter)
 
                     todoCompleteTv.setTextColor(Color.parseColor("#BABABA"))
+                    classifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                 } else {
                     drawable.setColorFilter(null)
 
                     todoCompleteTv.setTextColor(Color.parseColor("#191919"))
+                    classifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
                 }
 
                 calendarMainData.todoComplete = !calendarMainData.todoComplete
             }
         }
 
-        todoIncompleteLayout.setOnClickListener {
+        unclassifiedShowIv.setOnClickListener {
             if(calendarMainData.todoApply) {
                 val drawable = todoIncompleteImv.background as VectorDrawable
                 if (calendarMainData.todoInComplete) {
@@ -483,10 +484,12 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     drawable.setColorFilter(filter)
 
                     todoIncompleteTv.setTextColor(Color.parseColor("#BABABA"))
+                    unclassifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                 } else {
                     drawable.setColorFilter(null)
 
                     todoIncompleteTv.setTextColor(Color.parseColor("#191919"))
+                    unclassifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
                 }
 
                 calendarMainData.todoInComplete = !calendarMainData.todoInComplete
@@ -500,7 +503,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image_false)
 
                 todoApplyTv.setTextColor(
-                    Color.parseColor("#BABABA")
+                    Color.parseColor("#ACACAC")
                 )
 
                 val drawable = todoCompleteImv.background as VectorDrawable
@@ -512,8 +515,10 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 drawable.setColorFilter(filter)
                 drawable2.setColorFilter(filter)
 
-                todoCompleteTv.setTextColor(Color.parseColor("#BABABA"))
-                todoIncompleteTv.setTextColor(Color.parseColor("#BABABA"))
+                todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                unclassifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
+                classifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
 
                 if(!calendarMainData.scheduleApply){
                     allBlindTv.text = "모두 표시"
@@ -522,7 +527,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             } else {
                 calendarMainData.todoApply = true
 
-                todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
+                todoApplyImv.setBackgroundResource(R.drawable.category_todo)
 
                 todoApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -532,12 +537,14 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     val drawable = todoCompleteImv.background as VectorDrawable
                     todoCompleteTv.setTextColor(Color.parseColor("#191919"))
                     drawable.setColorFilter(null)
+                    classifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
                 }
 
                 if(calendarMainData.todoInComplete){
                     val drawable = todoIncompleteImv.background as VectorDrawable
                     todoIncompleteTv.setTextColor(Color.parseColor("#191919"))
                     drawable.setColorFilter(null)
+                    unclassifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
                 }
             }
 
@@ -545,7 +552,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         }
 
         if(calendarMainData.scheduleApply) {
-            scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
+            scheduleApplyImv.setBackgroundResource(R.drawable.category_schedule)
 
             scheduleApplyTv.setTextColor(
                 Color.parseColor("#1DAFFF")
@@ -575,7 +582,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             } else {
                 calendarMainData.scheduleApply = true
 
-                scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
+                scheduleApplyImv.setBackgroundResource(R.drawable.category_schedule)
 
                 scheduleApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -601,7 +608,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image_false)
 
                     todoApplyTv.setTextColor(
-                        Color.parseColor("#BABABA")
+                        Color.parseColor("#ACACAC")
                     )
 
                     if (calendarMainData.todoInComplete) {
@@ -613,7 +620,8 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                         val filter = ColorMatrixColorFilter(matrix)
                         drawable.setColorFilter(filter)
 
-                        todoIncompleteTv.setTextColor(Color.parseColor("#BABABA"))
+                        todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                        unclassifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                     }
 
                     if (calendarMainData.todoComplete) {
@@ -624,7 +632,8 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                         val filter = ColorMatrixColorFilter(matrix)
                         drawable.setColorFilter(filter)
 
-                        todoCompleteTv.setTextColor(Color.parseColor("#BABABA"))
+                        todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
+                        classifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                     }
 
                     changeStatus = true
@@ -634,7 +643,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image_false)
 
                     scheduleApplyTv.setTextColor(
-                        Color.parseColor("#BABABA")
+                        Color.parseColor("#ACACAC")
                     )
 
                     changeStatus = true
@@ -657,7 +666,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 calendarMainData.scheduleApply = true
                 calendarMainData.todoApply = true
 
-                scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
+                scheduleApplyImv.setBackgroundResource(R.drawable.category_schedule)
 
                 scheduleApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -665,7 +674,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
                 categoryAdapter.dataAllVisible()
 
-                todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
+                todoApplyImv.setBackgroundResource(R.drawable.category_todo)
 
                 todoApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -675,12 +684,16 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                     val drawable = todoCompleteImv.background as VectorDrawable
                     todoCompleteTv.setTextColor(Color.parseColor("#191919"))
                     drawable.setColorFilter(null)
+
+                    classifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
                 }
 
                 if(calendarMainData.todoInComplete){
                     val drawable = todoIncompleteImv.background as VectorDrawable
                     todoIncompleteTv.setTextColor(Color.parseColor("#191919"))
                     drawable.setColorFilter(null)
+
+                    unclassifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
                 }
 
                 allBlindTv.text = "모두 가리기"
@@ -746,11 +759,11 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
 
-                binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
+                binding.btnAddMainIncalendar.setImageResource(R.drawable.big_add_fab)
                 binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
                 binding.btnAddTodoIncalendar.setClickable(false);
             } else {
-                btnAddMainInCalendar.setImageResource(R.drawable.calendar_schedule_add_btn)
+                btnAddMainInCalendar.setImageResource(R.drawable.schedule_add_fab)
                 btnAddTodoInCalendar.visibility = View.VISIBLE
                 btnAddTodoInCalendar.setClickable(true)
             }
@@ -769,7 +782,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
             todoInput.show(parentFragmentManager, todoInput.tag)
 
-            binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
+            binding.btnAddMainIncalendar.setImageResource(R.drawable.big_add_fab)
             binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
             binding.btnAddTodoIncalendar.setClickable(false);
             fabMain_status = !fabMain_status

@@ -19,6 +19,7 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentCalendarItemBinding
@@ -923,7 +924,15 @@ class CalendarItemFragment(val schedule: Schedule,
             deleteDialg.show(parentFragmentManager, deleteDialg.tag)
         }
 
-
+        binding.scheduleContentEt.addTextChangedListener {
+            if(it.toString() == ""){
+                binding.btnSubmitSchedule.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
+            } else {
+                binding.btnSubmitSchedule.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#191919"))
+            }
+        }
 
         binding.btnSubmitSchedule.setOnClickListener {
             if(binding.scheduleContentEt.text.toString().replace(" ","") == ""){

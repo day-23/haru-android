@@ -330,6 +330,12 @@ class TodoAdapter(val context: Context) :
 
             complete = item.completed
 
+            binding.checkFlag.background = if (item.completed)
+                ContextCompat.getDrawable(context, R.drawable.completed_flag_star)
+            else ContextCompat.getDrawable(context, R.drawable.checklist_flag_star)
+
+
+
             binding.tvTitle.typeface = context.resources.getFont(R.font.pretendard_bold)
             binding.tvTitle.text = item.content
 
@@ -362,8 +368,6 @@ class TodoAdapter(val context: Context) :
 
                 addView.findViewById<TextView>(R.id.tv_subTodo).apply {
                     text = item.subTodos[i].content
-//                    paintFlags =
-//                        if (item.subTodos[i].completed) Paint.ANTI_ALIAS_FLAG or Paint.STRIKE_THRU_TEXT_FLAG else Paint.ANTI_ALIAS_FLAG
                     if (item.subTodos[i].completed)
                         setTextColor(ContextCompat.getColor(context, R.color.light_gray))
                 }

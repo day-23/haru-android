@@ -65,8 +65,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/update_icon"
-            android:backgroundTint="@color/todo_description" />
+            android:background="@drawable/update_icon"/>
 
     </LinearLayout>
 
@@ -158,8 +157,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/big_delete_icon"
-            android:backgroundTint="@color/delete_red" />
+            android:background="@drawable/delete_icon" />
     </LinearLayout>
 
 </LinearLayout>
