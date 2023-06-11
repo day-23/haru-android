@@ -19,12 +19,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.example.haru.R
-import com.example.haru.databinding.ActivityMainBinding
 import com.example.haru.utils.HeightProvider
 import com.example.haru.data.model.Schedule
 import com.example.haru.data.model.Todo
-import com.example.haru.view.calendar.CalendarFragment
-import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.databinding.ActivityMainBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.User
@@ -65,7 +62,10 @@ class MainActivity : BaseActivity() {
         editor.putBoolean("holidayCategory", calendarMainData.holidayCategory)
         editor.putInt("alarmCnt", calendarMainData.alarmCnt)
         editor.putString("userId", User.id)
-        editor.putBoolean("alarmAprove", User.alarmAprove)
+        editor.putBoolean("amAlarmAprove", User.amAlarmAprove)
+        editor.putString("amAlarmDate", User.amAlarmDate)
+        editor.putBoolean("pmAlarmAprove", User.pmAlarmAprove)
+        editor.putString("pmAlarmDate", User.pmAlarmDate)
         editor.apply()
 
         super.onPause()
@@ -99,10 +99,10 @@ class MainActivity : BaseActivity() {
         calendarMainData.todoInComplete = sharedPreference.getBoolean("todoInComplete", true)
         calendarMainData.holidayCategory = sharedPreference.getBoolean("holidayCategory", true)
         calendarMainData.alarmCnt = sharedPreference.getInt("alarmCnt", 0)
-        User.alarmAprove = sharedPreference.getBoolean("alarmAprove", true)
-
-//        initAlarm(0)
-//        initAlarm(1)
+        User.amAlarmAprove = sharedPreference.getBoolean("amAlarmAprove", true)
+        User.amAlarmDate = sharedPreference.getString("amAlarmDate", "오전 9:00")!!
+        User.pmAlarmAprove = sharedPreference.getBoolean("pmAlarmAprove", true)
+        User.pmAlarmDate = sharedPreference.getString("pmAlarmDate", "오후 9:00")!!
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

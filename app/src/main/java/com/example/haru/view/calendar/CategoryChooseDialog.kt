@@ -88,6 +88,7 @@ class CategoryChooseDialog (private val context : CalendarAddFragment?,
             binding.categoriesChooseRecyclerview.layoutManager = LinearLayoutManager(context.requireContext())
             binding.categoriesChooseRecyclerview.adapter = CategoriesAdapterInPost(categories){
                 listener(it)
+                dismiss()
             }
 //
 //            dlg.setCancelable(true)
@@ -104,6 +105,7 @@ class CategoryChooseDialog (private val context : CalendarAddFragment?,
 
             binding.categoriesChooseRecyclerview.adapter = CategoriesAdapterInPost(categories){
                 listener(it)
+                dismiss()
             }
 
 //            dlg.setCancelable(true)

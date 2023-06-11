@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -56,7 +57,6 @@ class CategoryAddActivity : AppCompatActivity() {
         val addCheckImageview = findViewById<ImageView>(R.id.add_check_imageView)
 
         addCategoriesRecyclerview.layoutManager = GridLayoutManager(this,6)
-        addCategoriesRecyclerview.addItemDecoration(MyItemDecoration())
         addCategoriesRecyclerview.adapter = CategoriesColorAdapter(null, this)
 
         addBackImageview.setOnClickListener {

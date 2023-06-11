@@ -17,23 +17,29 @@
             android:id="@+id/correction_back_imageView"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/back_image"
+            android:background="@drawable/back_arrow"
             android:layout_width="28dp"
             android:layout_height="28dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="right">
 
-            <ImageView
-                android:id="@+id/correction_check_imageView"
-                android:background="@drawable/check_image"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="20dp"
-                android:layout_width="28dp"
-                android:layout_height="28dp"/>
-        </LinearLayout>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="#191919"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="카테고리 추가"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/correction_check_imageView"
+            android:background="@drawable/check_icon"
+            android:backgroundTint="@color/todo_description"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"/>
 
     </LinearLayout>
 
@@ -58,6 +64,7 @@
                     android:layout_marginLeft="34dp"
                     android:layout_marginRight="34dp"
                     android:hint="카테고리 이름을 입력하세요"
+                    android:textColorHint="#ACACAC"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:textColor="#191919"
@@ -66,6 +73,44 @@
                     android:layout_height="match_parent"/>
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#DBDBDB"/>
+
+            <LinearLayout
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_marginTop="14dp"
+                    android:layout_marginLeft="14dp"
+                    android:text="캘린더에 카테고리 표시"
+                    android:textSize="16sp"
+                    android:textColor="#ACACAC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="right">
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/category_mark_switch"
+                        style="@style/minSize"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:thumb="@drawable/custom_switch_thumb"
+                        app:track="@drawable/custom_switch" />
+                </LinearLayout>
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -83,16 +128,15 @@
                     android:layout_marginLeft="14dp"
                     android:text="색상 선택"
                     android:textSize="14sp"
-                    android:textColor="#646464"
+                    android:textColor="#ACACAC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/categories_recyclerview"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_width="match_parent"
                 android:layout_height="380dp"/>
         </LinearLayout>
@@ -116,7 +160,8 @@
         <ImageView
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:background="@drawable/category_delete"/>
+            android:background="@drawable/big_delete_icon"
+            android:backgroundTint="@color/delete_red"/>
     </LinearLayout>
 
 </LinearLayout>
