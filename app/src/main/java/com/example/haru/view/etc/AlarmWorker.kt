@@ -17,6 +17,7 @@ import com.example.haru.data.model.AlldoData
 import com.example.haru.data.model.PostAllDoResponse
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,9 +33,6 @@ class AlarmWorker : BroadcastReceiver(){
         val requestCode = intent?.getStringExtra("requestCode")
         var body: String? = null
 
-        val sharedPreference = context.getSharedPreferences("ApplyData", 0)
-        val editor = sharedPreference.edit()
-
         if(requestCode != null && requestCode.toInt() > 0){
             body = intent.getStringExtra("body")!!
         }
@@ -44,10 +42,8 @@ class AlarmWorker : BroadcastReceiver(){
                 Context.NOTIFICATION_SERVICE
             ) as NotificationManager
 
-            if (sharedPreference.getBoolean("alarmAprove", true)) {
-                createNotificationChannel(requestCode)
-                deliverNotification(context, userId, requestCode, body)
-            }
+            createNotificationChannel(requestCode)
+            deliverNotification(context, userId, requestCode, body)
         }
     }
 
@@ -91,6 +87,8 @@ class AlarmWorker : BroadcastReceiver(){
     }
 
     private fun deliverNotification(context: Context, userId: String?, requestCode: String?, body: String?){
+        val sharedPreference = context.getSharedPreferences("ApplyData", 0)
+
         if(requestCode != null && requestCode == "0") {
             val contentIntent = Intent(context, MainActivity::class.java)
             val contentPendingIntent = PendingIntent.getActivity(
@@ -104,6 +102,10 @@ class AlarmWorker : BroadcastReceiver(){
 
             val intent2 = Intent(context, AlarmWorker::class.java)
 
+            val amTime:Date
+            val pmTime:Date
+            var alarmBoolean = false
+
             if (userId != "") {
                 intent2.putExtra("userId", userId)
                 val pendingIntent = PendingIntent.getBroadcast(
@@ -112,10 +114,40 @@ class AlarmWorker : BroadcastReceiver(){
                 )
 
                 val calendar = Calendar.getInstance()
-                calendar.apply {
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
-                    add(Calendar.HOUR_OF_DAY, 12)
+                val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
+
+                amTime = timeformatter.parse(sharedPreference.getString("amAlarmDate", "오전 9:00")!!)!!
+                pmTime = timeformatter.parse(sharedPreference.getString("pmAlarmDate", "오후 9:00")!!)!!
+
+                if(calendar.time >= pmTime){
+                    calendar.apply {
+                        time = Date()
+                        set(Calendar.HOUR_OF_DAY, amTime.hours)
+                        set(Calendar.MINUTE, amTime.minutes)
+                        set(Calendar.SECOND, amTime.seconds)
+                        add(Calendar.DATE, 1)
+                    }
+
+                    alarmBoolean = false
+                }
+                else if (calendar.time >= amTime){
+                    calendar.apply {
+                        time = Date()
+                        set(Calendar.HOUR_OF_DAY, pmTime.hours)
+                        set(Calendar.MINUTE, pmTime.minutes)
+                        set(Calendar.SECOND, pmTime.seconds)
+                    }
+
+                    alarmBoolean = true
+                } else {
+                    calendar.apply {
+                        time = Date()
+                        set(Calendar.HOUR_OF_DAY, amTime.hours)
+                        set(Calendar.MINUTE, amTime.minutes)
+                        set(Calendar.SECOND, amTime.seconds)
+                    }
+
+                    alarmBoolean = false
                 }
 
                 alarmManager.setExactAndAllowWhileIdle(
@@ -582,16 +614,41 @@ class AlarmWorker : BroadcastReceiver(){
 //                            result = "오늘의 할일 ${todoCnt}개 일정 ${scheduleCnt}개 남았습니다."
 //                        }
 
-                        val builder = NotificationCompat.Builder(context, requestCode)
-                            .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
-                            .setContentTitle("오늘의 하루") // 제목
-                            .setContentText("오늘 할 일이 ${result}개 있습니다") // 내용
-                            .setContentIntent(contentPendingIntent)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setAutoCancel(true)
-                            .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        var resultStr = ""
 
-                        notificationManager.notify(requestCode.toInt(), builder.build())
+                        if(result > 0) {
+                            if (alarmBoolean) {
+                                resultStr = "오늘 할 일이 ${result}개 있습니다"
+                            } else {
+                                resultStr = "오늘 남은 할 일이 ${result - completedCnt}개 있습니다"
+                            }
+                        } else {
+                            resultStr = "오늘 할 일은 다 하셨나요?"
+                        }
+
+                        if (alarmBoolean && sharedPreference.getBoolean("amAlarmAprove", true)) {
+                            val builder = NotificationCompat.Builder(context, requestCode)
+                                .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
+                                .setContentTitle("오늘의 하루") // 제목
+                                .setContentText(resultStr) // 내용
+                                .setContentIntent(contentPendingIntent)
+                                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                .setAutoCancel(true)
+                                .setDefaults(NotificationCompat.DEFAULT_ALL)
+
+                            notificationManager.notify(requestCode.toInt(), builder.build())
+                        } else if(!alarmBoolean && sharedPreference.getBoolean("pmAlarmAprove", true)){
+                            val builder = NotificationCompat.Builder(context, requestCode)
+                                .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
+                                .setContentTitle("오늘의 하루") // 제목
+                                .setContentText(resultStr) // 내용
+                                .setContentIntent(contentPendingIntent)
+                                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                .setAutoCancel(true)
+                                .setDefaults(NotificationCompat.DEFAULT_ALL)
+
+                            notificationManager.notify(requestCode.toInt(), builder.build())
+                        }
                     } else {
                         Log.d("알람", "null")
                     }

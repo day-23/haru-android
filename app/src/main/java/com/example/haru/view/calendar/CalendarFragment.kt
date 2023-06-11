@@ -220,40 +220,39 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 PendingIntent.FLAG_IMMUTABLE
             )
 
+            val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
+
             val calendar = Calendar.getInstance()
 
-            val amTime = calendar.time.clone() as Date
-            val pmTime = calendar.time.clone() as Date
-
-            amTime.hours = 9
-            amTime.minutes = 0
-            amTime.seconds = 0
-
-            pmTime.hours = 21
-            pmTime.minutes = 0
-            pmTime.seconds = 0
+            val amTime = timeformatter.parse(User.amAlarmDate)
+            val pmTime = timeformatter.parse(User.pmAlarmDate)
 
             if(calendar.time.after(pmTime)){
                 calendar.apply {
-                    set(Calendar.HOUR_OF_DAY, 9)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
+                    time = Date()
+                    set(Calendar.HOUR_OF_DAY, amTime.hours)
+                    set(Calendar.MINUTE, amTime.minutes)
+                    set(Calendar.SECOND, amTime.seconds)
                     add(Calendar.DATE, 1)
                 }
             }
             else if (calendar.time.after(amTime)){
                 calendar.apply {
-                    set(Calendar.HOUR_OF_DAY, 21)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
+                    time = Date()
+                    set(Calendar.HOUR_OF_DAY, pmTime.hours)
+                    set(Calendar.MINUTE, pmTime.minutes)
+                    set(Calendar.SECOND, pmTime.seconds)
                 }
             } else {
                 calendar.apply {
-                    set(Calendar.HOUR_OF_DAY, 9)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
+                    time = Date()
+                    set(Calendar.HOUR_OF_DAY, amTime.hours)
+                    set(Calendar.MINUTE, amTime.minutes)
+                    set(Calendar.SECOND, amTime.seconds)
                 }
             }
+
+            Log.d("알람추가", calendar.time.toString())
 
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
