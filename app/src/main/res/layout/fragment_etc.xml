@@ -10,7 +10,6 @@
         android:id="@+id/etc_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/todo_table_selected"
         android:paddingStart="15dp"
         android:paddingEnd="20dp"
         tools:ignore="MissingConstraints">
@@ -26,7 +25,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="2dp"
                 android:background="@drawable/small_haru_title"
-                android:backgroundTint="@color/white"
                 android:textStyle="bold" />
 
             <ImageView
@@ -46,6 +44,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="30dp"
             android:orientation="vertical">
 
 
