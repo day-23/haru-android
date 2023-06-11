@@ -45,14 +45,15 @@ class CategoriesColorAdapter(val activity: CategoryCorrectionActivity?=null,
 
     override fun onBindViewHolder(holder: CategoriesColorAdapter.ColorsView, position: Int) {
         val categoryImage = holder.itemView.findViewById<FrameLayout>(R.id.color_item_layout)
+        val categoryOutsideLayout = holder.itemView.findViewById<FrameLayout>(R.id.color_item_outside_layout)
 
         val drawable = categoryImage.background as VectorDrawable
         drawable.setColorFilter(Color.parseColor(colorsList[position]), PorterDuff.Mode.SRC_ATOP)
 
         if(lastChooseIndex == position){
-            holder.itemView.setBackgroundResource(R.drawable.category_choose_image)
+            categoryOutsideLayout.setBackgroundResource(R.drawable.category_choose_image)
         } else {
-            holder.itemView.setBackgroundResource(com.kakao.sdk.friend.R.color.transparent)
+            categoryOutsideLayout.setBackgroundResource(com.kakao.sdk.friend.R.color.transparent)
         }
 
         categoryImage.setOnClickListener {
