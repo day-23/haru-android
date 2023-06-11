@@ -27,7 +27,9 @@ import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.view.customDialog.CustomCalendarDialog
+import com.example.haru.view.sns.SearchFragment
 import com.example.haru.viewmodel.CalendarViewModel
+import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TimeTableRecyclerViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import kotlinx.coroutines.launch
@@ -44,6 +46,7 @@ class TimetableFragment : Fragment() {
     private lateinit var binding: FragmentTimetableBinding
     private lateinit var timetableviewModel: TimetableViewModel
     private lateinit var reviewModel: TimeTableRecyclerViewModel
+    private lateinit var checkListViewModel: CheckListViewModel
     private lateinit var timetableAdapter: TimetableAdapter
     var timeList: ArrayList<timetable_data> = ArrayList()
     lateinit var timeTableRecyclerView: RecyclerView
@@ -64,6 +67,7 @@ class TimetableFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reviewModel = TimeTableRecyclerViewModel()
+        checkListViewModel = CheckListViewModel()
         Log.d(TAG, "TimetableFragment - onCreate() called")
     }
 
@@ -244,6 +248,14 @@ class TimetableFragment : Fragment() {
                     }
                 }
             datePicker.show(parentFragmentManager, null)
+        }
+
+
+        binding.timetableSearchButton.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .addToBackStack(null)
+                .commit()
         }
 
         return rootView

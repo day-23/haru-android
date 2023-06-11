@@ -40,6 +40,7 @@ import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.view.checklist.ChecklistInputFragment
 import com.example.haru.view.customDialog.CustomMonthDialog
 import com.example.haru.view.etc.AlarmWorker
+import com.example.haru.view.sns.SearchFragment
 import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.CheckListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -845,6 +846,14 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             categoryRecyclerView.adapter = categoryAdapter
 
             adapterMonth.setCategories(categoryAdapter.categoryList)
+        }
+
+
+        binding.calendarSearchButton.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .addToBackStack(null)
+                .commit()
         }
     }
 

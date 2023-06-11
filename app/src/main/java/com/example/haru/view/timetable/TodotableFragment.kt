@@ -19,6 +19,7 @@ import com.example.haru.databinding.FragmentTodotableBinding
 import com.example.haru.view.adapter.TodotableAdapter
 import com.example.haru.view.checklist.ChecklistInputFragment
 import com.example.haru.view.customDialog.CustomCalendarDialog
+import com.example.haru.view.sns.SearchFragment
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TimetableViewModel
 import com.example.haru.viewmodel.TodoTableRecyclerViewmodel
@@ -91,6 +92,13 @@ class TodotableFragment : Fragment() {
                 }
             }
             todoInput.show(parentFragmentManager, todoInput.tag)
+        }
+
+        binding.timetableSearchButton.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .addToBackStack(null)
+                .commit()
         }
 
         timetableviewModel = TimetableViewModel(requireContext())
