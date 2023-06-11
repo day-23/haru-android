@@ -73,7 +73,7 @@
                                         android:id="@+id/schedule_apply_imv"
                                         android:layout_width="28dp"
                                         android:layout_height="28dp"
-                                        android:background="@drawable/calendar_schedule_image" />
+                                        android:background="@drawable/category_schedule" />
 
                                     <TextView
                                         android:id="@+id/schedule_apply_tv"
@@ -137,9 +137,9 @@
 
                                 <ImageView
                                     android:id="@+id/todo_apply_imv"
-                                    android:layout_width="28dp"
-                                    android:layout_height="28dp"
-                                    android:background="@drawable/calendar_todo_image" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/category_todo" />
 
                                 <TextView
                                     android:id="@+id/todo_apply_tv"

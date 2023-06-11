@@ -28,7 +28,8 @@
 
             <ImageView
                 android:id="@+id/correction_check_imageView"
-                android:background="@drawable/check_image"
+                android:background="@drawable/check_icon"
+                android:backgroundTint="@color/todo_description"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="20dp"
                 android:layout_width="28dp"

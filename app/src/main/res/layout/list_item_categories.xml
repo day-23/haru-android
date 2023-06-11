@@ -40,7 +40,7 @@
 
         <ImageView
             android:id="@+id/category_correction"
-            android:background="@drawable/category_correction_image"
+            android:background="@drawable/update_icon"
             android:layout_marginTop="6dp"
             android:layout_width="28dp"
             android:layout_height="28dp"/>

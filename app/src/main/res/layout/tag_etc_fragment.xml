@@ -78,7 +78,8 @@
                             android:id="@+id/iv_tag_add"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/calendar_schedule_plus_image" />
+                            android:backgroundTint="@color/date_text"
+                            android:background="@drawable/twenty_eight_plus_icon" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
