@@ -291,7 +291,7 @@ class TodoAdapter(val context: Context) :
                         tag += "${item.tags[i].content} "
                         count--
                         totalLen -= (len + 1)
-                    } else if (totalLen - len >= 0) {
+                    } else if (totalLen - len >= 0 && count == 1) {
                         tag += item.tags[i].content
                         count--
                         break

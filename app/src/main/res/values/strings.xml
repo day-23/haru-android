@@ -72,7 +72,7 @@
     <string name="notRepeatTodoSave">저장하기</string>
     <string name="notRepeatTodoDelete">삭제하기</string>
 
-    <string name="simpleAddTodo">간편 추가</string>
+    <string name="simpleAddTodo">오늘 할 일 빠른 추가</string>
 
     <string name="oneDelete">이 할일만 삭제</string>
     <string name="allDelete">모든 할일 삭제</string>

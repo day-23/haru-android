@@ -29,41 +29,48 @@
                 android:layout_marginBottom="13dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="30dp"
-                android:paddingRight="20dp"
-                >
+                android:paddingRight="20dp">
 
-                <TextView
-                    android:id="@+id/timetable_year"
+                <LinearLayout
+                    android:id="@+id/timetable_month_choose_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
+                    android:gravity="center">
 
-                    android:hint="2023년"
-                    android:text="@{viewModel.Selected.year}"
-                    android:textColor="#191919"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/timetable_year"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
 
-                <TextView
-                    android:id="@+id/timetable_month"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="0"
-                    android:gravity="center"
-                    android:hint="3월"
-                    android:text="@{viewModel.Selected.month}"
-                    android:textColor="#191919"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                        android:hint="2023년"
+                        android:text="@{viewModel.Selected.year}"
+                        android:textColor="#191919"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
 
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginHorizontal="4dp"
-                    android:layout_weight="0"
-                    android:onClick="@{() -> viewModel.buttonClick()}"
-                    android:background="@drawable/calendar_month_choose_btn"/>
+                    <TextView
+                        android:id="@+id/timetable_month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="0"
+                        android:gravity="center"
+                        android:hint="3월"
+                        android:text="@{viewModel.Selected.month}"
+                        android:textColor="#191919"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_weight="0"
+                        android:background="@drawable/calendar_month_choose_btn"
+                        />
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="0dp"
@@ -75,7 +82,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_alignParentEnd="true"
-                    android:src="@drawable/search_icon"/>
+                    android:src="@drawable/search_icon" />
 
                 <View
                     android:layout_width="10dp"
@@ -95,8 +102,7 @@
 
                 <View
                     android:layout_width="10dp"
-                    android:layout_height="match_parent"
-                    />
+                    android:layout_height="match_parent" />
 
                 <ImageButton
                     android:id="@+id/todolist_change"
@@ -284,13 +290,11 @@
                 android:id="@+id/timetable_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FDFDFD"
-                >
+                android:background="#FDFDFD">
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    >
+                    android:layout_height="match_parent">
 
                     <View
                         android:layout_width="match_parent"
@@ -310,8 +314,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="80dp"
-                        >
+                        android:layout_marginBottom="80dp">
 
                         <LinearLayout
                             android:id="@+id/left_time_textview_layout"
@@ -345,79 +348,85 @@
 
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="1727dp"
-                            />
+                            android:layout_height="1727dp" />
 
                         <FrameLayout
                             android:id="@+id/sun_table"
                             android:layout_width="0dp"
                             android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical"/>
+                            android:orientation="vertical" />
+
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="1727dp"
-                            />
+                            android:layout_height="1727dp" />
+
                         <FrameLayout
                             android:id="@+id/mon_table"
                             android:layout_width="0dp"
                             android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical"/>
+                            android:orientation="vertical" />
+
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="1727dp"
-                            />
+                            android:layout_height="1727dp" />
+
                         <FrameLayout
                             android:id="@+id/tue_table"
                             android:layout_width="0dp"
                             android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical"/>
+                            android:orientation="vertical" />
+
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="1727dp"
-                            />
+                            android:layout_height="1727dp" />
+
                         <FrameLayout
                             android:id="@+id/wed_table"
                             android:layout_width="0dp"
                             android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical"/>
+                            android:orientation="vertical" />
+
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="1727dp"
-                            />
+                            android:layout_height="1727dp" />
+
                         <FrameLayout
                             android:id="@+id/thu_table"
                             android:layout_width="0dp"
                             android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical"/>
+                            android:orientation="vertical" />
+
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="1727dp"
-                            />
+                            android:layout_height="1727dp" />
+
                         <FrameLayout
                             android:id="@+id/fri_table"
                             android:layout_width="0dp"
                             android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical"/>
+                            android:orientation="vertical" />
+
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="1727dp"
-                            />
+                            android:layout_height="1727dp" />
+
                         <FrameLayout
                             android:id="@+id/sat_table"
                             android:layout_width="0dp"
                             android:layout_height="1727dp"
                             android:layout_weight="2"
-                            android:orientation="vertical"/>
+                            android:orientation="vertical" />
+
                         <View
                             android:layout_width="1dp"
-                            android:layout_height="1727dp"
-                            />
+                            android:layout_height="1727dp" />
+
                         <LinearLayout
                             android:layout_width="20dp"
                             android:layout_height="match_parent" />
@@ -426,6 +435,7 @@
             </androidx.core.widget.NestedScrollView>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -438,8 +448,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                android:layout_marginBottom="10dp"
                 android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
                 android:clickable="true"
                 app:borderWidth="0dp"
                 app:elevation="0dp"

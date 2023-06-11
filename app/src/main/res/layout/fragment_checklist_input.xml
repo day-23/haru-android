@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -13,19 +12,18 @@
 
     <LinearLayout
         android:id="@+id/input_entire_layout"
-        android:background="@drawable/shape_rect_radius_top_40"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/shape_rect_radius_top_40"
         android:orientation="vertical"
         tools:context=".view.checklist.ChecklistInputFragment">
 
         <View
-            android:layout_gravity="center"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/black_bar_radius"
             android:layout_width="100dp"
             android:layout_height="6dp"
-            />
+            android:layout_gravity="center"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/black_bar_radius" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,8 +37,8 @@
                 android:id="@+id/btn_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/todo_description"
-                android:background="@drawable/cancel_icon" />
+                android:background="@drawable/cancel_icon"
+                android:backgroundTint="@color/todo_description" />
 
             <View
                 android:layout_width="0dp"
@@ -51,8 +49,8 @@
                 android:id="@+id/btn_submit_todo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/date_text"
-                android:background="@drawable/check_icon" />
+                android:background="@drawable/check_icon"
+                android:backgroundTint="@color/date_text" />
 
         </LinearLayout>
 
@@ -71,8 +69,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_marginBottom="14dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
 
@@ -113,23 +111,23 @@
                         android:id="@+id/subTodo_add_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="34dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingStart="34dp">
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
-                            android:backgroundTint="@color/light_gray"
-                            android:background="@drawable/calendar_schedule_plus_image"/>
+                            android:background="@drawable/calendar_schedule_plus_image"
+                            android:backgroundTint="@color/light_gray" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="16sp"
                             android:layout_gravity="center_vertical"
                             android:text="하위 항목 추가"
-                            android:textColor="@color/light_gray"/>
+                            android:textColor="@color/light_gray"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -154,8 +152,8 @@
                         android:id="@+id/iv_tag_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/tag_icon"
-                        android:layout_marginEnd="10dp"/>
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/tag_icon" />
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tag_et"
@@ -164,10 +162,10 @@
                         android:background="@android:color/transparent"
                         android:hint="@string/tag"
                         android:inputType="text"
-                        android:singleLine="true"
                         android:maxLength="10"
-                        android:textColorHint="@color/light_gray"
+                        android:singleLine="true"
                         android:text="@={viewModel.tag}"
+                        android:textColorHint="@color/light_gray"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -201,6 +199,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="20dp"
+                        android:background="@android:color/transparent"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
 
@@ -257,6 +256,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -297,6 +297,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
 
@@ -308,8 +309,8 @@
                     style="@style/linearBorderLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/linear_border_up_bottom"
                     android:animateLayoutChanges="true"
+                    android:background="@drawable/linear_border_up_bottom"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -359,6 +360,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="20dp"
+                        android:background="@android:color/transparent"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
                 </LinearLayout>
@@ -401,6 +403,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -628,6 +631,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
 

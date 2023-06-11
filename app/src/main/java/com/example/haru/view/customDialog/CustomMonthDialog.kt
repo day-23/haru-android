@@ -73,7 +73,7 @@ class CustomMonthDialog(date: Date? = null) : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Toast.makeText(requireContext(), "Custom Month Picker", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireContext(), "Custom Month Picker", Toast.LENGTH_SHORT).show()
 
         binding.tvDate.text = "${startYear}년 ${startMonth+1}월"
 
@@ -101,6 +101,12 @@ class CustomMonthDialog(date: Date? = null) : DialogFragment() {
     override fun onCancel(dialog: DialogInterface) {
         monthPickerClick?.onClick(binding.npYearPick, binding.npMonthPick)
         super.onCancel(dialog)
+    }
+
+    /* 하단 클릭할 때도 되도록 변경 */
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onCancel(dialog)
     }
 
     override fun onResume() {

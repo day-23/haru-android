@@ -10,6 +10,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.haru.App
 import com.example.haru.data.model.UserKakaoAuthResponse
@@ -161,7 +162,7 @@ class LoginActivity : BaseActivity() {
                                     response: Response<UserVerifyResponse>
                                 ) {
                                     if (response.isSuccessful) {
-                                        Log.d(TAG, "splash onResponse: ${response.body()}")
+                                        Log.d("splashsplash", "splash onResponse: ${response.body()}")
 
                                         //user 정보 저장
                                         User.id = response.body()?.data?.user?.id.toString()
@@ -179,9 +180,13 @@ class LoginActivity : BaseActivity() {
                                         User.isAllowFeedComment =
                                             response.body()?.data?.isAllowFeedComment!!
                                         User.isAllowSearch = response.body()?.data?.isAllowSearch!!
+                                        User.isMaliciousUser = response.body()?.data?.isMaliciousUser!!
                                         User.createdAt = response.body()?.data?.createdAt.toString()
                                         User.accessToken =
                                             response.body()?.data?.accessToken.toString()
+
+
+
 
                                         //새로운 accessToken을 저장한다.
                                         with(sharedPreferences.edit()) {
@@ -203,9 +208,11 @@ class LoginActivity : BaseActivity() {
                             })
 
                             // If user is not registered, go to sign up page
-                            Log.d(TAG, "자동로그인 onResponse: ${User.name} ${User.email} ${User.id}")
-
-                            if (User.name == "") {
+//                            Log.d(TAG, "자동로그인 onResponse: ${User.name} ${User.email} ${User.id}")
+                            if(User.isMaliciousUser){
+                                Toast.makeText(this@LoginActivity, "애플리케이션 악성 이용자로 판단되어 정지된 계정입니다.", Toast.LENGTH_SHORT).show()
+                            }
+                            else if (User.name == "") {
                                 val intent = Intent(this@LoginActivity, SignUpActivity::class.java)
                                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                                 finish()

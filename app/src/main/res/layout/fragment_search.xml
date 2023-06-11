@@ -19,8 +19,8 @@
             android:id="@+id/iv_search_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/back_arrow"
-            android:focusable="false" />
+            android:src="@drawable/back_arrow"
+            android:background="@android:color/transparent"/>
 
         <EditText
             android:id="@+id/et_search_content"
