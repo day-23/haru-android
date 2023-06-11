@@ -120,6 +120,7 @@
                             android:layout_height="0dp"
                             android:layout_weight="1"
                             android:background="#FDFDFD"
+                            android:backgroundTint="#FDFDFD"
                             app:cardElevation="0dp"
                             app:cardUseCompatPadding="true"
                             app:contentPadding="20dp">
