@@ -57,7 +57,7 @@
                         android:layout_height="28dp"
                         android:layout_marginTop="3dp"
                         android:layout_alignParentEnd="true"
-                        android:background="@drawable/etc_icon" />
+                        android:background="@drawable/three_line" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -88,6 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:scaleType="centerCrop"
+                    android:background="#D2D7FF"
                     android:src="@drawable/today_banner_bg" />
 
 
@@ -95,7 +96,6 @@
                     android:id="@+id/today_todo_layout"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
-
                     android:clickable="true"
                     android:orientation="horizontal">
 
@@ -128,7 +128,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
-                        android:background="@drawable/arrow"
+                        android:background="@drawable/setting_detail_arrow"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
 
@@ -192,7 +192,7 @@
                     android:layout_marginBottom="10dp"
                     android:backgroundTint="@android:color/transparent"
                     android:clickable="true"
-                    android:src="@drawable/fab"
+                    android:src="@drawable/big_add_fab"
                     app:elevation="0dp"
                     app:borderWidth="0dp"
                     app:tint="@null" />

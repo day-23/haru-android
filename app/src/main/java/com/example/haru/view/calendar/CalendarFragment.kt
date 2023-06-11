@@ -128,7 +128,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 fabMain_status
             ) {
                 Log.d("touchedView","정상 진입")
-                binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
+                binding.btnAddMainIncalendar.setImageResource(R.drawable.big_add_fab)
                 binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
                 binding.btnAddTodoIncalendar.setClickable(false);
 
@@ -396,7 +396,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         itemMonthBtn.text = "${calendar.get(Calendar.MONTH) + 1}월"
 
         if(calendarMainData.todoApply) {
-            todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
+            todoApplyImv.setBackgroundResource(R.drawable.category_todo)
 
             if(!calendarMainData.todoComplete){
                 val drawable = todoCompleteImv.background as VectorDrawable
@@ -527,7 +527,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             } else {
                 calendarMainData.todoApply = true
 
-                todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
+                todoApplyImv.setBackgroundResource(R.drawable.category_todo)
 
                 todoApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -552,7 +552,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         }
 
         if(calendarMainData.scheduleApply) {
-            scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
+            scheduleApplyImv.setBackgroundResource(R.drawable.category_schedule)
 
             scheduleApplyTv.setTextColor(
                 Color.parseColor("#1DAFFF")
@@ -582,7 +582,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             } else {
                 calendarMainData.scheduleApply = true
 
-                scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
+                scheduleApplyImv.setBackgroundResource(R.drawable.category_schedule)
 
                 scheduleApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -666,7 +666,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 calendarMainData.scheduleApply = true
                 calendarMainData.todoApply = true
 
-                scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image)
+                scheduleApplyImv.setBackgroundResource(R.drawable.category_schedule)
 
                 scheduleApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -674,7 +674,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
                 categoryAdapter.dataAllVisible()
 
-                todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image)
+                todoApplyImv.setBackgroundResource(R.drawable.category_todo)
 
                 todoApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -759,11 +759,11 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
 
-                binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
+                binding.btnAddMainIncalendar.setImageResource(R.drawable.big_add_fab)
                 binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
                 binding.btnAddTodoIncalendar.setClickable(false);
             } else {
-                btnAddMainInCalendar.setImageResource(R.drawable.calendar_schedule_add_btn)
+                btnAddMainInCalendar.setImageResource(R.drawable.schedule_add_fab)
                 btnAddTodoInCalendar.visibility = View.VISIBLE
                 btnAddTodoInCalendar.setClickable(true)
             }
@@ -782,7 +782,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
             todoInput.show(parentFragmentManager, todoInput.tag)
 
-            binding.btnAddMainIncalendar.setImageResource(R.drawable.fab)
+            binding.btnAddMainIncalendar.setImageResource(R.drawable.big_add_fab)
             binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
             binding.btnAddTodoIncalendar.setClickable(false);
             fabMain_status = !fabMain_status

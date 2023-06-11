@@ -8,9 +8,9 @@
       android:pathData="M14,14m-9,0a9,9 0,1 1,18 0a9,9 0,1 1,-18 0">
     <aapt:attr name="android:fillColor">
       <gradient 
-          android:startX="14"
+          android:startX="5"
           android:startY="4.853"
-          android:endX="14"
+          android:endX="23"
           android:endY="23.147"
           android:type="linear">
         <item android:offset="0" android:color="#FF9FA9FF"/>
@@ -19,8 +19,10 @@
     </aapt:attr>
   </path>
   <path
-      android:pathData="M8.823,13.194 L12.563,16.716 18.564,10.582"
+      android:pathData="M9,13.194L9,13.194L12.74,16.716 18.741,10.582"
+      android:strokeLineJoin="round"
       android:strokeWidth="2"
       android:fillColor="#00000000"
-      android:strokeColor="#fff"/>
+      android:strokeColor="#fdfdfd"
+      android:strokeLineCap="round"/>
 </vector>

@@ -270,7 +270,8 @@ class AdapterMonth(
                     dateTextViews[i * 7 + k].setTextColor(Color.parseColor("#1DAFFF"))
                     dateLayoutViews[i * 7 + k].background = ContextCompat.getDrawable(
                         parentFragment.requireContext(),
-                        R.drawable.calendar_in_today_image
+                        R.drawable.today_circle
+//                        calendar_in_today_image
                     )
                 } else { // font 문제 해결
 //                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.NORMAL)

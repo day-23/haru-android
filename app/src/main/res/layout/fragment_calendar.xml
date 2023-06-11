@@ -76,7 +76,8 @@
                                 android:layout_height="28dp"
                                 android:layout_gravity="center"
                                 android:layout_marginStart="4dp"
-                                android:background="@drawable/calendar_month_choose_btn" />
+                                android:background="@drawable/date_arrow_right"
+                                />
                         </LinearLayout>
 
                         <ImageView
@@ -88,12 +89,13 @@
                             android:layout_marginRight="10dp"
                             android:src="@drawable/search_icon" />
 
+<!--                        android:background="@drawable/calendar_today_date"-->
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center"
                             android:layout_marginRight="10dp"
-                            android:background="@drawable/calendar_today_date">
+                            android:background="@drawable/today_circle">
 
                             <TextView
                                 android:id="@+id/calendar_today_tv"
@@ -114,7 +116,7 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/calendar_category" />
+                            android:background="@drawable/three_line" />
                     </LinearLayout>
 
 
@@ -210,7 +212,7 @@
                     app:borderWidth="0dp"
                     app:elevation="0dp"
                     app:maxImageSize="56dp"
-                    app:srcCompat="@drawable/calendar_todo_add_btn"
+                    app:srcCompat="@drawable/todo_add_fab"
                     app:tint="@null" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -226,7 +228,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:maxImageSize="56dp"
-                    app:srcCompat="@drawable/fab"
+                    app:srcCompat="@drawable/big_add_fab"
                     app:tint="@null" />
             </RelativeLayout>
 

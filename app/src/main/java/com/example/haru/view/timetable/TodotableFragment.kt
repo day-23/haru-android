@@ -214,43 +214,43 @@ class TodotableFragment : Fragment() {
                 date[0] -> {
                     binding.todoSunDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoSunDate.setTypeface(Typeface.DEFAULT_BOLD)
-                    binding.todoSunDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.todoSunDate.setBackgroundResource(R.drawable.today_circle)
                     binding.sunLayout.setBackgroundResource(R.drawable.todo_table_selected)
                     }
                 date[1] -> {
                     binding.todoMonDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoMonDate.setTypeface(Typeface.DEFAULT_BOLD)
-                    binding.todoMonDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.todoMonDate.setBackgroundResource(R.drawable.today_circle)
                     binding.monLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[2] -> {
                     binding.todoTueDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoTueDate.setTypeface(Typeface.DEFAULT_BOLD)
-                    binding.todoTueDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.todoTueDate.setBackgroundResource(R.drawable.today_circle)
                     binding.tueLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[3] -> {
                     binding.todoWedDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoWedDate.setTypeface(Typeface.DEFAULT_BOLD)
-                    binding.todoWedDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.todoWedDate.setBackgroundResource(R.drawable.today_circle)
                     binding.wedLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[4] -> {
                     binding.todoThuDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoThuDate.setTypeface(Typeface.DEFAULT_BOLD)
-                    binding.todoThuDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.todoThuDate.setBackgroundResource(R.drawable.today_circle)
                     binding.thuLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[5] -> {
                     binding.todoSatDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoSatDate.setTypeface(Typeface.DEFAULT_BOLD)
-                    binding.todoFriDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.todoFriDate.setBackgroundResource(R.drawable.today_circle)
                     binding.friLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
                 date[6] -> {
                     binding.todoSatDate.setTextColor(Color.parseColor("#2CA4FF"))
                     binding.todoSatDate.setTypeface(Typeface.DEFAULT_BOLD)
-                    binding.todoSatDate.setBackgroundResource(R.drawable.calendar_today_background_image)
+                    binding.todoSatDate.setBackgroundResource(R.drawable.today_circle)
                     binding.satLayout.setBackgroundResource(R.drawable.todo_table_selected)
                 }
             }

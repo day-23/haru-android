@@ -15,31 +15,31 @@
 
         <ImageView
             android:id="@+id/add_back_imageView"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/back_arrow"
             android:layout_width="28dp"
-            android:layout_height="28dp"/>
+            android:layout_height="28dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/back_arrow" />
 
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#191919"
-            android:textStyle="bold"
-            android:textSize="20sp"
             android:text="카테고리 수정"
-            android:layout_height="wrap_content"/>
+            android:textColor="#191919"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/add_check_imageView"
-            android:background="@drawable/check_icon"
-            android:backgroundTint="@color/todo_description"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="20dp"
-            android:layout_width="28dp"
-            android:layout_height="28dp"/>
+            android:background="@drawable/check_icon"
+            android:backgroundTint="@color/todo_description" />
 
     </LinearLayout>
 
@@ -51,55 +51,56 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <LinearLayout
-                android:layout_marginTop="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
+                android:layout_marginTop="30dp"
                 android:orientation="horizontal">
 
                 <EditText
-                    android:background="@android:color/transparent"
                     android:id="@+id/add_schedule_name"
-                    android:hint="카테고리 이름을 입력하세요"
-                    android:textColorHint="#ACACAC"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="34dp"
                     android:layout_marginRight="34dp"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
+                    android:background="@android:color/transparent"
+                    android:hint="카테고리 이름을 입력하세요"
                     android:textColor="#191919"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:textColorHint="#ACACAC"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#DBDBDB"/>
+                android:background="#DBDBDB" />
 
             <LinearLayout
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_marginTop="14dp"
-                    android:layout_marginLeft="14dp"
-                    android:text="색상 선택"
-                    android:textSize="16sp"
-                    android:textColor="#ACACAC"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginTop="14dp"
+                    android:text="색상 선택"
+                    android:textColor="#ACACAC"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/add_categories_recyclerview"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

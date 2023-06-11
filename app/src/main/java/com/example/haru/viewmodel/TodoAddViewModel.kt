@@ -437,7 +437,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(
                 repeatOption.value
             ) else null,
-            repeatValue = repeatValue.value,
+            repeatValue = repeatValueStr,
+//            repeatValue.value,
             repeatEnd = repeatEndDateStr,
             tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
             subTodos = subTodos,
@@ -462,7 +463,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(
                 repeatOption.value
             ) else null,
-            repeatValue = repeatValue.value,
+            repeatValue = repeatValueStr,
+//            repeatValue.value,
             repeatEnd = repeatEndDateStr,
             tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
             subTodos = subTodos,
@@ -485,7 +487,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
             repeatOption = if (repeatSwitch.value == true && repeatOption.value != null) getRepeatOptionStr(
                 repeatOption.value
             ) else null,
-            repeatValue = repeatValue.value,
+            repeatValue = repeatValueStr,
+//            repeatValue.value,
             repeatEnd = repeatEndDateStr,
             tags = if (tagLiveData.value == null) emptyList() else tagLiveData.value!!,
             subTodos = subTodos,

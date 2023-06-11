@@ -2,18 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="10dp"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingBottom="10dp">
 
     <ImageView
-        android:background="@drawable/big_dot_icon"
-        android:backgroundTint="@color/black"
+        android:id="@+id/dot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="34dp"
-        android:layout_marginEnd="10dp"/>
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/subtodo_dot" />
 
     <EditText
         android:id="@+id/et_subTodo"
@@ -22,17 +22,18 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:hint="@string/subTodo_input"
-        android:maxLines="1"
         android:inputType="text"
+        android:maxLines="1"
+        android:textColor="@color/todo_description"
         android:textColorHint="@color/light_gray"
         android:textSize="16sp"
-        android:textColor="@color/todo_description"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/iv_subTodo_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="40dp"
+        android:backgroundTint="@color/light_gray"
         android:background="@drawable/cancel_icon" />
 </LinearLayout>

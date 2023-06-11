@@ -48,7 +48,7 @@ class ChecklistInputFragment(
         fun onDismiss()
     }
 
-    interface OnSubmitListener{
+    interface OnSubmitListener {
         fun onSubmit()
     }
 
@@ -208,7 +208,7 @@ class ChecklistInputFragment(
                 binding.repeatEndDateLayout.visibility = View.GONE
 
                 binding.repeatEndDateLayout.post {
-                    if (isTimeTable == true){
+                    if (isTimeTable == true) {
                         todoAddViewModel.setEndDateSwitch()
                     }
                 }
@@ -292,7 +292,7 @@ class ChecklistInputFragment(
                 binding.endDateTimeLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
                 binding.btnEndDatePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
 
-                Log.e("20191627", "endDateSetLayout : ${ binding.endDateSetLayout.height }")
+                Log.e("20191627", "endDateSetLayout : ${binding.endDateSetLayout.height}")
                 when (it) {
                     true -> {
                         binding.endDateSetLayout.animateViewHeight(
@@ -347,7 +347,7 @@ class ChecklistInputFragment(
             when (it) {
                 true -> {
                     todoAddViewModel.setRepeatSetLayoutH(binding.repeatSetLayout.height)
-                    Log.e("20191627", "repeatSetLayout : ${ todoAddViewModel.repeatSetLayoutHeight }")
+                    Log.e("20191627", "repeatSetLayout : ${todoAddViewModel.repeatSetLayoutHeight}")
 
                     binding.repeatSetLayout.animateViewHeight(
                         400, binding.repeatSetLayout.height,
@@ -664,12 +664,14 @@ class ChecklistInputFragment(
 
             override fun afterTextChanged(s: Editable?) {
                 val str = s.toString()
-                if (str == "") {
-                    binding.todoEt.setTypeface(null, Typeface.NORMAL)
-                    return
-                }
+                val color = if (str == "")
+                    ContextCompat.getColor(requireContext(), R.color.light_gray)
+                else ContextCompat.getColor(requireContext(), R.color.todo_description)
+                val typeFace = if (str == "") Typeface.NORMAL else Typeface.BOLD
 
-                binding.todoEt.setTypeface(null, Typeface.BOLD)
+                binding.btnSubmitTodo.backgroundTintList = ColorStateList.valueOf(color)
+                binding.btnClose.backgroundTintList = ColorStateList.valueOf(color)
+                binding.todoEt.setTypeface(null, typeFace)
             }
 
         })
@@ -879,15 +881,14 @@ class ChecklistInputFragment(
                                 Log.d("20191627", "dismiss")
                                 dismiss()
                             }
-                        } else if(isTimeTable == true){
+                        } else if (isTimeTable == true) {
                             todoAddViewModel.addTodo(true) {
                                 adapter.notifyDataSetChanged()
                                 onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
                                 dismiss()
                             }
-                        }
-                        else{
+                        } else {
                             todoAddViewModel.addTodo(true) {
                                 adapter.notifyDataSetChanged()
                                 onSubmitListener?.onSubmit()

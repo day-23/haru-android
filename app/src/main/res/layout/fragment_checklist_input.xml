@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/cancel_icon"
-                android:backgroundTint="@color/todo_description" />
+                android:backgroundTint="@color/light_gray" />
 
             <View
                 android:layout_width="0dp"
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/check_icon"
-                android:backgroundTint="@color/date_text" />
+                android:backgroundTint="@color/light_gray" />
 
         </LinearLayout>
 
@@ -118,8 +118,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
-                            android:background="@drawable/calendar_schedule_plus_image"
-                            android:backgroundTint="@color/light_gray" />
+                            android:background="@drawable/twenty_eight_plus_icon" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -153,7 +152,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:background="@drawable/tag_icon" />
+                        android:background="@drawable/tag_icon"
+                        android:backgroundTint="@color/light_gray"/>
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tag_et"
@@ -181,7 +181,8 @@
                         android:id="@+id/iv_today_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/big_today_icon" />
+                        android:background="@drawable/big_today_icon"
+                        android:backgroundTint="@color/light_gray"/>
 
                     <TextView
                         android:id="@+id/tv_today_todo"
@@ -226,7 +227,8 @@
                             android:id="@+id/iv_calendar_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/big_calendar_icon" />
+                            android:background="@drawable/big_calendar_icon"
+                            android:backgroundTint="@color/light_gray"/>
 
                         <TextView
                             android:id="@+id/tv_endDate_set"
@@ -318,7 +320,8 @@
                         android:id="@+id/iv_alarm_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/big_alarm_icon" />
+                        android:background="@drawable/big_alarm_icon"
+                        android:backgroundTint="@color/light_gray"/>
 
                     <TextView
                         android:id="@+id/tv_alarm_set"
@@ -385,7 +388,8 @@
                             android:id="@+id/iv_repeat_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/big_repeat_icon" />
+                            android:background="@drawable/big_repeat_icon"
+                            android:backgroundTint="@color/light_gray"/>
 
                         <TextView
                             android:id="@+id/tv_repeat_set"
@@ -651,7 +655,8 @@
                         android:id="@+id/iv_memo_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/big_memo_icon" />
+                        android:background="@drawable/big_memo_icon"
+                        android:backgroundTint="@color/light_gray"/>
 
                     <EditText
                         android:id="@+id/et_memo"
