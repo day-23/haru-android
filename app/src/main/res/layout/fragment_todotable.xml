@@ -122,11 +122,11 @@
                 >
 
                 <LinearLayout
-                    android:layout_width="20dp"
-                    android:layout_height="46dp"
+                    android:layout_width="28dp"
+                    android:layout_height="51dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="18dp"
-                    android:layout_marginEnd="14dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -134,7 +134,7 @@
                         android:id="@+id/sunday"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginBottom="6dp"
+                        android:layout_marginBottom="3dp"
                         android:text="일"
                         android:textAlignment="center"
                         android:textColor="#F71E58"
@@ -142,11 +142,11 @@
 
                     <TextView
                         android:id="@+id/todo_sun_date"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:hint="1"
                         android:text="@{viewModel.days.get(0)}"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textColor="#F71E58"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -168,11 +168,11 @@
                 >
 
                 <LinearLayout
-                    android:layout_width="20dp"
-                    android:layout_height="46dp"
+                    android:layout_width="28dp"
+                    android:layout_height="51dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="18dp"
-                    android:layout_marginEnd="14dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -180,19 +180,18 @@
                         android:id="@+id/monday"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginBottom="6dp"
+                        android:layout_marginBottom="3dp"
                         android:text="월"
                         android:textAlignment="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
-
                     <TextView
                         android:id="@+id/todo_mon_date"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:hint="2"
                         android:text="@{viewModel.days.get(1)}"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -214,11 +213,11 @@
                 >
 
                 <LinearLayout
-                    android:layout_width="20dp"
-                    android:layout_height="46dp"
+                    android:layout_width="28dp"
+                    android:layout_height="51dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="18dp"
-                    android:layout_marginEnd="14dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -226,7 +225,7 @@
                         android:id="@+id/tueday"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginBottom="6dp"
+                        android:layout_marginBottom="3dp"
                         android:text="화"
                         android:textAlignment="center"
                         android:textColor="#646464"
@@ -234,11 +233,11 @@
 
                     <TextView
                         android:id="@+id/todo_tue_date"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:hint="3"
                         android:text="@{viewModel.days.get(2)}"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -259,11 +258,11 @@
                 >
 
                 <LinearLayout
-                    android:layout_width="20dp"
-                    android:layout_height="46dp"
+                    android:layout_width="28dp"
+                    android:layout_height="51dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="18dp"
-                    android:layout_marginEnd="14dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -271,7 +270,7 @@
                         android:id="@+id/wedday"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginBottom="6dp"
+                        android:layout_marginBottom="3dp"
                         android:text="수"
                         android:textAlignment="center"
                         android:textColor="#646464"
@@ -279,11 +278,11 @@
 
                     <TextView
                         android:id="@+id/todo_wed_date"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:hint="4"
                         android:text="@{viewModel.days.get(3)}"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -304,11 +303,11 @@
                 >
 
                 <LinearLayout
-                    android:layout_width="20dp"
-                    android:layout_height="46dp"
+                    android:layout_width="28dp"
+                    android:layout_height="51dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="18dp"
-                    android:layout_marginEnd="14dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -316,7 +315,7 @@
                         android:id="@+id/thuday"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginBottom="6dp"
+                        android:layout_marginBottom="3dp"
                         android:text="목"
                         android:textAlignment="center"
                         android:textColor="#646464"
@@ -324,11 +323,11 @@
 
                     <TextView
                         android:id="@+id/todo_thu_date"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:hint="5"
                         android:text="@{viewModel.days.get(4)}"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -348,13 +347,12 @@
                 android:paddingVertical="7dp"
                 >
 
-
                 <LinearLayout
-                    android:layout_width="20dp"
-                    android:layout_height="46dp"
+                    android:layout_width="28dp"
+                    android:layout_height="51dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="18dp"
-                    android:layout_marginEnd="14dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -362,7 +360,7 @@
                         android:id="@+id/friday"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginBottom="6dp"
+                        android:layout_marginBottom="3dp"
                         android:text="금"
                         android:textAlignment="center"
                         android:textColor="#646464"
@@ -370,11 +368,11 @@
 
                     <TextView
                         android:id="@+id/todo_fri_date"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:hint="6"
                         android:text="@{viewModel.days.get(5)}"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textColor="#646464"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -394,11 +392,11 @@
                 android:paddingVertical="7dp">
 
                 <LinearLayout
-                    android:layout_width="20dp"
-                    android:layout_height="46dp"
+                    android:layout_width="28dp"
+                    android:layout_height="51dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="18dp"
-                    android:layout_marginEnd="14dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:orientation="vertical">
 
@@ -406,7 +404,7 @@
                         android:id="@+id/satday"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginBottom="6dp"
+                        android:layout_marginBottom="3dp"
                         android:text="토"
                         android:textAlignment="center"
                         android:textColor="#1DAFFF"
@@ -414,11 +412,11 @@
 
                     <TextView
                         android:id="@+id/todo_sat_date"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:hint="7"
                         android:text="@{viewModel.days.get(6)}"
-                        android:textAlignment="center"
+                        android:gravity="center"
                         android:textColor="#1DAFFF"
                         android:textSize="14sp" />
                 </LinearLayout>

@@ -118,7 +118,7 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                             }
                         }
                         2-> {//back
-                            todoAddViewmodel.updateRepeatBackTodo{
+                            todoAddViewmodel.updateRepeatBackTodo(true){
                                 todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
                             }
                         }

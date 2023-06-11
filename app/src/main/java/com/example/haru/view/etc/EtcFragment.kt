@@ -71,7 +71,7 @@ class EtcFragment : Fragment() {
 
             if (it == "" || it == null)
                 binding.ivProfile.background =
-                    ContextCompat.getDrawable(requireContext(), R.drawable.haru_fighting)
+                    ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
             else Glide.with(this)
                 .load(it)
                 .into(binding.ivProfile)
