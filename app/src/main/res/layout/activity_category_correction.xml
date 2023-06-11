@@ -161,7 +161,7 @@
         <ImageView
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:background="@drawable/big_delete_icon"
+            android:background="@drawable/delete_icon"
             android:backgroundTint="@color/delete_red" />
     </LinearLayout>
 
