@@ -70,12 +70,13 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         val correctionBackImageview = findViewById<ImageView>(R.id.correction_back_imageView)
         val correctionCheckImageview = findViewById<ImageView>(R.id.correction_check_imageView)
         val categoryDeleteTv = findViewById<TextView>(R.id.category_delete_tv)
+        val categoryMarkSwitch = findViewById<SwitchCompat>(R.id.category_mark_switch)
 
         content = category.content
         correctionScheduleName.setText(content)
+        categoryMarkSwitch.isChecked = category.isSelected
 
         categoriesRecyclerview.layoutManager = GridLayoutManager(this,6)
-        categoriesRecyclerview.addItemDecoration(MyItemDecoration())
         categoriesRecyclerview.adapter = CategoriesColorAdapter(this, null, colorsList.indexOf(category.color))
 
         correctionBackImageview.setOnClickListener {
@@ -94,6 +95,7 @@ class CategoryCorrectionActivity : AppCompatActivity() {
 
             category.color = color
             category.content = content
+            category.isSelected = categoryMarkSwitch.isSelected
 
             val calendarviewmodel = CalendarViewModel()
 

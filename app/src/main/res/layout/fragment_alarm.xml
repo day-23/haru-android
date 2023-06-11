@@ -48,7 +48,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="15dp"
-        android:text="할 일, 일정 푸시 알림"
+        android:text="푸시 알림"
         android:textColor="@color/todo_description"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -65,22 +65,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="할일 알림"
+            android:text="아침"
             android:textColor="@color/todo_description"
             android:textSize="16sp" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/am_alarm_time"
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:visibility="gone"
             android:background="@drawable/custom_btn_date"
             android:text="오후 3:03"
             android:textColor="@color/highlight"
             android:textSize="14sp" />
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/todo_alarm_switch"
+            android:id="@+id/am_alarm_switch"
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,27 +101,28 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="일정 알림"
+            android:text="저녁"
             android:textColor="@color/todo_description"
             android:textSize="16sp" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/pm_alarm_time"
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:visibility="gone"
             android:background="@drawable/custom_btn_date"
             android:text="오후 3:03"
             android:textColor="@color/highlight"
             android:textSize="14sp" />
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/schedule_alarm_switch"
+            android:id="@+id/pm_alarm_switch"
             style="@style/minSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

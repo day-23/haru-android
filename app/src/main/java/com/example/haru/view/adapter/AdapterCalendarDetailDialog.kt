@@ -1,12 +1,15 @@
 package com.example.haru.view.adapter
 
 import android.app.Dialog
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
@@ -80,15 +83,12 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
                 calendar.time.date.toString() +
                 "일 일정 추가"
 
-        simpleScheduleInputEt.addTextChangedListener {
-            if(simpleScheduleInputEt.text.length == 0){
-                simpleScheduleBtn.visibility = View.INVISIBLE
-            } else {
-                simpleScheduleBtn.visibility = View.VISIBLE
-            }
-        }
-
         simpleScheduleBtn.setOnClickListener {
+            if(simpleScheduleInputEt.text.toString().trim() == ""){
+                Toast.makeText(holder.itemView.context,"내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val calendarviewmodel = CalendarViewModel()
             calendarviewmodel.postSchedule(
                 PostSchedule(
@@ -103,6 +103,10 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
                     emptyList()
                 )
             ){
+                simpleScheduleInputEt.setText("")
+                val imm: InputMethodManager = holder.itemView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(simpleScheduleInputEt?.windowToken, 0)
+
                 notifyItemChanged(position)
                 adapter.notifyDataSetChanged()
             }

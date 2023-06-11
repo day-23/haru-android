@@ -20,6 +20,7 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import com.example.haru.R
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.PostSchedule
@@ -165,6 +166,16 @@ class CalendarAddFragment(private val categories: List<Category?>,
                 binding.everyWeekLayout.visibility = View.GONE
                 binding.gridMonthSchedule.visibility = View.GONE
                 binding.gridYearSchedule.visibility = View.GONE
+            }
+        }
+
+        binding.scheduleContentEt.addTextChangedListener {
+            if(it.toString() == ""){
+                binding.btnSubmitSchedule.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
+            } else {
+                binding.btnSubmitSchedule.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor("#191919"))
             }
         }
 

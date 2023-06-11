@@ -5,243 +5,263 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="right"
         android:layout_marginVertical="40dp"
         android:layout_marginStart="20dp"
-        android:layout_gravity="right"
-        android:orientation="vertical"
-        android:clickable="true">
+        android:clickable="true"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="16"
-            android:orientation="vertical">
+            android:background="@drawable/category_up_border">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="match_parent"
                 android:gravity="left"
-                android:background="@drawable/category_up_border">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="25dp"
                     android:text="카테고리 관리"
-                    android:layout_marginLeft="24dp"
-                    android:layout_gravity="center"
-                    android:textStyle="bold"
                     android:textColor="#FDFDFD"
-                    android:textSize="24sp"/>
-            </LinearLayout>
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-            <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="#FDFDFD"
-                android:layout_weight="577">
-
-                <LinearLayout
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="0dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_weight="17"
+                    android:background="#FDFDFD">
 
-                    <androidx.cardview.widget.CardView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardElevation="0dp"
-                        app:cardUseCompatPadding="true"
-                        android:backgroundTint="#FDFDFD"
-                        app:contentPadding="20dp">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                        <LinearLayout
+                        <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:backgroundTint="#FDFDFD"
+                            app:cardElevation="0dp"
+                            app:cardUseCompatPadding="true"
+                            app:contentPadding="20dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:orientation="vertical">
 
                                 <LinearLayout
-                                    android:id="@+id/schedule_apply_layout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <LinearLayout
+                                        android:id="@+id/schedule_apply_layout"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:id="@+id/schedule_apply_imv"
+                                            android:layout_width="28dp"
+                                            android:layout_height="28dp"
+                                            android:background="@drawable/calendar_schedule_image" />
+
+                                        <TextView
+                                            android:id="@+id/schedule_apply_tv"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_marginLeft="6dp"
+                                            android:text="일정"
+                                            android:textColor="#1DAFFF"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="right"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:id="@+id/category_add_image"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:foregroundGravity="right"
+                                            android:src="@drawable/calendar_schedule_plus_image" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/category_recyclerView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#DBDBDB" />
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="#FDFDFD"
+                            app:cardElevation="0dp"
+                            app:cardUseCompatPadding="true"
+                            app:contentPadding="20dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:id="@+id/todo_apply_layout"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:orientation="horizontal">
 
                                     <ImageView
-                                        android:id="@+id/schedule_apply_imv"
+                                        android:id="@+id/todo_apply_imv"
                                         android:layout_width="28dp"
                                         android:layout_height="28dp"
                                         android:background="@drawable/category_schedule" />
 
                                     <TextView
-                                        android:id="@+id/schedule_apply_tv"
+                                        android:id="@+id/todo_apply_tv"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="일정"
-                                        android:layout_marginLeft="6dp"
                                         android:layout_gravity="center"
+                                        android:layout_marginLeft="6dp"
+                                        android:text="할일"
                                         android:textColor="#1DAFFF"
                                         android:textSize="16sp"
-                                        android:textStyle="bold"/>
+                                        android:textStyle="bold" />
                                 </LinearLayout>
 
                                 <LinearLayout
+                                    android:id="@+id/todo_incomplete_layout"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:gravity="right">
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:gravity="left"
+                                    android:orientation="horizontal">
 
                                     <ImageView
-                                        android:id="@+id/category_add_image"
+                                        android:id="@+id/todo_incomplete_imv"
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/circle_uncheck" />
+
+                                    <TextView
+                                        android:id="@+id/todo_incomplete_tv"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:foregroundGravity="right"
-                                        android:src="@drawable/calendar_schedule_plus_image" />
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="14dp"
+                                        android:text="미완료"
+                                        android:textColor="#191919"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="right">
+
+                                        <ImageView
+                                            android:id="@+id/unclassified_show_iv"
+                                            android:layout_width="28dp"
+                                            android:layout_height="28dp"
+                                            android:layout_marginRight="38dp"
+                                            android:background="@drawable/category_show_image" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/todo_complete_layout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="19dp"
+                                    android:gravity="left"
+                                    android:orientation="horizontal">
+
+                                    <ImageView
+                                        android:id="@+id/todo_complete_imv"
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/circle_check" />
+
+                                    <TextView
+                                        android:id="@+id/todo_complete_tv"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="14dp"
+                                        android:text="완료"
+                                        android:textColor="#191919"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="right">
+
+                                        <ImageView
+                                            android:id="@+id/classified_show_iv"
+                                            android:layout_width="28dp"
+                                            android:layout_height="28dp"
+                                            android:layout_marginRight="38dp"
+                                            android:background="@drawable/category_show_image" />
+                                    </LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>
 
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/category_recyclerView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
 
-                    </androidx.cardview.widget.CardView>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#DBDBDB"/>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:cardElevation="0dp"
-                        app:cardUseCompatPadding="true"
-                        android:backgroundTint="#FDFDFD"
-                        app:contentPadding="20dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:id="@+id/todo_apply_layout"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/todo_apply_imv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/category_todo" />
-
-                                <TextView
-                                    android:id="@+id/todo_apply_tv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginLeft="6dp"
-                                    android:text="할일"
-                                    android:textStyle="bold"
-                                    android:textSize="16sp"
-                                    android:textColor="#1DAFFF" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/todo_incomplete_layout"
-                                android:layout_marginTop="15dp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="left">
-
-                                <ImageView
-                                    android:id="@+id/todo_incomplete_imv"
-                                    android:layout_width="28dp"
-                                    android:layout_height="28dp"
-                                    android:layout_gravity="center"
-                                    android:background="@drawable/circle_uncheck" />
-
-                                <TextView
-                                    android:id="@+id/todo_incomplete_tv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="14dp"
-                                    android:layout_gravity="center"
-                                    android:text="미완료"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    android:textColor="#191919" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/todo_complete_layout"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="19dp"
-                                android:orientation="horizontal"
-                                android:gravity="left">
-
-                                <ImageView
-                                    android:id="@+id/todo_complete_imv"
-                                    android:layout_width="28dp"
-                                    android:layout_height="28dp"
-                                    android:layout_gravity="center"
-                                    android:background="@drawable/circle_check" />
-
-                                <TextView
-                                    android:id="@+id/todo_complete_tv"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="14dp"
-                                    android:layout_gravity="center"
-                                    android:text="완료"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    android:textColor="#191919"/>
-                            </LinearLayout>
-                        </LinearLayout>
-
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="#FDFDFD">
-
-                <TextView
-                    android:id="@+id/all_blind_tv"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:gravity="center"
-                    android:text="모두 가리기"
-                    android:background="#FDFDFD"
-                    android:layout_marginBottom="27dp"
-                    android:textColor="#646464" />
-            </LinearLayout>
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:background="@drawable/category_botton_border"
+                    android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="26"
-                android:background="@drawable/category_botton_border">
+                    <TextView
+                        android:id="@+id/all_blind_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FDFDFD"
+                        android:gravity="center"
+                        android:text="모두 가리기"
+                        android:textColor="#646464"
+                        android:textSize="20sp" />
+                </LinearLayout>
             </LinearLayout>
+        </FrameLayout>
 
-        </LinearLayout>
         <View
             android:layout_width="1dp"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
     </LinearLayout>
 
 </layout>

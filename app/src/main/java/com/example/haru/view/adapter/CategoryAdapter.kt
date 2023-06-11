@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.VectorDrawable
+import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -113,34 +114,44 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
 
     override fun onBindViewHolder(holder: CategoryAdapter.CategoryView, position: Int) {
         val categoryColor = holder.itemView.findViewById<ImageView>(R.id.category_Color)
-        val categoryColorOutside = holder.itemView.findViewById<ImageView>(R.id.category_Color_outside)
         val cateogryName = holder.itemView.findViewById<TextView>(R.id.category_name)
         val cateogryCorrection = holder.itemView.findViewById<ImageView>(R.id.category_correction)
+        val categoryShowIv = holder.itemView.findViewById<ImageView>(R.id.category_show_iv)
 
         val drawable = categoryColor.background as VectorDrawable
-
         if (categoryList[position] != null) {
             if (categoryList[position]!!.isSelected) {
                 if (calendarMainData.scheduleApply) {
-                    Log.d("카테고리 확인", categoryList[position].toString())
                     drawable.setColorFilter(
                         Color.parseColor(categoryList[position]!!.color),
                         PorterDuff.Mode.SRC_ATOP
                     )
+
+                    cateogryName.setTextColor(Color.parseColor("#191919"))
+
+                    categoryShowIv.setBackgroundResource(R.drawable.category_show_image)
                 } else {
                     drawable.setColorFilter(
-                        Color.parseColor("#BABABA"),
+                        Color.parseColor("#ACACAC"),
                         PorterDuff.Mode.SRC_ATOP
                     )
+
+                    cateogryName.setTextColor(Color.parseColor("#ACACAC"))
+
+                    categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                 }
             } else {
                 drawable.setColorFilter(
-                    Color.parseColor("#FFFFFF"),
+                    Color.parseColor("#ACACAC"),
                     PorterDuff.Mode.SRC_ATOP
                 )
+
+                cateogryName.setTextColor(Color.parseColor("#ACACAC"))
+
+                categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
             }
 
-            categoryColor.setOnClickListener {
+            categoryShowIv.setOnClickListener {
                 if (calendarMainData.scheduleApply) {
                     val calendarViewModel = CalendarViewModel()
 
@@ -151,24 +162,6 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
                 }
             }
 
-            val drawable2 = categoryColorOutside.background as VectorDrawable
-
-            if (!calendarMainData.scheduleApply) {
-                drawable2.setColorFilter(
-                    Color.parseColor("#BABABA"),
-                    PorterDuff.Mode.SRC_ATOP
-                )
-
-                cateogryName.setTextColor(Color.parseColor("#BABABA"))
-            } else {
-                drawable2.setColorFilter(
-                    Color.parseColor(categoryList[position]!!.color),
-                    PorterDuff.Mode.SRC_ATOP
-                )
-
-                cateogryName.setTextColor(Color.parseColor("#191919"))
-            }
-
             cateogryName.text = categoryList[position]!!.content
 
             cateogryCorrection.setOnClickListener {
@@ -176,6 +169,7 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
             }
         } else {
             cateogryCorrection.visibility = View.INVISIBLE
+
             if (position == 0) {
                 if (calendarMainData.unclassifiedCategory) {
                     if (calendarMainData.scheduleApply) {
@@ -183,44 +177,38 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
                             Color.parseColor("#AAD7FF"),
                             PorterDuff.Mode.SRC_ATOP
                         )
+
+                        cateogryName.setTextColor(Color.parseColor("#191919"))
+
+                        categoryShowIv.setBackgroundResource(R.drawable.category_show_image)
                     } else {
                         drawable.setColorFilter(
-                            Color.parseColor("#BABABA"),
+                            Color.parseColor("#ACACAC"),
                             PorterDuff.Mode.SRC_ATOP
                         )
+
+                        cateogryName.setTextColor(Color.parseColor("#ACACAC"))
+
+                        categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                     }
                 } else {
                     drawable.setColorFilter(
-                        Color.parseColor("#FFFFFF"),
+                        Color.parseColor("#ACACAC"),
                         PorterDuff.Mode.SRC_ATOP
                     )
+
+                    cateogryName.setTextColor(Color.parseColor("#ACACAC"))
+
+                    categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                 }
 
-                categoryColor.setOnClickListener {
+                categoryShowIv.setOnClickListener {
                     if (calendarMainData.scheduleApply) {
                         calendarMainData.unclassifiedCategory =
                             !calendarMainData.unclassifiedCategory
 
                         notifyItemChanged(position)
                     }
-                }
-
-                val drawable2 = categoryColorOutside.background as VectorDrawable
-
-                if (!calendarMainData.scheduleApply) {
-                    drawable2.setColorFilter(
-                        Color.parseColor("#BABABA"),
-                        PorterDuff.Mode.SRC_ATOP
-                    )
-
-                    cateogryName.setTextColor(Color.parseColor("#BABABA"))
-                } else {
-                    drawable2.setColorFilter(
-                        Color.parseColor("#AAD7FF"),
-                        PorterDuff.Mode.SRC_ATOP
-                    )
-
-                    cateogryName.setTextColor(Color.parseColor("#191919"))
                 }
 
                 cateogryName.text = "미분류"
@@ -231,44 +219,38 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
                             Color.parseColor("#F71E58"),
                             PorterDuff.Mode.SRC_ATOP
                         )
+
+                        cateogryName.setTextColor(Color.parseColor("#191919"))
+
+                        categoryShowIv.setBackgroundResource(R.drawable.category_show_image)
                     } else {
                         drawable.setColorFilter(
-                            Color.parseColor("#BABABA"),
+                            Color.parseColor("#ACACAC"),
                             PorterDuff.Mode.SRC_ATOP
                         )
+
+                        cateogryName.setTextColor(Color.parseColor("#ACACAC"))
+
+                        categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                     }
                 } else {
                     drawable.setColorFilter(
-                        Color.parseColor("#FFFFFF"),
+                        Color.parseColor("#ACACAC"),
                         PorterDuff.Mode.SRC_ATOP
                     )
+
+                    cateogryName.setTextColor(Color.parseColor("#ACACAC"))
+
+                    categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                 }
 
-                categoryColor.setOnClickListener {
+                categoryShowIv.setOnClickListener {
                     if (calendarMainData.scheduleApply) {
                         calendarMainData.holidayCategory =
                             !calendarMainData.holidayCategory
 
                         notifyItemChanged(position)
                     }
-                }
-
-                val drawable2 = categoryColorOutside.background as VectorDrawable
-
-                if (!calendarMainData.scheduleApply) {
-                    drawable2.setColorFilter(
-                        Color.parseColor("#BABABA"),
-                        PorterDuff.Mode.SRC_ATOP
-                    )
-
-                    cateogryName.setTextColor(Color.parseColor("#BABABA"))
-                } else {
-                    drawable2.setColorFilter(
-                        Color.parseColor("#F71E58"),
-                        PorterDuff.Mode.SRC_ATOP
-                    )
-
-                    cateogryName.setTextColor(Color.parseColor("#191919"))
                 }
 
                 cateogryName.text = "공휴일"

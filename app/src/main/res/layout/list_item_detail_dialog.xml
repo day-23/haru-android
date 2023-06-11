@@ -7,13 +7,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/detail_dialog_radius">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:gravity="left"
-            android:orientation="horizontal"
-            android:background="@drawable/detail_dialog_radius">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/detail_day_tv"
@@ -163,7 +163,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="#FDFDFD">
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/detail_dialog_radius_bottom">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -197,11 +198,6 @@
                 android:layout_marginRight="17dp"
                 android:background="@drawable/small_add_fab"/>
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="26dp"
-            android:background="@drawable/detail_dialog_radius_bottom"/>
     </LinearLayout>
 
     <View
