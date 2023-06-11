@@ -544,12 +544,19 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         }
     }
 
-    fun updateRepeatBackTodo(callback: () -> Unit) {
-        val preEndDate = FormatDate.preEndDate(
+    fun updateRepeatBackTodo(atTimeTable: Boolean = false, callback: () -> Unit) {
+        var preEndDate = FormatDate.preEndDate(
             clickedTodo?.endDate,
             clickedTodo?.repeatOption,
             clickedTodo?.repeatValue
         )
+
+        if(atTimeTable)
+        {
+            repeatValueStr = null
+            repeatEndDateStr = null
+            _repeatOption.value = null
+        }
         if (preEndDate == null) {
             Log.d("20191627", "TodoAddViewModel -> UpdateRepeatBackTodo에서 preEndDate가 null")
             checklistViewModel.updateTodo(

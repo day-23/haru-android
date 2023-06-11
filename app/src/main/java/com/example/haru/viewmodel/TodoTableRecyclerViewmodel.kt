@@ -104,6 +104,8 @@ class TodoTableRecyclerViewmodel : ViewModel() {
                     if (repeatOption != null) {
                         if (todo.repeatEnd != null) {
                             repeateEnd = serverformat.parse(todo.repeatEnd)
+
+                            repeateEnd.time
                         }
 
                         repeatValue = todo.repeatValue!!
