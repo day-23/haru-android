@@ -9,8 +9,10 @@
         android:id="@+id/look_around_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="15dp"
+        android:paddingEnd="20dp"
         tools:ignore="MissingConstraints"
-        android:background="@drawable/todo_table_selected">
+        android:background="#FDFDFD">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -21,50 +23,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/small_haru_title"
-                android:backgroundTint="@color/white"
                 android:textStyle="bold"
                 android:textColor="#191919"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="2dp"
-                android:layout_marginStart="15dp"
                 />
             <ImageView
                 android:id="@+id/look_around_button"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/___20513"
+                android:background="@drawable/___20513"
+                android:backgroundTint="@color/black"
                 app:layout_constraintLeft_toRightOf="@id/look_around_title"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="7dp"
+                app:layout_constraintBottom_toBottomOf="@id/look_around_title"
+                app:layout_constraintTop_toTopOf="@id/look_around_title"
                 android:rotation="-90"/>
 
             <TextView
                 android:id="@+id/look_around_my_records"
                 android:layout_width="70dp"
                 android:layout_height="32dp"
-                android:paddingHorizontal="11dp"
-                android:paddingVertical="5dp"
-                app:layout_constraintRight_toLeftOf="@id/look_around_search_button"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginEnd="11dp"
+                app:layout_constraintRight_toRightOf="parent"
                 android:text="내 기록"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="#191919"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:background="@drawable/sns_my_record_border"
                 />
-            <ImageView
-                android:id="@+id/look_around_search_button"
-                android:layout_marginTop="3dp"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginEnd="20dp"
-                app:layout_goneMarginTop="3dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:src="@drawable/search_icon"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 

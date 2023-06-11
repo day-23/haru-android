@@ -18,15 +18,12 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="48dp">
-
-
             <ImageView
                 android:id="@+id/mypage_back"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="2dp"
-                android:src="@drawable/back_image"
+                android:src="@drawable/back_arrow"
                 android:textColor="#191919"
                 android:textStyle="bold"/>
 
