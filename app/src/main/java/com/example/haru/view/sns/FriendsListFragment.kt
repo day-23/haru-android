@@ -97,6 +97,9 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFriendsListBinding.inflate(inflater, container, false)
+        if(User.id != targetId){
+            binding.requestListContainer.visibility = View.GONE
+        }
         mypageViewModel.getFirstFriendsList(targetId)
         friendAdapter = FriendsListAdapter(requireContext(), arrayListOf(),this)
         binding.friendsListRecycler.layoutManager = LinearLayoutManager(requireContext())
