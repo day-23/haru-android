@@ -156,7 +156,7 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     }.apply {
                         isOutsideTouchable = true
                         isTouchable = true
-                        showAsDropDown(binding.tvAllowFeedComment, -100, 10)
+                        showAsDropDown(binding.tvAllowFeedComment, -90, 10)
                     }
                 }
 
@@ -188,7 +188,7 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     }.apply {
                         isOutsideTouchable = true
                         isTouchable = true
-                        showAsDropDown(binding.tvAllowFeedLike, -100, 10)
+                        showAsDropDown(binding.tvAllowFeedLike, -90, 10)
                     }
                 }
             }
