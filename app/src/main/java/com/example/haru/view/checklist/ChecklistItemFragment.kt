@@ -703,8 +703,8 @@ class ChecklistItemFragment(
                                     )
                                 )
 
-                            if (it.size < binding.infoTagContainerLayout.childCount - 2)
-                                for (i in 1 until binding.infoTagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
+                            if (it.size < binding.infoTagContainerLayout.childCount - 1)
+                                for (i in 0 until binding.infoTagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
                                     val chip =
                                         binding.infoTagContainerLayout.getChildAt(i) as LinearLayout
                                     if (!it.contains((chip.getChildAt(0) as AppCompatButton).text)) {
@@ -712,11 +712,11 @@ class ChecklistItemFragment(
                                         break
                                     }
                                 }
-                            else if (it.size > binding.infoTagContainerLayout.childCount - 2) {
+                            else if (it.size > binding.infoTagContainerLayout.childCount - 1) {
                                 val layoutInflater =
                                     context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                                 val childCount = binding.infoTagContainerLayout.childCount
-                                for (i in childCount - 2 until it.size) {
+                                for (i in childCount - 1 until it.size) {
                                     val chip = layoutInflater.inflate(R.layout.custom_chip, null)
                                     chip.findViewById<AppCompatButton>(R.id.tag_chip).apply {
                                         text = it[i]
@@ -729,6 +729,12 @@ class ChecklistItemFragment(
                                         binding.infoTagContainerLayout.childCount - 1
                                     )
                                 }
+                                if (todoAddViewModel.tagAfter)
+                                    binding.infoTagScrollView.post {
+                                        binding.infoTagScrollView.fullScroll(ScrollView.FOCUS_RIGHT)
+                                        binding.infoTagEt.requestFocus()
+                                    }
+                                else todoAddViewModel.tagAfter = true
                             }
                         })
 
@@ -785,6 +791,7 @@ class ChecklistItemFragment(
                                 )
                         }
                     })
+
                 }
             }
         })
