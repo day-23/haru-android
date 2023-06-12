@@ -424,7 +424,7 @@ class TimetableViewModel(val context: Context) : ViewModel() {
     }
 
     /*TODO 로케이션 계산, 시간 계산 확인 */
-    suspend fun patchMoved(newRepeatStart: String, preScheduleData: Schedule){
+    suspend fun patchMoved(newRepeatStart: String, preScheduleData: Schedule, callback: () -> Unit){
         //"2023-03-07T18:30:00.000Z" X -> "2023-05-07T00:00:00+09:00"
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
@@ -472,7 +472,9 @@ class TimetableViewModel(val context: Context) : ViewModel() {
                 preScheduleData.category?.id,
                 emptyList()
             )
-            scheduleRepository.submitSchedule(preScheduleData.id, body) {}
+            scheduleRepository.submitSchedule(preScheduleData.id, body) {
+                callback()
+            }
         }else{ /* 반복 일정인 경우 */
             val schedule = preScheduleData
             val preDate = PreMoveDate.value!!
@@ -485,6 +487,7 @@ class TimetableViewModel(val context: Context) : ViewModel() {
             //시간 변경
             callUpdateRepeatScheduleAPI(schedule, preDate, newRepeatStart, newRepeatEnd){
                 getSchedule(Datelist)
+                callback()
             }
         }
 

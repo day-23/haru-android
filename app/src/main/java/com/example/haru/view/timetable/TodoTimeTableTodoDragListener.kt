@@ -1,15 +1,18 @@
 package com.example.haru.view.timetable
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.util.Log
 import android.view.DragEvent
 import android.view.View
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.model.Todo
 import com.example.haru.data.model.UpdateTodo
+import com.example.haru.utils.Alarm
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.adapter.TodotableAdapter
 import com.example.haru.view.checklist.ChecklistItemFragment
@@ -22,7 +25,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel, timetableviewModel:TimetableViewModel) : View.OnDragListener {
+class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel,
+                                     timetableviewModel:TimetableViewModel,
+                                     val lifecycle: LifecycleOwner,
+                                     val context: Context) : View.OnDragListener {
     val checkListViewModel = CheckListViewModel()
     val todoRecyclerViewModel = todoreviewModel
     val timeTableViewModel = timetableviewModel
@@ -97,6 +103,7 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                         updateTodo
                     ){
                         todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
+                        Alarm.initAlarm(lifecycle, context)
                     }
                 }else{
                     calculateTodoNextEndDateAndLocation(todo, preDateInfo)
@@ -110,16 +117,19 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                         0 -> { //front
                             todoAddViewmodel.updateRepeatFrontTodo {
                                 todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
+                                Alarm.initAlarm(lifecycle, context)
                             }
                         }
                         1 -> { //middle
                             todoAddViewmodel.updateRepeatMiddleTodo{
                                 todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
+                                Alarm.initAlarm(lifecycle, context)
                             }
                         }
                         2-> {//back
                             todoAddViewmodel.updateRepeatBackTodo(true){
                                 todoRecyclerViewModel.getTodo(timeTableViewModel.Dates.value!!)
+                                Alarm.initAlarm(lifecycle, context)
                             }
                         }
                     }

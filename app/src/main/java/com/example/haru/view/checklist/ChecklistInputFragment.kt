@@ -19,11 +19,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
+import com.example.haru.utils.Alarm
 import com.example.haru.utils.FormatDate
+import com.example.haru.view.MainActivity
 import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.view.adapter.AdapterMonth
+import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
@@ -34,6 +38,7 @@ import java.util.*
 
 class ChecklistInputFragment(
     checkListViewModel: CheckListViewModel,
+    val lifecycle: LifecycleOwner,
     val adapter: AdapterMonth? = null,
     val today: Boolean? = null,
     val isTimeTable: Boolean? = null,
@@ -62,8 +67,8 @@ class ChecklistInputFragment(
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(checkListViewModel: CheckListViewModel): ChecklistInputFragment {
-            return ChecklistInputFragment(checkListViewModel)
+        fun newInstance(checkListViewModel: CheckListViewModel, lifecycle: LifecycleOwner): ChecklistInputFragment {
+            return ChecklistInputFragment(checkListViewModel, lifecycle)
         }
     }
 
@@ -879,20 +884,33 @@ class ChecklistInputFragment(
                             todoAddViewModel.addTodo {
                                 onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
+
+                                if(it != null && it) {
+                                    Alarm.initAlarm(lifecycle, requireContext())
+                                }
+
                                 dismiss()
                             }
                         } else if (isTimeTable == true) {
                             todoAddViewModel.addTodo(true) {
-                                adapter.notifyDataSetChanged()
                                 onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
+
+                                if(it != null && it) {
+                                    Alarm.initAlarm(lifecycle, requireContext())
+                                }
+
                                 dismiss()
                             }
                         } else {
                             todoAddViewModel.addTodo(true) {
-                                adapter.notifyDataSetChanged()
                                 onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
+
+                                if(it != null && it) {
+                                    Alarm.initAlarm(lifecycle, requireContext())
+                                }
+
                                 dismiss()
                             }
                         }
