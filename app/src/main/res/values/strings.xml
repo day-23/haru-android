@@ -35,6 +35,8 @@
     <string name="MonthDay">%1$d</string>
     <string name="YearMonth">%1$d월</string>
 
+    <string name="loading">로딩 중입니다.</string>
+
     <string name="Monday">월</string>
     <string name="Tuesday">화</string>
     <string name="Wednesday">수</string>

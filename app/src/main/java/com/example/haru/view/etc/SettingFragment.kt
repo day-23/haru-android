@@ -3,11 +3,13 @@ package com.example.haru.view.etc
 import BaseActivity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.App
 import com.example.haru.R
@@ -16,6 +18,7 @@ import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
+import com.example.haru.view.sns.LoadingAnimation
 import com.example.haru.viewmodel.EtcViewModel
 
 class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
