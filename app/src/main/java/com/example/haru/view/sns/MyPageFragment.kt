@@ -166,8 +166,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             }
         }
 
-        val initialHeaderTop = binding.select.top
-        val initialHeaderBottom = binding.select.bottom
         binding.select.bringToFront()
         binding.mypageScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             if (scrollY >= binding.select.top) {
@@ -184,7 +182,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 }else if(!isFeedClick && !isFullLoaded){
                     mypageViewModel.getMedia(userId, lastDate)
                 }
-                Toast.makeText(requireContext(), "bottomed", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -245,19 +242,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
 
         mypageViewModel.Tags.observe(viewLifecycleOwner){tags ->
             tagAdapter.newPage(ArrayList(tags))
-        }
-
-        binding.menuButton.setOnClickListener {
-            if(click == false){
-                binding.snsButtons.visibility = View.VISIBLE
-                click = true
-                binding.menuButton.animate().rotation(0f)
-            }
-            else{
-                binding.snsButtons.visibility = View.GONE
-                click = false
-                binding.menuButton.animate().rotation(-90f)
-            }
         }
 
         binding.editProfile.setOnClickListener {
@@ -363,13 +347,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         mypageViewModel.requestDelFriend(DelFriendBody(userId))
     }
 
-    fun hideMytitle(){
-        binding.snsHaruTitle.visibility = View.GONE
-        binding.menuButton.visibility = View.GONE
-        binding.myPageMyRecord.visibility = View.GONE
-        binding.searchButton.visibility = View.GONE
-    }
-
     fun showFriendTitle(){
         binding.snsMenu.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
         binding.mypageBack.visibility = View.VISIBLE
@@ -402,10 +379,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         if(userId == com.example.haru.utils.User.id){
             isMyPage = true
             binding.editProfile.text = "프로필 편집"
-            binding.myPageMyRecord.visibility = View.GONE
             mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
         }else{
-            hideMytitle()
             showFriendTitle()
             isMyPage = false
             binding.editProfile.text = "친구 신청"
