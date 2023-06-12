@@ -655,6 +655,7 @@ object FormatDate {
                     strToDatecalendar(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
             } else {
                 calendar.time = Date()
+                calendar.add(Calendar.DATE, -1)
             }
 
             val nWeek = calendar.get(Calendar.DAY_OF_WEEK)
@@ -730,6 +731,7 @@ object FormatDate {
                     strToDatecalendar(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
             } else {
                 calendar.time = Date()
+                calendar.add(Calendar.DATE, -1)
             }
 
             val idx = calendar.get(Calendar.DAY_OF_MONTH) - 1
@@ -826,6 +828,7 @@ object FormatDate {
                     strToDatecalendar(endDateStr) // endDateStr이 null이 아니라면 Todo를 완료하기 위해 다음 endDate를 구하기 위한 과정
             } else {
                 calendar.time = Date()
+                calendar.add(Calendar.DATE, -1)
             }
 
             val idx = calendar.get(Calendar.MONTH)

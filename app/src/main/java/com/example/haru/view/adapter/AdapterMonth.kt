@@ -398,7 +398,8 @@ class AdapterMonth(
                             val scheduleInput = CalendarAddFragment(
                                 categories,
                                 dateArrayList[startPosition],
-                                dateArrayList[endPosition]
+                                dateArrayList[endPosition],
+                                parentFragment.requireContext()
                             ) {
                                 notifyDataSetChanged()
                             }

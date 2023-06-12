@@ -21,9 +21,12 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
+import com.example.haru.utils.Alarm
 import com.example.haru.utils.FormatDate
+import com.example.haru.view.MainActivity
 import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.view.adapter.AdapterMonth
+import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.customDialog.CustomTimeDialog
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
@@ -879,20 +882,33 @@ class ChecklistInputFragment(
                             todoAddViewModel.addTodo {
                                 onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
+
+                                if(it != null && it) {
+                                    Alarm.initAlarm(viewLifecycleOwner, requireContext())
+                                }
+
                                 dismiss()
                             }
                         } else if (isTimeTable == true) {
                             todoAddViewModel.addTodo(true) {
-                                adapter.notifyDataSetChanged()
                                 onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
+
+                                if(it != null && it) {
+                                    Alarm.initAlarm(viewLifecycleOwner, requireContext())
+                                }
+
                                 dismiss()
                             }
                         } else {
                             todoAddViewModel.addTodo(true) {
-                                adapter.notifyDataSetChanged()
                                 onSubmitListener?.onSubmit()
                                 Log.d("20191627", "dismiss")
+
+                                if(it != null && it) {
+                                    Alarm.initAlarm(viewLifecycleOwner, requireContext())
+                                }
+
                                 dismiss()
                             }
                         }

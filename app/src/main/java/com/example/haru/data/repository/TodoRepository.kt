@@ -77,13 +77,13 @@ class TodoRepository() {
                 data
             }
 
-            if (calendar) {
-                withContext(Dispatchers.Main) {
-                    callback(postTodoResponse)
-                }
-            } else {
+//            if (calendar) {
+            withContext(Dispatchers.Main) {
                 callback(postTodoResponse)
             }
+//            } else {
+//                callback(postTodoResponse)
+//            }
         }
     }
 

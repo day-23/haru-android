@@ -127,10 +127,10 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    fun postSchedule(body: PostSchedule, callback: () -> Unit){
+    fun postSchedule(body: PostSchedule, callback: (Boolean) -> Unit){
         viewModelScope.launch {
             ScheduleRepository.postSchedule(body){
-                callback()
+                callback(it)
             }
         }
     }
