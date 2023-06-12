@@ -136,6 +136,7 @@
                         android:text="자기소개"
                         android:textColor="#191919"
                         android:textSize="14sp"
+                        android:maxLength="12"
                         app:layout_constraintBottom_toBottomOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

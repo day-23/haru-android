@@ -137,6 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
                 android:hint="자기소개를 입력해 보세요"
+                android:maxLength="12"
                 android:textColorHint="#ACACAC"
                 android:textSize="14sp"
                 android:textColor="#191919"
