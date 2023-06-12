@@ -48,7 +48,7 @@
             android:layout_marginTop="20dp"
             android:text="이 게시글 신고하기"
             android:textSize="20sp"
-            android:textColor="#F71E58"
+            android:textColor="#F71E58"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
