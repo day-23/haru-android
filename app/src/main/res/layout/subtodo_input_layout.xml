@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingBottom="10dp">
 
@@ -24,6 +24,7 @@
         android:hint="@string/subTodo_input"
         android:inputType="text"
         android:maxLines="1"
+        android:maxLength="20"
         android:textColor="@color/todo_description"
         android:textColorHint="@color/light_gray"
         android:textSize="16sp"
