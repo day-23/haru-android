@@ -64,6 +64,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FDFDFD"
                     app:cardElevation="0dp"
                     app:cardUseCompatPadding="true"
                     app:contentPadding="10dp">
@@ -117,6 +118,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FDFDFD"
                     app:cardElevation="0dp"
                     app:cardUseCompatPadding="true"
                     app:contentPadding="10dp">

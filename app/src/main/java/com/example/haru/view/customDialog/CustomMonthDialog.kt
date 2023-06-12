@@ -83,6 +83,7 @@ class CustomMonthDialog(date: Date? = null) : DialogFragment() {
             maxValue = 199
             value = startYear-1923
             displayedValues = yearList
+            textColor = Color.parseColor("#646464")
         }
 
         binding.npMonthPick.apply {
@@ -91,6 +92,7 @@ class CustomMonthDialog(date: Date? = null) : DialogFragment() {
             maxValue = 11
             value = startMonth
             displayedValues = monthList
+            textColor = Color.parseColor("#646464")
         }
 
         binding.emptyView.setOnClickListener {

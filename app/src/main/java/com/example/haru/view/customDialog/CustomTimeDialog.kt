@@ -127,7 +127,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             value = flag
             displayedValues = timeList
             wrapSelectorWheel = false
-
+            textColor = Color.parseColor("#646464")
         }
 //        binding.timeDivision.
 
@@ -153,6 +153,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
 //                    this.value = 1
                 }
             }
+            textColor = Color.parseColor("#646464")
         }
 
         binding.npMinutePick.apply {
@@ -161,6 +162,7 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
             maxValue = 11
             value = startMinute
             displayedValues = minuteList
+            textColor = Color.parseColor("#646464")
         }
 
         binding.emptyLayout.setOnClickListener{

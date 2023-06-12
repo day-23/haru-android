@@ -17,6 +17,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:paddingTop="2dp"
             >
             <ImageView
                 android:id="@+id/look_around_title"
@@ -30,10 +31,9 @@
                 />
             <ImageView
                 android:id="@+id/look_around_button"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:background="@drawable/___20513"
-                android:backgroundTint="@color/black"
                 app:layout_constraintLeft_toRightOf="@id/look_around_title"
                 app:layout_constraintBottom_toBottomOf="@id/look_around_title"
                 app:layout_constraintTop_toTopOf="@id/look_around_title"
