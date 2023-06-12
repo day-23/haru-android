@@ -21,7 +21,6 @@ object GetPastDate {
 
         val now = Calendar.getInstance()
         val minutesDiff = TimeUnit.MILLISECONDS.toMinutes(now.timeInMillis - korPastDate.time)
-
         var timeAgo = ""
         if(minutesDiff < 1)
             timeAgo = "방금 전"
@@ -29,8 +28,12 @@ object GetPastDate {
             timeAgo = "${minutesDiff}분 전"
         else if(minutesDiff < 1440)
             timeAgo = "${minutesDiff / 60}시간 전"
-        else
-            timeAgo = "${minutesDiff / 1440}일 전"
+        else if(minutesDiff < 1440 * 7 * 4)
+            timeAgo = "${minutesDiff / 1440 * 7}주 전"
+        else if(minutesDiff < 1440 * 7 * 4 * 12)
+            timeAgo = "${minutesDiff / 1440 * 7 * 4}개월 전"
+        else timeAgo = "${minutesDiff / 1440 * 7 * 4 * 12}년 전"
+
         return timeAgo
     }
 }

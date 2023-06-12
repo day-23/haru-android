@@ -109,12 +109,12 @@ class SnsFragment : Fragment(), OnPostClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+        (activity as BaseActivity).adjustTopMargin(binding.snsRootView.id)
     }
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+        (activity as BaseActivity).adjustTopMargin(binding.snsRootView.id)
     }
 
     override fun onCreateView(

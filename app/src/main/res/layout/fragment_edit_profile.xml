@@ -103,7 +103,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
-                android:hint="momo"
+                android:hint="이름을 입력해주세요"
                 android:textSize="14sp"
                 android:background="@null"/>
         </LinearLayout>
@@ -133,7 +133,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
-                android:hint="야옹"
+                android:hint="자기소개를 입력해주세요"
                 android:textSize="14sp"
                 android:background="@null"/>
 
