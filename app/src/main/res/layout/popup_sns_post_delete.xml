@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_post_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#33191919"
@@ -21,6 +22,7 @@
             android:background="@drawable/black_bar_radius" />
         
         <TextView
+            android:id="@+id/edit_or_hide"
             android:layout_width="match_parent"
             android:layout_height="24dp"
             android:textSize="20sp"
@@ -41,6 +43,7 @@
             android:background="#DBDBDB"/>
         
         <TextView
+            android:id="@+id/delete_or_report"
             android:layout_width="match_parent"
             android:layout_height="24dp"
             android:gravity="center"

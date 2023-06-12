@@ -26,6 +26,9 @@ import com.example.haru.data.model.Profile
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.databinding.FragmentSnsBinding
+import com.example.haru.databinding.PopupSnsCommentDeleteBinding
+import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.databinding.PopupSnsPostDeleteBinding
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SnsPostAdapter
@@ -37,7 +40,13 @@ import com.example.haru.viewmodel.UserViewModel
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-class SnsFragment : Fragment(), OnPostClickListener {
+
+interface OnPostPopupClick {
+    fun postPopupClicked(userId: String, postId: String, position: Int)
+    fun PopupConfirm(userId: String, postId: String, position: Int)
+}
+
+class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     private lateinit var userViewModel: UserViewModel
     private lateinit var snsViewModel: SnsViewModel
     private lateinit var profileViewModel: MyPageViewModel
@@ -48,22 +57,23 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
     override fun onCommentClick(postitem: Post) {
         profileViewModel.getUserInfo(User.id)
-        profileViewModel.UserInfo.observe(viewLifecycleOwner){user ->
+        profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
             val newFrag = AddCommentFragment(postitem.id, postitem.images, user)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-            if(!isSnsMainInBackStack)
+            if (!isSnsMainInBackStack)
                 transaction.addToBackStack("snsmain")
             transaction.commit()
         }
     }
-    override fun onTotalCommentClick(post : Post) {
+
+    override fun onTotalCommentClick(post: Post) {
         val newFrag = CommentsFragment(post, User.id)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-        if(!isSnsMainInBackStack)
+        if (!isSnsMainInBackStack)
             transaction.addToBackStack("snsmain")
         transaction.commit()
     }
@@ -73,30 +83,69 @@ class SnsFragment : Fragment(), OnPostClickListener {
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-        if(!isSnsMainInBackStack)
+        if (!isSnsMainInBackStack)
             transaction.addToBackStack("snsmain")
         transaction.commit()
     }
 
     override fun onSetupClick(userId: String, postId: String, item: Post) {
-        Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+        val fragment = PopupDeletePost(userId, postId, this)
+        val fragmentManager = childFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        transaction.add(R.id.sns_post_anchor, fragment)
+        transaction.commit()
 
-        snsViewModel.deletePost(postId)
-
-        snsViewModel.DeleteResult.observe(viewLifecycleOwner){ result ->
-            if(result)
+        snsViewModel.DeleteResult.observe(viewLifecycleOwner) { result ->
+            if (result)
                 snsPostAdapter.deletePost(item)
             else
                 Toast.makeText(requireContext(), "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
-    companion object{
-        const val TAG : String = "로그"
 
-        fun newInstance() : SnsFragment {
+    override fun postPopupClicked(userId: String, postId: String, position: Int) {
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.sns_post_anchor)
+        if (fragment != null) {
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+            if (position == 0) {
+                //TODO:숨기기 혹은 수정하기
+            } else if (position == 1) {
+                if (User.id == userId) {
+                    val fragment = PopupDeleteConfirm(userId, postId, this)
+                    val fragmentManager = childFragmentManager
+                    val transaction = fragmentManager.beginTransaction()
+                    transaction.add(R.id.sns_post_anchor, fragment)
+                    transaction.commit()
+                }
+            }
+        }
+    }
+
+    override fun PopupConfirm(userId: String, postId: String, position: Int) {
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.sns_post_anchor)
+        if (fragment != null) {
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+            if (position == 0) {
+                Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+                snsViewModel.deletePost(postId)
+            }
+        }
+    }
+
+    companion object {
+        const val TAG: String = "로그"
+
+        fun newInstance(): SnsFragment {
             return SnsFragment()
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "SnsFragment - onCreate() called")
@@ -109,12 +158,12 @@ class SnsFragment : Fragment(), OnPostClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(binding.snsRootView.id)
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id, 1.1f)
     }
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.snsRootView.id)
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id, 1.1f)
     }
 
     override fun onCreateView(
@@ -150,15 +199,15 @@ class SnsFragment : Fragment(), OnPostClickListener {
             refresher.isRefreshing = false
         }
 
-        snsViewModel.newPost.observe(viewLifecycleOwner){newPost ->
-            if(newPost.isNotEmpty()) {
+        snsViewModel.newPost.observe(viewLifecycleOwner) { newPost ->
+            if (newPost.isNotEmpty()) {
                 snsPostAdapter.newPage(newPost)
                 getLastDate(newPost)
-            }else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+            } else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
-        snsViewModel.Posts.observe(viewLifecycleOwner){post ->
-            if(post.isNotEmpty()){
+        snsViewModel.Posts.observe(viewLifecycleOwner) { post ->
+            if (post.isNotEmpty()) {
                 snsPostAdapter.initList(post)
                 getLastDate(post)
             } else Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
@@ -169,20 +218,19 @@ class SnsFragment : Fragment(), OnPostClickListener {
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-            if(!isSnsMainInBackStack)
+            if (!isSnsMainInBackStack)
                 transaction.addToBackStack("snsmain")
             transaction.commit()
 
         }
 
         //하루 옆 메뉴 클릭
-        binding.menuButton.setOnClickListener{
-            if(click == false){
+        binding.menuButton.setOnClickListener {
+            if (click == false) {
                 binding.snsButtons.visibility = View.VISIBLE
                 binding.menuButton.animate().rotation(0f)
                 click = true
-            }
-            else{
+            } else {
                 binding.snsButtons.visibility = View.GONE
                 binding.menuButton.animate().rotation(-90f)
                 click = false
@@ -191,7 +239,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
 
         //내 피드 보기 클릭
         binding.myRecords.setOnClickListener {
-           onProfileClick(User.id)
+            onProfileClick(User.id)
         }
 
         binding.addPost.setOnClickListener {
@@ -199,7 +247,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-            if(!isSnsMainInBackStack)
+            if (!isSnsMainInBackStack)
                 transaction.addToBackStack("snsmain")
             transaction.commit()
         }
@@ -210,7 +258,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-            if(!isSnsMainInBackStack)
+            if (!isSnsMainInBackStack)
                 transaction.addToBackStack("snsmain")
             transaction.commit()
         }
@@ -244,9 +292,81 @@ class SnsFragment : Fragment(), OnPostClickListener {
         return false
     }
 
-    fun getLastDate(items : ArrayList<Post>){
+    fun getLastDate(items: ArrayList<Post>) {
         val index = items.size - 1
         lastDate = items[index].createdAt
     }
 
+}
+
+class PopupDeletePost(val userId: String, val postId: String, listener: OnPostPopupClick) :
+    Fragment() {
+    lateinit var popupbinding: PopupSnsPostDeleteBinding
+    val listener = listener
+
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(SnsFragment.TAG, "sns onViewCreated: ")
+        (activity as BaseActivity).adjustTopMargin(popupbinding.popupPostContainer.id, 2f)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(popupbinding.popupPostContainer.id, 2f)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        popupbinding = PopupSnsPostDeleteBinding.inflate(inflater, container, false)
+
+        if (userId == User.id) {
+            popupbinding.editOrHide.text = "게시글 수정하기"
+            popupbinding.deleteOrReport.text = "게시글 삭제하기"
+        }
+
+
+        popupbinding.editOrHide.setOnClickListener {
+            listener.postPopupClicked(userId, postId, 0)
+        }
+
+        popupbinding.deleteOrReport.setOnClickListener {
+            listener.postPopupClicked(userId, postId, 1)
+        }
+
+        popupbinding.popupPostContainer.setOnClickListener {
+            listener.postPopupClicked(userId, postId, 2)
+        }
+
+        return popupbinding.root
+    }
+}
+
+class PopupDeleteConfirm(val userId: String, val postId: String, listener: OnPostPopupClick) :
+    Fragment() {
+    lateinit var popupbinding: PopupSnsPostCancelBinding
+    val listener = listener
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        popupbinding = PopupSnsPostCancelBinding.inflate(inflater, container, false)
+        popupbinding.postCancelText.text = "게시글을 삭제할까요? 이 작업은 복원할 수 없습니다."
+
+
+        popupbinding.snsAddPostUnsave.setOnClickListener {
+            listener.postPopupClicked(userId, postId, 0)
+        }
+
+        popupbinding.snsAddPostCancel.setOnClickListener {
+            listener.postPopupClicked(userId, postId, 1)
+        }
+
+        return popupbinding.root
+    }
 }
