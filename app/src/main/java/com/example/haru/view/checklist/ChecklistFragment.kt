@@ -75,6 +75,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         super.onViewCreated(view, savedInstanceState)
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
+        (activity as BaseActivity).adjustTopMargin(binding.tagEtcLayout.drawerHeaderId.id)
 
         checkListViewModel.dataInit()
         initTagList()
