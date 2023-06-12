@@ -102,6 +102,7 @@
             android:id="@+id/tv_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="4dp"
             android:text="panda2211@naver.com"
             android:textColor="@color/todo_description"
             android:textSize="16sp"

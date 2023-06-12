@@ -199,7 +199,7 @@
         android:paddingBottom="14dp"
         android:text="Version"
         android:textColor="@color/date_text"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
@@ -218,7 +218,7 @@
         android:paddingBottom="14dp"
         android:text="로그아웃"
         android:textColor="@color/date_text"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
 
 </LinearLayout>
