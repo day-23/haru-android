@@ -85,7 +85,7 @@ class TodotableFragment : Fragment() {
         val rootView = binding.root
 
         binding.btnAddTodo.setOnClickListener {
-            val todoInput = ChecklistInputFragment(checkListViewModel,null, false, true)
+            val todoInput = ChecklistInputFragment(checkListViewModel,viewLifecycleOwner, null, false, true)
             todoInput.onDismissListener = object : ChecklistInputFragment.OnDismissListener {
                 override fun onDismiss() {
                     todoreviewModel.getTodo(timetableviewModel.Dates.value!!)
@@ -108,23 +108,23 @@ class TodotableFragment : Fragment() {
 
         todoreviewModel.TodoDataList.observe(viewLifecycleOwner) { contents ->
             val date = timetableviewModel.getDates()
-            sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ,date[0] ,TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
+            sun_todotableAdapter = TodotableAdapter(requireContext(), contents[0] ,date[0] ,TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel, viewLifecycleOwner, requireContext()))
             sun_todorecyclerView.adapter = sun_todotableAdapter
-            mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ,date[1],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
+            mon_todotableAdapter = TodotableAdapter(requireContext(), contents[1] ,date[1],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel, viewLifecycleOwner, requireContext()))
             mon_todorecyclerView.adapter = mon_todotableAdapter
-            tue_todotableAdapter = TodotableAdapter(requireContext(), contents[2] ,date[2],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
+            tue_todotableAdapter = TodotableAdapter(requireContext(), contents[2] ,date[2],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel, viewLifecycleOwner, requireContext()))
             tue_todorecyclerView.adapter = tue_todotableAdapter
-            wed_todotableAdapter = TodotableAdapter(requireContext(), contents[3] ,date[3],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
+            wed_todotableAdapter = TodotableAdapter(requireContext(), contents[3] ,date[3],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel, viewLifecycleOwner, requireContext()))
             wed_todorecyclerView.adapter = wed_todotableAdapter
-            thu_todotableAdapter = TodotableAdapter(requireContext(), contents[4] ,date[4],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
+            thu_todotableAdapter = TodotableAdapter(requireContext(), contents[4] ,date[4],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel, viewLifecycleOwner, requireContext()))
             thu_todorecyclerView.adapter = thu_todotableAdapter
-            fri_todotableAdapter = TodotableAdapter(requireContext(), contents[5] ,date[5],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
+            fri_todotableAdapter = TodotableAdapter(requireContext(), contents[5] ,date[5],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel, viewLifecycleOwner, requireContext()))
             fri_todorecyclerView.adapter = fri_todotableAdapter
-            sat_todotableAdapter = TodotableAdapter(requireContext(), contents[6] ,date[6],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel))
+            sat_todotableAdapter = TodotableAdapter(requireContext(), contents[6] ,date[6],TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel, viewLifecycleOwner, requireContext()))
             sat_todorecyclerView.adapter = sat_todotableAdapter
         }
 
-        val dragListener = TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel)
+        val dragListener = TodoTimeTableTodoDragListener(todoreviewModel, timetableviewModel, viewLifecycleOwner, requireContext())
         //리사이클러뷰 요일별 바인딩
         sun_todorecyclerView = binding.sunTodosRecycler
         sun_todorecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)

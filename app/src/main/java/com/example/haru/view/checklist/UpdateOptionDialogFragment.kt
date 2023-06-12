@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -10,15 +11,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatButton
+import androidx.lifecycle.LifecycleOwner
 import com.example.haru.R
 import com.example.haru.databinding.FragmentOptionUpdateBinding
+import com.example.haru.utils.Alarm
 import com.example.haru.view.checklist.ChecklistItemFragment.UpdateType
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: UpdateType) :
+class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
+                                 type: UpdateType,
+                                 val lifecycle: LifecycleOwner) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionUpdateBinding
     private var ratio: Int = 30
@@ -231,6 +236,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
                         UpdateType.FRONT_NOT_UPDATE_REPEAT -> {
                             todoAddViewModel.updateRepeatFrontTodo {
                                 binding.btnOptionOneUpdate.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
@@ -238,6 +244,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
                         UpdateType.MIDDLE_NOT_UPDATE_REPEAT -> {
                             todoAddViewModel.updateRepeatMiddleTodo {
                                 binding.btnOptionOneUpdate.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
@@ -275,6 +282,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
                         UpdateType.FRONT_UPDATE_REPEAT, UpdateType.FRONT_NOT_UPDATE_REPEAT -> {
                             todoAddViewModel.updateTodo {
                                 binding.btnOptionAllUpdate.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
@@ -293,6 +301,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
                         UpdateType.BACK -> {
                             todoAddViewModel.updateRepeatBackTodo {
                                 binding.btnOptionAfterUpdate.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
@@ -323,6 +332,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Updat
                         UpdateType.NOT_REPEAT -> {
                             todoAddViewModel.updateTodo {
                                 binding.btnOptionSave.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }

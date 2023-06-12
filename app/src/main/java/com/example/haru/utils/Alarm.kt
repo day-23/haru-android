@@ -69,7 +69,6 @@ object Alarm {
         val intent = Intent(context, AlarmWorker::class.java)
 
         if (User.id != "") {
-            Log.d("알람", "알람 설정")
             intent.putExtra("userId", User.id)
             intent.putExtra("requestCode", "0")
 
@@ -112,8 +111,6 @@ object Alarm {
                 }
             }
 
-            Log.d("알람추가", calendar.time.toString())
-
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
@@ -141,9 +138,6 @@ object Alarm {
         calendar.time = FormatDate.strToDate(todo.alarms[0].time)
 
         if(calendar.time.after(Date())) {
-            Log.d("알람추가", calendar.time.toString())
-            Log.d("알람추가", todo.content)
-
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
@@ -171,9 +165,6 @@ object Alarm {
         calendar.time = date
 
         if(calendar.time.after(Date())) {
-            Log.d("알람추가", calendar.time.toString())
-            Log.d("알람추가", schedule.content)
-
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,

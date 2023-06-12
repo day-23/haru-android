@@ -196,7 +196,9 @@ class TimetableFragment : Fragment() {
             val start = timetableviewModel.MoveDate.value!!
 
             timetableviewModel.viewModelScope.launch {
-                timetableviewModel.patchMoved(start, movedData)
+                timetableviewModel.patchMoved(start, movedData){
+                    com.example.haru.utils.Alarm.initAlarm(viewLifecycleOwner, requireContext())
+                }
             }
         }
 
@@ -221,9 +223,17 @@ class TimetableFragment : Fragment() {
 
             calendarViewModel.liveCategoryList.observe(viewLifecycleOwner){
                 Log.d(TAG, "onCreateView: ${it}")
-                val scheduleInput = CalendarAddFragment(it , null, null, requireContext()){
+
+                val scheduleInput = CalendarAddFragment(
+                    it ,
+                    null,
+                    null,
+                    requireContext(),
+                    viewLifecycleOwner
+                ){
                     timetableviewModel.getSchedule(timetableviewModel.Datelist)
                 }
+
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
             }
         }

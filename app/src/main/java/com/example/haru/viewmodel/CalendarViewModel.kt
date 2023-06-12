@@ -1,5 +1,9 @@
 package com.example.haru.viewmodel
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +14,9 @@ import com.example.haru.data.repository.CategoryRepository
 import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.User
+import com.example.haru.view.calendar.calendarMainData
+import com.example.haru.view.etc.AlarmWorker
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*

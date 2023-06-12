@@ -399,7 +399,8 @@ class AdapterMonth(
                                 categories,
                                 dateArrayList[startPosition],
                                 dateArrayList[endPosition],
-                                parentFragment.requireContext()
+                                parentFragment.requireContext(),
+                                lifecycleOwner
                             ) {
                                 notifyDataSetChanged()
                             }

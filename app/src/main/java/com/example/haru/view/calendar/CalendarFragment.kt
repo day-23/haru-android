@@ -573,7 +573,13 @@ class CalendarFragment(private val activity: Activity?) : Fragment(), DrawerLayo
         //추가 버튼 2개
         btnAddMainInCalendar.setOnClickListener {
             if (fabMain_status) {
-                val scheduleInput = CalendarAddFragment(categoryAdapter.categoryList, null, null, requireContext()){
+                val scheduleInput = CalendarAddFragment(
+                    categoryAdapter.categoryList,
+                    null,
+                    null,
+                    requireContext(),
+                    viewLifecycleOwner
+                ){
                     adapterMonth.notifyDataSetChanged()
                 }
 
@@ -592,7 +598,7 @@ class CalendarFragment(private val activity: Activity?) : Fragment(), DrawerLayo
         }
         
         btnAddTodoInCalendar.setOnClickListener{
-            val todoInput = ChecklistInputFragment(checkListViewModel, adapterMonth)
+            val todoInput = ChecklistInputFragment(checkListViewModel, viewLifecycleOwner, adapterMonth)
 
             todoInput.onSubmitListener = object : ChecklistInputFragment.OnSubmitListener{
                 override fun onSubmit() {

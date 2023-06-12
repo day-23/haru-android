@@ -22,6 +22,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import com.example.haru.R
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.PostSchedule
@@ -46,6 +48,7 @@ class CalendarAddFragment(private val categories: List<Category?>,
                           private val initStartDate: Date?=null,
                           private val initEndDate:Date?=null,
                           private val parentContext: Context,
+                          private val lifecycle: LifecycleOwner,
                           private val callback:() -> Unit) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentCalendarInputBinding
@@ -82,8 +85,9 @@ class CalendarAddFragment(private val categories: List<Category?>,
         fun newInstance(categories: List<Category?>,
                         initStartDate: Date?=null,
                         initEndDate:Date?=null,
-                        parentContext: Context): CalendarAddFragment {
-            return CalendarAddFragment(categories, initStartDate, initEndDate, parentContext){}
+                        parentContext: Context,
+                        lifecycle: LifecycleOwner): CalendarAddFragment {
+            return CalendarAddFragment(categories, initStartDate, initEndDate, parentContext, lifecycle){}
         }
     }
 
@@ -923,7 +927,7 @@ class CalendarAddFragment(private val categories: List<Category?>,
                     callback()
 
                     if(success){
-                        Alarm.initAlarm(viewLifecycleOwner, parentContext)
+                        Alarm.initAlarm(lifecycle, parentContext)
                     }
 
                     dismiss()

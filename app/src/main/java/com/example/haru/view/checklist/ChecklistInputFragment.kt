@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.Alarm
@@ -37,6 +38,7 @@ import java.util.*
 
 class ChecklistInputFragment(
     checkListViewModel: CheckListViewModel,
+    val lifecycle: LifecycleOwner,
     val adapter: AdapterMonth? = null,
     val today: Boolean? = null,
     val isTimeTable: Boolean? = null,
@@ -65,8 +67,8 @@ class ChecklistInputFragment(
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(checkListViewModel: CheckListViewModel): ChecklistInputFragment {
-            return ChecklistInputFragment(checkListViewModel)
+        fun newInstance(checkListViewModel: CheckListViewModel, lifecycle: LifecycleOwner): ChecklistInputFragment {
+            return ChecklistInputFragment(checkListViewModel, lifecycle)
         }
     }
 
@@ -884,7 +886,7 @@ class ChecklistInputFragment(
                                 Log.d("20191627", "dismiss")
 
                                 if(it != null && it) {
-                                    Alarm.initAlarm(viewLifecycleOwner, requireContext())
+                                    Alarm.initAlarm(lifecycle, requireContext())
                                 }
 
                                 dismiss()
@@ -895,7 +897,7 @@ class ChecklistInputFragment(
                                 Log.d("20191627", "dismiss")
 
                                 if(it != null && it) {
-                                    Alarm.initAlarm(viewLifecycleOwner, requireContext())
+                                    Alarm.initAlarm(lifecycle, requireContext())
                                 }
 
                                 dismiss()
@@ -906,7 +908,7 @@ class ChecklistInputFragment(
                                 Log.d("20191627", "dismiss")
 
                                 if(it != null && it) {
-                                    Alarm.initAlarm(viewLifecycleOwner, requireContext())
+                                    Alarm.initAlarm(lifecycle, requireContext())
                                 }
 
                                 dismiss()
