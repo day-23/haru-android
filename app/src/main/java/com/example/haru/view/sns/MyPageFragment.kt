@@ -27,7 +27,10 @@ import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaTagClicked{
+interface MediaClick{
+    fun onMediaClick(media: Media)
+}
+class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaTagClicked, MediaClick{
     private lateinit var binding: FragmentSnsMypageBinding
     private lateinit var feedRecyclerView: RecyclerView
     private lateinit var mediaRecyclerView: RecyclerView
@@ -39,7 +42,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     private lateinit var snsViewModel : SnsViewModel
     private var isFeedClick = true
     private var isFullLoaded = false //게시글 페이지네이션이 끝났는지
-    private var click = false
     val userId = userId
     var isMyPage = false
     var friendStatus = 0
@@ -47,6 +49,14 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     var lastDate = ""
     var index = 0
 
+    override fun onMediaClick(media: Media) {
+        val dummyMedia = Post()
+        val newFrag = DetailFragment(media, Post())
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        transaction.addToBackStack("snsmypage")
+        transaction.commit()
+    }
     override fun onCommentClick(postitem: Post) {
         mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
 
@@ -193,7 +203,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
 
         mediaRecyclerView = binding.mediaRecycler
         mediaLayout()
-        mediaAdapter = MediaAdapter(requireContext(), arrayListOf())
+        mediaAdapter = MediaAdapter(requireContext(), arrayListOf(), this)
         mediaRecyclerView.adapter = mediaAdapter
 
         tagRecyclerView = binding.mediaTags

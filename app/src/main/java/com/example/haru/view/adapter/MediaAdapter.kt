@@ -11,9 +11,11 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Media
 import com.example.haru.data.model.SnsPost
+import com.example.haru.view.sns.MediaClick
 
 class MediaAdapter (val context: Context,
-                   private var itemList: ArrayList<Media>): RecyclerView.Adapter<MediaAdapter.MyFeedViewHolder>(){
+                   private var itemList: ArrayList<Media>,
+                   val mediaClick: MediaClick): RecyclerView.Adapter<MediaAdapter.MyFeedViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaAdapter.MyFeedViewHolder {
         val view = LayoutInflater.from(context)
@@ -23,7 +25,9 @@ class MediaAdapter (val context: Context,
 
     override fun onBindViewHolder(holder: MediaAdapter.MyFeedViewHolder, position: Int) {
         Glide.with(context).load(itemList[position].images[0].url).into(holder.picture)
-
+        holder.picture.setOnClickListener {
+            mediaClick.onMediaClick(itemList[position])
+        }
     }
 
     override fun getItemCount(): Int {
