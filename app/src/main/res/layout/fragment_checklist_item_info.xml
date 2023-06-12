@@ -166,6 +166,7 @@
                                 android:layout_width="100dp"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
+                                android:textCursorDrawable="@drawable/custom_cursor"
                                 android:hint="@string/tag"
                                 android:inputType="text"
                                 android:maxLength="8"
