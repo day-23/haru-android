@@ -166,8 +166,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             }
         }
 
-        val initialHeaderTop = binding.select.top
-        val initialHeaderBottom = binding.select.bottom
         binding.select.bringToFront()
         binding.mypageScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             if (scrollY >= binding.select.top) {
@@ -184,7 +182,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 }else if(!isFeedClick && !isFullLoaded){
                     mypageViewModel.getMedia(userId, lastDate)
                 }
-                Toast.makeText(requireContext(), "bottomed", Toast.LENGTH_SHORT).show()
             }
         }
 

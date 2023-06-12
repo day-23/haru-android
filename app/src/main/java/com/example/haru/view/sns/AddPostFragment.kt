@@ -56,7 +56,7 @@ class AddPostFragment : Fragment(), PostInterface{
     lateinit var galleryViewmodel: MyPageViewModel
     lateinit var galleryAdapter: AddPostAdapter
     var toggle = false
-
+    var totalImage : ArrayList<ExternalImages> = arrayListOf()
 
     override fun onResume() {
         super.onResume()
@@ -113,6 +113,9 @@ class AddPostFragment : Fragment(), PostInterface{
 
             binding = FragmentAddPostBinding.inflate(inflater, container, false)
             galleryRecyclerView = binding.addpostGalleryImage
+            val imagePager = binding.addPostImages
+            val pagerAdapter = AddTagPagerAdapter(requireContext(), arrayListOf())
+            imagePager.adapter = pagerAdapter
 
             if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
                 &&
@@ -124,6 +127,7 @@ class AddPostFragment : Fragment(), PostInterface{
                 val lastindex = galleryViewmodel.getLastImage()
                 val layoutManager = galleryRecyclerView.layoutManager
                 if(layoutManager != null && index != -1){
+                    pagerAdapter.updateImage(arrayListOf(totalImage.get(index)))
                     Log.d("20191668", "current :$index last :$lastindex")
                     val targetView = layoutManager.findViewByPosition(index)
                     val imageView = targetView!!.findViewById<ImageView>(R.id.image)
@@ -141,6 +145,7 @@ class AddPostFragment : Fragment(), PostInterface{
             }
 
             galleryViewmodel.StoredImages.observe(viewLifecycleOwner){images ->
+                totalImage = images
                 galleryAdapter = AddPostAdapter(requireContext(), images, galleryViewmodel)
                 galleryRecyclerView.adapter = galleryAdapter
                 val gridLayoutManager = GridLayoutManager(requireContext(), 3)
@@ -167,7 +172,9 @@ class AddPostFragment : Fragment(), PostInterface{
 
             galleryViewmodel.SelectedPosition.observe(viewLifecycleOwner){selected ->
                 if(selected != null) {
+                    val images = ArrayList<ExternalImages>()
                     for (i in selected) {
+                        images.add(totalImage.get(i))
                         Log.d("20191668", "i : $i")
                         val layoutManager = galleryRecyclerView.layoutManager
                         if (layoutManager != null) {
@@ -176,6 +183,7 @@ class AddPostFragment : Fragment(), PostInterface{
                             textView?.text = "${selected.indexOf(i) + 1}"
                         }
                     }
+                    pagerAdapter.updateImage(images)
                 }
             }
 
