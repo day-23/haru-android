@@ -7,9 +7,9 @@ data class Media(
     val templateUrl : String = "",
     val images : ArrayList<Profile> = arrayListOf(),
     val hashTags : ArrayList<String> = arrayListOf(),
-    val isLiked : Boolean = false,
+    var isLiked : Boolean = false,
     val isCommented: Boolean = false,
-    val likedCount : Int = 0,
+    var likedCount : Int = 0,
     val commentCount : Int = 0,
     val createdAt: String = "",
     val updatedAt : String = ""

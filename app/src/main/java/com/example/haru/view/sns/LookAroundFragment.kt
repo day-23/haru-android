@@ -125,6 +125,13 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
         getTags()
         getFirstPosts()
 
+        val refresher = binding.refreshLookAround
+        refresher.setOnRefreshListener {
+            refresher.isRefreshing = true
+            snsViewModel.getFirstPosts()
+            refresher.isRefreshing = false
+        }
+
         snsViewModel.Posts.observe(viewLifecycleOwner){posts ->
             if(posts.isNotEmpty()) {
                 postAdapter.firstPage(posts)

@@ -68,7 +68,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             transaction.commit()
         }else{
             mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
-                val newFrag = AddCommentFragment(postitem,user)
+                val newFrag = AddCommentFragment(postitem.id, postitem.images, user)
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragments_frame, newFrag)
                 transaction.addToBackStack("snsmypage")

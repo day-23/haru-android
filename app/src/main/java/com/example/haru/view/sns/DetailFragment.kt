@@ -16,6 +16,7 @@ import com.example.haru.R
 import com.example.haru.data.model.Post
 import com.example.haru.databinding.FragmentDetailPostBinding
 import com.example.haru.databinding.FragmentSnsMypageBinding
+import com.example.haru.utils.User
 import com.example.haru.view.adapter.PicturesPagerAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
@@ -26,10 +27,14 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
     val post = post
     lateinit var adapter : PicturesPagerAdapter
     lateinit var pager : ViewPager2
+    lateinit var snsViewModel: SnsViewModel
+    lateinit var myPageViewModel: MyPageViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "MypageFragment - onCreate() called")
+        snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
+        myPageViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,6 +56,12 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         Log.d("TAG", "MyPageFragment - onCreateView() called")
         binding = FragmentDetailPostBinding.inflate(inflater, container, false)
         pager = binding.detailPostPicture
+
+        if(User.id != media.id && User.id != post.id){
+            binding.detailPostTotalComment.visibility = View.GONE
+
+        }
+
         if(media.id != ""){
             bindMedia(media)
             adapter = PicturesPagerAdapter(requireContext(), media.images)
@@ -59,6 +70,55 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
             bindPost(post)
             adapter = PicturesPagerAdapter(requireContext(), post.images)
             pager.adapter = adapter
+        }
+
+        binding.detailButtonLike.setOnClickListener {
+            if(media.id != ""){
+                if(media.isLiked) {
+                    binding.detailButtonLike.setBackgroundResource(R.drawable.likedyet)
+                    media.likedCount -= 1
+                    binding.detailLikedCount.text = media.likedCount.toString()
+                    media.isLiked = false
+                }else{
+                    binding.detailButtonLike.setBackgroundResource(R.drawable.sns_liked)
+                    media.likedCount += 1
+                    binding.detailLikedCount.text = media.likedCount.toString()
+                    media.isLiked = true
+                }
+                snsViewModel.likeAction(media.id)
+            }else{
+                if(post.isLiked) {
+                    binding.detailButtonLike.setBackgroundResource(R.drawable.likedyet)
+                    post.likedCount -= 1
+                    binding.detailLikedCount.text = post.likedCount.toString()
+                    post.isLiked = false
+                }else{
+                    binding.detailButtonLike.setBackgroundResource(R.drawable.sns_liked)
+                    post.likedCount += 1
+                    binding.detailLikedCount.text = post.likedCount.toString()
+                    post.isLiked = true
+                }
+                snsViewModel.likeAction(post.id)
+            }
+        }
+
+        binding.detailButtonComment.setOnClickListener {
+            myPageViewModel.getUserInfo(User.id)
+            myPageViewModel.UserInfo.observe(viewLifecycleOwner){user ->
+                if(post.id != "") {
+                    val newFrag = AddCommentFragment(post.id, post.images, user)
+                    val transaction = parentFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragments_frame, newFrag)
+                    transaction.addToBackStack("detail")
+                    transaction.commit()
+                }else{
+                    val newFrag = AddCommentFragment(media.id, media.images, user)
+                    val transaction = parentFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragments_frame, newFrag)
+                    transaction.addToBackStack("detail")
+                    transaction.commit()
+                }
+            }
         }
 
         binding.detailBack.setOnClickListener {
@@ -100,10 +160,10 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         binding.detailPostContents.text = post.content
         binding.detailLikedCount.text = post.likedCount.toString()
         binding.detailPostCommentCount.text = post.commentCount.toString()
-        if(media.isLiked){
+        if(post.isLiked){
             binding.detailButtonLike.setBackgroundResource(R.drawable.sns_liked)
         }
-        if(media.isCommented){
+        if(post.isCommented){
             binding.detailButtonComment.setBackgroundResource(R.drawable.comment_filled)
         }
     }

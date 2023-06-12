@@ -49,7 +49,7 @@ class SnsFragment : Fragment(), OnPostClickListener {
     override fun onCommentClick(postitem: Post) {
         profileViewModel.getUserInfo(User.id)
         profileViewModel.UserInfo.observe(viewLifecycleOwner){user ->
-            val newFrag = AddCommentFragment(postitem, user)
+            val newFrag = AddCommentFragment(postitem.id, postitem.images, user)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
