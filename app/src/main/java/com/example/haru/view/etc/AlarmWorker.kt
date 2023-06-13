@@ -204,8 +204,8 @@ class AlarmWorker : BroadcastReceiver(){
 
                         val todayDateFormat =
                             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
-                        val serverformat =
-                            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
+//                        val serverformat =
+//                            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.KOREAN)
 
                         var result = 0
                         var completedCnt = 0

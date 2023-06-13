@@ -69,6 +69,7 @@
                         android:background="@android:color/transparent"
                         android:hint="일정 입력"
                         android:inputType="text"
+                        android:textColor="#191919"
                         android:textColorHint="@color/light_gray"
                         android:textSize="24sp" />
 
@@ -552,6 +553,7 @@
                         android:background="@android:color/transparent"
                         android:ems="10"
                         android:hint="@string/memo_set"
+                        android:textColor="#191919"
                         android:inputType="textMultiLine"
                         android:scrollbars="vertical"
                         android:textColorHint="@color/light_gray"

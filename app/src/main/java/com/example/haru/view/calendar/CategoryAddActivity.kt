@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +64,13 @@ class CategoryAddActivity : AppCompatActivity() {
             intent.putExtra("status", "back")
             setResult(Activity.RESULT_OK, intent)
             finish()
+        }
+
+        addScheduleName.addTextChangedListener {
+            if (it.toString().length > 8) {
+                addScheduleName.setText(it.toString().substring(0, 8))
+                addScheduleName.setSelection(8)
+            }
         }
 
         addCheckImageview.setOnClickListener {

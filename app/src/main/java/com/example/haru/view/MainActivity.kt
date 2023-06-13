@@ -126,7 +126,7 @@ class MainActivity : BaseActivity() {
     private fun initFragments() {
         fragments[0] = SnsFragment.newInstance()
         fragments[1] = ChecklistFragment.newInstance()
-        fragments[2] = CalendarFragment.newInstance(this)
+        fragments[2] = CalendarFragment.newInstance()
         fragments[3] = TimetableFragment.newInstance()
         fragments[4] = EtcFragment.newInstance()
     }
@@ -165,7 +165,7 @@ class MainActivity : BaseActivity() {
         return when (index) {
             0 -> SnsFragment.newInstance()
             1 -> ChecklistFragment.newInstance()
-            2 -> CalendarFragment.newInstance(this)
+            2 -> CalendarFragment.newInstance()
             3 -> TimetableFragment.newInstance()
             4 -> EtcFragment.newInstance()
             else -> throw IllegalStateException("Unexpected fragment index $index")

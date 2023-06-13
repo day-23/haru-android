@@ -111,6 +111,9 @@ object Alarm {
                 }
             }
 
+            Log.d("알람추가", "아침저녁 알림")
+            Log.d("알람추가", calendar.time.toString())
+
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
@@ -125,7 +128,6 @@ object Alarm {
 
         intent.putExtra("userId", User.id)
         intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
-        calendarMainData.alarmCnt++
 
         intent.putExtra("body", todo.content)
 
@@ -134,8 +136,13 @@ object Alarm {
             PendingIntent.FLAG_IMMUTABLE
         )
 
+        calendarMainData.alarmCnt++
+
         val calendar = Calendar.getInstance()
         calendar.time = FormatDate.strToDate(todo.alarms[0].time)
+
+        Log.d("알람추가", "투두 알림: ${todo.content}")
+        Log.d("알람추가", calendar.time.toString())
 
         if(calendar.time.after(Date())) {
             alarmManager.setExactAndAllowWhileIdle(
@@ -152,7 +159,6 @@ object Alarm {
 
         intent.putExtra("userId", User.id)
         intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
-        calendarMainData.alarmCnt++
 
         intent.putExtra("body", schedule.content)
 
@@ -161,8 +167,13 @@ object Alarm {
             PendingIntent.FLAG_IMMUTABLE
         )
 
+        calendarMainData.alarmCnt++
+
         val calendar = Calendar.getInstance()
         calendar.time = date
+
+        Log.d("알람추가", "일정 알림: ${schedule.content}")
+        Log.d("알람추가", calendar.time.toString())
 
         if(calendar.time.after(Date())) {
             alarmManager.setExactAndAllowWhileIdle(

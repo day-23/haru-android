@@ -50,7 +50,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class CalendarFragment(private val activity: Activity?) : Fragment(), DrawerLayout.DrawerListener {
+class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var adapterMonth: AdapterMonth
     private var lastIndex = -1
@@ -69,8 +69,8 @@ class CalendarFragment(private val activity: Activity?) : Fragment(), DrawerLayo
     companion object{
         const val TAG : String = "로그"
 
-        fun newInstance(activity: Activity?) : CalendarFragment {
-            return CalendarFragment(activity)
+        fun newInstance() : CalendarFragment {
+            return CalendarFragment()
         }
     }
 
@@ -156,9 +156,7 @@ class CalendarFragment(private val activity: Activity?) : Fragment(), DrawerLayo
     override fun onResume() {
         super.onResume()
 
-        if(activity != null) {
-            (activity as BaseActivity).adjustTopMargin(binding.calendarFragmentParentLayout.id)
-        }
+        (activity as BaseActivity).adjustTopMargin(binding.calendarFragmentParentLayout.id)
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -620,7 +618,6 @@ class CalendarFragment(private val activity: Activity?) : Fragment(), DrawerLayo
                 )
 
         adapterMonth = AdapterMonth(
-            activity,
             requireActivity(),
             viewLifecycleOwner,
             month_viewpager,
