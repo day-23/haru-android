@@ -33,7 +33,12 @@ class ChecklistItemTouchHelperCallback(val listener: ItemTouchHelperListener) :
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
+        Log.e("20191627", "Changed")
+        Log.e("20191627", viewHolder.toString())
+        Log.e("20191627", viewHolder?.adapterPosition.toString())
+
         when(actionState){
+            ItemTouchHelper.ACTION_STATE_DRAG -> itemTouchHelperListener.onLiftItem(viewHolder?.adapterPosition)
             ItemTouchHelper.ACTION_STATE_IDLE -> itemTouchHelperListener.onDropAdapter()
         }
     }
