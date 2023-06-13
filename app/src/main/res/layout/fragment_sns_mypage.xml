@@ -334,4 +334,10 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <LinearLayout
+        android:id="@+id/mypage_popup_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

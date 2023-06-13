@@ -24,15 +24,14 @@
         <TextView
             android:id="@+id/edit_or_hide"
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="64dp"
             android:textSize="20sp"
             android:gravity="center"
             android:textColor="#646464"
             android:text="이 게시글 숨기기"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="62dp"/>
+            app:layout_constraintBottom_toTopOf="@id/delete_line"/>
         
         <View
             android:id="@+id/delete_line"
@@ -45,10 +44,9 @@
         <TextView
             android:id="@+id/delete_or_report"
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="64dp"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@id/delete_line"
-            android:layout_marginTop="20dp"
             android:text="이 게시글 신고하기"
             android:textSize="20sp"
             android:textColor="#F71E58"/>

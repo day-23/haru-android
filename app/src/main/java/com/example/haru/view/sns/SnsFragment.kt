@@ -54,6 +54,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     private var click = false
     private lateinit var snsPostAdapter: SnsPostAdapter
     var lastDate = ""
+    var deletedItem : Post = Post()
 
     override fun onCommentClick(postitem: Post) {
         profileViewModel.getUserInfo(User.id)
@@ -89,6 +90,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     }
 
     override fun onSetupClick(userId: String, postId: String, item: Post) {
+        deletedItem = item
         val fragment = PopupDeletePost(userId, postId, this)
         val fragmentManager = childFragmentManager
         val transaction = fragmentManager.beginTransaction()
@@ -198,7 +200,11 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             } else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
 
-
+        snsViewModel.DeleteResult.observe(viewLifecycleOwner) { result ->
+            if(result && deletedItem.id != ""){
+                snsPostAdapter.deletePost(deletedItem)
+            }
+        }
 
         snsViewModel.Posts.observe(viewLifecycleOwner) { post ->
             if (post.isNotEmpty()) {
@@ -297,18 +303,6 @@ class PopupDeletePost(val userId: String, val postId: String, listener: OnPostPo
     Fragment() {
     lateinit var popupbinding: PopupSnsPostDeleteBinding
     val listener = listener
-
-    // status bar height 조정
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(SnsFragment.TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(popupbinding.popupPostContainer.id, 2f)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as BaseActivity).adjustTopMargin(popupbinding.popupPostContainer.id, 2f)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

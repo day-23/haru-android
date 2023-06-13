@@ -21,6 +21,10 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSnsMypageBinding
+import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.databinding.PopupSnsPostDeleteBinding
+import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.MediaAdapter
 import com.example.haru.view.adapter.MediaTagAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
@@ -30,7 +34,7 @@ import com.example.haru.viewmodel.SnsViewModel
 interface MediaClick{
     fun onMediaClick(media: Media)
 }
-class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaTagClicked, MediaClick{
+class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaTagClicked, MediaClick, OnPostPopupClick{
     private lateinit var binding: FragmentSnsMypageBinding
     private lateinit var feedRecyclerView: RecyclerView
     private lateinit var mediaRecyclerView: RecyclerView
@@ -42,6 +46,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     private lateinit var snsViewModel : SnsViewModel
     private var isFeedClick = true
     private var isFullLoaded = false //게시글 페이지네이션이 끝났는지
+    var deletedItem = Post()
     val userId = userId
     var isMyPage = false
     var friendStatus = 0
@@ -90,15 +95,45 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     override fun onSetupClick(userId: String, postId: String, item: Post) {
-        Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+        deletedItem = item
+        val fragment = PopupDeletePost(userId, postId, this)
+        val fragmentManager = childFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        transaction.add(R.id.mypage_popup_anchor, fragment)
+        transaction.commit()
+    }
 
-        snsViewModel.deletePost(postId)
+    override fun postPopupClicked(userId: String, postId: String, position: Int) {
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
+        if (fragment != null) {
+            MainActivity.hideNavi(false)
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+            if (position == 0) {
+                //TODO:숨기기 혹은 수정하기
+            } else if (position == 1) {
+                if (User.id == userId) {
+                    val fragment = PopupDeleteConfirm(userId, postId, this)
+                    transaction.add(R.id.mypage_popup_anchor, fragment)
+                }
+            }
+        }
+    }
 
-        snsViewModel.DeleteResult.observe(viewLifecycleOwner){ result ->
-            if(result)
-                feedAdapter.deletePost(item)
-            else
-                Toast.makeText(requireContext(), "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
+    override fun PopupConfirm(userId: String, postId: String, position: Int) {
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
+        if (fragment != null) {
+            MainActivity.hideNavi(false)
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+            if (position == 0) {
+                Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+                snsViewModel.deletePost(postId)
+            }
         }
     }
 
@@ -219,6 +254,12 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 index = feeds.size - 1
                 lastDate = feeds[index].createdAt
                 feedAdapter.initList(feeds)
+            }
+        }
+
+        snsViewModel.DeleteResult.observe(viewLifecycleOwner) {result ->
+            if(result){
+                feedAdapter.deletePost(deletedItem)
             }
         }
 
