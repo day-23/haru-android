@@ -34,10 +34,10 @@ interface OnFriendClicked{
 
     fun onProfileClick(item: FriendInfo)
     fun onDeleteClick(item : FriendInfo)
-
     fun onAcceptClick(item: FriendInfo)
-
     fun onRejectClick(item: FriendInfo)
+    fun onCancelClick(item: FriendInfo)
+    fun onRequestClick(item: FriendInfo)
 }
 class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
     lateinit var binding : FragmentFriendsListBinding
@@ -70,7 +70,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         friendAdapter.patchInfo(item)
     }
 
-    override fun onRejectClick(item: FriendInfo) {
+    override fun onRejectClick(item: FriendInfo) { //친구요청 거절
         mypageViewModel.requestUnFriend(item.id!!, UnFollowbody(User.id))
 
         mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
@@ -78,6 +78,14 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
             Toast.makeText(requireContext(), "거절 성공", Toast.LENGTH_SHORT).show()
         }
 
+    }
+
+    override fun onCancelClick(item: FriendInfo) {
+        mypageViewModel.requestFriend(Followbody(com.example.haru.utils.User.id))
+    }
+
+    override fun onRequestClick(item: FriendInfo) { //친구신청 취소
+        mypageViewModel.requestUnFriend(com.example.haru.utils.User.id, UnFollowbody(item.id!!))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,7 +117,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
             binding.requestListContainer.visibility = View.GONE
         }
         mypageViewModel.getFirstFriendsList(targetId)
-        friendAdapter = FriendsListAdapter(requireContext(), arrayListOf(),this)
+        friendAdapter = FriendsListAdapter(requireContext(), arrayListOf(),targetId,this)
         binding.friendsListRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.friendsListRecycler.adapter = friendAdapter
 

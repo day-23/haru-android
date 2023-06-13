@@ -163,8 +163,10 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                     binding.editProfile.text = "친구 신청"
                 } else if (user.friendStatus == 1) {
                     binding.editProfile.text = "신청 취소"
-                } else {
+                } else if (user.friendStatus == 2){
                     binding.editProfile.text = "내 친구"
+                } else if (user.friendStatus == 3){
+                    binding.editProfile.text = "수락"
                 }
             }
 
@@ -262,8 +264,10 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                     requestFriend() //친구 신청
                 } else if (friendStatus == 1) {
                     requestUnFriend() //친구신청 취소
-                } else{
+                } else if (friendStatus == 2){
                     requestDelFriend() //친구끊기
+                } else if(friendStatus == 3){
+
                 }
             }
         }
@@ -284,9 +288,12 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 }else if(friendStatus == 1){ //신청 취소
                     friendStatus = 0
                     binding.editProfile.text = "친구 신청"
-                }else{
+                }else if(friendStatus == 2){
                     friendStatus = 0
                     binding.editProfile.text = "친구 신청"
+                }else if(friendStatus == 3){
+                    friendStatus = 2
+                    binding.editProfile.text = "내 친구"
                 }
             }else{
                 Toast.makeText(requireContext(), "요청에 실패하였습니다.", Toast.LENGTH_SHORT).show()
@@ -350,11 +357,15 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     fun requestUnFriend(){
-        mypageViewModel.requestUnFriend(userId, UnFollowbody(com.example.haru.utils.User.id))
+        mypageViewModel.requestUnFriend(com.example.haru.utils.User.id, UnFollowbody(userId))
     }
 
     fun requestDelFriend(){
         mypageViewModel.requestDelFriend(DelFriendBody(userId))
+    }
+
+    fun acceptRequest(){
+        mypageViewModel.requestAccpet(Friendbody(userId))
     }
 
     fun showFriendTitle(){
