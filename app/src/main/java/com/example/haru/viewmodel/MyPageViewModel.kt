@@ -80,12 +80,12 @@ class MyPageViewModel() : ViewModel() {
     val EditUri: LiveData<Uri>
         get() = _EditUri
 
-    private val _AfterCrop = MutableLiveData<ExternalImages>()
-    val AfterCrop: LiveData<ExternalImages>
+    private val _AfterCrop = MutableLiveData<ExternalImages?>()
+    val AfterCrop: LiveData<ExternalImages?>
         get() = _AfterCrop
 
-    private val _BeforeCrop = MutableLiveData<ExternalImages>()
-    val BeforeCrop: LiveData<ExternalImages>
+    private val _BeforeCrop = MutableLiveData<ExternalImages?>()
+    val BeforeCrop: LiveData<ExternalImages?>
         get() = _BeforeCrop
 
     private val _SelectedUri = MutableLiveData<ArrayList<ExternalImages>>()
@@ -266,6 +266,8 @@ class MyPageViewModel() : ViewModel() {
         _SelectedImage.value = -1
         _SelectedPosition.value = arrayListOf()
         lastImageIndex = -1
+        _Images.value = arrayListOf()
+        _BeforeCrop.value = null
     }
 
     //커스텀 갤러리 단일 사진 선택을 위한 함수
@@ -280,45 +282,47 @@ class MyPageViewModel() : ViewModel() {
 
     //MutableList로 바꿈
     fun convertMultiPart(context: Context): MutableList<MultipartBody.Part> {
-        val images = ArrayList<ExternalImages>()
-        val indexSet = _SelectedPosition.value
-        val indexOne = _SelectedImage.value
-        val totalImage = _StoredImages.value
-        if (indexSet!!.size > 0 && totalImage != null) {
-            for (i in indexSet) {
-                images.add(totalImage.get(i))
-            }
-        } else if (indexOne != null && indexOne != -1 && totalImage != null) {
-            images.add(totalImage.get(indexOne))
-        }
-
+//        val images = ArrayList<ExternalImages>()
+//        val indexSet = _SelectedPosition.value
+//        val indexOne = _SelectedImage.value
+//        val totalImage = _StoredImages.value
+//        if (indexSet!!.size > 0 && totalImage != null) {
+//            for (i in indexSet) {
+//                images.add(totalImage.get(i))
+//            }
+//        } else if (indexOne != null && indexOne != -1 && totalImage != null) {
+//            images.add(totalImage.get(indexOne))
+//        }
+        val images = Images.value
         val convertedImages = mutableListOf<MultipartBody.Part>()
 
-        for (data in images) {
-            val cursor = context.contentResolver.query(data.absuri, null, null, null, null)
-            cursor?.use {
-                it.moveToFirst()
-                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                val imagePath = it.getString(columnIndex)
-                val fileName = data.name.substringAfterLast('.')
-                val fileExtension = "image/$fileName"
+        if (images != null) {
+            for (data in images) {
+                val cursor = context.contentResolver.query(data.absuri, null, null, null, null)
+                cursor?.use {
+                    it.moveToFirst()
+                    val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                    val imagePath = it.getString(columnIndex)
+                    val fileName = data.name.substringAfterLast('.')
+                    val fileExtension = "image/$fileName"
 
-                val file = File(imagePath)
-                Log.d("Image", "4 $file")
+                    val file = File(imagePath)
+                    Log.d("Image", "4 $file")
 
-                val requestFile = RequestBody.create(fileExtension.toMediaTypeOrNull(), file)
-                val part = MultipartBody.Part.createFormData("image", fileName, requestFile)
-                convertedImages.add(part)
+                    val requestFile = RequestBody.create(fileExtension.toMediaTypeOrNull(), file)
+                    val part = MultipartBody.Part.createFormData("image", fileName, requestFile)
+                    convertedImages.add(part)
+                }
             }
         }
 
-        _SelectedUri.value = images
+        _SelectedUri.value = images ?: arrayListOf()
         return convertedImages
     }
 
     //선택한 사진들의 내부저장소 정보를 얻어옴
     fun getSelectImages(): ArrayList<ExternalImages> {
-        return _SelectedUri.value ?: arrayListOf()
+        return _Images.value ?: arrayListOf()
     }
 
     fun postRequest(
@@ -397,6 +401,9 @@ class MyPageViewModel() : ViewModel() {
     }
 
     fun resetValue() {
+        _BeforeCrop.value = null
+        _AfterCrop.value = null
+        _Images.value = arrayListOf()
         _SelectedPosition.value = arrayListOf()
         _StoredImages.value = arrayListOf()
         _SelectedUri.value = arrayListOf()

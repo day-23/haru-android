@@ -31,7 +31,10 @@ class AddTagPagerAdapter(private val context: Context,
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateImage(images : ArrayList<ExternalImages>){
-        imageList = images
+        if(images.size > 0)
+            imageList = images
+        else
+            imageList.clear()
         notifyDataSetChanged()
     }
 

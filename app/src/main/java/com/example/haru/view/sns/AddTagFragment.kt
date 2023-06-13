@@ -64,6 +64,7 @@ class AddTagFragment(
     ): View? {
         val fragmentManager = parentFragmentManager
         binding = FragmentAddpostAddtagBinding.inflate(inflater, container, false)
+        Log.d("CropImages", "recieved images $Uris")
         val adapter = AddTagPagerAdapter(requireContext(), Uris)
         binding.addtagImages.adapter = adapter
         binding.addTagContent.text = content

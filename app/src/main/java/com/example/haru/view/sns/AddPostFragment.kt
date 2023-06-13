@@ -104,6 +104,7 @@ class AddPostFragment : Fragment(), PostInterface{
             super.onCreate(savedInstanceState)
             Log.d(TAG, "SnsMypageFragment - onCreate() called")
             galleryViewmodel = ViewModelProvider(requireActivity()).get(MyPageViewModel::class.java)
+            galleryViewmodel.resetValue()
         }
 
         @SuppressLint("NotifyDataSetChanged")
@@ -188,20 +189,23 @@ class AddPostFragment : Fragment(), PostInterface{
             }
 
             galleryViewmodel.BeforeCrop.observe(viewLifecycleOwner){image ->
-                cropImage(image.absuri)
+                if(image != null)
+                    cropImage(image.absuri)
 //                MainActivity.startCrop(image.absuri)
             }
 
             galleryViewmodel.AfterCrop.observe(viewLifecycleOwner){image ->
-                Log.d("CropImages", "$image")
-                if(isMultiSelect)
-                    galleryViewmodel.setImages(image)
-                else
-                    galleryViewmodel.setImage(image)
+                Log.d("CropImages", "after image $image")
+                if(image != null) {
+                    if (isMultiSelect)
+                        galleryViewmodel.setImages(image)
+                    else
+                        galleryViewmodel.setImage(image)
+                }
             }
 
             galleryViewmodel.Images.observe(viewLifecycleOwner){ images ->
-                Log.d("CropImages", "$images")
+                Log.d("CropImages", "new image : $images")
                 pagerAdapter.updateImage(images)
             }
 
@@ -220,9 +224,9 @@ class AddPostFragment : Fragment(), PostInterface{
                 if(galleryViewmodel.SelectedImage.value != -1 || galleryViewmodel.SelectedPosition.value!!.size > 0) {
                     val converedImage = galleryViewmodel.convertMultiPart(requireContext())
                     val selecteduri = galleryViewmodel.getSelectImages()
+                    Log.d("CropImages", "list : $selecteduri")
+                    val newFrag = AddContentFragment(converedImage, ArrayList(selecteduri))
                     galleryViewmodel.resetValue()
-
-                    val newFrag = AddContentFragment(converedImage, selecteduri)
                     val transaction = parentFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragments_frame, newFrag)
                     transaction.addToBackStack(null)
