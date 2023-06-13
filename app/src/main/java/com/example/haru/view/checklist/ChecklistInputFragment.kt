@@ -613,19 +613,19 @@ class ChecklistInputFragment(
                     )
                 )
 
-            if (it.size < binding.tagContainerLayout.childCount - 2)
-                for (i in 1 until binding.tagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
+            if (it.size < binding.tagContainerLayout.childCount - 1)
+                for (i in 0 until binding.tagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
                     val chip = binding.tagContainerLayout.getChildAt(i) as LinearLayout
                     if (!it.contains((chip.getChildAt(0) as AppCompatButton).text)) {
                         binding.tagContainerLayout.removeViewAt(i)
                         break
                     }
                 }
-            else if (it.size > binding.tagContainerLayout.childCount - 2) {
+            else if (it.size > binding.tagContainerLayout.childCount - 1) {
                 val layoutInflater =
                     context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val childCount = binding.tagContainerLayout.childCount
-                for (i in childCount - 2 until it.size) {
+                for (i in childCount - 1  until it.size) {
                     val chip = layoutInflater.inflate(R.layout.custom_chip, null)
                     chip.findViewById<AppCompatButton>(R.id.tag_chip).apply {
                         text = it[i]
@@ -638,6 +638,10 @@ class ChecklistInputFragment(
                         chip,
                         binding.tagContainerLayout.childCount - 1
                     )
+                }
+                binding.tagScrollView.post{
+                    binding.tagScrollView.fullScroll(ScrollView.FOCUS_RIGHT)
+                    binding.tagEt.requestFocus()
                 }
             }
         })

@@ -12,10 +12,12 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -28,8 +30,10 @@ import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.HeightProvider
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
+import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.sns.SearchFragment
 import com.example.haru.viewmodel.CheckListViewModel
 import java.util.*
@@ -55,6 +59,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         checkListViewModel.dataInit()
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -70,6 +75,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         super.onViewCreated(view, savedInstanceState)
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
+        (activity as BaseActivity).adjustTopMargin(binding.tagEtcLayout.drawerHeaderId.id)
 
         checkListViewModel.dataInit()
         initTagList()
@@ -95,11 +101,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         binding.ivTagEtc.setOnClickListener {
             if (!binding.drawableLayout.isDrawerOpen(Gravity.RIGHT)) {
                 binding.drawableLayout.openDrawer(Gravity.RIGHT)
-
             } else {
                 binding.drawableLayout.closeDrawer(Gravity.RIGHT)
             }
         }
+
+
 
         binding.tagEtcLayout.ivTagAdd.setOnClickListener {
             val inputTag =

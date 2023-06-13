@@ -69,6 +69,7 @@
             android:background="@android:color/transparent"
             android:textColor="#191919"
             android:textColorHint="#ACACAC"
+            android:textCursorDrawable="@drawable/custom_cursor"
             android:hint="태그 추가"
             android:inputType="text"
             android:singleLine="true"

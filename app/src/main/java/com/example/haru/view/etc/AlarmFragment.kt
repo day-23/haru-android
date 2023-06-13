@@ -78,7 +78,7 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
             if(isChecked) {
                 binding.amAlarmTime.visibility = View.VISIBLE
             } else {
-                binding.amAlarmTime.visibility = View.GONE
+                binding.amAlarmTime.visibility = View.INVISIBLE
             }
 
             User.amAlarmAprove = isChecked
@@ -89,7 +89,7 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
             if(isChecked) {
                 binding.pmAlarmTime.visibility = View.VISIBLE
             } else {
-                binding.pmAlarmTime.visibility = View.GONE
+                binding.pmAlarmTime.visibility = View.INVISIBLE
             }
 
             User.pmAlarmAprove = isChecked

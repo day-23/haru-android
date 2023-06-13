@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--    <style name="ButtonGroup">-->
-<!--        <item name="android:background">@drawable/btn_group_custom</item>-->
-<!--    </style>-->
+    <!--        <item name="android:background">@drawable/btn_group_custom</item>-->
+    <!--    </style>-->
 
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
@@ -31,19 +31,9 @@
         <item name="android:textColor">@color/date_text</item>
     </style>
 
-<!--    <style name="datePickerDialogAnimation">-->
-<!--        <item name="android:windowEnterAnimation">@anim/dialog_in</item>-->
-<!--        <item name="android:windowExitAnimation">@anim/dialog_out</item>-->
-<!--    </style>-->
-    
     <style name="datePickerDialogStyle">
         <item name="android:windowIsFloating">true</item>
-<!--        <item name="android:windowAnimationStyle">@style/datePickerDialogAnimation</item>-->
-    </style>
-
-    <style name="MyPopupMenu" parent="@style/Widget.AppCompat.PopupMenu">
-        <item name="android:popupBackground">@drawable/shape_rect_radius_10</item>
-<!--        <item name="android:textColor">@color/</item>-->
+        <!--        <item name="android:windowAnimationStyle">@style/datePickerDialogAnimation</item>-->
     </style>
 
     <style name="dialog_fullscreen" parent="Theme.AppCompat.Dialog">

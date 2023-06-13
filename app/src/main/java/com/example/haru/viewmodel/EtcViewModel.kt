@@ -273,24 +273,33 @@ class EtcViewModel : ViewModel() {
         }
     }
 
-    fun submitIsAllowFeedLike(callback: (it: SuccessFail?) -> Unit) {
+    fun submitIsAllowFeedLike(str : String, callback: (it: SuccessFail?) -> Unit) {
         if (isAllowFeedLike.value == null)
             return
 
-//        val type = 0, 1, 2
-//        updateUserInfo(UpdateIsAllowFeedLike(type)){
-//            callback(it)
-//        }
+        val type = when (str){
+            "허용 안 함" -> 0
+            "친구만" -> 1
+            "모두 허용" -> 2
+            else -> 0
+        }
+        updateUserInfo(UpdateIsAllowFeedLike(type)){
+            callback(it)
+        }
     }
 
-    fun submitIsAllowFeedComment(callback: (it: SuccessFail?) -> Unit) {
+    fun submitIsAllowFeedComment(str : String, callback: (it: SuccessFail?) -> Unit) {
         if (isAllowFeedComment.value == null)
             return
-
-//        val type = 0, 1, 2
-//        updateUserInfo(UpdateIsAllowFeedComment(type)){
-//            callback(it)
-//        }
+        val type = when (str){
+            "허용 안 함" -> 0
+            "친구만" -> 1
+            "모두 허용" -> 2
+            else -> 0
+        }
+        updateUserInfo(UpdateIsAllowFeedComment(type)){
+            callback(it)
+        }
     }
 
 }

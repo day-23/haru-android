@@ -82,6 +82,7 @@
                         android:layout_weight="1"
                         android:background="@null"
                         android:hint="@string/todo_input"
+                        android:textCursorDrawable="@drawable/custom_cursor"
                         android:inputType="textNoSuggestions"
                         android:text="@={viewModel.content}"
                         android:textColor="@color/todo_description"
@@ -138,14 +139,12 @@
                     android:background="@color/divider" />
 
                 <LinearLayout
-                    android:id="@+id/tag_container_layout"
                     style="@style/linearBorderLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/linear_border_up_bottom"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
-
 
                     <ImageView
                         android:id="@+id/iv_tag_icon"
@@ -155,18 +154,37 @@
                         android:background="@drawable/tag_icon"
                         android:backgroundTint="@color/light_gray"/>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tag_et"
+                    <HorizontalScrollView
+                        android:id="@+id/tag_scroll_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/tag"
-                        android:inputType="text"
-                        android:maxLength="10"
-                        android:singleLine="true"
-                        android:text="@={viewModel.tag}"
-                        android:textColorHint="@color/light_gray"
-                        android:textSize="14sp" />
+                        android:layout_marginEnd="20dp">
+
+                        <LinearLayout
+                            android:id="@+id/tag_container_layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/tag_et"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:hint="@string/tag"
+                                android:inputType="text"
+                                android:maxLength="8"
+                                android:singleLine="true"
+                                android:textCursorDrawable="@drawable/custom_cursor"
+                                android:textColor="@color/todo_description"
+                                android:text="@={viewModel.tag}"
+                                android:textColorHint="@color/light_gray"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -665,14 +683,14 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="72dp"
                         android:background="@android:color/transparent"
+                        android:textCursorDrawable="@drawable/custom_cursor"
                         android:ems="10"
+                        android:maxLength="500"
                         android:hint="@string/memo_set"
                         android:inputType="textMultiLine"
                         android:text="@={viewModel.memo}"
                         android:textColorHint="@color/light_gray"
                         android:textSize="14sp" />
-
-
                 </LinearLayout>
             </LinearLayout>
 
