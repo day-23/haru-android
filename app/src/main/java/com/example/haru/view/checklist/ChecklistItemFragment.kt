@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import BaseActivity
+import android.accessibilityservice.AccessibilityService.SoftKeyboardController
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -34,6 +36,7 @@ class ChecklistItemFragment(
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
+
 
     enum class UpdateType {
         FRONT_UPDATE_REPEAT, FRONT_NOT_UPDATE_REPEAT,
