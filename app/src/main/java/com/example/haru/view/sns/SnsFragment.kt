@@ -94,19 +94,13 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         val transaction = fragmentManager.beginTransaction()
         transaction.add(R.id.sns_post_anchor, fragment)
         transaction.commit()
-
-        snsViewModel.DeleteResult.observe(viewLifecycleOwner) { result ->
-            if (result)
-                snsPostAdapter.deletePost(item)
-            else
-                Toast.makeText(requireContext(), "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
-        }
     }
 
     override fun postPopupClicked(userId: String, postId: String, position: Int) {
         val fragmentManager = childFragmentManager
         val fragment = fragmentManager.findFragmentById(R.id.sns_post_anchor)
         if (fragment != null) {
+            MainActivity.hideNavi(false)
             val transaction = fragmentManager.beginTransaction()
             transaction.remove(fragment)
             transaction.commit()
@@ -115,10 +109,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             } else if (position == 1) {
                 if (User.id == userId) {
                     val fragment = PopupDeleteConfirm(userId, postId, this)
-                    val fragmentManager = childFragmentManager
-                    val transaction = fragmentManager.beginTransaction()
                     transaction.add(R.id.sns_post_anchor, fragment)
-                    transaction.commit()
                 }
             }
         }
@@ -128,6 +119,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         val fragmentManager = childFragmentManager
         val fragment = fragmentManager.findFragmentById(R.id.sns_post_anchor)
         if (fragment != null) {
+            MainActivity.hideNavi(false)
             val transaction = fragmentManager.beginTransaction()
             transaction.remove(fragment)
             transaction.commit()
@@ -205,6 +197,8 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                 getLastDate(newPost)
             } else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
         }
+
+
 
         snsViewModel.Posts.observe(viewLifecycleOwner) { post ->
             if (post.isNotEmpty()) {
@@ -322,6 +316,7 @@ class PopupDeletePost(val userId: String, val postId: String, listener: OnPostPo
         savedInstanceState: Bundle?
     ): View? {
         popupbinding = PopupSnsPostDeleteBinding.inflate(inflater, container, false)
+        MainActivity.hideNavi(true)
 
         if (userId == User.id) {
             popupbinding.editOrHide.text = "게시글 수정하기"
@@ -358,13 +353,13 @@ class PopupDeleteConfirm(val userId: String, val postId: String, listener: OnPos
         popupbinding = PopupSnsPostCancelBinding.inflate(inflater, container, false)
         popupbinding.postCancelText.text = "게시글을 삭제할까요? 이 작업은 복원할 수 없습니다."
 
-
+        MainActivity.hideNavi(true)
         popupbinding.snsAddPostUnsave.setOnClickListener {
-            listener.postPopupClicked(userId, postId, 0)
+            listener.PopupConfirm(userId, postId, 0)
         }
 
         popupbinding.snsAddPostCancel.setOnClickListener {
-            listener.postPopupClicked(userId, postId, 1)
+            listener.PopupConfirm(userId, postId, 1)
         }
 
         return popupbinding.root

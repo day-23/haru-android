@@ -35,6 +35,9 @@ interface UserService {
     fun getRequestList(@Path("userId") userId: String, @Query("lastCreatedAt") lastCreatedAt: String) : Call<FriendsResponse>
     @GET("friends/{userId}/request")
     fun getFirstRequestList(@Path("userId") userId: String, @Query("page") page: String) : Call<FriendsResponse>
+    //친구 검색
+    @GET("friends/{userId}/search/")
+    fun searchOnFriend(@Path("userId") userId: String, @Query("name") name: String) : Call<FriendsResponse>
 
     @PATCH("user/{userId}/setting")
     fun updateUserInfo(@Path("userId") userId: String, @Body body : Any) : Call<SuccessFail>

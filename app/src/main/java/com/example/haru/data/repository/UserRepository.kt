@@ -3,6 +3,7 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.User.name
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -155,6 +156,19 @@ class UserRepository() {
     suspend fun getFirstRequestList(userId: String, callback: (friends: FriendsResponse) -> Unit) = withContext(
         Dispatchers.IO) {
         val response = userService.getFirstRequestList(userId, "1").execute()
+        val result: FriendsResponse
+
+        if (response.isSuccessful) {
+            result = response.body()!!
+        } else {
+            result = FriendsResponse(false, arrayListOf(), pagination())
+        }
+        callback(result)
+    }
+
+    suspend fun searchOnFriend(targetId: String, name : String, callback: (friends : FriendsResponse) -> Unit) = withContext(
+        Dispatchers.IO) {
+        val response = userService.searchOnFriend(targetId, name).execute()
         val result: FriendsResponse
 
         if (response.isSuccessful) {

@@ -16,6 +16,7 @@ import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.data.repository.UserRepository
+import com.example.haru.utils.User.name
 import com.kakao.sdk.talk.model.Friend
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
@@ -87,6 +88,9 @@ class MyPageViewModel() : ViewModel() {
 
     private val _PostRequest = MutableLiveData<Boolean>()
     val PostRequest: LiveData<Boolean> = _PostRequest
+
+    private val _SearchedFriends = MutableLiveData<FriendsResponse>()
+    val SearchedFriends: LiveData<FriendsResponse> = _SearchedFriends
 
     private val _Friends = MutableLiveData<FriendsResponse>()
     val Friends: LiveData<FriendsResponse> = _Friends
@@ -543,5 +547,17 @@ class MyPageViewModel() : ViewModel() {
         }
 
         return arrayListOf()
+    }
+
+    fun searchOnFriends(targetId: String, name: String){
+        var Friends = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.searchOnFriend(targetId, name) {
+                if (it.success) {
+                    Friends = it
+                }
+            }
+            _SearchedFriends.value = Friends
+        }
     }
 }

@@ -2,14 +2,22 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.ViewCompat.canScrollVertically
+import androidx.databinding.adapters.TextViewBindingAdapter.setText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -127,6 +135,12 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
             }
         }
 
+        mypageViewModel.SearchedFriends.observe(viewLifecycleOwner){friends ->
+            if(friends.data.size > 0) {
+                friendAdapter.addFirstList(friends.data)
+            }
+        }
+
         mypageViewModel.FirstRequests.observe(viewLifecycleOwner){friends ->
             binding.friendslistFriendsRequestCount.text = "친구 신청 ${friends.pagination.totalItems}"
             if(!isFriendList) {
@@ -191,6 +205,29 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
                 fragmentManager.popBackStack()
             }
         }
+
+        binding.editTextSearch.addTextChangedListener(object : TextWatcher { // 소프트웨어 키보드의 스페이스바 감지
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s == null)
+                    return
+
+                val str = s.toString()
+                if (str == "") {
+                    mypageViewModel.getFirstFriendsList(targetId)
+                    return
+                }
+
+                if (str[str.length - 1] == '\n') {
+                    val result = str.replace("\n", "")
+                    binding.editTextSearch.setText(result)mypageViewModel.getFirstFriendsList(targetId)
+                    mypageViewModel.searchOnFriends(targetId, result)
+                }
+            }
+
+        })
 
         return binding.root
     }
