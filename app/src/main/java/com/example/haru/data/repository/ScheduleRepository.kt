@@ -53,7 +53,7 @@ class ScheduleRepository() {
         callback(scheduleData)
     }
 
-    suspend fun postSchedule(body: PostSchedule, callback: () -> Unit) {
+    suspend fun postSchedule(body: PostSchedule, callback: (Boolean) -> Unit) {
         withContext(Dispatchers.IO) {
             val response = scheduleService.createSchedule(
                 User.id,
@@ -72,7 +72,7 @@ class ScheduleRepository() {
 //            val data: PostScheduleResponse
 //            val schedule: Schedule?
             withContext(Dispatchers.Main) {
-                callback()
+                callback(response.isSuccessful)
             }
         }
     }
