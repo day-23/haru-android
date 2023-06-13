@@ -674,6 +674,13 @@ class CalendarAddFragment(private val categories: List<Category?>,
             }
         }
 
+        binding.etMemoSchedule.addTextChangedListener {
+            if(it.toString().length > 500){
+                binding.etMemoSchedule.setText(it.toString().substring(0,500))
+                binding.etMemoSchedule.setSelection(500)
+            }
+        }
+
         binding.btnSubmitSchedule.setOnClickListener {
             if(binding.scheduleContentEt.text.toString().replace(" ","") == ""){
                 Toast.makeText(requireContext(), "일정을 입력해 주세요", Toast.LENGTH_SHORT).show()

@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
@@ -85,6 +86,13 @@ class CategoryCorrectionActivity : AppCompatActivity() {
             intent.putExtra("status", "back")
             setResult(Activity.RESULT_OK, intent)
             finish()
+        }
+
+        correctionScheduleName.addTextChangedListener {
+            if (it.toString().length > 8) {
+                correctionScheduleName.setText(it.toString().substring(0, 8))
+                correctionScheduleName.setSelection(8)
+            }
         }
 
         correctionCheckImageview.setOnClickListener {

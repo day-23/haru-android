@@ -43,7 +43,6 @@ import kotlin.collections.ArrayList
 
 //월간 달력 어뎁터
 class AdapterMonth(
-    val activity: Activity,
     val fragment: FragmentActivity,
     val lifecycleOwner: LifecycleOwner,
     val thisViewPager: ViewPager2,

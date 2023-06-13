@@ -9,11 +9,8 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.NumberPicker
 import android.widget.TextView
@@ -1751,10 +1748,19 @@ class CalendarItemFragment(val schedule: Schedule,
                     ColorStateList.valueOf(Color.LTGRAY)
             }
         }
+
+        binding.etMemoSchedule.addTextChangedListener {
+            if(it.toString().length > 500){
+                binding.etMemoSchedule.setText(it.toString().substring(0,500))
+                binding.etMemoSchedule.setSelection(500)
+            }
+        }
     }
 
     @SuppressLint("ResourceAsColor")
     fun initView() {
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
         //내용 가져오기
         binding.scheduleContentEt.setText(schedule.content)
         binding.gridMonthSchedule.visibility = View.GONE
