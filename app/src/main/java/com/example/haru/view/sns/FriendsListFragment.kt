@@ -141,6 +141,12 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
             }
         }
 
+        mypageViewModel.SearchedRequests.observe(viewLifecycleOwner){friends ->
+            if(friends.data.size > 0) {
+                friendAdapter.addFirstList(friends.data)
+            }
+        }
+
         mypageViewModel.FirstRequests.observe(viewLifecycleOwner){friends ->
             binding.friendslistFriendsRequestCount.text = "친구 신청 ${friends.pagination.totalItems}"
             if(!isFriendList) {
@@ -222,8 +228,11 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
 
                 if (str[str.length - 1] == '\n') {
                     val result = str.replace("\n", "")
-                    binding.editTextSearch.setText(result)mypageViewModel.getFirstFriendsList(targetId)
-                    mypageViewModel.searchOnFriends(targetId, result)
+                    binding.editTextSearch.setText(result)
+                    if(isFriendList)
+                        mypageViewModel.searchOnFriends(targetId, result)
+                    else
+                        mypageViewModel.searchOnRequests(targetId, result)
                 }
             }
 

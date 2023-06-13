@@ -39,6 +39,12 @@ interface UserService {
     @GET("friends/{userId}/search/")
     fun searchOnFriend(@Path("userId") userId: String, @Query("name") name: String) : Call<FriendsResponse>
 
+    @GET("friends/{userId}/request/search/")
+    fun searchOnRequests(@Path("userId") userId: String, @Query("name") name: String) : Call<FriendsResponse>
+
+    //하루 유저 검색
+    @GET("post/{userId}/search/user/{targetId}")
+    fun searchHaruUser(@Path("userId") userId: String, @Path("targetId") targetId: String) : Call<UserResponse>
     @PATCH("user/{userId}/setting")
     fun updateUserInfo(@Path("userId") userId: String, @Body body : Any) : Call<SuccessFail>
 

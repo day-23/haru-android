@@ -1,11 +1,13 @@
 package com.example.haru.data.repository
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.utils.User.name
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.example.haru.utils.User as UserObject
 
@@ -165,7 +167,7 @@ class UserRepository() {
         }
         callback(result)
     }
-
+    //친구목록 검색
     suspend fun searchOnFriend(targetId: String, name : String, callback: (friends : FriendsResponse) -> Unit) = withContext(
         Dispatchers.IO) {
         val response = userService.searchOnFriend(targetId, name).execute()
@@ -175,6 +177,33 @@ class UserRepository() {
             result = response.body()!!
         } else {
             result = FriendsResponse(false, arrayListOf(), pagination())
+        }
+        callback(result)
+    }
+
+    //요청목록 검색
+    suspend fun searchOnRequests(targetId: String, name : String, callback: (friends : FriendsResponse) -> Unit) = withContext(
+        Dispatchers.IO) {
+        val response = userService.searchOnFriend(targetId, name).execute()
+        val result: FriendsResponse
+
+        if (response.isSuccessful) {
+            result = response.body()!!
+        } else {
+            result = FriendsResponse(false, arrayListOf(), pagination())
+        }
+        callback(result)
+    }
+
+    suspend fun searchHaruUser(targetId: String, callback: (friends : User) -> Unit) = withContext(
+        Dispatchers.IO) {
+        val response = userService.searchHaruUser(com.example.haru.utils.User.id, targetId).execute()
+        val result: User
+
+        if (response.isSuccessful) {
+            result = response.body()!!.data
+        } else {
+            result = User()
         }
         callback(result)
     }

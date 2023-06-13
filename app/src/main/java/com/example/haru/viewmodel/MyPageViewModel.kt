@@ -92,6 +92,9 @@ class MyPageViewModel() : ViewModel() {
     private val _SearchedFriends = MutableLiveData<FriendsResponse>()
     val SearchedFriends: LiveData<FriendsResponse> = _SearchedFriends
 
+    private val _SearchedRequests = MutableLiveData<FriendsResponse>()
+    val SearchedRequests: LiveData<FriendsResponse> = _SearchedRequests
+
     private val _Friends = MutableLiveData<FriendsResponse>()
     val Friends: LiveData<FriendsResponse> = _Friends
 
@@ -558,6 +561,18 @@ class MyPageViewModel() : ViewModel() {
                 }
             }
             _SearchedFriends.value = Friends
+        }
+    }
+
+    fun searchOnRequests(targetId: String, name: String){
+        var Friends = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.searchOnRequests(targetId, name) {
+                if (it.success) {
+                    Friends = it
+                }
+            }
+            _SearchedRequests.value = Friends
         }
     }
 }
