@@ -19,7 +19,7 @@
                 android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/back_image"/>
+                android:src="@drawable/back_arrow"/>
 
             <TextView
                 android:layout_width="0dp"

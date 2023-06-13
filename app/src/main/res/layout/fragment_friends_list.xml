@@ -125,4 +125,10 @@
         android:layout_marginTop="20dp"
         tools:listitem="@layout/item_searched_user"/>
 
+    <LinearLayout
+        android:id="@+id/friend_list_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

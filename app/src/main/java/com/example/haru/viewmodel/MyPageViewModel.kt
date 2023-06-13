@@ -52,6 +52,10 @@ class MyPageViewModel() : ViewModel() {
     val StoredImages: LiveData<ArrayList<ExternalImages>>
         get() = _StoredImages
 
+    private val _Images =  MutableLiveData<ArrayList<ExternalImages>>()
+    val Images: LiveData<ArrayList<ExternalImages>>
+        get() = _Images
+
     private val _SelectedPosition = MutableLiveData<ArrayList<Int>>()
     val SelectedPosition: LiveData<ArrayList<Int>>
         get() = _SelectedPosition
@@ -75,6 +79,14 @@ class MyPageViewModel() : ViewModel() {
     private val _EditUri = MutableLiveData<Uri>()
     val EditUri: LiveData<Uri>
         get() = _EditUri
+
+    private val _AfterCrop = MutableLiveData<ExternalImages>()
+    val AfterCrop: LiveData<ExternalImages>
+        get() = _AfterCrop
+
+    private val _BeforeCrop = MutableLiveData<ExternalImages>()
+    val BeforeCrop: LiveData<ExternalImages>
+        get() = _BeforeCrop
 
     private val _SelectedUri = MutableLiveData<ArrayList<ExternalImages>>()
     val SelectedUri: LiveData<ArrayList<ExternalImages>>
@@ -574,5 +586,41 @@ class MyPageViewModel() : ViewModel() {
             }
             _SearchedRequests.value = Friends
         }
+    }
+
+    fun setImage(image : ExternalImages){
+        _Images.value = arrayListOf(image)
+    }
+
+    fun setImages(image: ExternalImages){
+        var temp = _Images.value
+        if(!temp.isNullOrEmpty())
+            temp?.add(image)
+        else{
+            temp = arrayListOf(image)
+        }
+        _Images.value = temp!!
+    }
+
+    fun deleteImage(image: ExternalImages){
+        var temp = _Images.value
+        if(temp.isNullOrEmpty()) {
+            temp!!.remove(image)
+            _Images.value = temp!!
+        }
+    }
+
+    fun getCropResult(image: Uri){
+        var temp = _BeforeCrop.value
+        if(temp != null) {
+            temp.absuri = image
+            _AfterCrop.value = temp!!
+        }else{
+            Log.d("ImageCrop", "null")
+        }
+    }
+
+    fun getCrop(image : ExternalImages){
+        _BeforeCrop.value = image
     }
 }

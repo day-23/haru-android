@@ -101,4 +101,8 @@ dependencies {
 
     /* sns 당겨서 새로고침 */
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    /* 이미지 크롭 */
+    implementation "com.theartofdev.edmodo:android-image-cropper:2.8.0"
+
 }

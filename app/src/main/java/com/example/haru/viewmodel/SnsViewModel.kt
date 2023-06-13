@@ -197,7 +197,7 @@ class SnsViewModel: ViewModel() {
             _ChangeResult.value = result
         }
     }
-
+    //하루 유저 아이디로 검색
     fun searchHaruUser(targetId: String){
         var user = User()
         viewModelScope.launch {

@@ -325,7 +325,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             if(result){
                 if(friendStatus == 0) { //신청 성공
                     friendStatus = 1
-                    binding.editProfile.text = "신청 대기"
+                    binding.editProfile.text = "신청 취소"
                 }else if(friendStatus == 1){ //신청 취소
                     friendStatus = 0
                     binding.editProfile.text = "친구 신청"

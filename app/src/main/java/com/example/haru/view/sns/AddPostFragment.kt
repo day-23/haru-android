@@ -43,8 +43,11 @@ import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.FragmentSnsMypageBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.*
 import com.example.haru.viewmodel.MyPageViewModel
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 
 interface PostInterface{
     fun Postpopup(position: Int)
@@ -57,6 +60,7 @@ class AddPostFragment : Fragment(), PostInterface{
     lateinit var galleryAdapter: AddPostAdapter
     var toggle = false
     var totalImage : ArrayList<ExternalImages> = arrayListOf()
+    var isMultiSelect = false
 
     override fun onResume() {
         super.onResume()
@@ -88,7 +92,6 @@ class AddPostFragment : Fragment(), PostInterface{
         }
 
     }
-
         companion object{
             const val TAG : String = "로그"
 
@@ -100,7 +103,7 @@ class AddPostFragment : Fragment(), PostInterface{
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             Log.d(TAG, "SnsMypageFragment - onCreate() called")
-            galleryViewmodel = ViewModelProvider(this).get(MyPageViewModel::class.java)
+            galleryViewmodel = ViewModelProvider(requireActivity()).get(MyPageViewModel::class.java)
         }
 
         @SuppressLint("NotifyDataSetChanged")
@@ -127,8 +130,6 @@ class AddPostFragment : Fragment(), PostInterface{
                 val lastindex = galleryViewmodel.getLastImage()
                 val layoutManager = galleryRecyclerView.layoutManager
                 if(layoutManager != null && index != -1){
-                    pagerAdapter.updateImage(arrayListOf(totalImage.get(index)))
-                    Log.d("20191668", "current :$index last :$lastindex")
                     val targetView = layoutManager.findViewByPosition(index)
                     val imageView = targetView!!.findViewById<ImageView>(R.id.image)
                     imageView!!.setColorFilter(Color.argb(127, 0, 0, 0), PorterDuff.Mode.SRC_OVER)
@@ -183,14 +184,31 @@ class AddPostFragment : Fragment(), PostInterface{
                             textView?.text = "${selected.indexOf(i) + 1}"
                         }
                     }
-                    pagerAdapter.updateImage(images)
                 }
+            }
+
+            galleryViewmodel.BeforeCrop.observe(viewLifecycleOwner){image ->
+                cropImage(image.absuri)
+//                MainActivity.startCrop(image.absuri)
+            }
+
+            galleryViewmodel.AfterCrop.observe(viewLifecycleOwner){image ->
+                Log.d("CropImages", "$image")
+                if(isMultiSelect)
+                    galleryViewmodel.setImages(image)
+                else
+                    galleryViewmodel.setImage(image)
+            }
+
+            galleryViewmodel.Images.observe(viewLifecycleOwner){ images ->
+                Log.d("CropImages", "$images")
+                pagerAdapter.updateImage(images)
             }
 
             binding.imageMultiSelect.setOnClickListener {
                 galleryViewmodel.resetSelection()
-                val result = galleryAdapter.setMultiSelect()
-                if (result){
+                isMultiSelect = galleryAdapter.setMultiSelect()
+                if (isMultiSelect){
                     binding.imageMultiSelect.setImageResource(R.drawable.multi_select_on)
                 } else{
                     binding.imageMultiSelect.setImageResource(R.drawable.multi_select_picture)
@@ -325,6 +343,13 @@ class AddPostFragment : Fragment(), PostInterface{
                 cursor?.close()
                 galleryViewmodel.loadGallery(gallery)
         }
+
+    private fun cropImage(uri: Uri?){
+        context?.let {
+            CropImage.activity(uri)
+                .start(it, this)
+        }
+    }
 }
 
 class PopupPost(listener: PostInterface) : Fragment() {

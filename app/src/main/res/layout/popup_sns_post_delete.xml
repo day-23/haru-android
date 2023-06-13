@@ -3,7 +3,7 @@
     android:id="@+id/popup_post_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#33191919"
+    android:background="#80191919"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout

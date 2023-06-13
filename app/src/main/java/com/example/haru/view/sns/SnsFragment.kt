@@ -112,6 +112,8 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                 if (User.id == userId) {
                     val fragment = PopupDeleteConfirm(userId, postId, this)
                     transaction.add(R.id.sns_post_anchor, fragment)
+                }else{
+
                 }
             }
         }
