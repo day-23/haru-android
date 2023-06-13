@@ -359,7 +359,7 @@ class CheckListViewModel() :
     fun addTodo(
         todoRequest: TodoRequest,
         calendar: Boolean = false,
-        callback: () -> Unit
+        callback: (Boolean?) -> Unit
     ) { // Todo 추가 기능
         viewModelScope.launch {
             todoRepository.createTodo(calendar, todoRequest) {
@@ -371,8 +371,9 @@ class CheckListViewModel() :
                     Log.e("20191627", "CheckListViewModel -> AddTodo Fail")
                     Log.e("20191627", it.toString())
                 }
+
+                callback(it?.success)
             }
-            callback()
         }
     }
 

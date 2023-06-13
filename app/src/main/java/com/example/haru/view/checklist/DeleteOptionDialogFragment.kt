@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -10,15 +11,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatButton
+import androidx.lifecycle.LifecycleOwner
 import com.example.haru.R
 import com.example.haru.databinding.FragmentOptionDeleteBinding
+import com.example.haru.utils.Alarm
 import com.example.haru.view.checklist.ChecklistItemFragment.*
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: DeleteType) :
+class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
+                                 type: DeleteType,
+                                 val lifecycle: LifecycleOwner) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentOptionDeleteBinding
     private var ratio: Int = 30
@@ -142,6 +147,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
                         DeleteType.REPEAT_FRONT -> { // 반복 할 일의 front 삭제
                             todoAddViewModel.deleteRepeatFrontTodo {
                                 binding.btnOptionOneDelete.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
@@ -149,6 +155,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
                         DeleteType.REPEAT_MIDDLE -> { // 반복 할 일의 middle 삭제
                             todoAddViewModel.deleteRepeatMiddleTodo {
                                 binding.btnOptionOneDelete.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
@@ -156,6 +163,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
                         DeleteType.REPEAT_BACK -> { // 반복 할 일의 back 삭제
                             todoAddViewModel.deleteRepeatBackTodo {
                                 binding.btnOptionOneDelete.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
@@ -174,6 +182,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
                         DeleteType.REPEAT_BACK -> {
                             todoAddViewModel.deleteTodo {
                                 binding.btnOptionAllDelete.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
@@ -196,6 +205,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
                         DeleteType.REPEAT_MIDDLE -> {
                             todoAddViewModel.deleteRepeatBackTodo {
                                 binding.btnOptionAfterDelete.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
@@ -213,6 +223,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel, type: Delet
                         DeleteType.NOT_REPEAT -> {
                             todoAddViewModel.deleteTodo {
                                 binding.btnOptionDelete.isClickable = true
+                                Alarm.initAlarm(lifecycle, requireContext())
                                 dismiss()
                                 requireActivity().supportFragmentManager.popBackStack()
                             }

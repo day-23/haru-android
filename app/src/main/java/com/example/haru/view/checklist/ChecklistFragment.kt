@@ -156,7 +156,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         binding.btnAddTodo.setOnClickListener {
             val text = binding.etSimpleAddTodo.text.toString().trim()
             if (text.replace(" ", "") == "") {
-                val todoInput = ChecklistInputFragment(checkListViewModel)
+                val todoInput = ChecklistInputFragment(checkListViewModel, viewLifecycleOwner)
                 todoInput.show(parentFragmentManager, todoInput.tag)
                 binding.etSimpleAddTodo.setText("")
                 binding.etSimpleAddTodo.clearFocus()

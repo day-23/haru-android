@@ -618,7 +618,7 @@ class AlarmWorker : BroadcastReceiver(){
 
                         if(result > 0) {
                             if (alarmBoolean) {
-                                resultStr = "오늘 할 일이 ${result}개 있습니다"
+                                resultStr = "오늘 할 일이 ${result - completedCnt}개 있습니다"
                             } else {
                                 resultStr = "오늘 남은 할 일이 ${result - completedCnt}개 있습니다"
                             }

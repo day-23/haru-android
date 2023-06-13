@@ -65,6 +65,8 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         var category = intent.getSerializableExtra("category") as Category
         val index = intent.getSerializableExtra("index") as Int
 
+        color = category.color
+
         val correctionScheduleName = findViewById<EditText>(R.id.correction_schedule_name)
         val categoriesRecyclerview = findViewById<RecyclerView>(R.id.categories_recyclerview)
         val correctionBackImageview = findViewById<ImageView>(R.id.correction_back_imageView)
@@ -95,7 +97,7 @@ class CategoryCorrectionActivity : AppCompatActivity() {
 
             category.color = color
             category.content = content
-            category.isSelected = categoryMarkSwitch.isSelected
+            category.isSelected = categoryMarkSwitch.isChecked
 
             val calendarviewmodel = CalendarViewModel()
 

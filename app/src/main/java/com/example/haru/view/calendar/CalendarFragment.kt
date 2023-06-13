@@ -6,6 +6,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
@@ -31,6 +32,7 @@ import com.example.haru.data.model.Category
 import com.example.haru.data.model.Schedule
 import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentCalendarBinding
+import com.example.haru.utils.Alarm
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
@@ -48,7 +50,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayout.DrawerListener {
+class CalendarFragment(private val activity: Activity?) : Fragment(), DrawerLayout.DrawerListener {
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var adapterMonth: AdapterMonth
     private var lastIndex = -1
@@ -67,7 +69,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
     companion object{
         const val TAG : String = "로그"
 
-        fun newInstance(activity: Activity) : CalendarFragment {
+        fun newInstance(activity: Activity?) : CalendarFragment {
             return CalendarFragment(activity)
         }
     }
@@ -153,192 +155,10 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.calendarFragmentParentLayout.id)
-    }
 
-    fun initAlarm(){
-        deleteAlarm()
-
-        val endcalendar = Calendar.getInstance()
-        endcalendar.time = Date()
-        endcalendar.add(Calendar.DATE, 34)
-
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
-        val startDate = dateFormat.format(Date())
-        val endDate = dateFormat.format(endcalendar.time)
-
-        val calendarViewModel = CalendarViewModel()
-        calendarViewModel.getAlldo(startDate, endDate, 4)
-
-        calendarViewModel.liveTodoCalendarList.observe(viewLifecycleOwner){livetodo->
-            calendarViewModel.liveScheduleCalendarList.observe(viewLifecycleOwner){liveschedule->
-                var todoIds = ArrayList<String>()
-
-                addAlarm()
-
-                for(todos in livetodo){
-                    for (todo in todos.todos){
-                        if(todo.alarms.size > 0 && !todoIds.contains(todo.id)){
-                            addAlarm(todo.copy())
-                        }
-                    }
-                }
-
-                for(schedule in liveschedule){
-                    if(schedule.schedule.alarms.size > 0){
-                        val calendar = Calendar.getInstance()
-                        val repeatstart = FormatDate.strToDatecalendar(schedule.schedule.repeatStart)
-                        calendar.time = Date()
-                        calendar.add(Calendar.DATE, schedule.position)
-
-                        calendar.apply {
-                            set(Calendar.HOUR_OF_DAY, repeatstart!!.hours)
-                            set(Calendar.MINUTE, repeatstart.minutes)
-                            set(Calendar.SECOND, repeatstart.seconds)
-                        }
-
-                        addAlarm(schedule.schedule.copy(), calendar.time.clone() as Date)
-                    }
-                }
-            }
+        if(activity != null) {
+            (activity as BaseActivity).adjustTopMargin(binding.calendarFragmentParentLayout.id)
         }
-    }
-
-    private fun addAlarm(){
-        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        val intent = Intent(requireContext(), AlarmWorker::class.java)
-
-        if (User.id != "") {
-            Log.d("알람", "알람 설정")
-            intent.putExtra("userId", User.id)
-            intent.putExtra("requestCode", "0")
-
-            calendarMainData.alarmCnt++
-
-            val pendingIntent = PendingIntent.getBroadcast(
-                requireContext(), 0, intent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
-
-            val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
-
-            val calendar = Calendar.getInstance()
-
-            val amTime = timeformatter.parse(User.amAlarmDate)
-            val pmTime = timeformatter.parse(User.pmAlarmDate)
-
-            if(calendar.time.after(pmTime)){
-                calendar.apply {
-                    time = Date()
-                    set(Calendar.HOUR_OF_DAY, amTime.hours)
-                    set(Calendar.MINUTE, amTime.minutes)
-                    set(Calendar.SECOND, amTime.seconds)
-                    add(Calendar.DATE, 1)
-                }
-            }
-            else if (calendar.time.after(amTime)){
-                calendar.apply {
-                    time = Date()
-                    set(Calendar.HOUR_OF_DAY, pmTime.hours)
-                    set(Calendar.MINUTE, pmTime.minutes)
-                    set(Calendar.SECOND, pmTime.seconds)
-                }
-            } else {
-                calendar.apply {
-                    time = Date()
-                    set(Calendar.HOUR_OF_DAY, amTime.hours)
-                    set(Calendar.MINUTE, amTime.minutes)
-                    set(Calendar.SECOND, amTime.seconds)
-                }
-            }
-
-            Log.d("알람추가", calendar.time.toString())
-
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        }
-    }
-
-    private fun addAlarm(todo: Todo){
-        val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmWorker::class.java)
-
-        intent.putExtra("userId", User.id)
-        intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
-        calendarMainData.alarmCnt++
-
-        intent.putExtra("body", todo.content)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val calendar = Calendar.getInstance()
-        calendar.time = FormatDate.strToDate(todo.alarms[0].time)
-
-        if(calendar.time.after(Date())) {
-            Log.d("알람추가", calendar.time.toString())
-            Log.d("알람추가", todo.content)
-
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        }
-    }
-
-    private fun addAlarm(schedule: Schedule, date: Date){
-        val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmWorker::class.java)
-
-        intent.putExtra("userId", User.id)
-        intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
-        calendarMainData.alarmCnt++
-
-        intent.putExtra("body", schedule.content)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-
-        if(calendar.time.after(Date())) {
-            Log.d("알람추가", calendar.time.toString())
-            Log.d("알람추가", schedule.content)
-
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        }
-    }
-
-    private fun deleteAlarm(){
-        val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmWorker::class.java)
-
-        for (i in 0 until  calendarMainData.alarmCnt-1) {
-            val pendingIntent = PendingIntent.getBroadcast(
-                context, i, intent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
-
-            if(pendingIntent != null){
-                alarmManager.cancel(pendingIntent)
-            }
-        }
-
-        calendarMainData.alarmCnt = 0
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -391,13 +211,13 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
         calendar.time = Date()
 
-        initAlarm()
+        Alarm.initAlarm(viewLifecycleOwner, requireContext())
 
         itemYearBtn.text = "${calendar.get(Calendar.YEAR)}년"
         itemMonthBtn.text = "${calendar.get(Calendar.MONTH) + 1}월"
 
         if(calendarMainData.todoApply) {
-            todoApplyImv.setBackgroundResource(R.drawable.category_todo)
+            todoApplyImv.backgroundTintList = null
 
             if(!calendarMainData.todoComplete){
                 val drawable = todoCompleteImv.background as VectorDrawable
@@ -429,7 +249,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 Color.parseColor("#1DAFFF")
             )
         } else {
-            todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image_false)
+            todoApplyImv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
             todoApplyTv.setTextColor(
                 Color.parseColor("#BABABA")
@@ -501,7 +321,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             if(calendarMainData.todoApply) {
                 calendarMainData.todoApply = false
 
-                todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image_false)
+                todoApplyImv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                 todoApplyTv.setTextColor(
                     Color.parseColor("#ACACAC")
@@ -528,7 +348,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             } else {
                 calendarMainData.todoApply = true
 
-                todoApplyImv.setBackgroundResource(R.drawable.category_todo)
+                todoApplyImv.backgroundTintList = null
 
                 todoApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -553,13 +373,13 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         }
 
         if(calendarMainData.scheduleApply) {
-            scheduleApplyImv.setBackgroundResource(R.drawable.category_schedule)
+            scheduleApplyImv.backgroundTintList = null
 
             scheduleApplyTv.setTextColor(
                 Color.parseColor("#1DAFFF")
             )
         } else {
-            scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image_false)
+            scheduleApplyImv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
             scheduleApplyTv.setTextColor(
                 Color.parseColor("#BABABA")
@@ -567,10 +387,10 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         }
 
         scheduleApplyLayout.setOnClickListener{
-            if(calendarMainData.scheduleApply) {
+            if (calendarMainData.scheduleApply) {
                 calendarMainData.scheduleApply = false
 
-                scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image_false)
+                scheduleApplyImv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                 scheduleApplyTv.setTextColor(
                     Color.parseColor("#BABABA")
@@ -583,7 +403,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
             } else {
                 calendarMainData.scheduleApply = true
 
-                scheduleApplyImv.setBackgroundResource(R.drawable.category_schedule)
+                scheduleApplyImv.backgroundTintList = null
 
                 scheduleApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -606,7 +426,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 var changeStatus = false
 
                 if (calendarMainData.todoApply) {
-                    todoApplyImv.setBackgroundResource(R.drawable.calendar_todo_image_false)
+                    todoApplyImv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                     todoApplyTv.setTextColor(
                         Color.parseColor("#ACACAC")
@@ -641,7 +461,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 }
 
                 if (calendarMainData.scheduleApply) {
-                    scheduleApplyImv.setBackgroundResource(R.drawable.calendar_schedule_image_false)
+                    scheduleApplyImv.backgroundTintList = null
 
                     scheduleApplyTv.setTextColor(
                         Color.parseColor("#ACACAC")
@@ -667,7 +487,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
                 calendarMainData.scheduleApply = true
                 calendarMainData.todoApply = true
 
-                scheduleApplyImv.setBackgroundResource(R.drawable.category_schedule)
+                scheduleApplyImv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                 scheduleApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -675,7 +495,7 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
 
                 categoryAdapter.dataAllVisible()
 
-                todoApplyImv.setBackgroundResource(R.drawable.category_todo)
+                todoApplyImv.backgroundTintList = null
 
                 todoApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -753,9 +573,14 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         //추가 버튼 2개
         btnAddMainInCalendar.setOnClickListener {
             if (fabMain_status) {
-                val scheduleInput = CalendarAddFragment(categoryAdapter.categoryList){
+                val scheduleInput = CalendarAddFragment(
+                    categoryAdapter.categoryList,
+                    null,
+                    null,
+                    requireContext(),
+                    viewLifecycleOwner
+                ){
                     adapterMonth.notifyDataSetChanged()
-                    initAlarm()
                 }
 
                 scheduleInput.show(parentFragmentManager, scheduleInput.tag)
@@ -773,11 +598,11 @@ class CalendarFragment(private val activity: Activity) : Fragment(), DrawerLayou
         }
         
         btnAddTodoInCalendar.setOnClickListener{
-            val todoInput = ChecklistInputFragment(checkListViewModel, adapterMonth)
+            val todoInput = ChecklistInputFragment(checkListViewModel, viewLifecycleOwner, adapterMonth)
 
             todoInput.onSubmitListener = object : ChecklistInputFragment.OnSubmitListener{
                 override fun onSubmit() {
-                    initAlarm()
+                    adapterMonth.notifyDataSetChanged()
                 }
             }
 

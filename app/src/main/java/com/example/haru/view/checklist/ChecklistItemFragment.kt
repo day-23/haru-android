@@ -994,7 +994,7 @@ class ChecklistItemFragment(
                         2 -> DeleteType.REPEAT_BACK
                         else -> DeleteType.NOT_REPEAT
                     }
-                    val option = DeleteOptionDialogFragment(todoAddViewModel, type)
+                    val option = DeleteOptionDialogFragment(todoAddViewModel, type, viewLifecycleOwner)
                     option.dismissEvent = object : DeleteOptionDialogFragment.DismissEvent {
                         override fun onDismiss() {
                             activity?.runOnUiThread {
@@ -1077,7 +1077,7 @@ class ChecklistItemFragment(
                             }
                         }
                         Log.d("20191627", "type : $type")
-                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        val option = UpdateOptionDialogFragment(todoAddViewModel, type, viewLifecycleOwner)
                         option.dismissEvent = object : UpdateOptionDialogFragment.DismissEvent {
                             override fun onDismiss() {
                                 activity?.runOnUiThread {
@@ -1088,7 +1088,7 @@ class ChecklistItemFragment(
                         option.show(parentFragmentManager, option.tag)
                     } else {
                         val type = UpdateType.NOT_REPEAT
-                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        val option = UpdateOptionDialogFragment(todoAddViewModel, type, viewLifecycleOwner)
                         option.dismissEvent = object : UpdateOptionDialogFragment.DismissEvent {
                             override fun onDismiss() {
                                 activity?.runOnUiThread {

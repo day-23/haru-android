@@ -33,16 +33,17 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/category_show_iv"
-            android:background="@drawable/category_show_image"
+            android:id="@+id/category_correction"
+            android:background="@drawable/update_icon"
             android:layout_marginTop="6dp"
             android:layout_marginRight="10dp"
+
             android:layout_width="28dp"
             android:layout_height="28dp"/>
 
         <ImageView
-            android:id="@+id/category_correction"
-            android:background="@drawable/update_icon"
+            android:id="@+id/category_show_iv"
+            android:background="@drawable/category_show_image"
             android:layout_marginTop="6dp"
             android:layout_width="28dp"
             android:layout_height="28dp"/>

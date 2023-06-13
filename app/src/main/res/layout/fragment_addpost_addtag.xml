@@ -67,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:textColor="#191919"
             android:textColorHint="#ACACAC"
             android:textCursorDrawable="@drawable/custom_cursor"
             android:hint="태그 추가"
