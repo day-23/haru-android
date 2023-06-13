@@ -106,5 +106,5 @@ class LoadingAnimation : Fragment() {
 //    .addToBackStack(null)
 //    .commit()
 
-    // 통신이 끝나면 loading.dismiss() 호출 
+    // 통신이 끝나면 loading.dismiss() 호출
 }
