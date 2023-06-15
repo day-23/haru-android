@@ -117,6 +117,8 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
         }
 
         holder.itemView.setOnClickListener {
+            Log.e("20191627", todayTodo)
+
             if (schedule.repeatOption == null) {
                 activity.supportFragmentManager.beginTransaction()
                     .replace(
