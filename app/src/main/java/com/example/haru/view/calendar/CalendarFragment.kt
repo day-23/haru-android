@@ -572,7 +572,6 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
         btnAddMainInCalendar.setOnClickListener {
             if (fabMain_status) {
                 val scheduleInput = CalendarAddFragment(
-                    categoryAdapter.categoryList,
                     null,
                     null,
                     requireContext(),
@@ -649,27 +648,16 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
         }
         month_viewpager.offscreenPageLimit = 1
 
-        calendarViewModel.getCategories()
-        calendarViewModel.liveCategoryList.observe(viewLifecycleOwner){
-            categoryRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+        categoryRecyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
 
-            var categoryArrayList = ArrayList<Category?>()
-            categoryArrayList.add(null)
-            categoryArrayList.add(null)
-            categoryArrayList.addAll(it)
-
-            categoryAdapter = CategoryAdapter(categoryArrayList){ category,index ->
-                val intent = Intent(view.context, CategoryCorrectionActivity::class.java)
-                intent.putExtra("category", category)
-                intent.putExtra("index", index)
-                resultLauncher?.launch(intent)
-            }
-
-            categoryRecyclerView.adapter = categoryAdapter
-
-            adapterMonth.setCategories(categoryAdapter.categoryList)
+        categoryAdapter = CategoryAdapter{ category,index ->
+            val intent = Intent(view.context, CategoryCorrectionActivity::class.java)
+            intent.putExtra("category", category)
+            intent.putExtra("index", index)
+            resultLauncher?.launch(intent)
         }
 
+        categoryRecyclerView.adapter = categoryAdapter
 
         binding.calendarSearchButton.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()

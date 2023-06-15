@@ -19,7 +19,6 @@ import com.example.haru.view.checklist.CalendarAddFragment
 
 class CategoryChooseDialog (private val context : CalendarAddFragment?,
                             private val context2 : CalendarItemFragment?=null,
-                            private val categories: List<Category?>,
                             private val listener: (Category) -> Unit
 ): DialogFragment(){
     private lateinit var binding: CategoryChooseDialogBinding
@@ -86,7 +85,7 @@ class CategoryChooseDialog (private val context : CalendarAddFragment?,
 //            dlg.setContentView(binding.root)
 
             binding.categoriesChooseRecyclerview.layoutManager = LinearLayoutManager(context.requireContext())
-            binding.categoriesChooseRecyclerview.adapter = CategoriesAdapterInPost(categories){
+            binding.categoriesChooseRecyclerview.adapter = CategoriesAdapterInPost(){
                 listener(it)
                 dismiss()
             }
@@ -103,7 +102,7 @@ class CategoryChooseDialog (private val context : CalendarAddFragment?,
 
             binding.categoriesChooseRecyclerview.layoutManager = LinearLayoutManager(context2.requireContext())
 
-            binding.categoriesChooseRecyclerview.adapter = CategoriesAdapterInPost(categories){
+            binding.categoriesChooseRecyclerview.adapter = CategoriesAdapterInPost(){
                 listener(it)
                 dismiss()
             }

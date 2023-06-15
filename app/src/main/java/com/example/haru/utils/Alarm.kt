@@ -11,6 +11,7 @@ import com.example.haru.data.model.Todo
 import com.example.haru.view.calendar.calendarMainData
 import com.example.haru.view.etc.AlarmWorker
 import com.example.haru.viewmodel.CalendarViewModel
+import com.example.haru.viewmodel.CheckListViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,26 +28,35 @@ object Alarm {
         val endDate = dateFormat.format(endcalendar.time)
 
         val calendarViewModel = CalendarViewModel()
+        val checkListViewModel = CheckListViewModel()
+
         calendarViewModel.getAlldo(startDate, endDate, 4)
+        checkListViewModel.dataInit()
 
-        calendarViewModel.liveTodoCalendarList.observe(lifecycle){livetodo->
-            calendarViewModel.liveScheduleCalendarList.observe(lifecycle){liveschedule->
-                var todoIds = ArrayList<String>()
-
+        calendarViewModel.liveScheduleCalendarList.observe(lifecycle){liveschedule->
+            checkListViewModel.todoDataList.observe(lifecycle) {livetodo->
+//                var todoIds = ArrayList<String>()
                 addAlarm(context)
 
-                for(todos in livetodo){
-                    for (todo in todos.todos){
-                        if(todo.alarms.size > 0 && !todoIds.contains(todo.id)){
-                            addAlarm(todo.copy(), context)
-                        }
+//                for (todos in livetodo) {
+//                    for (todo in todos.todos) {
+//                        if (todo.alarms.size > 0 && !todoIds.contains(todo.id)) {
+//                            addAlarm(todo.copy(), context)
+//                        }
+//                    }
+//                }
+
+                for (todo in livetodo){
+                    if(todo.alarms.size > 0){
+                        addAlarm(todo.copy(), context)
                     }
                 }
 
-                for(schedule in liveschedule){
-                    if(schedule.schedule.alarms.size > 0){
+                for (schedule in liveschedule) {
+                    if (schedule.schedule.alarms.size > 0) {
                         val calendar = Calendar.getInstance()
-                        val repeatstart = FormatDate.strToDatecalendar(schedule.schedule.repeatStart)
+                        val repeatstart =
+                            FormatDate.strToDatecalendar(schedule.schedule.repeatStart)
                         calendar.time = Date()
                         calendar.add(Calendar.DATE, schedule.position)
 
@@ -56,7 +66,11 @@ object Alarm {
                             set(Calendar.SECOND, repeatstart.seconds)
                         }
 
-                        addAlarm(schedule.schedule.copy(), calendar.time.clone() as Date, context)
+                        addAlarm(
+                            schedule.schedule.copy(),
+                            calendar.time.clone() as Date,
+                            context
+                        )
                     }
                 }
             }
@@ -76,38 +90,39 @@ object Alarm {
 
             val pendingIntent = PendingIntent.getBroadcast(
                 context, 0, intent,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_MUTABLE
             )
 
             val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
 
             val calendar = Calendar.getInstance()
+            calendar.time = Date()
 
             val amTime = timeformatter.parse(User.amAlarmDate)
+
+            amTime.year = calendar.time.year
+            amTime.month = calendar.time.month
+            amTime.date = calendar.time.date
+
             val pmTime = timeformatter.parse(User.pmAlarmDate)
+
+            pmTime.year = calendar.time.year
+            pmTime.month = calendar.time.month
+            pmTime.date = calendar.time.date
 
             if(calendar.time.after(pmTime)){
                 calendar.apply {
-                    time = Date()
-                    set(Calendar.HOUR_OF_DAY, amTime.hours)
-                    set(Calendar.MINUTE, amTime.minutes)
-                    set(Calendar.SECOND, amTime.seconds)
+                    time = amTime
                     add(Calendar.DATE, 1)
                 }
             }
             else if (calendar.time.after(amTime)){
                 calendar.apply {
-                    time = Date()
-                    set(Calendar.HOUR_OF_DAY, pmTime.hours)
-                    set(Calendar.MINUTE, pmTime.minutes)
-                    set(Calendar.SECOND, pmTime.seconds)
+                    time = pmTime
                 }
             } else {
                 calendar.apply {
-                    time = Date()
-                    set(Calendar.HOUR_OF_DAY, amTime.hours)
-                    set(Calendar.MINUTE, amTime.minutes)
-                    set(Calendar.SECOND, amTime.seconds)
+                    time = amTime
                 }
             }
 
@@ -133,7 +148,7 @@ object Alarm {
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_MUTABLE
         )
 
         calendarMainData.alarmCnt++
@@ -141,10 +156,10 @@ object Alarm {
         val calendar = Calendar.getInstance()
         calendar.time = FormatDate.strToDate(todo.alarms[0].time)
 
-        Log.d("알람추가", "투두 알림: ${todo.content}")
-        Log.d("알람추가", calendar.time.toString())
-
         if(calendar.time.after(Date())) {
+            Log.d("알람추가", "투두 알림: ${todo.content}")
+            Log.d("알람추가", calendar.time.toString())
+
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
@@ -164,7 +179,7 @@ object Alarm {
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_MUTABLE
         )
 
         calendarMainData.alarmCnt++
@@ -172,10 +187,10 @@ object Alarm {
         val calendar = Calendar.getInstance()
         calendar.time = date
 
-        Log.d("알람추가", "일정 알림: ${schedule.content}")
-        Log.d("알람추가", calendar.time.toString())
-
         if(calendar.time.after(Date())) {
+            Log.d("알람추가", "일정 알림: ${schedule.content}")
+            Log.d("알람추가", calendar.time.toString())
+
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
@@ -191,7 +206,7 @@ object Alarm {
         for (i in 0 until  calendarMainData.alarmCnt-1) {
             val pendingIntent = PendingIntent.getBroadcast(
                 context, i, intent,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_MUTABLE
             )
 
             if(pendingIntent != null){

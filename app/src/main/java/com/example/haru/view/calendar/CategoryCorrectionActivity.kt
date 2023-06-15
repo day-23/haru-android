@@ -74,13 +74,30 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         val correctionCheckImageview = findViewById<ImageView>(R.id.correction_check_imageView)
         val categoryDeleteTv = findViewById<TextView>(R.id.category_delete_tv)
         val categoryMarkSwitch = findViewById<SwitchCompat>(R.id.category_mark_switch)
+        val categorySelectedTv = findViewById<TextView>(R.id.category_selected_tv)
 
         content = category.content
         correctionScheduleName.setText(content)
         categoryMarkSwitch.isChecked = category.isSelected
 
         categoriesRecyclerview.layoutManager = GridLayoutManager(this,6)
-        categoriesRecyclerview.adapter = CategoriesColorAdapter(this, null, colorsList.indexOf(category.color))
+        categoriesRecyclerview.adapter = CategoriesColorAdapter(colorsList.indexOf(category.color)){
+            changeColor(it)
+        }
+
+        if(category.isSelected){
+            categorySelectedTv.setTextColor(Color.parseColor("#191919"))
+        } else {
+            categorySelectedTv.setTextColor(Color.parseColor("#ACACAC"))
+        }
+
+        categoryMarkSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                categorySelectedTv.setTextColor(Color.parseColor("#191919"))
+            } else {
+                categorySelectedTv.setTextColor(Color.parseColor("#ACACAC"))
+            }
+        }
 
         correctionBackImageview.setOnClickListener {
             intent.putExtra("status", "back")

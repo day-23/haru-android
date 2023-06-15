@@ -44,8 +44,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarAddFragment(private val categories: List<Category?>,
-                          private val initStartDate: Date?=null,
+class CalendarAddFragment(private val initStartDate: Date?=null,
                           private val initEndDate:Date?=null,
                           private val parentContext: Context,
                           private val lifecycle: LifecycleOwner,
@@ -82,12 +81,11 @@ class CalendarAddFragment(private val categories: List<Category?>,
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(categories: List<Category?>,
-                        initStartDate: Date?=null,
+        fun newInstance(initStartDate: Date?=null,
                         initEndDate:Date?=null,
                         parentContext: Context,
                         lifecycle: LifecycleOwner): CalendarAddFragment {
-            return CalendarAddFragment(categories, initStartDate, initEndDate, parentContext, lifecycle){}
+            return CalendarAddFragment(initStartDate, initEndDate, parentContext, lifecycle){}
         }
     }
 
@@ -602,7 +600,7 @@ class CalendarAddFragment(private val categories: List<Category?>,
         }
 
         binding.categoryChooseIv.setOnClickListener {
-            val dlg = CategoryChooseDialog(this, null, categories){
+            val dlg = CategoryChooseDialog(this, null){
                 category = it
 
                 val drawable = binding.categoryChooseIv.background as VectorDrawable

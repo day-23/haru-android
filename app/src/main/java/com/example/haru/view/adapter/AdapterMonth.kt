@@ -51,12 +51,6 @@ class AdapterMonth(
 ) :
     RecyclerView.Adapter<AdapterMonth.MonthView>() {
 
-    private var categories: List<Category?> = emptyList()
-
-    fun setCategories(new_categories: List<Category?>) {
-        categories = new_categories
-    }
-
     inner class MonthView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     init {
@@ -344,6 +338,10 @@ class AdapterMonth(
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
+                    if(column < 0 || column >= 7 || row < 0 || row >= (maxi+1)){
+                        return@setOnTouchListener true
+                    }
+
                     if (!longPress && System.currentTimeMillis() - startTime > 1000) {
                         thisViewPager.setUserInputEnabled(false)
                         longPress = true
@@ -386,7 +384,12 @@ class AdapterMonth(
                                 endPosition = tmp
                             }
 
-                            adapter.itemChange(startPosition, endPosition, false)
+                            if(column < 0 || column >= 7 || row < 0 || row >= (maxi+1)){
+                                adapter.itemChange()
+                                return@setOnTouchListener false
+                            } else {
+                                adapter.itemChange(startPosition, endPosition, false)
+                            }
 
 //                            for(i in startPosition..endPosition){
 //                                if(adapter.touchList[i]) {
@@ -395,7 +398,6 @@ class AdapterMonth(
 //                            }
 
                             val scheduleInput = CalendarAddFragment(
-                                categories,
                                 dateArrayList[startPosition],
                                 dateArrayList[endPosition],
                                 parentFragment.requireContext(),
@@ -415,8 +417,7 @@ class AdapterMonth(
                             lifecycleOwner,
                             dateArrayList[row * 7 + column],
                             this,
-                            fragment,
-                            categories
+                            fragment
                         )
 
                         detailDialog.show(parentConstraintLayout.height)

@@ -75,7 +75,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     requireActivity().supportFragmentManager.beginTransaction()
                         .add(
                             R.id.fragments_frame,
-                            CalendarItemFragment(schedule, emptyList(), today)
+                            CalendarItemFragment(schedule, today)
                         )
                         .addToBackStack(null)
                         .commit()

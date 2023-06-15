@@ -30,7 +30,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarItemFragment(val schedule: Schedule,
-                           val categories: List<Category?>,
                            var todayDate: Date) : Fragment() {
     private lateinit var binding: FragmentCalendarItemBinding
 
@@ -521,7 +520,7 @@ class CalendarItemFragment(val schedule: Schedule,
         }
 
         binding.categoryChooseIv.setOnClickListener {
-            val dlg = CategoryChooseDialog(null, this, categories){
+            val dlg = CategoryChooseDialog(null, this){
                 category = it
 
                 val drawable = binding.categoryChooseIv.background as VectorDrawable
