@@ -93,13 +93,17 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
 
     override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
+        dismiss()
+    }
+
+    override fun dismiss() {
+        super.dismiss()
         if (timePickerClick != null) {
             timePickerClick?.onClick(
                 binding.timeDivision,
                 binding.npHourPick,
                 binding.npMinutePick
             )
-            dismiss()
         }
     }
 

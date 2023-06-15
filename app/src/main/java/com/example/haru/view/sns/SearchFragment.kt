@@ -56,8 +56,6 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
         (activity as BaseActivity).adjustTopMargin(binding.searchHeader.id)
 
-        Log.e("20191627", "123")
-
         // checklist와 캘린더에서 접근한 검색 화면일 경우
         if (viewModel is CheckListViewModel) {
             val scheduleListView: RecyclerView = binding.searchRecyclerOne
@@ -71,11 +69,19 @@ class SearchFragment(val viewModel: Any) : Fragment() {
             )
 
             scheduleAdapter.scheduleClick = object : SearchScheduleAdapter.ScheduleClick {
-                override fun onClick(view: View, schedule: Schedule, today : Date) {
+                override fun onClick(view: View, schedule: Schedule, today: Date) {
+                    val calendarItemFragment = CalendarItemFragment(schedule, today)
+                    calendarItemFragment.searchCallback =
+                        object : CalendarItemFragment.SearchCallback {
+                            override fun updateCallback(callback: () -> Unit) {
+                                viewModel.updateSearchData()
+                                callback()
+                            }
+                        }
                     requireActivity().supportFragmentManager.beginTransaction()
                         .add(
                             R.id.fragments_frame,
-                            CalendarItemFragment(schedule, today)
+                            calendarItemFragment
                         )
                         .addToBackStack(null)
                         .commit()
@@ -91,7 +97,6 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     if (viewModel.searchList.value?.second?.find {
                             it.id == id
                         }?.type == 2) {
-
                         requireActivity().supportFragmentManager.beginTransaction()
                             .add(
                                 R.id.fragments_frame,
