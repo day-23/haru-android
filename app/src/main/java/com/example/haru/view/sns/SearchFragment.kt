@@ -271,7 +271,8 @@ class SearchFragment(val viewModel: Any) : Fragment() {
             }
 
 
-        } else {
+        }
+        else {
             TODO()
         }
 
