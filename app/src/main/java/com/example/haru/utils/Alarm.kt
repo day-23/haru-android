@@ -11,6 +11,7 @@ import com.example.haru.data.model.Todo
 import com.example.haru.view.calendar.calendarMainData
 import com.example.haru.view.etc.AlarmWorker
 import com.example.haru.viewmodel.CalendarViewModel
+import com.example.haru.viewmodel.CheckListViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,26 +28,35 @@ object Alarm {
         val endDate = dateFormat.format(endcalendar.time)
 
         val calendarViewModel = CalendarViewModel()
+        val checkListViewModel = CheckListViewModel()
+
         calendarViewModel.getAlldo(startDate, endDate, 4)
+        checkListViewModel.dataInit()
 
-        calendarViewModel.liveTodoCalendarList.observe(lifecycle){livetodo->
-            calendarViewModel.liveScheduleCalendarList.observe(lifecycle){liveschedule->
-                var todoIds = ArrayList<String>()
-
+        calendarViewModel.liveScheduleCalendarList.observe(lifecycle){liveschedule->
+            checkListViewModel.todoDataList.observe(lifecycle) {livetodo->
+//                var todoIds = ArrayList<String>()
                 addAlarm(context)
 
-                for(todos in livetodo){
-                    for (todo in todos.todos){
-                        if(todo.alarms.size > 0 && !todoIds.contains(todo.id)){
-                            addAlarm(todo.copy(), context)
-                        }
+//                for (todos in livetodo) {
+//                    for (todo in todos.todos) {
+//                        if (todo.alarms.size > 0 && !todoIds.contains(todo.id)) {
+//                            addAlarm(todo.copy(), context)
+//                        }
+//                    }
+//                }
+
+                for (todo in livetodo){
+                    if(todo.alarms.size > 0){
+                        addAlarm(todo.copy(), context)
                     }
                 }
 
-                for(schedule in liveschedule){
-                    if(schedule.schedule.alarms.size > 0){
+                for (schedule in liveschedule) {
+                    if (schedule.schedule.alarms.size > 0) {
                         val calendar = Calendar.getInstance()
-                        val repeatstart = FormatDate.strToDatecalendar(schedule.schedule.repeatStart)
+                        val repeatstart =
+                            FormatDate.strToDatecalendar(schedule.schedule.repeatStart)
                         calendar.time = Date()
                         calendar.add(Calendar.DATE, schedule.position)
 
@@ -56,7 +66,11 @@ object Alarm {
                             set(Calendar.SECOND, repeatstart.seconds)
                         }
 
-                        addAlarm(schedule.schedule.copy(), calendar.time.clone() as Date, context)
+                        addAlarm(
+                            schedule.schedule.copy(),
+                            calendar.time.clone() as Date,
+                            context
+                        )
                     }
                 }
             }
