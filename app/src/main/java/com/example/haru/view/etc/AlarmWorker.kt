@@ -38,6 +38,9 @@ class AlarmWorker : BroadcastReceiver(){
         }
 
         if(requestCode != null) {
+            Log.d("알람", requestCode.toString())
+            Log.d("알람", body.toString())
+
             notificationManager = context.getSystemService(
                 Context.NOTIFICATION_SERVICE
             ) as NotificationManager
@@ -117,14 +120,20 @@ class AlarmWorker : BroadcastReceiver(){
                 val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
 
                 amTime = timeformatter.parse(sharedPreference.getString("amAlarmDate", "오전 9:00")!!)!!
+
+                amTime.year = calendar.time.year
+                amTime.month = calendar.time.month
+                amTime.date = calendar.time.date
+
                 pmTime = timeformatter.parse(sharedPreference.getString("pmAlarmDate", "오후 9:00")!!)!!
+
+                pmTime.year = calendar.time.year
+                pmTime.month = calendar.time.month
+                pmTime.date = calendar.time.date
 
                 if(calendar.time >= pmTime){
                     calendar.apply {
-                        time = Date()
-                        set(Calendar.HOUR_OF_DAY, amTime.hours)
-                        set(Calendar.MINUTE, amTime.minutes)
-                        set(Calendar.SECOND, amTime.seconds)
+                        time = amTime
                         add(Calendar.DATE, 1)
                     }
 
@@ -132,19 +141,13 @@ class AlarmWorker : BroadcastReceiver(){
                 }
                 else if (calendar.time >= amTime){
                     calendar.apply {
-                        time = Date()
-                        set(Calendar.HOUR_OF_DAY, pmTime.hours)
-                        set(Calendar.MINUTE, pmTime.minutes)
-                        set(Calendar.SECOND, pmTime.seconds)
+                        time = pmTime
                     }
 
                     alarmBoolean = true
                 } else {
                     calendar.apply {
-                        time = Date()
-                        set(Calendar.HOUR_OF_DAY, amTime.hours)
-                        set(Calendar.MINUTE, amTime.minutes)
-                        set(Calendar.SECOND, amTime.seconds)
+                        time = amTime
                     }
 
                     alarmBoolean = false

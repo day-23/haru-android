@@ -37,8 +37,7 @@ class CalendarDetailDialog (val context : Context,
                             val lifecycleOwner: LifecycleOwner,
                             val startDate: Date,
                             val adaptermonth:AdapterMonth,
-                            val activity: FragmentActivity,
-                            val categories: List<Category?>
+                            val activity: FragmentActivity
                             ){
     private val dlg = Dialog(context)
 
@@ -76,8 +75,7 @@ class CalendarDetailDialog (val context : Context,
                 startDate,
                 adaptermonth,
                 activity,
-                dlg,
-                categories
+                dlg
             )
         }
 

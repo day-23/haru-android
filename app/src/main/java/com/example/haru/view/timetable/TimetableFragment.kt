@@ -225,7 +225,6 @@ class TimetableFragment : Fragment() {
                 Log.d(TAG, "onCreateView: ${it}")
 
                 val scheduleInput = CalendarAddFragment(
-                    it ,
                     null,
                     null,
                     requireContext(),

@@ -329,10 +329,13 @@ class CalendarViewModel : ViewModel() {
                                 schedule.startTime = todayDate
                                 schedule.endTime = endtime
                             } else if(schedule.repeatOption == "매일"){
+                                val starttime = serverformat.parse(schedule.repeatStart!!)
                                 val endtime = serverformat.parse(schedule.repeatEnd!!)
 
-                                today = schedule.repeatStart!!
-                                todayDate = serverformat.parse(today)
+                                todayDate = startdateFormat.clone() as Date
+                                todayDate.hours = starttime.hours
+                                todayDate.minutes = starttime.minutes
+                                todayDate.seconds = starttime.seconds
 
                                 schedule.startTime = todayDate.clone() as Date
                                 todayDate.hours = endtime.hours

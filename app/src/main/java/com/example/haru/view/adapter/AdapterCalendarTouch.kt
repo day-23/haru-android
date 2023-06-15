@@ -22,18 +22,14 @@ class AdapterCalendarTouch(val size: Int, val touchList: ArrayList<Boolean>) : R
         }
 
         notifyDataSetChanged()
+    }
 
-//        var indexList = ArrayList<Int>()
-//        for (i in 0 until touchList.size){
-//            if ()
-//            touchList[i] = false
-//        }
-//
-//        for(i in startIndex..index){
-//            touchList[i] = value
-//        }
-//
-//        notifyItemChanged(index)
+    fun itemChange(){
+        for (i in 0 until touchList.size){
+            touchList[i] = false
+        }
+
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterCalendarTouch.TouchView {

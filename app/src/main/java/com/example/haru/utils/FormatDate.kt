@@ -79,7 +79,6 @@ object FormatDate {
         return date.format(calendarDateFormatter)
     }
 
-
     fun calendarBackFormat(str: String): String {
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(-diff)
         return date.format(calendarDateFormatter)

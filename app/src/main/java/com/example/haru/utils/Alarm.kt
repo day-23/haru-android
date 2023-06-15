@@ -76,38 +76,39 @@ object Alarm {
 
             val pendingIntent = PendingIntent.getBroadcast(
                 context, 0, intent,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_MUTABLE
             )
 
             val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
 
             val calendar = Calendar.getInstance()
+            calendar.time = Date()
 
             val amTime = timeformatter.parse(User.amAlarmDate)
+
+            amTime.year = calendar.time.year
+            amTime.month = calendar.time.month
+            amTime.date = calendar.time.date
+
             val pmTime = timeformatter.parse(User.pmAlarmDate)
+
+            pmTime.year = calendar.time.year
+            pmTime.month = calendar.time.month
+            pmTime.date = calendar.time.date
 
             if(calendar.time.after(pmTime)){
                 calendar.apply {
-                    time = Date()
-                    set(Calendar.HOUR_OF_DAY, amTime.hours)
-                    set(Calendar.MINUTE, amTime.minutes)
-                    set(Calendar.SECOND, amTime.seconds)
+                    time = amTime
                     add(Calendar.DATE, 1)
                 }
             }
             else if (calendar.time.after(amTime)){
                 calendar.apply {
-                    time = Date()
-                    set(Calendar.HOUR_OF_DAY, pmTime.hours)
-                    set(Calendar.MINUTE, pmTime.minutes)
-                    set(Calendar.SECOND, pmTime.seconds)
+                    time = pmTime
                 }
             } else {
                 calendar.apply {
-                    time = Date()
-                    set(Calendar.HOUR_OF_DAY, amTime.hours)
-                    set(Calendar.MINUTE, amTime.minutes)
-                    set(Calendar.SECOND, amTime.seconds)
+                    time = amTime
                 }
             }
 
@@ -133,7 +134,7 @@ object Alarm {
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_MUTABLE
         )
 
         calendarMainData.alarmCnt++
@@ -141,10 +142,10 @@ object Alarm {
         val calendar = Calendar.getInstance()
         calendar.time = FormatDate.strToDate(todo.alarms[0].time)
 
-        Log.d("알람추가", "투두 알림: ${todo.content}")
-        Log.d("알람추가", calendar.time.toString())
-
         if(calendar.time.after(Date())) {
+            Log.d("알람추가", "투두 알림: ${todo.content}")
+            Log.d("알람추가", calendar.time.toString())
+
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
@@ -164,7 +165,7 @@ object Alarm {
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_MUTABLE
         )
 
         calendarMainData.alarmCnt++
@@ -172,10 +173,10 @@ object Alarm {
         val calendar = Calendar.getInstance()
         calendar.time = date
 
-        Log.d("알람추가", "일정 알림: ${schedule.content}")
-        Log.d("알람추가", calendar.time.toString())
-
         if(calendar.time.after(Date())) {
+            Log.d("알람추가", "일정 알림: ${schedule.content}")
+            Log.d("알람추가", calendar.time.toString())
+
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
@@ -191,7 +192,7 @@ object Alarm {
         for (i in 0 until  calendarMainData.alarmCnt-1) {
             val pendingIntent = PendingIntent.getBroadcast(
                 context, i, intent,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_MUTABLE
             )
 
             if(pendingIntent != null){

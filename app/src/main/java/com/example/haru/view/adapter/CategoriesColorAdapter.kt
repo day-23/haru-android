@@ -12,9 +12,7 @@ import com.example.haru.R
 import com.example.haru.view.calendar.CategoryAddActivity
 import com.example.haru.view.calendar.CategoryCorrectionActivity
 
-class CategoriesColorAdapter(val activity: CategoryCorrectionActivity?=null,
-                             val activity2:CategoryAddActivity?=null,
-                             initIndex: Int = -1): RecyclerView.Adapter<CategoriesColorAdapter.ColorsView>(){
+class CategoriesColorAdapter(initIndex: Int = -1, val callback : (String) -> Unit): RecyclerView.Adapter<CategoriesColorAdapter.ColorsView>(){
 
     var lastChooseIndex = initIndex
     val colorsList = listOf(
@@ -57,11 +55,7 @@ class CategoriesColorAdapter(val activity: CategoryCorrectionActivity?=null,
         }
 
         categoryImage.setOnClickListener {
-            if(activity != null) {
-                activity.changeColor(colorsList[position])
-            } else {
-                activity2!!.changeColor(colorsList[position])
-            }
+            callback(colorsList[position])
 
             if(lastChooseIndex != -1){
                 notifyItemChanged(lastChooseIndex)
