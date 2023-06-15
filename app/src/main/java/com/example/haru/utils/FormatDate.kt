@@ -31,6 +31,7 @@ object FormatDate {
 
     private val simpleFormatterCalendar = SimpleDateFormat("M월 d일 a h:mm", Locale.KOREA)
 
+    val todayDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
 
     val cal = Calendar.getInstance()
 

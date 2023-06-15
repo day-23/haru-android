@@ -1,5 +1,6 @@
 package com.example.haru.view.calendar
 
+import BaseActivity
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -31,6 +32,10 @@ import java.util.*
 class CalendarItemFragment(val schedule: Schedule,
                            var todayDate: Date) : Fragment() {
     private lateinit var binding: FragmentCalendarItemBinding
+
+    init {
+        Log.e("20191627", schedule.toString())
+    }
 
     private val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
 
@@ -124,6 +129,16 @@ class CalendarItemFragment(val schedule: Schedule,
         touchEvent()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.calendarAddFragmentParentLayout.id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.calendarAddFragmentParentLayout.id)
     }
 
     fun optionChange() {
