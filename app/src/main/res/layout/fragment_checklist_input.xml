@@ -70,25 +70,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
+                    android:paddingStart="34dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
-
-                    <EditText
-                        android:id="@+id/todo_et"
+                    <HorizontalScrollView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:hint="@string/todo_input"
-                        android:textCursorDrawable="@drawable/custom_cursor"
-                        android:inputType="textNoSuggestions"
-                        android:text="@={viewModel.content}"
-                        android:textColor="@color/todo_description"
-                        android:textColorHint="@color/light_gray"
-                        android:textSize="24sp" />
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1">
 
+                        <EditText
+                            android:id="@+id/todo_et"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:hint="@string/todo_input"
+                            android:inputType="textNoSuggestions"
+                            android:maxLength="50"
+                            android:maxLines="1"
+                            android:text="@={viewModel.content}"
+                            android:textColor="@color/todo_description"
+                            android:textColorHint="@color/light_gray"
+                            android:textCursorDrawable="@drawable/custom_cursor"
+                            android:textSize="24sp" />
+
+                    </HorizontalScrollView>
 
                     <CheckBox
                         android:id="@+id/check_flag_todo"
@@ -152,7 +159,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/tag_icon"
-                        android:backgroundTint="@color/light_gray"/>
+                        android:backgroundTint="@color/light_gray" />
 
                     <HorizontalScrollView
                         android:id="@+id/tag_scroll_view"
@@ -176,10 +183,10 @@
                                 android:inputType="text"
                                 android:maxLength="8"
                                 android:singleLine="true"
-                                android:textCursorDrawable="@drawable/custom_cursor"
-                                android:textColor="@color/todo_description"
                                 android:text="@={viewModel.tag}"
+                                android:textColor="@color/todo_description"
                                 android:textColorHint="@color/light_gray"
+                                android:textCursorDrawable="@drawable/custom_cursor"
                                 android:textSize="14sp" />
                         </LinearLayout>
 
@@ -200,7 +207,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/big_today_icon"
-                        android:backgroundTint="@color/light_gray"/>
+                        android:backgroundTint="@color/light_gray" />
 
                     <TextView
                         android:id="@+id/tv_today_todo"
@@ -246,7 +253,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/big_calendar_icon"
-                            android:backgroundTint="@color/light_gray"/>
+                            android:backgroundTint="@color/light_gray" />
 
                         <TextView
                             android:id="@+id/tv_endDate_set"
@@ -339,7 +346,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/big_alarm_icon"
-                        android:backgroundTint="@color/light_gray"/>
+                        android:backgroundTint="@color/light_gray" />
 
                     <TextView
                         android:id="@+id/tv_alarm_set"
@@ -407,7 +414,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/big_repeat_icon"
-                            android:backgroundTint="@color/light_gray"/>
+                            android:backgroundTint="@color/light_gray" />
 
                         <TextView
                             android:id="@+id/tv_repeat_set"
@@ -674,7 +681,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/big_memo_icon"
-                        android:backgroundTint="@color/light_gray"/>
+                        android:backgroundTint="@color/light_gray" />
 
                     <EditText
                         android:id="@+id/et_memo"
@@ -683,13 +690,13 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="72dp"
                         android:background="@android:color/transparent"
-                        android:textCursorDrawable="@drawable/custom_cursor"
                         android:ems="10"
-                        android:maxLength="500"
                         android:hint="@string/memo_set"
                         android:inputType="textMultiLine"
+                        android:maxLength="500"
                         android:text="@={viewModel.memo}"
                         android:textColorHint="@color/light_gray"
+                        android:textCursorDrawable="@drawable/custom_cursor"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
