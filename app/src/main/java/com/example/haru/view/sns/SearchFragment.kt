@@ -23,9 +23,11 @@ import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SearchScheduleAdapter
 import com.example.haru.view.adapter.SearchTodoAdapter
 import com.example.haru.view.adapter.TodoAdapter
+import com.example.haru.view.calendar.CalendarItemFragment
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CheckListViewModel
+import java.util.*
 
 class SearchFragment(val viewModel: Any) : Fragment() {
     lateinit var binding: FragmentSearchBinding
@@ -67,6 +69,19 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                 LinearLayoutManager.VERTICAL,
                 false
             )
+
+            scheduleAdapter.scheduleClick = object : SearchScheduleAdapter.ScheduleClick {
+                override fun onClick(view: View, schedule: Schedule, today : Date) {
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .add(
+                            R.id.fragments_frame,
+                            CalendarItemFragment(schedule, emptyList(), today)
+                        )
+                        .addToBackStack(null)
+                        .commit()
+                }
+            }
+
             // -------------------------------------Todo 검색 결과를 맡은 RecyclerView---------------------------------------//
             val todoListView: RecyclerView = binding.searchRecyclerTwo
             val todoAdapter = SearchTodoAdapter(requireContext())
