@@ -7,12 +7,16 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.haru.R
+import com.example.haru.data.model.UpdateHaruId
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.databinding.ActivitySignUpBinding
@@ -116,11 +120,46 @@ class SignUpActivity : BaseActivity() {
         imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 
         if (currentFocus is EditText) {
-            currentFocus!!.clearFocus()
-            if (currentFocus == binding.etSignupId){
+            if (currentFocus == binding.etSignupId) {
+                val id = binding.etSignupId.text.toString().replace(" ", "")
+                if (id == "")
+                    return false
+                lifecycleScope.launch {
+                    Log.e("20191627", "test")
+                    profileRepository.testHaruId(UpdateHaruId(id)) {
+                        if (it?.success == true) {
+                            val checkIcon = ContextCompat.getDrawable(
+                                this@SignUpActivity,
+                                R.drawable.check_icon
+                            )
+                            checkIcon!!.setTint(
+                                ContextCompat.getColor(
+                                    this@SignUpActivity,
+                                    R.color.highlight
+                                )
+                            )
+                            this@SignUpActivity.runOnUiThread {
+                                binding.tvIdDescription.text = "사용 가능한 아이디입니다."
+                                binding.tvIdDescription.setTextColor(
+                                    ContextCompat.getColor(
+                                        this@SignUpActivity,
+                                        R.color.highlight
+                                    )
+                                )
+                                binding.etSignupId.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                                    null,
+                                    null,
+                                    checkIcon,
+                                    null
+                                )
+                            }
+                        }
+                    }
+                }
+            } else if (currentFocus == binding.etSignupNickname) {
 
             }
-            else if (currentFocus == binding.etSignupNickname){}
+            currentFocus!!.clearFocus()
 
             return false
         }
