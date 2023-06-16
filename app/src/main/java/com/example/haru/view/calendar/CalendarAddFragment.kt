@@ -159,9 +159,9 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                 binding.repeatSwitchSchedule.isChecked = false
                 binding.repeatSwitchSchedule.isClickable = false
 
-                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                binding.repeatTvSchedule.setTextColor(Color.parseColor("#ACACAC"))
                 binding.repeatIvSchedule.backgroundTintList =
-                    ColorStateList.valueOf(Color.LTGRAY)
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                 binding.repeatOptionSelectSchedule.visibility = View.GONE
                 binding.repeatEndLayout.visibility = View.GONE
@@ -241,9 +241,9 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                                 binding.repeatSwitchSchedule.isChecked = false
                                 binding.repeatSwitchSchedule.isClickable = false
 
-                                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                                binding.repeatTvSchedule.setTextColor(Color.parseColor("#ACACAC"))
                                 binding.repeatIvSchedule.backgroundTintList =
-                                    ColorStateList.valueOf(Color.LTGRAY)
+                                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                                 binding.repeatOptionSelectSchedule.visibility = View.GONE
                                 binding.repeatEndLayout.visibility = View.GONE
@@ -353,9 +353,9 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                                 binding.repeatSwitchSchedule.isChecked = false
                                 binding.repeatSwitchSchedule.isClickable = false
 
-                                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                                binding.repeatTvSchedule.setTextColor(Color.parseColor("#ACACAC"))
                                 binding.repeatIvSchedule.backgroundTintList =
-                                    ColorStateList.valueOf(Color.LTGRAY)
+                                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                                 binding.repeatOptionSelectSchedule.visibility = View.GONE
                                 binding.repeatEndLayout.visibility = View.GONE
@@ -428,8 +428,8 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
             } else {
                 isAllday = false
                 binding.alldayIv.backgroundTintList =
-                    ColorStateList.valueOf(Color.LTGRAY)
-                binding.alldayTv.setTextColor(Color.LTGRAY)
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
+                binding.alldayTv.setTextColor(Color.parseColor("#ACACAC"))
 
                 binding.repeatStartTimeBtn.visibility = View.VISIBLE
                 binding.repeatEndTimeBtn.visibility = View.VISIBLE
@@ -453,9 +453,9 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                     binding.gridYearSchedule.visibility = View.VISIBLE
                 }
             } else {
-                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                binding.repeatTvSchedule.setTextColor(Color.parseColor("#ACACAC"))
                 binding.repeatIvSchedule.backgroundTintList =
-                    ColorStateList.valueOf(Color.LTGRAY)
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                 binding.repeatOptionSelectSchedule.visibility = View.GONE
                 binding.repeatEndLayout.visibility = View.GONE
@@ -480,16 +480,16 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                 binding.alarmIv.backgroundTintList =
                     ColorStateList.valueOf(Color.parseColor("#191919"))
             } else {
-                binding.alarmTv.setTextColor(Color.LTGRAY)
+                binding.alarmTv.setTextColor(Color.parseColor("#ACACAC"))
                 binding.alarmIv.backgroundTintList =
-                    ColorStateList.valueOf(Color.LTGRAY)
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
             }
         }
 
         for (i in 1..31) {
             val textView = TextView(requireContext())
             textView.text = getString(R.string.MonthDay, i)
-            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
             textView.gravity = Gravity.CENTER
 
             textView.setOnClickListener {
@@ -510,7 +510,7 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                     binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
                     binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 } else {
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                    textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
                     monthsValue[i-1] = false
 
                     var repeatvalue = ""
@@ -541,7 +541,7 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
         for (i in 1..12) {
             val textView = TextView(requireContext())
             textView.text = getString(R.string.YearMonth, i)
-            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
             textView.gravity = Gravity.CENTER
 
             textView.setOnClickListener {
@@ -562,7 +562,7 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                     binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
                     binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 } else {
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                    textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
                     yearsValue[i-1] = false
 
                     var repeatvalue = ""
@@ -654,7 +654,7 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                     binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 } else {
                     weeksValue[i] = false
-                    view.setTextColor(Color.LTGRAY)
+                    view.setTextColor(Color.parseColor("#ACACAC"))
 
                     var repeatvalue = ""
                     for (i in 0 until weeksValue.size){
@@ -677,6 +677,12 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                 binding.etMemoSchedule.setText(it.toString().substring(0,500))
                 binding.etMemoSchedule.setSelection(500)
             }
+
+            if(it.toString().length > 0){
+                binding.ivMemoIcon.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#191919"))
+            } else {
+                binding.ivMemoIcon.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
+            }
         }
 
         binding.btnSubmitSchedule.setOnClickListener {
@@ -685,9 +691,56 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                 return@setOnClickListener
             }
 
-            if(repeatEndCalendar.time.time - repeatStartCalendar.time.time < 1000*60*30){
+            if(!isAllday && repeatEndCalendar.time.time - repeatStartCalendar.time.time < 1000*60*30){
                 Toast.makeText(requireContext(),"일정은 30분 이상 차이나야 합니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
+            }
+
+            when(repeatOption){
+                1,2 ->{
+                    if(binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text){
+                        var cnt = 0
+
+                        for(value in weeksValue){
+                            if(value) cnt++
+                        }
+
+                        if(cnt == 0){
+                            Toast.makeText(requireContext(),"반복설정이 잘못 되었습니다.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                    }
+                }
+
+                3->{
+                    if(binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text){
+                        var cnt = 0
+
+                        for(value in monthsValue){
+                            if(value) cnt++
+                        }
+
+                        if(cnt == 0){
+                            Toast.makeText(requireContext(),"반복설정이 잘못 되었습니다.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                    }
+                }
+
+                4->{
+                    if(binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text){
+                        var cnt = 0
+
+                        for(value in yearsValue){
+                            if(value) cnt++
+                        }
+
+                        if(cnt == 0){
+                            Toast.makeText(requireContext(),"반복설정이 잘못 되었습니다.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                    }
+                }
             }
 
             val initRepeatStartDate = repeatStartCalendar.time.clone() as Date

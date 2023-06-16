@@ -2,6 +2,8 @@ package com.example.haru.view.adapter
 
 import android.app.Dialog
 import android.content.Context
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,6 +83,46 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
         simpleScheduleInputEt.hint = (calendar.time.month+1).toString()+"월 " +
                 calendar.time.date.toString() +
                 "일 일정 추가"
+
+        var enterBoolean = false
+
+        simpleScheduleInputEt.setOnKeyListener { v, keyCode, event ->
+            if(!enterBoolean && keyCode == KeyEvent.KEYCODE_ENTER){
+                enterBoolean = true
+                if(simpleScheduleInputEt.text.toString().trim() == ""){
+                    Toast.makeText(holder.itemView.context,"내용을 입력해 주세요", Toast.LENGTH_SHORT).show()
+                    enterBoolean = false
+                    return@setOnKeyListener false
+                }
+
+                val calendarviewmodel = CalendarViewModel()
+                calendarviewmodel.postSchedule(
+                    PostSchedule(
+                        simpleScheduleInputEt.text.toString(),
+                        "",
+                        true,
+                        startDate,
+                        startDate,
+                        null,
+                        null,
+                        null,
+                        emptyList()
+                    )
+                ){
+                    simpleScheduleInputEt.setText("")
+                    val imm: InputMethodManager = holder.itemView.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(simpleScheduleInputEt?.windowToken, 0)
+
+                    notifyItemChanged(position)
+                    adapter.notifyDataSetChanged()
+                    enterBoolean = false
+                }
+
+                return@setOnKeyListener true
+            }
+
+            return@setOnKeyListener false
+        }
 
         simpleScheduleBtn.setOnClickListener {
             if(simpleScheduleInputEt.text.toString().trim() == ""){
