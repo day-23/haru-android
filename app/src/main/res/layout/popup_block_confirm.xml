@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#80191919"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="30dp"
+    android:clickable="true">
+
+    <LinearLayout
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="104dp"
+        android:id="@+id/layout_parent_btn_update"
+        android:layout_width="match_parent"
+        android:layout_height="297dp"
+        android:background="@drawable/layout_radius_20_bg"
+        android:backgroundTint="#FDFDFD"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="232dp"
+            android:background="@drawable/text_radius">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/block_profile_img"
+                android:layout_width="62dp"
+                android:layout_height="62dp"
+                android:src="@drawable/default_profile"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="24dp"
+                tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/popup_block_target_name"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:text="이름"
+                android:textColor="#191919"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/block_profile_img"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="20dp"
+                tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/popup_block_user_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="이 이용자를 차단할까요? 차단된 이용자 내 피드를\n 볼 수 없으며 나에게 친구 신청을 보낼 수 없습니다.\n차단된 이용자에게는 내 계정이 검색되지 않습니다."
+                android:lineSpacingExtra="24px"
+                android:textColor="@color/date_text"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/block_profile_img"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="58dp"
+                tools:ignore="MissingConstraints" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DBDBDB"/>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/block_user_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/text_radius_bottom"
+            android:gravity="center"
+            android:text="차단하기"
+            android:textColor="@color/delete_red"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        app:layout_constraintTop_toBottomOf="@id/layout_parent_btn_update"
+        android:layout_marginTop="10dp"
+        android:id="@+id/block_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_weight="1"
+        android:background="@drawable/cancel_button_bg"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/date_text"
+        android:textSize="20sp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@ package com.example.haru.view.sns
 import BaseActivity
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -25,11 +27,13 @@ import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentAddCommentBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AddCommentPagerAdapter
 import com.example.haru.view.adapter.ImageClickListener
+import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo: User) : Fragment(), ImageClickListener{
+class AddCommentFragment(var isTemplate: String? = "", val content: String, postId: String, postImages:ArrayList<Profile>,val likeCnt : Int, val commentCnt:Int, writerInfo: User) : Fragment(), ImageClickListener{
     lateinit var binding : FragmentAddCommentBinding
     lateinit var commentContainer: FrameLayout
     lateinit var writeContainer: FrameLayout
@@ -38,11 +42,15 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
     val postId = postId
     val postImages = postImages
     private lateinit var snsViewModel: SnsViewModel
+    private lateinit var profileViewModel: MyPageViewModel
     var imageIndex = 0
     var CommentIsVisible = true
-    val myInfo = myInfo
+    val writerInfo = writerInfo
     var onEdit = false
     var ProfileImage = ""
+    var myInfo = User()
+    var isMyPost = false
+    var isCommented = false
 
     //사진위 댓글 값
     var onWrite = false
@@ -55,11 +63,7 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
     var lastX = 0f
     var lastY = 0f
     override fun OnImageClick(position: Int) {
-        if(!onWrite) {
-            onWrite = true
-            writeComment()
-            writeStart()
-        }
+        //Don't need to implement
     }
     override fun OnPopupClick(position: Int) {
         val fragmentManager = childFragmentManager
@@ -81,7 +85,7 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
            }
        }else if(position == 1){
            snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postId, postImages[imageIndex].id)
-           val addedComment = Comments("",myInfo,AddContent,AddX,AddY, true,"","")
+           val addedComment = Comments("", myInfo, AddContent,AddX,AddY, true,"","")
            postImages[imageIndex].comments.add(addedComment)
            bindComment(addedComment)
            onWrite = false
@@ -92,29 +96,32 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
     }
 
     fun writeEnd(){
-        val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-        //writeContainer.setBackgroundColor(color)
-        filterFrame.setBackgroundColor(color)
+        binding.addCommentLayout.setBackgroundColor(Color.parseColor("#FDFDFD"))
         binding.writeCommentBack.visibility = View.VISIBLE
         binding.commentVisibility.visibility = View.VISIBLE
         binding.writeCommentCancel.isGone = true
         binding.writeCommentApply.isGone = true
-        binding.commentOnWrite.isGone = true
         writeContainer.isClickable = false
-        binding.writeCommentTitle.text = "코멘트 남기기"
+        binding.addCommentButtonsLayout.visibility = View.VISIBLE
+        binding.writeCommentTitle.setTextColor(Color.parseColor("#191919"))
+        binding.writeCommentTitle.text = "코멘트"
+
+        if(com.example.haru.utils.User.id == writerInfo.id){
+            binding.addCommentInfo.visibility = View.VISIBLE
+        }
     }
 
     fun writeStart(){
-        val color = Color.argb(100, 25, 25, 25)
-        //writeContainer.setBackgroundColor(color)
-        filterFrame.setBackgroundColor(color)
+        binding.addCommentLayout.setBackgroundColor(Color.parseColor("#191919"))
         binding.writeCommentBack.isGone = true
         binding.commentVisibility.isGone = true
         binding.writeCommentApply.visibility = View.VISIBLE
         binding.writeCommentCancel.visibility = View.VISIBLE
-        binding.commentOnWrite.visibility = View.VISIBLE
         writeContainer.isClickable = true
+        binding.addCommentButtonsLayout.visibility = View.GONE
+        binding.writeCommentTitle.setTextColor(Color.parseColor("#FDFDFD"))
         binding.writeCommentTitle.text = "코멘트 작성"
+        binding.addCommentInfo.visibility = View.GONE
     }
 
 
@@ -122,6 +129,8 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
         super.onCreate(savedInstanceState)
         Log.d("TAG", "SnsMypageFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
+        MainActivity.hideNavi(true)
     }
 
     // status bar height 조정
@@ -142,7 +151,19 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
         savedInstanceState: Bundle?
     ): View? {
         Log.d("TAG", "SnsFragment - onCreateView() called")
+        profileViewModel.getUserInfo(com.example.haru.utils.User.id)
+        profileViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
+            isMyPost = com.example.haru.utils.User.id == user.id
+            myInfo = user
+        }
         binding = FragmentAddCommentBinding.inflate(inflater, container, false)
+        if(isTemplate != "" && isTemplate != null) {
+            binding.addCommentTemplateText.text = content
+            binding.addCommentTemplateText.setTextColor(Color.parseColor(isTemplate))
+        }
+
+        binding.addCommentLikeCount.text = likeCnt.toString()
+        binding.addCommentCommentCount.text = commentCnt.toString()
         commentContainer = binding.commentFrame
         filterFrame = binding.filterFrame
         commentContainer.post{
@@ -153,6 +174,21 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
         writeContainer = binding.moveFrame
         val viewpager = binding.commentImage
         val viewPagerAdapter = AddCommentPagerAdapter(requireContext(), postImages, this)
+
+        binding.addCommentWriteText.setOnClickListener {
+            if(!onWrite) {
+                onWrite = true
+                writeComment()
+                writeStart()
+            }
+        }
+        binding.addCommentWriteButton.setOnClickListener {
+            if(!onWrite) {
+                onWrite = true
+                writeComment()
+                writeStart()
+            }
+        }
 
         binding.lastPicture.setOnClickListener {
             val currentItem = viewpager.currentItem
@@ -170,11 +206,11 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
 
         binding.writeCommentBack.setOnClickListener {
             val backManager = parentFragmentManager
+            MainActivity.hideNavi(false)
             backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
 
         binding.tempCheckWriter.setOnClickListener {
-
             if(showWriter) {
                 for (i in 0..commentContainer.size - 1) {
                     val view = commentContainer.get(i)
@@ -187,6 +223,7 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
             override fun onPageSelected(position: Int) {
                 writeContainer.removeAllViews()
                 onWrite = false
+                isCommented = false
                 imageIndex = position
                 binding.lastPicture.visibility = View.VISIBLE
                 binding.nextPicture.visibility = View.VISIBLE
@@ -204,10 +241,15 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
                 }
                 for(comment in postImages[position].comments) {
                     Log.d("20191668","내용:  ${comment}")
+                    comment.user?.let {
+                        if(it.id == com.example.haru.utils.User.id)
+                            isCommented = true
+                    }
                     commentContainer.post {
                         bindComment(comment)
                     }
                 }
+                setUi()
             }
         })
 
@@ -229,6 +271,8 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
                 val addedComment = Comments("",myInfo,AddContent,AddX,AddY, true,"","")
                 postImages[imageIndex].comments.add(addedComment)
                 bindComment(addedComment)
+                isCommented = true
+                setUi()
                 onWrite = false
                 writeContainer.removeAllViews()
                 writeEnd()
@@ -265,10 +309,31 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
         return binding.root
     }
 
+    fun setUi(){
+        if(com.example.haru.utils.User.id == writerInfo.id){
+            binding.addCommentEditComments.visibility = View.VISIBLE
+            binding.addCommentEditText.visibility = View.VISIBLE
+        }else if(isCommented){
+            binding.addCommentWriteButton.visibility = View.GONE
+            binding.addCommentWriteText.visibility = View.GONE
+            binding.addCommentMyCommentIcon.visibility = View.VISIBLE
+            binding.addCommentMyCommentText.visibility = View.VISIBLE
+        }else{
+            binding.addCommentWriteButton.visibility = View.VISIBLE
+            binding.addCommentWriteText.visibility = View.VISIBLE
+            binding.addCommentMyCommentIcon.visibility = View.GONE
+            binding.addCommentMyCommentText.visibility = View.GONE
+        }
+    }
+
     fun editStart(){
+        binding.addCommentInfo.visibility = View.GONE
+        binding.addCommentLayout.setBackgroundColor(Color.parseColor("#191919"))
         val color = Color.argb(100, 25, 25, 25)
         binding.editFilterFrame.setBackgroundColor(color)
         binding.addCommentEditComments.setImageResource(R.drawable.edit_comment_blue_finger)
+        binding.writeCommentBack.setBackgroundResource(R.drawable.back_arrow_white)
+        binding.writeCommentTitle.setTextColor(Color.parseColor("#FDFDFD"))
         binding.addCommentEditText.setText("편집중")
         binding.addCommentEditText.setTextColor(Color.parseColor("#1DAFFF"))
         binding.addCommentResetIcon.visibility = View.VISIBLE
@@ -278,16 +343,19 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
         binding.addcommentIndex.visibility = View.GONE
         binding.commentVisibility.visibility = View.GONE
         binding.showTotalComment.visibility = View.GONE
-
-
+        binding.editCommentApply.visibility = View.VISIBLE
     }
 
     fun editEnd(){
+        binding.addCommentInfo.visibility = View.VISIBLE
+        binding.addCommentLayout.setBackgroundColor(Color.parseColor("#FDFDFD"))
         val color = Color.argb(0, 0, 0, 0)
         binding.editFilterFrame.setBackgroundColor(color)
-        binding.addCommentEditComments.setImageResource(R.drawable.edit_comment_white_finger)
+        binding.addCommentEditComments.setImageResource(R.drawable.edit_comment_gray_finger)
+        binding.writeCommentBack.setBackgroundResource(R.drawable.back_arrow)
+        binding.writeCommentTitle.setTextColor(Color.parseColor("#191919"))
         binding.addCommentEditText.setText("편집하기")
-        binding.addCommentEditText.setTextColor(Color.parseColor("#FDFDFD"))
+        binding.addCommentEditText.setTextColor(Color.parseColor("#646464"))
         binding.addCommentResetIcon.visibility = View.GONE
         binding.addCommentResetText.visibility = View.GONE
         binding.lastPicture.visibility = View.VISIBLE
@@ -295,6 +363,7 @@ class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo:
         binding.addcommentIndex.visibility = View.VISIBLE
         binding.commentVisibility.visibility = View.VISIBLE
         binding.showTotalComment.visibility = View.VISIBLE
+        binding.editCommentApply.visibility = View.GONE
     }
 
     @SuppressLint("MissingInflatedId")

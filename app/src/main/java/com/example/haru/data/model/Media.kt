@@ -4,7 +4,7 @@ data class Media(
     val id : String = "",
     val user : MediaUser = MediaUser(),
     val content: String = "",
-    val templateUrl : String = "",
+    val templateUrl : String? = "",
     val images : ArrayList<Profile> = arrayListOf(),
     val hashTags : ArrayList<String> = arrayListOf(),
     var isLiked : Boolean = false,
