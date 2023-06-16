@@ -28,23 +28,42 @@
         android:lineSpacingExtra="6sp"
         android:layout_marginTop="39dp"/>
 
-    <ImageView
-        android:id="@+id/kakao_login_btn"
+    <LinearLayout
+        android:id="@+id/kakao_login_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/kakao_login_large_wide"
+        android:layout_marginTop="132dp"
+        android:gravity="center"
+        android:adjustViewBounds="true"
+        android:background="@drawable/shape_rect_radius_12"
+        android:backgroundTint="@color/kakao_bg"
         app:layout_constraintTop_toBottomOf="@id/login_haru_subtitle"
         tools:ignore="MissingConstraints"
-        android:layout_marginTop="134dp"
-        android:adjustViewBounds="true"
-        />
+        tools:layout_editor_absoluteX="38dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/minSize"
+            android:id="@+id/kakao_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:paddingVertical="9dp"
+            android:drawableStart="@drawable/kakaotalk_logo"
+            android:drawablePadding="10dp"
+            android:text="카카오로 로그인하기"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/one_second_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/kakao_login_btn"
-        app:layout_constraintRight_toRightOf="@id/kakao_login_btn"
+        app:layout_constraintBottom_toTopOf="@id/kakao_login_layout"
+        app:layout_constraintRight_toRightOf="@id/kakao_login_layout"
         android:layout_marginRight="20dp"
         android:src="@drawable/one_second_login"
         />
@@ -59,17 +78,24 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@id/one_second_login"
-        app:layout_constraintRight_toRightOf="@id/kakao_login_btn"
+        app:layout_constraintRight_toRightOf="@id/kakao_login_layout"
         android:layout_marginRight="20dp"
         />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
+        style="@style/minSize"
         android:id="@+id/login_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="테스트용 로그인"
+        android:background="@drawable/shape_rect_radius_12"
+        android:backgroundTint="@color/white"
+        android:text="게스트로 로그인하기"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/todo_description"
+        android:paddingVertical="14dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/kakao_login_btn"
+        app:layout_constraintTop_toBottomOf="@id/kakao_login_layout"
         />
 
 

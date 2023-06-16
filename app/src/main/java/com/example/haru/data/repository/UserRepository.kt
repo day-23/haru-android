@@ -11,9 +11,7 @@ import com.example.haru.utils.User as UserObject
 class UserRepository() {
     private val userService = RetrofitClient.userService
     val userId = com.example.haru.utils.User.id
-    suspend fun getUser(userId: Int): User {
-        return userService.getUser(userId)
-    }
+
     //친구 요청
     suspend fun requestFriend(body: Followbody, callback: (result : Boolean) -> Unit) = withContext(
         Dispatchers.IO){

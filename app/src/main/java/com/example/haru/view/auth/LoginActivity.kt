@@ -39,8 +39,12 @@ class LoginActivity : BaseActivity() {
         setContentView(binding.root)
 
         /* 카카오 로그인 버튼 */
-        binding.kakaoLoginBtn.setOnClickListener {
+        binding.kakaoLoginLayout.setOnClickListener {
             updateKakaoLoginUi()
+        }
+
+        binding.kakaoLogin.setOnClickListener{
+            binding.kakaoLoginLayout.performClick()
         }
 
         /* 기존 로그인 버튼 */
@@ -62,13 +66,13 @@ class LoginActivity : BaseActivity() {
 
     //카카오 로그인 과정
     private fun updateKakaoLoginUi() {// 카카오계정으로 로그인 공통 callback 구성
-        binding.kakaoLoginBtn.isEnabled = false
+        binding.kakaoLoginLayout.isEnabled = false
 
         // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 Log.e("LOGIN", "카카오계정으로 로그인 실패", error)
-                binding.kakaoLoginBtn.isEnabled = true
+                binding.kakaoLoginLayout.isEnabled = true
             } else if (token != null) {
                 Log.i("LOGIN", "카카오계정으로 로그인 성공 ${token.accessToken}")
                 validateUserWithServer(token)
@@ -231,7 +235,7 @@ class LoginActivity : BaseActivity() {
             override fun onFailure(call: Call<UserKakaoAuthResponse>, t: Throwable) {
                 // i want to know server response json
                 Log.e("LOGIN", "Server login failed with error: ${t.message}")
-                binding.kakaoLoginBtn.isEnabled = true
+                binding.kakaoLoginLayout.isEnabled = true
                 updateKakaoLoginUi()
             }
         })

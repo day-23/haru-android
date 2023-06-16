@@ -74,6 +74,7 @@
         <activity
             android:name=".view.auth.SignUpActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.Haru.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"

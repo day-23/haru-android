@@ -6,8 +6,6 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface UserService {
-    @GET("users/{userId}")
-    suspend fun getUser(@Path("userId") userId: Int): User
     //친구 요청
     @POST("friends/{userId}/request")
     fun requestFriend(@Path("userId") userId: String, @Body followingId : Followbody) : Call<FollowResponse>

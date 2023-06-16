@@ -9,10 +9,10 @@
         android:id="@+id/header_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginVertical="60dp"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:layout_marginVertical="60dp"
         tools:context=".view.auth.SignUpActivity">
 
         <ImageView
@@ -44,22 +44,29 @@
                 android:layout_marginHorizontal="14dp"
                 android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
+                android:gravity="center_vertical"
                 android:hint="ID를 입력해 주세요"
-                android:textColor="#ACACAC"
+                android:inputType="text"
+                android:maxLength="20"
+                android:maxLines="1"
+                android:textColor="@color/todo_description"
+                android:textColorHint="@color/light_gray"
                 android:textSize="24sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="14dp"
-                android:background="#DBDBDB" />
+                android:background="@color/divider" />
 
             <TextView
+                android:id="@+id/tv_id_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="14dp"
                 android:layout_marginBottom="58dp"
                 android:text="하루 ID는 타 사용자가 나의 계정을 검색할 때 외에 노출되지 않습니다.\nID는 초기 생성 이후 변경이 가능합니다."
+                android:textColor="@color/light_gray"
                 android:textSize="12dp" />
 
             <TextView
@@ -78,16 +85,28 @@
                 android:layout_marginHorizontal="14dp"
                 android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
+                android:gravity="center_vertical"
                 android:hint="최대 8글자를 입력해 주세요"
-                android:textColor="#ACACAC"
+                android:inputType="text"
+                android:maxLength="8"
+                android:maxLines="1"
+                android:textColor="@color/todo_description"
+                android:textColorHint="@color/light_gray"
                 android:textSize="24sp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="14dp"
-                android:layout_marginBottom="99dp"
                 android:background="#DBDBDB" />
+
+            <TextView
+                android:id="@+id/tv_nick_name_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
+                android:textColor="@color/light_gray"
+                android:textSize="12dp" />
 
             <android.widget.Button
                 android:id="@+id/btn_signup"
