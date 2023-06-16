@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.GradientDrawable
@@ -128,18 +129,22 @@ class CategoryAdapter(private val onItemClicked: (Category, Int) -> Unit) : Recy
                         PorterDuff.Mode.SRC_ATOP
                     )
 
+                    cateogryCorrection.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#191919"))
                     cateogryName.setTextColor(Color.parseColor("#191919"))
 
                     categoryShowIv.setBackgroundResource(R.drawable.category_show_image)
+                    categoryShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#191919"))
                 } else {
                     drawable.setColorFilter(
                         Color.parseColor("#ACACAC"),
                         PorterDuff.Mode.SRC_ATOP
                     )
 
+                    cateogryCorrection.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
                     cateogryName.setTextColor(Color.parseColor("#ACACAC"))
 
                     categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
+                    categoryShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
                 }
             } else {
                 drawable.setColorFilter(
@@ -147,9 +152,11 @@ class CategoryAdapter(private val onItemClicked: (Category, Int) -> Unit) : Recy
                     PorterDuff.Mode.SRC_ATOP
                 )
 
+                cateogryCorrection.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
                 cateogryName.setTextColor(Color.parseColor("#ACACAC"))
 
                 categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
+                categoryShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
             }
 
             categoryShowIv.setOnClickListener {
@@ -182,6 +189,7 @@ class CategoryAdapter(private val onItemClicked: (Category, Int) -> Unit) : Recy
                         cateogryName.setTextColor(Color.parseColor("#191919"))
 
                         categoryShowIv.setBackgroundResource(R.drawable.category_show_image)
+                        categoryShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#191919"))
                     } else {
                         drawable.setColorFilter(
                             Color.parseColor("#ACACAC"),
@@ -191,6 +199,7 @@ class CategoryAdapter(private val onItemClicked: (Category, Int) -> Unit) : Recy
                         cateogryName.setTextColor(Color.parseColor("#ACACAC"))
 
                         categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
+                        categoryShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
                     }
                 } else {
                     drawable.setColorFilter(
@@ -201,6 +210,7 @@ class CategoryAdapter(private val onItemClicked: (Category, Int) -> Unit) : Recy
                     cateogryName.setTextColor(Color.parseColor("#ACACAC"))
 
                     categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
+                    categoryShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
                 }
 
                 categoryShowIv.setOnClickListener {
@@ -224,6 +234,7 @@ class CategoryAdapter(private val onItemClicked: (Category, Int) -> Unit) : Recy
                         cateogryName.setTextColor(Color.parseColor("#191919"))
 
                         categoryShowIv.setBackgroundResource(R.drawable.category_show_image)
+                        categoryShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#191919"))
                     } else {
                         drawable.setColorFilter(
                             Color.parseColor("#ACACAC"),
@@ -233,6 +244,7 @@ class CategoryAdapter(private val onItemClicked: (Category, Int) -> Unit) : Recy
                         cateogryName.setTextColor(Color.parseColor("#ACACAC"))
 
                         categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
+                        categoryShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
                     }
                 } else {
                     drawable.setColorFilter(
@@ -243,6 +255,7 @@ class CategoryAdapter(private val onItemClicked: (Category, Int) -> Unit) : Recy
                     cateogryName.setTextColor(Color.parseColor("#ACACAC"))
 
                     categoryShowIv.setBackgroundResource(R.drawable.category_unshow_image)
+                    categoryShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
                 }
 
                 categoryShowIv.setOnClickListener {

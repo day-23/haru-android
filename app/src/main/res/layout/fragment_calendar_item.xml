@@ -121,6 +121,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -209,7 +210,8 @@
                         android:id="@+id/alarm_iv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/big_alarm_icon" />
+                        android:background="@drawable/big_alarm_icon"
+                        android:backgroundTint="#ACACAC"/>
 
                     <TextView
                         android:id="@+id/alarm_tv"
@@ -251,6 +253,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="20dp"
+                        android:background="@android:color/transparent"
                         android:thumb="@drawable/custom_switch_thumb"
                         app:track="@drawable/custom_switch" />
 
@@ -276,7 +279,8 @@
                             android:id="@+id/repeat_iv_schedule"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/big_repeat_icon" />
+                            android:background="@drawable/big_repeat_icon"
+                            android:backgroundTint="#ACACAC"/>
 
                         <TextView
                             android:id="@+id/repeat_tv_schedule"
@@ -294,6 +298,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:background="@android:color/transparent"
                             android:thumb="@drawable/custom_switch_thumb"
                             app:track="@drawable/custom_switch" />
                     </LinearLayout>
@@ -510,8 +515,9 @@
                             android:layout_marginEnd="10dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/custom_btn_date"
+                            android:text="2023.03.14 화"
                             android:textColor="@color/date_text"
-                            android:visibility="gone"
+                            android:visibility="invisible"
                             android:textSize="14sp"
                             app:backgroundTint="@null" />
 
@@ -541,7 +547,8 @@
                         android:id="@+id/iv_memo_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/big_memo_icon" />
+                        android:background="@drawable/big_memo_icon"
+                        android:backgroundTint="#ACACAC"/>
 
                     <EditText
                         android:id="@+id/et_memo_schedule"
