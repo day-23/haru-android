@@ -188,6 +188,7 @@ class LoginActivity : BaseActivity() {
                                         User.createdAt = response.body()?.data?.createdAt.toString()
                                         User.accessToken =
                                             response.body()?.data?.accessToken.toString()
+                                        User.isSignUp = response.body()?.data?.isSignUp!!
 
 
 
@@ -216,7 +217,7 @@ class LoginActivity : BaseActivity() {
                             if(User.isMaliciousUser){
                                 Toast.makeText(this@LoginActivity, "애플리케이션 악성 이용자로 판단되어 정지된 계정입니다.", Toast.LENGTH_SHORT).show()
                             }
-                            else if (User.name == "") {
+                            else if (!User.isSignUp) {
                                 val intent = Intent(this@LoginActivity, SignUpActivity::class.java)
                                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                                 finish()

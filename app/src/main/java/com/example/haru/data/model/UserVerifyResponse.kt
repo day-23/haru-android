@@ -18,7 +18,8 @@ data class UserVerify(
     val isAllowSearch: Boolean,
     val isMaliciousUser: Boolean,
     val createdAt: String,
-    val accessToken: String?
+    val accessToken: String?,
+    val isSignUp : Boolean
 )
 
 data class UserRelatedWithSnsData(
