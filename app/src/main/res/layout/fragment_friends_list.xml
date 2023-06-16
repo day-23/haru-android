@@ -13,9 +13,9 @@
         tools:ignore="MissingConstraints">
         <ImageView
             android:id="@+id/friends_list_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/back_image"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/back_arrow"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="20dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -82,10 +82,6 @@
                 android:src="@color/white"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
-
-
-
-
 
     <LinearLayout
         android:id="@+id/friends_list_search"
