@@ -42,4 +42,26 @@ object User {
                 "{createdAt : $createdAt}, " +
                 "{isSignUp : $isSignUp}, "
     }
+
+    fun clear() {
+        id = ""
+        name = ""  // sns 이름 = nickname
+        isPublicAccount = true
+        haruId = ""  // 검색용 이름
+        email = ""
+        socialAccountType = ""
+        isPostBrowsingEnabled = true
+        isAllowFeedLike = 0
+        isAllowFeedComment = 0
+        isAllowSearch = true
+        isMaliciousUser = false
+        createdAt = ""
+        accessToken = ""
+        amAlarmAprove = true
+        amAlarmDate = ""
+        pmAlarmAprove = true
+        pmAlarmDate = ""
+        categories = arrayListOf(null, null)
+        isSignUp = false
+    }
 }
