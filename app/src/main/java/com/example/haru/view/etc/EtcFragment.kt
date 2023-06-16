@@ -83,7 +83,7 @@ class EtcFragment : Fragment() {
         })
 
         etcViewModel.introduction.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            binding.tvIntroduction.text = it
+            binding.tvIntroduction.text = if (it == "") getString(R.string.SnsIntroduction) else it
         })
 
         etcViewModel.postCount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
