@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FDFDFD"
-        android:paddingStart="15dp"
+        android:paddingStart="20dp"
         android:paddingEnd="20dp"
         tools:ignore="MissingConstraints">
 
@@ -26,6 +26,34 @@
                 android:src="@drawable/back_arrow"
                 android:textColor="#191919"
                 android:textStyle="bold"/>
+
+            <LinearLayout
+                android:id="@+id/mypage_denote_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/my_record_feather"
+                    android:backgroundTint="#1DAFFF"
+                    android:layout_marginRight="5dp"
+                    />
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="16dp"
+                    android:text="내 기록"
+                    android:layout_gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="#1DAFFF"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:background="#00000000"
+                    />
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/mypage_setup"
@@ -100,6 +128,7 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_image"
+                    android:src="@drawable/default_profile"
                     android:layout_width="62dp"
                     android:layout_height="62dp"
                     android:layout_marginStart="20dp"
@@ -135,6 +164,7 @@
                         android:text="자기소개"
                         android:textColor="#191919"
                         android:textSize="14sp"
+                        android:maxLength="12"
                         app:layout_constraintBottom_toBottomOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -331,5 +361,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/mypage_popup_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -80,11 +80,18 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <!--이미지 크롭-->
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
 
         <receiver
             android:name=".view.etc.AlarmWorker"
             android:enabled="true"
             android:exported="false" />
-    </application>
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/app_icon_foreground"
+            />
+    </application>
 </manifest>

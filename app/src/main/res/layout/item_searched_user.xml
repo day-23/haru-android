@@ -86,5 +86,54 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="5dp"/>
+    
+    <TextView
+        android:id="@+id/friend_send_request"
+        android:layout_width="83dp"
+        android:layout_height="32dp"
+        android:text="친구 신청"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FDFDFD"
+        android:background="@drawable/gradation_btn_custom"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="20dp"/>
+
+    <TextView
+        android:id="@+id/friend_myfriend"
+        android:layout_width="70dp"
+        android:layout_height="32dp"
+        android:text="내 친구"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#646464"
+        android:background="@drawable/search_box"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="20dp"/>
+
+    <TextView
+        android:id="@+id/friend_cancel_request"
+        android:layout_width="83dp"
+        android:layout_height="32dp"
+        android:visibility="gone"
+        android:text="신청 취소"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#646464"
+        android:background="@drawable/search_box"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="20dp"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -72,6 +72,7 @@
             android:textCursorDrawable="@drawable/custom_cursor"
             android:textColorHint="#ACACAC"
             android:hint="태그 추가"
+            android:textColor="#191919"
             android:inputType="text"
             android:singleLine="true"
             android:maxLength="10"

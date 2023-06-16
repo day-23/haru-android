@@ -76,7 +76,7 @@ class SnsPostAdapter(val context: Context,
 
         holder.setup.setOnClickListener {
             Log.d("20191668", "set up")
-            listener.onSetupClick(User.id, itemList[position].id, itemList[position])
+            listener.onSetupClick(itemList[position].user.id, itemList[position].id, itemList[position])
         }
 
         val pictureIndex = adapter.itemCount

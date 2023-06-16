@@ -1888,6 +1888,13 @@ class CalendarItemFragment(
             }
         }
 
+        binding.scheduleContentEt.addTextChangedListener {
+            if(it.toString().length > 50){
+                binding.scheduleContentEt.setText(it.toString().substring(0,50))
+                binding.scheduleContentEt.setSelection(50)
+            }
+        }
+
         binding.etMemoSchedule.addTextChangedListener {
             if (it.toString().length > 500) {
                 binding.etMemoSchedule.setText(it.toString().substring(0, 500))

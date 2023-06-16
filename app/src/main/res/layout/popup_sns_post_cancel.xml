@@ -17,8 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="194dp"
         android:background="@drawable/layout_radius_20_bg"
+        android:backgroundTint="#FDFDFD"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/post_cancel_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -44,7 +46,8 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_parent_btn_update"
+        android:layout_marginTop="10dp"
         android:id="@+id/sns_add_post_cancel"
         android:layout_width="match_parent"
         android:layout_height="64dp"

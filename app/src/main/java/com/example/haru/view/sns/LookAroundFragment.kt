@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
+import com.example.haru.data.model.Media
+import com.example.haru.data.model.MediaUser
 import com.example.haru.data.model.Post
 import com.example.haru.data.model.Tag
 import com.example.haru.databinding.FragmentLookAroundBinding
@@ -28,7 +30,11 @@ import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-class LookAroundFragment : Fragment() , OnMediaTagClicked{
+interface LookAroundClick{
+    fun pictureClicked(post : Post)
+}
+
+class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
     private lateinit var snsViewModel: SnsViewModel
     private lateinit var profileViewModel: MyPageViewModel
     private lateinit var lookAroundPosts: RecyclerView
@@ -75,6 +81,15 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked{
         }
     }
 
+    override fun pictureClicked(post: Post) {
+        val dummyMedia = Media()
+        val newFrag = DetailFragment(dummyMedia, post)
+        val transaction = parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragments_frame, newFrag)
+        transaction.addToBackStack("lookaround")
+        transaction.commit()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(SnsFragment.TAG, "LookAroundFragment - onCreate() called")
@@ -103,12 +118,19 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked{
         lookAroundPosts = binding.lookAroundPosts
         lookAroundPosts.addOnScrollListener(scrollListener)
         lookAroundTags = binding.lookAroundTags
-        postAdapter = LookAroundAdapter(requireContext(), arrayListOf())
+        postAdapter = LookAroundAdapter(requireContext(), arrayListOf(), this)
         lookAroundPosts.adapter = postAdapter
         setGridLayout(lookAroundPosts)
         lookAroundTags.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         getTags()
         getFirstPosts()
+
+        val refresher = binding.refreshLookAround
+        refresher.setOnRefreshListener {
+            refresher.isRefreshing = true
+            snsViewModel.getFirstPosts()
+            refresher.isRefreshing = false
+        }
 
         snsViewModel.Posts.observe(viewLifecycleOwner){posts ->
             if(posts.isNotEmpty()) {

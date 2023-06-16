@@ -5,6 +5,6 @@ import android.net.Uri
 data class ExternalImages(
     val id: Long,
     val name: String,
-    val path: String,
-    val absuri: Uri,
+    var path: String,
+    var absuri: Uri,
 )

@@ -77,6 +77,66 @@ object Alarm {
         }
     }
 
+    fun amPmAlarmEdit(context: Context){
+        deleteAmPmAlarm(context)
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(context, AlarmWorker::class.java)
+
+        if (User.id != "") {
+            intent.putExtra("userId", User.id)
+            intent.putExtra("requestCode", "0")
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, 0, intent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
+
+            val calendar = Calendar.getInstance()
+            calendar.time = Date()
+
+            val amTime = timeformatter.parse(User.amAlarmDate)
+
+            amTime.year = calendar.time.year
+            amTime.month = calendar.time.month
+            amTime.date = calendar.time.date
+
+            val pmTime = timeformatter.parse(User.pmAlarmDate)
+
+            pmTime.year = calendar.time.year
+            pmTime.month = calendar.time.month
+            pmTime.date = calendar.time.date
+
+            if(calendar.time.after(pmTime)){
+                calendar.apply {
+                    time = amTime
+                    add(Calendar.DATE, 1)
+                }
+            }
+            else if (calendar.time.after(amTime)){
+                calendar.apply {
+                    time = pmTime
+                }
+            } else {
+                calendar.apply {
+                    time = amTime
+                }
+            }
+
+            Log.d("알람추가", "아침저녁 알림")
+            Log.d("알람추가", calendar.time.toString())
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+        }
+    }
+
     private fun addAlarm(context: Context){
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -90,7 +150,7 @@ object Alarm {
 
             val pendingIntent = PendingIntent.getBroadcast(
                 context, 0, intent,
-                PendingIntent.FLAG_MUTABLE
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
             val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
@@ -148,7 +208,7 @@ object Alarm {
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         calendarMainData.alarmCnt++
@@ -179,7 +239,7 @@ object Alarm {
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         calendarMainData.alarmCnt++
@@ -206,12 +266,28 @@ object Alarm {
         for (i in 0 until  calendarMainData.alarmCnt-1) {
             val pendingIntent = PendingIntent.getBroadcast(
                 context, i, intent,
-                PendingIntent.FLAG_MUTABLE
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
             if(pendingIntent != null){
                 alarmManager.cancel(pendingIntent)
             }
+        }
+
+        calendarMainData.alarmCnt = 0
+    }
+
+    private fun deleteAmPmAlarm(context: Context){
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmWorker::class.java)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context, 0, intent,
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        if(pendingIntent != null){
+            alarmManager.cancel(pendingIntent)
         }
 
         calendarMainData.alarmCnt = 0

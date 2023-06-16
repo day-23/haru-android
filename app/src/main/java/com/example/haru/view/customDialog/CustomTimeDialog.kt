@@ -170,7 +170,14 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
         }
 
         binding.emptyLayout.setOnClickListener{
-            dismiss()
+            if (timePickerClick != null) {
+                timePickerClick?.onClick(
+                    binding.timeDivision,
+                    binding.npHourPick,
+                    binding.npMinutePick
+                )
+                dismiss()
+            }
         }
 
 //        binding.btnPositive.setOnClickListener {

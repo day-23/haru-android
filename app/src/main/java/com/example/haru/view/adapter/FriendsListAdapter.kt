@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.FriendInfo
+import com.example.haru.utils.User
 import com.example.haru.view.sns.OnFriendClicked
 
 class FriendsListAdapter(val context: Context,
                          private var itemList: ArrayList<FriendInfo> = arrayListOf(),
+                         val listOwner : String,
                          val onFriendClicked: OnFriendClicked
                         ) : RecyclerView.Adapter<FriendsListAdapter.FriendsListViewHolder>(){
 
@@ -41,14 +43,30 @@ class FriendsListAdapter(val context: Context,
 
         holder.accept.setOnClickListener {
             onFriendClicked.onAcceptClick(itemList[position])
+            hideButtons(holder)
+            showButtons(holder, 2)
         }
 
         holder.reject.setOnClickListener {
             onFriendClicked.onRejectClick(itemList[position])
+            hideButtons(holder)
+            showButtons(holder, 0)
         }
 
         holder.profile.setOnClickListener {
             onFriendClicked.onProfileClick(itemList[position])
+        }
+
+        holder.cancelReq.setOnClickListener {
+            onFriendClicked.onCancelClick(itemList[position])
+            hideButtons(holder)
+            showButtons(holder, 0)
+        }
+
+        holder.request.setOnClickListener {
+            onFriendClicked.onRequestClick(itemList[position])
+            hideButtons(holder)
+            showButtons(holder, 1)
         }
 
     }
@@ -59,13 +77,23 @@ class FriendsListAdapter(val context: Context,
 
     fun showButtons(holder: FriendsListViewHolder, status: Int){
         when(status){
-            1 -> {
+            0 ->{ //아무사이 아님
+                holder.request.visibility = View.VISIBLE
+            }
+            1 -> { // 내가 친구 신청중
+                holder.cancelReq.visibility = View.VISIBLE
+                }
+            2 -> { //친구
+                if(User.id == listOwner) {
+                    holder.delete.visibility = View.VISIBLE
+                    holder.setup.visibility = View.VISIBLE
+                }else{
+                    holder.myFriend.visibility = View.VISIBLE
+                }
+            }
+            3 -> { //나한테 요청을 건사람
                 holder.accept.visibility = View.VISIBLE
                 holder.reject.visibility = View.VISIBLE
-                }
-            2 -> {
-                holder.delete.visibility = View.VISIBLE
-                holder.setup.visibility = View.VISIBLE
             }
         }
     }
@@ -75,6 +103,9 @@ class FriendsListAdapter(val context: Context,
         holder.accept.visibility = View.GONE
         holder.reject.visibility = View.GONE
         holder.setup.visibility = View.GONE
+        holder.request.visibility = View.GONE
+        holder.myFriend.visibility = View.GONE
+        holder.cancelReq.visibility = View.GONE
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -109,9 +140,15 @@ class FriendsListAdapter(val context: Context,
     inner class FriendsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var profile = itemView.findViewById<ImageView>(R.id.search_profile)
         var name = itemView.findViewById<TextView>(R.id.search_id)
+
         var delete = itemView.findViewById<TextView>(R.id.friend_delete)
+        var setup = itemView.findViewById<ImageView>(R.id.search_setup)
+
         var accept = itemView.findViewById<TextView>(R.id.friend_accept)
         var reject = itemView.findViewById<TextView>(R.id.friend_reject)
-        var setup = itemView.findViewById<ImageView>(R.id.search_setup)
+
+        var request = itemView.findViewById<TextView>(R.id.friend_send_request)
+        var myFriend = itemView.findViewById<TextView>(R.id.friend_myfriend)
+        var cancelReq = itemView.findViewById<TextView>(R.id.friend_cancel_request)
     }
 }

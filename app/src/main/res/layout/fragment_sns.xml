@@ -45,7 +45,7 @@
                 app:layout_constraintRight_toLeftOf="@id/my_records"
                 app:layout_constraintTop_toTopOf="@id/sns_haru_title"
                 app:layout_constraintBottom_toBottomOf="@id/sns_haru_title"
-                android:layout_marginRight="10.71dp"
+                android:layout_marginRight="5dp"
                 />
 
             <TextView
@@ -72,10 +72,9 @@
         android:layout_height="67dp"
         android:orientation="vertical"
         android:background="@drawable/sns_select_buttons"
-        app:layout_constraintTop_toTopOf="@id/sns_menu"
+        app:layout_constraintTop_toBottomOf="@id/sns_menu"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="16dp"
         tools:ignore="MissingConstraints"
         android:visibility="gone"
         android:elevation="15dp">
@@ -122,7 +121,7 @@
         android:id="@+id/add_post"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:src="@drawable/add_sns_post"
+        android:src="@drawable/add_sns"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="10dp"
@@ -136,6 +135,12 @@
         app:layout_constraintBottom_toTopOf = "@+id/add_post"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="10dp"
-        android:layout_marginEnd="20dp"/>
+        android:layout_marginEnd="20dp"
+        android:visibility="gone"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sns_post_anchor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

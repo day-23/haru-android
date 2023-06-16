@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
@@ -113,7 +114,7 @@ class AlarmWorker : BroadcastReceiver(){
                 intent2.putExtra("userId", userId)
                 val pendingIntent = PendingIntent.getBroadcast(
                     context, 0, intent2,
-                    PendingIntent.FLAG_MUTABLE
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
                 val calendar = Calendar.getInstance()

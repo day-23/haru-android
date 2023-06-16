@@ -9,11 +9,13 @@ import com.bumptech.glide.Glide.init
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
+import com.example.haru.data.repository.UserRepository
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 
 class SnsViewModel: ViewModel() {
     private val PostRepository = PostRepository()
+    private val userRepository = UserRepository()
 
     private val _Posts = MutableLiveData<ArrayList<Post>>()//요청한 게시글 첫번째 페이지
     val Posts : LiveData<ArrayList<Post>>
@@ -59,6 +61,9 @@ class SnsViewModel: ViewModel() {
     val ChangeResult : LiveData<Boolean>
         get() = _ChangeResult
 
+    private val _SearchedUser = MutableLiveData<User>()
+    val SearchedUser : LiveData<User>
+        get() = _SearchedUser
     fun getPosts(lastCreatedAt: String){
         Log.d("20191668", "$lastCreatedAt")
         var newPost: ArrayList<Post> = arrayListOf()
@@ -192,4 +197,6 @@ class SnsViewModel: ViewModel() {
             _ChangeResult.value = result
         }
     }
+    //하루 유저 아이디로 검색
+
 }
