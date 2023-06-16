@@ -2,10 +2,7 @@ package com.example.haru.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build.VERSION_CODES.P
-import android.provider.ContactsContract.Profile
 import android.provider.MediaStore
-import android.security.KeyChainAliasCallback
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,16 +11,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
-import com.example.haru.data.repository.TodoRepository
 import com.example.haru.data.repository.UserRepository
-import com.example.haru.utils.User.name
-import com.kakao.sdk.talk.model.Friend
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.security.AccessController.getContext
 
 class MyPageViewModel() : ViewModel() {
     private val ProfileRepository = ProfileRepository()
@@ -299,6 +294,8 @@ class MyPageViewModel() : ViewModel() {
         if (images != null) {
             for (data in images) {
                 val cursor = context.contentResolver.query(data.absuri, null, null, null, null)
+                Log.d("CropImages", "cursor : $cursor")
+                Log.d("CropImages", "${data.absuri}")
                 cursor?.use {
                     it.moveToFirst()
                     val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
@@ -307,15 +304,39 @@ class MyPageViewModel() : ViewModel() {
                     val fileExtension = "image/$fileName"
 
                     val file = File(imagePath)
-                    Log.d("Image", "4 $file")
-
+                    Log.d("CropImages", "file : $file")
                     val requestFile = RequestBody.create(fileExtension.toMediaTypeOrNull(), file)
                     val part = MultipartBody.Part.createFormData("image", fileName, requestFile)
                     convertedImages.add(part)
                 }
-            }
-        }
+                if(cursor == null){
+                    // File path of the cache image
+                    val imagePath = data.absuri.toString()
 
+                    // Create a File object from the image path
+                    val imageFile = File(imagePath)
+
+                    Log.d("CropImages", "image file $imageFile")
+
+                    if(imageFile.exists()) {
+                        // Create a RequestBody from the image file
+                        val imageRequestBody =
+                            RequestBody.create("image/*".toMediaTypeOrNull(), imageFile)
+
+                        // Create a MultipartBody.Part from the image RequestBody
+                        val imagePart = MultipartBody.Part.createFormData(
+                            "image",
+                            imageFile.name,
+                            imageRequestBody
+                        )
+                        convertedImages.add(imagePart)
+                    }
+                }
+            }
+        }else{
+            Log.d("CropImages", "image is null")
+        }
+        Log.d("CropImages", "$convertedImages")
         _SelectedUri.value = images ?: arrayListOf()
         return convertedImages
     }

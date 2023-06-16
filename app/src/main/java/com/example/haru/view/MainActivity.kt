@@ -182,7 +182,8 @@ class MainActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         val result = CropImage.getActivityResult(data)
         if (resultCode == RESULT_OK) {
-            Log.d("CropImages", "${result.uri}")
+            Log.d("CropImages", "abs uri : ${result.uri}")
+            Log.d("CropImages", "path : ${result.originalUri}")
             cropViewModel.getCropResult(result.uri)
         } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
             val error = result.error

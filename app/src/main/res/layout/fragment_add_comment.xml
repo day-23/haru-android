@@ -60,6 +60,7 @@
         app:layout_constraintTop_toBottomOf="@id/add_comment_title"
         android:layout_marginTop="88dp">
 
+        <!--편집하기-->
         <ImageView
             android:id="@+id/add_comment_edit_comments"
             android:layout_width="28dp"
@@ -67,7 +68,8 @@
             android:background="@drawable/edit_comment_white_finger"
             android:backgroundTint="#191919"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="20dp"/>
+            android:layout_marginStart="20dp"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/add_comment_edit_text"
@@ -79,7 +81,55 @@
             android:textSize="14sp"
             android:textColor="#191919"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="53dp"/>
+            android:layout_marginStart="53dp"
+            android:visibility="gone"/>
+
+        <!--작성하기-->
+        <ImageView
+            android:id="@+id/add_comment_write_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/comment_white"
+            android:backgroundTint="#191919"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="20dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/add_comment_write_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="작성하기"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="#191919"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="53dp"
+            android:visibility="gone"/>
+
+        <!--작성하기-->
+        <ImageView
+            android:id="@+id/add_comment_my_comment_icon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/comment_filled"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="20dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/add_comment_my_comment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="내 코멘트"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="#1DAFFF"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="53dp"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/add_comment_reset_icon"
@@ -165,15 +215,6 @@
             android:background="@drawable/comment"
             android:backgroundTint="#191919"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginEnd="58dp"/>
-        
-        <ImageView
-            android:id="@+id/show_total_comment"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:background="@drawable/sns_etc_white"
-            android:backgroundTint="#191919"
             android:layout_marginEnd="20dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -198,6 +239,59 @@
         android:layout_height="390dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/add_comment_info"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        app:layout_constraintTop_toBottomOf="@id/comment_frame"
+        android:layout_marginTop="10dp">
+        <ImageView
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="24dp"
+            android:id="@+id/add_comment_like_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sns_liked"/>
+        <TextView
+            android:id="@+id/add_comment_like_count"
+            app:layout_constraintLeft_toRightOf="@id/add_comment_like_icon"
+            android:layout_marginStart="9dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            android:textColor="#191919"
+            android:text="0"/>
+
+        <ImageView
+            android:id="@+id/add_comment_comment_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/add_comment_like_count"
+            android:layout_marginStart="14dp"
+            android:src="@drawable/comment_filled"/>
+        <TextView
+            android:id="@+id/add_comment_comment_count"
+            app:layout_constraintLeft_toRightOf="@id/add_comment_comment_icon"
+            android:layout_marginStart="9dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            android:textColor="#191919"
+            android:text="0"/>
+
+        <ImageView
+            android:id="@+id/show_total_comment"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:background="@drawable/sns_etc_white"
+            android:backgroundTint="#191919"
+            android:layout_marginEnd="20dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/filter_frame"

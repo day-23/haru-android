@@ -224,7 +224,6 @@ class AddPostFragment : Fragment(), PostInterface{
                 if(galleryViewmodel.SelectedImage.value != -1 || galleryViewmodel.SelectedPosition.value!!.size > 0) {
                     val converedImage = galleryViewmodel.convertMultiPart(requireContext())
                     val selecteduri = galleryViewmodel.getSelectImages()
-                    Log.d("CropImages", "list : $selecteduri")
                     val newFrag = AddContentFragment(converedImage, ArrayList(selecteduri))
                     galleryViewmodel.resetValue()
                     val transaction = parentFragmentManager.beginTransaction()
@@ -351,6 +350,7 @@ class AddPostFragment : Fragment(), PostInterface{
     private fun cropImage(uri: Uri?){
         context?.let {
             CropImage.activity(uri)
+                .setGuidelines(CropImageView.Guidelines.ON)
                 .start(it, this)
         }
     }
