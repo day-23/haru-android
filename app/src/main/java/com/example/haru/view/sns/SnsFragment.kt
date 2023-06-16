@@ -57,9 +57,9 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     var deletedItem : Post = Post()
 
     override fun onCommentClick(postitem: Post) {
-        profileViewModel.getUserInfo(User.id)
+        profileViewModel.getUserInfo(postitem.user.id)
         profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
-            val newFrag = AddCommentFragment(postitem.id, postitem.images, user)
+            val newFrag = AddCommentFragment(postitem.id, postitem.images, postitem.likedCount, postitem.commentCount, user)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")

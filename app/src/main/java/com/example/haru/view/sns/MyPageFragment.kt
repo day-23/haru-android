@@ -63,7 +63,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         transaction.commit()
     }
     override fun onCommentClick(postitem: Post) {
-        mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
+        mypageViewModel.getUserInfo(userId)
 
         if(postitem.isTemplatePost != null) {
             val newFrag = CommentsFragment(postitem, com.example.haru.utils.User.id)
@@ -73,7 +73,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             transaction.commit()
         }else{
             mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
-                val newFrag = AddCommentFragment(postitem.id, postitem.images, user)
+                val newFrag = AddCommentFragment(postitem.id, postitem.images, postitem.likedCount, postitem.commentCount, user)
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragments_frame, newFrag)
                 transaction.addToBackStack("snsmypage")
