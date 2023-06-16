@@ -90,7 +90,6 @@ class AddPostFragment : Fragment(), PostInterface{
                     .commit()
             }
         }
-
     }
         companion object{
             const val TAG : String = "로그"
@@ -348,6 +347,7 @@ class AddPostFragment : Fragment(), PostInterface{
         }
 
     private fun cropImage(uri: Uri?){
+
         context?.let {
             CropImage.activity(uri)
                 .setGuidelines(CropImageView.Guidelines.ON)
