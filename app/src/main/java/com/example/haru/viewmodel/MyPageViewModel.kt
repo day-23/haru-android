@@ -500,10 +500,10 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             UserRepository.blockUser(body) {
                 if (it) {
-                    Log.d("TAG", "Success to block User")
+                    Log.d("TAG", "Success to block user")
                     result = it
                 } else {
-                    Log.d("TAG", "Fail to block User")
+                    Log.d("TAG", "Fail to block user")
                 }
             }
             _FriendRequest.value = result

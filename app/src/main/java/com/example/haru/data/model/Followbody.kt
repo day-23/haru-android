@@ -17,5 +17,5 @@ data class DelFriendBody(
 )
 
 data class BlockBody(
-    val userId: String
+    val blockUserId: String
 )

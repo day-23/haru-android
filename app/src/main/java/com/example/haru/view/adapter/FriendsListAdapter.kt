@@ -29,7 +29,8 @@ class FriendsListAdapter(val context: Context,
 
     override fun onBindViewHolder(holder: FriendsListViewHolder, position: Int) {
         hideButtons(holder)
-        showButtons(holder, itemList[position].friendStatus!!)
+        if(User.id != itemList[position].id)
+            showButtons(holder, itemList[position].friendStatus!!)
 
         Glide.with(holder.itemView.context)
             .load(itemList[position].profileImageUrl)
