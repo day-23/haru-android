@@ -2,9 +2,11 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import UserViewModelFactory
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -43,6 +45,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     private lateinit var binding: FragmentSnsBinding
     private var click = false
     private var postClicked = false
+    private var startBoolean = false
     private lateinit var snsPostAdapter: SnsPostAdapter
     var lastDate = ""
     var deletedItem : Post = Post()
@@ -146,6 +149,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "sns onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id, 1.1f)
+        startBoolean = true
     }
 
     override fun onResume() {
