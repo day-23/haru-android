@@ -47,6 +47,18 @@ class EditProfileFragment(userId: String) : Fragment() {
         profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d("TAG", "SnsFragment - onCreateView() called")
+
+        binding = FragmentEditProfileBinding.inflate(inflater)
+
+        return binding.root
+    }
+
     // status bar height 조정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,6 +71,7 @@ class EditProfileFragment(userId: String) : Fragment() {
                 fragmentManager.popBackStack()
             }
         }
+
         if (userId == "") userId = User.id //TODO:나중에는 동적으로 할당해야함
         profileViewModel.getUserInfo(userId)
 
@@ -124,16 +137,16 @@ class EditProfileFragment(userId: String) : Fragment() {
 //            transaction.replace(R.id.fragments_frame, newFrag)
 //            transaction.commit()
             profileViewModel.UserInfo.observe(viewLifecycleOwner) { User ->
-                if (User.id != "") {
-                    val fragmentManager = parentFragmentManager
-                    if (fragmentManager.backStackEntryCount > 0) {
-                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-                        fragmentManager.popBackStack()
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "프로필 업데이트에 실패하였습니다.", Toast.LENGTH_SHORT)
-                        .show()
-                }
+//                if (User.id != "") {
+//                    val fragmentManager = parentFragmentManager
+//                    if (fragmentManager.backStackEntryCount > 0) {
+//                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+//                        fragmentManager.popBackStack()
+//                    }
+//                } else {
+                Toast.makeText(requireContext(), "프로필 업데이트에 실패하였습니다.", Toast.LENGTH_SHORT)
+                    .show()
+//                }
             }
         }
 
@@ -226,17 +239,6 @@ class EditProfileFragment(userId: String) : Fragment() {
         (activity as BaseActivity).adjustTopMargin(binding.editProfileRootview.id)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        Log.d("TAG", "SnsFragment - onCreateView() called")
-
-        binding = FragmentEditProfileBinding.inflate(inflater)
-
-        return binding.root
-    }
 }
 
 class GalleryFragment : Fragment() {
