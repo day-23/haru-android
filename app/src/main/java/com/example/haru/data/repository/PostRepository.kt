@@ -80,6 +80,36 @@ class PostRepository() {
         callback(delete)
     }
 
+    //게시글 숨기기
+    suspend fun hidePost(postId: String, callback: (hide: Boolean) -> Unit) = withContext(Dispatchers.IO) {
+        val call = postService.hidePost(com.example.haru.utils.User.id, postId)
+        val response = call.execute()
+        var hide = false
+        val data = response.body()
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to hide post")
+            hide = true
+        } else {
+            Log.d("TAG", "Fail to hide post")
+        }
+        callback(hide)
+    }
+
+    //게시글 신고하기
+    suspend fun reportPost(postId: String, callback: (report: Boolean) -> Unit) = withContext(Dispatchers.IO) {
+        val call = postService.reportPost(com.example.haru.utils.User.id, postId)
+        val response = call.execute()
+        var report = false
+        val data = response.body()
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to report post")
+            report = true
+        } else {
+            Log.d("TAG", "Fail to report post")
+        }
+        callback(report)
+    }
+
 
     //전체 게시글(둘러보기)
     suspend fun getPost(lastCreatedAt:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(

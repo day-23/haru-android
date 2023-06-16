@@ -176,6 +176,27 @@ class SnsViewModel: ViewModel() {
             _DeleteResult.value = result
         }
     }
+    //게시글 숨기기
+    fun hidePost(postId: String){
+        var result = false
+        viewModelScope.launch {
+            PostRepository.hidePost(postId){
+                result = it
+            }
+            _DeleteResult.value = result
+        }
+    }
+
+    //게시글 신고하기
+    fun reportPost(postId: String){
+        var result = false
+        viewModelScope.launch {
+            PostRepository.reportPost(postId){
+                result = it
+            }
+            _DeleteResult.value = result
+        }
+    }
 
     fun deleteComment(writerId: String, commentId:String){
         var result = false

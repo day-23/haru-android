@@ -107,13 +107,17 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             transaction.remove(fragment)
             transaction.commit()
             if (position == 0) {
-                //TODO:숨기기 혹은 수정하기
+                if(User.id == userId){//수정하기
+
+                }else{//이 게시글 숨기기
+                    snsViewModel.hidePost(postId)
+                }
             } else if (position == 1) {
-                if (User.id == userId) {
+                if (User.id == userId) {//삭제확인창
                     val fragment = PopupDeleteConfirm(userId, postId, this)
                     transaction.add(R.id.sns_post_anchor, fragment)
-                }else{
-
+                }else{ //신고하기
+                    snsViewModel.reportPost(postId)
                 }
             }
         }

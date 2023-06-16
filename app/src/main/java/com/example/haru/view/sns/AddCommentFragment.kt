@@ -105,6 +105,10 @@ class AddCommentFragment(postId: String, postImages:ArrayList<Profile>,val likeC
         binding.addCommentButtonsLayout.visibility = View.VISIBLE
         binding.writeCommentTitle.setTextColor(Color.parseColor("#191919"))
         binding.writeCommentTitle.text = "코멘트"
+
+        if(com.example.haru.utils.User.id == writerInfo.id){
+            binding.addCommentInfo.visibility = View.VISIBLE
+        }
     }
 
     fun writeStart(){
@@ -117,6 +121,7 @@ class AddCommentFragment(postId: String, postImages:ArrayList<Profile>,val likeC
         binding.addCommentButtonsLayout.visibility = View.GONE
         binding.writeCommentTitle.setTextColor(Color.parseColor("#FDFDFD"))
         binding.writeCommentTitle.text = "코멘트 작성"
+        binding.addCommentInfo.visibility = View.GONE
     }
 
 

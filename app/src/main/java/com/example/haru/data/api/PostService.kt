@@ -83,6 +83,18 @@ interface PostService {
         @Path("postId") postId: String
     ): Call<LikeResponse>
 
+    @POST("post/{userId}/{postId}/hide")
+    fun hidePost(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String
+    ): Call<LikeResponse>
+
+    @POST("post/{userId}/{postId}/like")
+    fun reportPost(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String
+    ): Call<LikeResponse>
+
     @DELETE("comment/{writerId}/{commentId}")
     fun deleteComment(
         @Path("writerId") writerId: String,
