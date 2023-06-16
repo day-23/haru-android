@@ -28,8 +28,7 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
                                   val startDate:Date,
                                   val adapter:AdapterMonth,
                                   val activity: FragmentActivity,
-                                  val dialog: Dialog,
-                                  val categories: List<Category?>
+                                  val dialog: Dialog
                                   ) : RecyclerView.Adapter<AdapterCalendarDetailDialog.DetailView>(){
     inner class DetailView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -129,7 +128,7 @@ class AdapterCalendarDetailDialog(val lifecycleOwner: LifecycleOwner,
         calendarViewModel.liveTodoList.observe(lifecycleOwner) {livetodo->
             calendarViewModel.liveScheduleList.observe(lifecycleOwner){liveschedule->
                 detailScheduleRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-                detailScheduleRecyclerView.adapter = AdapterSimpleSchedule(liveschedule,activity, startDate, dialog, categories)
+                detailScheduleRecyclerView.adapter = AdapterSimpleSchedule(liveschedule,activity, startDate, dialog)
 
                 detailTodoRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
                 detailTodoRecyclerView.adapter = AdapterSimpleTodo(livetodo,activity, startDate, dialog, adapter)

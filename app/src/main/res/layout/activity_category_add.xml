@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FDFDFD"
     tools:context=".view.calendar.CategoryCorrectionActivity">
 
     <LinearLayout
@@ -86,6 +87,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/color_choose_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="14dp"

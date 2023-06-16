@@ -1,17 +1,20 @@
 package com.example.haru.view
 
 import BaseActivity
+import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
 import android.net.Uri
+import android.os.Build
+import android.os.Build.VERSION
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.haru.R
@@ -28,6 +31,10 @@ import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageActivity
 import com.theartofdev.edmodo.cropper.CropImageView
 import com.theartofdev.edmodo.cropper.CropImageView.CropResult
+import com.example.haru.viewmodel.CalendarViewModel
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
+import java.util.*
 
 
 class MainActivity : BaseActivity() {
@@ -86,6 +93,15 @@ class MainActivity : BaseActivity() {
             handleNavigation(menuItem.itemId)
         }
 
+        val calendarViewModel = CalendarViewModel()
+
+        calendarViewModel.getCategories()
+        calendarViewModel.liveCategoryList.observe(this){
+            for (category in it){
+                User.categories.add(category)
+            }
+        }
+
         sharedPreference = getSharedPreferences("ApplyData", 0)
         editor = sharedPreference.edit()
 
@@ -101,6 +117,23 @@ class MainActivity : BaseActivity() {
         User.amAlarmDate = sharedPreference.getString("amAlarmDate", "오전 9:00")!!
         User.pmAlarmAprove = sharedPreference.getBoolean("pmAlarmAprove", true)
         User.pmAlarmDate = sharedPreference.getString("pmAlarmDate", "오후 9:00")!!
+
+        if(VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val permissionlistener: PermissionListener = object : PermissionListener {
+                override fun onPermissionGranted() {
+                }
+
+                override fun onPermissionDenied(deniedPermissions: List<String>) {
+                }
+            }
+
+            TedPermission.create()
+                .setPermissionListener(permissionlistener)
+                .setPermissions(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+                .check()
+        }
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -123,7 +156,7 @@ class MainActivity : BaseActivity() {
     private fun initFragments() {
         fragments[0] = SnsFragment.newInstance()
         fragments[1] = ChecklistFragment.newInstance()
-        fragments[2] = CalendarFragment.newInstance(this)
+        fragments[2] = CalendarFragment.newInstance()
         fragments[3] = TimetableFragment.newInstance()
         fragments[4] = EtcFragment.newInstance()
     }
@@ -162,7 +195,7 @@ class MainActivity : BaseActivity() {
         return when (index) {
             0 -> SnsFragment.newInstance()
             1 -> ChecklistFragment.newInstance()
-            2 -> CalendarFragment.newInstance(this)
+            2 -> CalendarFragment.newInstance()
             3 -> TimetableFragment.newInstance()
             4 -> EtcFragment.newInstance()
             else -> throw IllegalStateException("Unexpected fragment index $index")

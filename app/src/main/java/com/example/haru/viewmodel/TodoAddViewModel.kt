@@ -100,6 +100,8 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
 
     var calculateDateFlag = false
 
+    var tagAfter = false
+
     init {
         this.checklistViewModel = checkListViewModel
     }
@@ -270,9 +272,11 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
     }
 
     fun addTagList(): Boolean {
-        if (tag == "" || tag.replace(" ", "") == "")
+        val str = tag.replace(" ", "")
+        if (str == "" || tagList.contains(str))
             return false
-        tagList.add(tag.replace(" ", ""))
+
+        tagList.add(str)
         _tagLiveData.value = tagList
         return true
     }
@@ -398,9 +402,9 @@ class TodoAddViewModel(checkListViewModel: CheckListViewModel) : ViewModel() {
         )
     }
 
-    fun addTodo(calendar: Boolean = false, callback: () -> Unit) {
+    fun addTodo(calendar: Boolean = false, callback: (Boolean?) -> Unit) {
         checklistViewModel.addTodo(createTodo(), calendar) {
-            callback()
+            callback(it)
         }
     }
 

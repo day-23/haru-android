@@ -8,6 +8,7 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -413,17 +414,21 @@ class TodoAdapter(val context: Context) :
     }
 
     override fun onItemMove(formPosition: Int, toPosition: Int): Boolean {
-        for (i in formPosition downTo 0)
+        for (i in formPosition downTo 0) {
+            dragLimitTop = i
             if (diffUtil.currentList[i].type == 4) {
                 dragLimitTop = i
                 break
             }
+        }
 
-        for (i in formPosition until diffUtil.currentList.size)
-            if (diffUtil.currentList[i].type in listOf(3, 6)) {
+        for (i in formPosition until diffUtil.currentList.size) {
+            dragLimitBottom = i
+            if (diffUtil.currentList[i].type in listOf(3, 6, 1)) {
                 dragLimitBottom = i
                 break
             }
+        }
 
         if ((toPosition > dragLimitTop!!) && (toPosition < dragLimitBottom!!)) {
             val list = mutableListOf<Todo>()
@@ -440,9 +445,14 @@ class TodoAdapter(val context: Context) :
             val list = mutableListOf<String>()
             for (i in dragLimitTop!! + 1 until dragLimitBottom!!)
                 list.add(diffUtil.currentList[i].id)
-
-            dropListener?.onDropFragment(list)
+            if (list.size != 0)
+                dropListener?.onDropFragment(list)
         }
+    }
+
+    override fun onLiftItem(position: Int?) {
+        dragLimitTop = position
+        dragLimitBottom = position
     }
 
 }

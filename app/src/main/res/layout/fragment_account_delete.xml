@@ -117,7 +117,7 @@
         android:layout_marginTop="40dp"
         android:text="계정이 삭제됩니다."
         android:textColor="@color/todo_description"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
@@ -126,8 +126,9 @@
         android:layout_marginStart="34dp"
         android:layout_marginTop="22dp"
         android:layout_marginEnd="21dp"
+        android:lineSpacingExtra="1.8dp"
         android:text="하루 계정이 삭제됩니다. 내 디바이스의 하루 데이터가 모두 삭제되며 닉네임, 사용자 아이디, 공개 프로필이 더 이상 하루 기록에 표시되지 않습니다. 실수로 계정을 삭제한 경우 30일 이내 복구가 가능합니다."
-        android:textColor="@color/date_text"
+        android:textColor="@color/light_gray"
         android:textSize="12sp" />
 
     <ImageView

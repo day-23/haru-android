@@ -1,6 +1,7 @@
 package com.example.haru.view.checklist
 
 import BaseActivity
+import android.accessibilityservice.AccessibilityService.SoftKeyboardController
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -34,6 +36,7 @@ class ChecklistItemFragment(
     private lateinit var binding: FragmentChecklistItemInfoBinding
     private var todoAddViewModel: TodoAddViewModel
     private var id: String
+
 
     enum class UpdateType {
         FRONT_UPDATE_REPEAT, FRONT_NOT_UPDATE_REPEAT,
@@ -703,8 +706,8 @@ class ChecklistItemFragment(
                                     )
                                 )
 
-                            if (it.size < binding.infoTagContainerLayout.childCount - 2)
-                                for (i in 1 until binding.infoTagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
+                            if (it.size < binding.infoTagContainerLayout.childCount - 1)
+                                for (i in 0 until binding.infoTagContainerLayout.childCount - 1) { // chip을 검사해서 리스트에 없으면 삭제
                                     val chip =
                                         binding.infoTagContainerLayout.getChildAt(i) as LinearLayout
                                     if (!it.contains((chip.getChildAt(0) as AppCompatButton).text)) {
@@ -712,11 +715,11 @@ class ChecklistItemFragment(
                                         break
                                     }
                                 }
-                            else if (it.size > binding.infoTagContainerLayout.childCount - 2) {
+                            else if (it.size > binding.infoTagContainerLayout.childCount - 1) {
                                 val layoutInflater =
                                     context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                                 val childCount = binding.infoTagContainerLayout.childCount
-                                for (i in childCount - 2 until it.size) {
+                                for (i in childCount - 1 until it.size) {
                                     val chip = layoutInflater.inflate(R.layout.custom_chip, null)
                                     chip.findViewById<AppCompatButton>(R.id.tag_chip).apply {
                                         text = it[i]
@@ -729,6 +732,12 @@ class ChecklistItemFragment(
                                         binding.infoTagContainerLayout.childCount - 1
                                     )
                                 }
+                                if (todoAddViewModel.tagAfter)
+                                    binding.infoTagScrollView.post {
+                                        binding.infoTagScrollView.fullScroll(ScrollView.FOCUS_RIGHT)
+                                        binding.infoTagEt.requestFocus()
+                                    }
+                                else todoAddViewModel.tagAfter = true
                             }
                         })
 
@@ -785,6 +794,7 @@ class ChecklistItemFragment(
                                 )
                         }
                     })
+
                 }
             }
         })
@@ -987,7 +997,7 @@ class ChecklistItemFragment(
                         2 -> DeleteType.REPEAT_BACK
                         else -> DeleteType.NOT_REPEAT
                     }
-                    val option = DeleteOptionDialogFragment(todoAddViewModel, type)
+                    val option = DeleteOptionDialogFragment(todoAddViewModel, type, viewLifecycleOwner)
                     option.dismissEvent = object : DeleteOptionDialogFragment.DismissEvent {
                         override fun onDismiss() {
                             activity?.runOnUiThread {
@@ -1070,7 +1080,7 @@ class ChecklistItemFragment(
                             }
                         }
                         Log.d("20191627", "type : $type")
-                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        val option = UpdateOptionDialogFragment(todoAddViewModel, type, viewLifecycleOwner)
                         option.dismissEvent = object : UpdateOptionDialogFragment.DismissEvent {
                             override fun onDismiss() {
                                 activity?.runOnUiThread {
@@ -1081,7 +1091,7 @@ class ChecklistItemFragment(
                         option.show(parentFragmentManager, option.tag)
                     } else {
                         val type = UpdateType.NOT_REPEAT
-                        val option = UpdateOptionDialogFragment(todoAddViewModel, type)
+                        val option = UpdateOptionDialogFragment(todoAddViewModel, type, viewLifecycleOwner)
                         option.dismissEvent = object : UpdateOptionDialogFragment.DismissEvent {
                             override fun onDismiss() {
                                 activity?.runOnUiThread {

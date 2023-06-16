@@ -15,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="25dp"
             android:layout_marginEnd="30dp"
             android:orientation="horizontal">
 
@@ -69,6 +68,7 @@
                         android:background="@android:color/transparent"
                         android:hint="일정 입력"
                         android:inputType="text"
+                        android:textColor="#191919"
                         android:textColorHint="@color/light_gray"
                         android:textSize="24sp" />
 
@@ -552,6 +552,7 @@
                         android:background="@android:color/transparent"
                         android:ems="10"
                         android:hint="@string/memo_set"
+                        android:textColor="#191919"
                         android:inputType="textMultiLine"
                         android:scrollbars="vertical"
                         android:textColorHint="@color/light_gray"

@@ -7,34 +7,35 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="480dp"
         android:background="@drawable/detail_dialog_radius"
-        android:layout_gravity="left"
-        android:orientation="horizontal">
+        android:gravity="left"
+        android:orientation="vertical">
 
         <TextView
+            android:layout_marginTop="25dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginLeft="24dp"
             android:text="카테고리 선택"
             android:textColor="#FDFDFD"
             android:textStyle="bold"
             android:textSize="24sp"/>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="410dp"
-        android:background="@drawable/category_choose_radius_bottom">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/categories_choose_recyclerview"
+        <LinearLayout
+            android:layout_marginTop="15dp"
             android:layout_width="match_parent"
-            android:layout_marginLeft="17dp"
-            android:paddingTop="15dp"
-            android:clipToPadding="false"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:background="@drawable/category_choose_radius_bottom">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categories_choose_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="17dp"
+                android:paddingTop="15dp"
+                android:clipToPadding="false"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
     </LinearLayout>
 
     <View

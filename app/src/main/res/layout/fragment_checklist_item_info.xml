@@ -66,21 +66,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingStart="34dp">
 
-                    <EditText
-                        android:id="@+id/et_info_content"
+                    <HorizontalScrollView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:text="@={vm.content}"
-                        android:textColor="@color/todo_description"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/et_info_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:maxLines="1"
+                            android:text="@={vm.content}"
+                            android:textColor="@color/todo_description"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+                    </HorizontalScrollView>
 
                     <CheckBox
                         android:id="@+id/cb_info_flag"
@@ -133,12 +139,11 @@
                     android:background="@color/divider" />
 
                 <LinearLayout
-                    android:id="@+id/info_tag_container_layout"
                     style="@style/linearBorderLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/linear_border_up_bottom"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -147,21 +152,41 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
                         android:background="@drawable/tag_icon"
-                        android:backgroundTint="@color/light_gray"/>
+                        android:backgroundTint="@color/light_gray" />
 
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/info_tag_et"
+                    <HorizontalScrollView
+                        android:id="@+id/info_tag_scroll_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/tag"
-                        android:inputType="text"
-                        android:singleLine="true"
-                        android:text="@={vm.tag}"
-                        android:textColor="@color/todo_description"
-                        android:textColorHint="@color/light_gray"
-                        android:textSize="14sp" />
+                        android:layout_marginEnd="20dp">
+
+                        <LinearLayout
+                            android:id="@+id/info_tag_container_layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/info_tag_et"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:hint="@string/tag"
+                                android:inputType="text"
+                                android:maxLength="8"
+                                android:singleLine="true"
+                                android:text="@={vm.tag}"
+                                android:textColor="@color/todo_description"
+                                android:textColorHint="@color/light_gray"
+                                android:textCursorDrawable="@drawable/custom_cursor"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+
                 </LinearLayout>
 
 
@@ -663,6 +688,7 @@
                         android:ems="10"
                         android:hint="@string/memo_set"
                         android:inputType="textMultiLine"
+                        android:maxLength="500"
                         android:scrollbars="vertical"
                         android:text='@={vm.memo}'
                         android:textColor="@color/todo_description"
@@ -671,6 +697,11 @@
 
 
                 </LinearLayout>
+
+                <View
+                    android:id="@+id/empty_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -693,7 +724,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/delete_icon"/>
+                android:background="@drawable/delete_icon" />
 
         </LinearLayout>
 

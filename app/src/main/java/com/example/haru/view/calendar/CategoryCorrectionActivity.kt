@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
@@ -65,24 +66,50 @@ class CategoryCorrectionActivity : AppCompatActivity() {
         var category = intent.getSerializableExtra("category") as Category
         val index = intent.getSerializableExtra("index") as Int
 
+        color = category.color
+
         val correctionScheduleName = findViewById<EditText>(R.id.correction_schedule_name)
         val categoriesRecyclerview = findViewById<RecyclerView>(R.id.categories_recyclerview)
         val correctionBackImageview = findViewById<ImageView>(R.id.correction_back_imageView)
         val correctionCheckImageview = findViewById<ImageView>(R.id.correction_check_imageView)
         val categoryDeleteTv = findViewById<TextView>(R.id.category_delete_tv)
         val categoryMarkSwitch = findViewById<SwitchCompat>(R.id.category_mark_switch)
+        val categorySelectedTv = findViewById<TextView>(R.id.category_selected_tv)
 
         content = category.content
         correctionScheduleName.setText(content)
         categoryMarkSwitch.isChecked = category.isSelected
 
         categoriesRecyclerview.layoutManager = GridLayoutManager(this,6)
-        categoriesRecyclerview.adapter = CategoriesColorAdapter(this, null, colorsList.indexOf(category.color))
+        categoriesRecyclerview.adapter = CategoriesColorAdapter(colorsList.indexOf(category.color)){
+            changeColor(it)
+        }
+
+        if(category.isSelected){
+            categorySelectedTv.setTextColor(Color.parseColor("#191919"))
+        } else {
+            categorySelectedTv.setTextColor(Color.parseColor("#ACACAC"))
+        }
+
+        categoryMarkSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                categorySelectedTv.setTextColor(Color.parseColor("#191919"))
+            } else {
+                categorySelectedTv.setTextColor(Color.parseColor("#ACACAC"))
+            }
+        }
 
         correctionBackImageview.setOnClickListener {
             intent.putExtra("status", "back")
             setResult(Activity.RESULT_OK, intent)
             finish()
+        }
+
+        correctionScheduleName.addTextChangedListener {
+            if (it.toString().length > 8) {
+                correctionScheduleName.setText(it.toString().substring(0, 8))
+                correctionScheduleName.setSelection(8)
+            }
         }
 
         correctionCheckImageview.setOnClickListener {
@@ -95,7 +122,7 @@ class CategoryCorrectionActivity : AppCompatActivity() {
 
             category.color = color
             category.content = content
-            category.isSelected = categoryMarkSwitch.isSelected
+            category.isSelected = categoryMarkSwitch.isChecked
 
             val calendarviewmodel = CalendarViewModel()
 

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -21,14 +22,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import com.example.haru.R
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.PostSchedule
 import com.example.haru.data.model.User
 import com.example.haru.databinding.FragmentCalendarInputBinding
+import com.example.haru.utils.Alarm
 import com.example.haru.utils.FormatDate
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AdapterMonth
+import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.calendar.CategoryChooseDialog
 import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.view.customDialog.CustomTimeDialog
@@ -39,9 +44,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarAddFragment(private val categories: List<Category?>,
-                          private val initStartDate: Date?=null,
+class CalendarAddFragment(private val initStartDate: Date?=null,
                           private val initEndDate:Date?=null,
+                          private val parentContext: Context,
+                          private val lifecycle: LifecycleOwner,
                           private val callback:() -> Unit) :
     BottomSheetDialogFragment() {
     private lateinit var binding: FragmentCalendarInputBinding
@@ -75,8 +81,11 @@ class CalendarAddFragment(private val categories: List<Category?>,
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(categories: List<Category?>): CalendarAddFragment {
-            return CalendarAddFragment(categories){}
+        fun newInstance(initStartDate: Date?=null,
+                        initEndDate:Date?=null,
+                        parentContext: Context,
+                        lifecycle: LifecycleOwner): CalendarAddFragment {
+            return CalendarAddFragment(initStartDate, initEndDate, parentContext, lifecycle){}
         }
     }
 
@@ -591,7 +600,7 @@ class CalendarAddFragment(private val categories: List<Category?>,
         }
 
         binding.categoryChooseIv.setOnClickListener {
-            val dlg = CategoryChooseDialog(this, null, categories){
+            val dlg = CategoryChooseDialog(this, null){
                 category = it
 
                 val drawable = binding.categoryChooseIv.background as VectorDrawable
@@ -660,6 +669,13 @@ class CalendarAddFragment(private val categories: List<Category?>,
                     binding.repeatEndDateBtn.text = dateParser.format(repeatEndCalendar.time)
                     binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
                 }
+            }
+        }
+
+        binding.etMemoSchedule.addTextChangedListener {
+            if(it.toString().length > 500){
+                binding.etMemoSchedule.setText(it.toString().substring(0,500))
+                binding.etMemoSchedule.setSelection(500)
             }
         }
 
@@ -912,8 +928,13 @@ class CalendarAddFragment(private val categories: List<Category?>,
                         category?.id,
                         if(binding.alarmSwitchSchedule.isChecked) listOf(koreanFormat.format(Date())) else emptyList()
                     )
-                ) {
+                ) {success->
                     callback()
+
+                    if(success){
+                        Alarm.initAlarm(lifecycle, parentContext)
+                    }
+
                     dismiss()
                 }
 

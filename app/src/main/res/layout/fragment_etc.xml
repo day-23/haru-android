@@ -200,9 +200,9 @@
                     android:id="@+id/iv_etc_date_left"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/___20513"
+                    android:background="@drawable/small_arrow_right"
                     android:backgroundTint="@color/light_gray"
-                    android:rotation="90" />
+                    android:rotation="180" />
 
                 <TextView
                     android:id="@+id/tv_etc_date_month"
@@ -219,9 +219,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
-                    android:background="@drawable/___20513"
-                    android:backgroundTint="@color/light_gray"
-                    android:rotation="-90" />
+                    android:background="@drawable/small_arrow_right"
+                    android:backgroundTint="@color/light_gray"/>
 
             </LinearLayout>
 

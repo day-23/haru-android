@@ -35,6 +35,8 @@
     <string name="MonthDay">%1$d</string>
     <string name="YearMonth">%1$d월</string>
 
+    <string name="loading">로딩 중입니다.</string>
+
     <string name="Monday">월</string>
     <string name="Tuesday">화</string>
     <string name="Wednesday">수</string>
@@ -103,9 +105,9 @@
 
     <string name="searchDescription">검색어를 입력하세요</string>
 
-    <string name="notAllow">허용 안함</string>
+    <string name="notAllow">허용 안 함</string>
     <string name="onlyFriend">친구만</string>
-    <string name="everyOne">모든 사람</string>
+    <string name="everyOne">모두 허용</string>
 
     <string name="termsOfService">##제1조 목적 \n
 본 약관은 하루 애플리케이션(이하 ‘하루’)가 스마트 기기를 통해 제공하는 모든 애플리케이션, 기타 제반 서비스(이하 ‘서비스’)를 이용하는 사용자(이하 ‘이용자’)와 회사 간에 서비스의 이용에 관한 권리, 의무 및 책임 사항, 기타 필요한 사항을 규정함을 목적으로 합니다.\n

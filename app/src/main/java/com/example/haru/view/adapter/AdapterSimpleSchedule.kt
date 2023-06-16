@@ -31,8 +31,7 @@ import java.util.*
 class AdapterSimpleSchedule(val schedules: List<Schedule>,
                             val activity: FragmentActivity,
                             val todayTodo: String,
-                            val dialog: Dialog,
-                            val categories: List<Category?>
+                            val dialog: Dialog
 ) : RecyclerView.Adapter<AdapterSimpleSchedule.DetailView>(){
     inner class DetailView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -117,11 +116,13 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
         }
 
         holder.itemView.setOnClickListener {
+            Log.e("20191627", todayTodo)
+
             if (schedule.repeatOption == null) {
                 activity.supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragments_frame,
-                        CalendarItemFragment(schedule, categories, todayDateFormat.parse(todayTodo))
+                        CalendarItemFragment(schedule, todayDateFormat.parse(todayTodo))
                     )
                     .addToBackStack(null)
                     .commit()
@@ -148,7 +149,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                         activity.supportFragmentManager.beginTransaction()
                             .replace(
                                 R.id.fragments_frame,
-                                CalendarItemFragment(schedule, categories, todayDateFormat.parse(todayTodo))
+                                CalendarItemFragment(schedule, todayDateFormat.parse(todayTodo))
                             )
                             .addToBackStack(null)
                             .commit()
@@ -169,7 +170,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                         activity.supportFragmentManager.beginTransaction()
                             .replace(
                                 R.id.fragments_frame,
-                                CalendarItemFragment(schedule, categories, todayDateFormat.parse(todayTodo))
+                                CalendarItemFragment(schedule, todayDateFormat.parse(todayTodo))
                             )
                             .addToBackStack(null)
                             .commit()
@@ -226,7 +227,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                         activity.supportFragmentManager.beginTransaction()
                             .replace(
                                 R.id.fragments_frame,
-                                CalendarItemFragment(schedule, categories, todayDateFormat.parse(todayTodo))
+                                CalendarItemFragment(schedule, todayDateFormat.parse(todayTodo))
                             )
                             .addToBackStack(null)
                             .commit()
@@ -241,7 +242,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
                 activity.supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragments_frame,
-                        CalendarItemFragment(schedule, categories, todayDateFormat.parse(todayTodo))
+                        CalendarItemFragment(schedule, todayDateFormat.parse(todayTodo))
                     )
                     .addToBackStack(null)
                     .commit()

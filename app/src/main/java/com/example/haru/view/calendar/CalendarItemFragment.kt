@@ -1,5 +1,6 @@
 package com.example.haru.view.calendar
 
+import BaseActivity
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -9,11 +10,8 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.NumberPicker
 import android.widget.TextView
@@ -32,9 +30,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarItemFragment(val schedule: Schedule,
-                           val categories: List<Category?>,
                            var todayDate: Date) : Fragment() {
     private lateinit var binding: FragmentCalendarItemBinding
+
+    init {
+        Log.e("20191627", schedule.toString())
+    }
 
     private val serverFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREAN)
 
@@ -128,6 +129,16 @@ class CalendarItemFragment(val schedule: Schedule,
         touchEvent()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as BaseActivity).adjustTopMargin(binding.calendarAddFragmentParentLayout.id)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.calendarAddFragmentParentLayout.id)
     }
 
     fun optionChange() {
@@ -509,7 +520,7 @@ class CalendarItemFragment(val schedule: Schedule,
         }
 
         binding.categoryChooseIv.setOnClickListener {
-            val dlg = CategoryChooseDialog(null, this, categories){
+            val dlg = CategoryChooseDialog(null, this){
                 category = it
 
                 val drawable = binding.categoryChooseIv.background as VectorDrawable
@@ -1751,10 +1762,19 @@ class CalendarItemFragment(val schedule: Schedule,
                     ColorStateList.valueOf(Color.LTGRAY)
             }
         }
+
+        binding.etMemoSchedule.addTextChangedListener {
+            if(it.toString().length > 500){
+                binding.etMemoSchedule.setText(it.toString().substring(0,500))
+                binding.etMemoSchedule.setSelection(500)
+            }
+        }
     }
 
     @SuppressLint("ResourceAsColor")
     fun initView() {
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
         //내용 가져오기
         binding.scheduleContentEt.setText(schedule.content)
         binding.gridMonthSchedule.visibility = View.GONE

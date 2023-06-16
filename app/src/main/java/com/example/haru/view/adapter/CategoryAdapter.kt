@@ -25,12 +25,13 @@ import com.example.haru.R
 import com.example.haru.data.model.CategoriesUpdate
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.Schedule
+import com.example.haru.utils.User
 import com.example.haru.view.calendar.CategoryCorrectionActivity
 import com.example.haru.view.calendar.calendarMainData
 import com.example.haru.viewmodel.CalendarViewModel
 import java.util.Vector
 
-class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItemClicked: (Category, Int) -> Unit) : RecyclerView.Adapter<CategoryAdapter.CategoryView>() {
+class CategoryAdapter(private val onItemClicked: (Category, Int) -> Unit) : RecyclerView.Adapter<CategoryAdapter.CategoryView>() {
 
     inner class CategoryView(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -39,10 +40,10 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
         val ids = ArrayList<String>()
         val selected = ArrayList<Boolean>()
 
-        for(i in 2 until categoryList.size){
-            if(categoryList[i]!!.isSelected){
-                categoryList[i]!!.isSelected = false
-                ids.add(categoryList[i]!!.id)
+        for(i in 2 until User.categories.size){
+            if(User.categories[i]!!.isSelected){
+                User.categories[i]!!.isSelected = false
+                ids.add(User.categories[i]!!.id)
                 selected.add(false)
             }
         }
@@ -61,10 +62,10 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
         val ids = ArrayList<String>()
         val selected = ArrayList<Boolean>()
 
-        for(i in 2 until categoryList.size){
-            if(!categoryList[i]!!.isSelected){
-                categoryList[i]!!.isSelected = true
-                ids.add(categoryList[i]!!.id)
+        for(i in 2 until User.categories.size){
+            if(!User.categories[i]!!.isSelected){
+                User.categories[i]!!.isSelected = true
+                ids.add(User.categories[i]!!.id)
                 selected.add(true)
             }
         }
@@ -79,19 +80,19 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
     }
 
     fun dataChanged(index: Int, category: Category){
-        categoryList[index] = category
+        User.categories[index] = category
         notifyItemChanged(index)
     }
 
     fun dataDelete(index: Int){
-        categoryList.removeAt(index)
+        User.categories.removeAt(index)
         notifyItemRemoved(index)
         notifyItemRangeRemoved(index, 1)
     }
 
     fun dataAdd(category: Category){
-        categoryList.add(category)
-        notifyItemInserted(categoryList.size-1)
+        User.categories.add(category)
+        notifyItemInserted(User.categories.size-1)
     }
 
     fun dataAllChanged(){
@@ -119,11 +120,11 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
         val categoryShowIv = holder.itemView.findViewById<ImageView>(R.id.category_show_iv)
 
         val drawable = categoryColor.background as VectorDrawable
-        if (categoryList[position] != null) {
-            if (categoryList[position]!!.isSelected) {
+        if (User.categories[position] != null) {
+            if (User.categories[position]!!.isSelected) {
                 if (calendarMainData.scheduleApply) {
                     drawable.setColorFilter(
-                        Color.parseColor(categoryList[position]!!.color),
+                        Color.parseColor(User.categories[position]!!.color),
                         PorterDuff.Mode.SRC_ATOP
                     )
 
@@ -155,17 +156,17 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
                 if (calendarMainData.scheduleApply) {
                     val calendarViewModel = CalendarViewModel()
 
-                    categoryList[position]!!.isSelected = !categoryList[position]!!.isSelected
-                    calendarViewModel.updateCategory(categoryList[position]!!)
+                    User.categories[position]!!.isSelected = !User.categories[position]!!.isSelected
+                    calendarViewModel.updateCategory(User.categories[position]!!)
 
                     notifyItemChanged(position)
                 }
             }
 
-            cateogryName.text = categoryList[position]!!.content
+            cateogryName.text = User.categories[position]!!.content
 
             cateogryCorrection.setOnClickListener {
-                onItemClicked(categoryList[position]!!, position)
+                onItemClicked(User.categories[position]!!, position)
             }
         } else {
             cateogryCorrection.visibility = View.INVISIBLE
@@ -259,6 +260,6 @@ class CategoryAdapter(val categoryList: ArrayList<Category?>, private val onItem
     }
 
     override fun getItemCount(): Int {
-        return categoryList.size
+        return User.categories.size
     }
 }

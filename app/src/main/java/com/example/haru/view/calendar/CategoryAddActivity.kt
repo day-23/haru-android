@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -55,14 +56,26 @@ class CategoryAddActivity : AppCompatActivity() {
         val addCategoriesRecyclerview = findViewById<RecyclerView>(R.id.add_categories_recyclerview)
         val addBackImageview = findViewById<ImageView>(R.id.add_back_imageView)
         val addCheckImageview = findViewById<ImageView>(R.id.add_check_imageView)
+        val colorChooseTv = findViewById<TextView>(R.id.color_choose_tv)
 
         addCategoriesRecyclerview.layoutManager = GridLayoutManager(this,6)
-        addCategoriesRecyclerview.adapter = CategoriesColorAdapter(null, this)
+
+        addCategoriesRecyclerview.adapter = CategoriesColorAdapter{
+            changeColor(it)
+            colorChooseTv.setTextColor(Color.parseColor("#191919"))
+        }
 
         addBackImageview.setOnClickListener {
             intent.putExtra("status", "back")
             setResult(Activity.RESULT_OK, intent)
             finish()
+        }
+
+        addScheduleName.addTextChangedListener {
+            if (it.toString().length > 8) {
+                addScheduleName.setText(it.toString().substring(0, 8))
+                addScheduleName.setSelection(8)
+            }
         }
 
         addCheckImageview.setOnClickListener {

@@ -14,13 +14,22 @@ object SharedPrefsManager {
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                 .build()
 
-            sharedPreferences = EncryptedSharedPreferences.create(
-                context,
-                "HaruSharedPrefs",
-                masterKey,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
+            val i = 0
+            while (true) {
+                try {
+                    sharedPreferences = EncryptedSharedPreferences.create(
+                        context,
+                        "HaruSharedPrefs"+i.toString(),
+                        masterKey,
+                        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                    )
+
+                    break
+                } catch (ex : Exception){
+
+                }
+            }
         }
         return sharedPreferences!!
     }

@@ -189,7 +189,6 @@
                                             android:id="@+id/unclassified_show_iv"
                                             android:layout_width="28dp"
                                             android:layout_height="28dp"
-                                            android:layout_marginRight="38dp"
                                             android:background="@drawable/category_show_image" />
                                     </LinearLayout>
                                 </LinearLayout>
@@ -229,7 +228,6 @@
                                             android:id="@+id/classified_show_iv"
                                             android:layout_width="28dp"
                                             android:layout_height="28dp"
-                                            android:layout_marginRight="38dp"
                                             android:background="@drawable/category_show_image" />
                                     </LinearLayout>
                                 </LinearLayout>

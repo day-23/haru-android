@@ -3,11 +3,13 @@ package com.example.haru.view.etc
 import BaseActivity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.App
 import com.example.haru.R
@@ -16,10 +18,12 @@ import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
+import com.example.haru.view.sns.LoadingAnimation
 import com.example.haru.viewmodel.EtcViewModel
 
 class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentSettingBinding
+    private val loading = LoadingAnimation()
 
     companion object {
         const val TAG: String = "로그"
@@ -78,14 +82,19 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
         override fun onClick(v: View?) {
             when (v?.id) {
                 binding.ivBackIconSetting.id -> {
-                    requireActivity().supportFragmentManager.popBackStack()
+                    loading.dismiss()
+//                    requireActivity().supportFragmentManager.popBackStack()
                 }
 
                 binding.layoutAccount.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AccountFragment(etcViewModel))
+                        .add(R.id.fragments_frame, loading)
                         .addToBackStack(null)
                         .commit()
+//                    requireActivity().supportFragmentManager.beginTransaction()
+//                        .replace(R.id.fragments_frame, AccountFragment(etcViewModel))
+//                        .addToBackStack(null)
+//                        .commit()
                 }
 
                 binding.layoutProtect.id -> {
