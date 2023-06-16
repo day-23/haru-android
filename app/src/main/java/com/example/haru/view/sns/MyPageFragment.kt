@@ -404,7 +404,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         val newFrag = EditProfileFragment(userId)
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.fragments_frame, newFrag)
-        transaction.addToBackStack("snsmypage")
+        transaction.addToBackStack(null)
         transaction.commit()
         true
     }
