@@ -74,6 +74,7 @@ class SignUpActivity : BaseActivity() {
             }
             return@setOnKeyListener false
         }
+        //
 
         //기본정보 입력 완료시에 회원가입 성공
         binding.btnSignup.setOnClickListener {
@@ -82,15 +83,14 @@ class SignUpActivity : BaseActivity() {
             val nickname = binding.etSignupNickname.text.toString()
 
             //haruId나 nickname이 ""이면 모달 뜨게하기
-            if(haruId == "" || nickname == ""){
+            if (haruId == "" || nickname == "") {
                 //모달 띄우기
                 Toast.makeText(this, "ID와 닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
-            }
-            else{
+            } else {
                 //회원가입 성공
                 lifecycleScope.launch {
-                    ProfileRepository().editProfileInit(nickname, haruId){
+                    ProfileRepository().editProfileInit(nickname, haruId) {
                         val intent = Intent(this@SignUpActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()
