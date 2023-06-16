@@ -284,7 +284,8 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 //            binding.userSearchLayout.visibility = View.VISIBLE
 
             viewModel.searchUser.observe(viewLifecycleOwner) {
-                if (it == null){
+                Log.e("20191627", it.toString())
+                if (it == null) {
                     binding.tvEmptyDescription.text = "아이디 또는 닉네임 검색을 통해\n친구를 찾을 수 있어요."
                     binding.ivEmpty.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.hagi_ruri_back)
@@ -296,10 +297,16 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     binding.emptyLayout.visibility = View.VISIBLE
                     binding.ivEmpty.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.account_delete_image)
-                } else{
+                } else {
                     binding.userSearchLayout.visibility = View.VISIBLE
                     binding.emptyLayout.visibility = View.GONE
-                    Glide.with(this)
+                    if (it.profileImage == "" || it.profileImage == "null" || it.profileImage == null)
+                        binding.ivSearchUserProfile.background =
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.profile_base_image
+                            )
+                    else Glide.with(this)
                         .load(it.profileImage)
                         .into(binding.ivSearchUserProfile)
                     binding.tvSearchUserId.text = it.name

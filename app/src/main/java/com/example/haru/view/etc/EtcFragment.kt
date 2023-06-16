@@ -68,7 +68,6 @@ class EtcFragment : Fragment() {
         etcViewModel.calculateWithHaru()
 
         etcViewModel.profileImage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-
             if (it == "" || it == null)
                 binding.ivProfile.background =
                     ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
