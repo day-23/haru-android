@@ -36,11 +36,6 @@ class EditProfileFragment(userId: String) : Fragment() {
     private lateinit var profileViewModel: MyPageViewModel
     var userId = userId
 
-    interface AtEtcPopBackListener {
-        fun onDismiss()
-    }
-
-    var listener: AtEtcPopBackListener? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("TAG", "SnsMypageFragment - onCreate() called")
@@ -100,29 +95,19 @@ class EditProfileFragment(userId: String) : Fragment() {
             val introduction = binding.editIntroduction.text.toString()
             if (multipart != null) {
                 profileViewModel.editProfile(multipart, name, introduction) {
-                    if (listener != null) {
-                        listener?.onDismiss()
-                        requireActivity().supportFragmentManager.popBackStack()
-                    } else
-                        requireActivity().supportFragmentManager.popBackStack()
-//                    val fragmentManager = parentFragmentManager
-//                    if (fragmentManager.backStackEntryCount > 0) {
-//                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-//                        fragmentManager.popBackStack()
-//                    }
+                    val fragmentManager = parentFragmentManager
+                    if (fragmentManager.backStackEntryCount > 0) {
+                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+                        fragmentManager.popBackStack()
+                    }
                 }
             } else {
                 profileViewModel.editProfileName(name, introduction) {
-                    if (listener != null) {
-                        listener?.onDismiss()
-                        requireActivity().supportFragmentManager.popBackStack()
-                    } else
-                        requireActivity().supportFragmentManager.popBackStack()
-//                    val fragmentManager = requireActivity().supportFragmentManager
-//                    if (fragmentManager.backStackEntryCount > 0) {
-//                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-//                        fragmentManager.popBackStack()
-//                    }
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    if (fragmentManager.backStackEntryCount > 0) {
+                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+                        fragmentManager.popBackStack()
+                    }
                 }
             }
 

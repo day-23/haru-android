@@ -155,14 +155,8 @@ class EtcFragment : Fragment() {
                 binding.ivEtcDateRight.id -> etcViewModel.addSubTodayYearMonth(true)
 
                 binding.btnProfileEdit.id -> {
-                    val editProfileFragment = EditProfileFragment(User.id)
-                    editProfileFragment.listener = object : EditProfileFragment.AtEtcPopBackListener{
-                        override fun onDismiss() {
-                            etcViewModel.getSnsInfo()
-                        }
-                    }
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, editProfileFragment)
+                        .replace(R.id.fragments_frame, EditProfileFragment(User.id))
                         .addToBackStack(null)
                         .commit()
                 }
