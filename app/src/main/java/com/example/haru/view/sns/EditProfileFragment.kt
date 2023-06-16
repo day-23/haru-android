@@ -83,9 +83,11 @@ class EditProfileFragment(userId: String): Fragment() {
             binding.editIntroduction.setText(profile.introduction)
         }
 
-        profileViewModel.EditUri.observe(viewLifecycleOwner){absuri ->
+        profileViewModel.EditUri.observe(viewLifecycleOwner){
+            Log.e("20191627", it.toString())
+            
             Glide.with(requireContext())
-                .load(absuri)
+                .load(it)
                 .into(binding.editProfileImage)
         }
 

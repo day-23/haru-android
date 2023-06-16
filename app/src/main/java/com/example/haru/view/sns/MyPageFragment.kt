@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -213,12 +214,13 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 }
             }
 
-            if(user.profileImage != "") {
-                Log.d("TAG", "${user.profileImage}")
-                Glide.with(this)
-                    .load(user.profileImage)
-                    .into(binding.profileImage)
-            }
+            if (user.profileImage == "" || user.profileImage == null)
+                binding.profileImage.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
+            else Glide.with(this)
+                .load(user.profileImage)
+                .into(binding.profileImage)
+
         }
 
         binding.select.bringToFront()
