@@ -228,6 +228,19 @@
         app:layout_constraintBottom_toBottomOf="parent">
     </androidx.viewpager2.widget.ViewPager2>
 
+    <TextView
+        android:id="@+id/add_comment_template_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/comment_image"
+        app:layout_constraintBottom_toBottomOf="@id/comment_image"
+        app:layout_constraintLeft_toLeftOf="@id/comment_image"
+        android:layout_marginStart="34dp"
+        android:textSize="24sp"
+        android:textColor="#191919"
+        android:textStyle="bold"/>
+
+
     <LinearLayout
         android:id="@+id/edit_filter_frame"
         android:layout_width="match_parent"

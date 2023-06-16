@@ -33,7 +33,7 @@ import com.example.haru.view.adapter.ImageClickListener
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-class AddCommentFragment(postId: String, postImages:ArrayList<Profile>,val likeCnt : Int, val commentCnt:Int, writerInfo: User) : Fragment(), ImageClickListener{
+class AddCommentFragment(var isTemplate: String? = "", val content: String, postId: String, postImages:ArrayList<Profile>,val likeCnt : Int, val commentCnt:Int, writerInfo: User) : Fragment(), ImageClickListener{
     lateinit var binding : FragmentAddCommentBinding
     lateinit var commentContainer: FrameLayout
     lateinit var writeContainer: FrameLayout
@@ -152,12 +152,16 @@ class AddCommentFragment(postId: String, postImages:ArrayList<Profile>,val likeC
     ): View? {
         Log.d("TAG", "SnsFragment - onCreateView() called")
         profileViewModel.getUserInfo(com.example.haru.utils.User.id)
-
         profileViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
             isMyPost = com.example.haru.utils.User.id == user.id
             myInfo = user
         }
         binding = FragmentAddCommentBinding.inflate(inflater, container, false)
+        if(isTemplate != "" && isTemplate != null) {
+            binding.addCommentTemplateText.text = content
+            binding.addCommentTemplateText.setTextColor(Color.parseColor(isTemplate))
+        }
+
         binding.addCommentLikeCount.text = likeCnt.toString()
         binding.addCommentCommentCount.text = commentCnt.toString()
         commentContainer = binding.commentFrame
