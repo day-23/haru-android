@@ -63,11 +63,7 @@ class AddCommentFragment(postId: String, postImages:ArrayList<Profile>,val likeC
     var lastX = 0f
     var lastY = 0f
     override fun OnImageClick(position: Int) {
-        if(!onWrite) {
-            onWrite = true
-            writeComment()
-            writeStart()
-        }
+        //Don't need to implement
     }
     override fun OnPopupClick(position: Int) {
         val fragmentManager = childFragmentManager
@@ -100,26 +96,26 @@ class AddCommentFragment(postId: String, postImages:ArrayList<Profile>,val likeC
     }
 
     fun writeEnd(){
-        val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-        //writeContainer.setBackgroundColor(color)
-        filterFrame.setBackgroundColor(color)
+        binding.addCommentLayout.setBackgroundColor(Color.parseColor("#FDFDFD"))
         binding.writeCommentBack.visibility = View.VISIBLE
         binding.commentVisibility.visibility = View.VISIBLE
         binding.writeCommentCancel.isGone = true
         binding.writeCommentApply.isGone = true
         writeContainer.isClickable = false
-        binding.writeCommentTitle.text = "코멘트 남기기"
+        binding.addCommentButtonsLayout.visibility = View.VISIBLE
+        binding.writeCommentTitle.setTextColor(Color.parseColor("#191919"))
+        binding.writeCommentTitle.text = "코멘트"
     }
 
     fun writeStart(){
-        val color = Color.argb(100, 25, 25, 25)
-        //writeContainer.setBackgroundColor(color)
-        filterFrame.setBackgroundColor(color)
+        binding.addCommentLayout.setBackgroundColor(Color.parseColor("#191919"))
         binding.writeCommentBack.isGone = true
         binding.commentVisibility.isGone = true
         binding.writeCommentApply.visibility = View.VISIBLE
         binding.writeCommentCancel.visibility = View.VISIBLE
         writeContainer.isClickable = true
+        binding.addCommentButtonsLayout.visibility = View.GONE
+        binding.writeCommentTitle.setTextColor(Color.parseColor("#FDFDFD"))
         binding.writeCommentTitle.text = "코멘트 작성"
     }
 
@@ -169,6 +165,21 @@ class AddCommentFragment(postId: String, postImages:ArrayList<Profile>,val likeC
         writeContainer = binding.moveFrame
         val viewpager = binding.commentImage
         val viewPagerAdapter = AddCommentPagerAdapter(requireContext(), postImages, this)
+
+        binding.addCommentWriteText.setOnClickListener {
+            if(!onWrite) {
+                onWrite = true
+                writeComment()
+                writeStart()
+            }
+        }
+        binding.addCommentWriteButton.setOnClickListener {
+            if(!onWrite) {
+                onWrite = true
+                writeComment()
+                writeStart()
+            }
+        }
 
         binding.lastPicture.setOnClickListener {
             val currentItem = viewpager.currentItem
@@ -294,11 +305,15 @@ class AddCommentFragment(postId: String, postImages:ArrayList<Profile>,val likeC
             binding.addCommentEditComments.visibility = View.VISIBLE
             binding.addCommentEditText.visibility = View.VISIBLE
         }else if(isCommented){
+            binding.addCommentWriteButton.visibility = View.GONE
+            binding.addCommentWriteText.visibility = View.GONE
             binding.addCommentMyCommentIcon.visibility = View.VISIBLE
             binding.addCommentMyCommentText.visibility = View.VISIBLE
         }else{
-            binding.addCommentCommentIcon.visibility = View.VISIBLE
+            binding.addCommentWriteButton.visibility = View.VISIBLE
             binding.addCommentWriteText.visibility = View.VISIBLE
+            binding.addCommentMyCommentIcon.visibility = View.GONE
+            binding.addCommentMyCommentText.visibility = View.GONE
         }
     }
 

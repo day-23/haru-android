@@ -65,6 +65,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/add_comment_buttons_layout"
         android:layout_width="match_parent"
         android:layout_height="28dp"
         tools:ignore="MissingConstraints"
