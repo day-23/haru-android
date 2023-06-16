@@ -87,6 +87,7 @@ class EtcModalFragment() : BottomSheetDialogFragment() {
         binding.btnOptionLogout.setOnClickListener {
             // User confirmed logout, perform the logout operation
             SharedPrefsManager.clear(App.instance)
+            User.clear()
             val intent = Intent(activity, LoginActivity::class.java)
             startActivity(intent)
             activity?.finish()
