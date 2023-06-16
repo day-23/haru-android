@@ -39,8 +39,12 @@ class LoginActivity : BaseActivity() {
         setContentView(binding.root)
 
         /* 카카오 로그인 버튼 */
-        binding.kakaoLoginBtn.setOnClickListener {
+        binding.kakaoLoginLayout.setOnClickListener {
             updateKakaoLoginUi()
+        }
+
+        binding.kakaoLogin.setOnClickListener{
+            binding.kakaoLoginLayout.performClick()
         }
 
         /* 기존 로그인 버튼 */
@@ -62,13 +66,13 @@ class LoginActivity : BaseActivity() {
 
     //카카오 로그인 과정
     private fun updateKakaoLoginUi() {// 카카오계정으로 로그인 공통 callback 구성
-        binding.kakaoLoginBtn.isEnabled = false
+        binding.kakaoLoginLayout.isEnabled = false
 
         // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 Log.e("LOGIN", "카카오계정으로 로그인 실패", error)
-                binding.kakaoLoginBtn.isEnabled = true
+                binding.kakaoLoginLayout.isEnabled = true
             } else if (token != null) {
                 Log.i("LOGIN", "카카오계정으로 로그인 성공 ${token.accessToken}")
                 validateUserWithServer(token)
@@ -184,6 +188,7 @@ class LoginActivity : BaseActivity() {
                                         User.createdAt = response.body()?.data?.createdAt.toString()
                                         User.accessToken =
                                             response.body()?.data?.accessToken.toString()
+                                        User.isSignUp = response.body()?.data?.isSignUp!!
 
 
 
@@ -212,7 +217,7 @@ class LoginActivity : BaseActivity() {
                             if(User.isMaliciousUser){
                                 Toast.makeText(this@LoginActivity, "애플리케이션 악성 이용자로 판단되어 정지된 계정입니다.", Toast.LENGTH_SHORT).show()
                             }
-                            else if (User.name == "") {
+                            else if (!User.isSignUp) {
                                 val intent = Intent(this@LoginActivity, SignUpActivity::class.java)
                                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                                 finish()
@@ -231,7 +236,7 @@ class LoginActivity : BaseActivity() {
             override fun onFailure(call: Call<UserKakaoAuthResponse>, t: Throwable) {
                 // i want to know server response json
                 Log.e("LOGIN", "Server login failed with error: ${t.message}")
-                binding.kakaoLoginBtn.isEnabled = true
+                binding.kakaoLoginLayout.isEnabled = true
                 updateKakaoLoginUi()
             }
         })

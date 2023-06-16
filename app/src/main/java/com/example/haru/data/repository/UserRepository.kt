@@ -14,9 +14,7 @@ import com.example.haru.utils.User as UserObject
 class UserRepository() {
     private val userService = RetrofitClient.userService
     val userId = com.example.haru.utils.User.id
-    suspend fun getUser(userId: Int): User {
-        return userService.getUser(userId)
-    }
+
     //친구 요청
     suspend fun requestFriend(body: Followbody, callback: (result : Boolean) -> Unit) = withContext(
         Dispatchers.IO){
@@ -195,18 +193,6 @@ class UserRepository() {
         callback(result)
     }
 
-    suspend fun searchHaruUser(targetId: String, callback: (friends : User) -> Unit) = withContext(
-        Dispatchers.IO) {
-        val response = userService.searchHaruUser(com.example.haru.utils.User.id, targetId).execute()
-        val result: User
-
-        if (response.isSuccessful) {
-            result = response.body()!!.data
-        } else {
-            result = User()
-        }
-        callback(result)
-    }
 
     suspend fun updateUserInfo(body: Any, callback: (successFail: SuccessFail?) -> Unit) =
         withContext(Dispatchers.IO) {
@@ -243,6 +229,23 @@ class UserRepository() {
             }
             callback(successFail)
         }
+
+    suspend fun getSearchUserInfo(targetId: String, callback: (it: UserResponse?) -> Unit) = withContext(Dispatchers.IO){
+        val response = userService.getSearchUserInfo(UserObject.id, targetId).execute()
+        var data = response.body()
+
+        val it = if (response.isSuccessful){
+            Log.d("20191627", "Success to getSearch UserInfo")
+            data
+        } else {
+            Log.d("20191627", "Fail to getSearch UserInfo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, UserResponse::class.java)
+            data
+        }
+        callback(it)
+    }
 }
 
 

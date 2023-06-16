@@ -286,8 +286,6 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         userViewModel = ViewModelProvider(this, viewModelFactory).get(UserViewModel::class.java)
 
 
-        val userId = 1// Replace with actual user ID
-        userViewModel.fetchUser(userId)
 
         return binding.root
     }

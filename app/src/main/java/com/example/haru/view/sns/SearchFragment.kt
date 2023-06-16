@@ -1,6 +1,7 @@
 package com.example.haru.view.sns
 
 import BaseActivity
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
@@ -12,14 +13,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSearchBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
+import com.example.haru.view.adapter.FriendsListAdapter
 import com.example.haru.view.adapter.SearchScheduleAdapter
 import com.example.haru.view.adapter.SearchTodoAdapter
 import com.example.haru.view.adapter.TodoAdapter
@@ -27,6 +33,7 @@ import com.example.haru.view.calendar.CalendarItemFragment
 import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CheckListViewModel
+import com.example.haru.viewmodel.MyPageViewModel
 import java.util.*
 
 class SearchFragment(val viewModel: Any) : Fragment() {
@@ -56,8 +63,6 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
         (activity as BaseActivity).adjustTopMargin(binding.searchHeader.id)
 
-        Log.e("20191627", "123")
-
         // checklist와 캘린더에서 접근한 검색 화면일 경우
         if (viewModel is CheckListViewModel) {
             val scheduleListView: RecyclerView = binding.searchRecyclerOne
@@ -71,11 +76,19 @@ class SearchFragment(val viewModel: Any) : Fragment() {
             )
 
             scheduleAdapter.scheduleClick = object : SearchScheduleAdapter.ScheduleClick {
-                override fun onClick(view: View, schedule: Schedule, today : Date) {
+                override fun onClick(view: View, schedule: Schedule, today: Date) {
+                    val calendarItemFragment = CalendarItemFragment(schedule, today)
+                    calendarItemFragment.searchCallback =
+                        object : CalendarItemFragment.SearchCallback {
+                            override fun updateCallback(callback: () -> Unit) {
+                                viewModel.updateSearchData()
+                                callback()
+                            }
+                        }
                     requireActivity().supportFragmentManager.beginTransaction()
                         .add(
                             R.id.fragments_frame,
-                            CalendarItemFragment(schedule, today)
+                            calendarItemFragment
                         )
                         .addToBackStack(null)
                         .commit()
@@ -91,7 +104,6 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     if (viewModel.searchList.value?.second?.find {
                             it.id == id
                         }?.type == 2) {
-
                         requireActivity().supportFragmentManager.beginTransaction()
                             .add(
                                 R.id.fragments_frame,
@@ -266,8 +278,57 @@ class SearchFragment(val viewModel: Any) : Fragment() {
             }
 
 
-        } else {
-            TODO()
+        } else if (viewModel is MyPageViewModel) {
+            binding.tvEmptyDescription.text = "아이디 또는 닉네임 검색을 통해\n친구를 찾을 수 있어요."
+
+//            binding.userSearchLayout.visibility = View.VISIBLE
+
+            viewModel.searchUser.observe(viewLifecycleOwner) {
+                Log.e("20191627", it.toString())
+                if (it == null) {
+                    binding.tvEmptyDescription.text = "아이디 또는 닉네임 검색을 통해\n친구를 찾을 수 있어요."
+                    binding.ivEmpty.background =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.hagi_ruri_back)
+                    binding.emptyLayout.visibility = View.VISIBLE
+                    binding.userSearchLayout.visibility = View.GONE
+                } else if (it.id == "") {
+                    binding.userSearchLayout.visibility = View.GONE
+                    binding.tvEmptyDescription.text = "검색 아이디 또는 닉네임을 가진\n친구를 찾을 수 없어요."
+                    binding.emptyLayout.visibility = View.VISIBLE
+                    binding.ivEmpty.background =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.account_delete_image)
+                } else {
+                    binding.userSearchLayout.visibility = View.VISIBLE
+                    binding.emptyLayout.visibility = View.GONE
+                    if (it.profileImage == "" || it.profileImage == "null" || it.profileImage == null)
+                        binding.ivSearchUserProfile.background =
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.profile_base_image
+                            )
+                    else Glide.with(this)
+                        .load(it.profileImage)
+                        .into(binding.ivSearchUserProfile)
+                    binding.tvSearchUserId.text = it.name
+                }
+            }
+
+
+            binding.etSearchContent.setOnKeyListener { view, keyCode, keyEvent ->
+                if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+                    val content = binding.etSearchContent.text.toString().trim()
+                    if (content != "") {
+                        viewModel.getSearchUserInfo(content) {
+                            Log.d("20191627", "정보 가져오기 완료")
+                        }
+                    }
+                    binding.etSearchContent.setText("")
+                    binding.etSearchContent.clearFocus()
+                    imm.hideSoftInputFromWindow(binding.etSearchContent.windowToken, 0)
+                    return@setOnKeyListener true
+                }
+                return@setOnKeyListener false
+            }
         }
 
 
@@ -304,6 +365,8 @@ class SearchFragment(val viewModel: Any) : Fragment() {
             when (v?.id) {
                 binding.ivSearchCancel.id -> {
                     if (viewModel is CheckListViewModel)
+                        viewModel.clearSearch()
+                    else if (viewModel is MyPageViewModel)
                         viewModel.clearSearch()
                     requireActivity().supportFragmentManager.popBackStack()
                 }

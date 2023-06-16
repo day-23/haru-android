@@ -14,10 +14,10 @@ interface ApiService {
     @HTTP(method = "DELETE", path = "follows/{userId}/following", hasBody = true)
     fun requestUnFollowing(@Path("userId") userId: String, @Body followingId: UnFollowbody) : Call<FollowResponse>
 
-    @POST("/auth/kakao")
+    @POST("auth/kakao")
     fun validateKakaoUser(@HeaderMap headers: Map<String, String>): Call<UserKakaoAuthResponse>
 
 
-    @POST("/auth/verify-token")
+    @POST("auth/verify-token")
     fun validateUser(@HeaderMap headers: Map<String, String>): Call<UserVerifyResponse>
 }

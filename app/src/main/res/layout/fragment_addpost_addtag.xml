@@ -70,6 +70,7 @@
             android:textColor="#191919"
             android:textColorHint="#ACACAC"
             android:textCursorDrawable="@drawable/custom_cursor"
+            android:theme="@style/customHandle"
             android:hint="태그 추가"
             android:inputType="text"
             android:singleLine="true"

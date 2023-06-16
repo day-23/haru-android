@@ -13,13 +13,4 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
     val user: LiveData<User>
         get() = _user
 
-    fun fetchUser(userId: Int) {
-        viewModelScope.launch {
-            try {
-                _user.value = userRepository.getUser(userId)
-            } catch (e: Exception) {
-                // Handle exception
-            }
-        }
-    }
 }
