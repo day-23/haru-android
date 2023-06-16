@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSnsMypageBinding
+import com.example.haru.databinding.PopupFriendDeleteConfirmBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
 import com.example.haru.databinding.PopupSnsPostDeleteBinding
 import com.example.haru.utils.User
@@ -33,7 +34,10 @@ import com.example.haru.viewmodel.SnsViewModel
 
 interface MediaClick{
     fun onMediaClick(media: Media)
+
+    fun onDeleteClick(position: Int)
 }
+
 class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaTagClicked, MediaClick, OnPostPopupClick{
     private lateinit var binding: FragmentSnsMypageBinding
     private lateinit var feedRecyclerView: RecyclerView
@@ -48,6 +52,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     private var isFullLoaded = false //게시글 페이지네이션이 끝났는지
     var deletedItem = Post()
     val userId = userId
+    var userInfo = User()
     var isMyPage = false
     var friendStatus = 0
     var selectedTag: MediaTagAdapter.MediaTagViewHolder? = null
@@ -61,6 +66,24 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         transaction.replace(R.id.fragments_frame, newFrag)
         transaction.addToBackStack("snsmypage")
         transaction.commit()
+    }
+
+    override fun onDeleteClick(position: Int) {
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
+        if (fragment != null) {
+            MainActivity.hideNavi(false)
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+        }
+        if(position == 0){
+            mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
+                if(result){
+                    requestDelFriend() //친구끊기
+                }
+            }
+        }
     }
     override fun onCommentClick(postitem: Post) {
         mypageViewModel.getUserInfo(userId)
@@ -188,6 +211,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         mypageViewModel.getUserTags(userId)
 
         mypageViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
+            userInfo = user
             binding.profileName.text = user.name
             binding.profileIntroduction.text = user.introduction
             binding.profilePostCount.text = user.postCount.toString()
@@ -305,8 +329,13 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                     requestFriend() //친구 신청
                 } else if (friendStatus == 1) {
                     requestUnFriend() //친구신청 취소
-                } else if (friendStatus == 2){
-                    requestDelFriend() //친구끊기
+                } else if (friendStatus == 2){ //친구 삭제
+                    MainActivity.hideNavi(true)
+                    val fragment = MypageDeleteFriend(userInfo, this)
+                    val fragmentManager = childFragmentManager
+                    val transaction = fragmentManager.beginTransaction()
+                    transaction.add(R.id.mypage_popup_anchor, fragment)
+                    transaction.commit()
                 } else if(friendStatus == 3){
 
                 }
@@ -393,19 +422,19 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         true
     }
 
-    fun requestFriend(){
+    fun requestFriend(){ //친구신청
         mypageViewModel.requestFriend(Followbody(userId))
     }
 
-    fun requestUnFriend(){
+    fun requestUnFriend(){ //신청취소
         mypageViewModel.requestUnFriend(com.example.haru.utils.User.id, UnFollowbody(userId))
     }
 
-    fun requestDelFriend(){
+    fun requestDelFriend(){ //친구삭제
         mypageViewModel.requestDelFriend(DelFriendBody(userId))
     }
 
-    fun acceptRequest(){
+    fun acceptRequest(){ //요청수락
         mypageViewModel.requestAccpet(Friendbody(userId))
     }
 
@@ -472,5 +501,35 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 else outRect.set(0,0,3,3)
             }
         })
+    }
+}
+
+class MypageDeleteFriend(val targetItem : com.example.haru.data.model.User, val listener : MediaClick) :
+    Fragment() {
+    lateinit var popupbinding: PopupFriendDeleteConfirmBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        popupbinding = PopupFriendDeleteConfirmBinding.inflate(inflater, container, false)
+
+        Glide
+            .with(requireContext())
+            .load(targetItem.profileImage)
+            .into(popupbinding.popupProfileImg)
+
+        popupbinding.popupDelTargetName.text = targetItem.name
+
+        popupbinding.deleteFriendConfirm.setOnClickListener {
+            listener.onDeleteClick(0)
+        }
+
+        popupbinding.cancelDeleteFriend.setOnClickListener {
+            listener.onDeleteClick(1)
+        }
+
+        return popupbinding.root
     }
 }
