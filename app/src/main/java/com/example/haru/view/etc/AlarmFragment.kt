@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import com.example.haru.databinding.FragmentAlarmBinding
+import com.example.haru.utils.Alarm
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.customDialog.CustomTimeDialog
@@ -125,6 +126,8 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     binding.amAlarmTime.text = timeformatter.format(date)
                     User.amAlarmDate = binding.amAlarmTime.text.toString()
                     editor.putString("amAlarmDate", User.amAlarmDate)
+
+                    Alarm.amPmAlarmEdit(requireContext())
                 }
             }
             timePicker.show(parentFragmentManager, null)
@@ -161,6 +164,8 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     binding.pmAlarmTime.text = timeformatter.format(date)
                     User.pmAlarmDate = binding.pmAlarmTime.text.toString()
                     editor.putString("pmAlarmDate", User.pmAlarmDate)
+
+                    Alarm.amPmAlarmEdit(requireContext())
                 }
             }
             timePicker.show(parentFragmentManager, null)
