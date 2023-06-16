@@ -82,7 +82,9 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             transaction.remove(fragment)
             transaction.commit()
         }
+
         if(position == 0) {
+            MainActivity.hideNavi(true)
             val confirmFragment = MypageDeleteFriend(userInfo, isDelete,this)
             val transaction = fragmentManager.beginTransaction()
             transaction.add(R.id.mypage_popup_anchor, confirmFragment)
@@ -351,6 +353,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                     requestUnFriend() //친구신청 취소
                 } else if (friendStatus == 2){ //친구 삭제
                     isDelete = true
+                    binding.editProfile.isClickable = true
                     MainActivity.hideNavi(true)
                     val fragment = MypageDeleteFriend(userInfo, isDelete, this)
                     val fragmentManager = childFragmentManager

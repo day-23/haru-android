@@ -178,7 +178,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         binding.friendFeed.setTextColor(0xFF1DAFFF.toInt())
         val postRecycler = binding.postOfAll
         snsPostAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
-        snsViewModel.getFirstPosts()
+        snsViewModel.getFirstFeeds()
         postRecycler.layoutManager = LinearLayoutManager(requireContext())
         postRecycler.adapter = snsPostAdapter
 
@@ -186,7 +186,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!postRecycler.canScrollVertically(1)) {
-                    snsViewModel.getPosts(lastDate)
+                    snsViewModel.getFeeds(lastDate)
                 }
             }
         }
@@ -195,7 +195,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         val refresher = binding.refreshPost
         refresher.setOnRefreshListener {
             refresher.isRefreshing = true
-            snsViewModel.getFirstPosts()
+            snsViewModel.getFirstFeeds()
             refresher.isRefreshing = false
         }
 

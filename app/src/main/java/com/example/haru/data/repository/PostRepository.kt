@@ -109,7 +109,45 @@ class PostRepository() {
         }
         callback(report)
     }
+    //친구피드
+    suspend fun getFirstFeeds(callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFirstFeeds(
+            userId,
+        ).execute()
 
+        val posts: ArrayList<Post>
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get feeds")
+            data = response.body()!!
+            posts = data.data!!
+        } else{
+            Log.d("TAG", "Fail to get feeds")
+            posts = arrayListOf()
+        }
+        callback(posts)
+    }
+
+    suspend fun getFeeds(lastCreatedAt:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.getFeeds(
+            userId,
+            lastCreatedAt
+        ).execute()
+
+        val posts: ArrayList<Post>
+        val data: PostResponse
+        if (response.isSuccessful) {
+            Log.d("TAG", "Success to get Feeds")
+            data = response.body()!!
+            posts = data.data!!
+        } else{
+            Log.d("TAG", "Fail to get Feeds")
+            posts = arrayListOf()
+        }
+        callback(posts)
+    }
 
     //전체 게시글(둘러보기)
     suspend fun getPost(lastCreatedAt:String, callback: (posts: ArrayList<Post>) -> Unit) = withContext(

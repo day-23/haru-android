@@ -64,6 +64,8 @@ class SnsViewModel: ViewModel() {
     private val _SearchedUser = MutableLiveData<User>()
     val SearchedUser : LiveData<User>
         get() = _SearchedUser
+
+    //둘러보기 게시글
     fun getPosts(lastCreatedAt: String){
         Log.d("20191668", "$lastCreatedAt")
         var newPost: ArrayList<Post> = arrayListOf()
@@ -109,6 +111,34 @@ class SnsViewModel: ViewModel() {
             _HotPosts.value = post
         }
     }
+
+    //친구피드
+    fun getFirstFeeds(){
+        var newPost: ArrayList<Post> = arrayListOf()
+        viewModelScope.launch{
+            PostRepository.getFirstFeeds() {
+                if(it.size > 0){ //get success
+                    newPost = it
+                }
+            }
+            _Posts.value = newPost // 첫번째 페이지일 경우
+        }
+    }
+
+    fun getFeeds(lastCreatedAt: String){
+        Log.d("20191668", "$lastCreatedAt")
+        var newPost: ArrayList<Post> = arrayListOf()
+        viewModelScope.launch {
+            PostRepository.getFeeds(lastCreatedAt) {
+                if (it.size > 0){
+                    newPost = it
+                }
+            }
+            _newPost.value = newPost
+        }
+    }
+
+
 
     fun likeAction(id: String){
         viewModelScope.launch {
