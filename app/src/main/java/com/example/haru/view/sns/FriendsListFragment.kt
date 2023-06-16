@@ -183,18 +183,32 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
 
         mypageViewModel.FirstRequests.observe(viewLifecycleOwner){friends ->
             binding.friendslistFriendsRequestCount.text = "친구 신청 ${friends.pagination.totalItems}"
+            val list = friends.data
+            val requests = arrayListOf<FriendInfo>()
+            for(request in list){
+                val temp = request
+                temp.friendStatus = 3
+                requests.add(temp)
+            }
             if(!isFriendList) {
                 if(friends.data.size > 0) {
-                    lastCreatedAt = getLastCreated(friends.data)
+                    lastCreatedAt = getLastCreated(requests)
                 }
-                friendAdapter.addFirstList(friends.data)
+                friendAdapter.addFirstList(requests)
             }
         }
 
         mypageViewModel.Requests.observe(viewLifecycleOwner){friends ->
+            val list = friends.data
+            val requests = arrayListOf<FriendInfo>()
+            for(request in list){
+                val temp = request
+                temp.friendStatus = 3
+                requests.add(temp)
+            }
             if(friends.data.size > 0) {
-                friendAdapter.addList(friends.data)
-                lastCreatedAt = getLastCreated(friends.data)
+                friendAdapter.addList(requests)
+                lastCreatedAt = getLastCreated(requests)
             }
         }
 
