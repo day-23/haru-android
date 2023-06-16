@@ -942,6 +942,13 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
             }
         }
 
+        binding.scheduleContentEt.addTextChangedListener {
+            if(it.toString().length > 50){
+                binding.scheduleContentEt.setText(it.toString().substring(0,50))
+                binding.scheduleContentEt.setSelection(50)
+            }
+        }
+
         return binding.root
     }
 

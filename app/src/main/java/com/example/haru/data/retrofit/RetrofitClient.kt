@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    private const val BASE_URL = "https://api.23haru.com/"
+    private const val BASE_URL = "https://api.23haru.com/v1/"
 //    private const val BASE_URL = "http://192.168.0.42:3000/"
 
     private val okHttpClient = OkHttpClient.Builder()
