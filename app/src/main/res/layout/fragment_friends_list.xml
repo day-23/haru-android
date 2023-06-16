@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/friends_list_title"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
         <ImageView
             android:id="@+id/friends_list_back"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/friends_list_title"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="40dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
