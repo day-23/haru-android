@@ -90,7 +90,7 @@ object Alarm {
 
             val pendingIntent = PendingIntent.getBroadcast(
                 context, 0, intent,
-                PendingIntent.FLAG_MUTABLE
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
             val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
@@ -148,7 +148,7 @@ object Alarm {
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         calendarMainData.alarmCnt++
@@ -179,7 +179,7 @@ object Alarm {
 
         val pendingIntent = PendingIntent.getBroadcast(
             context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         calendarMainData.alarmCnt++
@@ -206,7 +206,7 @@ object Alarm {
         for (i in 0 until  calendarMainData.alarmCnt-1) {
             val pendingIntent = PendingIntent.getBroadcast(
                 context, i, intent,
-                PendingIntent.FLAG_MUTABLE
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
             if(pendingIntent != null){

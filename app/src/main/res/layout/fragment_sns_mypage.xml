@@ -27,6 +27,34 @@
                 android:textColor="#191919"
                 android:textStyle="bold"/>
 
+            <LinearLayout
+                android:id="@+id/mypage_denote_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/my_record_feather"
+                    android:backgroundTint="#1DAFFF"
+                    android:layout_marginRight="5dp"
+                    />
+
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="16dp"
+                    android:text="내 기록"
+                    android:layout_gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="#1DAFFF"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:background="#00000000"
+                    />
+            </LinearLayout>
+
             <ImageView
                 android:id="@+id/mypage_setup"
                 android:layout_width="28dp"

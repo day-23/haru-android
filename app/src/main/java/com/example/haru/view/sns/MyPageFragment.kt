@@ -195,12 +195,20 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             friendStatus = user.friendStatus
             if(!isMyPage) { //타인의 페이지라면
                 if (user.friendStatus == 0) {
+                    binding.editProfile.setBackgroundResource(R.drawable.gradation_btn_custom)
+                    binding.editProfile.setTextColor(Color.parseColor("#FDFDFD"))
                     binding.editProfile.text = "친구 신청"
                 } else if (user.friendStatus == 1) {
+                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "신청 취소"
                 } else if (user.friendStatus == 2){
+                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "내 친구"
                 } else if (user.friendStatus == 3){
+                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "수락"
                 }
             }
@@ -328,12 +336,18 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                     binding.editProfile.text = "신청 취소"
                 }else if(friendStatus == 1){ //신청 취소
                     friendStatus = 0
+                    binding.editProfile.setBackgroundResource(R.drawable.gradation_btn_custom)
+                    binding.editProfile.setTextColor(Color.parseColor("#FDFDFD"))
                     binding.editProfile.text = "친구 신청"
                 }else if(friendStatus == 2){
                     friendStatus = 0
+                    binding.editProfile.setBackgroundResource(R.drawable.gradation_btn_custom)
+                    binding.editProfile.setTextColor(Color.parseColor("#FDFDFD"))
                     binding.editProfile.text = "친구 신청"
                 }else if(friendStatus == 3){
                     friendStatus = 2
+                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "내 친구"
                 }
             }else{
@@ -413,6 +427,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         binding.snsMenu.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
         binding.mypageBack.visibility = View.VISIBLE
         binding.mypageSetup.visibility = View.VISIBLE
+        binding.mypageDenoteLayout.visibility = View.GONE
     }
 
     fun feedClicked(){
@@ -440,11 +455,15 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     fun initProfile(){
         if(userId == com.example.haru.utils.User.id){
             isMyPage = true
+            binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+            binding.editProfile.setTextColor(Color.parseColor("#646464"))
             binding.editProfile.text = "프로필 편집"
             mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
         }else{
             showFriendTitle()
             isMyPage = false
+            binding.editProfile.setBackgroundResource(R.drawable.gradation_btn_custom)
+            binding.editProfile.setTextColor(Color.parseColor("#FDFDFD"))
             binding.editProfile.text = "친구 신청"
             mypageViewModel.getUserInfo(userId)
         }

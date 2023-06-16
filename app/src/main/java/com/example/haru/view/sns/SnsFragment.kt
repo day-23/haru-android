@@ -2,38 +2,28 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import UserViewModelFactory
-import android.content.Intent
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat.animate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
 import com.example.haru.data.api.UserService
 import com.example.haru.data.model.Post
-import com.example.haru.data.model.Profile
-import com.example.haru.data.model.SnsPost
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.databinding.FragmentSnsBinding
-import com.example.haru.databinding.PopupSnsCommentDeleteBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
 import com.example.haru.databinding.PopupSnsPostDeleteBinding
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SnsPostAdapter
-import com.example.haru.view.adapter.TimetableAdapter
-import com.example.haru.view.timetable.TodotableFragment
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 import com.example.haru.viewmodel.UserViewModel
@@ -52,6 +42,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     private lateinit var profileViewModel: MyPageViewModel
     private lateinit var binding: FragmentSnsBinding
     private var click = false
+    private var postClicked = false
     private lateinit var snsPostAdapter: SnsPostAdapter
     var lastDate = ""
     var deletedItem : Post = Post()
@@ -224,6 +215,9 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                 transaction.addToBackStack("snsmain")
             transaction.commit()
 
+            binding.writeHaru.visibility = View.GONE
+            binding.addPost.setImageResource(R.drawable.add_sns)
+            postClicked = false
         }
 
         //하루 옆 메뉴 클릭
@@ -245,13 +239,23 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         }
 
         binding.addPost.setOnClickListener {
-            val newFrag = AddPostFragment.newInstance()
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-            if (!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmain")
-            transaction.commit()
+            if(postClicked) {
+                val newFrag = AddPostFragment.newInstance()
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragments_frame, newFrag)
+                val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+                if (!isSnsMainInBackStack)
+                    transaction.addToBackStack("snsmain")
+                transaction.commit()
+
+                binding.writeHaru.visibility = View.GONE
+                binding.addPost.setImageResource(R.drawable.add_sns)
+            } else {
+                binding.writeHaru.visibility = View.VISIBLE
+                binding.addPost.setImageResource(R.drawable.add_sns_post)
+            }
+
+            postClicked = !postClicked
         }
 
         //둘러보기 클릭

@@ -32,7 +32,7 @@
                 android:text="프로필 편집"
                 android:textColor="#191919"
                 android:textStyle="bold"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 />
 
 
@@ -68,7 +68,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/mini_camera"
+                android:src="@drawable/profile_image_edit"
                 app:layout_constraintBottom_toBottomOf="@+id/edit_profile_image"
                 app:layout_constraintRight_toRightOf="@+id/edit_profile_image"/>
 
@@ -88,16 +88,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_marginLeft="14dp">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="이름"
+                android:text="닉네임"
                 android:textStyle="bold"
                 android:textSize="14sp"
-                android:textColor="#191919"/>
+                android:textColor="#646464"/>
 
             <EditText
                 android:id="@+id/edit_name"
@@ -121,6 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:layout_marginLeft="14dp"
             android:layout_marginTop="16dp">
             <TextView
                 android:layout_width="0dp"
@@ -129,7 +131,7 @@
                 android:text="자기소개"
                 android:textStyle="bold"
                 android:textSize="14sp"
-                android:textColor="#191919"/>
+                android:textColor="#646464"/>
 
             <EditText
                 android:id="@+id/edit_introduction"
