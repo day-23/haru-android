@@ -45,7 +45,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     private var postClicked = false
     private lateinit var snsPostAdapter: SnsPostAdapter
     var lastDate = ""
-    var deletedItem : Post = Post()
+    var deletedItem: Post = Post()
 
     override fun onCommentClick(postitem: Post) {
         profileViewModel.getUserInfo(User.id)
@@ -103,7 +103,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                 if (User.id == userId) {
                     val fragment = PopupDeleteConfirm(userId, postId, this)
                     transaction.add(R.id.sns_post_anchor, fragment)
-                }else{
+                } else {
 
                 }
             }
@@ -145,12 +145,12 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id, 1.1f)
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
     }
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id, 1.1f)
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
     }
 
     override fun onCreateView(
@@ -194,7 +194,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         }
 
         snsViewModel.DeleteResult.observe(viewLifecycleOwner) { result ->
-            if(result && deletedItem.id != ""){
+            if (result && deletedItem.id != "") {
                 snsPostAdapter.deletePost(deletedItem)
             }
         }
@@ -239,7 +239,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         }
 
         binding.addPost.setOnClickListener {
-            if(postClicked) {
+            if (postClicked) {
                 val newFrag = AddPostFragment.newInstance()
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragments_frame, newFrag)
