@@ -181,7 +181,8 @@
                     android:minHeight="0dp"
                     android:textColor="@color/todo_description"
                     android:textColorHint="@color/date_text"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:theme="@style/customHandle" />
 
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton

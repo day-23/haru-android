@@ -179,6 +179,7 @@
                                 android:text="@={vm.tag}"
                                 android:textColor="@color/todo_description"
                                 android:textColorHint="@color/light_gray"
+                                android:theme="@style/customHandle"
                                 android:textCursorDrawable="@drawable/custom_cursor"
                                 android:textSize="14sp" />
 

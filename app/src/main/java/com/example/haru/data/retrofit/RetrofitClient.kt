@@ -12,22 +12,22 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-//    private const val BASE_URL = "https://api.23haru.com/"
-    private const val BASE_URL = "http://192.168.0.42:3000/"
+    private const val BASE_URL = "https://api.23haru.com/v1/"
+//    private const val BASE_URL = "http://192.168.0.42:3000/"
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
-        .addInterceptor { chain ->
-            val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
-            val accessToken = sharedPreferences.getString("accessToken", null)
-
-            val newRequest = chain.request().newBuilder()
-                .addHeader("Authorization", "Bearer $accessToken")
-                .build()
-            chain.proceed(newRequest)
-        }
+//        .addInterceptor { chain ->
+//            val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
+//            val accessToken = sharedPreferences.getString("accessToken", null)
+//
+//            val newRequest = chain.request().newBuilder()
+//                .addHeader("Authorization", "Bearer $accessToken")
+//                .build()
+//            chain.proceed(newRequest)
+//        }
         .addInterceptor(NetworkErrorInterceptor(App.instance))
         .connectTimeout(100, TimeUnit.SECONDS)
         .followRedirects(true)
