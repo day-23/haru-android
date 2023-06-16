@@ -103,16 +103,16 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         }
 
         binding.detailButtonComment.setOnClickListener {
-            myPageViewModel.getUserInfo(User.id)
+            myPageViewModel.getUserInfo(post.user.id)
             myPageViewModel.UserInfo.observe(viewLifecycleOwner){user ->
                 if(post.id != "") {
-                    val newFrag = AddCommentFragment(post.id, post.images, user)
+                    val newFrag = AddCommentFragment(post.isTemplatePost, post.content, post.id,post.images,post.likedCount, post.commentCount, user)
                     val transaction = parentFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragments_frame, newFrag)
                     transaction.addToBackStack("detail")
                     transaction.commit()
                 }else{
-                    val newFrag = AddCommentFragment(media.id, media.images, user)
+                    val newFrag = AddCommentFragment(media.templateUrl, media.content,media.id, media.images, media.likedCount, media.commentCount, user)
                     val transaction = parentFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragments_frame, newFrag)
                     transaction.addToBackStack("detail")

@@ -48,9 +48,9 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     var deletedItem : Post = Post()
 
     override fun onCommentClick(postitem: Post) {
-        profileViewModel.getUserInfo(User.id)
+        profileViewModel.getUserInfo(postitem.user.id)
         profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
-            val newFrag = AddCommentFragment(postitem.id, postitem.images, user)
+            val newFrag = AddCommentFragment(postitem.isTemplatePost, postitem.content, postitem.id, postitem.images, postitem.likedCount, postitem.commentCount, user)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
@@ -98,13 +98,17 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             transaction.remove(fragment)
             transaction.commit()
             if (position == 0) {
-                //TODO:숨기기 혹은 수정하기
+                if(User.id == userId){//수정하기
+
+                }else{//이 게시글 숨기기
+                    snsViewModel.hidePost(postId)
+                }
             } else if (position == 1) {
-                if (User.id == userId) {
+                if (User.id == userId) {//삭제확인창
                     val fragment = PopupDeleteConfirm(userId, postId, this)
                     transaction.add(R.id.sns_post_anchor, fragment)
-                }else{
-
+                }else{ //신고하기
+                    snsViewModel.reportPost(postId)
                 }
             }
         }
@@ -165,7 +169,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         binding.friendFeed.setTextColor(0xFF1DAFFF.toInt())
         val postRecycler = binding.postOfAll
         snsPostAdapter = SnsPostAdapter(requireContext(), arrayListOf(), this)
-        snsViewModel.getFirstPosts()
+        snsViewModel.getFirstFeeds()
         postRecycler.layoutManager = LinearLayoutManager(requireContext())
         postRecycler.adapter = snsPostAdapter
 
@@ -173,7 +177,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!postRecycler.canScrollVertically(1)) {
-                    snsViewModel.getPosts(lastDate)
+                    snsViewModel.getFeeds(lastDate)
                 }
             }
         }
@@ -182,7 +186,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         val refresher = binding.refreshPost
         refresher.setOnRefreshListener {
             refresher.isRefreshing = true
-            snsViewModel.getFirstPosts()
+            snsViewModel.getFirstFeeds()
             refresher.isRefreshing = false
         }
 
