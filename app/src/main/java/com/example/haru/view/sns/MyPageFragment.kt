@@ -552,10 +552,16 @@ class MypageDeleteFriend(val targetItem : com.example.haru.data.model.User, val 
         if(isDelete) { //삭제창
             popupbinding = PopupFriendDeleteConfirmBinding.inflate(inflater, container, false)
 
-            Glide
-                .with(requireContext())
-                .load(targetItem.profileImage)
-                .into(popupbinding.popupProfileImg)
+            if(targetItem.profileImage != null) {
+                Glide
+                    .with(requireContext())
+                    .load(targetItem.profileImage)
+                    .into(popupbinding.popupProfileImg)
+            }
+            else{
+                popupbinding.popupProfileImg.setBackgroundResource(R.drawable.default_profile)
+            }
+
 
             popupbinding.popupDelTargetName.text = targetItem.name
             popupbinding.deleteFriendConfirm.setOnClickListener {
@@ -569,10 +575,15 @@ class MypageDeleteFriend(val targetItem : com.example.haru.data.model.User, val 
             return popupbinding.root
         }else{ //차단창
             blockbinding = PopupBlockConfirmBinding.inflate(inflater, container, false)
-            Glide
-                .with(requireContext())
-                .load(targetItem.profileImage)
-                .into(blockbinding.blockProfileImg)
+
+            if(targetItem.profileImage != null) {
+                Glide
+                    .with(requireContext())
+                    .load(targetItem.profileImage)
+                    .into(blockbinding.blockProfileImg)
+            }else{
+                blockbinding.blockProfileImg.setBackgroundResource(R.drawable.default_profile)
+            }
 
             blockbinding.popupBlockTargetName.text = targetItem.name
             blockbinding.blockUserConfirm.setOnClickListener {
