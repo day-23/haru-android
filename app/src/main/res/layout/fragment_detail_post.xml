@@ -182,7 +182,7 @@
             android:layout_marginStart="62dp"
             tools:ignore="MissingConstraints" />
         <TextView
-            android:id="@+id/post_comment_count"
+            android:id="@+id/detail_post_comment_count"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -194,7 +194,7 @@
             android:text="0"/>
 
         <ImageView
-            android:id="@+id/post_total_comment"
+            android:id="@+id/detail_post_total_comment"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/sns_etc"

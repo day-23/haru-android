@@ -5,6 +5,7 @@ import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
+import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION
 import android.os.Bundle
@@ -15,6 +16,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.haru.R
 import com.example.haru.databinding.ActivityMainBinding
 import com.example.haru.utils.User
@@ -24,6 +26,11 @@ import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.etc.EtcFragment
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.view.timetable.TimetableFragment
+import com.example.haru.viewmodel.MyPageViewModel
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageActivity
+import com.theartofdev.edmodo.cropper.CropImageView
+import com.theartofdev.edmodo.cropper.CropImageView.CropResult
 import com.example.haru.viewmodel.CalendarViewModel
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
@@ -36,6 +43,7 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreference: SharedPreferences
     private lateinit var editor: Editor
+    private lateinit var cropViewModel : MyPageViewModel
 
     companion object {
         private var binding: ActivityMainBinding? = null
@@ -46,6 +54,7 @@ class MainActivity : BaseActivity() {
         fun setBinding(activityMainBinding: ActivityMainBinding) {
             binding = activityMainBinding
         }
+
     }
 
     override fun onPause() {
@@ -70,6 +79,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
+        cropViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
         setContentView(binding.root)
 
         setBinding(binding)
@@ -199,5 +209,18 @@ class MainActivity : BaseActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragments_frame, fragment)
             .commit()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val result = CropImage.getActivityResult(data)
+        if (resultCode == RESULT_OK) {
+            Log.d("CropImages", "abs uri : ${result.uri}")
+            Log.d("CropImages", "path : ${result.originalUri}")
+            cropViewModel.getCropResult(result.uri)
+        } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            val error = result.error
+            Log.d("ImageCrop", "$error")
+        }
     }
 }

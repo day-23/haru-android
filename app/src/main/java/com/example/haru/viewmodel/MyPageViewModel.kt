@@ -2,10 +2,7 @@ package com.example.haru.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build.VERSION_CODES.P
-import android.provider.ContactsContract.Profile
 import android.provider.MediaStore
-import android.security.KeyChainAliasCallback
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,15 +11,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.*
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
-import com.example.haru.data.repository.TodoRepository
 import com.example.haru.data.repository.UserRepository
-import com.kakao.sdk.talk.model.Friend
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.security.AccessController.getContext
 
 class MyPageViewModel() : ViewModel() {
     private val ProfileRepository = ProfileRepository()
@@ -51,6 +47,10 @@ class MyPageViewModel() : ViewModel() {
     val StoredImages: LiveData<ArrayList<ExternalImages>>
         get() = _StoredImages
 
+    private val _Images =  MutableLiveData<ArrayList<ExternalImages>>()
+    val Images: LiveData<ArrayList<ExternalImages>>
+        get() = _Images
+
     private val _SelectedPosition = MutableLiveData<ArrayList<Int>>()
     val SelectedPosition: LiveData<ArrayList<Int>>
         get() = _SelectedPosition
@@ -75,6 +75,14 @@ class MyPageViewModel() : ViewModel() {
     val EditUri: LiveData<Uri>
         get() = _EditUri
 
+    private val _AfterCrop = MutableLiveData<ExternalImages?>()
+    val AfterCrop: LiveData<ExternalImages?>
+        get() = _AfterCrop
+
+    private val _BeforeCrop = MutableLiveData<ExternalImages?>()
+    val BeforeCrop: LiveData<ExternalImages?>
+        get() = _BeforeCrop
+
     private val _SelectedUri = MutableLiveData<ArrayList<ExternalImages>>()
     val SelectedUri: LiveData<ArrayList<ExternalImages>>
         get() = _SelectedUri
@@ -87,6 +95,12 @@ class MyPageViewModel() : ViewModel() {
 
     private val _PostRequest = MutableLiveData<Boolean>()
     val PostRequest: LiveData<Boolean> = _PostRequest
+
+    private val _SearchedFriends = MutableLiveData<FriendsResponse>()
+    val SearchedFriends: LiveData<FriendsResponse> = _SearchedFriends
+
+    private val _SearchedRequests = MutableLiveData<FriendsResponse>()
+    val SearchedRequests: LiveData<FriendsResponse> = _SearchedRequests
 
     private val _Friends = MutableLiveData<FriendsResponse>()
     val Friends: LiveData<FriendsResponse> = _Friends
@@ -247,6 +261,8 @@ class MyPageViewModel() : ViewModel() {
         _SelectedImage.value = -1
         _SelectedPosition.value = arrayListOf()
         lastImageIndex = -1
+        _Images.value = arrayListOf()
+        _BeforeCrop.value = null
     }
 
     //커스텀 갤러리 단일 사진 선택을 위한 함수
@@ -261,45 +277,73 @@ class MyPageViewModel() : ViewModel() {
 
     //MutableList로 바꿈
     fun convertMultiPart(context: Context): MutableList<MultipartBody.Part> {
-        val images = ArrayList<ExternalImages>()
-        val indexSet = _SelectedPosition.value
-        val indexOne = _SelectedImage.value
-        val totalImage = _StoredImages.value
-        if (indexSet!!.size > 0 && totalImage != null) {
-            for (i in indexSet) {
-                images.add(totalImage.get(i))
-            }
-        } else if (indexOne != null && indexOne != -1 && totalImage != null) {
-            images.add(totalImage.get(indexOne))
-        }
-
+//        val images = ArrayList<ExternalImages>()
+//        val indexSet = _SelectedPosition.value
+//        val indexOne = _SelectedImage.value
+//        val totalImage = _StoredImages.value
+//        if (indexSet!!.size > 0 && totalImage != null) {
+//            for (i in indexSet) {
+//                images.add(totalImage.get(i))
+//            }
+//        } else if (indexOne != null && indexOne != -1 && totalImage != null) {
+//            images.add(totalImage.get(indexOne))
+//        }
+        val images = Images.value
         val convertedImages = mutableListOf<MultipartBody.Part>()
 
-        for (data in images) {
-            val cursor = context.contentResolver.query(data.absuri, null, null, null, null)
-            cursor?.use {
-                it.moveToFirst()
-                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                val imagePath = it.getString(columnIndex)
-                val fileName = data.name.substringAfterLast('.')
-                val fileExtension = "image/$fileName"
+        if (images != null) {
+            for (data in images) {
+                val cursor = context.contentResolver.query(data.absuri, null, null, null, null)
+                Log.d("CropImages", "cursor : $cursor")
+                Log.d("CropImages", "${data.absuri}")
+                cursor?.use {
+                    it.moveToFirst()
+                    val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                    val imagePath = it.getString(columnIndex)
+                    val fileName = data.name.substringAfterLast('.')
+                    val fileExtension = "image/$fileName"
 
-                val file = File(imagePath)
-                Log.d("Image", "4 $file")
+                    val file = File(imagePath)
+                    Log.d("CropImages", "file : $file")
+                    val requestFile = RequestBody.create(fileExtension.toMediaTypeOrNull(), file)
+                    val part = MultipartBody.Part.createFormData("image", fileName, requestFile)
+                    convertedImages.add(part)
+                }
+                if(cursor == null){
+                    // File path of the cache image
+                    val imagePath = data.absuri.toString()
 
-                val requestFile = RequestBody.create(fileExtension.toMediaTypeOrNull(), file)
-                val part = MultipartBody.Part.createFormData("image", fileName, requestFile)
-                convertedImages.add(part)
+                    // Create a File object from the image path
+                    val imageFile = File(imagePath)
+
+                    Log.d("CropImages", "image file $imageFile")
+
+                    if(imageFile.exists()) {
+                        // Create a RequestBody from the image file
+                        val imageRequestBody =
+                            RequestBody.create("image/*".toMediaTypeOrNull(), imageFile)
+
+                        // Create a MultipartBody.Part from the image RequestBody
+                        val imagePart = MultipartBody.Part.createFormData(
+                            "image",
+                            imageFile.name,
+                            imageRequestBody
+                        )
+                        convertedImages.add(imagePart)
+                    }
+                }
             }
+        }else{
+            Log.d("CropImages", "image is null")
         }
-
-        _SelectedUri.value = images
+        Log.d("CropImages", "$convertedImages")
+        _SelectedUri.value = images ?: arrayListOf()
         return convertedImages
     }
 
     //선택한 사진들의 내부저장소 정보를 얻어옴
     fun getSelectImages(): ArrayList<ExternalImages> {
-        return _SelectedUri.value ?: arrayListOf()
+        return _Images.value ?: arrayListOf()
     }
 
     fun postRequest(
@@ -378,6 +422,9 @@ class MyPageViewModel() : ViewModel() {
     }
 
     fun resetValue() {
+        _BeforeCrop.value = null
+        _AfterCrop.value = null
+        _Images.value = arrayListOf()
         _SelectedPosition.value = arrayListOf()
         _StoredImages.value = arrayListOf()
         _SelectedUri.value = arrayListOf()
@@ -543,5 +590,65 @@ class MyPageViewModel() : ViewModel() {
         }
 
         return arrayListOf()
+    }
+
+    fun searchOnFriends(targetId: String, name: String){
+        var Friends = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.searchOnFriend(targetId, name) {
+                if (it.success) {
+                    Friends = it
+                }
+            }
+            _SearchedFriends.value = Friends
+        }
+    }
+
+    fun searchOnRequests(targetId: String, name: String){
+        var Friends = FriendsResponse(false, arrayListOf(), pagination())
+        viewModelScope.launch {
+            UserRepository.searchOnRequests(targetId, name) {
+                if (it.success) {
+                    Friends = it
+                }
+            }
+            _SearchedRequests.value = Friends
+        }
+    }
+
+    fun setImage(image : ExternalImages){
+        _Images.value = arrayListOf(image)
+    }
+
+    fun setImages(image: ExternalImages){
+        var temp = _Images.value
+        if(!temp.isNullOrEmpty())
+            temp?.add(image)
+        else{
+            temp = arrayListOf(image)
+        }
+        _Images.value = temp!!
+    }
+
+    fun deleteImage(image: ExternalImages){
+        var temp = _Images.value
+        if(temp.isNullOrEmpty()) {
+            temp!!.remove(image)
+            _Images.value = temp!!
+        }
+    }
+
+    fun getCropResult(image: Uri){
+        var temp = _BeforeCrop.value
+        if(temp != null) {
+            temp.absuri = image
+            _AfterCrop.value = temp!!
+        }else{
+            Log.d("ImageCrop", "null")
+        }
+    }
+
+    fun getCrop(image : ExternalImages){
+        _BeforeCrop.value = image
     }
 }

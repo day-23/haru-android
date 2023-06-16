@@ -39,6 +39,15 @@
                 app:layout_constraintTop_toTopOf="@id/look_around_title"
                 android:rotation="-90"/>
 
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/my_record_feather"
+                android:backgroundTint="@color/black"
+                app:layout_constraintRight_toLeftOf="@id/look_around_my_records"
+                android:layout_marginRight="10.71dp"
+                />
+
             <TextView
                 android:id="@+id/look_around_my_records"
                 android:layout_width="70dp"

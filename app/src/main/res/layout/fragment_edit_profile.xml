@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FDFDFD"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--상단바-->
@@ -18,7 +19,7 @@
                 android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/back_image"/>
+                android:src="@drawable/back_arrow"/>
 
             <TextView
                 android:layout_width="0dp"
@@ -58,7 +59,7 @@
                 android:id="@+id/edit_profile_image"
                 android:layout_width="94dp"
                 android:layout_height="94dp"
-                android:src="@color/cardview_dark_background"
+                android:src="@drawable/default_profile"
                 android:layout_gravity="center"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -104,6 +105,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
                 android:hint="이름을 입력해주세요"
+                android:textColorHint="#ACACAC"
+                android:textColor="#191919"
                 android:textSize="14sp"
                 android:background="@null"/>
         </LinearLayout>
@@ -133,8 +136,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="9"
-                android:hint="자기소개를 입력해주세요"
+                android:hint="자기소개를 입력해 보세요"
+                android:maxLength="12"
+                android:textColorHint="#ACACAC"
                 android:textSize="14sp"
+                android:textColor="#191919"
                 android:background="@null"/>
 
         </LinearLayout>

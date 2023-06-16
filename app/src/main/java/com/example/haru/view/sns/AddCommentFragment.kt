@@ -22,24 +22,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.haru.R
-import com.example.haru.data.model.CommentBody
-import com.example.haru.data.model.Comments
-import com.example.haru.data.model.Post
-import com.example.haru.data.model.User
+import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentAddCommentBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
 import com.example.haru.view.adapter.AddCommentPagerAdapter
 import com.example.haru.view.adapter.ImageClickListener
 import com.example.haru.viewmodel.SnsViewModel
 
-class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClickListener{
+class AddCommentFragment(postId : String, postImages:ArrayList<Profile>, myInfo: User) : Fragment(), ImageClickListener{
     lateinit var binding : FragmentAddCommentBinding
     lateinit var commentContainer: FrameLayout
     lateinit var writeContainer: FrameLayout
     lateinit var filterFrame: LinearLayout
     lateinit var writeBox: View
-    val postitem = postitem
-    val postIndex = postitem.images
+    val postId = postId
+    val postImages = postImages
     private lateinit var snsViewModel: SnsViewModel
     var imageIndex = 0
     var CommentIsVisible = true
@@ -83,9 +80,9 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
                }
            }
        }else if(position == 1){
-           snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
+           snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postId, postImages[imageIndex].id)
            val addedComment = Comments("",myInfo,AddContent,AddX,AddY, true,"","")
-           postIndex[imageIndex].comments.add(addedComment)
+           postImages[imageIndex].comments.add(addedComment)
            bindComment(addedComment)
            onWrite = false
            writeContainer.removeAllViews()
@@ -155,7 +152,7 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
 
         writeContainer = binding.moveFrame
         val viewpager = binding.commentImage
-        val viewPagerAdapter = AddCommentPagerAdapter(requireContext(), postitem.images, this)
+        val viewPagerAdapter = AddCommentPagerAdapter(requireContext(), postImages, this)
 
         binding.lastPicture.setOnClickListener {
             val currentItem = viewpager.currentItem
@@ -197,15 +194,15 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
                 if(position == 0){
                     binding.lastPicture.isGone = true
                 }
-                if(position == postitem.images.size - 1){
+                if(position == postImages.size - 1){
                     binding.nextPicture.isGone = true
                 }
 
-                binding.addcommentIndex.text = "${position + 1} / ${postitem.images.size}"
+                binding.addcommentIndex.text = "${position + 1} / ${postImages.size}"
                 if (commentContainer.childCount != 0) {
                     commentContainer.removeAllViews()
                 }
-                for(comment in postIndex[position].comments) {
+                for(comment in postImages[position].comments) {
                     Log.d("20191668","내용:  ${comment}")
                     commentContainer.post {
                         bindComment(comment)
@@ -228,9 +225,9 @@ class AddCommentFragment(postitem : Post, myInfo: User) : Fragment(), ImageClick
 
         binding.writeCommentApply.setOnClickListener {
             if(AddContent != ""){
-                snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postitem.id,postIndex[imageIndex].id)
+                snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postId,postImages[imageIndex].id)
                 val addedComment = Comments("",myInfo,AddContent,AddX,AddY, true,"","")
-                postIndex[imageIndex].comments.add(addedComment)
+                postImages[imageIndex].comments.add(addedComment)
                 bindComment(addedComment)
                 onWrite = false
                 writeContainer.removeAllViews()
