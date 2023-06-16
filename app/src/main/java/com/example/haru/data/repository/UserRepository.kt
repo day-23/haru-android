@@ -200,6 +200,23 @@ class UserRepository() {
             }
             callback(successFail)
         }
+
+    suspend fun getSearchUserInfo(targetId: String, callback: (it: UserResponse?) -> Unit) = withContext(Dispatchers.IO){
+        val response = userService.getSearchUserInfo(UserObject.id, targetId).execute()
+        var data = response.body()
+
+        val it = if (response.isSuccessful){
+            Log.d("20191627", "Success to getSearch UserInfo")
+            data
+        } else {
+            Log.d("20191627", "Fail to getSearch UserInfo")
+            val error = response.errorBody()?.string()
+            val gson = Gson()
+            data = gson.fromJson(error, UserResponse::class.java)
+            data
+        }
+        callback(it)
+    }
 }
 
 

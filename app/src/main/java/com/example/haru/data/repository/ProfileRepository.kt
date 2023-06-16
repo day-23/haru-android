@@ -33,7 +33,7 @@ class ProfileRepository() {
             if (response.isSuccessful) {
                 Log.d("EDITTAG", "Success to update profile")
                 data = response.body()!!
-                user = data.data
+                user = data.data!!
 
             } else {
                 Log.d("EDITTAG", "Fail to update Profile: $response")
@@ -58,7 +58,7 @@ class ProfileRepository() {
             if (response.isSuccessful) {
                 Log.d("EDITTAG", "Success to update profile")
                 data = response.body()!!
-                user = data.data
+                user = data.data!!
 
             } else {
                 Log.d("EDITTAG", "Fail to update Profile: $response")
@@ -117,7 +117,7 @@ class ProfileRepository() {
         if(response.isSuccessful){
             Log.d("TAG", "Success to get User")
             data = response.body()!!
-            user = data.data
+            user = data.data!!
         } else{
             Log.d("TAG", "Fail to get User")
             user = User("","","","",0,0,0,false)

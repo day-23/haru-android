@@ -67,6 +67,9 @@ class MyPageViewModel() : ViewModel() {
     val UserInfo: LiveData<User>
         get() = _UserInfo
 
+    private val _searchUser = MutableLiveData<User?>()
+    val searchUser : LiveData<User?> get() = _searchUser
+
     private val _EditImage = MutableLiveData<MultipartBody.Part>()
     val EditImage: LiveData<MultipartBody.Part>
         get() = _EditImage
@@ -543,5 +546,20 @@ class MyPageViewModel() : ViewModel() {
         }
 
         return arrayListOf()
+    }
+
+    fun getSearchUserInfo(targetId: String, callback: () -> Unit){
+        viewModelScope.launch {
+            UserRepository.getSearchUserInfo(targetId){
+                if (it?.success == true){
+                    _searchUser.postValue(it.data!!)
+                } else _searchUser.postValue(User())
+                callback()
+            }
+        }
+    }
+
+    fun clearSearch() {
+        _searchUser.value = null
     }
 }

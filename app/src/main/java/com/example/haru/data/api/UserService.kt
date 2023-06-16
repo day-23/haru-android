@@ -36,6 +36,9 @@ interface UserService {
     @GET("friends/{userId}/request")
     fun getFirstRequestList(@Path("userId") userId: String, @Query("page") page: String) : Call<FriendsResponse>
 
+    @GET("post/{userId}/search/user/{targetId}")
+    fun getSearchUserInfo(@Path("userId") userId: String, @Path("targetId") targetId: String) : Call<UserResponse>
+
     @PATCH("user/{userId}/setting")
     fun updateUserInfo(@Path("userId") userId: String, @Body body : Any) : Call<SuccessFail>
 
