@@ -3,9 +3,7 @@ package com.example.haru.view.auth
 import BaseActivity
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Typeface
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,18 +12,17 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.haru.R
 import com.example.haru.data.repository.ProfileRepository
-import com.example.haru.databinding.ActivityLoginBinding
+import com.example.haru.data.repository.TodoRepository
 import com.example.haru.databinding.ActivitySignUpBinding
 import com.example.haru.view.MainActivity
-import com.example.haru.view.calendar.CalendarFragment
 import kotlinx.coroutines.launch
 
 class SignUpActivity : BaseActivity() {
     private lateinit var binding: ActivitySignUpBinding
+    private val profileRepository = ProfileRepository()
+
     val imm: InputMethodManager by lazy {
         getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
@@ -50,6 +47,15 @@ class SignUpActivity : BaseActivity() {
                 binding.etSignupId.setTypeface(null, typeFace)
             }
         })
+
+        binding.etSignupId.setOnKeyListener { view, keyCode, keyEvent ->
+//            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+//                imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+//                binding.etSignupId.clearFocus()
+//                return@setOnKeyListener true
+//            }
+            return@setOnKeyListener false
+        }
 
         binding.etSignupNickname.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -90,7 +96,7 @@ class SignUpActivity : BaseActivity() {
             } else {
                 //회원가입 성공
                 lifecycleScope.launch {
-                    ProfileRepository().editProfileInit(nickname, haruId) {
+                    profileRepository.editProfileInit(nickname, haruId) {
                         val intent = Intent(this@SignUpActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -111,6 +117,11 @@ class SignUpActivity : BaseActivity() {
 
         if (currentFocus is EditText) {
             currentFocus!!.clearFocus()
+            if (currentFocus == binding.etSignupId){
+
+            }
+            else if (currentFocus == binding.etSignupNickname){}
+
             return false
         }
         return super.dispatchTouchEvent(ev)

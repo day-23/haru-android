@@ -28,4 +28,10 @@ interface ProfileService {
 
     @GET("post/{userId}/info/{targetId}")
     fun getUserInfo(@Path("userId") userId: String, @Path("targetId") targetId:String): Call<UserResponse>
+
+    @PATCH("post/{userId}/profile/init/name")
+    fun testName(@Path("userId") userId: String, @Body body: UpdateName) : Call<TestInitResponse>
+
+    @PATCH("post/{userId}/profile/init/haruId")
+    fun testHaruId(@Path("userId") userId: String, @Body body: UpdateHaruId) : Call<TestInitResponse>
 }
