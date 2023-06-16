@@ -86,12 +86,12 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         }
     }
 
-    override fun onCancelClick(item: FriendInfo) {
-        mypageViewModel.requestFriend(Followbody(com.example.haru.utils.User.id))
+    override fun onCancelClick(item: FriendInfo) { //친구신청 취소
+        mypageViewModel.requestUnFriend(com.example.haru.utils.User.id, UnFollowbody(item.id!!))
     }
 
-    override fun onRequestClick(item: FriendInfo) { //친구신청 취소
-        mypageViewModel.requestUnFriend(com.example.haru.utils.User.id, UnFollowbody(item.id!!))
+    override fun onRequestClick(item: FriendInfo) { //친구신청
+        mypageViewModel.requestFriend(Followbody(item.id!!))
     }
 
     override fun onPopupClick(position: Int) {
