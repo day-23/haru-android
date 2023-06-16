@@ -47,7 +47,7 @@ class MyPageViewModel() : ViewModel() {
     val StoredImages: LiveData<ArrayList<ExternalImages>>
         get() = _StoredImages
 
-    private val _Images =  MutableLiveData<ArrayList<ExternalImages>>()
+    private val _Images = MutableLiveData<ArrayList<ExternalImages>>()
     val Images: LiveData<ArrayList<ExternalImages>>
         get() = _Images
 
@@ -66,6 +66,9 @@ class MyPageViewModel() : ViewModel() {
     private val _UserInfo = MutableLiveData<User>()
     val UserInfo: LiveData<User>
         get() = _UserInfo
+
+    private val _searchUser = MutableLiveData<User?>()
+    val searchUser: LiveData<User?> get() = _searchUser
 
     private val _EditImage = MutableLiveData<MultipartBody.Part>()
     val EditImage: LiveData<MultipartBody.Part>
@@ -146,7 +149,7 @@ class MyPageViewModel() : ViewModel() {
         return images
     }
 
-    fun getImageInfo(index : Int) : ExternalImages {
+    fun getImageInfo(index: Int): ExternalImages {
         val images = _StoredImages.value!!
         return images[index]
     }
@@ -309,7 +312,7 @@ class MyPageViewModel() : ViewModel() {
                     val part = MultipartBody.Part.createFormData("image", fileName, requestFile)
                     convertedImages.add(part)
                 }
-                if(cursor == null){
+                if (cursor == null) {
                     // File path of the cache image
                     val imagePath = data.absuri.toString()
 
@@ -318,7 +321,7 @@ class MyPageViewModel() : ViewModel() {
 
                     Log.d("CropImages", "image file $imageFile")
 
-                    if(imageFile.exists()) {
+                    if (imageFile.exists()) {
                         // Create a RequestBody from the image file
                         val imageRequestBody =
                             RequestBody.create("image/*".toMediaTypeOrNull(), imageFile)
@@ -333,7 +336,7 @@ class MyPageViewModel() : ViewModel() {
                     }
                 }
             }
-        }else{
+        } else {
             Log.d("CropImages", "image is null")
         }
         Log.d("CropImages", "$convertedImages")
@@ -592,7 +595,22 @@ class MyPageViewModel() : ViewModel() {
         return arrayListOf()
     }
 
-    fun searchOnFriends(targetId: String, name: String){
+    fun getSearchUserInfo(targetId: String, callback: () -> Unit) {
+        viewModelScope.launch {
+            UserRepository.getSearchUserInfo(targetId) {
+                if (it?.success == true) {
+                    _searchUser.postValue(it.data!!)
+                } else _searchUser.postValue(User())
+                callback()
+            }
+        }
+    }
+
+    fun clearSearch() {
+        _searchUser.value = null
+    }
+
+    fun searchOnFriends(targetId: String, name: String) {
         var Friends = FriendsResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
             UserRepository.searchOnFriend(targetId, name) {
@@ -604,7 +622,7 @@ class MyPageViewModel() : ViewModel() {
         }
     }
 
-    fun searchOnRequests(targetId: String, name: String){
+    fun searchOnRequests(targetId: String, name: String) {
         var Friends = FriendsResponse(false, arrayListOf(), pagination())
         viewModelScope.launch {
             UserRepository.searchOnRequests(targetId, name) {
@@ -616,39 +634,39 @@ class MyPageViewModel() : ViewModel() {
         }
     }
 
-    fun setImage(image : ExternalImages){
+    fun setImage(image: ExternalImages) {
         _Images.value = arrayListOf(image)
     }
 
-    fun setImages(image: ExternalImages){
+    fun setImages(image: ExternalImages) {
         var temp = _Images.value
-        if(!temp.isNullOrEmpty())
+        if (!temp.isNullOrEmpty())
             temp?.add(image)
-        else{
+        else {
             temp = arrayListOf(image)
         }
         _Images.value = temp!!
     }
 
-    fun deleteImage(image: ExternalImages){
+    fun deleteImage(image: ExternalImages) {
         var temp = _Images.value
-        if(temp.isNullOrEmpty()) {
+        if (temp.isNullOrEmpty()) {
             temp!!.remove(image)
             _Images.value = temp!!
         }
     }
 
-    fun getCropResult(image: Uri){
+    fun getCropResult(image: Uri) {
         var temp = _BeforeCrop.value
-        if(temp != null) {
+        if (temp != null) {
             temp.absuri = image
             _AfterCrop.value = temp!!
-        }else{
+        } else {
             Log.d("ImageCrop", "null")
         }
     }
 
-    fun getCrop(image : ExternalImages){
+    fun getCrop(image: ExternalImages) {
         _BeforeCrop.value = image
     }
 }

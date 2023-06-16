@@ -198,13 +198,5 @@ class SnsViewModel: ViewModel() {
         }
     }
     //하루 유저 아이디로 검색
-    fun searchHaruUser(targetId: String){
-        var user = User()
-        viewModelScope.launch {
-            userRepository.searchHaruUser(targetId){
-                user = it
-            }
-            _SearchedUser.value = user
-        }
-    }
+
 }

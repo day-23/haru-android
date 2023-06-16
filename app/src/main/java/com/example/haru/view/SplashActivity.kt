@@ -72,6 +72,7 @@ class SplashActivity : BaseActivity() {
                         User.isMaliciousUser = response.body()?.data?.isMaliciousUser!!
                         User.createdAt = response.body()?.data?.createdAt.toString()
                         User.accessToken = response.body()?.data?.accessToken.toString()
+                        User.isSignUp = response.body()?.data?.isSignUp!!
 
                         //새로운 accessToken을 저장한다.
                         with (sharedPreferences.edit()) {
@@ -85,7 +86,7 @@ class SplashActivity : BaseActivity() {
                             startActivity(intent)
                             finish()
                         }
-                        else if(User.name== "" || User.haruId == "" ){
+                        else if(!User.isSignUp){
                             val intent = Intent(this@SplashActivity, SignUpActivity::class.java)
                             startActivity(intent)
                             finish()

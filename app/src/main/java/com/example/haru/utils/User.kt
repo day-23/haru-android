@@ -26,6 +26,7 @@ object User {
     var pmAlarmAprove: Boolean = true
     var pmAlarmDate: String = ""
     var categories: ArrayList<Category?> = arrayListOf(null,null)
+    var isSignUp : Boolean = false
 
     override fun toString(): String {
         return "User : {id : $id}, " +
@@ -39,6 +40,6 @@ object User {
                 "{isAllowFeedComment : $isAllowFeedComment}, " +
                 "{isAllowSearch : $isAllowSearch}," +
                 "{createdAt : $createdAt}, " +
-                "{accessToken : $accessToken}"
+                "{isSignUp : $isSignUp}, "
     }
 }

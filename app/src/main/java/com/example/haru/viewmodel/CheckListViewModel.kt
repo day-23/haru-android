@@ -118,6 +118,15 @@ class CheckListViewModel() :
         }
     }
 
+    fun updateSearchData(){
+        if (searchContent == null)
+            return
+
+        viewModelScope.launch {
+            getScheduleTodoSearch(searchContent!!)
+        }
+    }
+
     /* -------------------------------------태그 관련 기능---------------------------------- */
 
     fun getTag() { // Tag 받아오는 기능

@@ -1,6 +1,6 @@
 package com.example.haru.data.model
 
-data class UserResponse (
+class TestInitResponse(
     val success: Boolean,
     val data : User? = null,
     val error : Error? = null

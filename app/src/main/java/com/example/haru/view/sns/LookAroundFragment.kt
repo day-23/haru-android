@@ -186,6 +186,13 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
             transaction.commit()
         }
 
+        binding.ivSnsSearch.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragments_frame, SearchFragment(profileViewModel))
+                .addToBackStack(null)
+                .commit()
+        }
+
         return binding.root
     }
 

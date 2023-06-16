@@ -105,6 +105,10 @@
 
     <string name="searchDescription">검색어를 입력하세요</string>
 
+    <string name="SnsIntroduction">자기소개를 입력해보세요</string>
+
+    <string name="signUpIdDescription">하루 ID는 타 사용자가 나의 계정을 검색할 때 외에 노출되지 않습니다.\nID는 초기 생성 이후 변경이 가능합니다.</string>
+
     <string name="notAllow">허용 안 함</string>
     <string name="onlyFriend">친구만</string>
     <string name="everyOne">모두 허용</string>

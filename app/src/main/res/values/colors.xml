@@ -20,6 +20,8 @@
     <color name="divider">#DBDBDB</color>
     <color name="delete_red">#F71E58</color>
 
+    <color name="kakao_bg">#FEE500</color>
+
     <color name="dialog_bg">#B3707070</color>
 
     <color name="circle_progressbar_bg">#D2D7FF</color>

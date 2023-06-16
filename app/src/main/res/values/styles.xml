@@ -18,6 +18,9 @@
         <item name="android:paddingBottom">10dp</item>
     </style>
 
+    <style name="customHandle">
+        <item name="colorControlActivated">@color/highlight</item>
+    </style>
 
     <style name="minSize">
         <item name="android:stateListAnimator">@null</item>
