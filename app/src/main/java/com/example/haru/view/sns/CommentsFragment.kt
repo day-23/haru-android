@@ -3,6 +3,7 @@ package com.example.haru.view.sns
 import BaseActivity
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
 import android.icu.text.Transliterator.Position
 import android.os.Bundle
@@ -13,11 +14,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Comments
 import com.example.haru.data.model.PatchCommentBody
@@ -26,6 +29,7 @@ import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.FragmentCommentsBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
 import com.example.haru.databinding.PopupSnsCommentDeleteBinding
+import com.example.haru.utils.GetPastDate
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.CommentsAdapter
@@ -35,7 +39,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.w3c.dom.Comment
 
-interface onCommentClick{
+interface onCommentClick {
 
     fun onDeleteClick(writerId: String, commentId: String, item: Comments)
 
@@ -44,11 +48,11 @@ interface onCommentClick{
     fun onPopupSelect(position: Int)
 }
 
-class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onCommentClick{
-    lateinit var binding : FragmentCommentsBinding
+class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onCommentClick {
+    lateinit var binding: FragmentCommentsBinding
     lateinit var commentsRecyclerView: RecyclerView
     lateinit var snsViewModel: SnsViewModel
-    private lateinit var adapter:  CommentsAdapter
+    private lateinit var adapter: CommentsAdapter
     val post = postitem
     lateinit var comment: Comments
     var newComment = true
@@ -58,10 +62,13 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
 
 
     override fun onDeleteClick(writerId: String, commentId: String, item: Comments) {
+        Log.e("20191627", writerId)
+        Log.e("20191627", commentId)
+        Log.e("20191627", item.toString())
         this.writerId = writerId
         this.commentId = commentId
         comment = item
-        addPopup()
+        addPopup(item.user?.name, item.user?.profileImage, item?.content, item?.createdAt)
     }
 
     override fun onPublicClick(writerId: String, commentId: String, body: PatchCommentBody) {
@@ -69,10 +76,10 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
     }
 
     override fun onPopupSelect(position: Int) {
-       deletePopup()
-        if(position == 0){
+        deletePopup()
+        if (position == 0) {
             snsViewModel.deleteComment(writerId, commentId)
-        }else if(position == 1){
+        } else if (position == 1) {
             //TODO:신고창 만들기
         }
     }
@@ -104,7 +111,7 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCommentsBinding.inflate(inflater, container, false)
-        if(User.id != userId ){
+        if (User.id != userId) {
             binding.totalCommentEdit.visibility = View.GONE
             binding.totalCommentEdit.visibility = View.GONE
         }
@@ -117,7 +124,7 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         var index = 0
         binding.commentCommentsIndex.text = "1/${post.images.size}"
 
-        if(post.images.size == 1){
+        if (post.images.size == 1) {
             binding.commentsNextPicture.visibility = View.GONE
             binding.commentsLastPicture.visibility = View.GONE
         }
@@ -145,13 +152,13 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
             snsViewModel.getFirstComments(post.id, post.images[index].id)
             binding.commentCommentsIndex.text = "${index + 1}/${post.images.size}"
 
-            if(index == 0){
+            if (index == 0) {
                 binding.commentsLastPicture.visibility = View.GONE
-            }else{
+            } else {
                 binding.commentsLastPicture.visibility = View.VISIBLE
             }
 
-            if(index != post.images.size - 1){
+            if (index != post.images.size - 1) {
                 binding.commentsNextPicture.visibility = View.VISIBLE
             }
         }
@@ -161,32 +168,32 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
             snsViewModel.getFirstComments(post.id, post.images[index].id)
             binding.commentCommentsIndex.text = "${index + 1}/${post.images.size}"
 
-            if(index == post.images.size - 1){
+            if (index == post.images.size - 1) {
                 binding.commentsNextPicture.visibility = View.GONE
-            }else{
+            } else {
                 binding.commentsNextPicture.visibility = View.VISIBLE
             }
 
-            if(index != 0){
+            if (index != 0) {
                 binding.commentsLastPicture.visibility = View.VISIBLE
             }
         }
         commentsRecyclerView.addOnScrollListener(scrollListener)
 
-        snsViewModel.Comments.observe(viewLifecycleOwner){comments ->
-            if(comments.size > 0) {
+        snsViewModel.Comments.observe(viewLifecycleOwner) { comments ->
+            if (comments.size > 0) {
                 adapter.newComment(comments)
                 binding.commentCount.text = adapter.itemCount.toString()
-            }else{
+            } else {
                 newComment = false
             }
         }
 
-        snsViewModel.FirstComments.observe(viewLifecycleOwner){comments ->
-            if(comments.size > 0){
+        snsViewModel.FirstComments.observe(viewLifecycleOwner) { comments ->
+            if (comments.size > 0) {
                 adapter.firstComment(comments)
                 binding.commentCount.text = adapter.itemCount.toString()
-            }else{
+            } else {
                 adapter.firstComment(arrayListOf())
                 binding.commentCount.text = "0"
                 newComment = false
@@ -198,20 +205,19 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
             fragmentManager.popBackStack()
         }
 
-        snsViewModel.ChangeResult.observe(viewLifecycleOwner){result ->
-            if(result){
-                Toast.makeText(requireContext(),"변경 성공", Toast.LENGTH_SHORT).show()
-            }else{
-                Toast.makeText(requireContext(),"변경 실패", Toast.LENGTH_SHORT).show()
+        snsViewModel.ChangeResult.observe(viewLifecycleOwner) { result ->
+            if (result) {
+                Toast.makeText(requireContext(), "변경 성공", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "변경 실패", Toast.LENGTH_SHORT).show()
             }
         }
 
-        snsViewModel.DeleteResult.observe(viewLifecycleOwner){result ->
-            if(result){
+        snsViewModel.DeleteResult.observe(viewLifecycleOwner) { result ->
+            if (result) {
                 adapter.deleteItem(comment)
                 binding.commentCount.text = adapter.itemCount.toString()
-            }
-            else{
+            } else {
                 Toast.makeText(requireContext(), "삭제 실패", Toast.LENGTH_SHORT).show()
             }
         }
@@ -219,8 +225,8 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         return binding.root
     }
 
-    fun addPopup(){
-        val fragment = PopupDeleteComment(this)
+    fun addPopup(name: String?, profileImage: String?, content: String?, date: String?) {
+        val fragment = PopupDeleteComment(this, name, profileImage, content, date)
         fragment.show(parentFragmentManager, fragment.tag)
 //        val fragmentManager = childFragmentManager
 //        val transaction = fragmentManager.beginTransaction()
@@ -228,7 +234,7 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
 //        transaction.commit()
     }
 
-    fun deletePopup(){
+    fun deletePopup() {
 //        val fragmentManager = childFragmentManager
 //        val fragment = fragmentManager.findFragmentById(R.id.add_comment_anchor)
 //
@@ -240,33 +246,56 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
     }
 }
 
-class PopupDeleteComment(val listener: onCommentClick): BottomSheetDialogFragment(){
-    lateinit var popupbinding : PopupSnsCommentDeleteBinding
+class PopupDeleteComment(
+    val listener: onCommentClick,
+    val name: String?,
+    val profileImage: String?,
+    val content: String?,
+    val date: String?
+) : BottomSheetDialogFragment() {
+    lateinit var binding: PopupSnsCommentDeleteBinding
 
     // status bar height 조정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (profileImage != null)
+            Glide.with(this)
+                .load(profileImage)
+                .into(binding.ivProfileImage)
+        else binding.ivProfileImage.background =
+            ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
+
+        binding.tvUserId.text = name
+        if (date != null)
+            binding.tvTime.text = GetPastDate.getPastDate(date)
+        binding.tvContent.text = content
+
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
-        popupbinding.commentsDelete.setOnClickListener {
+        binding.commentsDelete.setOnClickListener {
             listener.onPopupSelect(0)
             dismiss()
         }
 
-        popupbinding.commentsReport.setOnClickListener {
+        binding.commentsReport.setOnClickListener {
             listener.onPopupSelect(1)
             dismiss()
         }
 
-//        popupbinding.commentsCancel.setOnClickListener {
+//        binding.commentsCancel.setOnClickListener {
 //            listener.onPopupSelect(2)
 //            dismiss()
 //        }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        popupbinding = PopupSnsCommentDeleteBinding.inflate(inflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = PopupSnsCommentDeleteBinding.inflate(inflater, container, false)
 
-        return popupbinding.root
+        return binding.root
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

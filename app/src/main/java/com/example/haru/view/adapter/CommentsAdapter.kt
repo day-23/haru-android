@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Comments
 import com.example.haru.data.model.PatchCommentBody
+import com.example.haru.utils.GetPastDate
 import com.example.haru.view.sns.onCommentClick
 import com.example.haru.viewmodel.SnsViewModel
 import org.w3c.dom.Comment
@@ -41,6 +42,8 @@ class CommentsAdapter(val context: Context,
         }
         holder.userid.text = itemList[position].user!!.name
         holder.content.text = itemList[position].content
+        val date = GetPastDate.getPastDate(item.createdAt!!)
+        holder.time.text = date
 
         holder.setup.setOnClickListener {
             listener.onDeleteClick(itemList[position].user!!.id, itemList[position].id, item)
@@ -97,5 +100,6 @@ class CommentsAdapter(val context: Context,
         var content = itemView.findViewById<TextView>(R.id.comment_content)
         var disclosure = itemView.findViewById<ImageView>(R.id.comment_disclosure)
         var setup = itemView.findViewById<ImageView>(R.id.comment_setup)
+        var time = itemView.findViewById<TextView>(R.id.comment_time)
     }
 }
