@@ -63,7 +63,6 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
     }
 
     override fun onDeleteClick(item: FriendInfo) {
-        MainActivity.hideNavi(true)
         deleteTarget = item
         val fragment = PopupDeleteFriend(item, this)
         val fragmentManager = childFragmentManager

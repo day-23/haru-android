@@ -197,8 +197,9 @@
             android:id="@+id/detail_post_total_comment"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/sns_etc"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/three_line"
+            android:backgroundTint="@color/date_text"
             app:layout_constraintRight_toRightOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
