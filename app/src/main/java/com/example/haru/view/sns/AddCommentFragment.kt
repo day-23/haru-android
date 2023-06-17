@@ -27,7 +27,9 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentAddCommentBinding
+import com.example.haru.databinding.PopupAddCommentHideBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
+import com.example.haru.utils.GetPastDate
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AddCommentPagerAdapter
 import com.example.haru.view.adapter.ImageClickListener
@@ -37,6 +39,7 @@ import com.example.haru.viewmodel.SnsViewModel
 class AddCommentFragment(var isTemplate: String? = "", val content: String, postId: String, postImages:ArrayList<Profile>,val likeCnt : Int, val commentCnt:Int, writerInfo: User) : Fragment(), ImageClickListener{
     lateinit var binding : FragmentAddCommentBinding
     lateinit var commentContainer: FrameLayout
+    lateinit var infoContainer: FrameLayout
     lateinit var writeContainer: FrameLayout
     lateinit var filterFrame: LinearLayout
     lateinit var writeBox: View
@@ -71,18 +74,34 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
     override fun OnImageClick(position: Int) {
         if(!onEdit && writerInfo.id == com.example.haru.utils.User.id) {
             if (showWriter) {
-                for (i in 0..commentContainer.size - 1) {
-                    val view = commentContainer.get(i)
-                    view.visibility = View.VISIBLE
-                }
+                infoContainer.visibility = View.VISIBLE
                 showWriter = false //다시누르면 사라지도록
             } else {
-                for (i in 0..commentContainer.size - 1) {
-                    val view = commentContainer.get(i)
-                    view.visibility = View.GONE
-                }
+                infoContainer.visibility = View.GONE
                 showWriter = true //다시누르면 보이도록
             }
+        }
+    }
+
+    override fun OnHideClick(comment: Comments, content: View, writer: View ,position: Int) {
+        val fragmentManager = childFragmentManager
+        val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comment)
+
+        if(fragment != null) {
+            val transaction = fragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+        }
+
+        if(position == 0) {//숨기기
+            snsViewModel.patchComment(
+                comment.user!!.id,
+                comment.id,
+                PatchCommentBody(comment.x!!, comment.y!!, false)
+            )
+            commentContainer.removeView(content)
+            infoContainer.removeView(writer)
+            postImages[imageIndex].comments.remove(comment)
         }
     }
     override fun OnPopupClick(position: Int) {
@@ -185,6 +204,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         binding.addCommentLikeCount.text = likeCnt.toString()
         binding.addCommentCommentCount.text = commentCnt.toString()
         commentContainer = binding.commentFrame
+        infoContainer = binding.writerFrame
         filterFrame = binding.filterFrame
             binding.commentImage.post{
             ImageWidth = binding.commentImage.width
@@ -228,15 +248,6 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
             val backManager = parentFragmentManager
             MainActivity.hideNavi(false)
             backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
-
-        binding.tempCheckWriter.setOnClickListener {
-            if(showWriter) {
-                for (i in 0..commentContainer.size - 1) {
-                    val view = commentContainer.get(i)
-                    view.visibility = View.VISIBLE
-                }
-            }
         }
 
         viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -330,6 +341,8 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
         binding.commentVisibility.setOnClickListener {
             if(CommentIsVisible){
+                infoContainer.visibility = View.GONE
+                showWriter = true //다시누르면 보이도록
                 CommentIsVisible = false
                 commentContainer.visibility = View.INVISIBLE
                 binding.commentVisibility.setBackgroundResource(R.drawable.comment_invisible)
@@ -347,6 +360,8 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 editEnd()
                 onEdit = false
             }else{//편집 시작
+                infoContainer.visibility = View.GONE
+                showWriter = true //다시누르면 보이도록
                 editStart()
                 onEdit = true
             }
@@ -358,6 +373,8 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 editEnd()
                 onEdit = false
             }else{//편집 시작
+                infoContainer.visibility = View.GONE
+                showWriter = true //다시누르면 보이도록
                 editStart()
                 onEdit = true
             }
@@ -489,7 +506,6 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         val writerName = writerView.findViewById<TextView>(R.id.comment_on_picture_name)
         val writerProfile = writerView.findViewById<ImageView>(R.id.comment_on_picture_profile)
         val toUserPageBtn = writerView.findViewById<ImageView>(R.id.comment_on_picture_move_page)
-        writerView.visibility = View.VISIBLE
 
         val commentDragListener = object : View.OnTouchListener {
             private var offsetX = 0f
@@ -585,7 +601,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
                             if(onHide){
                                 commentContainer.removeView(view)
-                                commentContainer.removeView(writerView)
+                                infoContainer.removeView(writerView)
                                 snsViewModel.patchComment(comment.user!!.id, comment.id, PatchCommentBody(comment.x!!, comment.y!!, false))
                             }
                         }
@@ -626,15 +642,13 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
             writerView.layoutParams = writerParam
 
-            commentContainer.addView(writerView)
+            infoContainer.addView(writerView)
         }
 
         writerView.post {
-
-            if(writerView.x + writerView.width > ImageWidth){ // 사진에서 벗어나는 정보에 대한 보정
-                Log.d("Comment", "over")
+            if(writerParam.leftMargin + (120 * density + 0.5f).toInt() >= ImageWidth){ // 사진에서 벗어나는 정보에 대한 보정
                 if(view.width > writerView.width) //댓글 시작지점이랑 x값 맞추기
-                    writerView.x = view.x
+                    writerParam.leftMargin = params.leftMargin
                 else{ //댓글 끝지점이랑 정보 끝지점 맞추기
                     writerView.x = view.x - (writerView.width - view.width)
                 }
@@ -651,13 +665,12 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                     .into(writerProfile)
             }
 
-            toUserPageBtn.setOnClickListener {// 유저페이지 이동
-                val newFrag = MyPageFragment(Id)
-                val transaction = parentFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragments_frame, newFrag)
-                transaction.addToBackStack("snsaddcomment")
+            writerView.setOnClickListener {// 유저페이지 이동
+                val fragment = PopupHide(comment,view,writerView,this)
+                val fragmentManager = childFragmentManager
+                val transaction = fragmentManager.beginTransaction()
+                transaction.add(R.id.anchor_popup_comment, fragment)
                 transaction.commit()
-
             }
 
         }
@@ -758,7 +771,6 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                                 writeContainer.removeView(writeBox)
                                 onWrite = false
                                 val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
-                                //writeContainer.setBackgroundColor(color)
                                 filterFrame.setBackgroundColor(color)
                                 writeEnd()
                                 onDelete = false
@@ -861,6 +873,37 @@ class PopupComment(listener: ImageClickListener) : Fragment() {
 
         popupbinding.popupCommentContainer.setOnClickListener {
 
+        }
+
+        return popupbinding.root
+    }
+}
+
+class PopupHide(val comment: Comments, val content : View, val writer : View, listener: ImageClickListener) : Fragment() {
+
+    lateinit var popupbinding : PopupAddCommentHideBinding
+    val listener = listener
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        popupbinding = PopupAddCommentHideBinding.inflate(inflater, container, false)
+
+        if(comment.user!!.profileImage != null) {
+            Glide
+                .with(this)
+                .load(comment.user.profileImage)
+                .into(popupbinding.hideTargetProfile)
+        }else
+            popupbinding.hideTargetProfile.setImageResource(R.drawable.default_profile)
+
+        popupbinding.hideTargetName.text = comment.user!!.name
+        popupbinding.hideTargetContent.text = comment.content
+        popupbinding.hideTargetTime.text = com.example.haru.utils.GetPastDate.getPastDate(comment.createdAt!!)
+
+        popupbinding.hideComment.setOnClickListener {
+            listener.OnHideClick(comment, content, writer,0)
+        }
+
+        popupbinding.popupHideContainer.setOnClickListener {
+            listener.OnHideClick(comment,content, writer,1)
         }
 
         return popupbinding.root
