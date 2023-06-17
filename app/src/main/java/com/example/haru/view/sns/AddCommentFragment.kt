@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
+import android.media.Image
 import android.os.Bundle
 import android.text.StaticLayout
 import android.text.TextPaint
@@ -52,6 +53,11 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
     var isMyPost = false
     var isCommented = false
 
+    //수정 사진 리스트
+    val idList = arrayListOf<String>()
+    val xList = arrayListOf<Int>()
+    val yList = arrayListOf<Int>()
+
     //사진위 댓글 값
     var onWrite = false
     var showWriter = true
@@ -63,7 +69,21 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
     var lastX = 0f
     var lastY = 0f
     override fun OnImageClick(position: Int) {
-        //Don't need to implement
+        if(!onEdit && writerInfo.id == com.example.haru.utils.User.id) {
+            if (showWriter) {
+                for (i in 0..commentContainer.size - 1) {
+                    val view = commentContainer.get(i)
+                    view.visibility = View.VISIBLE
+                }
+                showWriter = false //다시누르면 사라지도록
+            } else {
+                for (i in 0..commentContainer.size - 1) {
+                    val view = commentContainer.get(i)
+                    view.visibility = View.GONE
+                }
+                showWriter = true //다시누르면 보이도록
+            }
+        }
     }
     override fun OnPopupClick(position: Int) {
         val fragmentManager = childFragmentManager
@@ -268,18 +288,44 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         binding.writeCommentApply.setOnClickListener {
             if(AddContent != ""){
                 snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postId,postImages[imageIndex].id)
-                val addedComment = Comments("",myInfo,AddContent,AddX,AddY, true,"","")
-                postImages[imageIndex].comments.add(addedComment)
-                bindComment(addedComment)
-                isCommented = true
-                setUi()
-                onWrite = false
-                writeContainer.removeAllViews()
-                writeEnd()
-                binding.writeCommentTitle.text = "코멘트 남기기"
+
+                snsViewModel.AddComment.observe(viewLifecycleOwner){comment ->
+                    if(comment.id != "") {
+                        val addedComment = comment
+                        postImages[imageIndex].comments.add(addedComment)
+                        bindComment(addedComment)
+                        isCommented = true
+                    }else{
+                        Toast.makeText(requireContext(), "댓글 작성에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                    setUi()
+                    onWrite = false
+                    writeContainer.removeAllViews()
+                    writeEnd()
+                    binding.writeCommentTitle.text = "코멘트 남기기"
+                }
+
             }else{
                 Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.editCommentApply.setOnClickListener {
+            if(idList.size > 0){
+                val changes = ChangedComments(idList, xList, yList)
+                snsViewModel.patchComments(postImages[imageIndex].id, changes)
+            }
+            editEnd()
+        }
+
+        binding.addCommentResetText.setOnClickListener {
+            editCancel()
+            editEnd()
+        }
+
+        binding.addCommentResetIcon.setOnClickListener {
+            editCancel()
+            editEnd()
         }
 
         binding.commentVisibility.setOnClickListener {
@@ -297,6 +343,18 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
         binding.addCommentEditComments.setOnClickListener {
             if(onEdit){//편집 종료
+                editCancel()
+                editEnd()
+                onEdit = false
+            }else{//편집 시작
+                editStart()
+                onEdit = true
+            }
+        }
+
+        binding.addCommentEditText.setOnClickListener {
+            if(onEdit){//편집 종료
+                editCancel()
                 editEnd()
                 onEdit = false
             }else{//편집 시작
@@ -327,6 +385,8 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
     }
 
     fun editStart(){
+        onEdit = true
+
         binding.addCommentInfo.visibility = View.GONE
         binding.addCommentLayout.setBackgroundColor(Color.parseColor("#191919"))
         val color = Color.argb(100, 25, 25, 25)
@@ -344,6 +404,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         binding.commentVisibility.visibility = View.GONE
         binding.showTotalComment.visibility = View.GONE
         binding.editCommentApply.visibility = View.VISIBLE
+        binding.writeCommentTitle.text = "코멘트 편집"
 
         //댓글들이 드래그가 가능하도록
         if(commentContainer.childCount > 0){
@@ -354,7 +415,20 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         }
     }
 
+    fun editCancel(){
+        if (commentContainer.childCount != 0) {
+            commentContainer.removeAllViews()
+        }
+        for(comment in postImages[imageIndex].comments) {
+            commentContainer.post {
+                bindComment(comment)
+            }
+        }
+    }
+
     fun editEnd(){
+        onEdit = false
+
         binding.addCommentInfo.visibility = View.VISIBLE
         binding.addCommentLayout.setBackgroundColor(Color.parseColor("#FDFDFD"))
         val color = Color.argb(0, 0, 0, 0)
@@ -372,6 +446,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         binding.commentVisibility.visibility = View.VISIBLE
         binding.showTotalComment.visibility = View.VISIBLE
         binding.editCommentApply.visibility = View.GONE
+        binding.writeCommentTitle.text = "코멘트"
 
         //댓글들이 드래그가 불가하도록
         if(commentContainer.childCount > 0){
@@ -379,6 +454,19 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 val view = commentContainer.getChildAt(i)
                 view.isClickable = false
             }
+        }
+    }
+
+    //편집한 댓글 정보
+    fun editList(commentId : String, x : Int, y : Int){
+        if(idList.contains(commentId)){
+            val index = idList.indexOf(commentId)
+            xList[index] = x
+            yList[index] = y
+        }else{
+            idList.add(commentId)
+            xList.add(x)
+            yList.add(y)
         }
     }
 
@@ -390,6 +478,18 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         val textView = view.findViewById<TextView>(R.id.comment_on_picture_text)
         textView.text = comment.content
         view.bringToFront()
+
+        //작성자 정보를 위한 뷰
+        val Name = comment.user!!.name
+        if(!comment.user.profileImage.isNullOrEmpty())
+            ProfileImage = comment.user.profileImage
+        val Id = comment.user!!.id
+
+        val writerView = inflater.inflate(R.layout.item_comment_on_picture_writer, null)
+        val writerName = writerView.findViewById<TextView>(R.id.comment_on_picture_name)
+        val writerProfile = writerView.findViewById<ImageView>(R.id.comment_on_picture_profile)
+        val toUserPageBtn = writerView.findViewById<ImageView>(R.id.comment_on_picture_move_page)
+        writerView.visibility = View.VISIBLE
 
         val commentDragListener = object : View.OnTouchListener {
             private var offsetX = 0f
@@ -468,7 +568,16 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                             else{
                                 AddX = (view.x / ImageWidth * 100).toInt()
                                 AddY = (view.y / ImageHeight * 100).toInt()
-                                Log.d("20191668", "Percentage: $AddX $AddY")
+                                editList(comment.id, AddX, AddY)
+                                writerView.x = view.x + view.width / 2
+                                writerView.y = view.y - view.height - 30
+                                if(writerView.width + writerView.x > ImageWidth){
+                                    if (view.width > writerView.width) //댓글 시작지점이랑 x값 맞추기
+                                        writerView.x = view.x
+                                    else { //댓글 끝지점이랑 정보 끝지점 맞추기
+                                        writerView.x = view.x - (writerView.width - view.width)
+                                    }
+                                }
                             }
                             binding.writeCommentHide.visibility = View.GONE
                             binding.writeCommentHide.setImageResource(R.drawable.comment_hide_off)
@@ -476,6 +585,8 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
                             if(onHide){
                                 commentContainer.removeView(view)
+                                commentContainer.removeView(writerView)
+                                snsViewModel.patchComment(comment.user!!.id, comment.id, PatchCommentBody(comment.x!!, comment.y!!, false))
                             }
                         }
                         isDragging = false // Reset the dragging flag
@@ -487,9 +598,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
         view.setOnTouchListener(commentDragListener)
 
-        view.setOnClickListener {
-            Toast.makeText(requireContext(),"asdfasdf", Toast.LENGTH_SHORT).show()
-        }
+        view.isClickable = false
 
         val params = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -498,45 +607,44 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
         val density = resources.displayMetrics.density
 
-
         val writerParam = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            (120 * density + 0.5f).toInt(),
             (33 * density + 0.5f).toInt()
         )
 
-        params.leftMargin = commentContainer.width * comment.x!! / 100
-        params.topMargin =  commentContainer.height * comment.y!! / 100
+        params.leftMargin = ImageWidth * comment.x!! / 100
+        params.topMargin =  ImageHeight * comment.y!! / 100
         if(params.topMargin + textView.height > viewHeight){ // 사진에서 벗어나는 댓글에 대한 보정
             params.topMargin -= (params.leftMargin + textView.height) - viewHeight
         }
         view.layoutParams = params
         commentContainer.addView(view)
 
-        //작성자 정보를 위한 뷰
-        val Name = comment.user!!.name
-        if(!comment.user.profileImage.isNullOrEmpty())
-            ProfileImage = comment.user.profileImage
-        val Id = comment.user!!.id
-
-        val writerView = inflater.inflate(R.layout.item_comment_on_picture_writer, null)
-        val writerName = writerView.findViewById<TextView>(R.id.comment_on_picture_name)
-        val writerProfile = writerView.findViewById<ImageView>(R.id.comment_on_picture_profile)
-        val toUserPageBtn = writerView.findViewById<ImageView>(R.id.comment_on_picture_move_page)
-        writerView.visibility = View.GONE
-
-        view.post {
-            Log.d("20191668", "${view.width}, ${view.height}")
+        view.post {//작성자 정보창 param
             writerParam.leftMargin = params.leftMargin + view.width / 2
             writerParam.topMargin = params.topMargin - (view.height + 30)
+
             writerView.layoutParams = writerParam
+
             commentContainer.addView(writerView)
         }
 
         writerView.post {
+
+            if(writerView.x + writerView.width > ImageWidth){ // 사진에서 벗어나는 정보에 대한 보정
+                Log.d("Comment", "over")
+                if(view.width > writerView.width) //댓글 시작지점이랑 x값 맞추기
+                    writerView.x = view.x
+                else{ //댓글 끝지점이랑 정보 끝지점 맞추기
+                    writerView.x = view.x - (writerView.width - view.width)
+                }
+            }
+
+            Log.d("20191668", "${writerView.width}, ${writerView.y}")
             writerName.text = Name// 유저명
 
             if(ProfileImage.isNullOrEmpty()){
-                writerProfile.setBackgroundResource(R.drawable.haru_logo)
+                writerProfile.setImageResource(R.drawable.default_profile)
             }else {
                 Glide.with(this)//프로필 사진
                     .load(ProfileImage)
@@ -551,9 +659,8 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 transaction.commit()
 
             }
+
         }
-
-
     }
 
     fun writeComment(){

@@ -52,7 +52,8 @@
             app:layout_constraintRight_toRightOf="parent"
             android:src="@drawable/add_comment_apply"
             android:visibility="gone"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="20dp"
+            tools:ignore="MissingConstraints" />
 
         <ImageView
             android:id="@+id/edit_comment_apply"
@@ -61,7 +62,8 @@
             app:layout_constraintRight_toRightOf="parent"
             android:src="@drawable/add_comment_apply"
             android:visibility="gone"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="20dp"
+            tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     
     <androidx.constraintlayout.widget.ConstraintLayout
