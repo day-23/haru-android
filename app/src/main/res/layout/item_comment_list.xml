@@ -1,77 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingStart="20dp"
+    android:paddingBottom="20dp"
+    android:paddingEnd="20dp"
+    android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/comment_profile"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
-        android:src="@color/black"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginHorizontal="20dp"
-        tools:ignore="MissingConstraints"
-        android:layout_marginBottom="26dp"/>
-    
-    <TextView
-        android:id="@+id/comment_id"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:text="name"
-        android:textStyle="bold"
-        android:textColor="#191919"
-        android:maxLength="20"
-        app:layout_constraintLeft_toRightOf="@+id/comment_profile"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginHorizontal="12dp"/>
-    
-    <TextView
-        android:id="@+id/comment_content"
-        android:layout_width="250dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="20dp"
+        android:src="@color/black" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="content"
-        android:textColor="#191919"
-        app:layout_constraintLeft_toRightOf="@id/comment_profile"
-        app:layout_constraintTop_toBottomOf="@+id/comment_id"
-        android:layout_marginVertical="2dp"
-        android:layout_marginHorizontal="12dp"/>
-    
-    <TextView
-        android:id="@+id/comment_time"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:text="1분전"
-        android:textSize="10dp"
-        android:textColor="#191919"
-        android:gravity="bottom"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/comment_id"
-        android:layout_marginHorizontal="10dp"/>
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/comment_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="20"
+            android:text="name"
+            android:textColor="#191919"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/comment_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="content"
+            android:textColor="@color/date_text"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/comment_id"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+            android:id="@+id/comment_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="1분전"
+            android:textColor="#191919"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toTopOf="@id/comment_content"
+            app:layout_constraintLeft_toRightOf="@id/comment_id"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:id="@+id/comment_disclosure"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginHorizontal="58dp"
-        android:layout_marginTop="6dp"
-        android:src="@drawable/on_write_comment"
-        tools:ignore="MissingConstraints" />
-    
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/on_write_comment" />
+
     <ImageView
         android:id="@+id/comment_setup"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:background="@drawable/three_dot"
-        android:backgroundTint="@color/light_gray"
-        app:layout_constraintLeft_toRightOf="@id/comment_disclosure"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="6dp"
-        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@color/date_text"
         tools:ignore="MissingConstraints" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

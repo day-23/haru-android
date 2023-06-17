@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -51,16 +52,20 @@ class CommentsAdapter(val context: Context,
 
         if(disclosure){
             holder.disclosure.setImageResource(R.drawable.on_write_comment)
+            holder.content.setTextColor(ContextCompat.getColor(context, R.color.date_text))
         }else{
             holder.disclosure.setImageResource(R.drawable.comment_not_public)
+            holder.content.setTextColor(ContextCompat.getColor(context, R.color.light_gray))
         }
 
         holder.disclosure.setOnClickListener {
             if(disclosure){
                 holder.disclosure.setImageResource(R.drawable.comment_not_public)
+                holder.content.setTextColor(ContextCompat.getColor(context, R.color.light_gray))
                 disclosure = false
             }else{
                 holder.disclosure.setImageResource(R.drawable.on_write_comment)
+                holder.content.setTextColor(ContextCompat.getColor(context, R.color.date_text))
                 disclosure = true
             }
             val body = PatchCommentBody(item.x!!, item.y!!, disclosure!!)
