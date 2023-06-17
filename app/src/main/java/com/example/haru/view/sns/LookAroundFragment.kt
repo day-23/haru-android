@@ -30,19 +30,19 @@ import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-interface LookAroundClick{
-    fun pictureClicked(post : Post)
+interface LookAroundClick {
+    fun pictureClicked(post: Post)
 }
 
-class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
+class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
     private lateinit var snsViewModel: SnsViewModel
     private lateinit var profileViewModel: MyPageViewModel
     private lateinit var lookAroundPosts: RecyclerView
     private lateinit var lookAroundTags: RecyclerView
-    private lateinit var tagAdapter : MediaTagAdapter
+    private lateinit var tagAdapter: MediaTagAdapter
     private lateinit var postAdapter: LookAroundAdapter
-    private lateinit var binding : FragmentLookAroundBinding
-    var selectedTag : MediaTagAdapter.MediaTagViewHolder? = null
+    private lateinit var binding: FragmentLookAroundBinding
+    var selectedTag: MediaTagAdapter.MediaTagViewHolder? = null
     var lastDate = ""
     var isTagSelected = false
     var tagId = ""
@@ -52,12 +52,12 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             if (!recyclerView.canScrollVertically(1)) {
-                if(isTagSelected){
+                if (isTagSelected) {
                     getHotPosts()
-                }else{
+                } else {
                     getPosts()
                 }
-                Toast.makeText(requireContext(),"loading", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "loading", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -69,14 +69,14 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
         selectedTag?.tag?.setBackgroundResource(R.drawable.tag_btn_custom)
         selectedTag?.tag?.setTextColor(Color.parseColor("#191919"))
 
-        if(holder != selectedTag) {
+        if (holder != selectedTag) {
             getFirstHotPosts(tag.id)
         }
-        if(holder == selectedTag){
+        if (holder == selectedTag) {
             getFirstPosts()
             selectedTag = null
             isTagSelected = false
-        }else {
+        } else {
             selectedTag = holder
         }
     }
@@ -121,7 +121,8 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
         postAdapter = LookAroundAdapter(requireContext(), arrayListOf(), this)
         lookAroundPosts.adapter = postAdapter
         setGridLayout(lookAroundPosts)
-        lookAroundTags.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        lookAroundTags.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         getTags()
         getFirstPosts()
 
@@ -132,41 +133,41 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
             refresher.isRefreshing = false
         }
 
-        snsViewModel.Posts.observe(viewLifecycleOwner){posts ->
-            if(posts.isNotEmpty()) {
+        snsViewModel.Posts.observe(viewLifecycleOwner) { posts ->
+            if (posts.isNotEmpty()) {
                 postAdapter.firstPage(posts)
                 getLastDate(posts)
                 Log.d("20191668", "first : $lastDate")
-            }else{
+            } else {
                 postAdapter.firstPage(arrayListOf())
             }
         }
 
-        snsViewModel.newPost.observe(viewLifecycleOwner){posts ->
-            if(posts.isNotEmpty()) {
+        snsViewModel.newPost.observe(viewLifecycleOwner) { posts ->
+            if (posts.isNotEmpty()) {
                 getLastDate(posts)
                 postAdapter.newPage(posts)
             }
         }
 
-        snsViewModel.HotPosts.observe(viewLifecycleOwner){posts ->
-            if(posts.isNotEmpty()) {
+        snsViewModel.HotPosts.observe(viewLifecycleOwner) { posts ->
+            if (posts.isNotEmpty()) {
                 postAdapter.newPage(posts)
                 getLastDate(posts)
             }
         }
 
-        snsViewModel.HotFirstPosts.observe(viewLifecycleOwner){posts ->
-            if(posts.isNotEmpty()) {
+        snsViewModel.HotFirstPosts.observe(viewLifecycleOwner) { posts ->
+            if (posts.isNotEmpty()) {
                 postAdapter.firstPage(posts)
                 getLastDate(posts)
-            }else{
+            } else {
                 postAdapter.firstPage(arrayListOf())
             }
         }
 
-        binding.lookAroundButton.setOnClickListener{
-           toggleClicked()
+        binding.lookAroundButton.setOnClickListener {
+            toggleClicked()
         }
 
         binding.friendFeed.setOnClickListener {
@@ -176,15 +177,15 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
             }
         }
 
-        binding.lookAroundMyRecords.setOnClickListener {
-            val newFrag = MyPageFragment(User.id)
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "lookaround")
-            if(!isSnsMainInBackStack)
-                transaction.addToBackStack("lookaround")
-            transaction.commit()
-        }
+//        binding.lookAroundMyRecords.setOnClickListener {
+//            val newFrag = MyPageFragment(User.id)
+//            val transaction = parentFragmentManager.beginTransaction()
+//            transaction.replace(R.id.fragments_frame, newFrag)
+//            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "lookaround")
+//            if(!isSnsMainInBackStack)
+//                transaction.addToBackStack("lookaround")
+//            transaction.commit()
+//        }
 
         binding.ivSnsSearch.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
@@ -196,51 +197,51 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
         return binding.root
     }
 
-    fun getLastDate(items : ArrayList<Post>){
+    fun getLastDate(items: ArrayList<Post>) {
         val index = items.size - 1
         lastDate = items[index].createdAt
         Log.d("20191668", "change : $lastDate")
     }
 
-    fun getTags(){
+    fun getTags() {
         tagAdapter = MediaTagAdapter(requireContext(), arrayListOf(), this)
         snsViewModel.getHotTags()
-        snsViewModel.HotTags.observe(viewLifecycleOwner){tags ->
+        snsViewModel.HotTags.observe(viewLifecycleOwner) { tags ->
             tagAdapter.newPage(tags)
             lookAroundTags.adapter = tagAdapter
         }
     }
 
-    fun toggleClicked(){
-        if(click == false){
+    fun toggleClicked() {
+        if (click == false) {
             binding.lookAroundButtons.visibility = View.VISIBLE
             binding.lookAroundButton.animate().rotation(0f)
             click = true
-        }
-        else{
+        } else {
             binding.lookAroundButtons.visibility = View.GONE
             binding.lookAroundButton.animate().rotation(-90f)
             click = false
         }
     }
 
-    fun getFirstPosts(){
+    fun getFirstPosts() {
         snsViewModel.getFirstPosts()
     }
 
-    fun getPosts(){
+    fun getPosts() {
         snsViewModel.getPosts(lastDate)
     }
 
-    fun getFirstHotPosts(tagId : String){
+    fun getFirstHotPosts(tagId: String) {
         snsViewModel.getFirstHotPosts(tagId)
         this.tagId = tagId
     }
 
-    fun getHotPosts(){
+    fun getHotPosts() {
         snsViewModel.getHotPosts(tagId, lastDate)
     }
-    fun setGridLayout(view : RecyclerView){
+
+    fun setGridLayout(view: RecyclerView) {
         val gridLayoutManager = GridLayoutManager(requireContext(), 3)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -258,8 +259,8 @@ class LookAroundFragment : Fragment() , OnMediaTagClicked, LookAroundClick{
             ) {
                 val position = parent.getChildAdapterPosition(view) // item position
                 val column = position % 3 // item column
-                if(column == 3) outRect.set(0, 0, 0, 3)
-                else outRect.set(0,0,3,3)
+                if (column == 3) outRect.set(0, 0, 0, 3)
+                else outRect.set(0, 0, 3, 3)
             }
         })
     }
