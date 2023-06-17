@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.viewmodel.MyPageViewModel
@@ -50,20 +51,25 @@ class AddPostAdapter (val context: Context,
         holder.image.setColorFilter(null)
 
         holder.image.setOnClickListener {
-            if(clicked){
-                myPageViewModel.imageList.remove(
-                    myPageViewModel.imageList[
-                            myPageViewModel.selectedPostionList.indexOf(position)
-                    ]
-                )
+            if(multiSelect) {
+                if (clicked) {
+                    myPageViewModel.imageList.remove(
+                        myPageViewModel.imageList[
+                                myPageViewModel.selectedPostionList.indexOf(position)
+                        ]
+                    )
 
-                myPageViewModel.selectedPostionList.remove(position)
+                    myPageViewModel.selectedPostionList.remove(position)
+                } else {
+                    myPageViewModel.imageList.add(
+                        itemList[position].copy()
+                    )
+
+                    myPageViewModel.selectedPostionList.add(position)
+                }
             } else {
-                myPageViewModel.imageList.add(
-                    itemList[position].copy()
-                )
-
-                myPageViewModel.selectedPostionList.add(position)
+                myPageViewModel.selectedPostionList = arrayListOf(position)
+                myPageViewModel.imageList = arrayListOf(itemList[position].copy())
             }
 
             clicked = pictureClicked(holder, clicked, position)

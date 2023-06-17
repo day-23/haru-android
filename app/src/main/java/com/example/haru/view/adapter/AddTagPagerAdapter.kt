@@ -25,6 +25,7 @@ class AddTagPagerAdapter(private val context: Context,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(
+            imageList[position].absuri.toString(),
             myPageViewModel.imageList[position]
         )
     }
@@ -45,13 +46,13 @@ class AddTagPagerAdapter(private val context: Context,
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.post_image)
 
-        fun bind(externalimage: ExternalImages) {
+        fun bind(image: String, externalimage: ExternalImages) {
             imageView.setOnClickListener {
                 myPageViewModel.getCrop(externalimage)
             }
 
             Glide.with(context)
-                .load(externalimage.absuri.toString())
+                .load(image)
                 .into(imageView)
         }
     }

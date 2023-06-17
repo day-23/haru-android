@@ -55,7 +55,7 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
 
         etcViewModel.isPublicAccount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            binding.switchAccountPublic.isChecked = it
+            binding.switchAccountPublic.isChecked = !it
         })
 
         etcViewModel.isPostBrowsingEnabled.observe(viewLifecycleOwner, androidx.lifecycle.Observer {

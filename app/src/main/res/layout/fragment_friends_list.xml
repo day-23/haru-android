@@ -1,56 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/friend_list_container"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/friend_list_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/friends_list_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
+
         <ImageView
             android:id="@+id/friends_list_back"
             android:layout_width="28dp"
             android:layout_height="28dp"
+            android:layout_marginStart="20dp"
             android:src="@drawable/back_arrow"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="친구"
+            android:textColor="@color/todo_description"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="20dp"/>
+            app:layout_constraintRight_toRightOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/friends_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/friends_list_title"
+        android:layout_marginTop="40dp"
         android:orientation="horizontal"
-        android:layout_marginTop="40dp">
+        android:paddingHorizontal="20dp"
+        app:layout_constraintTop_toBottomOf="@id/friends_list_title">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
             <TextView
                 android:id="@+id/friendslist_friends_count"
                 android:layout_width="match_parent"
-                android:layout_height="19dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="친구 목록 0"
                 android:textColor="#1DAFFF"
-                android:textStyle="bold"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 tools:ignore="MissingConstraints" />
 
             <ImageView
                 android:id="@+id/friends_count_underline"
                 android:layout_width="match_parent"
                 android:layout_height="4dp"
-                app:layout_constraintTop_toBottomOf="@id/friendslist_friends_count"
                 android:layout_marginTop="10dp"
-                android:paddingHorizontal="20dp"
-                android:src="@drawable/todo_table_selected"/>
+                android:src="@drawable/todo_table_selected"
+                app:layout_constraintTop_toBottomOf="@id/friendslist_friends_count" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -61,65 +73,67 @@
 
             <TextView
                 android:id="@+id/friendslist_friends_request_count"
-                android:layout_width="84dp"
-                android:layout_height="19dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginEnd="65dp"
                 android:text="친구 신청 0"
                 android:textColor="#ACACAC"
-                android:textStyle="bold"
                 android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 tools:ignore="MissingConstraints" />
+
             <ImageView
                 android:id="@+id/request_list_underline"
-                android:layout_width="175dp"
+                android:layout_width="match_parent"
                 android:layout_height="4dp"
-                app:layout_constraintTop_toBottomOf="@id/friendslist_friends_request_count"
-                app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:src="@color/white"/>
+                android:src="@color/white"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/friendslist_friends_request_count" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/friends_list_search"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
-        app:layout_constraintTop_toBottomOf="@+id/friends_btn"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/search_box">
+        android:background="@drawable/search_box"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friends_btn">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/search_gray"
-            android:layout_marginLeft="8dp"/>
+            android:layout_marginLeft="8dp"
+            android:src="@drawable/search_gray" />
 
         <EditText
             android:id="@+id/edit_text_search"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:background="#00000000"
             android:hint="검색어를 입력하세요"
-            android:textSize="16dp"
-            android:textColor="#acacac"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
+            android:textColor="@color/todo_description"
             android:textColorHint="#acacac"
-            android:background="#00000000"/>
+            android:textSize="14dp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friends_list_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/friends_list_search"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="20dp"
-        tools:listitem="@layout/item_searched_user"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friends_list_search"
+        tools:listitem="@layout/item_searched_user" />
 
     <LinearLayout
         android:id="@+id/friend_list_anchor"

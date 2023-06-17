@@ -115,6 +115,13 @@ interface PostService {
         @Body body: PatchCommentBody
     ): Call<EditCommentResponse>
 
+    @PATCH("comment/{userId}/{imageId}/comments")
+    fun changeComments(
+        @Path("userId") userId: String,
+        @Path("imageId") imageId: String,
+        @Body body: ChangedComments
+    ): Call<EditCommentResponse>
+
     @GET("post/{userId}/hashtags/{targetId}")
     fun getUserTags(
         @Path("userId") userId: String,

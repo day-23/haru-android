@@ -16,7 +16,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="14dp"
             android:paddingTop="2dp">
 
             <ImageView
@@ -24,50 +25,47 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/small_haru_title"
-                android:textColor="#191919"
-                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/look_around_button"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/date_arrow_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/small_arrow_down"
                 android:backgroundTint="@color/date_text"
                 android:rotation="-90"
                 app:layout_constraintBottom_toBottomOf="@id/look_around_title"
                 app:layout_constraintLeft_toRightOf="@id/look_around_title"
                 app:layout_constraintTop_toTopOf="@id/look_around_title" />
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginRight="10.71dp"
-                android:background="@drawable/my_record_feather"
-                android:backgroundTint="@color/black"
-                app:layout_constraintRight_toLeftOf="@id/look_around_my_records" />
+<!--            <ImageView-->
+<!--                android:layout_width="28dp"-->
+<!--                android:layout_height="28dp"-->
+<!--                android:layout_marginRight="10.71dp"-->
+<!--                android:background="@drawable/my_record_feather"-->
+<!--                android:backgroundTint="@color/black"-->
+<!--                app:layout_constraintRight_toLeftOf="@id/look_around_my_records" />-->
 
-            <TextView
-                android:id="@+id/look_around_my_records"
-                android:layout_width="70dp"
-                android:layout_height="32dp"
-                android:gravity="center"
-                android:text="내 기록"
-                android:textColor="#191919"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintRight_toLeftOf="@id/iv_sns_search"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <TextView-->
+<!--                android:id="@+id/look_around_my_records"-->
+<!--                android:layout_width="70dp"-->
+<!--                android:layout_height="32dp"-->
+<!--                android:gravity="center"-->
+<!--                android:text="내 기록"-->
+<!--                android:textColor="#191919"-->
+<!--                android:textSize="14sp"-->
+<!--                android:textStyle="bold"-->
+<!--                app:layout_constraintRight_toLeftOf="@id/iv_sns_search"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
             <ImageView
                 android:id="@+id/iv_sns_search"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/search_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_icon"
                 app:layout_constraintRight_toRightOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
@@ -93,8 +91,7 @@
             android:padding="8dp"
             android:text="친구피드"
             android:textColor="#191919"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
@@ -110,8 +107,7 @@
             android:padding="8dp"
             android:text="둘러보기"
             android:textColor="#1DAFFF"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="16sp" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

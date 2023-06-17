@@ -2,15 +2,18 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import UserViewModelFactory
-import android.graphics.Rect
+import android.app.Dialog
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.widget.Toast
-import androidx.core.view.ViewCompat.animate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -24,11 +27,13 @@ import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
 import com.example.haru.databinding.PopupSnsPostDeleteBinding
 import com.example.haru.utils.User
-import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 import com.example.haru.viewmodel.UserViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -48,27 +53,15 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     private var startBoolean = false
     private lateinit var snsPostAdapter: SnsPostAdapter
     var lastDate = ""
-    var deletedItem: Post = Post()
 
-    override fun onCommentClick(postitem: Post) {
+    var deletedItem : Post = Post()
+    var postitem = Post()
+    var commentClicked = false
+    var postAllLoaded = false
+    override fun onCommentClick(postitems: Post) {
+        commentClicked = true
+        postitem = postitems
         profileViewModel.getUserInfo(postitem.user.id)
-        profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
-            val newFrag = AddCommentFragment(
-                postitem.isTemplatePost,
-                postitem.content,
-                postitem.id,
-                postitem.images,
-                postitem.likedCount,
-                postitem.commentCount,
-                user
-            )
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-            if (!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmain")
-            transaction.commit()
-        }
     }
 
     override fun onTotalCommentClick(post: Post) {
@@ -94,50 +87,49 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     override fun onSetupClick(userId: String, postId: String, item: Post) {
         deletedItem = item
         val fragment = PopupDeletePost(userId, postId, this)
-        val fragmentManager = childFragmentManager
-        val transaction = fragmentManager.beginTransaction()
-        transaction.add(R.id.sns_post_anchor, fragment)
-        transaction.commit()
+        fragment.show(parentFragmentManager, fragment.tag)
+//        val fragment = PopupDeletePost(userId, postId, this)
+//        val fragmentManager = childFragmentManager
+//        val transaction = fragmentManager.beginTransaction()
+//        transaction.add(R.id.sns_post_anchor, fragment)
+//        transaction.commit()
     }
 
     override fun postPopupClicked(userId: String, postId: String, position: Int) {
-        val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.sns_post_anchor)
-        if (fragment != null) {
-            MainActivity.hideNavi(false)
-            val transaction = fragmentManager.beginTransaction()
-            transaction.remove(fragment)
-            transaction.commit()
-            if (position == 0) {
-                if (User.id == userId) {//수정하기
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        if (position == 0) {
+            if (User.id == userId) {//수정하기
 
-                } else {//이 게시글 숨기기
-                    snsViewModel.hidePost(postId)
-                }
-            } else if (position == 1) {
-                if (User.id == userId) {//삭제확인창
-                    val fragment = PopupDeleteConfirm(userId, postId, this)
-                    transaction.add(R.id.sns_post_anchor, fragment)
-                } else { //신고하기
-                    snsViewModel.reportPost(postId)
-                }
+            } else {//이 게시글 숨기기
+                snsViewModel.hidePost(postId)
+            }
+        } else if (position == 1) {
+            if (User.id == userId) {//삭제확인창
+                val fragment = PopupDeleteConfirm(userId, postId, this)
+                fragment.show(parentFragmentManager, fragment.tag)
+//                transaction.add(R.id.sns_post_anchor, fragment)
+//                transaction.addToBackStack(null)
+//                transaction.commit()
+            } else { //신고하기
+                snsViewModel.reportPost(postId)
             }
         }
+//        val fragmentManager = childFragmentManager
+//        val fragment = fragmentManager.findFragmentById(R.id.sns_post_anchor)
+//        if (fragment != null) {
+//            Log.e("20191627", "123")
+//            MainActivity.hideNavi(false)
+//            val transaction = fragmentManager.beginTransaction()
+//        }
     }
 
     override fun PopupConfirm(userId: String, postId: String, position: Int) {
-        val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.sns_post_anchor)
-        if (fragment != null) {
-            MainActivity.hideNavi(false)
-            val transaction = fragmentManager.beginTransaction()
-            transaction.remove(fragment)
-            transaction.commit()
-            if (position == 0) {
-                Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
-                snsViewModel.deletePost(postId)
-            }
+        if (position == 0) {
+            Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+            snsViewModel.deletePost(postId)
         }
+//        requireActivity().supportFragmentManager.popBackStack()
+
     }
 
     companion object {
@@ -169,6 +161,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -188,8 +181,26 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         val scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+
+                if(click){
+                    fadeOutAndHideView(binding.snsButtons)
+                    binding.menuButton.animate().rotation(-90f)
+                    click = false
+                }
+                if(postClicked){
+                    fadeOutAndHideView(binding.drawHaru)
+                    binding.addPost.setImageResource(R.drawable.add_sns)
+                    postClicked = false
+                }
+                if (dy < 0){
+                    fadeInAndShowView(binding.addPost)
+                }
+
                 if (!postRecycler.canScrollVertically(1)) {
-                    snsViewModel.getFeeds(lastDate)
+                    if(!postAllLoaded) {
+                        snsViewModel.getFeeds(lastDate)
+                        fadeOutAndHideView(binding.addPost)
+                    }
                 }
             }
         }
@@ -198,6 +209,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         val refresher = binding.refreshPost
         refresher.setOnRefreshListener {
             refresher.isRefreshing = true
+            postAllLoaded = false
             snsViewModel.getFirstFeeds()
             refresher.isRefreshing = false
         }
@@ -206,7 +218,10 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             if (newPost.isNotEmpty()) {
                 snsPostAdapter.newPage(newPost)
                 getLastDate(newPost)
-            } else Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                postAllLoaded = true
+                Toast.makeText(context, "모든 게시글을 불러왔습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         snsViewModel.DeleteResult.observe(viewLifecycleOwner) { result ->
@@ -215,11 +230,35 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             }
         }
 
+        profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
+            if(commentClicked){
+                commentClicked = false
+                val newFrag = AddCommentFragment(
+                    postitem.isTemplatePost,
+                    postitem.content,
+                    postitem.id,
+                    postitem.images,
+                    postitem.likedCount,
+                    postitem.commentCount,
+                    user
+                )
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragments_frame, newFrag)
+                val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+                if (!isSnsMainInBackStack)
+                    transaction.addToBackStack("snsmain")
+                transaction.commit()
+            }
+        }
+
         snsViewModel.Posts.observe(viewLifecycleOwner) { post ->
             if (post.isNotEmpty()) {
                 snsPostAdapter.initList(post)
                 getLastDate(post)
-            } else Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
+            } else {
+                postAllLoaded = true
+                Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.drawHaru.setOnClickListener {
@@ -238,12 +277,12 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
 
         //하루 옆 메뉴 클릭
         binding.menuButton.setOnClickListener {
-            if (click == false) {
-                binding.snsButtons.visibility = View.VISIBLE
+            if (!click) {
+                fadeInAndShowView(binding.snsButtons)
                 binding.menuButton.animate().rotation(0f)
                 click = true
             } else {
-                binding.snsButtons.visibility = View.GONE
+                fadeOutAndHideView(binding.snsButtons)
                 binding.menuButton.animate().rotation(-90f)
                 click = false
             }
@@ -267,8 +306,10 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                 binding.drawHaru.visibility = View.GONE
                 binding.addPost.setImageResource(R.drawable.add_sns)
             } else {
-                binding.drawHaru.visibility = View.VISIBLE
-                binding.addPost.setImageResource(R.drawable.haru_write)
+
+                binding.drawHaru.visibility = View.INVISIBLE
+                scaleAndShowView(binding.drawHaru)
+                binding.addPost.setImageResource(R.drawable.add_sns_post)
             }
 
             postClicked = !postClicked
@@ -302,6 +343,67 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         return binding.root
     }
 
+    //점점 사라지는 애니메이션
+    fun fadeOutAndHideView(view: View) {
+        val fadeOutAnimation = AlphaAnimation(1.0f, 0.0f)
+        fadeOutAnimation.duration = 400 // 1 second
+
+        fadeOutAnimation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+
+            override fun onAnimationEnd(animation: Animation?) {
+                view.visibility = View.GONE
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+
+        view.startAnimation(fadeOutAnimation)
+    }
+
+    //점점 나타나는 애니메이션
+    fun fadeInAndShowView(view: View) {
+        val fadeOutAnimation = AlphaAnimation(0.0f, 1.0f)
+        fadeOutAnimation.duration = 400
+
+        fadeOutAnimation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                view.visibility = View.VISIBLE
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                view.visibility = View.VISIBLE
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+
+        view.startAnimation(fadeOutAnimation)
+    }
+
+    //크기 커지는 애니메이션
+    private fun scaleAndShowView(view: View) {
+        val scaleAnimation = ScaleAnimation(
+            0.0f, 1.0f,  // Start and end scale X
+            0.0f, 1.0f,  // Start and end scale Y
+            Animation.RELATIVE_TO_SELF, 0.5f,  // Pivot X (center horizontally)
+            Animation.RELATIVE_TO_SELF, 0.5f   // Pivot Y (center vertically)
+        )
+        scaleAnimation.duration = 300
+
+        scaleAnimation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                view.visibility = View.VISIBLE
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {}
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+
+        view.startAnimation(scaleAnimation)
+    }
+
     fun isFragmentInBackStack(fragmentManager: FragmentManager, tag: String): Boolean {
         for (i in 0 until fragmentManager.backStackEntryCount) {
             val backStackEntry = fragmentManager.getBackStackEntryAt(i)
@@ -319,45 +421,80 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
 
 }
 
-class PopupDeletePost(val userId: String, val postId: String, listener: OnPostPopupClick) :
-    Fragment() {
-    lateinit var popupbinding: PopupSnsPostDeleteBinding
-    val listener = listener
+class PopupDeletePost(val userId: String, val postId: String, val listener: OnPostPopupClick) :
+    BottomSheetDialogFragment() {
+    private lateinit var binding: PopupSnsPostDeleteBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        popupbinding = PopupSnsPostDeleteBinding.inflate(inflater, container, false)
-        MainActivity.hideNavi(true)
+        binding = PopupSnsPostDeleteBinding.inflate(inflater)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (userId == User.id) {
-            popupbinding.editOrHide.text = "게시글 수정하기"
-            popupbinding.deleteOrReport.text = "게시글 삭제하기"
+            binding.editOrHide.text = "게시글 수정하기"
+            binding.tvDelete.text = "게시글 삭제하기"
         }
 
 
-        popupbinding.editOrHide.setOnClickListener {
+        binding.editOrHide.setOnClickListener {
+            Log.e("20191627", "click0")
             listener.postPopupClicked(userId, postId, 0)
+            dismiss()
         }
 
-        popupbinding.deleteOrReport.setOnClickListener {
+        binding.deleteOrReport.setOnClickListener {
+            Log.e("20191627", "click1")
             listener.postPopupClicked(userId, postId, 1)
+            dismiss()
         }
 
-        popupbinding.popupPostContainer.setOnClickListener {
+        binding.popupPostContainer.setOnClickListener {
+            Log.e("20191627", "click2")
             listener.postPopupClicked(userId, postId, 2)
+            dismiss()
         }
+    }
 
-        return popupbinding.root
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 23 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 }
 
-class PopupDeleteConfirm(val userId: String, val postId: String, listener: OnPostPopupClick) :
-    Fragment() {
+class PopupDeleteConfirm(val userId: String, val postId: String, val listener: OnPostPopupClick) :
+    BottomSheetDialogFragment() {
     lateinit var popupbinding: PopupSnsPostCancelBinding
-    val listener = listener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -365,17 +502,52 @@ class PopupDeleteConfirm(val userId: String, val postId: String, listener: OnPos
         savedInstanceState: Bundle?
     ): View? {
         popupbinding = PopupSnsPostCancelBinding.inflate(inflater, container, false)
-        popupbinding.postCancelText.text = "게시글을 삭제할까요? 이 작업은 복원할 수 없습니다."
 
-        MainActivity.hideNavi(true)
+        return popupbinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         popupbinding.snsAddPostUnsave.setOnClickListener {
+            Log.e("20191627", "click0")
             listener.PopupConfirm(userId, postId, 0)
+            dismiss()
         }
 
         popupbinding.snsAddPostCancel.setOnClickListener {
+            Log.e("20191627", "click1")
             listener.PopupConfirm(userId, postId, 1)
+            dismiss()
         }
+    }
 
-        return popupbinding.root
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 27 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 }

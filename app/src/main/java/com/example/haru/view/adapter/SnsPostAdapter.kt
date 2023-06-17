@@ -51,32 +51,33 @@ class SnsPostAdapter(val context: Context,
 
     override fun onBindViewHolder(holder: SnsPostViewHolder, position: Int) {
         val adapter = PicturesPagerAdapter(holder.itemView.context, itemList[position].images)
+        val item = itemList[position]
 
-        if(itemList[position].user.id != User.id){
+        if(item.user.id != User.id){
             holder.totalcomment.visibility = View.GONE
         }else{
             holder.totalcomment.visibility = View.VISIBLE
         }
-        val date = GetPastDate.getPastDate(itemList[position].createdAt)
+        val date = GetPastDate.getPastDate(item.createdAt)
         holder.daysAgo.setText(date)
 
-        if(itemList[position].isTemplatePost != null){
+        if(item.isTemplatePost != null){
             holder.content.text = ""
-            holder.templateText.text = itemList[position].content
-            holder.templateText.setTextColor(Color.parseColor(itemList[position].isTemplatePost))
+            holder.templateText.text = item.content
+            holder.templateText.setTextColor(Color.parseColor(item.isTemplatePost))
         }else{
             holder.templateText.text = ""
-            holder.content.text = itemList[position].content
+            holder.content.text = item.content
         }
 
         holder.picture.adapter = adapter
-        holder.userid.text = itemList[position].user.name
-        holder.likedcount.text = itemList[position].likedCount.toString()
-        holder.commentcount.text = itemList[position].commentCount.toString()
+        holder.userid.text = item.user.name
+        holder.likedcount.text = item.likedCount.toString()
+        holder.commentcount.text = item.commentCount.toString()
 
         holder.setup.setOnClickListener {
             Log.d("20191668", "set up")
-            listener.onSetupClick(itemList[position].user.id, itemList[position].id, itemList[position])
+            listener.onSetupClick(item.user.id, item.id, item)
         }
 
         val pictureIndex = adapter.itemCount
@@ -93,35 +94,44 @@ class SnsPostAdapter(val context: Context,
         })
 
         holder.profileImg.setOnClickListener {
-            listener.onProfileClick(itemList[position].user.id)
+            listener.onProfileClick(item.user.id)
         }
 
         holder.userid.setOnClickListener{
-            listener.onProfileClick(itemList[position].user.id)
+            listener.onProfileClick(item.user.id)
         }
 
         holder.totalcomment.setOnClickListener {
-            Log.d("TAG", "post id sended -------------${itemList[position].id}")
-            listener.onTotalCommentClick(itemList[position])
+            Log.d("TAG", "post id sended -------------${item.id}")
+            listener.onTotalCommentClick(item)
         }
 
         holder.comment.setOnClickListener {
-            listener.onCommentClick(itemList[position])
+            listener.onCommentClick(item)
         }
 
         if(itemList[position].user.profileImage != null) {
             Glide.with(holder.itemView.context)
-                .load(itemList[position].user.profileImage)
+                .load(item.user.profileImage)
                 .into(holder.profileImg)
         }else{
             holder.profileImg.setImageResource(R.drawable.default_profile)
         }
 
-        if(itemList[position].isLiked){
+
+        if(item.isLiked){
             holder.likeBtn.setImageResource(R.drawable.check_like)
+
         }
         else{
             holder.likeBtn.setImageResource(R.drawable.uncheck_like)
+        }
+
+        if(item.isCommented){
+            holder.comment.setImageResource(R.drawable.comment_filled)
+        }
+        else{
+            holder.comment.setImageResource(R.drawable.comment)
         }
 
         holder.likeBtn.setOnClickListener{
@@ -137,7 +147,7 @@ class SnsPostAdapter(val context: Context,
                 itemList[position].likedCount += 1
                 holder.likedcount.text = itemList[position].likedCount.toString()
             }
-            snsViewModel.likeAction(itemList[position].id)
+            snsViewModel.likeAction(item.id)
         }
     }
 

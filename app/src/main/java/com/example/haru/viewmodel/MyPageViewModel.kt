@@ -27,8 +27,8 @@ class MyPageViewModel() : ViewModel() {
     private val tagList: MutableList<String> = mutableListOf()
     var tag: String = ""
 
-    val imageList: ArrayList<ExternalImages> = arrayListOf()
-    val selectedPostionList: ArrayList<Int> = arrayListOf()
+    var imageList: ArrayList<ExternalImages> = arrayListOf()
+    var selectedPostionList: ArrayList<Int> = arrayListOf()
 
     private val _Profile = MutableLiveData<com.example.haru.data.model.Profile>()
     val Profile: LiveData<com.example.haru.data.model.Profile>
@@ -187,10 +187,12 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             PostRepository.getFirstMedia(targetId) {
                 if (it.data.size > 0) { //get success
+                    Log.e("20191627", it.data.toString())
                     newMedia = it
                 }
             }
             if (newMedia.success) {
+                Log.e("20191627", "newmedia.su")
                 _FirstMedia.value = newMedia
             }
         }
@@ -269,6 +271,9 @@ class MyPageViewModel() : ViewModel() {
         lastImageIndex = -1
         _Images.value = arrayListOf()
         _BeforeCrop.value = null
+
+        imageList = arrayListOf()
+        selectedPostionList = arrayListOf()
     }
 
     //커스텀 갤러리 단일 사진 선택을 위한 함수
@@ -637,29 +642,29 @@ class MyPageViewModel() : ViewModel() {
     }
 
     fun setImage(image: ExternalImages) {
-        _Images.value = arrayListOf(image)
+        _Images.value = arrayListOf(image.copy())
     }
 
     fun setImages(image: ExternalImages) {
         var temp = _Images.value
         if (!temp.isNullOrEmpty())
-            temp?.add(image)
+            temp?.add(image.copy())
         else {
-            temp = arrayListOf(image)
+            temp = arrayListOf(image.copy())
         }
         _Images.value = temp!!
     }
 
     fun deleteImage(image: ExternalImages) {
         var temp = _Images.value
-        if (temp.isNullOrEmpty()) {
+        if (!temp.isNullOrEmpty()) {
             temp!!.remove(image)
             _Images.value = temp!!
         }
     }
 
     fun getCropResult(image: Uri) {
-        var temp = _BeforeCrop.value
+        var temp = _BeforeCrop.value?.copy()
         if (temp != null) {
             temp.absuri = image
             _AfterCrop.value = temp!!
@@ -669,6 +674,6 @@ class MyPageViewModel() : ViewModel() {
     }
 
     fun getCrop(image: ExternalImages) {
-        _BeforeCrop.value = image
+        _BeforeCrop.value = image.copy()
     }
 }

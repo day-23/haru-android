@@ -39,7 +39,7 @@ class MediaTagAdapter (val context: Context,
 
     @SuppressLint("NotifyDataSetChanged")
     fun newPage(tags: ArrayList<Tag>){
-        itemList.addAll(tags)
+        itemList = tags
         notifyDataSetChanged()
     }
 

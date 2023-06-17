@@ -33,6 +33,10 @@ class SnsViewModel: ViewModel() {
     val Comments : LiveData<ArrayList<Comments>>
         get() = _Comments
 
+    private val _AddComment = MutableLiveData<Comments>()
+    val AddComment : LiveData<Comments>
+        get() = _AddComment
+
     private val _HotTags = MutableLiveData<ArrayList<Tag>>()
     val HotTags : LiveData<ArrayList<Tag>>
         get() = _HotTags
@@ -190,9 +194,15 @@ class SnsViewModel: ViewModel() {
     }
 
     fun writeComment(comment: CommentBody, postId: String, imageId:String){
+        var result = Comments("",User(),"",0,0,false,"","")
         viewModelScope.launch {
             PostRepository.writeComment(comment, postId, imageId){
-
+                result = it
+            }
+            if(result.id != ""){
+                _AddComment.value = result
+            }else{
+                Log.d("Comment", "Fail to add Comment")
             }
         }
     }
@@ -248,6 +258,15 @@ class SnsViewModel: ViewModel() {
             _ChangeResult.value = result
         }
     }
-    //하루 유저 아이디로 검색
+
+    fun patchComments(imageId: String, body: ChangedComments){
+        var result = false
+        viewModelScope.launch {
+            PostRepository.chageComments(imageId, body){
+                result = it
+            }
+            _ChangeResult.value = result
+        }
+    }
 
 }
