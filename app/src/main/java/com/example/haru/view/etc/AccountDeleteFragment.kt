@@ -15,6 +15,7 @@ import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountDeleteBinding
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
 import com.example.haru.viewmodel.EtcViewModel
@@ -91,6 +92,7 @@ class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     etcViewModel.deleteUserAccount {
                         if (it?.success == true) {
                             SharedPrefsManager.clear(App.instance)
+                            User.clear()
                             val intent = Intent(activity, LoginActivity::class.java)
                             startActivity(intent)
                             activity?.finish()

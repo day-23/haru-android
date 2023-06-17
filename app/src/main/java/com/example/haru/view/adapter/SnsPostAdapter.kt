@@ -118,21 +118,21 @@ class SnsPostAdapter(val context: Context,
         }
 
         if(itemList[position].isLiked){
-            holder.likeBtn.setImageResource(R.drawable.sns_liked)
+            holder.likeBtn.setImageResource(R.drawable.check_like)
         }
         else{
-            holder.likeBtn.setImageResource(R.drawable.likedyet)
+            holder.likeBtn.setImageResource(R.drawable.uncheck_like)
         }
 
         holder.likeBtn.setOnClickListener{
             if(itemList[position].isLiked){
-                holder.likeBtn.setImageResource(R.drawable.likedyet)
+                holder.likeBtn.setImageResource(R.drawable.uncheck_like)
                 itemList[position].isLiked = false
                 itemList[position].likedCount -= 1
                 holder.likedcount.text = itemList[position].likedCount.toString()
 
             }else{
-                holder.likeBtn.setImageResource(R.drawable.sns_liked)
+                holder.likeBtn.setImageResource(R.drawable.check_like)
                 itemList[position].isLiked = true
                 itemList[position].likedCount += 1
                 holder.likedcount.text = itemList[position].likedCount.toString()

@@ -159,7 +159,7 @@
             android:layout_height="28dp"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="20dp"
-            android:src="@drawable/likedyet"
+            android:src="@drawable/uncheck_like"
             tools:ignore="MissingConstraints" />
 
         <TextView
