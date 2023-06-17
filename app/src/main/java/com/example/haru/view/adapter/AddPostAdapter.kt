@@ -50,13 +50,29 @@ class AddPostAdapter (val context: Context,
         holder.image.setColorFilter(null)
 
         holder.image.setOnClickListener {
-            clicked = pictureClicked(holder, clicked, position, false)
+            if(clicked){
+                myPageViewModel.imageList.remove(
+                    myPageViewModel.imageList[
+                            myPageViewModel.selectedPostionList.indexOf(position)
+                    ]
+                )
+
+                myPageViewModel.selectedPostionList.remove(position)
+            } else {
+                myPageViewModel.imageList.add(
+                    itemList[position].copy()
+                )
+
+                myPageViewModel.selectedPostionList.add(position)
+            }
+
+            clicked = pictureClicked(holder, clicked, position)
         }
 
-        holder.cropButton.setOnClickListener {
-            myPageViewModel.getCrop(itemList[position])
-            clicked = pictureClicked(holder, clicked, position, true)
-        }
+//        holder.cropButton.setOnClickListener {
+//            myPageViewModel.getCrop(itemList[position])
+//            clicked = pictureClicked(holder, clicked, position, true)
+//        }
     }
 
     override fun getItemCount(): Int {
@@ -69,29 +85,26 @@ class AddPostAdapter (val context: Context,
         return multiSelect
     }
 
-    fun pictureClicked(holder: AddPostViewHolder, clicked : Boolean, position: Int, crop : Boolean) : Boolean{
+    fun pictureClicked(holder: AddPostViewHolder, clicked : Boolean, position: Int) : Boolean{
         if(multiSelect) {
             if (clicked) {
                 holder.selected.visibility = View.INVISIBLE
                 holder.index.visibility = View.INVISIBLE
                 holder.image.setColorFilter(null)
                 myPageViewModel.delSelected(position)
-                if(!crop)
-                    myPageViewModel.deleteImage(itemList[position])
+                myPageViewModel.deleteImage(itemList[position])
                 return false
             } else {
                 holder.selected.visibility = View.VISIBLE
                 holder.index.visibility = View.VISIBLE
                 holder.image.setColorFilter(Color.argb(127, 0, 0, 0), PorterDuff.Mode.SRC_OVER)
-                if(!crop)
-                    myPageViewModel.setImages(itemList[position])
+                myPageViewModel.setImages(itemList[position])
                 myPageViewModel.addSelected(position)
                 return true
             }
         }else{
             myPageViewModel.selectOnePicture(position)
-            if(!crop)
-                myPageViewModel.setImage(itemList[position])
+            myPageViewModel.setImage(itemList[position])
             return false
         }
     }

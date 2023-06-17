@@ -118,7 +118,7 @@ class AddPostFragment : Fragment(), PostInterface{
             binding = FragmentAddPostBinding.inflate(inflater, container, false)
             galleryRecyclerView = binding.addpostGalleryImage
             val imagePager = binding.addPostImages
-            val pagerAdapter = AddTagPagerAdapter(requireContext(), arrayListOf())
+            val pagerAdapter = AddTagPagerAdapter(requireContext(), arrayListOf(), galleryViewmodel)
             imagePager.adapter = pagerAdapter
 
             if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
@@ -350,6 +350,7 @@ class AddPostFragment : Fragment(), PostInterface{
     private fun cropImage(uri: Uri?){
         context?.let {
             CropImage.activity(uri)
+                .setAspectRatio(1,1)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .start(it, this)
         }

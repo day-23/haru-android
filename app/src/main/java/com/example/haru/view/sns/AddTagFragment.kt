@@ -66,7 +66,7 @@ class AddTagFragment(
         binding = FragmentAddpostAddtagBinding.inflate(inflater, container, false)
         Log.d("CropImages", "recieved images $Uris")
         Log.d("CropImages", "recieved parts $images")
-        val adapter = AddTagPagerAdapter(requireContext(), Uris)
+        val adapter = AddTagPagerAdapter(requireContext(), Uris, galleryViewmodel)
         binding.addtagImages.adapter = adapter
         binding.addTagContent.text = content
         var hashtag: List<String>

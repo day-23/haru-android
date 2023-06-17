@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
+import com.example.haru.viewmodel.MyPageViewModel
 
 class AddTagPagerAdapter(private val context: Context,
-                         private var imageList: ArrayList<ExternalImages> = arrayListOf()
+                         private var imageList: ArrayList<ExternalImages> = arrayListOf(),
+                         private val myPageViewModel: MyPageViewModel
 ) : RecyclerView.Adapter<AddTagPagerAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,7 +24,9 @@ class AddTagPagerAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(imageList[position].absuri.toString())
+        holder.bind(
+            myPageViewModel.imageList[position]
+        )
     }
 
     override fun getItemCount(): Int {
@@ -40,9 +44,14 @@ class AddTagPagerAdapter(private val context: Context,
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.findViewById<ImageView>(R.id.post_image)
-        fun bind(image: String) {
+
+        fun bind(externalimage: ExternalImages) {
+            imageView.setOnClickListener {
+                myPageViewModel.getCrop(externalimage)
+            }
+
             Glide.with(context)
-                .load(image)
+                .load(externalimage.absuri.toString())
                 .into(imageView)
         }
     }

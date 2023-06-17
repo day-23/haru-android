@@ -27,6 +27,9 @@ class MyPageViewModel() : ViewModel() {
     private val tagList: MutableList<String> = mutableListOf()
     var tag: String = ""
 
+    val imageList: ArrayList<ExternalImages> = arrayListOf()
+    val selectedPostionList: ArrayList<Int> = arrayListOf()
+
     private val _Profile = MutableLiveData<com.example.haru.data.model.Profile>()
     val Profile: LiveData<com.example.haru.data.model.Profile>
         get() = _Profile
