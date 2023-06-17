@@ -123,6 +123,8 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.friendsListTitle.id)
+
+        MainActivity.hideNavi(true)
     }
 
     override fun onResume() {
