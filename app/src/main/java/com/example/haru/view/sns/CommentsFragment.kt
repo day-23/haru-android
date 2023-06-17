@@ -2,9 +2,11 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.graphics.Color
 import android.icu.text.Transliterator.Position
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,8 +27,12 @@ import com.example.haru.databinding.FragmentCommentsBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
 import com.example.haru.databinding.PopupSnsCommentDeleteBinding
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.CommentsAdapter
 import com.example.haru.viewmodel.SnsViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.w3c.dom.Comment
 
 interface onCommentClick{
@@ -75,19 +81,20 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         super.onCreate(savedInstanceState)
         Log.d("TAG", "CommentsFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
+        MainActivity.hideNavi(true)
+
     }
 
     // status bar height 조정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(binding.commentMenu.id, 1.1f)
+        (activity as BaseActivity).adjustTopMargin(binding.commentMenu.id)
     }
 
     override fun onResume() {
         super.onResume()
         (activity as BaseActivity).adjustTopMargin(binding.commentMenu.id)
-        (activity as BaseActivity).adjustTopMargin(binding.commentMenu.id, 1.1f)
     }
 
     @SuppressLint("SetTextI18n")
@@ -214,58 +221,80 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
 
     fun addPopup(){
         val fragment = PopupDeleteComment(this)
-        val fragmentManager = childFragmentManager
-        val transaction = fragmentManager.beginTransaction()
-        transaction.add(R.id.add_comment_anchor, fragment)
-        transaction.commit()
+        fragment.show(parentFragmentManager, fragment.tag)
+//        val fragmentManager = childFragmentManager
+//        val transaction = fragmentManager.beginTransaction()
+//        transaction.add(R.id.add_comment_anchor, fragment)
+//        transaction.commit()
     }
 
     fun deletePopup(){
-        val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.add_comment_anchor)
-
-        if(fragment != null) {
-            val transaction = fragmentManager.beginTransaction()
-            transaction.remove(fragment)
-            transaction.commit()
-        }
+//        val fragmentManager = childFragmentManager
+//        val fragment = fragmentManager.findFragmentById(R.id.add_comment_anchor)
+//
+//        if(fragment != null) {
+//            val transaction = fragmentManager.beginTransaction()
+//            transaction.remove(fragment)
+//            transaction.commit()
+//        }
     }
 }
 
-class PopupDeleteComment(listener: onCommentClick): Fragment(){
+class PopupDeleteComment(val listener: onCommentClick): BottomSheetDialogFragment(){
     lateinit var popupbinding : PopupSnsCommentDeleteBinding
-    val listener = listener
 
     // status bar height 조정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(popupbinding.popupTotalCommentsContainer.id, 2f)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as BaseActivity).adjustTopMargin(popupbinding.popupTotalCommentsContainer.id, 2f)
-    }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        popupbinding = PopupSnsCommentDeleteBinding.inflate(inflater, container, false)
-
         popupbinding.commentsDelete.setOnClickListener {
             listener.onPopupSelect(0)
+            dismiss()
         }
 
         popupbinding.commentsReport.setOnClickListener {
             listener.onPopupSelect(1)
+            dismiss()
         }
 
-        popupbinding.commentsCancel.setOnClickListener {
-            listener.onPopupSelect(2)
-        }
+//        popupbinding.commentsCancel.setOnClickListener {
+//            listener.onPopupSelect(2)
+//            dismiss()
+//        }
+    }
 
-        popupbinding.popupTotalCommentsContainer.setOnClickListener {
-
-        }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        popupbinding = PopupSnsCommentDeleteBinding.inflate(inflater, container, false)
 
         return popupbinding.root
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 40 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 }

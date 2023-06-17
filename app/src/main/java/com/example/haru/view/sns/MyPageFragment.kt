@@ -249,6 +249,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+
+        MainActivity.hideNavi(false)
     }
 
     override fun onResume() {

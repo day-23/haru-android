@@ -27,6 +27,7 @@ import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
 import com.example.haru.databinding.PopupSnsPostDeleteBinding
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
@@ -154,6 +155,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         Log.d(TAG, "sns onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
         startBoolean = true
+        MainActivity.hideNavi(false)
     }
 
     override fun onResume() {
