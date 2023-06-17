@@ -111,7 +111,6 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     }
 
     override fun postPopupClicked(userId: String, postId: String, position: Int) {
-        Log.e("20191627", "123")
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         if (position == 0) {
             if (User.id == userId) {//수정하기
@@ -122,9 +121,10 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         } else if (position == 1) {
             if (User.id == userId) {//삭제확인창
                 val fragment = PopupDeleteConfirm(userId, postId, this)
-                transaction.add(R.id.sns_post_anchor, fragment)
-                transaction.addToBackStack(null)
-                transaction.commit()
+                fragment.show(parentFragmentManager, fragment.tag)
+//                transaction.add(R.id.sns_post_anchor, fragment)
+//                transaction.addToBackStack(null)
+//                transaction.commit()
             } else { //신고하기
                 snsViewModel.reportPost(postId)
             }
@@ -143,7 +143,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
             snsViewModel.deletePost(postId)
         }
-        requireActivity().supportFragmentManager.popBackStack()
+//        requireActivity().supportFragmentManager.popBackStack()
 
     }
 
@@ -432,10 +432,9 @@ class PopupDeletePost(val userId: String, val postId: String, val listener: OnPo
 //    }
 //}
 
-class PopupDeleteConfirm(val userId: String, val postId: String, listener: OnPostPopupClick) :
-    Fragment() {
+class PopupDeleteConfirm(val userId: String, val postId: String, val listener: OnPostPopupClick) :
+    BottomSheetDialogFragment() {
     lateinit var popupbinding: PopupSnsPostCancelBinding
-    val listener = listener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -443,19 +442,52 @@ class PopupDeleteConfirm(val userId: String, val postId: String, listener: OnPos
         savedInstanceState: Bundle?
     ): View? {
         popupbinding = PopupSnsPostCancelBinding.inflate(inflater, container, false)
-        popupbinding.postCancelText.text = "게시글을 삭제할까요? 이 작업은 복원할 수 없습니다."
 
-//        MainActivity.hideNavi(true)
+        return popupbinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         popupbinding.snsAddPostUnsave.setOnClickListener {
             Log.e("20191627", "click0")
             listener.PopupConfirm(userId, postId, 0)
+            dismiss()
         }
 
         popupbinding.snsAddPostCancel.setOnClickListener {
             Log.e("20191627", "click1")
             listener.PopupConfirm(userId, postId, 1)
+            dismiss()
         }
+    }
 
-        return popupbinding.root
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 27 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 }
