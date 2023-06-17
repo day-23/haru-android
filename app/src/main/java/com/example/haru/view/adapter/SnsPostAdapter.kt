@@ -125,6 +125,13 @@ class SnsPostAdapter(val context: Context,
             holder.likeBtn.setImageResource(R.drawable.likedyet)
         }
 
+        if(item.isCommented){
+            holder.comment.setImageResource(R.drawable.comment_filled)
+        }
+        else{
+            holder.comment.setImageResource(R.drawable.comment)
+        }
+
         holder.likeBtn.setOnClickListener{
             if(item.isLiked){
                 holder.likeBtn.setImageResource(R.drawable.likedyet)

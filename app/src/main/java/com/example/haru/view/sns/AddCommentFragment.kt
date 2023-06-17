@@ -484,6 +484,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
     fun editCancel(){
         if (commentContainer.childCount != 0) {
             commentContainer.removeAllViews()
+            infoContainer.removeAllViews()
         }
         for(comment in postImages[imageIndex].comments) {
             commentContainer.post {
@@ -554,7 +555,6 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         val writerView = inflater.inflate(R.layout.item_comment_on_picture_writer, null)
         val writerName = writerView.findViewById<TextView>(R.id.comment_on_picture_name)
         val writerProfile = writerView.findViewById<ImageView>(R.id.comment_on_picture_profile)
-        val toUserPageBtn = writerView.findViewById<ImageView>(R.id.comment_on_picture_move_page)
 
         val commentDragListener = object : View.OnTouchListener {
             private var offsetX = 0f
@@ -662,6 +662,12 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         }
 
         view.setOnTouchListener(commentDragListener)
+
+        if(com.example.haru.utils.User.id == comment.user!!.id){
+            view.setOnClickListener {
+                PopupComment(this)
+            }
+        }
 
         view.isClickable = false
 

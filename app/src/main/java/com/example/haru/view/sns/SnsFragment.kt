@@ -303,6 +303,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                 binding.writeHaru.visibility = View.GONE
                 binding.addPost.setImageResource(R.drawable.add_sns)
             } else {
+                binding.writeHaru.visibility = View.INVISIBLE
                 scaleAndShowView(binding.writeHaru)
                 binding.addPost.setImageResource(R.drawable.add_sns_post)
             }
