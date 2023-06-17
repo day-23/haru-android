@@ -78,18 +78,19 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     override fun onBlockClick(position: Int) {
         if (position == 0) {
             val confirmFragment = MypageDeleteFriend(userInfo, isDelete, this)
+            confirmFragment.show(parentFragmentManager, confirmFragment.tag)
         }
     }
 
     override fun onDeleteClick(position: Int) {
-        val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
-        if (fragment != null) {
-            MainActivity.hideNavi(false)
-            val transaction = fragmentManager.beginTransaction()
-            transaction.remove(fragment)
-            transaction.commit()
-        }
+//        val fragmentManager = childFragmentManager
+//        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
+//        if (fragment != null) {
+//            MainActivity.hideNavi(false)
+//            val transaction = fragmentManager.beginTransaction()
+//            transaction.remove(fragment)
+//            transaction.commit()
+//        }
         if (position == 0 && isDelete) {
             requestDelFriend() //친구끊기
         } else if (position == 0 && !isDelete) {
@@ -392,12 +393,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 } else if (friendStatus == 2) { //친구 삭제
                     isDelete = true
                     binding.editProfile.isClickable = true
-                    MainActivity.hideNavi(true)
                     val fragment = MypageDeleteFriend(userInfo, isDelete, this)
-                    val fragmentManager = childFragmentManager
-                    val transaction = fragmentManager.beginTransaction()
-                    transaction.add(R.id.mypage_popup_anchor, fragment)
-                    transaction.commit()
+                    fragment.show(parentFragmentManager, fragment.tag)
                 } else if (friendStatus == 3) {
 
                 }
@@ -598,9 +595,14 @@ class MypageDeleteFriend(
     val isDelete: Boolean,
     val listener: MediaClick
 ) :
-    Fragment() {
+    BottomSheetDialogFragment() {
     lateinit var popupbinding: PopupFriendDeleteConfirmBinding
     lateinit var blockbinding: PopupBlockConfirmBinding
+    private var ratio: Int = 30
+
+    init {
+        ratio = if (isDelete) 45 else 37
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -608,51 +610,74 @@ class MypageDeleteFriend(
         savedInstanceState: Bundle?
     ): View? {
         if (isDelete) { //삭제창
-            popupbinding = PopupFriendDeleteConfirmBinding.inflate(inflater, container, false)
+            popupbinding = PopupFriendDeleteConfirmBinding.inflate(inflater)
 
-            if (targetItem.profileImage != null) {
+            if (targetItem.profileImage == null || targetItem.profileImage == "") {
+                popupbinding.ivProfileImage.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
+            } else {
                 Glide
                     .with(requireContext())
                     .load(targetItem.profileImage)
-                    .into(popupbinding.popupProfileImg)
-            } else {
-                popupbinding.popupProfileImg.setImageResource(R.drawable.default_profile)
+                    .into(popupbinding.ivProfileImage)
             }
 
 
-            popupbinding.popupDelTargetName.text = targetItem.name
-            popupbinding.deleteFriendConfirm.setOnClickListener {
+            popupbinding.tvUserId.text = targetItem.name
+            popupbinding.btnDeleteUser.setOnClickListener {
                 listener.onDeleteClick(0)
+                dismiss()
             }
 
-            popupbinding.cancelDeleteFriend.setOnClickListener {
-                listener.onDeleteClick(1)
+            popupbinding.btnDeleteCancel.setOnClickListener {
+//                listener.onDeleteClick(1)
+                dismiss()
             }
 
             return popupbinding.root
         } else { //차단창
-            blockbinding = PopupBlockConfirmBinding.inflate(inflater, container, false)
+            blockbinding = PopupBlockConfirmBinding.inflate(inflater)
 
-            if (targetItem.profileImage != null) {
-                Glide
-                    .with(requireContext())
-                    .load(targetItem.profileImage)
-                    .into(blockbinding.blockProfileImg)
-            } else {
-                blockbinding.blockProfileImg.setImageResource(R.drawable.default_profile)
-            }
-
-            blockbinding.popupBlockTargetName.text = targetItem.name
-            blockbinding.blockUserConfirm.setOnClickListener {
+            blockbinding.btnBlockUser.setOnClickListener {
                 listener.onDeleteClick(0)
+                dismiss()
             }
 
-            blockbinding.blockCancel.setOnClickListener {
-                listener.onDeleteClick(1)
+            blockbinding.btnBlockCancel.setOnClickListener {
+//                listener.onDeleteClick(1)
+                dismiss()
             }
             return blockbinding.root
         }
+    }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * ratio / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 }
 
