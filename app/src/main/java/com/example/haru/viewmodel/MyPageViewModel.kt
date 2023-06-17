@@ -184,10 +184,12 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             PostRepository.getFirstMedia(targetId) {
                 if (it.data.size > 0) { //get success
+                    Log.e("20191627", it.data.toString())
                     newMedia = it
                 }
             }
             if (newMedia.success) {
+                Log.e("20191627", "newmedia.su")
                 _FirstMedia.value = newMedia
             }
         }

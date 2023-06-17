@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/add_comment_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#FDFDFD">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,306 +17,306 @@
             android:id="@+id/write_comment_cancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
             android:src="@drawable/add_comment_cancel"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:visibility="gone"
-            android:layout_marginLeft="20dp"/>
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <ImageView
             android:id="@+id/write_comment_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:background="@drawable/back_arrow"
             android:layout_marginLeft="20dp"
+            android:background="@drawable/back_arrow"
+            app:layout_constraintLeft_toLeftOf="parent"
             tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/write_comment_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="코멘트"
             android:textColor="#191919"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:gravity="center"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_weight="6"
+            app:layout_constraintRight_toRightOf="parent"
             tools:ignore="MissingConstraints" />
 
         <ImageView
             android:id="@+id/write_comment_apply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="20dp"
             android:src="@drawable/add_comment_apply"
             android:visibility="gone"
-            android:layout_marginRight="20dp"
+            app:layout_constraintRight_toRightOf="parent"
             tools:ignore="MissingConstraints" />
 
         <ImageView
             android:id="@+id/edit_comment_apply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="20dp"
             android:src="@drawable/add_comment_apply"
             android:visibility="gone"
-            android:layout_marginRight="20dp"
+            app:layout_constraintRight_toRightOf="parent"
             tools:ignore="MissingConstraints" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/add_comment_buttons_layout"
         android:layout_width="match_parent"
         android:layout_height="28dp"
-        tools:ignore="MissingConstraints"
-        app:layout_constraintBottom_toTopOf="@id/comment_image"
         android:layout_marginBottom="23dp"
-        android:layout_marginTop="88dp">
+
+        app:layout_constraintBottom_toTopOf="@id/comment_image"
+        tools:ignore="MissingConstraints">
 
         <!--편집하기-->
         <ImageView
             android:id="@+id/add_comment_edit_comments"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:src="@drawable/edit_comment_gray_finger"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="20dp"
-            android:visibility="gone"/>
+            android:src="@drawable/edit_comment_gray_finger"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
             android:id="@+id/add_comment_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="편집하기"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:textColor="#646464"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="53dp"
-            android:visibility="gone"/>
+            android:gravity="center"
+            android:text="편집하기"
+            android:textColor="#646464"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <!--작성하기-->
         <ImageView
             android:id="@+id/add_comment_write_button"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:background="@drawable/gray_comment"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="20dp"
-            android:visibility="gone"/>
+            android:background="@drawable/gray_comment"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
             android:id="@+id/add_comment_write_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="작성하기"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:textColor="#646464"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="53dp"
-            android:visibility="gone"/>
+            android:gravity="center"
+            android:text="작성하기"
+            android:textColor="#646464"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <!--내 코멘트-->
         <ImageView
             android:id="@+id/add_comment_my_comment_icon"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:background="@drawable/comment_filled"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="20dp"
-            android:visibility="gone"/>
+            android:background="@drawable/comment_filled"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
             android:id="@+id/add_comment_my_comment_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="내 코멘트"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:textColor="#1DAFFF"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="53dp"
-            android:visibility="gone"/>
+            android:gravity="center"
+            android:text="내 코멘트"
+            android:textColor="#1DAFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <ImageView
             android:id="@+id/add_comment_reset_icon"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="161dp"
+            android:src="@drawable/reset_button"
             android:visibility="gone"
-            android:src="@drawable/reset_button"/>
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
             android:id="@+id/add_comment_reset_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="초기화"
-            android:visibility="gone"
+            android:layout_marginStart="194dp"
             android:gravity="center"
-            android:textStyle="bold"
-            android:textSize="14sp"
+            android:text="초기화"
             android:textColor="#FDFDFD"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="194dp"/>
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
         <ImageView
             android:id="@+id/last_picture"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/small_arrow_down"
+            android:backgroundTint="@color/light_gray"
+            android:rotation="90"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/addcomment_index"
-            android:background="@drawable/date_arrow_down"
-            android:backgroundTint="@color/date_text"
-            android:layout_marginEnd="20dp"
-            android:rotation="90"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/next_picture"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            app:layout_constraintLeft_toRightOf="@+id/addcomment_index"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/date_arrow_down"
-            android:backgroundTint="@color/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:rotation="90"
-            android:rotationY="180"/>
+            android:background="@drawable/small_arrow_right"
+            android:backgroundTint="@color/light_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/addcomment_index"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/addcomment_index"
             android:layout_width="56dp"
             android:layout_height="26dp"
-            android:text="1 / 4"
-            android:textSize="12sp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/comment_index"
             android:gravity="center"
-            android:layout_marginTop="20dp"
-
+            android:text="1 / 4"
             android:textColor="#FDFDFD"
+            android:textSize="12sp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent" />
 
         <ImageView
             android:id="@+id/comment_visibility"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:background="@drawable/comment"
-            android:backgroundTint="#191919"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/visibility_icon"
+            android:backgroundTint="@color/date_text"
+            app:layout_constraintRight_toRightOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/comment_image"
         android:layout_width="match_parent"
         android:layout_height="390dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-    </androidx.viewpager2.widget.ViewPager2>
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/add_comment_template_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/comment_image"
+        android:layout_marginStart="34dp"
+        android:textColor="#191919"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/comment_image"
         app:layout_constraintLeft_toLeftOf="@id/comment_image"
-        android:layout_marginStart="34dp"
-        android:textSize="24sp"
-        android:textColor="#191919"
-        android:textStyle="bold"/>
+        app:layout_constraintTop_toTopOf="@id/comment_image" />
 
 
     <LinearLayout
         android:id="@+id/edit_filter_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="@id/comment_frame"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="horizontal" />
+        app:layout_constraintTop_toTopOf="@id/comment_frame" />
 
     <FrameLayout
         android:id="@+id/comment_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="@id/comment_image"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/comment_image" />
 
     <FrameLayout
         android:id="@+id/writer_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@+id/comment_image"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-    
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/comment_image" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/add_comment_info"
         android:layout_width="match_parent"
         android:layout_height="28dp"
-        app:layout_constraintTop_toBottomOf="@id/comment_image"
+        android:layout_marginTop="10dp"
         android:visibility="gone"
-        android:layout_marginTop="10dp">
+        app:layout_constraintTop_toBottomOf="@id/comment_image">
 
         <ImageView
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="24dp"
             android:id="@+id/add_comment_like_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
             android:src="@drawable/check_like"
+            app:layout_constraintLeft_toLeftOf="parent"
             tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/add_comment_like_count"
-            app:layout_constraintLeft_toRightOf="@id/add_comment_like_icon"
-            android:layout_marginStart="9dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14dp"
-            android:textStyle="bold"
-            android:textColor="#191919"
+            android:layout_marginStart="9dp"
             android:text="0"
-            tools:ignore="MissingConstraints"/>
+            android:textColor="#191919"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/add_comment_like_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
         <ImageView
             android:id="@+id/add_comment_comment_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toRightOf="@id/add_comment_like_count"
             android:layout_marginStart="14dp"
             android:src="@drawable/comment_filled"
+            app:layout_constraintLeft_toRightOf="@id/add_comment_like_count"
             tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/add_comment_comment_count"
-            app:layout_constraintLeft_toRightOf="@id/add_comment_comment_icon"
-            android:layout_marginStart="9dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14dp"
-            android:textStyle="bold"
-            android:textColor="#191919"
+            android:layout_marginStart="9dp"
             android:text="0"
+            android:textColor="#191919"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/add_comment_comment_icon"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
         <ImageView
             android:id="@+id/show_total_comment"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:background="@drawable/sns_etc_white"
-            android:backgroundTint="#191919"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
+            android:background="@drawable/three_line"
+            android:backgroundTint="@color/date_text"
+            app:layout_constraintRight_toRightOf="parent"
             tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -325,44 +325,45 @@
         android:id="@+id/filter_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/add_comment_title"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="horizontal" />
+        app:layout_constraintTop_toBottomOf="@+id/add_comment_title" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="@id/comment_frame"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/comment_frame">
+
         <ImageView
             android:id="@+id/write_comment_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/cancel_write_default"
             android:layout_marginBottom="46dp"
+            android:src="@drawable/cancel_write_default"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent" />
 
         <ImageView
             android:id="@+id/write_comment_hide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/comment_hide_off"
             android:layout_marginBottom="46dp"
+            android:src="@drawable/comment_hide_off"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:id="@+id/move_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="@id/comment_frame"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/comment_frame" />
 
     <FrameLayout
         android:id="@+id/anchor_popup_comment"

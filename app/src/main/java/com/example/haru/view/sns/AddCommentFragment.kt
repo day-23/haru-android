@@ -17,6 +17,7 @@ import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.core.view.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -37,8 +38,16 @@ import com.example.haru.view.adapter.ImageClickListener
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-class AddCommentFragment(var isTemplate: String? = "", val content: String, postId: String, postImages:ArrayList<Profile>,val likeCnt : Int, val commentCnt:Int, writerInfo: User) : Fragment(), ImageClickListener{
-    lateinit var binding : FragmentAddCommentBinding
+class AddCommentFragment(
+    var isTemplate: String? = "",
+    val content: String,
+    postId: String,
+    postImages: ArrayList<Profile>,
+    val likeCnt: Int,
+    val commentCnt: Int,
+    writerInfo: User
+) : Fragment(), ImageClickListener {
+    lateinit var binding: FragmentAddCommentBinding
     lateinit var commentContainer: FrameLayout
     lateinit var infoContainer: FrameLayout
     lateinit var writeContainer: FrameLayout
@@ -106,11 +115,12 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
             postImages[imageIndex].comments.remove(comment)
         }
     }
+
     override fun OnPopupClick(position: Int) {
         val fragmentManager = childFragmentManager
         val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comment)
 
-        if(fragment != null) {
+        if (fragment != null) {
             val transaction = fragmentManager.beginTransaction()
             transaction.remove(fragment)
             transaction.commit()
@@ -146,7 +156,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
        }
     }
 
-    fun writeEnd(){
+    fun writeEnd() {
         binding.addCommentLayout.setBackgroundColor(Color.parseColor("#FDFDFD"))
         binding.writeCommentBack.visibility = View.VISIBLE
         binding.commentVisibility.visibility = View.VISIBLE
@@ -166,7 +176,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         }
     }
 
-    fun writeStart(){
+    fun writeStart() {
         binding.addCommentLayout.setBackgroundColor(Color.parseColor("#191919"))
         binding.writeCommentBack.isGone = true
         binding.commentVisibility.isGone = true
@@ -209,7 +219,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         Log.d("TAG", "SnsFragment - onCreateView() called")
         Log.d("20191668", "작성자 이름 ${writerInfo.name}")
         profileViewModel.getUserInfo(com.example.haru.utils.User.id)
-        profileViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
+        profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
             isMyPost = com.example.haru.utils.User.id == user.id
             myInfo = user
         }
@@ -258,14 +268,14 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         val viewPagerAdapter = AddCommentPagerAdapter(requireContext(), postImages, this)
 
         binding.addCommentWriteText.setOnClickListener {
-            if(!onWrite) {
+            if (!onWrite) {
                 onWrite = true
                 writeComment()
                 writeStart()
             }
         }
         binding.addCommentWriteButton.setOnClickListener {
-            if(!onWrite) {
+            if (!onWrite) {
                 onWrite = true
                 writeComment()
                 writeStart()
@@ -301,10 +311,10 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 binding.lastPicture.visibility = View.VISIBLE
                 binding.nextPicture.visibility = View.VISIBLE
 
-                if(position == 0){
+                if (position == 0) {
                     binding.lastPicture.isGone = true
                 }
-                if(position == postImages.size - 1){
+                if (position == postImages.size - 1) {
                     binding.nextPicture.isGone = true
                 }
 
@@ -312,10 +322,10 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 if (commentContainer.childCount != 0) {
                     commentContainer.removeAllViews()
                 }
-                for(comment in postImages[position].comments) {
-                    Log.d("20191668","내용:  ${comment}")
+                for (comment in postImages[position].comments) {
+                    Log.d("20191668", "내용:  ${comment}")
                     comment.user?.let {
-                        if(it.id == com.example.haru.utils.User.id)
+                        if (it.id == com.example.haru.utils.User.id)
                             isCommented = true
                     }
                     commentContainer.post {
@@ -333,7 +343,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 val transaction = fragmentManager.beginTransaction()
                 transaction.add(R.id.anchor_popup_comment, fragment)
                 transaction.commit()
-            }else{
+            } else {
                 this.OnPopupClick(0)
             }
         }
@@ -394,12 +404,23 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 showWriter = true //다시누르면 보이도록
                 CommentIsVisible = false
                 commentContainer.visibility = View.INVISIBLE
-                binding.commentVisibility.setBackgroundResource(R.drawable.comment_invisible)
-            }
-            else{
+                binding.commentVisibility.setBackgroundResource(R.drawable.unvisibility_icon)
+                binding.commentVisibility.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.highlight
+                    )
+                )
+            } else {
                 CommentIsVisible = true
                 commentContainer.visibility = View.VISIBLE
-                binding.commentVisibility.setBackgroundResource(R.drawable.comment_white)
+                binding.commentVisibility.setBackgroundResource(R.drawable.visibility_icon)
+                binding.commentVisibility.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.date_text
+                    )
+                )
             }
         }
 
@@ -433,16 +454,16 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         return binding.root
     }
 
-    fun setUi(){
-        if(com.example.haru.utils.User.id == writerInfo.id){
+    fun setUi() {
+        if (com.example.haru.utils.User.id == writerInfo.id) {
             binding.addCommentEditComments.visibility = View.VISIBLE
             binding.addCommentEditText.visibility = View.VISIBLE
-        }else if(isCommented){
+        } else if (isCommented) {
             binding.addCommentWriteButton.visibility = View.GONE
             binding.addCommentWriteText.visibility = View.GONE
             binding.addCommentMyCommentIcon.visibility = View.VISIBLE
             binding.addCommentMyCommentText.visibility = View.VISIBLE
-        }else{
+        } else {
             binding.addCommentWriteButton.visibility = View.VISIBLE
             binding.addCommentWriteText.visibility = View.VISIBLE
             binding.addCommentMyCommentIcon.visibility = View.GONE
@@ -731,8 +752,9 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         }
     }
 
-    fun writeComment(){
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    fun writeComment() {
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         val dragTouchListener = object : View.OnTouchListener {
             private var offsetX = 0f
@@ -750,7 +772,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 var parentView = view
                 try {
                     parentView = view.parent as View
-                }catch (e:java.lang.Exception){
+                } catch (e: java.lang.Exception) {
 
                 }
                 binding.writeCommentDelete.visibility = View.GONE
@@ -764,8 +786,13 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                     }
                     MotionEvent.ACTION_MOVE -> {
                         //사진 밖으로 댓글을 드래그 하지 않았는지 검사
-                        if (!isDragging && (Math.abs(event.rawX - initialX) > ViewConfiguration.get(parentView.context).scaledTouchSlop ||
-                                    Math.abs(event.rawY - initialY) > ViewConfiguration.get(parentView.context).scaledTouchSlop)) {
+                        if (!isDragging && (Math.abs(event.rawX - initialX) > ViewConfiguration.get(
+                                parentView.context
+                            ).scaledTouchSlop ||
+                                    Math.abs(event.rawY - initialY) > ViewConfiguration.get(
+                                parentView.context
+                            ).scaledTouchSlop)
+                        ) {
                             isDragging = true
                         }
                         if (isDragging) {
@@ -775,10 +802,10 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                             y_end = y_start + parentView.height
 
 
-                            if(x_start > 0 && x_end < writeContainer.width)
+                            if (x_start > 0 && x_end < writeContainer.width)
                                 parentView.x = x_start
 
-                            if(y_start > 0 && y_end < writeContainer.height) {
+                            if (y_start > 0 && y_end < writeContainer.height) {
                                 if (y_end > commentContainer.height) {
                                     parentView.setBackgroundResource(R.color.light_gray)
                                 } else {
@@ -792,16 +819,18 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                             val deletexEnd = deletex + binding.writeCommentDelete.width
                             val deletey = binding.writeCommentDelete.y
                             val deleteyEnd = deletey + binding.writeCommentDelete.height
-                            Log.d("20191668","${parentView.x}, ${parentView.y} , ${binding.writeCommentDelete.x}, ${binding.writeCommentDelete.y}")
+                            Log.d(
+                                "20191668",
+                                "${parentView.x}, ${parentView.y} , ${binding.writeCommentDelete.x}, ${binding.writeCommentDelete.y}"
+                            )
                             //삭제 칸에 드래그 되었는지
                             if (x_start > deletexEnd || x_end < deletex) {
                                 binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_default)
                                 onDelete = false
-                            }else if(y_start > deleteyEnd || y_end < deletey){
+                            } else if (y_start > deleteyEnd || y_end < deletey) {
                                 binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_default)
                                 onDelete = false
-                            }
-                            else {
+                            } else {
                                 binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_ondrag)
                                 onDelete = true
                             }
@@ -809,11 +838,10 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                     }
                     MotionEvent.ACTION_UP -> {
                         if (isDragging) {
-                            if(y_end > ImageHeight){
+                            if (y_end > ImageHeight) {
                                 parentView.x = initialX
                                 parentView.y = initialY
-                            }
-                            else{
+                            } else {
                                 AddX = (parentView.x / ImageWidth * 100).toInt()
                                 AddY = (parentView.y / ImageHeight * 100).toInt()
                                 Log.d("20191668", "Percentage: $AddX $AddY")
@@ -822,7 +850,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                             binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_default)
                             parentView.setBackgroundResource(R.drawable.comment_ballon)
 
-                            if(onDelete){
+                            if (onDelete) {
                                 writeContainer.removeView(writeBox)
                                 onWrite = false
                                 val color = Color.argb(0, 0, 0, 0) // 204 represents 80% transparency black (255 * 0.8 = 204)
@@ -847,10 +875,10 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
             AddContent = editView.text.toString()
             val layoutParams = editView.layoutParams
 
-            if(AddContent == ""){
+            if (AddContent == "") {
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            }else {
+            } else {
                 val paint = Paint()
                 paint.textSize = editView.textSize
                 paint.typeface = editView.typeface
@@ -872,7 +900,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
             if (hasFocus) {
                 lastX = parentView.x
                 lastY = parentView.y
-                
+
                 parentView.x = (commentContainer.width * 0.35).toFloat()
                 parentView.y = (commentContainer.height * 0.25).toFloat()
             } else {
@@ -909,9 +937,13 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
 class PopupComment(listener: ImageClickListener) : Fragment() {
 
-    lateinit var popupbinding : PopupSnsCommentCancelBinding
+    lateinit var popupbinding: PopupSnsCommentCancelBinding
     val listener = listener
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         popupbinding = PopupSnsCommentCancelBinding.inflate(inflater, container, false)
 
         popupbinding.snsAddCommentUnsave.setOnClickListener {

@@ -63,7 +63,6 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
     }
 
     override fun onDeleteClick(item: FriendInfo) {
-        MainActivity.hideNavi(true)
         deleteTarget = item
         val fragment = PopupDeleteFriend(item, this)
         val fragmentManager = childFragmentManager
@@ -123,6 +122,8 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.friendsListTitle.id)
+
+        MainActivity.hideNavi(true)
     }
 
     override fun onResume() {
