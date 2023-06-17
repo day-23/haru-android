@@ -184,6 +184,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
                     android:hint="3월 14일 일정 추가"
+                    android:inputType="text"
                     android:background="@android:color/transparent"
                     android:textColorHint="#646464"
                     android:textSize="14sp"
@@ -205,6 +206,6 @@
     <View
         android:id="@+id/darken_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/mini_calendar_preview_border"/>
+        android:layout_height="match_parent" />
+        <!--android:background="@drawable/mini_calendar_preview_border"/>-->
 </FrameLayout>

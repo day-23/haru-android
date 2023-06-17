@@ -2,9 +2,11 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import UserViewModelFactory
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -43,14 +45,23 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     private lateinit var binding: FragmentSnsBinding
     private var click = false
     private var postClicked = false
+    private var startBoolean = false
     private lateinit var snsPostAdapter: SnsPostAdapter
     var lastDate = ""
-    var deletedItem : Post = Post()
+    var deletedItem: Post = Post()
 
     override fun onCommentClick(postitem: Post) {
         profileViewModel.getUserInfo(postitem.user.id)
         profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
-            val newFrag = AddCommentFragment(postitem.isTemplatePost, postitem.content, postitem.id, postitem.images, postitem.likedCount, postitem.commentCount, user)
+            val newFrag = AddCommentFragment(
+                postitem.isTemplatePost,
+                postitem.content,
+                postitem.id,
+                postitem.images,
+                postitem.likedCount,
+                postitem.commentCount,
+                user
+            )
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
@@ -98,16 +109,16 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             transaction.remove(fragment)
             transaction.commit()
             if (position == 0) {
-                if(User.id == userId){//수정하기
+                if (User.id == userId) {//수정하기
 
-                }else{//이 게시글 숨기기
+                } else {//이 게시글 숨기기
                     snsViewModel.hidePost(postId)
                 }
             } else if (position == 1) {
                 if (User.id == userId) {//삭제확인창
                     val fragment = PopupDeleteConfirm(userId, postId, this)
                     transaction.add(R.id.sns_post_anchor, fragment)
-                }else{ //신고하기
+                } else { //신고하기
                     snsViewModel.reportPost(postId)
                 }
             }
@@ -149,12 +160,13 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id, 1.1f)
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+        startBoolean = true
     }
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id, 1.1f)
+        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
     }
 
     override fun onCreateView(
@@ -198,7 +210,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         }
 
         snsViewModel.DeleteResult.observe(viewLifecycleOwner) { result ->
-            if(result && deletedItem.id != ""){
+            if (result && deletedItem.id != "") {
                 snsPostAdapter.deletePost(deletedItem)
             }
         }
@@ -210,8 +222,8 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             } else Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
         }
 
-        binding.writeHaru.setOnClickListener {
-            val newFrag = WriteHaruFragment()
+        binding.drawHaru.setOnClickListener {
+            val newFrag = AddPostFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
@@ -219,7 +231,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                 transaction.addToBackStack("snsmain")
             transaction.commit()
 
-            binding.writeHaru.visibility = View.GONE
+            binding.drawHaru.visibility = View.GONE
             binding.addPost.setImageResource(R.drawable.add_sns)
             postClicked = false
         }
@@ -243,8 +255,8 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         }
 
         binding.addPost.setOnClickListener {
-            if(postClicked) {
-                val newFrag = AddPostFragment.newInstance()
+            if (postClicked) {
+                val newFrag = WriteHaruFragment()
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragments_frame, newFrag)
                 val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
@@ -252,11 +264,11 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                     transaction.addToBackStack("snsmain")
                 transaction.commit()
 
-                binding.writeHaru.visibility = View.GONE
+                binding.drawHaru.visibility = View.GONE
                 binding.addPost.setImageResource(R.drawable.add_sns)
             } else {
-                binding.writeHaru.visibility = View.VISIBLE
-                binding.addPost.setImageResource(R.drawable.add_sns_post)
+                binding.drawHaru.visibility = View.VISIBLE
+                binding.addPost.setImageResource(R.drawable.haru_write)
             }
 
             postClicked = !postClicked

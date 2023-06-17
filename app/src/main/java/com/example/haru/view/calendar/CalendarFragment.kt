@@ -169,7 +169,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
 
         val calendarTodayTv = view.findViewById<TextView>(R.id.calendar_today_tv)
 
-        val categoryAddImage = view.findViewById<ImageView>(R.id.category_add_image)
+        val categoryAddImage = view.findViewById<LinearLayout>(R.id.category_add_image)
         val categoryButtonImv = view.findViewById<ImageView>(R.id.category_button_imv)
 
         categoryDrawerLayout = view.findViewById<DrawerLayout>(R.id.category_drawerlayout)
@@ -339,6 +339,9 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
                 unclassifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
                 classifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
 
+                unclassifiedShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
+                classifiedShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
+
                 if(!calendarMainData.scheduleApply){
                     allBlindTv.text = "모두 표시"
                     allBlindTv.setTextColor(Color.parseColor("#1DAFFF"))
@@ -357,6 +360,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
                     todoCompleteTv.setTextColor(Color.parseColor("#191919"))
                     drawable.setColorFilter(null)
                     classifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
+                    classifiedShowIv.backgroundTintList = null
                 }
 
                 if(calendarMainData.todoInComplete){
@@ -364,6 +368,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
                     todoIncompleteTv.setTextColor(Color.parseColor("#191919"))
                     drawable.setColorFilter(null)
                     unclassifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
+                    unclassifiedShowIv.backgroundTintList = null
                 }
             }
 
@@ -441,6 +446,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
 
                         todoIncompleteTv.setTextColor(Color.parseColor("#ACACAC"))
                         unclassifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
+                        unclassifiedShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
                     }
 
                     if (calendarMainData.todoComplete) {
@@ -453,13 +459,14 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
 
                         todoCompleteTv.setTextColor(Color.parseColor("#ACACAC"))
                         classifiedShowIv.setBackgroundResource(R.drawable.category_unshow_image)
+                        classifiedShowIv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1DAFFF"))
                     }
 
                     changeStatus = true
                 }
 
                 if (calendarMainData.scheduleApply) {
-                    scheduleApplyImv.backgroundTintList = null
+                    scheduleApplyImv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                     scheduleApplyTv.setTextColor(
                         Color.parseColor("#ACACAC")
@@ -485,7 +492,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
                 calendarMainData.scheduleApply = true
                 calendarMainData.todoApply = true
 
-                scheduleApplyImv.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
+                scheduleApplyImv.backgroundTintList = null
 
                 scheduleApplyTv.setTextColor(
                     Color.parseColor("#1DAFFF")
@@ -505,6 +512,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
                     drawable.setColorFilter(null)
 
                     classifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
+                    classifiedShowIv.backgroundTintList = null
                 }
 
                 if(calendarMainData.todoInComplete){
@@ -513,6 +521,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
                     drawable.setColorFilter(null)
 
                     unclassifiedShowIv.setBackgroundResource(R.drawable.category_show_image)
+                    unclassifiedShowIv.backgroundTintList = null
                 }
 
                 allBlindTv.text = "모두 가리기"

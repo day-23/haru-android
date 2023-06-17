@@ -415,7 +415,6 @@ class MyPageViewModel() : ViewModel() {
                 _UserInfo.postValue(user)
                 callback()
             }
-//            _UserInfo.value = user
         }
     }
 

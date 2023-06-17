@@ -273,9 +273,9 @@ class CalendarItemFragment(
                                 binding.repeatSwitchSchedule.isChecked = false
                                 binding.repeatSwitchSchedule.isClickable = false
 
-                                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                                binding.repeatTvSchedule.setTextColor(Color.parseColor("#ACACAC"))
                                 binding.repeatIvSchedule.backgroundTintList =
-                                    ColorStateList.valueOf(Color.LTGRAY)
+                                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                                 binding.repeatOptionSelectSchedule.visibility = View.GONE
                                 binding.repeatEndLayout.visibility = View.GONE
@@ -396,9 +396,9 @@ class CalendarItemFragment(
                                 binding.repeatSwitchSchedule.isChecked = false
                                 binding.repeatSwitchSchedule.isClickable = false
 
-                                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                                binding.repeatTvSchedule.setTextColor(Color.parseColor("#ACACAC"))
                                 binding.repeatIvSchedule.backgroundTintList =
-                                    ColorStateList.valueOf(Color.LTGRAY)
+                                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                                 binding.repeatOptionSelectSchedule.visibility = View.GONE
                                 binding.repeatEndLayout.visibility = View.GONE
@@ -473,8 +473,8 @@ class CalendarItemFragment(
             } else {
                 isAllday = false
                 binding.alldayIv.backgroundTintList =
-                    ColorStateList.valueOf(Color.LTGRAY)
-                binding.alldayTv.setTextColor(Color.LTGRAY)
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
+                binding.alldayTv.setTextColor(Color.parseColor("#ACACAC"))
 
                 binding.repeatStartTimeBtn.visibility = View.VISIBLE
                 binding.repeatEndTimeBtn.visibility = View.VISIBLE
@@ -500,9 +500,9 @@ class CalendarItemFragment(
                     binding.gridYearSchedule.visibility = View.VISIBLE
                 }
             } else {
-                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                binding.repeatTvSchedule.setTextColor(Color.parseColor("#ACACAC"))
                 binding.repeatIvSchedule.backgroundTintList =
-                    ColorStateList.valueOf(Color.LTGRAY)
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                 binding.repeatOptionSelectSchedule.visibility = View.GONE
                 binding.repeatEndLayout.visibility = View.GONE
@@ -530,7 +530,7 @@ class CalendarItemFragment(
                 binding.btnRepeatEndDateSchedule.text = dateformat.format(repeatEndCalendar.time)
             } else {
                 binding.repeatEndDateScheduleTv.setTextColor(Color.parseColor("#DBDBDB"))
-                binding.btnRepeatEndDateSchedule.visibility = View.GONE
+                binding.btnRepeatEndDateSchedule.visibility = View.INVISIBLE
             }
         }
 
@@ -1012,9 +1012,56 @@ class CalendarItemFragment(
                 return@setOnClickListener
             }
 
-            if (repeatEndCalendar.time.time - repeatStartCalendar.time.time < 1000 * 60 * 30) {
+            if (!isAllday && repeatEndCalendar.time.time - repeatStartCalendar.time.time < 1000 * 60 * 30) {
                 Toast.makeText(requireContext(), "일정은 30분 이상 차이나야 합니다.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
+            }
+
+            when(repeatOption){
+                1,2 ->{
+                    if(binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text){
+                        var cnt = 0
+
+                        for(value in weeksValue){
+                            if(value) cnt++
+                        }
+
+                        if(cnt == 0){
+                            Toast.makeText(requireContext(),"반복설정이 잘못 되었습니다.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                    }
+                }
+
+                3->{
+                    if(binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text){
+                        var cnt = 0
+
+                        for(value in monthsValue){
+                            if(value) cnt++
+                        }
+
+                        if(cnt == 0){
+                            Toast.makeText(requireContext(),"반복설정이 잘못 되었습니다.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                    }
+                }
+
+                4->{
+                    if(binding.repeatStartDateBtn.text == binding.repeatEndDateBtn.text){
+                        var cnt = 0
+
+                        for(value in yearsValue){
+                            if(value) cnt++
+                        }
+
+                        if(cnt == 0){
+                            Toast.makeText(requireContext(),"반복설정이 잘못 되었습니다.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                    }
+                }
             }
 
             var option: String? = ""
@@ -1882,9 +1929,9 @@ class CalendarItemFragment(
                 binding.alarmIv.backgroundTintList =
                     ColorStateList.valueOf(Color.parseColor("#191919"))
             } else {
-                binding.alarmTv.setTextColor(Color.LTGRAY)
+                binding.alarmTv.setTextColor(Color.parseColor("#ACACAC"))
                 binding.alarmIv.backgroundTintList =
-                    ColorStateList.valueOf(Color.LTGRAY)
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
             }
         }
 
@@ -1899,6 +1946,12 @@ class CalendarItemFragment(
             if (it.toString().length > 500) {
                 binding.etMemoSchedule.setText(it.toString().substring(0, 500))
                 binding.etMemoSchedule.setSelection(500)
+            }
+
+            if(it.toString().length > 0){
+                binding.ivMemoIcon.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#191919"))
+            } else {
+                binding.ivMemoIcon.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ACACAC"))
             }
         }
     }
@@ -2028,17 +2081,20 @@ class CalendarItemFragment(
         if (binding.repeatStartDateBtn.text != binding.repeatEndDateBtn.text) {
             val dateParser = SimpleDateFormat("yyyy.MM.dd EE", Locale.KOREAN)
 
-            val repeatEndDateText = binding.btnRepeatEndDateSchedule.text.toString().substring(
-                0,
-                binding.btnRepeatEndDateSchedule.text.toString().length - 2
-            )
+            if(binding.btnRepeatEndDateSchedule.text.length > 0) {
+                val repeatEndDateText = binding.btnRepeatEndDateSchedule.text.toString().substring(
+                    0,
+                    binding.btnRepeatEndDateSchedule.text.toString().length - 2
+                )
 
-            val dateFormat = SimpleDateFormat("yyyy.MM.dd")
-            val repeatEndDateCalendar = Calendar.getInstance()
-            repeatEndDateCalendar.time = dateFormat.parse(repeatEndDateText)
+                val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+                val repeatEndDateCalendar = Calendar.getInstance()
+                repeatEndDateCalendar.time = dateFormat.parse(repeatEndDateText)
 
-            if (repeatEndCalendar.time.after(repeatEndDateCalendar.time)) {
-                binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
+                if (repeatEndCalendar.time.after(repeatEndDateCalendar.time)) {
+                    binding.btnRepeatEndDateSchedule.text =
+                        dateParser.format(repeatEndCalendar.time)
+                }
             }
 
             if (repeatStartCalendar.time.month != repeatEndCalendar.time.month) {
@@ -2064,9 +2120,9 @@ class CalendarItemFragment(
                 binding.repeatSwitchSchedule.isChecked = false
                 binding.repeatSwitchSchedule.isClickable = false
 
-                binding.repeatTvSchedule.setTextColor(Color.LTGRAY)
+                binding.repeatTvSchedule.setTextColor(Color.parseColor("#ACACAC"))
                 binding.repeatIvSchedule.backgroundTintList =
-                    ColorStateList.valueOf(Color.LTGRAY)
+                    ColorStateList.valueOf(Color.parseColor("#ACACAC"))
 
                 binding.repeatOptionSelectSchedule.visibility = View.GONE
                 binding.repeatEndLayout.visibility = View.GONE
@@ -2146,11 +2202,11 @@ class CalendarItemFragment(
         for (i in 1..31) {
             val textView = TextView(requireContext())
             textView.text = getString(R.string.MonthDay, i)
-            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
             textView.gravity = Gravity.CENTER
 
             if (!monthsValue[i - 1]) {
-                textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
             } else {
                 textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
             }
@@ -2165,7 +2221,7 @@ class CalendarItemFragment(
                     )
                     monthsValue[i - 1] = true
                 } else {
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                    textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
                     monthsValue[i - 1] = false
                 }
             }
@@ -2181,11 +2237,11 @@ class CalendarItemFragment(
         for (i in 1..12) {
             val textView = TextView(requireContext())
             textView.text = getString(R.string.YearMonth, i)
-            textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+            textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
             textView.gravity = Gravity.CENTER
 
             if (!yearsValue[i - 1]) {
-                textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
             } else {
                 textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
             }
@@ -2200,7 +2256,7 @@ class CalendarItemFragment(
                     )
                     yearsValue[i - 1] = true
                 } else {
-                    textView.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                    textView.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
                     yearsValue[i - 1] = false
                 }
             }
@@ -2217,7 +2273,7 @@ class CalendarItemFragment(
             val view = binding.everyWeekLayout.getChildAt(i) as TextView
 
             if (!weeksValue[i]) {
-                view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                view.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
             } else {
                 view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
             }
@@ -2228,7 +2284,7 @@ class CalendarItemFragment(
                     view.setTextColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                 } else {
                     weeksValue[i] = false
-                    view.setTextColor(ColorStateList.valueOf(resources.getColor(R.color.light_gray)))
+                    view.setTextColor(ColorStateList.valueOf(Color.parseColor("#ACACAC")))
                 }
             }
         }
