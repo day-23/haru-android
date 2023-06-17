@@ -651,7 +651,7 @@ class MyPageViewModel() : ViewModel() {
 
     fun deleteImage(image: ExternalImages) {
         var temp = _Images.value
-        if (temp.isNullOrEmpty()) {
+        if (!temp.isNullOrEmpty()) {
             temp!!.remove(image)
             _Images.value = temp!!
         }

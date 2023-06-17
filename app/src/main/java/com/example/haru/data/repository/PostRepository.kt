@@ -497,12 +497,31 @@ class PostRepository() {
         }
         callback(deleted)
     }
-
+    //댓글 한개 수정
     suspend fun chageComment(writerId: String, commentId: String, body: PatchCommentBody, callback: (changed: Boolean) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.changeComment(
             writerId,
             commentId,
+            body
+        ).execute()
+        val data: EditCommentResponse
+        var changed = false
+        if(response.isSuccessful){
+            data = response.body()!!
+            changed = data.success
+        }else{
+            changed = false
+        }
+        callback(changed)
+    }
+
+    //댓글 여러개 수정
+    suspend fun chageComments(imageId: String, body: ChangedComments, callback: (changed: Boolean) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.changeComments(
+            com.example.haru.utils.User.id,
+            imageId,
             body
         ).execute()
         val data: EditCommentResponse

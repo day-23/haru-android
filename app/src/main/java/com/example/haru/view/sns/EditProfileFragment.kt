@@ -67,14 +67,17 @@ class EditProfileFragment(userId: String) : Fragment() {
             }
         }
 
-        if (userId == "") userId = User.id //TODO:나중에는 동적으로 할당해야함
+        userId = User.id
         profileViewModel.getUserInfo(userId)
 
-        profileViewModel.UserInfo.observe(viewLifecycleOwner) { profile ->
-            if (profile.profileImage != "") {
+        profileViewModel.UserInfo.observe(viewLifecycleOwner){profile ->
+            if(profile.profileImage != null) {
+
                 Glide.with(this)
                     .load(profile.profileImage)
                     .into(binding.editProfileImage)
+            }else{
+                binding.editProfileImage.setImageResource(R.drawable.default_profile)
             }
             binding.editName.setText(profile.name)
             binding.editIntroduction.setText(profile.introduction)
@@ -110,29 +113,6 @@ class EditProfileFragment(userId: String) : Fragment() {
                     }
                 }
             }
-
-//            val fragmentManager = parentFragmentManager
-//            if (fragmentManager.backStackEntryCount > 0) {
-//                // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-//                fragmentManager.popBackStack()
-//            }
-
-//            val newFrag = MyPageFragment(userId)
-//            val transaction = parentFragmentManager.beginTransaction()
-//            transaction.replace(R.id.fragments_frame, newFrag)
-//            transaction.commit()
-//            profileViewModel.UserInfo.observe(viewLifecycleOwner) { User ->
-////                if (User.id != "") {
-////                    val fragmentManager = parentFragmentManager
-////                    if (fragmentManager.backStackEntryCount > 0) {
-////                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-////                        fragmentManager.popBackStack()
-////                    }
-////                } else {
-//                Toast.makeText(requireContext(), "프로필 업데이트에 실패하였습니다.", Toast.LENGTH_SHORT)
-//                    .show()
-////                }
-//            }
         }
 
         // 이미지 선택 버튼에 클릭 이벤트 리스너 등록

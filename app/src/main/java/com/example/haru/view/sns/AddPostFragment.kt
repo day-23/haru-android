@@ -87,24 +87,6 @@ class AddPostFragment : Fragment(), PostInterface {
 //                .replace(R.id.fragments_frame, fragment)
 //                .commit()
         }
-//        val fragmentManager = childFragmentManager
-//        val fragment = fragmentManager.findFragmentById(R.id.add_post_anchor)
-//
-//        if(fragment != null) {
-//            val transaction = fragmentManager.beginTransaction()
-//            transaction.remove(fragment)
-//            transaction.commit()
-//
-//            if(position == 0){
-//                val backManager = parentFragmentManager
-//                backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-//                val fragment = SnsFragment()
-//                parentFragmentManager.beginTransaction()
-//                    .replace(R.id.fragments_frame, fragment)
-//                    .commit()
-//            }
-//        }
-
     }
 
     companion object {

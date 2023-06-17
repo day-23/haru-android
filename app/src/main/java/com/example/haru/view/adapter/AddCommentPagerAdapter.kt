@@ -8,12 +8,15 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
+import com.example.haru.data.model.Comments
 import com.example.haru.data.model.Profile
 
 interface ImageClickListener{
     fun OnImageClick(position: Int)
 
     fun OnPopupClick(position: Int)
+
+    fun OnHideClick(comment: Comments, content : View, writer : View, position: Int)
 }
 
 class AddCommentPagerAdapter(private val context: Context, private val imageList: ArrayList<Profile>, listener: ImageClickListener) :

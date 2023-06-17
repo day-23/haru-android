@@ -254,6 +254,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     override fun onResume() {
         super.onResume()
         (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+        initProfile()
     }
 
 
@@ -303,7 +304,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             else Glide.with(this)
                 .load(user.profileImage)
                 .into(binding.profileImage)
-
         }
 
         binding.select.bringToFront()
@@ -437,6 +437,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             if (result) {
                 if (friendStatus == 0) { //신청 성공
                     friendStatus = 1
+                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "신청 취소"
                 } else if (friendStatus == 1) { //신청 취소
                     friendStatus = 0
@@ -624,8 +626,9 @@ class MypageDeleteFriend(
                     .with(requireContext())
                     .load(targetItem.profileImage)
                     .into(popupbinding.popupProfileImg)
-            } else {
-                popupbinding.popupProfileImg.setBackgroundResource(R.drawable.default_profile)
+            }
+            else{
+                popupbinding.popupProfileImg.setImageResource(R.drawable.default_profile)
             }
 
 
@@ -647,8 +650,8 @@ class MypageDeleteFriend(
                     .with(requireContext())
                     .load(targetItem.profileImage)
                     .into(blockbinding.blockProfileImg)
-            } else {
-                blockbinding.blockProfileImg.setBackgroundResource(R.drawable.default_profile)
+            }else{
+                blockbinding.blockProfileImg.setImageResource(R.drawable.default_profile)
             }
 
             blockbinding.popupBlockTargetName.text = targetItem.name
