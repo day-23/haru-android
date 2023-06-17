@@ -28,6 +28,7 @@ import com.example.haru.data.model.Post
 import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.FragmentCommentsBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
+import com.example.haru.databinding.PopupSnsCommentDeleteAgainBinding
 import com.example.haru.databinding.PopupSnsCommentDeleteBinding
 import com.example.haru.utils.GetPastDate
 import com.example.haru.utils.User
@@ -46,6 +47,8 @@ interface onCommentClick {
     fun onPublicClick(writerId: String, commentId: String, body: PatchCommentBody)
 
     fun onPopupSelect(position: Int)
+
+    fun onRealDeleteClick(position: Int)
 }
 
 class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onCommentClick {
@@ -78,9 +81,17 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
     override fun onPopupSelect(position: Int) {
         deletePopup()
         if (position == 0) {
-            snsViewModel.deleteComment(writerId, commentId)
+            val fragment = PopupDeleteCommentAgain(this)
+            fragment.show(parentFragmentManager, fragment.tag)
+//            snsViewModel.deleteComment(writerId, commentId)
         } else if (position == 1) {
             //TODO:신고창 만들기
+        }
+    }
+
+    override fun onRealDeleteClick(position: Int) {
+        if (position == 0){
+            snsViewModel.deleteComment(writerId, commentId)
         }
     }
 
@@ -320,6 +331,66 @@ class PopupDeleteComment(
 
     private fun getBottomSheetDialogDefaultHeight(): Int {
         return getWindowHeight() * 40 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
+    }
+}
+
+class PopupDeleteCommentAgain(
+    val listener: onCommentClick,
+) : BottomSheetDialogFragment() {
+    lateinit var binding: PopupSnsCommentDeleteAgainBinding
+
+    // status bar height 조정
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.snsCommentRealDelete.setOnClickListener {
+            listener.onRealDeleteClick(0)
+            dismiss()
+        }
+
+        binding.snsDeleteCancel.setOnClickListener {
+            dismiss()
+        }
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = PopupSnsCommentDeleteAgainBinding.inflate(inflater)
+
+        return binding.root
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 27 / 100
     }
 
     private fun getWindowHeight(): Int {
