@@ -356,11 +356,11 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
         profileViewModel.UserInfo.observe(viewLifecycleOwner){user ->
             addedComment.user = user
-            if(addedComment.id != "") {
+            if(addedComment.id != "" && onWrite) {
                 postImages[imageIndex].comments.add(addedComment)
                 bindComment(addedComment)
                 isCommented = true
-            }else{
+            }else if(onWrite){
                 Toast.makeText(requireContext(), "댓글 작성에 실패하였습니다.", Toast.LENGTH_SHORT).show()
             }
             setUi()
