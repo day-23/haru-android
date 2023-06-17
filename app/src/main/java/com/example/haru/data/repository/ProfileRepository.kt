@@ -69,8 +69,7 @@ class ProfileRepository() {
             if (response.isSuccessful) {
                 Log.d("EDITTAG", "Success to update profile")
                 data = response.body()!!
-                user = data.data!!
-
+                user = data.data
             } else {
                 Log.d("EDITTAG", "Fail to update Profile: $response")
                 user = User("", "", "", "", 0, 0, 0, false)

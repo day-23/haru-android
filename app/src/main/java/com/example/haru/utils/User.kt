@@ -18,16 +18,15 @@ object User {
     var isAllowFeedLike: Int = 0
     var isAllowFeedComment: Int = 0
     var isAllowSearch: Boolean = true
-    var isMaliciousUser : Boolean = false
+    var isMaliciousUser: Boolean = false
     var createdAt: String = ""
     var accessToken: String = ""
     var amAlarmAprove: Boolean = true
     var amAlarmDate: String = ""
     var pmAlarmAprove: Boolean = true
     var pmAlarmDate: String = ""
-    var categories: ArrayList<Category?> = arrayListOf(null,null)
-    var isSignUp : Boolean = false
-
+    var categories: ArrayList<Category?> = arrayListOf(null, null)
+    var isSignUp: Boolean = false
     override fun toString(): String {
         return "User : {id : $id}, " +
                 "{name : $name}, " +

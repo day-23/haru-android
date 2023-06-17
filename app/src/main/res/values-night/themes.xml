@@ -34,7 +34,7 @@
     </style>
 
     <style name="Theme.Splash" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="Theme.Haru.NoActionBar">
