@@ -25,6 +25,7 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
     lateinit var binding : FragmentDetailPostBinding
     val media = media
     val post = post
+    var writerId = ""
     lateinit var adapter : PicturesPagerAdapter
     lateinit var pager : ViewPager2
     lateinit var snsViewModel: SnsViewModel
@@ -57,9 +58,22 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         binding = FragmentDetailPostBinding.inflate(inflater, container, false)
         pager = binding.detailPostPicture
 
+        if(media.id != ""){
+            writerId = media.user.id
+        }else{
+            writerId = post.user.id
+        }
+
         if(User.id != media.id && User.id != post.id){
             binding.detailPostTotalComment.visibility = View.GONE
+        }
 
+        binding.detailPostProfile.setOnClickListener{
+            val newFrag = MyPageFragment(writerId)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.addToBackStack("snsmain")
+            transaction.commit()
         }
 
         if(media.id != ""){

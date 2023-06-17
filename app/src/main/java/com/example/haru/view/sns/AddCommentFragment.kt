@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.*
@@ -47,6 +48,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
     val postImages = postImages
     private lateinit var snsViewModel: SnsViewModel
     private lateinit var profileViewModel: MyPageViewModel
+    private lateinit var backPressed: OnBackPressedCallback
     var imageIndex = 0
     var CommentIsVisible = true
     val writerInfo = writerInfo
@@ -114,7 +116,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
             transaction.commit()
         }
 
-       if(position == 0){
+       if(position == 0){//저장안함
            if(onWrite) {
                if (writeContainer.contains(writeBox)) {
                    writeContainer.removeView(writeBox)
@@ -122,15 +124,38 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                    writeEnd()
                }
            }
-       }else if(position == 1){
-           snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postId, postImages[imageIndex].id)
-           val addedComment = Comments("", myInfo, AddContent,AddX,AddY, true,"","")
-           postImages[imageIndex].comments.add(addedComment)
-           bindComment(addedComment)
-           onWrite = false
-           writeContainer.removeAllViews()
-           writeEnd()
-           binding.writeCommentTitle.text = "코멘트 남기기"
+           else if(onEdit){
+               editCancel()
+               editEnd()
+           }
+       }else if(position == 1){//저장하기
+           if(onWrite) {
+               if(AddContent != ""){
+                   snsViewModel.writeComment(
+                       CommentBody(AddContent, AddX, AddY),
+                       postId,
+                       postImages[imageIndex].id
+                   )
+                   val addedComment = Comments("", myInfo, AddContent, AddX, AddY, true, "", "")
+                   postImages[imageIndex].comments.add(addedComment)
+                   bindComment(addedComment)
+                   onWrite = false
+                   isCommented = true
+                   writeContainer.removeAllViews()
+                   writeEnd()
+                   setUi()
+                   binding.writeCommentTitle.text = "코멘트 남기기"
+               }else{
+                   Toast.makeText(requireContext(), "댓글 내용을 입력해주세요", Toast.LENGTH_SHORT).show()
+               }
+           }
+           else if(onEdit){
+               if(idList.size > 0){
+                   val changes = ChangedComments(idList, xList, yList)
+                   snsViewModel.patchComments(postImages[imageIndex].id, changes)
+               }
+               editEnd()
+           }
        }
     }
 
@@ -184,6 +209,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         (activity as BaseActivity).adjustTopMargin(binding.addCommentLayout.id)
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -196,17 +222,35 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
             myInfo = user
         }
         binding = FragmentAddCommentBinding.inflate(inflater, container, false)
+
+        backPressed = object : OnBackPressedCallback(true) { //뒤로가기 처리
+            override fun handleOnBackPressed() {
+                if(onEdit || onWrite){
+                    val fragment = PopupComment(this@AddCommentFragment)
+                    val fragmentManager = childFragmentManager
+                    val transaction = fragmentManager.beginTransaction()
+                    transaction.add(R.id.anchor_popup_comment, fragment)
+                    transaction.commit()
+                }else{
+                    val backManager = parentFragmentManager
+                    MainActivity.hideNavi(false)
+                    backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressed)
+
         if(isTemplate != "" && isTemplate != null) {
             binding.addCommentTemplateText.text = content
             binding.addCommentTemplateText.setTextColor(Color.parseColor(isTemplate))
         }
-
         binding.addCommentLikeCount.text = likeCnt.toString()
         binding.addCommentCommentCount.text = commentCnt.toString()
         commentContainer = binding.commentFrame
         infoContainer = binding.writerFrame
         filterFrame = binding.filterFrame
-            binding.commentImage.post{
+
+        binding.commentImage.post{
             ImageWidth = binding.commentImage.width
             ImageHeight = binding.commentImage.height
         }
@@ -285,7 +329,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         })
 
         binding.writeCommentCancel.setOnClickListener {
-            if(onWrite && AddContent != "") {
+            if(onWrite || onEdit) {
                 val fragment = PopupComment(this)
                 val fragmentManager = childFragmentManager
                 val transaction = fragmentManager.beginTransaction()
@@ -819,7 +863,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
                 lastY = parentView.y
                 
                 parentView.x = (commentContainer.width * 0.35).toFloat()
-                parentView.y = (commentContainer.height * 0.45).toFloat()
+                parentView.y = (commentContainer.height * 0.25).toFloat()
             } else {
                 parentView.x = lastX
                 parentView.y = lastY
@@ -842,7 +886,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         view.layoutParams = params
 
         view.x = (commentContainer.width * 0.35).toFloat()
-        view.y = (commentContainer.height * 0.45).toFloat()
+        view.y = (commentContainer.height * 0.25).toFloat()
 
         writeBox = view
         writeContainer.addView(view)
