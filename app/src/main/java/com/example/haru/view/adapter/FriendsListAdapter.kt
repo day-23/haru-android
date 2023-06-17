@@ -32,9 +32,13 @@ class FriendsListAdapter(val context: Context,
         if(User.id != itemList[position].id)
             showButtons(holder, itemList[position].friendStatus!!)
 
-        Glide.with(holder.itemView.context)
-            .load(itemList[position].profileImageUrl)
-            .into(holder.profile)
+        if(itemList[position].profileImageUrl != null) {
+            Glide.with(holder.itemView.context)
+                .load(itemList[position].profileImageUrl)
+                .into(holder.profile)
+        }else{
+            holder.profile.setImageResource(R.drawable.default_profile)
+        }
 
         holder.name.text = itemList[position].name
 
