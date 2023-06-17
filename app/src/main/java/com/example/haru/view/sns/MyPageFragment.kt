@@ -189,6 +189,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         if(holder != selectedTag) {
             mypageViewModel.getFirstTagMedia(userId, tag.id)
         }
+
         selectedTag?.tag?.setBackgroundResource(R.drawable.tag_btn_custom)
         selectedTag?.tag?.setTextColor(Color.parseColor("#191919"))
 
