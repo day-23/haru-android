@@ -27,6 +27,7 @@ class MediaTagAdapter (val context: Context,
 
     override fun onBindViewHolder(holder: MediaTagViewHolder, position: Int) {
         holder.tag.text = itemList[position].content
+        holder.tag.textSize = 16f
 
         holder.tag.setOnClickListener {
             tagClicked.onTagClicked(itemList[position], holder)
