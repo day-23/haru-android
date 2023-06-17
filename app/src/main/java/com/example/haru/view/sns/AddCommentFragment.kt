@@ -131,20 +131,7 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
        }else if(position == 1){//저장하기
            if(onWrite) {
                if(AddContent != ""){
-                   snsViewModel.writeComment(
-                       CommentBody(AddContent, AddX, AddY),
-                       postId,
-                       postImages[imageIndex].id
-                   )
-                   val addedComment = Comments("", myInfo, AddContent, AddX, AddY, true, "", "")
-                   postImages[imageIndex].comments.add(addedComment)
-                   bindComment(addedComment)
-                   onWrite = false
-                   isCommented = true
-                   writeContainer.removeAllViews()
-                   writeEnd()
-                   setUi()
-                   binding.writeCommentTitle.text = "코멘트 남기기"
+                   snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postId,postImages[imageIndex].id)
                }else{
                    Toast.makeText(requireContext(), "댓글 내용을 입력해주세요", Toast.LENGTH_SHORT).show()
                }
@@ -169,7 +156,11 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         binding.addCommentButtonsLayout.visibility = View.VISIBLE
         binding.writeCommentTitle.setTextColor(Color.parseColor("#191919"))
         binding.writeCommentTitle.text = "코멘트"
+        AddContent = ""
+        AddY = 0
+        AddX = 0
 
+        Log.d("20191668", "${com.example.haru.utils.User.id}  ${writerInfo.id}")
         if(com.example.haru.utils.User.id == writerInfo.id){
             binding.addCommentInfo.visibility = View.VISIBLE
         }
@@ -216,12 +207,19 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         savedInstanceState: Bundle?
     ): View? {
         Log.d("TAG", "SnsFragment - onCreateView() called")
+        Log.d("20191668", "작성자 이름 ${writerInfo.name}")
         profileViewModel.getUserInfo(com.example.haru.utils.User.id)
         profileViewModel.UserInfo.observe(viewLifecycleOwner){ user ->
             isMyPost = com.example.haru.utils.User.id == user.id
             myInfo = user
         }
         binding = FragmentAddCommentBinding.inflate(inflater, container, false)
+
+        if(com.example.haru.utils.User.id == writerInfo.id){
+            binding.addCommentInfo.visibility = View.VISIBLE
+        }else{
+            binding.addCommentInfo.visibility = View.GONE
+        }
 
         backPressed = object : OnBackPressedCallback(true) { //뒤로가기 처리
             override fun handleOnBackPressed() {
@@ -340,29 +338,36 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
             }
         }
 
+        var addedComment = Comments("",User(), "",0,0,false,"","")
+
         binding.writeCommentApply.setOnClickListener {
             if(AddContent != ""){
                 snsViewModel.writeComment(CommentBody(AddContent,AddX,AddY), postId,postImages[imageIndex].id)
-
-                snsViewModel.AddComment.observe(viewLifecycleOwner){comment ->
-                    if(comment.id != "") {
-                        val addedComment = comment
-                        postImages[imageIndex].comments.add(addedComment)
-                        bindComment(addedComment)
-                        isCommented = true
-                    }else{
-                        Toast.makeText(requireContext(), "댓글 작성에 실패하였습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                    setUi()
-                    onWrite = false
-                    writeContainer.removeAllViews()
-                    writeEnd()
-                    binding.writeCommentTitle.text = "코멘트 남기기"
-                }
-
+                addedComment = Comments("",User(), "",0,0,false,"","")
             }else{
                 Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        snsViewModel.AddComment.observe(viewLifecycleOwner){comment ->
+            profileViewModel.getUserInfo(com.example.haru.utils.User.id)
+            addedComment = comment
+        }
+
+        profileViewModel.UserInfo.observe(viewLifecycleOwner){user ->
+            addedComment.user = user
+            if(addedComment.id != "") {
+                postImages[imageIndex].comments.add(addedComment)
+                bindComment(addedComment)
+                isCommented = true
+            }else{
+                Toast.makeText(requireContext(), "댓글 작성에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+            }
+            setUi()
+            onWrite = false
+            writeContainer.removeAllViews()
+            writeEnd()
+            binding.writeCommentTitle.text = "코멘트 남기기"
         }
 
         binding.editCommentApply.setOnClickListener {
@@ -542,8 +547,8 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
 
         //작성자 정보를 위한 뷰
         val Name = comment.user!!.name
-        if(!comment.user.profileImage.isNullOrEmpty())
-            ProfileImage = comment.user.profileImage
+        if(!comment.user!!.profileImage.isNullOrEmpty())
+            ProfileImage = comment.user!!.profileImage
         val Id = comment.user!!.id
 
         val writerView = inflater.inflate(R.layout.item_comment_on_picture_writer, null)
@@ -933,7 +938,7 @@ class PopupHide(val comment: Comments, val content : View, val writer : View, li
         if(comment.user!!.profileImage != null) {
             Glide
                 .with(this)
-                .load(comment.user.profileImage)
+                .load(comment.user!!.profileImage)
                 .into(popupbinding.hideTargetProfile)
         }else
             popupbinding.hideTargetProfile.setImageResource(R.drawable.default_profile)

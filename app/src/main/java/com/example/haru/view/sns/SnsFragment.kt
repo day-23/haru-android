@@ -22,6 +22,7 @@ import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
 import com.example.haru.databinding.PopupSnsPostDeleteBinding
 import com.example.haru.utils.User
+import com.example.haru.utils.User.id
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
@@ -46,18 +47,13 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     private lateinit var snsPostAdapter: SnsPostAdapter
     var lastDate = ""
     var deletedItem : Post = Post()
+    var postitem = Post()
+    var commentClicked = false
 
-    override fun onCommentClick(postitem: Post) {
+    override fun onCommentClick(postitems: Post) {
+        commentClicked = true
+        postitem = postitems
         profileViewModel.getUserInfo(postitem.user.id)
-        profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
-            val newFrag = AddCommentFragment(postitem.isTemplatePost, postitem.content, postitem.id, postitem.images, postitem.likedCount, postitem.commentCount, user)
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
-            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
-            if (!isSnsMainInBackStack)
-                transaction.addToBackStack("snsmain")
-            transaction.commit()
-        }
     }
 
     override fun onTotalCommentClick(post: Post) {
@@ -200,6 +196,27 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         snsViewModel.DeleteResult.observe(viewLifecycleOwner) { result ->
             if(result && deletedItem.id != ""){
                 snsPostAdapter.deletePost(deletedItem)
+            }
+        }
+
+        profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
+            if(commentClicked){
+                commentClicked = false
+                val newFrag = AddCommentFragment(
+                    postitem.isTemplatePost,
+                    postitem.content,
+                    postitem.id,
+                    postitem.images,
+                    postitem.likedCount,
+                    postitem.commentCount,
+                    user
+                )
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragments_frame, newFrag)
+                val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
+                if (!isSnsMainInBackStack)
+                    transaction.addToBackStack("snsmain")
+                transaction.commit()
             }
         }
 
