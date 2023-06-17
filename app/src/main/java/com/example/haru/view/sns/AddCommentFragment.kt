@@ -165,10 +165,10 @@ class AddCommentFragment(
 
     fun writeEnd() {
         binding.addCommentLayout.setBackgroundColor(Color.parseColor("#FDFDFD"))
-        binding.writeCommentBack.visibility = View.VISIBLE
         binding.commentVisibility.visibility = View.VISIBLE
-        binding.writeCommentCancel.isGone = true
-        binding.writeCommentApply.isGone = true
+        binding.writeCommentBack.visibility = View.VISIBLE
+        binding.writeCommentCancel.visibility = View.GONE
+        binding.writeCommentApply.visibility = View.GONE
         writeContainer.isClickable = false
         binding.addCommentButtonsLayout.visibility = View.VISIBLE
         binding.writeCommentTitle.setTextColor(Color.parseColor("#191919"))
@@ -185,8 +185,8 @@ class AddCommentFragment(
 
     fun writeStart() {
         binding.addCommentLayout.setBackgroundColor(Color.parseColor("#191919"))
-        binding.writeCommentBack.isGone = true
-        binding.commentVisibility.isGone = true
+        binding.writeCommentBack.visibility = View.GONE
+        binding.commentVisibility.visibility = View.GONE
         binding.writeCommentApply.visibility = View.VISIBLE
         binding.writeCommentCancel.visibility = View.VISIBLE
         writeContainer.isClickable = true
@@ -304,6 +304,7 @@ class AddCommentFragment(
         }
 
         binding.writeCommentBack.setOnClickListener {
+            Log.e("20191627", "writeCommentBack")
             val backManager = parentFragmentManager
             MainActivity.hideNavi(false)
             backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -319,10 +320,10 @@ class AddCommentFragment(
                 binding.nextPicture.visibility = View.VISIBLE
 
                 if (position == 0) {
-                    binding.lastPicture.isGone = true
+                    binding.lastPicture.visibility = View.GONE
                 }
                 if (position == postImages.size - 1) {
-                    binding.nextPicture.isGone = true
+                    binding.nextPicture.visibility = View.GONE
                 }
 
                 binding.addcommentIndex.text = "${position + 1} / ${postImages.size}"
@@ -344,6 +345,7 @@ class AddCommentFragment(
         })
 
         binding.writeCommentCancel.setOnClickListener {
+            Log.e("20191627", "writeCommentCancel")
             if (onWrite || onEdit) {
                 val fragment = PopupComment(this)
                 fragment.show(parentFragmentManager, fragment.tag)
@@ -503,6 +505,8 @@ class AddCommentFragment(
         binding.commentVisibility.visibility = View.GONE
         binding.showTotalComment.visibility = View.GONE
         binding.editCommentApply.visibility = View.VISIBLE
+        binding.writeCommentBack.visibility = View.GONE
+        binding.writeCommentCancel.visibility = View.VISIBLE
         binding.writeCommentTitle.text = "코멘트 편집"
 
         //댓글들이 드래그가 가능하도록
@@ -545,6 +549,8 @@ class AddCommentFragment(
         binding.addcommentIndex.visibility = View.VISIBLE
         binding.commentVisibility.visibility = View.VISIBLE
         binding.showTotalComment.visibility = View.VISIBLE
+        binding.writeCommentBack.visibility = View.VISIBLE
+        binding.writeCommentCancel.visibility = View.GONE
         binding.editCommentApply.visibility = View.GONE
         binding.writeCommentTitle.text = "코멘트"
 
