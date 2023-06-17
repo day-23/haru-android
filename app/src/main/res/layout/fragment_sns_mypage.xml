@@ -147,8 +147,7 @@
                     <TextView
                         android:id="@+id/profile_name"
                         android:layout_width="match_parent"
-                        android:layout_height="24dp"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="이름"
                         android:textColor="#191919"
                         android:textSize="20sp"
@@ -157,9 +156,8 @@
 
                     <TextView
                         android:id="@+id/profile_introduction"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="자기소개"
                         android:textColor="#191919"
                         android:textSize="14sp"
@@ -177,9 +175,13 @@
 
                     <TextView
                         android:id="@+id/edit_profile"
-                        android:layout_width="98dp"
-                        android:layout_height="31dp"
-                        android:background="@drawable/total_comment_index"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_btn_date"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
                         android:gravity="center"
                         android:text="프로필 편집"
                         android:textColor="#646464"
@@ -281,6 +283,7 @@
                         android:layout_height="0dp"
                         android:layout_marginBottom="7dp"
                         android:layout_weight="1"
+                        android:textSize="16sp"
                         android:gravity="center"
                         android:text="내 피드"
                         android:textColor="#1DAFFF"
@@ -308,6 +311,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="미디어"
+                        android:textSize="16sp"
                         android:textColor="#acacac"
                         android:textStyle="bold" />
 
