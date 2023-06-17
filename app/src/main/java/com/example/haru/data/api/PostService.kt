@@ -8,6 +8,13 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface PostService {
+
+    @GET("post/{userId}/posts/follow/feed/?page=1")
+    fun getFirstFeeds(@Path("userId") userId: String) : Call<PostResponse>
+
+    @GET("post/{userId}/posts/follow/feed/")
+    fun getFeeds(@Path("userId") userId: String,
+                 @Query("lastCreatedAt") lastCreatedAt:String) : Call<PostResponse>
     @GET("post/{userId}/posts/all/")
     fun getPosts(@Path("userId") userId: String,
                  @Query("lastCreatedAt") lastCreatedAt:String) : Call<PostResponse>
@@ -79,6 +86,18 @@ interface PostService {
 
     @DELETE("post/{userId}/{postId}")
     fun deletePost(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String
+    ): Call<LikeResponse>
+
+    @POST("post/{userId}/{postId}/hide")
+    fun hidePost(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String
+    ): Call<LikeResponse>
+
+    @POST("post/{userId}/{postId}/like")
+    fun reportPost(
         @Path("userId") userId: String,
         @Path("postId") postId: String
     ): Call<LikeResponse>

@@ -190,8 +190,7 @@ class LoginActivity : BaseActivity() {
                                             response.body()?.data?.accessToken.toString()
                                         User.isSignUp = response.body()?.data?.isSignUp!!
 
-
-
+                                        Log.d("debug", "onResponse: ${User.isSignUp}")
 
                                         //새로운 accessToken을 저장한다.
                                         with(sharedPreferences.edit()) {
@@ -200,6 +199,20 @@ class LoginActivity : BaseActivity() {
                                                 response.body()?.data?.accessToken
                                             )
                                             commit()
+                                        }
+
+
+                                        if(User.isMaliciousUser){
+                                            Toast.makeText(this@LoginActivity, "애플리케이션 악성 이용자로 판단되어 정지된 계정입니다.", Toast.LENGTH_SHORT).show()
+                                        }
+                                        else if (!User.isSignUp) {
+                                            val intent = Intent(this@LoginActivity, SignUpActivity::class.java)
+                                            startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                                            finish()
+                                        } else {
+                                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                                            startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                                            finish()
                                         }
                                     }
                                 }
@@ -212,20 +225,11 @@ class LoginActivity : BaseActivity() {
                                 }
                             })
 
+                            Log.d("debug", "onResponse: ${User.isSignUp}")
+
                             // If user is not registered, go to sign up page
 //                            Log.d(TAG, "자동로그인 onResponse: ${User.name} ${User.email} ${User.id}")
-                            if(User.isMaliciousUser){
-                                Toast.makeText(this@LoginActivity, "애플리케이션 악성 이용자로 판단되어 정지된 계정입니다.", Toast.LENGTH_SHORT).show()
-                            }
-                            else if (!User.isSignUp) {
-                                val intent = Intent(this@LoginActivity, SignUpActivity::class.java)
-                                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                                finish()
-                            } else {
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-                                finish()
-                            }
+
                         }
                     }
                 } else {

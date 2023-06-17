@@ -93,12 +93,28 @@
                                         android:gravity="right"
                                         android:orientation="horizontal">
 
-                                        <ImageView
+                                        <LinearLayout
                                             android:id="@+id/category_add_image"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:foregroundGravity="right"
-                                            android:src="@drawable/calendar_schedule_plus_image" />
+                                            android:layout_gravity="center"
+                                            android:orientation="horizontal">
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="카테고리 추가"
+                                                android:textColor="#646464"
+                                                android:textSize="16sp"
+                                                android:layout_marginRight="5dp"
+                                                android:layout_gravity="center"/>
+
+                                            <ImageView
+                                                android:layout_width="20dp"
+                                                android:layout_height="20dp"
+                                                android:foregroundGravity="right"
+                                                android:src="@drawable/calendar_schedule_plus_image" />
+                                    </LinearLayout>
                                     </LinearLayout>
                                 </LinearLayout>
 
@@ -140,7 +156,7 @@
                                         android:id="@+id/todo_apply_imv"
                                         android:layout_width="28dp"
                                         android:layout_height="28dp"
-                                        android:background="@drawable/category_schedule" />
+                                        android:background="@drawable/category_todo" />
 
                                     <TextView
                                         android:id="@+id/todo_apply_tv"

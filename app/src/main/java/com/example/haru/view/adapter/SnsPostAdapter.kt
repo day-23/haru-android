@@ -113,6 +113,8 @@ class SnsPostAdapter(val context: Context,
             Glide.with(holder.itemView.context)
                 .load(itemList[position].user.profileImage)
                 .into(holder.profileImg)
+        }else{
+            holder.profileImg.setImageResource(R.drawable.default_profile)
         }
 
         if(itemList[position].isLiked){
