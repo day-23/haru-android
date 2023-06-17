@@ -271,7 +271,7 @@
             android:id="@+id/add_comment_like_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/sns_liked"
+            android:src="@drawable/check_like"
             tools:ignore="MissingConstraints" />
 
         <TextView

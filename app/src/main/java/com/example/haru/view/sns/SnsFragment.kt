@@ -222,8 +222,8 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             } else Toast.makeText(context, "게시글이 없습니다..", Toast.LENGTH_SHORT).show()
         }
 
-        binding.writeHaru.setOnClickListener {
-            val newFrag = WriteHaruFragment()
+        binding.drawHaru.setOnClickListener {
+            val newFrag = AddPostFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
@@ -231,7 +231,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                 transaction.addToBackStack("snsmain")
             transaction.commit()
 
-            binding.writeHaru.visibility = View.GONE
+            binding.drawHaru.visibility = View.GONE
             binding.addPost.setImageResource(R.drawable.add_sns)
             postClicked = false
         }
@@ -256,7 +256,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
 
         binding.addPost.setOnClickListener {
             if (postClicked) {
-                val newFrag = AddPostFragment.newInstance()
+                val newFrag = WriteHaruFragment()
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragments_frame, newFrag)
                 val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
@@ -264,11 +264,11 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                     transaction.addToBackStack("snsmain")
                 transaction.commit()
 
-                binding.writeHaru.visibility = View.GONE
+                binding.drawHaru.visibility = View.GONE
                 binding.addPost.setImageResource(R.drawable.add_sns)
             } else {
-                binding.writeHaru.visibility = View.VISIBLE
-                binding.addPost.setImageResource(R.drawable.add_sns_post)
+                binding.drawHaru.visibility = View.VISIBLE
+                binding.addPost.setImageResource(R.drawable.haru_write)
             }
 
             postClicked = !postClicked

@@ -17,7 +17,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="14dp"
             android:paddingTop="2dp"
             >
             <ImageView
@@ -29,9 +30,9 @@
                 />
             <ImageView
                 android:id="@+id/menu_button"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/date_arrow_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/small_arrow_down"
                 android:backgroundTint="@color/date_text"
                 app:layout_constraintLeft_toRightOf="@id/sns_haru_title"
                 app:layout_constraintBottom_toBottomOf="@id/sns_haru_title"
@@ -39,8 +40,8 @@
                 android:rotation="-90"/>
 
             <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@drawable/my_record_feather"
                 android:backgroundTint="@color/black"
                 app:layout_constraintRight_toLeftOf="@id/my_records"
@@ -51,17 +52,16 @@
 
             <TextView
                 android:id="@+id/my_records"
-                android:layout_width="40dp"
-                android:layout_height="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/sns_haru_title"
                 app:layout_constraintBottom_toBottomOf="@id/sns_haru_title"
                 android:text="내 기록"
                 android:textSize="14sp"
-                android:textColor="#191919"
+                android:textColor="@color/todo_description"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:background="#00000000"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>>
 
@@ -134,10 +134,10 @@
         android:layout_marginRight="20dp"/>
 
     <ImageView
-        android:id="@+id/write_haru"
+        android:id="@+id/draw_haru"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:src="@drawable/write_haru"
+        android:src="@drawable/haru_draw"
         app:layout_constraintBottom_toTopOf = "@+id/add_post"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="10dp"

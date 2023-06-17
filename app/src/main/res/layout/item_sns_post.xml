@@ -131,7 +131,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginStart="20dp"
-            android:src="@drawable/likedyet"
+            android:src="@drawable/uncheck_like"
             app:layout_constraintLeft_toLeftOf="parent"
             tools:ignore="MissingConstraints" />
 
@@ -172,7 +172,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginRight="20dp"
-            android:src="@drawable/sns_etc"
+            android:background="@drawable/three_line"
             app:layout_constraintRight_toRightOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

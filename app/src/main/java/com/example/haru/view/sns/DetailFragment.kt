@@ -75,12 +75,12 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         binding.detailButtonLike.setOnClickListener {
             if(media.id != ""){
                 if(media.isLiked) {
-                    binding.detailButtonLike.setBackgroundResource(R.drawable.likedyet)
+                    binding.detailButtonLike.setBackgroundResource(R.drawable.uncheck_like)
                     media.likedCount -= 1
                     binding.detailLikedCount.text = media.likedCount.toString()
                     media.isLiked = false
                 }else{
-                    binding.detailButtonLike.setBackgroundResource(R.drawable.sns_liked)
+                    binding.detailButtonLike.setBackgroundResource(R.drawable.check_like)
                     media.likedCount += 1
                     binding.detailLikedCount.text = media.likedCount.toString()
                     media.isLiked = true
@@ -88,12 +88,12 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
                 snsViewModel.likeAction(media.id)
             }else{
                 if(post.isLiked) {
-                    binding.detailButtonLike.setBackgroundResource(R.drawable.likedyet)
+                    binding.detailButtonLike.setBackgroundResource(R.drawable.uncheck_like)
                     post.likedCount -= 1
                     binding.detailLikedCount.text = post.likedCount.toString()
                     post.isLiked = false
                 }else{
-                    binding.detailButtonLike.setBackgroundResource(R.drawable.sns_liked)
+                    binding.detailButtonLike.setBackgroundResource(R.drawable.check_like)
                     post.likedCount += 1
                     binding.detailLikedCount.text = post.likedCount.toString()
                     post.isLiked = true
@@ -145,7 +145,7 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         binding.detailLikedCount.text = media.likedCount.toString()
         binding.detailPostCommentCount.text = media.commentCount.toString()
         if(media.isLiked){
-            binding.detailButtonLike.setBackgroundResource(R.drawable.sns_liked)
+            binding.detailButtonLike.setBackgroundResource(R.drawable.check_like)
         }
         if(media.isCommented){
             binding.detailButtonComment.setBackgroundResource(R.drawable.comment_filled)
@@ -161,7 +161,7 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         binding.detailLikedCount.text = post.likedCount.toString()
         binding.detailPostCommentCount.text = post.commentCount.toString()
         if(post.isLiked){
-            binding.detailButtonLike.setBackgroundResource(R.drawable.sns_liked)
+            binding.detailButtonLike.setBackgroundResource(R.drawable.check_like)
         }
         if(post.isCommented){
             binding.detailButtonComment.setBackgroundResource(R.drawable.comment_filled)
