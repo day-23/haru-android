@@ -166,9 +166,9 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         binding.addCommentCommentCount.text = commentCnt.toString()
         commentContainer = binding.commentFrame
         filterFrame = binding.filterFrame
-        commentContainer.post{
-            ImageWidth = commentContainer.width
-            ImageHeight = commentContainer.height
+            binding.commentImage.post{
+            ImageWidth = binding.commentImage.width
+            ImageHeight = binding.commentImage.height
         }
 
         writeContainer = binding.moveFrame
@@ -344,6 +344,14 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         binding.commentVisibility.visibility = View.GONE
         binding.showTotalComment.visibility = View.GONE
         binding.editCommentApply.visibility = View.VISIBLE
+
+        //댓글들이 드래그가 가능하도록
+        if(commentContainer.childCount > 0){
+            for( i in 0..commentContainer.childCount -1){
+                val view = commentContainer.getChildAt(i)
+                view.isClickable = true
+            }
+        }
     }
 
     fun editEnd(){
@@ -364,9 +372,16 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         binding.commentVisibility.visibility = View.VISIBLE
         binding.showTotalComment.visibility = View.VISIBLE
         binding.editCommentApply.visibility = View.GONE
+
+        //댓글들이 드래그가 불가하도록
+        if(commentContainer.childCount > 0){
+            for( i in 0..commentContainer.childCount -1){
+                val view = commentContainer.getChildAt(i)
+                view.isClickable = false
+            }
+        }
     }
 
-    @SuppressLint("MissingInflatedId")
     fun bindComment(comment : Comments){
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.item_comment_on_picture, null)
@@ -374,6 +389,107 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
         // TextView를 찾아서 텍스트를 변경
         val textView = view.findViewById<TextView>(R.id.comment_on_picture_text)
         textView.text = comment.content
+        view.bringToFront()
+
+        val commentDragListener = object : View.OnTouchListener {
+            private var offsetX = 0f
+            private var offsetY = 0f
+            private var isDragging = false
+            private var initialX = 0f
+            private var initialY = 0f
+            private var x_start = 0f
+            private var x_end = 0f
+            private var y_start = 0f
+            private var y_end = 0f
+            var onHide = false
+
+            override fun onTouch(view: View, event: MotionEvent): Boolean {
+
+                binding.writeCommentHide.visibility = View.GONE
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        offsetX = view.x - event.rawX
+                        offsetY = view.y - event.rawY
+                        initialX = view.x
+                        initialY = view.y
+                        isDragging = false
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        //사진 밖으로 댓글을 드래그 하지 않았는지 검사
+                        if (!isDragging && (Math.abs(event.rawX - initialX) > ViewConfiguration.get(view.context).scaledTouchSlop ||
+                                    Math.abs(event.rawY - initialY) > ViewConfiguration.get(view.context).scaledTouchSlop)) {
+                            isDragging = true
+                        }
+                        if (isDragging) {
+                            x_start = event.rawX + offsetX
+                            x_end = x_start + view.width
+                            y_start = event.rawY + offsetY
+                            y_end = y_start + view.height
+
+
+                            if(x_start > 0 && x_end < writeContainer.width)
+                                view.x = x_start
+
+                            if(y_start > 0 && y_end < writeContainer.height) {
+                                if (y_end > commentContainer.height) {
+                                    view.setBackgroundResource(R.color.light_gray)
+                                } else {
+                                    view.setBackgroundResource(R.drawable.comment_ballon)
+                                }
+                                view.y = event.rawY + offsetY
+                            }
+
+                            binding.writeCommentHide.visibility = View.VISIBLE
+                            val deletex = binding.writeCommentHide.x
+                            val deletexEnd = deletex + binding.writeCommentHide.width
+                            val deletey = binding.writeCommentHide.y
+                            val deleteyEnd = deletey + binding.writeCommentHide.height
+
+                            //가리기 칸에 드래그 되었는지
+                            if (x_start > deletexEnd || x_end < deletex) {
+                                binding.writeCommentHide.setImageResource(R.drawable.comment_hide_off)
+                                onHide = false
+                            }else if(y_start > deleteyEnd || y_end < deletey){
+                                binding.writeCommentHide.setImageResource(R.drawable.comment_hide_off)
+                                onHide = false
+                            }
+                            else {
+                                binding.writeCommentHide.setImageResource(R.drawable.comment_hide_on)
+                                onHide = true
+                            }
+                        }
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        if (isDragging) {
+                            if(y_end > ImageHeight){
+                                view.x = initialX
+                                view.y = initialY
+                            }
+                            else{
+                                AddX = (view.x / ImageWidth * 100).toInt()
+                                AddY = (view.y / ImageHeight * 100).toInt()
+                                Log.d("20191668", "Percentage: $AddX $AddY")
+                            }
+                            binding.writeCommentHide.visibility = View.GONE
+                            binding.writeCommentHide.setImageResource(R.drawable.comment_hide_off)
+                            view.setBackgroundResource(R.drawable.comment_ballon)
+
+                            if(onHide){
+                                commentContainer.removeView(view)
+                            }
+                        }
+                        isDragging = false // Reset the dragging flag
+                    }
+                }
+                return isDragging
+            }
+        }
+
+        view.setOnTouchListener(commentDragListener)
+
+        view.setOnClickListener {
+            Toast.makeText(requireContext(),"asdfasdf", Toast.LENGTH_SHORT).show()
+        }
 
         val params = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -387,10 +503,6 @@ class AddCommentFragment(var isTemplate: String? = "", val content: String, post
             ViewGroup.LayoutParams.WRAP_CONTENT,
             (33 * density + 0.5f).toInt()
         )
-
-        view.setOnClickListener{
-            Toast.makeText(requireContext(),"${comment.content}", Toast.LENGTH_SHORT).show()
-        }
 
         params.leftMargin = commentContainer.width * comment.x!! / 100
         params.topMargin =  commentContainer.height * comment.y!! / 100
