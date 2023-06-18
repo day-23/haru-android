@@ -103,7 +103,13 @@ class EditProfileFragment(userId: String) : Fragment() {
             if (multipart != null) {
                 profileViewModel.editProfile(multipart, name, introduction) {
                     if (it == 403){
-                        Toast.makeText(requireContext(), "포함될 수 없는 단어가 들어갔습니다.", Toast.LENGTH_SHORT).show()
+                        requireActivity().runOnUiThread{
+                            Toast.makeText(
+                                requireContext(),
+                                "포함될 수 없는 단어가 들어갔습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
                         val fragmentManager = parentFragmentManager
                         if (fragmentManager.backStackEntryCount > 0) {
@@ -115,7 +121,13 @@ class EditProfileFragment(userId: String) : Fragment() {
             } else {
                 profileViewModel.editProfileName(name, introduction) {
                     if (it == 403){
-                        Toast.makeText(requireContext(), "포함될 수 없는 단어가 들어갔습니다.", Toast.LENGTH_SHORT).show()
+                        requireActivity().runOnUiThread{
+                            Toast.makeText(
+                                requireContext(),
+                                "포함될 수 없는 단어가 들어갔습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
                         val fragmentManager = parentFragmentManager
                         if (fragmentManager.backStackEntryCount > 0) {

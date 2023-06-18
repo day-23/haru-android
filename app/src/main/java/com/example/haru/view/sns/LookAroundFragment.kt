@@ -172,6 +172,10 @@ class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
             toggleClicked()
         }
 
+        binding.lookAroundTitle.setOnClickListener {
+            binding.lookAroundButtons.performClick()
+        }
+
         binding.friendFeed.setOnClickListener {
             val fragmentManager = parentFragmentManager
             if (fragmentManager.backStackEntryCount > 0) {
