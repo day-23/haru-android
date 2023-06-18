@@ -60,6 +60,8 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
     var isFriendList = true // 친구목록 보기중인지 false == 친구신청 보여주기
     var lastCreatedAt = ""
     var deleteTarget = FriendInfo()
+    var friendCount = 0
+    var requestCount = 0
 
     override fun onProfileClick(item: FriendInfo) {
         val newFrag = MyPageFragment(item.id!!)
@@ -73,20 +75,25 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
         deleteTarget = item
         val fragment = PopupDeleteFriend(item, this)
         fragment.show(parentFragmentManager, fragment.tag)
+        friendCount -= 1
+        binding.friendslistFriendsCount.text = "친구 목록 $friendCount"
     }
 
     override fun onAcceptClick(item: FriendInfo) {
         mypageViewModel.requestAccpet(Friendbody(item.id!!))
         item.friendStatus = 2
         friendAdapter.patchInfo(item)
+        requestCount -= 1
+        binding.friendslistFriendsRequestCount.text = "친구 신청 $requestCount"
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onRejectClick(item: FriendInfo) { //친구요청 거절
         mypageViewModel.requestUnFriend(item.id!!, UnFollowbody(User.id))
-        mypageViewModel.FriendRequest.observe(viewLifecycleOwner) { result ->
-            friendAdapter.deleteFriend(item)
-            Toast.makeText(requireContext(), "거절 성공", Toast.LENGTH_SHORT).show()
-        }
+        friendAdapter.deleteFriend(item)
+        Toast.makeText(requireContext(), "거절 성공", Toast.LENGTH_SHORT).show()
+        requestCount -= 1
+        binding.friendslistFriendsRequestCount.text = "친구 신청 $requestCount"
     }
 
     override fun onCancelClick(item: FriendInfo) { //친구신청 취소
@@ -147,7 +154,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
 
         mypageViewModel.FirstFriends.observe(viewLifecycleOwner) { friends ->
             Log.d("Friends", "${friends.pagination} :: ${friends.data}")
-            val friendCount = friends.pagination.totalItems
+            friendCount = friends.pagination.totalItems ?: 0
             binding.friendslistFriendsCount.text = "친구 목록 $friendCount"
             if (isFriendList) {
                 if (friends.data.size > 0) {
@@ -177,6 +184,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
         }
 
         mypageViewModel.FirstRequests.observe(viewLifecycleOwner) { friends ->
+            requestCount = friends.pagination.totalItems ?: 0
             binding.friendslistFriendsRequestCount.text = "친구 신청 ${friends.pagination.totalItems}"
             val list = friends.data
             val requests = arrayListOf<FriendInfo>()
