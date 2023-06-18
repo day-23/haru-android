@@ -100,14 +100,14 @@ class AddCommentFragment(
     }
 
     override fun OnHideClick(comment: Comments, content: View, writer: View, position: Int) {
-        val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comment)
-
-        if (fragment != null) {
-            val transaction = fragmentManager.beginTransaction()
-            transaction.remove(fragment)
-            transaction.commit()
-        }
+//        val fragmentManager = childFragmentManager
+//        val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comment)
+//
+//        if (fragment != null) {
+//            val transaction = fragmentManager.beginTransaction()
+//            transaction.remove(fragment)
+//            transaction.commit()
+//        }
 
         if (position == 0) {//숨기기
             snsViewModel.patchComment(
@@ -764,10 +764,11 @@ class AddCommentFragment(
 
             writerView.setOnClickListener {// 유저페이지 이동
                 val fragment = PopupHide(comment, view, writerView, this)
-                val fragmentManager = childFragmentManager
-                val transaction = fragmentManager.beginTransaction()
-                transaction.add(R.id.anchor_popup_comment, fragment)
-                transaction.commit()
+                fragment.show(parentFragmentManager, fragment.tag)
+//                val fragmentManager = childFragmentManager
+//                val transaction = fragmentManager.beginTransaction()
+//                transaction.add(R.id.anchor_popup_comment, fragment)
+//                transaction.commit()
             }
 
         }
@@ -1022,40 +1023,63 @@ class PopupHide(
     val comment: Comments,
     val content: View,
     val writer: View,
-    listener: ImageClickListener
-) : Fragment() {
-
-    lateinit var popupbinding: PopupAddCommentHideBinding
-    val listener = listener
+    val listener: ImageClickListener
+) : BottomSheetDialogFragment() {
+    lateinit var binding: PopupAddCommentHideBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        popupbinding = PopupAddCommentHideBinding.inflate(inflater, container, false)
+        binding = PopupAddCommentHideBinding.inflate(inflater, container, false)
 
         if (comment.user!!.profileImage != null) {
             Glide
                 .with(this)
                 .load(comment.user!!.profileImage)
-                .into(popupbinding.hideTargetProfile)
+                .into(binding.hideTargetProfile)
         } else
-            popupbinding.hideTargetProfile.setImageResource(R.drawable.default_profile)
+            binding.hideTargetProfile.setImageResource(R.drawable.default_profile)
 
-        popupbinding.hideTargetName.text = comment.user!!.name
-        popupbinding.hideTargetContent.text = comment.content
-        popupbinding.hideTargetTime.text =
-            com.example.haru.utils.GetPastDate.getPastDate(comment.createdAt!!)
+        binding.hideTargetName.text = comment.user!!.name
+        binding.hideTargetContent.text = comment.content
+        binding.hideTargetTime.text =
+            GetPastDate.getPastDate(comment.createdAt!!)
 
-        popupbinding.hideComment.setOnClickListener {
+        binding.hideComment.setOnClickListener {
             listener.OnHideClick(comment, content, writer, 0)
+            dismiss()
         }
+        return binding.root
+    }
 
-        popupbinding.popupHideContainer.setOnClickListener {
-            listener.OnHideClick(comment, content, writer, 1)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
         }
+        return dialog
+    }
 
-        return popupbinding.root
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 32 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 
 }
