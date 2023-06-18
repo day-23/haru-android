@@ -271,6 +271,7 @@ class AddPostFragment : Fragment(), PostInterface {
             }
         }
 
+        
         binding.addpostCancel.setOnClickListener {
             galleryViewmodel.resetValue()
             val fragment = PopupPost(this)
