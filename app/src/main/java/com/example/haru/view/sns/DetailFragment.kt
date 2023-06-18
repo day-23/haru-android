@@ -36,6 +36,7 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
     override fun PopupConfirm(userId: String, postId: String, position: Int) {
         if (position == 0) {
             Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+            Log.d("delete", "$postId")
             snsViewModel.deletePost(postId)
             parentFragmentManager.popBackStack()
         }
