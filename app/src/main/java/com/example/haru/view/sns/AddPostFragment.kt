@@ -220,12 +220,7 @@ class AddPostFragment : Fragment(), PostInterface {
                 val selecteduri = galleryViewmodel.getSelectImages()
                 val newFrag = AddContentFragment(converedImage, ArrayList(selecteduri), galleryViewmodel)
                 val transaction = parentFragmentManager.beginTransaction()
-                transaction.setCustomAnimations(
-                    R.anim.fragment_in,
-                    R.anim.fragment_out,
-                    R.anim.popstack_in,
-                    R.anim.popstack_out
-                ).replace(R.id.fragments_frame, newFrag)
+                transaction.replace(R.id.fragments_frame, newFrag)
                 transaction.addToBackStack(null)
                 transaction.commit()
             } else {

@@ -73,12 +73,7 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         binding.detailPostProfile.setOnClickListener{
             val newFrag = MyPageFragment(writerId)
             val transaction = parentFragmentManager.beginTransaction()
-            transaction.setCustomAnimations(
-                R.anim.fragment_in,
-                R.anim.fragment_out,
-                R.anim.popstack_in,
-                R.anim.popstack_out
-            ).replace(R.id.fragments_frame, newFrag)
+            transaction.replace(R.id.fragments_frame, newFrag)
             transaction.addToBackStack("snsmain")
             transaction.commit()
         }
@@ -129,23 +124,13 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
                 if(post.id != "") {
                     val newFrag = AddCommentFragment(post.isTemplatePost, post.content, post.id,post.images,post.likedCount, post.commentCount, user)
                     val transaction = parentFragmentManager.beginTransaction()
-                    transaction.setCustomAnimations(
-                        R.anim.fragment_in,
-                        R.anim.fragment_out,
-                        R.anim.popstack_in,
-                        R.anim.popstack_out
-                    ).replace(R.id.fragments_frame, newFrag)
+                    transaction.replace(R.id.fragments_frame, newFrag)
                     transaction.addToBackStack("detail")
                     transaction.commit()
                 }else{
                     val newFrag = AddCommentFragment(media.templateUrl, media.content,media.id, media.images, media.likedCount, media.commentCount, user)
                     val transaction = parentFragmentManager.beginTransaction()
-                    transaction.setCustomAnimations(
-                        R.anim.fragment_in,
-                        R.anim.fragment_out,
-                        R.anim.popstack_in,
-                        R.anim.popstack_out
-                    ).replace(R.id.fragments_frame, newFrag)
+                    transaction.replace(R.id.fragments_frame, newFrag)
                     transaction.addToBackStack("detail")
                     transaction.commit()
                 }

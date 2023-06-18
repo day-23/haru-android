@@ -96,12 +96,7 @@ class TodotableFragment : Fragment() {
 
         binding.timetableSearchButton.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fragment_in,
-                    R.anim.fragment_out,
-                    R.anim.popstack_in,
-                    R.anim.popstack_out
-                ).replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
                 .addToBackStack(null)
                 .commit()
         }
@@ -273,12 +268,7 @@ class TodotableFragment : Fragment() {
             Log.d("Frag", "changed")
             val newFrag = TimetableFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
-            transaction.setCustomAnimations(
-                R.anim.fragment_in,
-                R.anim.fragment_out,
-                R.anim.popstack_in,
-                R.anim.popstack_out
-            ).replace(R.id.fragments_frame, newFrag)
+            transaction.replace(R.id.fragments_frame, newFrag)
             transaction.addToBackStack(null)
             transaction.commit()
             true

@@ -93,12 +93,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         binding.ivChecklistSearch.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fragment_in,
-                    R.anim.fragment_out,
-                    R.anim.popstack_in,
-                    R.anim.popstack_out
-                ).replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
                 .addToBackStack(null)
                 .commit()
         }
@@ -204,12 +199,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
             checkListViewModel.getTodayTodo(todayFrontEndDate) {
                 requireActivity().supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.fragment_in,
-                        R.anim.fragment_out,
-                        R.anim.popstack_in,
-                        R.anim.popstack_out
-                    ).replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
+                    .replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
                     .addToBackStack(null)
                     .commit()
             }

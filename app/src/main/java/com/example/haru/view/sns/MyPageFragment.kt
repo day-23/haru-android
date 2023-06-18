@@ -70,12 +70,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         val dummyMedia = Post()
         val newFrag = DetailFragment(media, Post())
         val transaction = parentFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(
-            R.anim.fragment_in,
-            R.anim.fragment_out,
-            R.anim.popstack_in,
-            R.anim.popstack_out
-        ).replace(R.id.fragments_frame, newFrag)
+        transaction.replace(R.id.fragments_frame, newFrag)
         transaction.addToBackStack("snsmypage")
         transaction.commit()
     }
@@ -101,12 +96,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         if (postitem.isTemplatePost != null) {
             val newFrag = CommentsFragment(postitem, com.example.haru.utils.User.id)
             val transaction = parentFragmentManager.beginTransaction()
-            transaction.setCustomAnimations(
-                R.anim.fragment_in,
-                R.anim.fragment_out,
-                R.anim.popstack_in,
-                R.anim.popstack_out
-            ).replace(R.id.fragments_frame, newFrag)
+            transaction.replace(R.id.fragments_frame, newFrag)
             transaction.addToBackStack("snsmypage")
             transaction.commit()
         } else {
@@ -121,12 +111,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                     user
                 )
                 val transaction = parentFragmentManager.beginTransaction()
-                transaction.setCustomAnimations(
-                    R.anim.fragment_in,
-                    R.anim.fragment_out,
-                    R.anim.popstack_in,
-                    R.anim.popstack_out
-                ).replace(R.id.fragments_frame, newFrag)
+                transaction.replace(R.id.fragments_frame, newFrag)
                 transaction.addToBackStack("snsmypage")
                 transaction.commit()
             }
@@ -136,12 +121,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     override fun onTotalCommentClick(post: Post) {
         val newFrag = CommentsFragment(post, com.example.haru.utils.User.id)
         val transaction = parentFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(
-            R.anim.fragment_in,
-            R.anim.fragment_out,
-            R.anim.popstack_in,
-            R.anim.popstack_out
-        ).replace(R.id.fragments_frame, newFrag)
+        transaction.replace(R.id.fragments_frame, newFrag)
         transaction.addToBackStack("snsmypage")
         transaction.commit()
     }
@@ -463,12 +443,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         binding.profileFriendsLayout.setOnClickListener {
             val newFrag = FriendsListFragment(userId)
             val transaction = parentFragmentManager.beginTransaction()
-            transaction.setCustomAnimations(
-                R.anim.fragment_in,
-                R.anim.fragment_out,
-                R.anim.popstack_in,
-                R.anim.popstack_out
-            ).replace(R.id.fragments_frame, newFrag)
+            transaction.replace(R.id.fragments_frame, newFrag)
             transaction.addToBackStack("snsmypage")
             transaction.commit()
         }
@@ -510,12 +485,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     fun moveEditprofile(userId: String) {
         val newFrag = EditProfileFragment(userId)
         val transaction = parentFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(
-            R.anim.fragment_in,
-            R.anim.fragment_out,
-            R.anim.popstack_in,
-            R.anim.popstack_out
-        ).replace(R.id.fragments_frame, newFrag)
+        transaction.replace(R.id.fragments_frame, newFrag)
         transaction.addToBackStack(null)
         transaction.commit()
         true

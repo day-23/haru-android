@@ -86,12 +86,7 @@ class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
         val dummyMedia = Media()
         val newFrag = DetailFragment(dummyMedia, post)
         val transaction = parentFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(
-            R.anim.fragment_in,
-            R.anim.fragment_out,
-            R.anim.popstack_in,
-            R.anim.popstack_out
-        ).replace(R.id.fragments_frame, newFrag)
+        transaction.replace(R.id.fragments_frame, newFrag)
         transaction.addToBackStack("lookaround")
         transaction.commit()
     }
@@ -197,12 +192,7 @@ class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
 
         binding.ivSnsSearch.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.fragment_in,
-                    R.anim.fragment_out,
-                    R.anim.popstack_in,
-                    R.anim.popstack_out
-                ).replace(R.id.fragments_frame, SearchFragment(profileViewModel))
+                .replace(R.id.fragments_frame, SearchFragment(profileViewModel))
                 .addToBackStack(null)
                 .commit()
         }
