@@ -452,6 +452,47 @@ class PostRepository() {
         callback(comments)
     }
 
+    suspend fun getFirstTemplateComment(postId: String, callback: (comments: CommentsResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        Log.d("TAG", "post id recieve-------------- $postId")
+        val response = postService.getFirstTemplateComments(
+            userId,
+            postId,
+        ).execute()
+
+        val comments: CommentsResponse
+
+        if(response.isSuccessful) {
+            Log.d("TAG","Success to get comments")
+            comments = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get comments")
+            comments = CommentsResponse(false, arrayListOf(), pagination(0,0,0,0))
+        }
+        callback(comments)
+    }
+
+    suspend fun getTemplateComment(postId: String, lastCreatedAt: String, callback: (comments: CommentsResponse) -> Unit) = withContext(
+        Dispatchers.IO){
+        Log.d("TAG", "post id recieve-------------- $postId")
+        val response = postService.getTemplateComments(
+            userId,
+            postId,
+            lastCreatedAt
+        ).execute()
+
+        val comments: CommentsResponse
+
+        if(response.isSuccessful) {
+            Log.d("TAG","Success to get comments")
+            comments = response.body()!!
+        }else{
+            Log.d("TAG", "Fail to get comments")
+            comments = CommentsResponse(false, arrayListOf(), pagination(0,0,0,0))
+        }
+        callback(comments)
+    }
+
     suspend fun writeComment(comment: CommentBody, postId: String, imageId:String, callback: (comments: Comments) -> Unit) = withContext(
         Dispatchers.IO){
         Log.d("TAG", "post id recieve-------------- $postId")
