@@ -38,15 +38,18 @@ import kotlinx.coroutines.*
 import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 
-class SnsPostAdapter(val context: Context,
-                     private var itemList: ArrayList<Post> = ArrayList(),
-                     private val listener: OnPostClickListener): RecyclerView.Adapter<SnsPostAdapter.SnsPostViewHolder>(){
+class SnsPostAdapter(
+    val context: Context,
+    private var itemList: ArrayList<Post> = ArrayList(),
+    private val listener: OnPostClickListener
+) : RecyclerView.Adapter<SnsPostAdapter.SnsPostViewHolder>() {
 
     private lateinit var snsViewModel: SnsViewModel
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SnsPostViewHolder {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.item_sns_post, parent, false)
-        snsViewModel = ViewModelProvider(context as ViewModelStoreOwner).get(SnsViewModel::class.java)
+        snsViewModel =
+            ViewModelProvider(context as ViewModelStoreOwner).get(SnsViewModel::class.java)
         return SnsPostViewHolder(view)
     }
 
@@ -54,20 +57,24 @@ class SnsPostAdapter(val context: Context,
         val adapter = PicturesPagerAdapter(holder.itemView.context, itemList[position].images)
         val item = itemList[position]
 
-        if(item.user.id != User.id){
+        if (item.user.id != User.id) {
             holder.totalcomment.visibility = View.GONE
-        }else{
+        } else {
             holder.totalcomment.visibility = View.VISIBLE
         }
         val date = GetPastDate.getPastDate(item.createdAt)
         holder.daysAgo.setText(date)
 
-        if(item.isTemplatePost != null){
+        if (item.isTemplatePost != null) {
             holder.content.text = ""
+            holder.content.visibility = View.GONE
             holder.templateText.text = item.content
             holder.templateText.setTextColor(Color.parseColor(item.isTemplatePost))
-        }else{
+        } else {
             holder.templateText.text = ""
+            holder.content.visibility =
+                if (item.content.replace(" ", "") == "") View.GONE
+                else View.VISIBLE
             holder.content.text = item.content
         }
 
@@ -98,7 +105,7 @@ class SnsPostAdapter(val context: Context,
             listener.onProfileClick(item.user.id)
         }
 
-        holder.userid.setOnClickListener{
+        holder.userid.setOnClickListener {
             listener.onProfileClick(item.user.id)
         }
 
@@ -111,38 +118,36 @@ class SnsPostAdapter(val context: Context,
             listener.onCommentClick(item)
         }
 
-        if(itemList[position].user.profileImage != null) {
+        if (itemList[position].user.profileImage != null) {
             Glide.with(holder.itemView.context)
                 .load(item.user.profileImage)
                 .into(holder.profileImg)
-        }else{
+        } else {
             holder.profileImg.setImageResource(R.drawable.default_profile)
         }
 
 
-        if(item.isLiked){
+        if (item.isLiked) {
             holder.likeBtn.setImageResource(R.drawable.check_like)
 
-        }
-        else{
+        } else {
             holder.likeBtn.setImageResource(R.drawable.uncheck_like)
         }
 
-        if(item.isCommented){
+        if (item.isCommented) {
             holder.comment.setImageResource(R.drawable.comment_filled)
-        }
-        else{
+        } else {
             holder.comment.setImageResource(R.drawable.comment)
         }
 
-        holder.likeBtn.setOnClickListener{
-            if(itemList[position].isLiked){
+        holder.likeBtn.setOnClickListener {
+            if (itemList[position].isLiked) {
                 holder.likeBtn.setImageResource(R.drawable.uncheck_like)
                 itemList[position].isLiked = false
                 itemList[position].likedCount -= 1
                 holder.likedcount.text = itemList[position].likedCount.toString()
 
-            }else{
+            } else {
                 holder.likeBtn.setImageResource(R.drawable.check_like)
                 itemList[position].isLiked = true
                 itemList[position].likedCount += 1
@@ -157,19 +162,19 @@ class SnsPostAdapter(val context: Context,
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun initList(post : ArrayList<Post>){
+    fun initList(post: ArrayList<Post>) {
         itemList = post
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun newPage(post: ArrayList<Post>){
+    fun newPage(post: ArrayList<Post>) {
         itemList.addAll(post)
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun deletePost(item: Post){
+    fun deletePost(item: Post) {
         itemList.remove(item)
         notifyDataSetChanged()
     }
