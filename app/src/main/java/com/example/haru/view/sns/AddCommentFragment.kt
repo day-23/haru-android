@@ -67,7 +67,6 @@ class AddCommentFragment(
     var CommentIsVisible = true
     val writerInfo = writerInfo
     var onEdit = false
-    var ProfileImage = ""
     var myInfo = User()
     var isMyPost = false
     var isCommented = false
@@ -580,8 +579,9 @@ class AddCommentFragment(
 
         //작성자 정보를 위한 뷰
         val Name = comment.user!!.name
+        var profileImage = ""
         if (!comment.user!!.profileImage.isNullOrEmpty())
-            ProfileImage = comment.user!!.profileImage
+            profileImage = comment.user!!.profileImage
         val Id = comment.user!!.id
 
         val writerView = inflater.inflate(R.layout.item_comment_on_picture_writer, null)
@@ -749,11 +749,11 @@ class AddCommentFragment(
             Log.d("20191668", "${writerView.width}, ${writerView.y}")
             writerName.text = Name// 유저명
 
-            if (ProfileImage.isNullOrEmpty()) {
+            if (profileImage.isNullOrEmpty()) {
                 writerProfile.setImageResource(R.drawable.default_profile)
             } else {
                 Glide.with(this)//프로필 사진
-                    .load(ProfileImage)
+                    .load(profileImage)
                     .into(writerProfile)
             }
 
