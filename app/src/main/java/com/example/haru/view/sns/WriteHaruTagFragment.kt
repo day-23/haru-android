@@ -31,20 +31,24 @@ import com.example.haru.databinding.FragmentWriteAddTagBinding
 import com.example.haru.view.adapter.TemplateAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
-interface onTemplateListener{
-    fun onTemplateClicked(url : String, id : String, holder:TemplateAdapter.TemplateViewHolder)
+interface onTemplateListener {
+    fun onTemplateClicked(url: String, id: String, holder: TemplateAdapter.TemplateViewHolder)
 }
 
-class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
-    lateinit var binding : FragmentWriteAddTagBinding
-    lateinit var templateViewModel : MyPageViewModel
+class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener {
+    lateinit var binding: FragmentWriteAddTagBinding
+    lateinit var templateViewModel: MyPageViewModel
     lateinit var templateAdapter: TemplateAdapter
     var toggle = true
     var selectedHolder: TemplateAdapter.TemplateViewHolder? = null
-    var id : String = ""
+    var id: String = ""
     var color = "#191919"
 
-    override fun onTemplateClicked(url: String, id: String, holder: TemplateAdapter.TemplateViewHolder) {
+    override fun onTemplateClicked(
+        url: String,
+        id: String,
+        holder: TemplateAdapter.TemplateViewHolder
+    ) {
         this.id = id
         Glide.with(requireContext())
             .load(url)
@@ -53,6 +57,7 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
         holder.template.setColorFilter(Color.parseColor("#80808080"), PorterDuff.Mode.SRC_ATOP)
         selectedHolder = holder
     }
+
     override fun onResume() {
         super.onResume()
         (activity as BaseActivity).adjustTopMargin(binding.writeTagHeaderTitle.id)
@@ -75,14 +80,15 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
     ): View? {
         binding = FragmentWriteAddTagBinding.inflate(inflater, container, false)
         val addPostRecycler = binding.writeHaruTemplates
-        templateAdapter = TemplateAdapter(requireContext(), arrayListOf(),this)
+        templateAdapter = TemplateAdapter(requireContext(), arrayListOf(), this)
         addPostRecycler.adapter = templateAdapter
-        addPostRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        addPostRecycler.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         templateViewModel.getTemplates()
         binding.writeTagContent.text = content
-        templateViewModel.Templates.observe(viewLifecycleOwner){ templates ->
+        templateViewModel.Templates.observe(viewLifecycleOwner) { templates ->
             templateAdapter.addTemplate(templates)
-       }
+        }
 
         binding.writeHaruCancel.setOnClickListener {
             val fragmentManager = parentFragmentManager
@@ -107,22 +113,27 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
             binding.writeHaruApply.isClickable = false
             Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
             val hashtag = templateViewModel.getTagList()
-            if(id != "")
+            val loading = LoadingAnimation()
+            if (id != "") {
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .add(R.id.fragments_frame, loading)
+                    .addToBackStack(null)
+                    .commit()
                 templateViewModel.templateRequest(Template(id, color, content, ArrayList(hashtag)))
-            else{
+            } else {
                 Toast.makeText(requireContext(), "템플릿을 선택해 주세요", Toast.LENGTH_SHORT).show()
                 binding.writeHaruApply.isClickable = true
             }
 
             templateViewModel.PostRequest.observe(viewLifecycleOwner) { done ->
-                if(done) {
-                    val fragmentManager = parentFragmentManager
-                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    val fragment = SnsFragment()
-                    val transaction = parentFragmentManager.beginTransaction()
-                    transaction.replace(R.id.fragments_frame, fragment)
-                    transaction.commit()
-                }else{
+                if (done) {
+                    loading.dismiss {
+                        val fragment = SnsFragment()
+                        val transaction = parentFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragments_frame, fragment)
+                        transaction.commit()
+                    }
+                } else {
                     binding.writeHaruApply.isClickable = true
                     Toast.makeText(requireContext(), "게시글 등록에 실패하였습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -192,7 +203,7 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
         return binding.root
     }
 
-    fun toggleClicked(){
+    fun toggleClicked() {
         val layoutparam = binding.popupTemplate.layoutParams
         val startHeight = layoutparam.height
         //dp into px

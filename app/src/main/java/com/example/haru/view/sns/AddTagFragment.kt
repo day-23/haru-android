@@ -78,16 +78,22 @@ class AddTagFragment(
         binding.addpostApply.setOnClickListener {
             binding.addpostApply.isClickable = false
             Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
+            val loading = LoadingAnimation()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.fragments_frame, loading)
+                .addToBackStack(null)
+                .commit()
             hashtag = galleryViewmodel.getTagList()
             galleryViewmodel.postRequest(images, content, hashtag)
 
             galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
                 if(done) {
-                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    val fragment = SnsFragment()
-                    val transaction = parentFragmentManager.beginTransaction()
-                    transaction.replace(R.id.fragments_frame, fragment)
-                    transaction.commit()
+                    loading.dismiss{
+                        val fragment = SnsFragment()
+                        val transaction = parentFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragments_frame, fragment)
+                        transaction.commit()
+                    }
                 }else{
                     Toast.makeText(requireContext(),"게시글 업로드 실패", Toast.LENGTH_SHORT).show()
                 }
