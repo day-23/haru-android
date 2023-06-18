@@ -100,11 +100,15 @@ class AddTagFragment(
                         transaction.commit()
                     }
                 }else if(done == 429){
-                    Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    loading.dismiss {
+                        Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }else if(done == 403){
-                    Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    loading.dismiss {
+                        Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                
+
             }
         }
         binding.addTagPictureIndex.text = "1/${Uris.size}"
