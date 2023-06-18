@@ -28,7 +28,7 @@ interface PostService {
     @GET("post/{userId}/posts/hashtag/{tagId}")
     fun getHotPosts(@Path("userId") userId: String, @Path("tagId")tagId: String, @Query("lastCreatedAt") lastCreatedAt: String) : Call<PostResponse>
 
-    @GET("post/{userId}/posts/user/{targetId}/feed/all") //TODO:lastCreatedAt 처리 해주어야함
+    @GET("post/{userId}/posts/user/{targetId}/feed/") //TODO:lastCreatedAt 처리 해주어야함
     fun getMyFeed(@Path("userId") userId: String,
                   @Path("targetId") targetId : String,
                   @Query("lastCreatedAt") lastCreatedAt: String) : Call<PostResponse>
