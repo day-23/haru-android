@@ -45,7 +45,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
-class SearchFragment(val viewModel: Any) : Fragment(){
+class SearchFragment(val viewModel: Any) : Fragment() {
     lateinit var binding: FragmentSearchBinding
     private lateinit var imm: InputMethodManager
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -293,7 +293,7 @@ class SearchFragment(val viewModel: Any) : Fragment(){
             binding.tvEmptyDescription.text = "아이디 또는 이메일 검색을 통해\n친구를 찾을 수 있어요."
 
             var friendStatus = -1
-            var targetInfo = com.example.haru.data.model.User()
+            var targetInfo = User()
             viewModel.searchUser.observe(viewLifecycleOwner) {
                 Log.e("20191627", it.toString())
                 if (it == null) {
@@ -313,7 +313,7 @@ class SearchFragment(val viewModel: Any) : Fragment(){
                     binding.ivEmpty.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.account_delete_image)
                 } else {
-                    friendStatus = it.friendStatus
+                    friendStatus = if (User.id == it.id) -1 else it.friendStatus
                     targetInfo = it
                     binding.userSearchLayout.visibility = View.VISIBLE
                     binding.emptyLayout.visibility = View.GONE
@@ -332,12 +332,15 @@ class SearchFragment(val viewModel: Any) : Fragment(){
             }
 
             binding.btnSearchUser.setOnClickListener {
-                when(friendStatus){
+                when (friendStatus) {
                     0 -> { //친구신청
                         viewModel.requestFriend(Followbody(targetInfo.id))
                     }
                     1 -> { //신청 취소
-                        viewModel.requestUnFriend(com.example.haru.utils.User.id, UnFollowbody(targetInfo.id))
+                        viewModel.requestUnFriend(
+                            com.example.haru.utils.User.id,
+                            UnFollowbody(targetInfo.id)
+                        )
                     }
                     2 -> { //내 친구
                         val fragment = PopupDelFriend(targetInfo, viewModel)
@@ -349,9 +352,9 @@ class SearchFragment(val viewModel: Any) : Fragment(){
                 }
             }
 
-            viewModel.FriendRequest.observe(viewLifecycleOwner){result ->
-                if(result){
-                    when(friendStatus){
+            viewModel.FriendRequest.observe(viewLifecycleOwner) { result ->
+                if (result) {
+                    when (friendStatus) {
                         0 -> {
                             friendStatus = 1
                         }
@@ -410,27 +413,47 @@ class SearchFragment(val viewModel: Any) : Fragment(){
 
     }
 
-    fun setButtons(friendStatus:Int){
-        when(friendStatus){
+    fun setButtons(friendStatus: Int) {
+        when (friendStatus) {
+            -1 -> {
+                binding.btnSearchUser.apply {
+                    text = "나"
+                    setBackgroundResource(R.drawable.custom_btn_date)
+                    setTextColor(Color.parseColor("#646464"))
+                    setTypeface(null, Typeface.NORMAL)
+                }
+            }
             0 -> {
-                binding.btnSearchUser.text = "친구 신청"
-                binding.btnSearchUser.setBackgroundResource(R.drawable.gradation_btn_custom)
-                binding.btnSearchUser.setTextColor(Color.parseColor("#FDFDFD"))
+                binding.btnSearchUser.apply {
+                    text = "친구 신청"
+                    setBackgroundResource(R.drawable.gradation_btn_custom)
+                    setTextColor(Color.parseColor("#FDFDFD"))
+                    setTypeface(null, Typeface.BOLD)
+                }
             }
             1 -> {
-                binding.btnSearchUser.text = "신청 취소"
-                binding.btnSearchUser.setBackgroundResource(R.drawable.custom_btn_date)
-                binding.btnSearchUser.setTextColor(Color.parseColor("#191919"))
+                binding.btnSearchUser.apply {
+                    text = "신청 취소"
+                    setBackgroundResource(R.drawable.custom_btn_date)
+                    setTextColor(Color.parseColor("#646464"))
+                    setTypeface(null, Typeface.NORMAL)
+                }
             }
             2 -> {
-                binding.btnSearchUser.text = "내 친구"
-                binding.btnSearchUser.setBackgroundResource(R.drawable.custom_btn_date)
-                binding.btnSearchUser.setTextColor(Color.parseColor("#191919"))
+                binding.btnSearchUser.apply {
+                    text = "내 친구"
+                    setBackgroundResource(R.drawable.custom_btn_date)
+                    setTextColor(Color.parseColor("#646464"))
+                    setTypeface(null, Typeface.NORMAL)
+                }
             }
             3 -> {
-                binding.btnSearchUser.text = "친구 수락"
-                binding.btnSearchUser.setBackgroundResource(R.drawable.custom_btn_date)
-                binding.btnSearchUser.setTextColor(Color.parseColor("#191919"))
+                binding.btnSearchUser.apply {
+                    text = "수락"
+                    setBackgroundResource(R.drawable.gradation_btn_custom)
+                    setTextColor(Color.parseColor("#FDFDFD"))
+                    setTypeface(null, Typeface.BOLD)
+                }
             }
         }
     }
@@ -456,7 +479,10 @@ class SearchFragment(val viewModel: Any) : Fragment(){
     }
 }
 
-class PopupDelFriend(val targetItem: com.example.haru.data.model.User, val viewModel: MyPageViewModel) :
+class PopupDelFriend(
+    val targetItem: com.example.haru.data.model.User,
+    val viewModel: MyPageViewModel
+) :
     BottomSheetDialogFragment() {
     lateinit var binding: PopupFriendDeleteConfirmBinding
 

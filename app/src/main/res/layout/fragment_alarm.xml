@@ -75,11 +75,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:visibility="invisible"
             android:background="@drawable/custom_btn_date"
             android:text="오후 3:03"
             android:textColor="@color/highlight"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="invisible" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/am_alarm_switch"
