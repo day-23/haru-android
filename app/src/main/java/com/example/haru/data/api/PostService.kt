@@ -64,7 +64,7 @@ interface PostService {
         @Path("postId") postId: String,
     ): Call<CommentsResponse>
 
-    @GET("comment/{userId}/{postId}/comments/")
+    @GET("comment/{userId}/{postId}/comments/all")
     fun getTemplateComments(
         @Path("userId") userId: String,
         @Path("postId") postId: String,
