@@ -12,41 +12,36 @@
         android:id="@+id/layout_parent_btn_update"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2.5"
+        android:layout_weight="2"
         android:background="@drawable/layout_radius_20_bg"
         android:orientation="vertical">
 
 
         <TextView
-            android:id="@+id/tv_block_user"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.5"
+            android:layout_weight="1"
             android:background="@drawable/text_radius"
             android:gravity="center"
-            android:paddingHorizontal="34dp"
-            android:lineSpacingMultiplier="1.6"
-            android:text="이 이용자를 차단할까요? 차단된 이용자는 내 피드를 볼 수 없으며 나에게 친구 신청을 보낼 수 없습니다. 차단된 이용자에게는 내 계정이 검색되지 않습니다."
+            android:text="코멘트를 삭제할까요? 이 작업은 복원할 수 없습니다."
             android:textColor="@color/date_text"
             android:textSize="14sp" />
 
-
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_block_user"
+            android:id="@+id/sns_comment_real_delete"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@drawable/option_last_view_bg"
             android:gravity="center"
-            android:text="차단하기"
+            android:text="@string/notRepeatTodoDelete"
             android:textColor="@color/delete_red"
             android:textSize="20sp" />
-
 
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_block_cancel"
+        android:id="@+id/sns_delete_cancel"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"

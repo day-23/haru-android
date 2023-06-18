@@ -16,9 +16,10 @@
         <ImageView
             android:id="@+id/write_comment_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/add_comment_cancel"
+            android:background="@drawable/back_arrow"
+            android:backgroundTint="@color/white"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -28,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:background="@drawable/back_arrow"
+            android:visibility="visible"
             app:layout_constraintLeft_toLeftOf="parent"
             tools:ignore="MissingConstraints" />
 
@@ -49,8 +51,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            android:src="@drawable/add_comment_apply"
-            android:visibility="gone"
+            android:background="@drawable/add_comment_apply"
+            android:backgroundTint="@color/white"
+            android:visibility="visible"
             app:layout_constraintRight_toRightOf="parent"
             tools:ignore="MissingConstraints" />
 

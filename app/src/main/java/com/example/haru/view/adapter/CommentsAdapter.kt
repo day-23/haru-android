@@ -9,12 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Comments
 import com.example.haru.data.model.PatchCommentBody
+import com.example.haru.utils.GetPastDate
 import com.example.haru.view.sns.onCommentClick
 import com.example.haru.viewmodel.SnsViewModel
 import org.w3c.dom.Comment
@@ -41,6 +43,8 @@ class CommentsAdapter(val context: Context,
         }
         holder.userid.text = itemList[position].user!!.name
         holder.content.text = itemList[position].content
+        val date = GetPastDate.getPastDate(item.createdAt!!)
+        holder.time.text = date
 
         holder.setup.setOnClickListener {
             listener.onDeleteClick(itemList[position].user!!.id, itemList[position].id, item)
@@ -48,16 +52,20 @@ class CommentsAdapter(val context: Context,
 
         if(disclosure){
             holder.disclosure.setImageResource(R.drawable.on_write_comment)
+            holder.content.setTextColor(ContextCompat.getColor(context, R.color.date_text))
         }else{
             holder.disclosure.setImageResource(R.drawable.comment_not_public)
+            holder.content.setTextColor(ContextCompat.getColor(context, R.color.light_gray))
         }
 
         holder.disclosure.setOnClickListener {
             if(disclosure){
                 holder.disclosure.setImageResource(R.drawable.comment_not_public)
+                holder.content.setTextColor(ContextCompat.getColor(context, R.color.light_gray))
                 disclosure = false
             }else{
                 holder.disclosure.setImageResource(R.drawable.on_write_comment)
+                holder.content.setTextColor(ContextCompat.getColor(context, R.color.date_text))
                 disclosure = true
             }
             val body = PatchCommentBody(item.x!!, item.y!!, disclosure!!)
@@ -97,5 +105,6 @@ class CommentsAdapter(val context: Context,
         var content = itemView.findViewById<TextView>(R.id.comment_content)
         var disclosure = itemView.findViewById<ImageView>(R.id.comment_disclosure)
         var setup = itemView.findViewById<ImageView>(R.id.comment_setup)
+        var time = itemView.findViewById<TextView>(R.id.comment_time)
     }
 }
