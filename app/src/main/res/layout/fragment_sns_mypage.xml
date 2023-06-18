@@ -7,7 +7,7 @@
     android:background="#fdfdfd">
 
     <LinearLayout
-        android:id="@+id/sns_menu"
+        android:id="@+id/my_page_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FDFDFD"

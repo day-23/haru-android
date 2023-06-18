@@ -228,14 +228,14 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
-        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+        (activity as BaseActivity).adjustTopMargin(binding.myPageHeader.id)
 
         MainActivity.hideNavi(false)
     }
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+        (activity as BaseActivity).adjustTopMargin(binding.myPageHeader.id)
         initProfile()
     }
 
@@ -512,7 +512,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     fun showFriendTitle() {
-        binding.snsMenu.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
+        binding.myPageHeader.setBackgroundResource(com.kakao.sdk.friend.R.color.white)
         binding.mypageBack.visibility = View.VISIBLE
         binding.mypageSetup.visibility = View.VISIBLE
         binding.mypageDenoteLayout.visibility = View.GONE

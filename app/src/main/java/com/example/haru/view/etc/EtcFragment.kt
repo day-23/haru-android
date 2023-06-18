@@ -142,6 +142,11 @@ class EtcFragment : Fragment() {
         binding.layoutFriend.setOnClickListener(ClickListener())
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.etcHeader.id)
+    }
+
     inner class ClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
