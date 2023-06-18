@@ -158,7 +158,6 @@ object Alarm {
             val calendar = Calendar.getInstance()
             calendar.time = Date()
 
-
             val amTime = timeformatter.parse(User.amAlarmDate)
 
             amTime.year = calendar.time.year
