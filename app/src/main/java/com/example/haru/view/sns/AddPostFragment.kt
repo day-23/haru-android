@@ -253,17 +253,6 @@ class AddPostFragment : Fragment(), PostInterface {
                 val imageUri = bitmapToUri(requireContext(), bitmap)
                 User.cameraBoolean = true
                 cropImage(imageUri)
-
-//                Log.d("camera", "result ${result.data!!.extras}")
-//                if(result.data != null) {
-//                    val extras = result.data?.extras
-//                    if (extras != null && extras.containsKey("data")) {
-//                        val bitmap = extras.get("data") as Bitmap
-//                        val imageUri = bitmapToUri(requireContext(), bitmap)
-//                        cropImage(imageUri)
-//                    }
-//                }
-//                imageResult(result.resultCode, result.resultCode, result.data)
             }
         }
 
