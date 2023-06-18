@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.Template
 import com.example.haru.databinding.FragmentWriteAddTagBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.TemplateAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 
@@ -66,6 +67,8 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.writeTagHeaderTitle.id)
+
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

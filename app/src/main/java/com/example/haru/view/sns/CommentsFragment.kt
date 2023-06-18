@@ -65,9 +65,6 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
 
 
     override fun onDeleteClick(writerId: String, commentId: String, item: Comments) {
-        Log.e("20191627", writerId)
-        Log.e("20191627", commentId)
-        Log.e("20191627", item.toString())
         this.writerId = writerId
         this.commentId = commentId
         comment = item
@@ -108,6 +105,7 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.commentMenu.id)
+        MainActivity.hideNavi(true)
     }
 
     override fun onResume() {

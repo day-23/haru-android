@@ -75,6 +75,7 @@ class AddPostFragment : Fragment(), PostInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.addpostTitle.id)
+        MainActivity.hideNavi(true)
     }
 
     override fun Postpopup(position: Int) {

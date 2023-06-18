@@ -14,6 +14,7 @@ import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddContentBinding
 import com.example.haru.databinding.FragmentAddpostAddtagBinding
+import com.example.haru.view.MainActivity
 import okhttp3.MultipartBody
 
 class AddContentFragment(
@@ -30,6 +31,7 @@ class AddContentFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.addContentHeader.id)
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(

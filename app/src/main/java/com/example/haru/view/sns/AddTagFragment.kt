@@ -23,6 +23,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddpostAddtagBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AddTagPagerAdapter
 import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.viewmodel.MyPageViewModel
@@ -55,6 +56,8 @@ class AddTagFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(

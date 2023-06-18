@@ -202,14 +202,14 @@ class AddCommentFragment(
         Log.d("TAG", "SnsMypageFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
         profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
-        MainActivity.hideNavi(true)
+
     }
 
     // status bar height 조정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.addCommentLayout.id)
-
+        MainActivity.hideNavi(true)
     }
 
     override fun onResume() {
@@ -248,7 +248,6 @@ class AddCommentFragment(
                     transaction.commit()
                 } else {
                     val backManager = parentFragmentManager
-                    MainActivity.hideNavi(false)
                     backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 }
             }
@@ -306,7 +305,6 @@ class AddCommentFragment(
         binding.writeCommentBack.setOnClickListener {
             Log.e("20191627", "writeCommentBack")
             val backManager = parentFragmentManager
-            MainActivity.hideNavi(false)
             backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
 

@@ -27,6 +27,7 @@ import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.CustomGalleryBinding
 import com.example.haru.databinding.FragmentEditProfileBinding
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.GalleryAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import okhttp3.internal.wait
@@ -58,6 +59,8 @@ class EditProfileFragment(userId: String) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.editProfileRootview.id)
+
+        MainActivity.hideNavi(true)
 
         binding.backButton.setOnClickListener {
             val fragmentManager = parentFragmentManager

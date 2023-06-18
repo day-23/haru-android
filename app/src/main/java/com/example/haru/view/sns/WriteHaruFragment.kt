@@ -26,6 +26,7 @@ import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.databinding.FragmentWriteHaruBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.UserViewModel
@@ -77,6 +78,8 @@ class WriteHaruFragment : Fragment(), PostInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.writeHaruTitle.id)
+
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(

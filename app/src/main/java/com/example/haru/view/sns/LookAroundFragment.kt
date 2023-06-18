@@ -23,6 +23,7 @@ import com.example.haru.data.model.Post
 import com.example.haru.data.model.Tag
 import com.example.haru.databinding.FragmentLookAroundBinding
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.LookAroundAdapter
 import com.example.haru.view.adapter.MediaAdapter
 import com.example.haru.view.adapter.MediaTagAdapter
@@ -102,6 +103,8 @@ class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "LookAroundFragment - onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.lookAroundMenu.id)
+
+        MainActivity.hideNavi(true)
     }
 
     override fun onResume() {
