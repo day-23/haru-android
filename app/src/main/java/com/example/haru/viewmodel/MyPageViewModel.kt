@@ -67,8 +67,8 @@ class MyPageViewModel() : ViewModel() {
     val SelectedImage: LiveData<Int>
         get() = _SelectedImage
 
-    private val _PostDone = MutableLiveData<Boolean>()
-    val PostDone: LiveData<Boolean>
+    private val _PostDone = MutableLiveData<Int>()
+    val PostDone: LiveData<Int>
         get() = _PostDone
 
     private val _UserInfo = MutableLiveData<User>()
@@ -104,8 +104,8 @@ class MyPageViewModel() : ViewModel() {
     private val _FriendRequest = MutableLiveData<Boolean>()
     val FriendRequest: LiveData<Boolean> = _FriendRequest
 
-    private val _PostRequest = MutableLiveData<Boolean>()
-    val PostRequest: LiveData<Boolean> = _PostRequest
+    private val _PostRequest = MutableLiveData<Int>()
+    val PostRequest: LiveData<Int> = _PostRequest
 
     private val _SearchedFriends = MutableLiveData<FriendsResponse>()
     val SearchedFriends: LiveData<FriendsResponse> = _SearchedFriends
@@ -212,7 +212,7 @@ class MyPageViewModel() : ViewModel() {
                 }
             }
             if (newMedia.success) {
-                _FirstMedia.value = newMedia
+                _Media.value = newMedia
             }
         }
     }
@@ -376,28 +376,32 @@ class MyPageViewModel() : ViewModel() {
         val post = AddPost(images, content, hashtags)
 
         viewModelScope.launch {
+            var status = 0
             PostRepository.addPost(post) {
-                if (it.id != "") { //get success
+                if (it == 201) { //get success
                     Log.d("TAG", "Success to Post")
+                }else{
+                    Log.d("TAG", "Fail to Post")
                 }
+                status = it
             }
-            _PostDone.value = true
+            _PostDone.value = status
         }
     }
 
     fun templateRequest(templateBody: Template) {
-        var postResult = false
+        var postResult = 0
 
         viewModelScope.launch {
             PostRepository.addTemplate(templateBody) {
-                if (it) {
+                if (it == 201) {
                     Log.d("TAG", "Success to post Template")
-                    postResult = it
                 } else {
                     Log.d("TAG", "Fail to post Template")
                 }
+                postResult = it
             }
-            _PostRequest.value = postResult
+            _PostDone.value = postResult
         }
     }
 

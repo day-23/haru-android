@@ -89,15 +89,9 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         deletedItem = item
         val fragment = PopupDeletePost(userId, postId, this)
         fragment.show(parentFragmentManager, fragment.tag)
-//        val fragment = PopupDeletePost(userId, postId, this)
-//        val fragmentManager = childFragmentManager
-//        val transaction = fragmentManager.beginTransaction()
-//        transaction.add(R.id.sns_post_anchor, fragment)
-//        transaction.commit()
     }
 
     override fun postPopupClicked(userId: String, postId: String, position: Int) {
-        val transaction = requireActivity().supportFragmentManager.beginTransaction()
         if (position == 0) {
             if (User.id == userId) {//수정하기
 
@@ -108,20 +102,10 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             if (User.id == userId) {//삭제확인창
                 val fragment = PopupDeleteConfirm(userId, postId, this)
                 fragment.show(parentFragmentManager, fragment.tag)
-//                transaction.add(R.id.sns_post_anchor, fragment)
-//                transaction.addToBackStack(null)
-//                transaction.commit()
             } else { //신고하기
                 snsViewModel.reportPost(postId)
             }
         }
-//        val fragmentManager = childFragmentManager
-//        val fragment = fragmentManager.findFragmentById(R.id.sns_post_anchor)
-//        if (fragment != null) {
-//            Log.e("20191627", "123")
-//            MainActivity.hideNavi(false)
-//            val transaction = fragmentManager.beginTransaction()
-//        }
     }
 
     override fun PopupConfirm(userId: String, postId: String, position: Int) {
@@ -129,8 +113,6 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
             snsViewModel.deletePost(postId)
         }
-//        requireActivity().supportFragmentManager.popBackStack()
-
     }
 
     companion object {

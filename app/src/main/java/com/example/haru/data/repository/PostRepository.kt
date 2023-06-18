@@ -22,7 +22,7 @@ class PostRepository() {
     val userId = com.example.haru.utils.User.id
 
     //게시글 추가
-    suspend fun addPost(post: AddPost, callback: (postInfo: SendPost) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun addPost(post: AddPost, callback: (status: Int) -> Unit) = withContext(Dispatchers.IO) {
         // Prepare the request data
         val content = RequestBody.create("text/plain".toMediaTypeOrNull(), post.content)
 
@@ -40,7 +40,6 @@ class PostRepository() {
         val call = postService.addPost(userId, images, content, hashTags)
         val response = call.execute()
 
-        val postInfo = SendPost()
         if (response.isSuccessful) {
             Log.d("TAG", "Success to post")
             // Deserialize the response body here to get the result (AddPostResponse)
@@ -48,21 +47,19 @@ class PostRepository() {
         } else {
             Log.d("TAG", "Fail to post")
         }
-        callback(postInfo)
+        callback(response.code())
     }
 
-    suspend fun addTemplate(template: Template, callback: (result: Boolean) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun addTemplate(template: Template, callback: (status: Int) -> Unit) = withContext(Dispatchers.IO) {
         val call = postService.addTemplate(userId, template)
         val response = call.execute()
 
-        var result = false
         if (response.isSuccessful) {
             Log.d("TAG", "Success to post")
-            result = response.body()!!.success
         } else {
             Log.d("TAG", "Fail to post")
         }
-        callback(result)
+        callback(response.code())
     }
 
     //게시글 삭제
@@ -479,6 +476,29 @@ class PostRepository() {
         callback(comments)
     }
 
+    //템플릿에 댓글달기
+    suspend fun writeComment(comment: CommentBody, postId: String, callback: (comments: Comments) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.writeComments(
+            userId,
+            postId,
+            comment
+        ).execute()
+
+        val comments: Comments
+        val data: WriteCommentResponse
+
+        if(response.isSuccessful) {
+            Log.d("TAG","Success to write comments")
+            data = response.body()!!
+            comments = data.data
+        }else{
+            Log.d("TAG", "Fail to write comments")
+            comments = Comments("",User("","","","",0,0,0,false),"",-1,-1,true,"","")
+        }
+        callback(comments)
+    }
+
     suspend fun deleteComment(writerId : String, commentId : String, callback: (deleted: Boolean) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.deleteComment(
@@ -497,6 +517,26 @@ class PostRepository() {
         }
         callback(deleted)
     }
+
+    suspend fun reportComment(writerId : String, commentId : String, callback: (deleted: Boolean) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.reportComment(
+            writerId,
+            commentId,
+        ).execute()
+
+        val data: EditCommentResponse
+        val deleted: Boolean
+
+        if(response.isSuccessful){
+            data = response.body()!!
+            deleted = data.success
+        }else{
+            deleted = false
+        }
+        callback(deleted)
+    }
+
     //댓글 한개 수정
     suspend fun chageComment(writerId: String, commentId: String, body: PatchCommentBody, callback: (changed: Boolean) -> Unit) = withContext(
         Dispatchers.IO){

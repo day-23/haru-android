@@ -2,11 +2,16 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Typeface
+import android.icu.text.Transliterator.Position
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -22,6 +27,7 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSearchBinding
+import com.example.haru.databinding.PopupFriendDeleteConfirmBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
@@ -34,9 +40,12 @@ import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.MyPageViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
-class SearchFragment(val viewModel: Any) : Fragment() {
+class SearchFragment(val viewModel: Any) : Fragment(){
     lateinit var binding: FragmentSearchBinding
     private lateinit var imm: InputMethodManager
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -283,23 +292,29 @@ class SearchFragment(val viewModel: Any) : Fragment() {
         } else if (viewModel is MyPageViewModel) {
             binding.tvEmptyDescription.text = "아이디 또는 닉네임 검색을 통해\n친구를 찾을 수 있어요."
 
-//            binding.userSearchLayout.visibility = View.VISIBLE
-
+            var friendStatus = -1
+            var targetInfo = com.example.haru.data.model.User()
             viewModel.searchUser.observe(viewLifecycleOwner) {
                 Log.e("20191627", it.toString())
                 if (it == null) {
+                    targetInfo = User()
+                    friendStatus = -1
                     binding.tvEmptyDescription.text = "아이디 또는 닉네임 검색을 통해\n친구를 찾을 수 있어요."
                     binding.ivEmpty.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.hagi_ruri_back)
                     binding.emptyLayout.visibility = View.VISIBLE
                     binding.userSearchLayout.visibility = View.GONE
                 } else if (it.id == "") {
+                    targetInfo = User()
+                    friendStatus = -1
                     binding.userSearchLayout.visibility = View.GONE
                     binding.tvEmptyDescription.text = "검색 아이디 또는 닉네임을 가진\n친구를 찾을 수 없어요."
                     binding.emptyLayout.visibility = View.VISIBLE
                     binding.ivEmpty.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.account_delete_image)
                 } else {
+                    friendStatus = it.friendStatus
+                    targetInfo = it
                     binding.userSearchLayout.visibility = View.VISIBLE
                     binding.emptyLayout.visibility = View.GONE
                     if (it.profileImage == "" || it.profileImage == "null" || it.profileImage == null)
@@ -312,9 +327,47 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                         .load(it.profileImage)
                         .into(binding.ivSearchUserProfile)
                     binding.tvSearchUserId.text = it.name
+                    setButtons(friendStatus)
                 }
             }
 
+            binding.btnSearchUser.setOnClickListener {
+                when(friendStatus){
+                    0 -> { //친구신청
+                        viewModel.requestFriend(Followbody(targetInfo.id))
+                    }
+                    1 -> { //신청 취소
+                        viewModel.requestUnFriend(com.example.haru.utils.User.id, UnFollowbody(targetInfo.id))
+                    }
+                    2 -> { //내 친구
+                        val fragment = PopupDelFriend(targetInfo, viewModel)
+                        fragment.show(parentFragmentManager, fragment.tag)
+                    }
+                    3 -> { //신청 수락
+                        viewModel.requestAccpet(Friendbody(targetInfo.id))
+                    }
+                }
+            }
+
+            viewModel.FriendRequest.observe(viewLifecycleOwner){result ->
+                if(result){
+                    when(friendStatus){
+                        0 -> {
+                            friendStatus = 1
+                        }
+                        1 -> {
+                            friendStatus = 0
+                        }
+                        2 -> {
+                            friendStatus = 0
+                        }
+                        3 -> {
+                            friendStatus = 2
+                        }
+                    }
+                    setButtons(friendStatus)
+                }
+            }
 
             binding.etSearchContent.setOnKeyListener { view, keyCode, keyEvent ->
                 if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
@@ -357,6 +410,31 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
     }
 
+    fun setButtons(friendStatus:Int){
+        when(friendStatus){
+            0 -> {
+                binding.btnSearchUser.text = "친구 신청"
+                binding.btnSearchUser.setBackgroundResource(R.drawable.gradation_btn_custom)
+                binding.btnSearchUser.setTextColor(Color.parseColor("#FDFDFD"))
+            }
+            1 -> {
+                binding.btnSearchUser.text = "신청 취소"
+                binding.btnSearchUser.setBackgroundResource(R.drawable.custom_btn_date)
+                binding.btnSearchUser.setTextColor(Color.parseColor("#191919"))
+            }
+            2 -> {
+                binding.btnSearchUser.text = "내 친구"
+                binding.btnSearchUser.setBackgroundResource(R.drawable.custom_btn_date)
+                binding.btnSearchUser.setTextColor(Color.parseColor("#191919"))
+            }
+            3 -> {
+                binding.btnSearchUser.text = "친구 수락"
+                binding.btnSearchUser.setBackgroundResource(R.drawable.custom_btn_date)
+                binding.btnSearchUser.setTextColor(Color.parseColor("#191919"))
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         (activity as BaseActivity).adjustTopMargin(binding.searchHeader.id)
@@ -375,5 +453,69 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
             }
         }
+    }
+}
+
+class PopupDelFriend(val targetItem: com.example.haru.data.model.User, val viewModel: MyPageViewModel) :
+    BottomSheetDialogFragment() {
+    lateinit var binding: PopupFriendDeleteConfirmBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = PopupFriendDeleteConfirmBinding.inflate(inflater)
+
+        if (targetItem.profileImage == null || targetItem.profileImage == "")
+            binding.ivProfileImage.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
+        else
+            Glide
+                .with(requireContext())
+                .load(targetItem.profileImage)
+                .into(binding.ivProfileImage)
+
+        binding.tvUserId.text = targetItem.name
+
+        binding.btnDeleteUser.setOnClickListener {
+            viewModel.requestDelFriend(DelFriendBody(targetItem.id!!))
+            dismiss()
+        }
+
+        binding.btnDeleteCancel.setOnClickListener {
+            dismiss()
+        }
+
+        return binding.root
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 45 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 }

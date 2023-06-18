@@ -142,8 +142,6 @@ class SnsViewModel: ViewModel() {
         }
     }
 
-
-
     fun likeAction(id: String){
         viewModelScope.launch {
             PostRepository.postLike(id) {
@@ -207,6 +205,21 @@ class SnsViewModel: ViewModel() {
         }
     }
 
+    //템플릿 댓글달기
+    fun writeComment(comment: CommentBody, postId: String){
+        var result = Comments("",User(),"",0,0,false,"","")
+        viewModelScope.launch {
+            PostRepository.writeComment(comment, postId){
+                result = it
+            }
+            if(result.id != ""){
+                _AddComment.value = result
+            }else{
+                Log.d("Comment", "Fail to add Comment")
+            }
+        }
+    }
+
     fun deletePost(postId: String){
         var result = false
         viewModelScope.launch {
@@ -242,6 +255,16 @@ class SnsViewModel: ViewModel() {
         var result = false
         viewModelScope.launch {
             PostRepository.deleteComment(writerId, commentId){
+                result = it
+            }
+            _DeleteResult.value = result
+        }
+    }
+
+    fun reportComment(writerId: String, commentId:String){
+        var result = false
+        viewModelScope.launch {
+            PostRepository.reportComment(writerId, commentId){
                 result = it
             }
             _DeleteResult.value = result

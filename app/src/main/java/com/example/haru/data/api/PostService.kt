@@ -28,7 +28,7 @@ interface PostService {
     @GET("post/{userId}/posts/hashtag/{tagId}")
     fun getHotPosts(@Path("userId") userId: String, @Path("tagId")tagId: String, @Query("lastCreatedAt") lastCreatedAt: String) : Call<PostResponse>
 
-    @GET("post/{userId}/posts/user/{targetId}/feed/all") //TODO:lastCreatedAt 처리 해주어야함
+    @GET("post/{userId}/posts/user/{targetId}/feed/") //TODO:lastCreatedAt 처리 해주어야함
     fun getMyFeed(@Path("userId") userId: String,
                   @Path("targetId") targetId : String,
                   @Query("lastCreatedAt") lastCreatedAt: String) : Call<PostResponse>
@@ -83,6 +83,13 @@ interface PostService {
         @Path("imageId") imageId: String,
         @Body comment: CommentBody
     ): Call<WriteCommentResponse>
+    //템플릿에 댓글달기
+    @POST("comment/{userId}/{postId}")
+    fun writeComments(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String,
+        @Body comment: CommentBody
+    ): Call<WriteCommentResponse>
 
     @DELETE("post/{userId}/{postId}")
     fun deletePost(
@@ -104,6 +111,12 @@ interface PostService {
 
     @DELETE("comment/{writerId}/{commentId}")
     fun deleteComment(
+        @Path("writerId") writerId: String,
+        @Path("commentId") commentId: String,
+    ): Call<EditCommentResponse>
+
+    @DELETE("comment/{writerId}/{commentId}/report")
+    fun reportComment(
         @Path("writerId") writerId: String,
         @Path("commentId") commentId: String,
     ): Call<EditCommentResponse>
