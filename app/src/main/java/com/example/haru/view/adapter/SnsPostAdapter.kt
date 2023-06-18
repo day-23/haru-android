@@ -55,6 +55,7 @@ class SnsPostAdapter(
 
     override fun onBindViewHolder(holder: SnsPostViewHolder, position: Int) {
         val adapter = PicturesPagerAdapter(holder.itemView.context, itemList[position].images)
+
         val item = itemList[position]
 
         if (item.user.id != User.id) {
@@ -139,6 +140,9 @@ class SnsPostAdapter(
         } else {
             holder.comment.setImageResource(R.drawable.comment)
         }
+
+        if (item.user.isAllowFeedLike == 0 || (item.user.isAllowFeedLike == 1 && item.user.friendStatus != 2))
+            return
 
         holder.likeBtn.setOnClickListener {
             if (itemList[position].isLiked) {

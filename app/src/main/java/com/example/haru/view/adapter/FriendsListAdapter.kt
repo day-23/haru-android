@@ -37,9 +37,9 @@ class FriendsListAdapter(
         if (User.id != itemList[position].id)
             showButtons(holder, itemList[position].friendStatus!!)
 
-        if (itemList[position].profileImageUrl != null) {
+        if (itemList[position].profileImage != null) {
             Glide.with(holder.itemView.context)
-                .load(itemList[position].profileImageUrl)
+                .load(itemList[position].profileImage)
                 .into(holder.profile)
         } else {
             holder.profile.setImageResource(R.drawable.default_profile)

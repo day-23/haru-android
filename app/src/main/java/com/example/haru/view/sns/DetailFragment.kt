@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -23,14 +24,15 @@ import com.example.haru.view.adapter.PicturesPagerAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : Fragment(), OnPostPopupClick {
-    lateinit var binding : FragmentDetailPostBinding
+class DetailFragment(media: com.example.haru.data.model.Media, post: Post) : Fragment(),
+    OnPostPopupClick {
+    lateinit var binding: FragmentDetailPostBinding
     val media = media
     val post = post
     var writerId = ""
     var postId = ""
-    lateinit var adapter : PicturesPagerAdapter
-    lateinit var pager : ViewPager2
+    lateinit var adapter: PicturesPagerAdapter
+    lateinit var pager: ViewPager2
     lateinit var snsViewModel: SnsViewModel
     lateinit var myPageViewModel: MyPageViewModel
 
@@ -89,19 +91,19 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         binding = FragmentDetailPostBinding.inflate(inflater, container, false)
         pager = binding.detailPostPicture
 
-        if(media.id != ""){
+        if (media.id != "") {
             writerId = media.user.id
             postId = media.id
-        }else{
+        } else {
             writerId = post.user.id
             postId = post.id
         }
 
-        if(User.id != media.id && User.id != post.id){
+        if (User.id != media.id && User.id != post.id) {
             binding.detailPostTotalComment.visibility = View.GONE
         }
 
-        binding.detailPostProfile.setOnClickListener{
+        binding.detailPostProfile.setOnClickListener {
             val newFrag = MyPageFragment(writerId)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
@@ -109,38 +111,40 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
             transaction.commit()
         }
 
-        if(media.id != ""){
+        if (media.id != "") {
             bindMedia(media)
             adapter = PicturesPagerAdapter(requireContext(), media.images)
             pager.adapter = adapter
-        }else{
+        } else {
             bindPost(post)
             adapter = PicturesPagerAdapter(requireContext(), post.images)
             pager.adapter = adapter
         }
 
         binding.detailButtonLike.setOnClickListener {
-            if(media.id != ""){
-                if(media.isLiked) {
+            if (media.user.isAllowFeedLike == 0 || (media.user.isAllowFeedLike == 1 && media.user.friendStatus != 2))
+                return@setOnClickListener
+            if (media.id != "") {
+                if (media.isLiked) {
                     binding.detailButtonLike.setBackgroundResource(R.drawable.uncheck_like)
                     media.likedCount -= 1
                     binding.detailLikedCount.text = media.likedCount.toString()
                     media.isLiked = false
-                }else{
+                } else {
                     binding.detailButtonLike.setBackgroundResource(R.drawable.check_like)
                     media.likedCount += 1
                     binding.detailLikedCount.text = media.likedCount.toString()
                     media.isLiked = true
                 }
                 snsViewModel.likeAction(media.id)
-            }else{
-                if(post.isLiked) {
-                    binding.detailButtonLike.setBackgroundResource(R.drawable.uncheck_like)
+            } else {
+                if (post.isLiked) {
+                    binding.detailButtonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.uncheck_like)
                     post.likedCount -= 1
                     binding.detailLikedCount.text = post.likedCount.toString()
                     post.isLiked = false
-                }else{
-                    binding.detailButtonLike.setBackgroundResource(R.drawable.check_like)
+                } else {
+                    binding.detailButtonLike.background = ContextCompat.getDrawable(requireContext(), R.drawable.check_like)
                     post.likedCount += 1
                     binding.detailLikedCount.text = post.likedCount.toString()
                     post.isLiked = true
@@ -151,15 +155,31 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
 
         binding.detailButtonComment.setOnClickListener {
             myPageViewModel.getUserInfo(post.user.id)
-            myPageViewModel.UserInfo.observe(viewLifecycleOwner){user ->
-                if(post.id != "") {
-                    val newFrag = AddCommentFragment(post.isTemplatePost, post.content, post.id,post.images,post.likedCount, post.commentCount, user)
+            myPageViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
+                if (post.id != "") {
+                    val newFrag = AddCommentFragment(
+                        post.isTemplatePost,
+                        post.content,
+                        post.id,
+                        post.images,
+                        post.likedCount,
+                        post.commentCount,
+                        user
+                    )
                     val transaction = parentFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragments_frame, newFrag)
                     transaction.addToBackStack("detail")
                     transaction.commit()
-                }else{
-                    val newFrag = AddCommentFragment(media.templateUrl, media.content,media.id, media.images, media.likedCount, media.commentCount, user)
+                } else {
+                    val newFrag = AddCommentFragment(
+                        media.templateUrl,
+                        media.content,
+                        media.id,
+                        media.images,
+                        media.likedCount,
+                        media.commentCount,
+                        user
+                    )
                     val transaction = parentFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragments_frame, newFrag)
                     transaction.addToBackStack("detail")
@@ -188,42 +208,42 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         return binding.root
     }
 
-    fun bindMedia(media: com.example.haru.data.model.Media){
-        if(media.user.profileImage != null) {
+    fun bindMedia(media: com.example.haru.data.model.Media) {
+        if (media.user.profileImage != null) {
             Glide.with(requireContext())
                 .load(media.user.profileImage)
                 .into(binding.detailPostProfile)
-        }else{
+        } else {
             binding.detailPostProfile.setImageResource(R.drawable.default_profile)
         }
         binding.detailUserId.text = media.user.name
         binding.detailPostContents.text = media.content
         binding.detailLikedCount.text = media.likedCount.toString()
         binding.detailPostCommentCount.text = media.commentCount.toString()
-        if(media.isLiked){
+        if (media.isLiked) {
             binding.detailButtonLike.setBackgroundResource(R.drawable.check_like)
         }
-        if(media.isCommented){
+        if (media.isCommented) {
             binding.detailButtonComment.setBackgroundResource(R.drawable.comment_filled)
         }
     }
 
-    fun bindPost(post: Post){
-        if(post.user.profileImage != null) {
+    fun bindPost(post: Post) {
+        if (post.user.profileImage != null) {
             Glide.with(requireContext())
                 .load(post.user.profileImage)
                 .into(binding.detailPostProfile)
-        }else{
+        } else {
             binding.detailPostProfile.setImageResource(R.drawable.default_profile)
         }
         binding.detailUserId.text = post.user.name
         binding.detailPostContents.text = post.content
         binding.detailLikedCount.text = post.likedCount.toString()
         binding.detailPostCommentCount.text = post.commentCount.toString()
-        if(post.isLiked){
+        if (post.isLiked) {
             binding.detailButtonLike.setBackgroundResource(R.drawable.check_like)
         }
-        if(post.isCommented){
+        if (post.isCommented) {
             binding.detailButtonComment.setBackgroundResource(R.drawable.comment_filled)
         }
     }

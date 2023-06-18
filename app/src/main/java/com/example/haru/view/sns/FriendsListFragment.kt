@@ -311,13 +311,13 @@ class PopupDeleteFriend(val targetItem: FriendInfo, val listener: OnFriendClicke
     ): View? {
         binding = PopupFriendDeleteConfirmBinding.inflate(inflater)
 
-        if (targetItem.profileImageUrl == null || targetItem.profileImageUrl == "")
+        if (targetItem.profileImage == null || targetItem.profileImage == "")
             binding.ivProfileImage.background =
                 ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
         else
             Glide
                 .with(requireContext())
-                .load(targetItem.profileImageUrl)
+                .load(targetItem.profileImage)
                 .into(binding.ivProfileImage)
 
         binding.tvUserId.text = targetItem.name
