@@ -257,9 +257,10 @@ class AddPostFragment : Fragment(), PostInterface {
         }
 
         binding.addpostApply.setOnClickListener {
-            if (galleryViewmodel.SelectedImage.value != -1 || galleryViewmodel.SelectedPosition.value!!.size > 0) {
+            val selecteduri = galleryViewmodel.getSelectImages()
+
+            if (selecteduri.size > 0) {
                 val converedImage = galleryViewmodel.convertMultiPart(requireContext())
-                val selecteduri = galleryViewmodel.getSelectImages()
                 val newFrag = AddContentFragment(converedImage, ArrayList(selecteduri), galleryViewmodel)
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragments_frame, newFrag)
@@ -270,6 +271,7 @@ class AddPostFragment : Fragment(), PostInterface {
             }
         }
 
+        
         binding.addpostCancel.setOnClickListener {
             galleryViewmodel.resetValue()
             val fragment = PopupPost(this)
