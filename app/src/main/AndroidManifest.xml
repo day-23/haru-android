@@ -91,9 +91,14 @@
             android:enabled="true"
             android:exported="false" />
 
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/app_icon_foreground"
-            />
+        <provider
+            android:authorities="com.example.haru.view.sns"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 </manifest>

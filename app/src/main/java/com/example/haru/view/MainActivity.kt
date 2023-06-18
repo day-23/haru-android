@@ -226,9 +226,15 @@ class MainActivity : BaseActivity() {
 
         if (result != null) {
             if (resultCode == RESULT_OK) {
-                Log.d("CropImages", "abs uri : ${result.uri}")
-                Log.d("CropImages", "path : ${result.originalUri}")
-                cropViewModel.getCropResult(result.uri)
+                if(User.cameraBoolean){
+                    Log.d("CropImages", "abs uri : ${result.uri}")
+                    Log.d("CropImages", "path : ${result.originalUri}")
+                    cropViewModel.getCropResultCamera(result.uri)
+                } else {
+                    Log.d("CropImages", "abs uri : ${result.uri}")
+                    Log.d("CropImages", "path : ${result.originalUri}")
+                    cropViewModel.getCropResult(result.uri)
+                }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 val error = result.error
                 Log.d("ImageCrop", "$error")
