@@ -299,8 +299,14 @@ class AdapterMonth(
             }
         }
 
-        while (parentConstraintLayout.get(0).id != R.id.date_layout_start) {
-            parentConstraintLayout.removeViewAt(0)
+        for(i in 0 until parentConstraintLayout.childCount){
+            if(parentConstraintLayout.getChildAt(i) != null) {
+                val tag = parentConstraintLayout.getChildAt(i).tag
+
+                if (tag != null && tag == "동적뷰") {
+                    parentConstraintLayout.removeViewAt(i)
+                }
+            }
         }
 
         val touchList = ArrayList<Boolean>()
@@ -552,7 +558,9 @@ class AdapterMonth(
 
         testView.layoutParams = layoutParams
 
-        parentConstraintLayout.addView(testView, 0)
+        testView.setTag("동적뷰")
+
+        parentConstraintLayout.addView(testView)
     }
 
     fun pxToDp(px: Float): Int {
@@ -657,9 +665,11 @@ class AdapterMonth(
 
     //레이아웃이 완전히 확립이 안됐을 때 실행이 돼
     fun setView(holder: MonthView, position: Int) {
+        holder.setIsRecyclable(false)
+
         val calendar = Calendar.getInstance()
 
-        var calendarviewModel = CalendarViewModel()
+        val calendarviewModel = CalendarViewModel()
 
         calendar.time = Date()
         calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
