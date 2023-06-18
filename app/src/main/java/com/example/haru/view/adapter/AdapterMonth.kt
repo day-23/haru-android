@@ -517,6 +517,7 @@ class AdapterMonth(
         testView.gravity = Gravity.CENTER
         testView.setText(textViewText)
         testView.setTextSize(Dimension.SP, 12.0f)
+        
 
         val calendar = Calendar.getInstance()
         val thisMonth = Calendar.getInstance()
