@@ -180,6 +180,36 @@ class SnsViewModel: ViewModel() {
         }
     }
 
+    fun getFirstTemplateComments(postId: String) {
+        var comments = ArrayList<Comments>()
+        var total = 0
+        viewModelScope.launch {
+            PostRepository.getFirstTemplateComment(postId){
+                if(it.data.size > 0){
+                    comments = it.data
+                    total = it.pagination.totalItems!!
+                }
+            }
+            _FirstComments.value = comments
+            _TotalComments.value = total
+        }
+    }
+
+    fun getTemplateComments(postId: String, lastCreatedAt: String) {
+        var comments = ArrayList<Comments>()
+        var total = 0
+        viewModelScope.launch {
+            PostRepository.getTemplateComment(postId, lastCreatedAt){
+                if(it.data.size > 0){
+                    comments = it.data
+                    total = it.pagination.totalItems!!
+                }
+            }
+            _Comments.value = comments
+
+        }
+    }
+
     fun getHotTags(){
         var tags = arrayListOf<Tag>()
 

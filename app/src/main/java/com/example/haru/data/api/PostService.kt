@@ -58,6 +58,19 @@ interface PostService {
         @Path("imageId") imageId: String,
     ): Call<CommentsResponse>
 
+    @GET("comment/{userId}/{postId}/comments/all?page=1")
+    fun getFirstTemplateComments(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String,
+    ): Call<CommentsResponse>
+
+    @GET("comment/{userId}/{postId}/comments/all")
+    fun getTemplateComments(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String,
+        @Query("lastCreatedAt") lastCreatedAt: String
+    ): Call<CommentsResponse>
+
     @POST("post/{userId}/{postId}/like")
     fun postLike(@Path("userId") userId: String, @Path("postId") postId:String) : Call<LikeResponse>
 
