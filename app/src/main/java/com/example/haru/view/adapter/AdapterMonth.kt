@@ -34,6 +34,7 @@ import com.example.haru.view.calendar.TouchEventDecoration
 import com.example.haru.view.calendar.calendarMainData
 import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.viewmodel.CalendarViewModel
+import okhttp3.internal.wait
 import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.time.Month
@@ -191,7 +192,7 @@ class AdapterMonth(
         val touchEventRecyclerView =
             holder.itemView.findViewById<RecyclerView>(R.id.touch_event_recyclerview)
 
-        var dateArrayList = ArrayList<Date>()
+        val dateArrayList = ArrayList<Date>()
 
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month)
@@ -199,7 +200,10 @@ class AdapterMonth(
 
         for (i in 0..5) {
             for (k in 0..6) {
-                calendar.add(Calendar.DAY_OF_MONTH, (1 - calendar.get(Calendar.DAY_OF_WEEK)) + k)
+                calendar.add(
+                    Calendar.DAY_OF_MONTH,
+                    (1 - calendar.get(Calendar.DAY_OF_WEEK)) + k
+                )
 
                 if (i >= 4 && k == 0 && calendar.get(Calendar.MONTH) != month) {
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
@@ -259,17 +263,20 @@ class AdapterMonth(
                     calendar.time.month == Date().month &&
                     calendar.time.date == Date().date
                 ) {
-//                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.BOLD)
+                    //                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.BOLD)
                     dateTextViews[i * 7 + k].setTextColor(Color.parseColor("#1DAFFF"))
                     dateLayoutViews[i * 7 + k].background = ContextCompat.getDrawable(
                         parentFragment.requireContext(),
                         R.drawable.today_circle
-//                        calendar_in_today_image
+                        //                        calendar_in_today_image
                     )
                 } else { // font 문제 해결
-//                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.NORMAL)
+                    //                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.NORMAL)
                     dateLayoutViews[i * 7 + k].background =
-                        ContextCompat.getDrawable(parentFragment.requireContext(), R.color.white)
+                        ContextCompat.getDrawable(
+                            parentFragment.requireContext(),
+                            R.color.white
+                        )
                 }
             }
 
@@ -277,13 +284,15 @@ class AdapterMonth(
         }
 
         if (maxi == 4) {
-            eraseableView.setBackgroundResource(R.color.white)
+            eraseableView.visibility = View.INVISIBLE
+            dateLayoutSix.visibility = View.INVISIBLE
 
             dateLayoutFive.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 bottomToTop = dateLayoutEnd.id
             }
         } else {
-            eraseableView.setBackgroundColor(Color.parseColor("#DBDBDB"))
+            eraseableView.visibility = View.VISIBLE
+            dateLayoutSix.visibility = View.VISIBLE
 
             dateLayoutFive.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 bottomToTop = dateLayoutSix.id
@@ -338,7 +347,7 @@ class AdapterMonth(
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    if(column < 0 || column >= 7 || row < 0 || row >= (maxi+1)){
+                    if (column < 0 || column >= 7 || row < 0 || row >= (maxi + 1)) {
                         return@setOnTouchListener true
                     }
 
@@ -360,12 +369,6 @@ class AdapterMonth(
                         }
 
                         adapter.itemChange(startPosition, endPosition, true)
-
-//                        for(i in startPosition..endPosition){
-//                            if(!adapter.touchList[i]) {
-//                                adapter.itemChange(i, true)
-//                            }
-//                        }
                     }
                     true
                 }
@@ -384,18 +387,12 @@ class AdapterMonth(
                                 endPosition = tmp
                             }
 
-                            if(column < 0 || column >= 7 || row < 0 || row >= (maxi+1)){
+                            if (column < 0 || column >= 7 || row < 0 || row >= (maxi + 1)) {
                                 adapter.itemChange()
                                 return@setOnTouchListener false
                             } else {
                                 adapter.itemChange(startPosition, endPosition, false)
                             }
-
-//                            for(i in startPosition..endPosition){
-//                                if(adapter.touchList[i]) {
-//                                    adapter.itemChange(i, false)
-//                                }
-//                            }
 
                             val scheduleInput = CalendarAddFragment(
                                 dateArrayList[startPosition],
@@ -696,8 +693,6 @@ class AdapterMonth(
                         var cloneLiveTodo = livetodo as ArrayList
                         var cloneLiveSchedule = liveschedule as ArrayList
                         val cloneLiveHoliday = liveholiday as ArrayList
-
-                        Log.d("공휴일", cloneLiveHoliday.toString())
 
                         var spanList = ArrayList<Int>()
 
