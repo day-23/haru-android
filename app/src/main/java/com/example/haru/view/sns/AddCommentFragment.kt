@@ -43,6 +43,7 @@ import com.example.haru.viewmodel.SnsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kakao.sdk.talk.model.Friend
 
 class AddCommentFragment(
     var isTemplate: String? = "",
@@ -219,8 +220,10 @@ class AddCommentFragment(
         Log.d("TAG", "SnsFragment - onCreateView() called")
         profileViewModel.getUserInfo(com.example.haru.utils.User.id)
         profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
-            isMyPost = com.example.haru.utils.User.id == user.id
-            myInfo = user
+            if(com.example.haru.utils.User.id == user.id) {
+                isMyPost = com.example.haru.utils.User.id == user.id
+                myInfo = user
+            }
         }
         binding = FragmentAddCommentBinding.inflate(inflater, container, false)
 
@@ -297,6 +300,16 @@ class AddCommentFragment(
         binding.writeCommentBack.setOnClickListener {
             val backManager = parentFragmentManager
             backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
+
+        binding.showTotalComment.setOnClickListener {
+            val friend = FriendInfo(writerInfo.id,writerInfo.name,writerInfo.profileImage,writerInfo.profileImage,0,0,0,"")
+            val post = Post(postId, friend, content, isTemplate, postImages, arrayListOf(), false, false, likeCnt, commentCnt,"","")
+            val newFrag = CommentsFragment(post, com.example.haru.utils.User.id)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
 
         viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
