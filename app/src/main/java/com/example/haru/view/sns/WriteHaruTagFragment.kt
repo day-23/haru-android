@@ -114,7 +114,6 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
 
         binding.writeHaruApply.setOnClickListener {
             binding.writeHaruApply.isClickable = false
-            Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
             val hashtag = templateViewModel.getTagList()
             val loading = LoadingAnimation()
             if (id != "") {
@@ -129,7 +128,6 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
             }
 
             templateViewModel.PostRequest.observe(viewLifecycleOwner) { done ->
-
                 if(done == 201) {
                     loading.dismiss {
                         val fragment = SnsFragment()

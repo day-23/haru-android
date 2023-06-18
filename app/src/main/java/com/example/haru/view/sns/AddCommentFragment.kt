@@ -229,7 +229,7 @@ class AddCommentFragment(
                     fragment.show(parentFragmentManager, fragment.tag)
                 } else {
                     val backManager = parentFragmentManager
-                    backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    backManager.popBackStack()
                 }
             }
         }
@@ -288,7 +288,7 @@ class AddCommentFragment(
 
         binding.writeCommentBack.setOnClickListener {
             val backManager = parentFragmentManager
-            backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            backManager.popBackStack()
         }
 
         binding.showTotalComment.setOnClickListener {
@@ -353,17 +353,17 @@ class AddCommentFragment(
             if (AddContent != "") {
                 Log.d("20191668", "position $AddX, $AddY")
 
-                if(isTemplate != null && isTemplate != "") {
+                if (isTemplate != null && isTemplate != "") {
                     snsViewModel.writeComment(
                         CommentBody(AddContent, AddX, AddY),
                         postId,
                     )
-                }
-                else{
+                } else {
                     snsViewModel.writeComment(
                         CommentBody(AddContent, AddX, AddY),
                         postId,
-                        postImages[imageIndex].id)
+                        postImages[imageIndex].id
+                    )
                 }
             } else {
                 Toast.makeText(requireContext(), "댓글 내용을 입력해주세요", Toast.LENGTH_SHORT).show()
@@ -371,8 +371,10 @@ class AddCommentFragment(
         }
 
         snsViewModel.AddComment.observe(viewLifecycleOwner) { comment ->
-            profileViewModel.getUserInfo(com.example.haru.utils.User.id)
-            addedComment = comment
+                if(comment.id != "") {
+                    profileViewModel.getUserInfo(com.example.haru.utils.User.id)
+                    addedComment = comment
+                }
         }
 
         profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->

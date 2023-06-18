@@ -81,7 +81,6 @@ class AddTagFragment(
 
         binding.addpostApply.setOnClickListener {
             binding.addpostApply.isClickable = false
-            Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
             val loading = LoadingAnimation()
             requireActivity().supportFragmentManager.beginTransaction()
                 .add(R.id.fragments_frame, loading)
@@ -92,6 +91,7 @@ class AddTagFragment(
             galleryViewmodel.resetValue()
 
             galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
+                binding.addpostApply.isClickable = true
                 if(done == 201) {
                     loading.dismiss{
                         val fragment = SnsFragment()
