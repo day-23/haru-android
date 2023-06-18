@@ -95,7 +95,7 @@ class FriendsListAdapter(
     override fun getItemCount(): Int {
         return itemList.size
     }
-    
+
     fun showButtons(holder: FriendsListViewHolder, status: Int){
         when(status){
             0 ->{ //아무사이 아님
