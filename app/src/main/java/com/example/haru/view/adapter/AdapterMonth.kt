@@ -183,7 +183,7 @@ class AdapterMonth(
         val dateLayoutSix = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_six)
 
         val parentConstraintLayout =
-            holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
+            holder.itemView.findViewById<ConstraintLayout>(R.id.addview_layout)
 
         val eraseableView = holder.itemView.findViewById<View>(R.id.eraseable_view)
 
@@ -299,15 +299,7 @@ class AdapterMonth(
             }
         }
 
-        for(i in 0 until parentConstraintLayout.childCount){
-            if(parentConstraintLayout.getChildAt(i) != null) {
-                val tag = parentConstraintLayout.getChildAt(i).tag
-
-                if (tag != null && tag == "동적뷰") {
-                    parentConstraintLayout.removeViewAt(i)
-                }
-            }
-        }
+        parentConstraintLayout.removeAllViews()
 
         val touchList = ArrayList<Boolean>()
 
@@ -453,7 +445,7 @@ class AdapterMonth(
         startDate: Date
     ) {
         val parentConstraintLayout =
-            holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
+            holder.itemView.findViewById<ConstraintLayout>(R.id.addview_layout)
 
         val dateLayoutOne = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_one)
         val dateLayoutTwo = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_two)
@@ -496,21 +488,26 @@ class AdapterMonth(
             dateLayoutOne.height / 2
         )
 
+//        layoutParams.bottomToBottom = parentConstraintLayout.id
+        layoutParams.topToTop = parentConstraintLayout.id
+
         layoutParams.leftToLeft = parentConstraintLayout.id
         layoutParams.rightToRight = parentConstraintLayout.id
         layoutParams.horizontalBias = x
 
-        layoutParams.topToBottom = layoutList[line].id
+//        layoutParams.topToBottom = layoutList[line].id
 
-        if (line == size) {
-            layoutParams.bottomToTop = lastView.id
-        } else {
-            layoutParams.bottomToTop = layoutList[line + 1].id
-        }
+//        if (line == size) {
+//            layoutParams.bottomToTop = lastView.id
+//        } else {
+//            layoutParams.bottomToTop = layoutList[line + 1].id
+//        }
+//
+//        val vertical = (count * 15).toFloat() / (layoutInterval - 15).toFloat()
+//
+//        layoutParams.verticalBias = vertical
 
-        val vertical = (count * 15).toFloat() / (layoutInterval - 15).toFloat()
-
-        layoutParams.verticalBias = vertical
+        testView.y = layoutList[line].y + layoutList[line].height + (count*(layoutList[line].height/2+1))
 
         testView.setBackgroundResource(R.drawable.calendar_textview_border)
         val drawable = testView.background as GradientDrawable
@@ -558,9 +555,7 @@ class AdapterMonth(
 
         testView.layoutParams = layoutParams
 
-        testView.setTag("동적뷰")
-
-        parentConstraintLayout.addView(testView)
+        parentConstraintLayout.addView(testView,0)
     }
 
     fun pxToDp(px: Float): Int {

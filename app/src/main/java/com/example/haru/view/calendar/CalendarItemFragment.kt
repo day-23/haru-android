@@ -570,7 +570,7 @@ class CalendarItemFragment(
             datePicker.show(parentFragmentManager, null)
         }
 
-        binding.deleteScheduleTv.setOnClickListener {
+        binding.deleteScheduleLayout.setOnClickListener {
             val deleteDialg = DeleteOptionScheduleFragment(schedule.location) {
                 val calendarviewmodel = CalendarViewModel()
 
