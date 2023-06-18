@@ -135,7 +135,7 @@
                     tools:ignore="MissingConstraints" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="138dp"
+                    android:layout_width="180dp"
                     android:layout_height="44dp"
                     android:layout_marginStart="102dp"
                     android:layout_marginTop="9dp"
@@ -146,13 +146,26 @@
 
                     <TextView
                         android:id="@+id/profile_name"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="이름"
                         android:textColor="#191919"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/secret_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/secret_icon"
+                        app:layout_constraintTop_toTopOf="@id/profile_name"
+                        app:layout_constraintBottom_toBottomOf="@id/profile_name"
+                        app:layout_constraintLeft_toRightOf="@id/profile_name"
+                        android:visibility="invisible"
+                        android:layout_marginStart="4dp"/>
 
                     <TextView
                         android:id="@+id/profile_introduction"
@@ -262,6 +275,31 @@
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <ImageView
+                android:id="@+id/hagi_ruri_watering"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/hagi_ruri_watering"
+                app:layout_constraintTop_toBottomOf="@id/profile"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:visibility="gone"
+                android:layout_marginTop="144dp"/>
+
+            <TextView
+                android:id="@+id/secret_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="비공개 계정입니다.\n수락된 친구만 게시글을 볼 수 있어요."
+                android:textSize="16sp"
+                android:textColor="#646464"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/hagi_ruri_watering"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:visibility="gone"
+                android:layout_marginTop="50dp"/>
+
             <!--피드선택-->
             <LinearLayout
                 android:id="@+id/select"
@@ -366,11 +404,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <LinearLayout
-        android:id="@+id/mypage_popup_anchor"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

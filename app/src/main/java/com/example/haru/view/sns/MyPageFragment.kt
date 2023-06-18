@@ -205,9 +205,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
 
         initProfile()
-        mypageViewModel.getFirstFeed(userId)
-        mypageViewModel.getFirstMedia(userId)
-        mypageViewModel.getUserTags(userId)
+
+
 
         mypageViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
             userInfo = user
@@ -242,6 +241,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             else Glide.with(this)
                 .load(user.profileImage)
                 .into(binding.profileImage)
+
+            showFeeds(user.friendStatus, user.isPublicAccount)
         }
 
         binding.select.bringToFront()
@@ -436,6 +437,22 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             }
         }
         return false
+    }
+
+    fun showFeeds(friendStatus : Int, isPublicAccount: Boolean){
+        if(friendStatus == 2  || isPublicAccount){
+            mypageViewModel.getFirstFeed(userId)
+            mypageViewModel.getFirstMedia(userId)
+            mypageViewModel.getUserTags(userId)
+        }else{ // 비공개 계정
+            binding.feedRecycler.visibility = View.GONE
+            binding.mediaContainer.visibility = View.GONE
+            binding.select.visibility = View.GONE
+
+            binding.hagiRuriWatering.visibility = View.VISIBLE
+            binding.secretText.visibility = View.VISIBLE
+            binding.secretIcon.visibility = View.VISIBLE
+        }
     }
 
     fun moveEditprofile(userId: String) {
