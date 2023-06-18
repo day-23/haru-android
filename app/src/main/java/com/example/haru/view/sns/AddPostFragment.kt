@@ -3,8 +3,12 @@ package com.example.haru.view.sns
 import BaseActivity
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.app.Dialog
 import android.content.ContentUris
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.media.MediaScannerConnection
@@ -21,7 +25,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -39,6 +47,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.jar.Manifest
+import kotlin.collections.ArrayList
 
 interface PostInterface {
     fun Postpopup(position: Int)
@@ -52,6 +67,8 @@ class AddPostFragment : Fragment(), PostInterface {
     var toggle = false
     var totalImage: ArrayList<ExternalImages> = arrayListOf()
     var isMultiSelect = false
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
 
     override fun onResume() {
         super.onResume()
@@ -72,7 +89,7 @@ class AddPostFragment : Fragment(), PostInterface {
 
     companion object {
         const val TAG: String = "로그"
-
+        private const val REQUEST_CODE_PERMISSIONS = 123 //카메라 코드
         fun newInstance(): AddPostFragment {
             return AddPostFragment()
         }
@@ -202,9 +219,28 @@ class AddPostFragment : Fragment(), PostInterface {
             } else {
                 binding.imageMultiSelect.setImageResource(R.drawable.multi_select_picture)
             }
-
-
             galleryAdapter.notifyDataSetChanged()
+        }
+
+        binding.useCamera.setOnClickListener {
+            openCamera()
+        }
+
+        resultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()){ result ->
+            // 서브 액티비티로부터 돌아올 때의 결과 값을 받아 올 수 있는 구문
+            if (result.resultCode == RESULT_OK){
+                Log.d("camera", "result ${result.data!!.extras}")
+                if(result.data != null) {
+                    val extras = result.data?.extras
+                    if (extras != null && extras.containsKey("data")) {
+                        val bitmap = extras.get("data") as Bitmap
+                        val imageUri = bitmapToUri(requireContext(), bitmap)
+                        cropImage(imageUri)
+                    }
+                }
+//                imageResult(result.resultCode, result.resultCode, result.data)
+            }
         }
 
         binding.addpostApply.setOnClickListener {
@@ -272,7 +308,6 @@ class AddPostFragment : Fragment(), PostInterface {
                 101
             )
         } else {
-            Log.d("Image", "permission here")
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
@@ -340,6 +375,49 @@ class AddPostFragment : Fragment(), PostInterface {
                 .start(it, this)
         }
     }
+    private fun openCamera() {
+        val cameraPermission = android.Manifest.permission.CAMERA
+
+        if (ContextCompat.checkSelfPermission(requireContext(), cameraPermission) == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            resultLauncher.launch(intent)
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(cameraPermission),
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
+    }
+
+    fun bitmapToUri(context: Context, bitmap: Bitmap): Uri {
+        val fileName = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        val cacheDir = context.externalCacheDir
+        val imagePath = File(cacheDir, "$fileName.jpg")
+
+        var fileOutputStream: FileOutputStream? = null
+        fileOutputStream = FileOutputStream(imagePath)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+        fileOutputStream.flush()
+
+        return Uri.fromFile(imagePath)
+    }
+
+    fun imageResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val imageUri: Uri? = data?.data
+        Log.d("camera", "받은 값: $imageUri")
+        imageUri?.let {
+            Log.d("camera", "$imageUri")
+            cropImage(imageUri)
+        }
+    }
+    private fun allPermissionsGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            android.Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
 }
 
 class PopupPost(val listener: PostInterface) : BottomSheetDialogFragment() {
