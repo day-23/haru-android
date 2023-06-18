@@ -290,7 +290,7 @@ class SearchFragment(val viewModel: Any) : Fragment(){
 
 
         } else if (viewModel is MyPageViewModel) {
-            binding.tvEmptyDescription.text = "아이디 또는 닉네임 검색을 통해\n친구를 찾을 수 있어요."
+            binding.tvEmptyDescription.text = "아이디 또는 이메일 검색을 통해\n친구를 찾을 수 있어요."
 
             var friendStatus = -1
             var targetInfo = com.example.haru.data.model.User()
@@ -299,7 +299,7 @@ class SearchFragment(val viewModel: Any) : Fragment(){
                 if (it == null) {
                     targetInfo = User()
                     friendStatus = -1
-                    binding.tvEmptyDescription.text = "아이디 또는 닉네임 검색을 통해\n친구를 찾을 수 있어요."
+                    binding.tvEmptyDescription.text = "아이디 또는 이메일 검색을 통해\n친구를 찾을 수 있어요."
                     binding.ivEmpty.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.hagi_ruri_back)
                     binding.emptyLayout.visibility = View.VISIBLE
@@ -308,7 +308,7 @@ class SearchFragment(val viewModel: Any) : Fragment(){
                     targetInfo = User()
                     friendStatus = -1
                     binding.userSearchLayout.visibility = View.GONE
-                    binding.tvEmptyDescription.text = "검색 아이디 또는 닉네임을 가진\n친구를 찾을 수 없어요."
+                    binding.tvEmptyDescription.text = "검색 아이디 또는 이메일을 가진\n친구를 찾을 수 없어요."
                     binding.emptyLayout.visibility = View.VISIBLE
                     binding.ivEmpty.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.account_delete_image)
