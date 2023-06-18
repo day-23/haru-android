@@ -54,7 +54,6 @@ class EtcFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentEtcBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -148,7 +147,12 @@ class EtcFragment : Fragment() {
             when (v?.id) {
                 binding.settingIcon.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out)
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        )
                         .replace(R.id.fragments_frame, SettingFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()

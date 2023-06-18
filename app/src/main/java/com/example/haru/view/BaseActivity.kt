@@ -42,6 +42,7 @@ open class BaseActivity : AppCompatActivity() {
 
     // Add this function to BaseActivity
     fun adjustTopMargin(viewId: Int) {
+        Log.d("Padding", "$viewId")
         findViewById<View>(viewId)?.let {
             ViewCompat.setOnApplyWindowInsetsListener(it) { view, insets ->
                 val statusBarHeight: Int

@@ -46,13 +46,13 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.protectHeaderTitle.id)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.protectHeaderTitle.id)
 
         etcViewModel.isPublicAccount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.switchAccountPublic.isChecked = !it
