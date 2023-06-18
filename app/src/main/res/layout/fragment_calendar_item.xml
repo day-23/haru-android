@@ -579,25 +579,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:paddingBottom="70dp"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/delete_schedule_tv"
+            <LinearLayout
+                android:id="@+id/delete_schedule_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:text="일정 삭제"
-                android:textColor="@color/delete_red"
-                android:textSize="20sp" />
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/delete_icon"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="일정 삭제"
+                    android:textColor="@color/delete_red"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/delete_icon"/>
+            </LinearLayout>
         </LinearLayout>
-
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"/>
     </LinearLayout>
 </layout>
