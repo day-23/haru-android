@@ -338,7 +338,7 @@ class MyPageViewModel() : ViewModel() {
                     if (imageFile != null && imageFile.exists()) {
                         // Create a RequestBody from the image file
                         val imageRequestBody =
-                            RequestBody.create("image/*".toMediaTypeOrNull(), imageFile)
+                            RequestBody.create("image/${imageFile.name.substringAfterLast('.')}".toMediaTypeOrNull(), imageFile)
 
                         // Create a MultipartBody.Part from the image RequestBody
                         val imagePart = MultipartBody.Part.createFormData(
