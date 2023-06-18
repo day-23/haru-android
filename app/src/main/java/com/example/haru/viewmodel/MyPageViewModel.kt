@@ -401,7 +401,7 @@ class MyPageViewModel() : ViewModel() {
                 }
                 postResult = it
             }
-            _PostDone.value = postResult
+            _PostRequest.value = postResult
         }
     }
 
