@@ -580,7 +580,6 @@ class MypageDeleteFriend(
             }
 
             popupbinding.btnDeleteCancel.setOnClickListener {
-//                listener.onDeleteClick(1)
                 dismiss()
             }
 
@@ -594,7 +593,6 @@ class MypageDeleteFriend(
             }
 
             blockbinding.btnBlockCancel.setOnClickListener {
-//                listener.onDeleteClick(1)
                 dismiss()
             }
             return blockbinding.root

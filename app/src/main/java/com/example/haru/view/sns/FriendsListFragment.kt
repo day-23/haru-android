@@ -72,10 +72,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
     override fun onDeleteClick(item: FriendInfo) {
         deleteTarget = item
         val fragment = PopupDeleteFriend(item, this)
-        val fragmentManager = childFragmentManager
-        val transaction = fragmentManager.beginTransaction()
-        transaction.add(R.id.friend_list_anchor, fragment)
-        transaction.commit()
+        fragment.show(parentFragmentManager, fragment.tag)
     }
 
     override fun onAcceptClick(item: FriendInfo) {
@@ -101,14 +98,6 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
     }
 
     override fun onPopupClick(position: Int) {
-//        val fragmentManager = childFragmentManager
-//        val fragment = fragmentManager.findFragmentById(R.id.friend_list_anchor)
-//        if (fragment != null) {
-//            MainActivity.hideNavi(false)
-//            val transaction = fragmentManager.beginTransaction()
-//            transaction.remove(fragment)
-//            transaction.commit()
-//        }
         if (position == 0) {
             mypageViewModel.requestDelFriend(DelFriendBody(deleteTarget.id!!))
             mypageViewModel.FriendRequest.observe(viewLifecycleOwner) { result ->
