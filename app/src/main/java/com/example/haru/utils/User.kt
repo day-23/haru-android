@@ -27,6 +27,8 @@ object User {
     var pmAlarmDate: String = ""
     var categories: ArrayList<Category?> = arrayListOf(null, null)
     var isSignUp: Boolean = false
+    var addViewIdCheck: Int = 0
+
     override fun toString(): String {
         return "User : {id : $id}, " +
                 "{name : $name}, " +
