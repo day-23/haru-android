@@ -76,18 +76,12 @@ class FriendsListAdapter(val context: Context,
         }
 
         if(User.id == itemList[position].id)
-            deleteMine(itemList[position])
+            holder.itemView.visibility = View.GONE
 
     }
 
     override fun getItemCount(): Int {
         return itemList.size
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun deleteMine(item: FriendInfo){
-        itemList.remove(item)
-        notifyDataSetChanged()
     }
 
     fun showButtons(holder: FriendsListViewHolder, status: Int){
