@@ -104,7 +104,7 @@ class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
         Log.d(SnsFragment.TAG, "LookAroundFragment - onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.lookAroundMenu.id)
 
-        MainActivity.hideNavi(true)
+        MainActivity.hideNavi(false)
     }
 
     override fun onResume() {
