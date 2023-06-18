@@ -247,7 +247,6 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
                     } else {//요청 목록 보기중인 상태라면
                         mypageViewModel.getFriendsRequestList(targetId, lastCreatedAt)
                     }
-                    Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT).show()
                 }
             }
         }
