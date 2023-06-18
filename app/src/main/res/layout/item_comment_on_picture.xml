@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:text="고양이 눈 완전 귀엽다"
         android:textColor="#191919"
-        android:textSize="14dp"
+        android:textSize="14sp"
         android:gravity="center"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -143,22 +143,6 @@ class MainActivity : BaseActivity() {
                 )
                 .check()
         }
-
-        when {
-            ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                Log.d("권한설정", "적용")
-            }
-            shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE) -> {
-                Log.d("권한설정", "거부됨")
-            }
-            else -> {
-                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000)
-                Log.d("권한설정", "else")
-            }
-        }
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

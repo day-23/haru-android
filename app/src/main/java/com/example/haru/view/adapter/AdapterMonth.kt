@@ -34,6 +34,7 @@ import com.example.haru.view.calendar.TouchEventDecoration
 import com.example.haru.view.calendar.calendarMainData
 import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.viewmodel.CalendarViewModel
+import okhttp3.internal.wait
 import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.time.Month
@@ -182,7 +183,7 @@ class AdapterMonth(
         val dateLayoutSix = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_six)
 
         val parentConstraintLayout =
-            holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
+            holder.itemView.findViewById<ConstraintLayout>(R.id.addview_layout)
 
         val eraseableView = holder.itemView.findViewById<View>(R.id.eraseable_view)
 
@@ -191,7 +192,7 @@ class AdapterMonth(
         val touchEventRecyclerView =
             holder.itemView.findViewById<RecyclerView>(R.id.touch_event_recyclerview)
 
-        var dateArrayList = ArrayList<Date>()
+        val dateArrayList = ArrayList<Date>()
 
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month)
@@ -199,7 +200,10 @@ class AdapterMonth(
 
         for (i in 0..5) {
             for (k in 0..6) {
-                calendar.add(Calendar.DAY_OF_MONTH, (1 - calendar.get(Calendar.DAY_OF_WEEK)) + k)
+                calendar.add(
+                    Calendar.DAY_OF_MONTH,
+                    (1 - calendar.get(Calendar.DAY_OF_WEEK)) + k
+                )
 
                 if (i >= 4 && k == 0 && calendar.get(Calendar.MONTH) != month) {
                     calendar.add(Calendar.DAY_OF_MONTH, -1)
@@ -259,17 +263,20 @@ class AdapterMonth(
                     calendar.time.month == Date().month &&
                     calendar.time.date == Date().date
                 ) {
-//                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.BOLD)
+                    //                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.BOLD)
                     dateTextViews[i * 7 + k].setTextColor(Color.parseColor("#1DAFFF"))
                     dateLayoutViews[i * 7 + k].background = ContextCompat.getDrawable(
                         parentFragment.requireContext(),
                         R.drawable.today_circle
-//                        calendar_in_today_image
+                        //                        calendar_in_today_image
                     )
                 } else { // font 문제 해결
-//                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.NORMAL)
+                    //                    dateTextViews[i*7 + k].setTypeface(Typeface.SERIF, Typeface.NORMAL)
                     dateLayoutViews[i * 7 + k].background =
-                        ContextCompat.getDrawable(parentFragment.requireContext(), R.color.white)
+                        ContextCompat.getDrawable(
+                            parentFragment.requireContext(),
+                            R.color.white
+                        )
                 }
             }
 
@@ -277,22 +284,22 @@ class AdapterMonth(
         }
 
         if (maxi == 4) {
-            eraseableView.setBackgroundResource(R.color.white)
+            eraseableView.visibility = View.INVISIBLE
+            dateLayoutSix.visibility = View.INVISIBLE
 
             dateLayoutFive.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 bottomToTop = dateLayoutEnd.id
             }
         } else {
-            eraseableView.setBackgroundColor(Color.parseColor("#DBDBDB"))
+            eraseableView.visibility = View.VISIBLE
+            dateLayoutSix.visibility = View.VISIBLE
 
             dateLayoutFive.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 bottomToTop = dateLayoutSix.id
             }
         }
 
-        while (parentConstraintLayout.get(0).id != R.id.date_layout_start) {
-            parentConstraintLayout.removeViewAt(0)
-        }
+        parentConstraintLayout.removeAllViews()
 
         val touchList = ArrayList<Boolean>()
 
@@ -338,7 +345,7 @@ class AdapterMonth(
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    if(column < 0 || column >= 7 || row < 0 || row >= (maxi+1)){
+                    if (column < 0 || column >= 7 || row < 0 || row >= (maxi + 1)) {
                         return@setOnTouchListener true
                     }
 
@@ -360,12 +367,6 @@ class AdapterMonth(
                         }
 
                         adapter.itemChange(startPosition, endPosition, true)
-
-//                        for(i in startPosition..endPosition){
-//                            if(!adapter.touchList[i]) {
-//                                adapter.itemChange(i, true)
-//                            }
-//                        }
                     }
                     true
                 }
@@ -384,18 +385,12 @@ class AdapterMonth(
                                 endPosition = tmp
                             }
 
-                            if(column < 0 || column >= 7 || row < 0 || row >= (maxi+1)){
+                            if (column < 0 || column >= 7 || row < 0 || row >= (maxi + 1)) {
                                 adapter.itemChange()
                                 return@setOnTouchListener false
                             } else {
                                 adapter.itemChange(startPosition, endPosition, false)
                             }
-
-//                            for(i in startPosition..endPosition){
-//                                if(adapter.touchList[i]) {
-//                                    adapter.itemChange(i, false)
-//                                }
-//                            }
 
                             val scheduleInput = CalendarAddFragment(
                                 dateArrayList[startPosition],
@@ -450,7 +445,7 @@ class AdapterMonth(
         startDate: Date
     ) {
         val parentConstraintLayout =
-            holder.itemView.findViewById<ConstraintLayout>(R.id.parent_contraint_layout)
+            holder.itemView.findViewById<ConstraintLayout>(R.id.addview_layout)
 
         val dateLayoutOne = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_one)
         val dateLayoutTwo = holder.itemView.findViewById<LinearLayout>(R.id.date_layout_two)
@@ -493,21 +488,26 @@ class AdapterMonth(
             dateLayoutOne.height / 2
         )
 
+//        layoutParams.bottomToBottom = parentConstraintLayout.id
+        layoutParams.topToTop = parentConstraintLayout.id
+
         layoutParams.leftToLeft = parentConstraintLayout.id
         layoutParams.rightToRight = parentConstraintLayout.id
         layoutParams.horizontalBias = x
 
-        layoutParams.topToBottom = layoutList[line].id
+//        layoutParams.topToBottom = layoutList[line].id
 
-        if (line == size) {
-            layoutParams.bottomToTop = lastView.id
-        } else {
-            layoutParams.bottomToTop = layoutList[line + 1].id
-        }
+//        if (line == size) {
+//            layoutParams.bottomToTop = lastView.id
+//        } else {
+//            layoutParams.bottomToTop = layoutList[line + 1].id
+//        }
+//
+//        val vertical = (count * 15).toFloat() / (layoutInterval - 15).toFloat()
+//
+//        layoutParams.verticalBias = vertical
 
-        val vertical = (count * 15).toFloat() / (layoutInterval - 15).toFloat()
-
-        layoutParams.verticalBias = vertical
+        testView.y = layoutList[line].y + layoutList[line].height + (count*(layoutList[line].height/2+2))
 
         testView.setBackgroundResource(R.drawable.calendar_textview_border)
         val drawable = testView.background as GradientDrawable
@@ -517,6 +517,7 @@ class AdapterMonth(
         testView.gravity = Gravity.CENTER
         testView.setText(textViewText)
         testView.setTextSize(Dimension.SP, 12.0f)
+
 
         val calendar = Calendar.getInstance()
         val thisMonth = Calendar.getInstance()
@@ -555,7 +556,7 @@ class AdapterMonth(
 
         testView.layoutParams = layoutParams
 
-        parentConstraintLayout.addView(testView, 0)
+        parentConstraintLayout.addView(testView,0)
     }
 
     fun pxToDp(px: Float): Int {
@@ -660,9 +661,11 @@ class AdapterMonth(
 
     //레이아웃이 완전히 확립이 안됐을 때 실행이 돼
     fun setView(holder: MonthView, position: Int) {
+        holder.setIsRecyclable(false)
+
         val calendar = Calendar.getInstance()
 
-        var calendarviewModel = CalendarViewModel()
+        val calendarviewModel = CalendarViewModel()
 
         calendar.time = Date()
         calendar.add(Calendar.MONTH, position - Int.MAX_VALUE / 2)
@@ -696,8 +699,6 @@ class AdapterMonth(
                         var cloneLiveTodo = livetodo as ArrayList
                         var cloneLiveSchedule = liveschedule as ArrayList
                         val cloneLiveHoliday = liveholiday as ArrayList
-
-                        Log.d("공휴일", cloneLiveHoliday.toString())
 
                         var spanList = ArrayList<Int>()
 

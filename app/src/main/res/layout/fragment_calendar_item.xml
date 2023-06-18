@@ -25,10 +25,15 @@
                 android:backgroundTint="@color/black"
                 android:background="@drawable/back_arrow"/>
 
-            <View
+            <TextView
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="일정 수정"
+                android:textColor="#191919"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:gravity="center"/>
 
             <ImageView
                 android:id="@+id/btn_submit_schedule"
@@ -55,7 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:layout_marginBottom="14dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
 
@@ -76,6 +81,7 @@
                         android:id="@+id/category_choose_iv"
                         android:layout_width="38dp"
                         android:layout_height="38dp"
+                        android:layout_marginRight="20dp"
                         android:background="@drawable/category_image" />
 
                 </LinearLayout>
@@ -147,7 +153,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_btn_date"
-                                android:textColor="#1DAFFF"
+                                android:textColor="#646464"
                                 android:textSize="14sp"
                                 app:backgroundTint="@null" />
 
@@ -159,7 +165,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_btn_date"
-                                android:textColor="#1DAFFF"
+                                android:textColor="#646464"
                                 android:textSize="14sp"
                                 app:backgroundTint="@null" />
                         </LinearLayout>
@@ -178,7 +184,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_btn_date"
-                                android:textColor="#1DAFFF"
+                                android:textColor="#646464"
                                 android:textSize="14sp"
                                 app:backgroundTint="@null" />
 
@@ -190,7 +196,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_btn_date"
-                                android:textColor="#1DAFFF"
+                                android:textColor="#646464"
                                 android:textSize="14sp"
                                 app:backgroundTint="@null" />
                         </LinearLayout>
@@ -516,7 +522,7 @@
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/custom_btn_date"
                             android:text="2023.03.14 화"
-                            android:textColor="@color/date_text"
+                            android:textColor="#1DAFFF"
                             android:visibility="invisible"
                             android:textSize="14sp"
                             app:backgroundTint="@null" />
@@ -573,22 +579,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingBottom="36dp">
+            android:paddingBottom="70dp"
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/delete_schedule_tv"
+            <LinearLayout
+                android:id="@+id/delete_schedule_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:text="일정 삭제하기"
-                android:textColor="@color/delete_red"
-                android:textSize="20sp" />
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/delete_icon"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:text="일정 삭제"
+                    android:textColor="@color/delete_red"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/delete_icon"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </layout>

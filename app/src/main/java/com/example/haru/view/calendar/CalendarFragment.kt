@@ -588,7 +588,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
 
                 binding.btnAddMainIncalendar.setImageResource(R.drawable.big_add_fab)
                 binding.btnAddTodoIncalendar.visibility = View.INVISIBLE
-                binding.btnAddTodoIncalendar.setClickable(false);
+                binding.btnAddTodoIncalendar.setClickable(false)
             } else {
                 btnAddMainInCalendar.setImageResource(R.drawable.schedule_add_fab)
                 btnAddTodoInCalendar.visibility = View.VISIBLE

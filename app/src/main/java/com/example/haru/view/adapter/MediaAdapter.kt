@@ -24,9 +24,11 @@ class MediaAdapter (val context: Context,
     }
 
     override fun onBindViewHolder(holder: MediaAdapter.MyFeedViewHolder, position: Int) {
-        Glide.with(context).load(itemList[position].images[0].url).into(holder.picture)
-        holder.picture.setOnClickListener {
-            mediaClick.onMediaClick(itemList[position])
+        if(itemList[position].images.size > 0){
+            Glide.with(context).load(itemList[position].images[0].url).into(holder.picture)
+            holder.picture.setOnClickListener {
+                mediaClick.onMediaClick(itemList[position])
+            }
         }
     }
 
