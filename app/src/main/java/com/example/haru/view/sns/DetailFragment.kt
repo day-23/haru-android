@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -21,15 +22,42 @@ import com.example.haru.view.adapter.PicturesPagerAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
 
-class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : Fragment() {
+class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : Fragment(), OnPostPopupClick {
     lateinit var binding : FragmentDetailPostBinding
     val media = media
     val post = post
     var writerId = ""
+    var postId = ""
     lateinit var adapter : PicturesPagerAdapter
     lateinit var pager : ViewPager2
     lateinit var snsViewModel: SnsViewModel
     lateinit var myPageViewModel: MyPageViewModel
+
+    override fun PopupConfirm(userId: String, postId: String, position: Int) {
+        if (position == 0) {
+            Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
+            snsViewModel.deletePost(postId)
+            parentFragmentManager.popBackStack()
+        }
+    }
+
+    override fun postPopupClicked(userId: String, postId: String, position: Int) {
+        if (position == 0) {
+            if (User.id == userId) {//수정하기
+            } else {//이 게시글 숨기기
+                snsViewModel.hidePost(postId)
+                parentFragmentManager.popBackStack()
+            }
+        } else if (position == 1) {
+            if (User.id == userId) {//삭제확인창
+                val fragment = PopupDeleteConfirm(userId, postId, this)
+                fragment.show(parentFragmentManager, fragment.tag)
+            } else { //신고하기
+                snsViewModel.reportPost(postId)
+                parentFragmentManager.popBackStack()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +88,10 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
 
         if(media.id != ""){
             writerId = media.user.id
+            postId = media.user.id
         }else{
             writerId = post.user.id
+            postId = post.user.id
         }
 
         if(User.id != media.id && User.id != post.id){
@@ -133,6 +163,11 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
                     transaction.commit()
                 }
             }
+        }
+
+        binding.detailPostSetup.setOnClickListener {
+            val fragment = PopupDeletePost(writerId, postId, this)
+            fragment.show(parentFragmentManager, fragment.tag)
         }
 
         binding.detailBack.setOnClickListener {
