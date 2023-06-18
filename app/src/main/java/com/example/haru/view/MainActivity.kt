@@ -37,6 +37,7 @@ import com.example.haru.viewmodel.CalendarViewModel
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : BaseActivity() {
@@ -80,30 +81,6 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        cropViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
-        setContentView(binding.root)
-
-        setBinding(binding)
-
-        initFragments()
-        setDefaultFragment()
-
-        binding.bottomNav.itemIconTintList = null
-
-        binding.bottomNav.setOnItemSelectedListener { menuItem ->
-            handleNavigation(menuItem.itemId)
-        }
-
-        val calendarViewModel = CalendarViewModel()
-
-        calendarViewModel.getCategories()
-        calendarViewModel.liveCategoryList.observe(this){
-            for (category in it){
-                User.categories.add(category)
-            }
-        }
-
         sharedPreference = getSharedPreferences("ApplyData", 0)
         editor = sharedPreference.edit()
 
@@ -119,6 +96,32 @@ class MainActivity : BaseActivity() {
         User.amAlarmDate = sharedPreference.getString("amAlarmDate", "오전 9:00")!!
         User.pmAlarmAprove = sharedPreference.getBoolean("pmAlarmAprove", true)
         User.pmAlarmDate = sharedPreference.getString("pmAlarmDate", "오후 9:00")!!
+
+        val calendarViewModel = CalendarViewModel()
+
+        calendarViewModel.getCategories()
+        calendarViewModel.liveCategoryList.observe(this){
+            User.categories = arrayListOf()
+
+            for (category in it){
+                User.categories.add(category)
+            }
+        }
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        cropViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
+        setContentView(binding.root)
+
+        setBinding(binding)
+
+        initFragments()
+        setDefaultFragment()
+
+        binding.bottomNav.itemIconTintList = null
+
+        binding.bottomNav.setOnItemSelectedListener { menuItem ->
+            handleNavigation(menuItem.itemId)
+        }
 
         if(VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val permissionlistener: PermissionListener = object : PermissionListener {
