@@ -329,6 +329,7 @@ class AddPostFragment : Fragment(), PostInterface {
                 101
             )
         }
+        getimage()
     }
 
     fun getimage() {
@@ -425,7 +426,18 @@ class AddPostFragment : Fragment(), PostInterface {
 
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-            resultLauncher.launch(intent)
+
+            if(allPermissionsGranted())
+                resultLauncher.launch(intent)
+            else{
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(android.Manifest.permission.CAMERA),
+                    101
+                )
+            }
+
+
         } catch (e: IOException){
             e.printStackTrace()
         }
