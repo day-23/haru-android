@@ -82,14 +82,17 @@ class AddTagFragment(
             galleryViewmodel.postRequest(images, content, hashtag)
 
             galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
-                if(done) {
+                if(done == 201) {
                     fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     val fragment = SnsFragment()
                     val transaction = parentFragmentManager.beginTransaction()
                     transaction.replace(R.id.fragments_frame, fragment)
                     transaction.commit()
+                }else if(done == 429){
+                    Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
                 }else{
-                    Toast.makeText(requireContext(),"게시글 업로드 실패", Toast.LENGTH_SHORT).show()
+                    binding.addpostApply.isClickable = true
+                    Toast.makeText(requireContext(), "게시글 등록에 실패하였습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
         }

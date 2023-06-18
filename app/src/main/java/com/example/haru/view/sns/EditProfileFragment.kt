@@ -118,7 +118,6 @@ class EditProfileFragment(userId: String) : Fragment() {
         // 이미지 선택 버튼에 클릭 이벤트 리스너 등록
         binding.editProfileImage.setOnClickListener {
 
-            // TODO:권한을 허락받자마자 코드가 계속 실행되면 좋을거 같음
             if (ContextCompat.checkSelfPermission(
                     requireContext(),
                     android.Manifest.permission.READ_MEDIA_IMAGES
@@ -247,6 +246,7 @@ class GalleryFragment : Fragment() {
                 }
             })
         }
+
         return binding.root
     }
 

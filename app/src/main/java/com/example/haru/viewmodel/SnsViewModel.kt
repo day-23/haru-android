@@ -142,8 +142,6 @@ class SnsViewModel: ViewModel() {
         }
     }
 
-
-
     fun likeAction(id: String){
         viewModelScope.launch {
             PostRepository.postLike(id) {

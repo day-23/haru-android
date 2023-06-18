@@ -22,7 +22,7 @@ class PostRepository() {
     val userId = com.example.haru.utils.User.id
 
     //게시글 추가
-    suspend fun addPost(post: AddPost, callback: (postInfo: SendPost) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun addPost(post: AddPost, callback: (status: Int) -> Unit) = withContext(Dispatchers.IO) {
         // Prepare the request data
         val content = RequestBody.create("text/plain".toMediaTypeOrNull(), post.content)
 
@@ -40,7 +40,6 @@ class PostRepository() {
         val call = postService.addPost(userId, images, content, hashTags)
         val response = call.execute()
 
-        val postInfo = SendPost()
         if (response.isSuccessful) {
             Log.d("TAG", "Success to post")
             // Deserialize the response body here to get the result (AddPostResponse)
@@ -48,21 +47,19 @@ class PostRepository() {
         } else {
             Log.d("TAG", "Fail to post")
         }
-        callback(postInfo)
+        callback(response.code())
     }
 
-    suspend fun addTemplate(template: Template, callback: (result: Boolean) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun addTemplate(template: Template, callback: (status: Int) -> Unit) = withContext(Dispatchers.IO) {
         val call = postService.addTemplate(userId, template)
         val response = call.execute()
 
-        var result = false
         if (response.isSuccessful) {
             Log.d("TAG", "Success to post")
-            result = response.body()!!.success
         } else {
             Log.d("TAG", "Fail to post")
         }
-        callback(result)
+        callback(response.code())
     }
 
     //게시글 삭제

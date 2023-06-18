@@ -89,10 +89,10 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
 
         if(media.id != ""){
             writerId = media.user.id
-            postId = media.user.id
+            postId = media.id
         }else{
             writerId = post.user.id
-            postId = post.user.id
+            postId = post.id
         }
 
         if(User.id != media.id && User.id != post.id){
