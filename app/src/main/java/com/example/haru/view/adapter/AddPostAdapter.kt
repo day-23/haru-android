@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.viewmodel.MyPageViewModel
@@ -50,13 +51,34 @@ class AddPostAdapter (val context: Context,
         holder.image.setColorFilter(null)
 
         holder.image.setOnClickListener {
-            clicked = pictureClicked(holder, clicked, position, false)
+            if(multiSelect) {
+                if (clicked) {
+                    myPageViewModel.imageList.remove(
+                        myPageViewModel.imageList[
+                                myPageViewModel.selectedPostionList.indexOf(position)
+                        ]
+                    )
+
+                    myPageViewModel.selectedPostionList.remove(position)
+                } else {
+                    myPageViewModel.imageList.add(
+                        itemList[position].copy()
+                    )
+
+                    myPageViewModel.selectedPostionList.add(position)
+                }
+            } else {
+                myPageViewModel.selectedPostionList = arrayListOf(position)
+                myPageViewModel.imageList = arrayListOf(itemList[position].copy())
+            }
+
+            clicked = pictureClicked(holder, clicked, position)
         }
 
-        holder.cropButton.setOnClickListener {
-            myPageViewModel.getCrop(itemList[position])
-            clicked = pictureClicked(holder, clicked, position, true)
-        }
+//        holder.cropButton.setOnClickListener {
+//            myPageViewModel.getCrop(itemList[position])
+//            clicked = pictureClicked(holder, clicked, position, true)
+//        }
     }
 
     override fun getItemCount(): Int {
@@ -69,29 +91,26 @@ class AddPostAdapter (val context: Context,
         return multiSelect
     }
 
-    fun pictureClicked(holder: AddPostViewHolder, clicked : Boolean, position: Int, crop : Boolean) : Boolean{
+    fun pictureClicked(holder: AddPostViewHolder, clicked : Boolean, position: Int) : Boolean{
         if(multiSelect) {
             if (clicked) {
                 holder.selected.visibility = View.INVISIBLE
                 holder.index.visibility = View.INVISIBLE
                 holder.image.setColorFilter(null)
                 myPageViewModel.delSelected(position)
-                if(!crop)
-                    myPageViewModel.deleteImage(itemList[position])
+                myPageViewModel.deleteImage(itemList[position])
                 return false
             } else {
                 holder.selected.visibility = View.VISIBLE
                 holder.index.visibility = View.VISIBLE
                 holder.image.setColorFilter(Color.argb(127, 0, 0, 0), PorterDuff.Mode.SRC_OVER)
-                if(!crop)
-                    myPageViewModel.setImages(itemList[position])
+                myPageViewModel.setImages(itemList[position])
                 myPageViewModel.addSelected(position)
                 return true
             }
         }else{
             myPageViewModel.selectOnePicture(position)
-            if(!crop)
-                myPageViewModel.setImage(itemList[position])
+            myPageViewModel.setImage(itemList[position])
             return false
         }
     }
@@ -101,6 +120,5 @@ class AddPostAdapter (val context: Context,
         var selected = itemView.findViewById<ImageView>(R.id.selected_circle)
         var index = itemView.findViewById<TextView>(R.id.select_index)
         var selectcircle = itemView.findViewById<ImageView>(R.id.image_select)
-        var cropButton = itemView.findViewById<ImageView>(R.id.crop_button)
     }
 }

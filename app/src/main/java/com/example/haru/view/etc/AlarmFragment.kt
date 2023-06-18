@@ -124,7 +124,7 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     date.seconds = 0
 
                     binding.amAlarmTime.text = timeformatter.format(date)
-                    User.amAlarmDate = binding.amAlarmTime.text.toString()
+                    User.amAlarmDate = timeformatter.format(date)
                     editor.putString("amAlarmDate", User.amAlarmDate)
 
                     Alarm.amPmAlarmEdit(requireContext())
@@ -162,7 +162,7 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     date.seconds = 0
 
                     binding.pmAlarmTime.text = timeformatter.format(date)
-                    User.pmAlarmDate = binding.pmAlarmTime.text.toString()
+                    User.pmAlarmDate = timeformatter.format(date)
                     editor.putString("pmAlarmDate", User.pmAlarmDate)
 
                     Alarm.amPmAlarmEdit(requireContext())

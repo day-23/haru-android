@@ -33,18 +33,19 @@ import okhttp3.MultipartBody
 class AddTagFragment(
     images: MutableList<MultipartBody.Part>,
     content: String,
-    select: ArrayList<ExternalImages>
+    select: ArrayList<ExternalImages>,
+    val galleryViewmodel: MyPageViewModel
 ) : Fragment() {
     lateinit var binding: FragmentAddpostAddtagBinding
     val images = images
     val content = content
     val Uris = select
-    lateinit var galleryViewmodel: MyPageViewModel
+//    lateinit var galleryViewmodel: MyPageViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        galleryViewmodel = ViewModelProvider(this).get(MyPageViewModel::class.java)
+//        galleryViewmodel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
 
 
@@ -69,7 +70,7 @@ class AddTagFragment(
         binding = FragmentAddpostAddtagBinding.inflate(inflater, container, false)
         Log.d("CropImages", "recieved images $Uris")
         Log.d("CropImages", "recieved parts $images")
-        val adapter = AddTagPagerAdapter(requireContext(), Uris)
+        val adapter = AddTagPagerAdapter(requireContext(), Uris, galleryViewmodel)
         binding.addtagImages.adapter = adapter
         binding.addTagContent.text = content
         var hashtag: List<String>
@@ -88,6 +89,7 @@ class AddTagFragment(
                 .commit()
             hashtag = galleryViewmodel.getTagList()
             galleryViewmodel.postRequest(images, content, hashtag)
+            galleryViewmodel.resetValue()
 
             galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
                 if(done) {

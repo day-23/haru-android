@@ -1,41 +1,25 @@
 package com.example.haru.view.sns
 
 import BaseActivity
-import UserViewModelFactory
 import android.app.Dialog
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.R
-import com.example.haru.data.api.UserService
-import com.example.haru.data.repository.UserRepository
-import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.databinding.FragmentWriteHaruBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
-import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
-import com.example.haru.view.adapter.SnsPostAdapter
-import com.example.haru.viewmodel.MyPageViewModel
-import com.example.haru.viewmodel.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class WriteHaruFragment : Fragment(), PostInterface {
     lateinit var binding: FragmentWriteHaruBinding
@@ -131,7 +115,7 @@ class WriteHaruFragment : Fragment(), PostInterface {
                 }
 
                 val str = s.toString()
-                if (str == ""){
+                if (str == "") {
                     binding.addpostCancel.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.cancel_icon)
                     binding.addpostCancel.backgroundTintList = ColorStateList.valueOf(

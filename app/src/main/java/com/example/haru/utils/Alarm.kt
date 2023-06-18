@@ -158,43 +158,41 @@ object Alarm {
             val calendar = Calendar.getInstance()
             calendar.time = Date()
 
-            try {
-                val amTime = timeformatter.parse(User.amAlarmDate)
+            val amTime = timeformatter.parse(User.amAlarmDate)
 
-                amTime.year = calendar.time.year
-                amTime.month = calendar.time.month
-                amTime.date = calendar.time.date
+            amTime.year = calendar.time.year
+            amTime.month = calendar.time.month
+            amTime.date = calendar.time.date
 
-                val pmTime = timeformatter.parse(User.pmAlarmDate)
+            val pmTime = timeformatter.parse(User.pmAlarmDate)
 
-                pmTime.year = calendar.time.year
-                pmTime.month = calendar.time.month
-                pmTime.date = calendar.time.date
+            pmTime.year = calendar.time.year
+            pmTime.month = calendar.time.month
+            pmTime.date = calendar.time.date
 
-                if (calendar.time.after(pmTime)) {
-                    calendar.apply {
-                        time = amTime
-                        add(Calendar.DATE, 1)
-                    }
-                } else if (calendar.time.after(amTime)) {
-                    calendar.apply {
-                        time = pmTime
-                    }
-                } else {
-                    calendar.apply {
-                        time = amTime
-                    }
+            if (calendar.time.after(pmTime)) {
+                calendar.apply {
+                    time = amTime
+                    add(Calendar.DATE, 1)
                 }
+            } else if (calendar.time.after(amTime)) {
+                calendar.apply {
+                    time = pmTime
+                }
+            } else {
+                calendar.apply {
+                    time = amTime
+                }
+            }
 
-                Log.d("알람추가", "아침저녁 알림")
-                Log.d("알람추가", calendar.time.toString())
+            Log.d("알람추가", "아침저녁 알림")
+            Log.d("알람추가", calendar.time.toString())
 
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
-            } catch (ex: Exception){}
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
         }
     }
 

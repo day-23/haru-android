@@ -13,13 +13,14 @@ import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddContentBinding
-import com.example.haru.databinding.FragmentAddpostAddtagBinding
 import com.example.haru.view.MainActivity
+import com.example.haru.viewmodel.MyPageViewModel
 import okhttp3.MultipartBody
 
 class AddContentFragment(
     val images: MutableList<MultipartBody.Part>,
-    val select: ArrayList<ExternalImages>
+    val select: ArrayList<ExternalImages>,
+    val myPageViewModel: MyPageViewModel
 ) : Fragment() {
     lateinit var binding: FragmentAddContentBinding
 
@@ -47,7 +48,7 @@ class AddContentFragment(
 
         binding.addContentApply.setOnClickListener {
             val content = binding.addContentText.text.toString()
-            val newFrag = AddTagFragment(images, content, select)
+            val newFrag = AddTagFragment(images, content, select, myPageViewModel)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             transaction.addToBackStack(null)
@@ -73,7 +74,7 @@ class AddContentFragment(
                 }
 
                 val str = s.toString()
-                if (str == ""){
+                if (str == "") {
                     binding.addContentCancel.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.cancel_icon)
                     binding.addContentCancel.backgroundTintList = ColorStateList.valueOf(
