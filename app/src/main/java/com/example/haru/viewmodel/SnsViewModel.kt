@@ -248,6 +248,16 @@ class SnsViewModel: ViewModel() {
         }
     }
 
+    fun reportComment(writerId: String, commentId:String){
+        var result = false
+        viewModelScope.launch {
+            PostRepository.reportComment(writerId, commentId){
+                result = it
+            }
+            _DeleteResult.value = result
+        }
+    }
+
     fun patchComment(writerId: String, commentId: String, body: PatchCommentBody){
         var result = false
         viewModelScope.launch {

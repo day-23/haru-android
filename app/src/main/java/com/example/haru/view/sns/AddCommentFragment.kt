@@ -33,6 +33,7 @@ import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentAddCommentBinding
 import com.example.haru.databinding.PopupAddCommentHideBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
+import com.example.haru.databinding.PopupSnsCommentDeleteAgainBinding
 import com.example.haru.utils.GetPastDate
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AddCommentPagerAdapter
@@ -99,15 +100,6 @@ class AddCommentFragment(
     }
 
     override fun OnHideClick(comment: Comments, content: View, writer: View, position: Int) {
-        val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comment)
-
-        if (fragment != null) {
-            val transaction = fragmentManager.beginTransaction()
-            transaction.remove(fragment)
-            transaction.commit()
-        }
-
         if (position == 0) {//숨기기
             snsViewModel.patchComment(
                 comment.user!!.id,
@@ -172,9 +164,9 @@ class AddCommentFragment(
         binding.addCommentButtonsLayout.visibility = View.VISIBLE
         binding.writeCommentTitle.setTextColor(Color.parseColor("#191919"))
         binding.writeCommentTitle.text = "코멘트"
-        AddContent = ""
-        AddY = 0
-        AddX = 0
+//        AddContent = ""
+//        AddY = 0
+//        AddX = 0
 
         Log.d("20191668", "${com.example.haru.utils.User.id}  ${writerInfo.id}")
         if (com.example.haru.utils.User.id == writerInfo.id) {
@@ -357,6 +349,7 @@ class AddCommentFragment(
 
         binding.writeCommentApply.setOnClickListener {
             if (AddContent != "") {
+                Log.d("20191668", "position $AddX, $AddY")
                 snsViewModel.writeComment(
                     CommentBody(AddContent, AddX, AddY),
                     postId,
@@ -701,15 +694,18 @@ class AddCommentFragment(
             }
         }
 
-        view.setOnTouchListener(commentDragListener)
+        if(writerInfo.id == com.example.haru.utils.User.id) {
+            view.setOnTouchListener(commentDragListener)
+            view.isClickable = false
+        }
 
         if (com.example.haru.utils.User.id == comment.user!!.id) {
             view.setOnClickListener {
-                PopupComment(this)
+                val fragment = PopupDelMyComment(comment, view, writerView, this, snsViewModel)
+                fragment.show(parentFragmentManager, fragment.tag)
             }
         }
 
-        view.isClickable = false
 
         val params = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -977,6 +973,69 @@ class PopupComment(val listener: ImageClickListener) : BottomSheetDialogFragment
 
         popupbinding.snsAddCommentCancel.setOnClickListener {
             listener.OnPopupClick(2)
+            dismiss()
+        }
+
+        return popupbinding.root
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 35 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
+    }
+}
+
+class PopupDelMyComment( val comment: Comments,
+                         val content: View,
+                         val writer: View,
+                         val listener: ImageClickListener,
+                         val viewModel : SnsViewModel) : BottomSheetDialogFragment() {
+    lateinit var popupbinding: PopupSnsCommentDeleteAgainBinding
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        popupbinding = PopupSnsCommentDeleteAgainBinding.inflate(inflater, container, false)
+        popupbinding.snsCommentRealDelete.setOnClickListener {
+            viewModel.deleteComment(comment.user!!.id, comment.id)
+        }
+
+        viewModel.DeleteResult.observe(viewLifecycleOwner){result ->
+            if(result){
+                listener.OnHideClick(comment, content, writer, 0)
+                dismiss()
+            }
+            else{
+                Toast.makeText(requireContext(), "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        popupbinding.snsDeleteCancel.setOnClickListener {
             dismiss()
         }
 

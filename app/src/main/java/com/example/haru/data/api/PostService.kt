@@ -108,6 +108,12 @@ interface PostService {
         @Path("commentId") commentId: String,
     ): Call<EditCommentResponse>
 
+    @DELETE("comment/{writerId}/{commentId}/report")
+    fun reportComment(
+        @Path("writerId") writerId: String,
+        @Path("commentId") commentId: String,
+    ): Call<EditCommentResponse>
+
     @PATCH("comment/{writerId}/{commentId}")
     fun changeComment(
         @Path("writerId") writerId: String,

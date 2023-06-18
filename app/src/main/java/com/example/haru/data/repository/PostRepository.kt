@@ -497,6 +497,26 @@ class PostRepository() {
         }
         callback(deleted)
     }
+
+    suspend fun reportComment(writerId : String, commentId : String, callback: (deleted: Boolean) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.reportComment(
+            writerId,
+            commentId,
+        ).execute()
+
+        val data: EditCommentResponse
+        val deleted: Boolean
+
+        if(response.isSuccessful){
+            data = response.body()!!
+            deleted = data.success
+        }else{
+            deleted = false
+        }
+        callback(deleted)
+    }
+
     //댓글 한개 수정
     suspend fun chageComment(writerId: String, commentId: String, body: PatchCommentBody, callback: (changed: Boolean) -> Unit) = withContext(
         Dispatchers.IO){

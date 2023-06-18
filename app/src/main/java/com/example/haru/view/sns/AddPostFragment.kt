@@ -80,12 +80,6 @@ class AddPostFragment : Fragment(), PostInterface {
     override fun Postpopup(position: Int) {
         if (position == 0) {
             requireActivity().supportFragmentManager.popBackStack()
-//            val backManager = parentFragmentManager
-//            backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-//            val fragment = SnsFragment()
-//            parentFragmentManager.beginTransaction()
-//                .replace(R.id.fragments_frame, fragment)
-//                .commit()
         }
     }
 
@@ -196,7 +190,6 @@ class AddPostFragment : Fragment(), PostInterface {
         galleryViewmodel.BeforeCrop.observe(viewLifecycleOwner) { image ->
             if (image != null)
                 cropImage(image.absuri)
-//                MainActivity.startCrop(image.absuri)
         }
 
         galleryViewmodel.AfterCrop.observe(viewLifecycleOwner) { image ->
@@ -244,10 +237,6 @@ class AddPostFragment : Fragment(), PostInterface {
             galleryViewmodel.resetValue()
             val fragment = PopupPost(this)
             fragment.show(parentFragmentManager, fragment.tag)
-//                val fragmentManager = childFragmentManager
-//                val transaction = fragmentManager.beginTransaction()
-//                transaction.add(R.id.add_post_anchor, fragment)
-//                transaction.commit()
         }
 
         binding.galleyToggle.setOnClickListener {
