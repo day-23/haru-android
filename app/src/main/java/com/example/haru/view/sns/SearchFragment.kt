@@ -63,6 +63,8 @@ class SearchFragment(val viewModel: Any) : Fragment() {
 
         (activity as BaseActivity).adjustTopMargin(binding.searchHeader.id)
 
+        MainActivity.hideNavi(true)
+
         // checklist와 캘린더에서 접근한 검색 화면일 경우
         if (viewModel is CheckListViewModel) {
             val scheduleListView: RecyclerView = binding.searchRecyclerOne

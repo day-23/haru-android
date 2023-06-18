@@ -17,6 +17,7 @@ import com.example.haru.data.model.Post
 import com.example.haru.databinding.FragmentDetailPostBinding
 import com.example.haru.databinding.FragmentSnsMypageBinding
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.PicturesPagerAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
@@ -42,6 +43,7 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.detailMenu.id)
+        MainActivity.hideNavi(true)
     }
 
     override fun onResume() {
