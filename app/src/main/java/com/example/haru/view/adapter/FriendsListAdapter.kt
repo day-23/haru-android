@@ -24,96 +24,76 @@ class FriendsListAdapter(
     private var itemList: ArrayList<FriendInfo> = arrayListOf(),
     val listOwner: String,
     val onFriendClicked: OnFriendClicked
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-
-    override fun getItemViewType(position: Int): Int {
-        return if (itemList[position].id != User.id)
-            0
-        else 1
-    }
+) : RecyclerView.Adapter<FriendsListAdapter.FriendsListViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): RecyclerView.ViewHolder {
-        return if (viewType == 0) {
-            val view = LayoutInflater.from(context)
-                .inflate(R.layout.item_searched_user, parent, false)
-            FriendsListViewHolder(view)
-        } else {
-            val view = LayoutInflater.from(context)
-                .inflate(R.layout.friend_empty_view, parent, false)
-            EmptyViewHolder(view)
-        }
+    ): FriendsListAdapter.FriendsListViewHolder {
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.item_searched_user, parent, false)
+        return FriendsListViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is FriendsListViewHolder -> {
-                hideButtons(holder)
-                showButtons(holder, itemList[position].friendStatus!!)
+    override fun onBindViewHolder(holder: FriendsListViewHolder, position: Int) {
+        hideButtons(holder)
+        if (User.id == itemList[position].id)
+            showButtons(holder, 4)
+        else showButtons(holder, itemList[position].friendStatus!!)
 
-                Log.e("20191627", "${itemList[position].profileImageUrl}")
+        Log.e("20191627", "${itemList[position].profileImageUrl}")
 
-                if (itemList[position].profileImageUrl == null
-                    || itemList[position].profileImageUrl == ""
-                    || itemList[position].profileImageUrl == "null"
-                )
-                    holder.profile.background = ContextCompat.getDrawable(
-                        holder.itemView.context,
-                        R.drawable.profile_base_image
-                    )
-                else Glide.with(holder.itemView.context)
-                    .load(itemList[position].profileImageUrl)
-                    .into(holder.profile)
+        if (itemList[position].profileImageUrl == null
+            || itemList[position].profileImageUrl == ""
+            || itemList[position].profileImageUrl == "null"
+        )
+            holder.profile.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.profile_base_image)
+        else Glide.with(holder.itemView.context)
+            .load(itemList[position].profileImageUrl)
+            .into(holder.profile)
 
 
 
-                holder.name.text = itemList[position].name
+        holder.name.text = itemList[position].name
 
-                holder.delete.setOnClickListener {
-                    onFriendClicked.onDeleteClick(itemList[position])
-                }
+        holder.delete.setOnClickListener {
+            onFriendClicked.onDeleteClick(itemList[position])
+        }
 
-                holder.accept.setOnClickListener {
-                    onFriendClicked.onAcceptClick(itemList[position])
-                    hideButtons(holder)
-                    showButtons(holder, 2)
-                }
+        holder.accept.setOnClickListener {
+            onFriendClicked.onAcceptClick(itemList[position])
+            hideButtons(holder)
+            showButtons(holder, 2)
+        }
 
-                holder.reject.setOnClickListener {
-                    onFriendClicked.onRejectClick(itemList[position])
-                    hideButtons(holder)
-                    showButtons(holder, 0)
-                }
+        holder.reject.setOnClickListener {
+            onFriendClicked.onRejectClick(itemList[position])
+            hideButtons(holder)
+            showButtons(holder, 0)
+        }
 
-                holder.profile.setOnClickListener {
-                    onFriendClicked.onProfileClick(itemList[position])
-                }
+        holder.profile.setOnClickListener {
+            onFriendClicked.onProfileClick(itemList[position])
+        }
 
-                holder.name.setOnClickListener {
-                    holder.profile.performClick()
-                }
+        holder.name.setOnClickListener {
+            holder.profile.performClick()
+        }
 
-                holder.cancelReq.setOnClickListener {
-                    onFriendClicked.onCancelClick(itemList[position])
-                    hideButtons(holder)
-                    showButtons(holder, 0)
-                }
+        holder.cancelReq.setOnClickListener {
+            onFriendClicked.onCancelClick(itemList[position])
+            hideButtons(holder)
+            showButtons(holder, 0)
+        }
 
-                holder.request.setOnClickListener {
-                    onFriendClicked.onRequestClick(itemList[position])
-                    hideButtons(holder)
-                    showButtons(holder, 1)
-                }
+        holder.request.setOnClickListener {
+            onFriendClicked.onRequestClick(itemList[position])
+            hideButtons(holder)
+            showButtons(holder, 1)
+        }
 
-                holder.setup.setOnClickListener {
-                    onFriendClicked.onSetupClick(itemList[position])
-                }
-
-            }
-            is EmptyViewHolder -> {}
+        holder.setup.setOnClickListener {
+            onFriendClicked.onSetupClick(itemList[position])
         }
 
 
@@ -123,9 +103,9 @@ class FriendsListAdapter(
         return itemList.size
     }
 
-    fun showButtons(holder: FriendsListViewHolder, status: Int) {
-        when (status) {
-            0 -> { //아무사이 아님
+    fun showButtons(holder: FriendsListViewHolder, status: Int){
+        when(status){
+            0 ->{ //아무사이 아님
                 holder.request.visibility = View.VISIBLE
             }
             1 -> { // 내가 친구 신청중
@@ -143,6 +123,10 @@ class FriendsListAdapter(
                 holder.accept.visibility = View.VISIBLE
                 holder.reject.visibility = View.VISIBLE
             }
+
+            4 -> {
+                holder.myProfile.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -154,6 +138,7 @@ class FriendsListAdapter(
         holder.request.visibility = View.GONE
         holder.myFriend.visibility = View.GONE
         holder.cancelReq.visibility = View.GONE
+        holder.myProfile.visibility = View.GONE
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -189,6 +174,8 @@ class FriendsListAdapter(
         var profile = itemView.findViewById<CircleImageView>(R.id.search_profile)
         var name = itemView.findViewById<TextView>(R.id.search_id)
 
+        var myProfile = itemView.findViewById<TextView>(R.id.my_profile)
+
         var delete = itemView.findViewById<TextView>(R.id.friend_delete)
         var setup = itemView.findViewById<ImageView>(R.id.search_setup)
 
@@ -199,6 +186,4 @@ class FriendsListAdapter(
         var myFriend = itemView.findViewById<TextView>(R.id.friend_myfriend)
         var cancelReq = itemView.findViewById<TextView>(R.id.friend_cancel_request)
     }
-
-    inner class EmptyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
 }

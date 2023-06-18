@@ -80,6 +80,17 @@
         android:visibility="gone" />
 
     <TextView
+        android:id="@+id/my_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/search_box"
+        android:gravity="center"
+        android:text="나"
+        android:textColor="#646464"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/friend_myfriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -88,7 +99,6 @@
         android:text="내 친구"
         android:textColor="#646464"
         android:textSize="16sp"
-        android:textStyle="bold"
         android:visibility="gone" />
 
     <TextView
@@ -100,7 +110,6 @@
         android:text="신청 취소"
         android:textColor="#646464"
         android:textSize="16sp"
-        android:textStyle="bold"
         android:visibility="gone" />
 
 
