@@ -170,14 +170,20 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
         mypageViewModel.getFirstFriendsRequestList(targetId)
 
         mypageViewModel.FirstFriends.observe(viewLifecycleOwner) { friends ->
+            val array = arrayListOf<FriendInfo>()
+            for(friend in friends.data){
+                if(friend.id != com.example.haru.utils.User.id){
+                    array.add(friend)
+                }
+            }
             Log.d("Friends", "${friends.pagination} :: ${friends.data}")
             friendCount = friends.pagination.totalItems ?: 0
             binding.friendslistFriendsCount.text = "친구 목록 $friendCount"
             if (isFriendList) {
                 if (friends.data.size > 0) {
-                    lastCreatedAt = getLastCreated(friends.data)
+                    lastCreatedAt = getLastCreated(array)
                 }
-                friendAdapter.addFirstList(friends.data)
+                friendAdapter.addFirstList(array)
             }
         }
 
@@ -189,8 +195,15 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
 
         mypageViewModel.Friends.observe(viewLifecycleOwner) { friends ->
             if (friends.data.size > 0) {
-                friendAdapter.addList(friends.data)
-                lastCreatedAt = getLastCreated(friends.data)
+                val array = arrayListOf<FriendInfo>()
+                for(friend in friends.data){
+                    if(friend.id != com.example.haru.utils.User.id){
+                        array.add(friend)
+                    }
+                }
+
+                friendAdapter.addList(array)
+                lastCreatedAt = getLastCreated(array)
             }
         }
 

@@ -94,10 +94,6 @@ class FriendsListAdapter(
         holder.setup.setOnClickListener {
             onFriendClicked.onSetupClick(itemList[position])
         }
-
-        if(User.id == itemList[position].id)
-            holder.itemView.visibility = View.GONE
-
     }
 
     override fun getItemCount(): Int {
