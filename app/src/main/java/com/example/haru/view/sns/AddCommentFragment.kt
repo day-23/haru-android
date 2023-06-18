@@ -117,14 +117,6 @@ class AddCommentFragment(
     }
 
     override fun OnPopupClick(position: Int) {
-//        val fragmentManager = childFragmentManager
-//        val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comment)
-
-//        if (fragment != null) {
-//            val transaction = fragmentManager.beginTransaction()
-//            transaction.remove(fragment)
-//            transaction.commit()
-//        }
 
         if (position == 0) {//저장안함
             if (onWrite) {
@@ -168,9 +160,6 @@ class AddCommentFragment(
         binding.addCommentButtonsLayout.visibility = View.VISIBLE
         binding.writeCommentTitle.setTextColor(Color.parseColor("#191919"))
         binding.writeCommentTitle.text = "코멘트"
-//        AddContent = ""
-//        AddY = 0
-//        AddX = 0
 
         if (com.example.haru.utils.User.id == writerInfo.id) {
             binding.addCommentInfo.visibility = View.VISIBLE
@@ -240,7 +229,7 @@ class AddCommentFragment(
                     fragment.show(parentFragmentManager, fragment.tag)
                 } else {
                     val backManager = parentFragmentManager
-                    backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    backManager.popBackStack()
                 }
             }
         }
@@ -299,7 +288,7 @@ class AddCommentFragment(
 
         binding.writeCommentBack.setOnClickListener {
             val backManager = parentFragmentManager
-            backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            backManager.popBackStack()
         }
 
         binding.showTotalComment.setOnClickListener {
@@ -364,28 +353,28 @@ class AddCommentFragment(
             if (AddContent != "") {
                 Log.d("20191668", "position $AddX, $AddY")
 
-                if(isTemplate != null && isTemplate != "") {
+                if (isTemplate != null && isTemplate != "") {
                     snsViewModel.writeComment(
                         CommentBody(AddContent, AddX, AddY),
                         postId,
                     )
-                }
-                else{
+                } else {
                     snsViewModel.writeComment(
                         CommentBody(AddContent, AddX, AddY),
                         postId,
-                        postImages[imageIndex].id)
+                        postImages[imageIndex].id
+                    )
                 }
-
-                addedComment = Comments("", User(), "", 0, 0, false, "", "")
             } else {
-                Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "댓글 내용을 입력해주세요", Toast.LENGTH_SHORT).show()
             }
         }
 
         snsViewModel.AddComment.observe(viewLifecycleOwner) { comment ->
-            profileViewModel.getUserInfo(com.example.haru.utils.User.id)
-            addedComment = comment
+                if(comment.id != "") {
+                    profileViewModel.getUserInfo(com.example.haru.utils.User.id)
+                    addedComment = comment
+                }
         }
 
         profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->

@@ -114,7 +114,6 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
 
         binding.writeHaruApply.setOnClickListener {
             binding.writeHaruApply.isClickable = false
-            Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
             val hashtag = templateViewModel.getTagList()
             val loading = LoadingAnimation()
             if (id != "") {
@@ -129,7 +128,6 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
             }
 
             templateViewModel.PostRequest.observe(viewLifecycleOwner) { done ->
-
                 if(done == 201) {
                     loading.dismiss {
                         val fragment = SnsFragment()
@@ -138,12 +136,15 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
                         transaction.commit()
                     }
                 }else if(done == 429){
-                    Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                }else{
-
-                    binding.writeHaruApply.isClickable = true
-                    Toast.makeText(requireContext(), "게시글 등록에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                    loading.dismiss {
+                        Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }else if(done == 403){
+                    loading.dismiss {
+                        Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
+                binding.writeHaruApply.isClickable = true
             }
         }
 

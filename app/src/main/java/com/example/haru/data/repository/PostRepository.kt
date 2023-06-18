@@ -464,7 +464,7 @@ class PostRepository() {
 
         val comments: Comments
         val data: WriteCommentResponse
-
+        Log.d("Comment", "${response.code()}")
         if(response.isSuccessful) {
             Log.d("TAG","Success to write comments")
             data = response.body()!!
