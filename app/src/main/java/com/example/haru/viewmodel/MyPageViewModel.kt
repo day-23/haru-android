@@ -660,6 +660,7 @@ class MyPageViewModel() : ViewModel() {
     }
 
     fun setImage(image: ExternalImages) {
+        Log.d("CropImages", "$image")
         _Images.value = arrayListOf(image.copy())
     }
 
@@ -684,6 +685,19 @@ class MyPageViewModel() : ViewModel() {
         _Images.value = temp!!
     }
 
+    fun addImage(image: ExternalImages){
+        var temp = _Images.value
+
+        if (!temp.isNullOrEmpty()) {
+            Log.d("CropImages", "add : ${image}")
+            temp!!.add(image.copy())
+//            temp.add(image.copy())
+        } else {
+            temp = arrayListOf(image.copy())
+        }
+        _Images.value = temp!!
+    }
+
     fun deleteImage(image: ExternalImages) {
         var temp = _Images.value
         if (!temp.isNullOrEmpty()) {
@@ -700,6 +714,13 @@ class MyPageViewModel() : ViewModel() {
         } else {
             Log.d("ImageCrop", "null")
         }
+    }
+
+    fun getCropResultCamera(image: Uri){
+        val temp = ExternalImages(0,"","", image)
+        _AfterCrop.value = temp.copy()
+        imageList.add(temp.copy())
+        selectedPostionList.add(-1)
     }
 
     fun getCrop(image: ExternalImages) {
