@@ -74,6 +74,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // status bar height 조정
+        MainActivity.hideNavi(false)
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
         (activity as BaseActivity).adjustTopMargin(binding.tagEtcLayout.drawerHeaderId.id)
 
