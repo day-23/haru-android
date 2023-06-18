@@ -75,6 +75,10 @@ class FriendsListAdapter(val context: Context,
             showButtons(holder, 1)
         }
 
+        holder.setup.setOnClickListener {
+            onFriendClicked.onSetupClick(itemList[position])
+        }
+
         if(User.id == itemList[position].id)
             holder.itemView.visibility = View.GONE
 

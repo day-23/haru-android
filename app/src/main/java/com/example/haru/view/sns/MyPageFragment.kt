@@ -440,7 +440,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     fun showFeeds(friendStatus : Int, isPublicAccount: Boolean){
-        if(friendStatus == 2  || isPublicAccount){
+        if(friendStatus == 2  || isPublicAccount || isMyPage){
             mypageViewModel.getFirstFeed(userId)
             mypageViewModel.getFirstMedia(userId)
             mypageViewModel.getUserTags(userId)
@@ -448,6 +448,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             binding.feedRecycler.visibility = View.GONE
             binding.mediaContainer.visibility = View.GONE
             binding.select.visibility = View.GONE
+
+            binding.profileFriendsLayout.isClickable = false
 
             binding.hagiRuriWatering.visibility = View.VISIBLE
             binding.secretText.visibility = View.VISIBLE
