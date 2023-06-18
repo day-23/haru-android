@@ -118,7 +118,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
-                            android:background="@drawable/calendar_schedule_plus_image"
+                            android:background="@drawable/twenty_eight_plus_icon"
                             android:backgroundTint="@color/light_gray" />
 
                         <TextView
