@@ -81,7 +81,6 @@ class AddTagFragment(
 
         binding.addpostApply.setOnClickListener {
             binding.addpostApply.isClickable = false
-            Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
             val loading = LoadingAnimation()
             requireActivity().supportFragmentManager.beginTransaction()
                 .add(R.id.fragments_frame, loading)
@@ -92,6 +91,7 @@ class AddTagFragment(
             galleryViewmodel.resetValue()
 
             galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
+                binding.addpostApply.isClickable = true
                 if(done == 201) {
                     loading.dismiss{
                         val fragment = SnsFragment()
@@ -100,11 +100,15 @@ class AddTagFragment(
                         transaction.commit()
                     }
                 }else if(done == 429){
-                    Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                }else{
-                    binding.addpostApply.isClickable = true
-                    Toast.makeText(requireContext(), "게시글 등록에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                    loading.dismiss {
+                        Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }else if(done == 403){
+                    loading.dismiss {
+                        Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
+
             }
         }
         binding.addTagPictureIndex.text = "1/${Uris.size}"
