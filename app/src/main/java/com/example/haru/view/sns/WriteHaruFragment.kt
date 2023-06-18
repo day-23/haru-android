@@ -4,6 +4,7 @@ import BaseActivity
 import UserViewModelFactory
 import android.app.Dialog
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -137,7 +138,10 @@ class WriteHaruFragment : Fragment(), PostInterface {
                             R.color.date_text
                         )
                     )
+                    binding.writeHaruContent.setTypeface(null, Typeface.NORMAL)
                     return
+                }else{
+                    binding.writeHaruContent.setTypeface(null, Typeface.BOLD)
                 }
 
                 binding.addpostCancel.background =
