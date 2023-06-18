@@ -479,6 +479,29 @@ class PostRepository() {
         callback(comments)
     }
 
+    //템플릿에 댓글달기
+    suspend fun writeComment(comment: CommentBody, postId: String, callback: (comments: Comments) -> Unit) = withContext(
+        Dispatchers.IO){
+        val response = postService.writeComments(
+            userId,
+            postId,
+            comment
+        ).execute()
+
+        val comments: Comments
+        val data: WriteCommentResponse
+
+        if(response.isSuccessful) {
+            Log.d("TAG","Success to write comments")
+            data = response.body()!!
+            comments = data.data
+        }else{
+            Log.d("TAG", "Fail to write comments")
+            comments = Comments("",User("","","","",0,0,0,false),"",-1,-1,true,"","")
+        }
+        callback(comments)
+    }
+
     suspend fun deleteComment(writerId : String, commentId : String, callback: (deleted: Boolean) -> Unit) = withContext(
         Dispatchers.IO){
         val response = postService.deleteComment(

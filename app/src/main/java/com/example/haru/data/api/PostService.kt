@@ -83,6 +83,13 @@ interface PostService {
         @Path("imageId") imageId: String,
         @Body comment: CommentBody
     ): Call<WriteCommentResponse>
+    //템플릿에 댓글달기
+    @POST("comment/{userId}/{postId}")
+    fun writeComments(
+        @Path("userId") userId: String,
+        @Path("postId") postId: String,
+        @Body comment: CommentBody
+    ): Call<WriteCommentResponse>
 
     @DELETE("post/{userId}/{postId}")
     fun deletePost(

@@ -352,11 +352,20 @@ class AddCommentFragment(
         binding.writeCommentApply.setOnClickListener {
             if (AddContent != "") {
                 Log.d("20191668", "position $AddX, $AddY")
-                snsViewModel.writeComment(
-                    CommentBody(AddContent, AddX, AddY),
-                    postId,
-                    postImages[imageIndex].id
-                )
+
+                if(isTemplate != null && isTemplate != "") {
+                    snsViewModel.writeComment(
+                        CommentBody(AddContent, AddX, AddY),
+                        postId,
+                    )
+                }
+                else{
+                    snsViewModel.writeComment(
+                        CommentBody(AddContent, AddX, AddY),
+                        postId,
+                        postImages[imageIndex].id)
+                }
+
                 addedComment = Comments("", User(), "", 0, 0, false, "", "")
             } else {
                 Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
