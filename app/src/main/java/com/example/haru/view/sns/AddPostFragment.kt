@@ -31,6 +31,7 @@ import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.*
 import com.example.haru.viewmodel.MyPageViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
