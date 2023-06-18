@@ -193,7 +193,7 @@
         android:paddingStart="34dp"
         android:paddingTop="14dp"
         android:paddingBottom="14dp"
-        android:text="Version 1.00"
+        android:text="Version 1.0.0"
         android:textColor="@color/date_text"
         android:textSize="14sp" />
 

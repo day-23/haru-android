@@ -74,6 +74,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // status bar height 조정
+
         MainActivity.hideNavi(false)
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
         (activity as BaseActivity).adjustTopMargin(binding.tagEtcLayout.drawerHeaderId.id)
@@ -105,6 +106,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             } else {
                 binding.drawableLayout.closeDrawer(Gravity.RIGHT)
             }
+        }
+
+        binding.tagEtcLayout.emptyView.setOnClickListener {
+            if (binding.drawableLayout.isDrawerOpen(Gravity.RIGHT))
+                binding.drawableLayout.closeDrawer(Gravity.RIGHT)
         }
 
 
@@ -205,6 +211,12 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     .commit()
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (binding.drawableLayout.isDrawerOpen(Gravity.RIGHT))
+            binding.drawableLayout.closeDrawer(Gravity.RIGHT)
     }
 
     private fun initTagList() {

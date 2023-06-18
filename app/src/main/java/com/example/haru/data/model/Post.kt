@@ -2,7 +2,7 @@ package com.example.haru.data.model
 
 data class Post(
     val id: String = "",
-    val user: User = User(),
+    val user: FriendInfo = FriendInfo(),
     val content: String = "",
     val isTemplatePost: String? = null,
     val images: ArrayList<Profile> = arrayListOf(),
