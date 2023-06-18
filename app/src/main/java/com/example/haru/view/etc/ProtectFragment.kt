@@ -148,11 +148,6 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     ) { _, popupValue, position ->
                         etcViewModel.submitIsAllowFeedComment(popupValue) {
                         }
-                        Toast.makeText(
-                            context,
-                            "Clicked $position ${popupValue}",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }.apply {
                         isOutsideTouchable = true
                         isTouchable = true
@@ -180,11 +175,6 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     ) { _, popupValue, position ->
                         etcViewModel.submitIsAllowFeedLike(popupValue) {
                         }
-                        Toast.makeText(
-                            context,
-                            "Clicked $position ${popupValue}",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }.apply {
                         isOutsideTouchable = true
                         isTouchable = true

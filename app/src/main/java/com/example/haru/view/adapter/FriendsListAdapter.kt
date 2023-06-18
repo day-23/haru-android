@@ -91,24 +91,22 @@ class FriendsListAdapter(
             showButtons(holder, 1)
         }
 
-        if (User.id == itemList[position].id)
-            deleteMine(itemList[position])
+        holder.setup.setOnClickListener {
+            onFriendClicked.onSetupClick(itemList[position])
+        }
+
+        if(User.id == itemList[position].id)
+            holder.itemView.visibility = View.GONE
 
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun deleteMine(item: FriendInfo) {
-        itemList.remove(item)
-        notifyDataSetChanged()
-    }
-
-    fun showButtons(holder: FriendsListViewHolder, status: Int) {
-        when (status) {
-            0 -> { //아무사이 아님
+    
+    fun showButtons(holder: FriendsListViewHolder, status: Int){
+        when(status){
+            0 ->{ //아무사이 아님
                 holder.request.visibility = View.VISIBLE
             }
             1 -> { // 내가 친구 신청중

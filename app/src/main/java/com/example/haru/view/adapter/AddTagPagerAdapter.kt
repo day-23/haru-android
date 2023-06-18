@@ -2,6 +2,7 @@ package com.example.haru.view.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,8 +25,9 @@ class AddTagPagerAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         if(myPageViewModel.imageList.size != 0) {
+            Log.d("CropImages", "image: ${imageList[position]}")
+
             holder.bind(
                 imageList[position].absuri.toString(),
                 myPageViewModel.imageList[position],
@@ -52,8 +54,10 @@ class AddTagPagerAdapter(private val context: Context,
 
         fun bind(image: String, externalimage: ExternalImages, position: Int) {
             imageView.setOnClickListener {
-                myPageViewModel.getCrop(externalimage)
-                myPageViewModel.lastTouchPosition = position
+                if(myPageViewModel.selectedPostionList[position] != -1) {
+                    myPageViewModel.getCrop(externalimage)
+                    myPageViewModel.lastTouchPosition = position
+                }
             }
 
             Glide.with(context)

@@ -58,7 +58,6 @@ class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
                 } else {
                     getPosts()
                 }
-                Toast.makeText(requireContext(), "loading", Toast.LENGTH_SHORT).show()
             }
         }
     }

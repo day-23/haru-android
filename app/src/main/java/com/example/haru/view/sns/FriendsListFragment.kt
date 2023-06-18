@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
+import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -30,6 +31,8 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentFriendsListBinding
+import com.example.haru.databinding.PopupBlockConfirmBinding
+import com.example.haru.databinding.PopupBlockFriendBinding
 import com.example.haru.databinding.PopupFriendDeleteConfirmBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
 import com.example.haru.utils.User
@@ -51,6 +54,10 @@ interface OnFriendClicked {
     fun onCancelClick(item: FriendInfo)
     fun onRequestClick(item: FriendInfo)
     fun onPopupClick(position: Int)
+
+    fun onSetupClick(targetItem: FriendInfo)
+
+    fun blockConfirmed(targetItem: FriendInfo)
 }
 
 class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
@@ -62,6 +69,16 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
     var deleteTarget = FriendInfo()
     var friendCount = 0
     var requestCount = 0
+    var blockTarget = FriendInfo()
+    override fun onSetupClick(targetItem: FriendInfo) {
+        val fragment = BlockFriend(targetItem,this)
+        fragment.show(parentFragmentManager, fragment.tag)
+    }
+
+    override fun blockConfirmed(targetItem: FriendInfo) {
+        blockTarget = targetItem
+        mypageViewModel.blockUser(BlockBody(targetItem.id!!))
+    }
 
     override fun onProfileClick(item: FriendInfo) {
         val newFrag = MyPageFragment(item.id!!)
@@ -161,6 +178,12 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
                     lastCreatedAt = getLastCreated(friends.data)
                 }
                 friendAdapter.addFirstList(friends.data)
+            }
+        }
+
+        mypageViewModel.BlockRequest.observe(viewLifecycleOwner){result ->
+            if(result){
+                friendAdapter.deleteFriend(blockTarget)
             }
         }
 
@@ -328,7 +351,6 @@ class PopupDeleteFriend(val targetItem: FriendInfo, val listener: OnFriendClicke
         }
 
         binding.btnDeleteCancel.setOnClickListener {
-//            listener.onPopupClick(1)
             dismiss()
         }
 
@@ -362,5 +384,41 @@ class PopupDeleteFriend(val targetItem: FriendInfo, val listener: OnFriendClicke
     private fun getWindowHeight(): Int {
         val displayMetrics: DisplayMetrics = this.resources.displayMetrics
         return displayMetrics.heightPixels
+    }
+}
+
+class BlockFriend(
+    val targetItem: FriendInfo,
+    val listener: OnFriendClicked
+) :
+    BottomSheetDialogFragment() {
+    lateinit var popupbinding: PopupBlockFriendBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        popupbinding = PopupBlockFriendBinding.inflate(inflater)
+
+        if (targetItem.profileImageUrl == null || targetItem.profileImageUrl == "") {
+            popupbinding.ivProfileImage.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
+        } else {
+            Glide
+                .with(requireContext())
+                .load(targetItem.profileImageUrl)
+                .into(popupbinding.ivProfileImage)
+        }
+
+
+        popupbinding.tvUserId.text = targetItem.name
+
+        popupbinding.btnDeleteUser.setOnClickListener {
+            listener.blockConfirmed(targetItem)
+            dismiss()
+        }
+
+        return popupbinding.root
     }
 }

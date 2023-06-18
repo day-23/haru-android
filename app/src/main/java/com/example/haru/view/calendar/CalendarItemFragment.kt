@@ -87,6 +87,432 @@ class CalendarItemFragment(
     private var initStartTime = ""
     private var initEndTime = ""
 
+    fun delete(){
+        val deleteDialg = DeleteOptionScheduleFragment(schedule.location) {
+            val calendarviewmodel = CalendarViewModel()
+
+            when (it) {
+                1 -> {// 이 일정만 삭제
+                    when (schedule.location) {
+                        0 -> {//front
+                            var next = schedule.repeatStart
+                            var nextDate: Date? = null
+
+                            when (schedule.repeatOption) {
+                                "매일" -> {
+                                    nextDate = FormatDate.nextStartDate(
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+
+                                "매주" -> {
+                                    nextDate = FormatDate.nextStartDateEveryWeek(
+                                        schedule.repeatValue!!,
+                                        1,
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+
+                                "격주" -> {
+                                    nextDate = FormatDate.nextStartDateEveryWeek(
+                                        schedule.repeatValue!!,
+                                        2,
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+
+                                "매달" -> {
+                                    nextDate = FormatDate.nextStartDateEveryMonth(
+                                        schedule.repeatValue!!,
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+
+                                "매년" -> {
+                                    nextDate = FormatDate.nextStartDateEveryYear(
+                                        schedule.repeatValue!!,
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+                            }
+
+                            if (nextDate != null) {
+                                if (schedule.repeatValue != null && schedule.repeatValue.contains(
+                                        "T"
+                                    )
+                                ) {
+                                    val repeatStartDate =
+                                        calendarDateFormatter.parse(schedule.repeatStart)
+                                    val datediff = dateDifference(
+                                        repeatStartDate,
+                                        nextDate
+                                    )
+
+                                    when (schedule.repeatOption) {
+                                        "매주" -> {
+                                            val cal = Calendar.getInstance()
+                                            cal.time = nextDate
+                                            cal.add(Calendar.DATE, -(datediff % 7))
+                                            nextDate = cal.time
+                                        }
+
+                                        "격주" -> {
+                                            val cal = Calendar.getInstance()
+                                            cal.time = nextDate
+                                            cal.add(Calendar.DATE, -(datediff % 14))
+                                            nextDate = cal.time
+                                        }
+
+                                        "매달" -> {
+                                            if (repeatStartDate.date != nextDate.date) {
+                                                nextDate.date = repeatStartDate.date
+                                            }
+                                        }
+
+                                        "매년" -> {
+                                            if (repeatStartDate.month != nextDate.month) {
+                                                nextDate.month = repeatStartDate.month
+                                            }
+
+                                            if (repeatStartDate.date != nextDate.date) {
+                                                nextDate.date = repeatStartDate.date
+                                            }
+                                        }
+                                    }
+                                }
+
+                                calendarviewmodel.deleteFrontSchedule(
+                                    schedule.id,
+                                    ScheduleFrontDelete(
+                                        serverFormatter.format(nextDate)
+                                    )
+                                ) {
+                                    if (searchCallback != null)
+                                        searchCallback?.updateCallback {
+                                            requireActivity().supportFragmentManager.popBackStack()
+                                        }
+                                    else requireActivity().supportFragmentManager.popBackStack()
+                                }
+                            } else {
+                                calendarviewmodel.deleteSchedule(schedule.id) {
+                                    if (searchCallback != null)
+                                        searchCallback?.updateCallback {
+                                            requireActivity().supportFragmentManager.popBackStack()
+                                        }
+                                    else requireActivity().supportFragmentManager.popBackStack()
+                                }
+                            }
+                        }
+
+                        1 -> {//middle
+                            var next = calendarDateFormatter.format(todayDate)
+                            var nextDate: Date? = null
+
+                            when (schedule.repeatOption) {
+                                "매일" -> {
+                                    nextDate = FormatDate.nextStartDate(
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+
+                                "매주" -> {
+                                    nextDate = FormatDate.nextStartDateEveryWeek(
+                                        schedule.repeatValue!!,
+                                        1,
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+
+                                "격주" -> {
+                                    nextDate = FormatDate.nextStartDateEveryWeek(
+                                        schedule.repeatValue!!,
+                                        2,
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+
+                                "매달" -> {
+                                    nextDate = FormatDate.nextStartDateEveryMonth(
+                                        schedule.repeatValue!!,
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+
+                                "매년" -> {
+                                    nextDate = FormatDate.nextStartDateEveryYear(
+                                        schedule.repeatValue!!,
+                                        next!!,
+                                        schedule.repeatEnd!!
+                                    )
+                                }
+                            }
+
+                            if (nextDate != null) {
+                                if (schedule.repeatValue != null && schedule.repeatValue.contains(
+                                        "T"
+                                    )
+                                ) {
+                                    val repeatStartDate =
+                                        calendarDateFormatter.parse(schedule.repeatStart)
+
+                                    val datediff = dateDifference(
+                                        repeatStartDate,
+                                        nextDate
+                                    )
+
+                                    val datediff2 = dateDifference(
+                                        repeatStartDate,
+                                        todayDate
+                                    )
+
+                                    when (schedule.repeatOption) {
+                                        "매주" -> {
+                                            val cal = Calendar.getInstance()
+                                            cal.time = nextDate
+                                            cal.add(Calendar.DATE, -(datediff % 7))
+                                            nextDate = cal.time
+
+                                            cal.time = todayDate
+                                            cal.add(Calendar.DATE, -(datediff2 % 7))
+                                            todayDate = cal.time
+                                        }
+
+                                        "격주" -> {
+                                            val cal = Calendar.getInstance()
+                                            cal.time = nextDate
+                                            cal.add(Calendar.DATE, -(datediff % 14))
+                                            nextDate = cal.time
+
+                                            cal.time = todayDate
+                                            cal.add(Calendar.DATE, -(datediff2 % 14))
+                                            todayDate = cal.time
+                                        }
+
+                                        "매달" -> {
+                                            if (repeatStartDate.date != nextDate.date) {
+                                                nextDate.date = repeatStartDate.date
+                                            }
+
+                                            if (repeatStartDate.date != todayDate.date) {
+                                                todayDate.date = repeatStartDate.date
+                                            }
+                                        }
+
+                                        "매년" -> {
+                                            if (repeatStartDate.month != nextDate.month) {
+                                                nextDate.month = repeatStartDate.month
+                                            }
+
+                                            if (repeatStartDate.month != todayDate.month) {
+                                                todayDate.month = repeatStartDate.month
+                                            }
+
+                                            if (repeatStartDate.date != nextDate.date) {
+                                                nextDate.date = repeatStartDate.date
+                                            }
+
+                                            if (repeatStartDate.date != todayDate.date) {
+                                                todayDate.date = repeatStartDate.date
+                                            }
+                                        }
+                                    }
+                                }
+
+                                todayDate.hours = schedule.startTime!!.hours
+                                todayDate.minutes = schedule.startTime!!.minutes
+                                todayDate.seconds = schedule.startTime!!.seconds
+
+                                nextDate!!.hours = schedule.startTime!!.hours
+                                nextDate!!.minutes = schedule.startTime!!.minutes
+                                nextDate!!.seconds = schedule.startTime!!.seconds
+
+                                calendarviewmodel.deleteMiddleSchedule(
+                                    schedule.id,
+                                    ScheduleMiddleDelete(
+                                        serverFormatter.format(todayDate),
+                                        serverFormatter.format(nextDate)
+                                    )
+                                ) {
+                                    if (searchCallback != null)
+                                        searchCallback?.updateCallback {
+                                            requireActivity().supportFragmentManager.popBackStack()
+                                        }
+                                    else requireActivity().supportFragmentManager.popBackStack()
+                                }
+                            }
+                        }
+
+                        2 -> {//back
+                            var pre = calendarDateFormatter.format(todayDate)
+                            var preDate: Date? = null
+
+                            preDate = FormatDate.preStartDate(
+                                pre,
+                                schedule.repeatOption,
+                                schedule.repeatValue
+                            )
+
+                            if (preDate != null) {
+                                if (schedule.repeatValue != null && schedule.repeatValue.contains(
+                                        "T"
+                                    )
+                                ) {
+                                    val repeatStartDate =
+                                        calendarDateFormatter.parse(schedule.repeatStart)
+                                    val datediff = dateDifference(
+                                        repeatStartDate,
+                                        preDate
+                                    )
+
+                                    when (schedule.repeatOption) {
+                                        "매주" -> {
+                                            val cal = Calendar.getInstance()
+                                            cal.time = preDate
+                                            cal.add(Calendar.DATE, -(datediff % 7))
+                                            preDate = cal.time
+                                        }
+
+                                        "격주" -> {
+                                            val cal = Calendar.getInstance()
+                                            cal.time = preDate
+                                            cal.add(Calendar.DATE, -(datediff % 14))
+                                            preDate = cal.time
+                                        }
+
+                                        "매달" -> {
+                                            if (repeatStartDate.date != preDate.date) {
+                                                preDate.date = repeatStartDate.date
+                                            }
+                                        }
+
+                                        "매년" -> {
+                                            if (repeatStartDate.month != preDate.month) {
+                                                preDate.month = repeatStartDate.month
+                                            }
+
+                                            if (repeatStartDate.date != preDate.date) {
+                                                preDate.date = repeatStartDate.date
+                                            }
+                                        }
+                                    }
+                                }
+
+                                preDate!!.hours = schedule.startTime!!.hours
+                                preDate!!.minutes = schedule.startTime!!.minutes
+                                preDate!!.seconds = schedule.startTime!!.seconds
+
+                                calendarviewmodel.deleteBackSchedule(
+                                    schedule.id,
+                                    ScheduleBackDelete(
+                                        serverFormatter.format(preDate)
+                                    )
+                                ) {
+                                    if (searchCallback != null)
+                                        searchCallback?.updateCallback {
+                                            requireActivity().supportFragmentManager.popBackStack()
+                                        }
+                                    else requireActivity().supportFragmentManager.popBackStack()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                0, 2 -> {// 삭제하기, 전부 삭제하기
+                    calendarviewmodel.deleteSchedule(schedule.id) {
+                        if (searchCallback != null)
+                            searchCallback?.updateCallback {
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                        else requireActivity().supportFragmentManager.popBackStack()
+                    }
+                }
+
+                3 -> {//이후 삭제하기
+                    var pre = calendarDateFormatter.format(todayDate)
+                    var preDate: Date? = null
+
+                    preDate = FormatDate.preStartDate(
+                        pre,
+                        schedule.repeatOption,
+                        schedule.repeatValue
+                    )
+
+                    if (preDate != null) {
+                        if (schedule.repeatValue != null && schedule.repeatValue.contains("T")) {
+                            val repeatStartDate =
+                                calendarDateFormatter.parse(schedule.repeatStart)
+                            val datediff = dateDifference(
+                                repeatStartDate,
+                                preDate
+                            )
+
+                            when (schedule.repeatOption) {
+                                "매주" -> {
+                                    val cal = Calendar.getInstance()
+                                    cal.time = preDate
+                                    cal.add(Calendar.DATE, -(datediff % 7))
+                                    preDate = cal.time
+                                }
+
+                                "격주" -> {
+                                    val cal = Calendar.getInstance()
+                                    cal.time = preDate
+                                    cal.add(Calendar.DATE, -(datediff % 14))
+                                    preDate = cal.time
+                                }
+
+                                "매달" -> {
+                                    if (repeatStartDate.date != preDate.date) {
+                                        preDate.date = repeatStartDate.date
+                                    }
+                                }
+
+                                "매년" -> {
+                                    if (repeatStartDate.month != preDate.month) {
+                                        preDate.month = repeatStartDate.month
+                                    }
+
+                                    if (repeatStartDate.date != preDate.date) {
+                                        preDate.date = repeatStartDate.date
+                                    }
+                                }
+                            }
+                        }
+
+                        preDate!!.hours = schedule.startTime!!.hours
+                        preDate!!.minutes = schedule.startTime!!.minutes
+                        preDate!!.seconds = schedule.startTime!!.seconds
+
+                        calendarviewmodel.deleteBackSchedule(
+                            schedule.id,
+                            ScheduleBackDelete(
+                                serverFormatter.format(preDate)
+                            )
+                        ) {
+                            if (searchCallback != null)
+                                searchCallback?.updateCallback {
+                                    requireActivity().supportFragmentManager.popBackStack()
+                                }
+                            else requireActivity().supportFragmentManager.popBackStack()
+                        }
+                    }
+                }
+            }
+        }
+
+        deleteDialg.show(parentFragmentManager, deleteDialg.tag)
+    }
+
     fun dateDifference(d1: Date, d2: Date): Int {
         // Create calendar objects
         val calendar1 = Calendar.getInstance()
@@ -570,431 +996,8 @@ class CalendarItemFragment(
             datePicker.show(parentFragmentManager, null)
         }
 
-        binding.deleteScheduleLayout.setOnClickListener {
-            val deleteDialg = DeleteOptionScheduleFragment(schedule.location) {
-                val calendarviewmodel = CalendarViewModel()
-
-                when (it) {
-                    1 -> {// 이 일정만 삭제
-                        when (schedule.location) {
-                            0 -> {//front
-                                var next = schedule.repeatStart
-                                var nextDate: Date? = null
-
-                                when (schedule.repeatOption) {
-                                    "매일" -> {
-                                        nextDate = FormatDate.nextStartDate(
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-
-                                    "매주" -> {
-                                        nextDate = FormatDate.nextStartDateEveryWeek(
-                                            schedule.repeatValue!!,
-                                            1,
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-
-                                    "격주" -> {
-                                        nextDate = FormatDate.nextStartDateEveryWeek(
-                                            schedule.repeatValue!!,
-                                            2,
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-
-                                    "매달" -> {
-                                        nextDate = FormatDate.nextStartDateEveryMonth(
-                                            schedule.repeatValue!!,
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-
-                                    "매년" -> {
-                                        nextDate = FormatDate.nextStartDateEveryYear(
-                                            schedule.repeatValue!!,
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-                                }
-
-                                if (nextDate != null) {
-                                    if (schedule.repeatValue != null && schedule.repeatValue.contains(
-                                            "T"
-                                        )
-                                    ) {
-                                        val repeatStartDate =
-                                            calendarDateFormatter.parse(schedule.repeatStart)
-                                        val datediff = dateDifference(
-                                            repeatStartDate,
-                                            nextDate
-                                        )
-
-                                        when (schedule.repeatOption) {
-                                            "매주" -> {
-                                                val cal = Calendar.getInstance()
-                                                cal.time = nextDate
-                                                cal.add(Calendar.DATE, -(datediff % 7))
-                                                nextDate = cal.time
-                                            }
-
-                                            "격주" -> {
-                                                val cal = Calendar.getInstance()
-                                                cal.time = nextDate
-                                                cal.add(Calendar.DATE, -(datediff % 14))
-                                                nextDate = cal.time
-                                            }
-
-                                            "매달" -> {
-                                                if (repeatStartDate.date != nextDate.date) {
-                                                    nextDate.date = repeatStartDate.date
-                                                }
-                                            }
-
-                                            "매년" -> {
-                                                if (repeatStartDate.month != nextDate.month) {
-                                                    nextDate.month = repeatStartDate.month
-                                                }
-
-                                                if (repeatStartDate.date != nextDate.date) {
-                                                    nextDate.date = repeatStartDate.date
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    calendarviewmodel.deleteFrontSchedule(
-                                        schedule.id,
-                                        ScheduleFrontDelete(
-                                            serverFormatter.format(nextDate)
-                                        )
-                                    ) {
-                                        if (searchCallback != null)
-                                            searchCallback?.updateCallback {
-                                                requireActivity().supportFragmentManager.popBackStack()
-                                            }
-                                        else requireActivity().supportFragmentManager.popBackStack()
-                                    }
-                                } else {
-                                    calendarviewmodel.deleteSchedule(schedule.id) {
-                                        if (searchCallback != null)
-                                            searchCallback?.updateCallback {
-                                                requireActivity().supportFragmentManager.popBackStack()
-                                            }
-                                        else requireActivity().supportFragmentManager.popBackStack()
-                                    }
-                                }
-                            }
-
-                            1 -> {//middle
-                                var next = calendarDateFormatter.format(todayDate)
-                                var nextDate: Date? = null
-
-                                when (schedule.repeatOption) {
-                                    "매일" -> {
-                                        nextDate = FormatDate.nextStartDate(
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-
-                                    "매주" -> {
-                                        nextDate = FormatDate.nextStartDateEveryWeek(
-                                            schedule.repeatValue!!,
-                                            1,
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-
-                                    "격주" -> {
-                                        nextDate = FormatDate.nextStartDateEveryWeek(
-                                            schedule.repeatValue!!,
-                                            2,
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-
-                                    "매달" -> {
-                                        nextDate = FormatDate.nextStartDateEveryMonth(
-                                            schedule.repeatValue!!,
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-
-                                    "매년" -> {
-                                        nextDate = FormatDate.nextStartDateEveryYear(
-                                            schedule.repeatValue!!,
-                                            next!!,
-                                            schedule.repeatEnd!!
-                                        )
-                                    }
-                                }
-
-                                if (nextDate != null) {
-                                    if (schedule.repeatValue != null && schedule.repeatValue.contains(
-                                            "T"
-                                        )
-                                    ) {
-                                        val repeatStartDate =
-                                            calendarDateFormatter.parse(schedule.repeatStart)
-
-                                        val datediff = dateDifference(
-                                            repeatStartDate,
-                                            nextDate
-                                        )
-
-                                        val datediff2 = dateDifference(
-                                            repeatStartDate,
-                                            todayDate
-                                        )
-
-                                        when (schedule.repeatOption) {
-                                            "매주" -> {
-                                                val cal = Calendar.getInstance()
-                                                cal.time = nextDate
-                                                cal.add(Calendar.DATE, -(datediff % 7))
-                                                nextDate = cal.time
-
-                                                cal.time = todayDate
-                                                cal.add(Calendar.DATE, -(datediff2 % 7))
-                                                todayDate = cal.time
-                                            }
-
-                                            "격주" -> {
-                                                val cal = Calendar.getInstance()
-                                                cal.time = nextDate
-                                                cal.add(Calendar.DATE, -(datediff % 14))
-                                                nextDate = cal.time
-
-                                                cal.time = todayDate
-                                                cal.add(Calendar.DATE, -(datediff2 % 14))
-                                                todayDate = cal.time
-                                            }
-
-                                            "매달" -> {
-                                                if (repeatStartDate.date != nextDate.date) {
-                                                    nextDate.date = repeatStartDate.date
-                                                }
-
-                                                if (repeatStartDate.date != todayDate.date) {
-                                                    todayDate.date = repeatStartDate.date
-                                                }
-                                            }
-
-                                            "매년" -> {
-                                                if (repeatStartDate.month != nextDate.month) {
-                                                    nextDate.month = repeatStartDate.month
-                                                }
-
-                                                if (repeatStartDate.month != todayDate.month) {
-                                                    todayDate.month = repeatStartDate.month
-                                                }
-
-                                                if (repeatStartDate.date != nextDate.date) {
-                                                    nextDate.date = repeatStartDate.date
-                                                }
-
-                                                if (repeatStartDate.date != todayDate.date) {
-                                                    todayDate.date = repeatStartDate.date
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    todayDate.hours = schedule.startTime!!.hours
-                                    todayDate.minutes = schedule.startTime!!.minutes
-                                    todayDate.seconds = schedule.startTime!!.seconds
-
-                                    nextDate!!.hours = schedule.startTime!!.hours
-                                    nextDate!!.minutes = schedule.startTime!!.minutes
-                                    nextDate!!.seconds = schedule.startTime!!.seconds
-
-                                    calendarviewmodel.deleteMiddleSchedule(
-                                        schedule.id,
-                                        ScheduleMiddleDelete(
-                                            serverFormatter.format(todayDate),
-                                            serverFormatter.format(nextDate)
-                                        )
-                                    ) {
-                                        if (searchCallback != null)
-                                            searchCallback?.updateCallback {
-                                                requireActivity().supportFragmentManager.popBackStack()
-                                            }
-                                        else requireActivity().supportFragmentManager.popBackStack()
-                                    }
-                                }
-                            }
-
-                            2 -> {//back
-                                var pre = calendarDateFormatter.format(todayDate)
-                                var preDate: Date? = null
-
-                                preDate = FormatDate.preStartDate(
-                                    pre,
-                                    schedule.repeatOption,
-                                    schedule.repeatValue
-                                )
-
-                                if (preDate != null) {
-                                    if (schedule.repeatValue != null && schedule.repeatValue.contains(
-                                            "T"
-                                        )
-                                    ) {
-                                        val repeatStartDate =
-                                            calendarDateFormatter.parse(schedule.repeatStart)
-                                        val datediff = dateDifference(
-                                            repeatStartDate,
-                                            preDate
-                                        )
-
-                                        when (schedule.repeatOption) {
-                                            "매주" -> {
-                                                val cal = Calendar.getInstance()
-                                                cal.time = preDate
-                                                cal.add(Calendar.DATE, -(datediff % 7))
-                                                preDate = cal.time
-                                            }
-
-                                            "격주" -> {
-                                                val cal = Calendar.getInstance()
-                                                cal.time = preDate
-                                                cal.add(Calendar.DATE, -(datediff % 14))
-                                                preDate = cal.time
-                                            }
-
-                                            "매달" -> {
-                                                if (repeatStartDate.date != preDate.date) {
-                                                    preDate.date = repeatStartDate.date
-                                                }
-                                            }
-
-                                            "매년" -> {
-                                                if (repeatStartDate.month != preDate.month) {
-                                                    preDate.month = repeatStartDate.month
-                                                }
-
-                                                if (repeatStartDate.date != preDate.date) {
-                                                    preDate.date = repeatStartDate.date
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    preDate!!.hours = schedule.startTime!!.hours
-                                    preDate!!.minutes = schedule.startTime!!.minutes
-                                    preDate!!.seconds = schedule.startTime!!.seconds
-
-                                    calendarviewmodel.deleteBackSchedule(
-                                        schedule.id,
-                                        ScheduleBackDelete(
-                                            serverFormatter.format(preDate)
-                                        )
-                                    ) {
-                                        if (searchCallback != null)
-                                            searchCallback?.updateCallback {
-                                                requireActivity().supportFragmentManager.popBackStack()
-                                            }
-                                        else requireActivity().supportFragmentManager.popBackStack()
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    0, 2 -> {// 삭제하기, 전부 삭제하기
-                        calendarviewmodel.deleteSchedule(schedule.id) {
-                            if (searchCallback != null)
-                                searchCallback?.updateCallback {
-                                    requireActivity().supportFragmentManager.popBackStack()
-                                }
-                            else requireActivity().supportFragmentManager.popBackStack()
-                        }
-                    }
-
-                    3 -> {//이후 삭제하기
-                        var pre = calendarDateFormatter.format(todayDate)
-                        var preDate: Date? = null
-
-                        preDate = FormatDate.preStartDate(
-                            pre,
-                            schedule.repeatOption,
-                            schedule.repeatValue
-                        )
-
-                        if (preDate != null) {
-                            if (schedule.repeatValue != null && schedule.repeatValue.contains("T")) {
-                                val repeatStartDate =
-                                    calendarDateFormatter.parse(schedule.repeatStart)
-                                val datediff = dateDifference(
-                                    repeatStartDate,
-                                    preDate
-                                )
-
-                                when (schedule.repeatOption) {
-                                    "매주" -> {
-                                        val cal = Calendar.getInstance()
-                                        cal.time = preDate
-                                        cal.add(Calendar.DATE, -(datediff % 7))
-                                        preDate = cal.time
-                                    }
-
-                                    "격주" -> {
-                                        val cal = Calendar.getInstance()
-                                        cal.time = preDate
-                                        cal.add(Calendar.DATE, -(datediff % 14))
-                                        preDate = cal.time
-                                    }
-
-                                    "매달" -> {
-                                        if (repeatStartDate.date != preDate.date) {
-                                            preDate.date = repeatStartDate.date
-                                        }
-                                    }
-
-                                    "매년" -> {
-                                        if (repeatStartDate.month != preDate.month) {
-                                            preDate.month = repeatStartDate.month
-                                        }
-
-                                        if (repeatStartDate.date != preDate.date) {
-                                            preDate.date = repeatStartDate.date
-                                        }
-                                    }
-                                }
-                            }
-
-                            preDate!!.hours = schedule.startTime!!.hours
-                            preDate!!.minutes = schedule.startTime!!.minutes
-                            preDate!!.seconds = schedule.startTime!!.seconds
-
-                            calendarviewmodel.deleteBackSchedule(
-                                schedule.id,
-                                ScheduleBackDelete(
-                                    serverFormatter.format(preDate)
-                                )
-                            ) {
-                                if (searchCallback != null)
-                                    searchCallback?.updateCallback {
-                                        requireActivity().supportFragmentManager.popBackStack()
-                                    }
-                                else requireActivity().supportFragmentManager.popBackStack()
-                            }
-                        }
-                    }
-                }
-            }
-
-            deleteDialg.show(parentFragmentManager, deleteDialg.tag)
-        }
+        binding.deleteScheduleBtn.setOnClickListener{ delete() }
+        binding.deleteScheduleImv.setOnClickListener { delete() }
 
         binding.scheduleContentEt.addTextChangedListener {
             if (it.toString() == "") {

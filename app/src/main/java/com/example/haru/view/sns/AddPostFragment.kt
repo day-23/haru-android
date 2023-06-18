@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.media.ExifInterface
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -31,6 +32,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -39,6 +41,7 @@ import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.*
 import com.example.haru.viewmodel.MyPageViewModel
@@ -67,6 +70,7 @@ class AddPostFragment : Fragment(), PostInterface {
     var toggle = false
     var totalImage: ArrayList<ExternalImages> = arrayListOf()
     var isMultiSelect = false
+    var currentPhotoPath = ""
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
 
@@ -193,14 +197,20 @@ class AddPostFragment : Fragment(), PostInterface {
 
         galleryViewmodel.BeforeCrop.observe(viewLifecycleOwner) { image ->
             if (image != null)
-                cropImage(image.absuri)
+                if (!User.cameraBoolean)
+                    cropImage(image.absuri)
         }
 
         galleryViewmodel.AfterCrop.observe(viewLifecycleOwner) { image ->
             Log.d("CropImages", "after image $image")
             if (image != null) {
                 if (isMultiSelect)
-                    galleryViewmodel.changeImage(image)
+                    if(User.cameraBoolean){
+                        galleryViewmodel.addImage(image)
+                        User.cameraBoolean = false
+                    } else {
+                        galleryViewmodel.changeImage(image)
+                    }
                 else
                     galleryViewmodel.setImage(image)
             }
@@ -230,16 +240,19 @@ class AddPostFragment : Fragment(), PostInterface {
             ActivityResultContracts.StartActivityForResult()){ result ->
             // 서브 액티비티로부터 돌아올 때의 결과 값을 받아 올 수 있는 구문
             if (result.resultCode == RESULT_OK){
-                Log.d("camera", "result ${result.data!!.extras}")
-                if(result.data != null) {
-                    val extras = result.data?.extras
-                    if (extras != null && extras.containsKey("data")) {
-                        val bitmap = extras.get("data") as Bitmap
-                        val imageUri = bitmapToUri(requireContext(), bitmap)
-                        cropImage(imageUri)
-                    }
-                }
-//                imageResult(result.resultCode, result.resultCode, result.data)
+                var bitmap = BitmapFactory.decodeFile(currentPhotoPath)
+
+                //meta data 저장하는 Exif
+                val exif = currentPhotoPath.let { ExifInterface(currentPhotoPath) }
+                val exifOrientation: Int = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+                val exifDegree = exifOrientationToDegrees(exifOrientation)
+
+                bitmap = rotate(bitmap, exifDegree)
+
+                val imageUri = bitmapToUri(requireContext(), bitmap)
+                User.cameraBoolean = true
+                cropImage(imageUri)
             }
         }
 
@@ -375,19 +388,58 @@ class AddPostFragment : Fragment(), PostInterface {
                 .start(it, this)
         }
     }
-    private fun openCamera() {
-        val cameraPermission = android.Manifest.permission.CAMERA
 
-        if (ContextCompat.checkSelfPermission(requireContext(), cameraPermission) == PackageManager.PERMISSION_GRANTED) {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            resultLauncher.launch(intent)
-        } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(cameraPermission),
-                REQUEST_CODE_PERMISSIONS
-            )
+    private fun exifOrientationToDegrees(exifOrientation: Int): Int {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270
         }
+        return 0
+    }
+
+    // 이미지 회전 함수
+    private fun rotate(bitmap: Bitmap, degree: Int) : Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degree.toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix,true)
+    }
+
+    private fun openCamera() {
+        val fileName = "photo"
+        val storageDirectory = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+        try {
+            val imageFile = File.createTempFile(fileName, ".jpg", storageDirectory)
+
+            currentPhotoPath = imageFile.absolutePath
+
+            val imageUri = FileProvider.getUriForFile(
+                requireContext(),
+                "com.example.haru.view.sns", imageFile
+            )
+
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+            resultLauncher.launch(intent)
+        } catch (e: IOException){
+            e.printStackTrace()
+        }
+
+//        val cameraPermission = android.Manifest.permission.CAMERA
+//
+//        if (ContextCompat.checkSelfPermission(requireContext(), cameraPermission) == PackageManager.PERMISSION_GRANTED) {
+//            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            resultLauncher.launch(intent)
+//        } else {
+//            ActivityCompat.requestPermissions(
+//                requireActivity(),
+//                arrayOf(cameraPermission),
+//                REQUEST_CODE_PERMISSIONS
+//            )
+//        }
     }
 
     fun bitmapToUri(context: Context, bitmap: Bitmap): Uri {

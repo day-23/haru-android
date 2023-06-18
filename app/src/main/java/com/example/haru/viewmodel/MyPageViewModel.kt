@@ -104,6 +104,9 @@ class MyPageViewModel() : ViewModel() {
     private val _FriendRequest = MutableLiveData<Boolean>()
     val FriendRequest: LiveData<Boolean> = _FriendRequest
 
+    private val _BlockRequest = MutableLiveData<Boolean>()
+    val BlockRequest: LiveData<Boolean> = _BlockRequest
+
     private val _PostRequest = MutableLiveData<Int>()
     val PostRequest: LiveData<Int> = _PostRequest
 
@@ -528,7 +531,7 @@ class MyPageViewModel() : ViewModel() {
                     Log.d("TAG", "Fail to block user")
                 }
             }
-            _FriendRequest.value = result
+            _BlockRequest.value = result
         }
     }
 
@@ -658,6 +661,7 @@ class MyPageViewModel() : ViewModel() {
     }
 
     fun setImage(image: ExternalImages) {
+        Log.d("CropImages", "$image")
         _Images.value = arrayListOf(image.copy())
     }
 
@@ -682,6 +686,19 @@ class MyPageViewModel() : ViewModel() {
         _Images.value = temp!!
     }
 
+    fun addImage(image: ExternalImages){
+        var temp = _Images.value
+
+        if (!temp.isNullOrEmpty()) {
+            Log.d("CropImages", "add : ${image}")
+            temp!!.add(image.copy())
+//            temp.add(image.copy())
+        } else {
+            temp = arrayListOf(image.copy())
+        }
+        _Images.value = temp!!
+    }
+
     fun deleteImage(image: ExternalImages) {
         var temp = _Images.value
         if (!temp.isNullOrEmpty()) {
@@ -698,6 +715,13 @@ class MyPageViewModel() : ViewModel() {
         } else {
             Log.d("ImageCrop", "null")
         }
+    }
+
+    fun getCropResultCamera(image: Uri){
+        val temp = ExternalImages(0,"","", image)
+        _AfterCrop.value = temp.copy()
+        imageList.add(temp.copy())
+        selectedPostionList.add(-1)
     }
 
     fun getCrop(image: ExternalImages) {
