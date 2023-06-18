@@ -177,13 +177,12 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                     postClicked = false
                 }
                 if (dy < 0) {
-                    fadeInAndShowView(binding.addPost)
+                    binding.addPost.visibility = View.VISIBLE
                 }
 
                 if (!postRecycler.canScrollVertically(1)) {
                     if (!postAllLoaded) {
                         snsViewModel.getFeeds(lastDate)
-                        fadeOutAndHideView(binding.addPost)
                     }
                 }
             }

@@ -119,10 +119,6 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCommentsBinding.inflate(inflater, container, false)
-        if (User.id != userId) {
-            binding.totalCommentEdit.visibility = View.GONE
-            binding.totalCommentEdit.visibility = View.GONE
-        }
 
         commentsRecyclerView = binding.commentRecycler
         adapter = CommentsAdapter(requireContext(), arrayListOf(), this)
@@ -131,6 +127,7 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         snsViewModel.getFirstComments(post.id, post.images[0].id)
         var index = 0
         binding.commentCommentsIndex.text = "1/${post.images.size}"
+        binding.commentsLastPicture.visibility = View.GONE
 
         if (post.images.size == 1) {
             binding.commentsNextPicture.visibility = View.GONE
@@ -143,7 +140,6 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
                 if (!commentsRecyclerView.canScrollVertically(1) && newComment) {
                     val lastday = adapter.getLastComment()
                     snsViewModel.getComments(post.id, post.images[index].id, lastday)
-                    Toast.makeText(context, "새 코멘트 불러오는 중....", Toast.LENGTH_SHORT).show()
                 }
             }
         }

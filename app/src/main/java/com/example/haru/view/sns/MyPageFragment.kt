@@ -92,29 +92,20 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
 
     override fun onCommentClick(postitem: Post) {
         mypageViewModel.getUserInfo(userId)
-
-        if (postitem.isTemplatePost != null) {
-            val newFrag = CommentsFragment(postitem, com.example.haru.utils.User.id)
+        mypageViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
+            val newFrag = AddCommentFragment(
+                postitem.isTemplatePost,
+                postitem.content,
+                postitem.id,
+                postitem.images,
+                postitem.likedCount,
+                postitem.commentCount,
+                user
+            )
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             transaction.addToBackStack("snsmypage")
             transaction.commit()
-        } else {
-            mypageViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
-                val newFrag = AddCommentFragment(
-                    postitem.isTemplatePost,
-                    postitem.content,
-                    postitem.id,
-                    postitem.images,
-                    postitem.likedCount,
-                    postitem.commentCount,
-                    user
-                )
-                val transaction = parentFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragments_frame, newFrag)
-                transaction.addToBackStack("snsmypage")
-                transaction.commit()
-            }
         }
     }
 
@@ -203,10 +194,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     ): View? {
         Log.d("TAG", "MyPageFragment - onCreateView() called")
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
-
         initProfile()
-
-
 
         mypageViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
             userInfo = user
@@ -215,21 +203,22 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             binding.profilePostCount.text = user.postCount.toString()
             binding.profileFriendsCount.text = user.friendCount.toString()
             friendStatus = user.friendStatus
+
             if (!isMyPage) { //타인의 페이지라면
                 if (user.friendStatus == 0) {
                     binding.editProfile.setBackgroundResource(R.drawable.gradation_btn_custom)
                     binding.editProfile.setTextColor(Color.parseColor("#FDFDFD"))
                     binding.editProfile.text = "친구 신청"
                 } else if (user.friendStatus == 1) {
-                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setBackgroundResource(R.drawable.custom_btn_date)
                     binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "신청 취소"
                 } else if (user.friendStatus == 2) {
-                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setBackgroundResource(R.drawable.custom_btn_date)
                     binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "내 친구"
                 } else if (user.friendStatus == 3) {
-                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setBackgroundResource(R.drawable.custom_btn_date)
                     binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "수락"
                 }
@@ -372,7 +361,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             if (result) {
                 if (friendStatus == 0) { //신청 성공
                     friendStatus = 1
-                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setBackgroundResource(R.drawable.custom_btn_date)
                     binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "신청 취소"
                 } else if (friendStatus == 1) { //신청 취소
@@ -385,9 +374,10 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                     binding.editProfile.setBackgroundResource(R.drawable.gradation_btn_custom)
                     binding.editProfile.setTextColor(Color.parseColor("#FDFDFD"))
                     binding.editProfile.text = "친구 신청"
+                    showFeeds(0, userInfo.isPublicAccount)
                 } else if (friendStatus == 3) {
                     friendStatus = 2
-                    binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+                    binding.editProfile.setBackgroundResource(R.drawable.custom_btn_date)
                     binding.editProfile.setTextColor(Color.parseColor("#646464"))
                     binding.editProfile.text = "내 친구"
                 }
@@ -518,7 +508,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     fun initProfile() {
         if (userId == com.example.haru.utils.User.id) {
             isMyPage = true
-            binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
+            binding.editProfile.setBackgroundResource(R.drawable.custom_btn_date)
             binding.editProfile.setTextColor(Color.parseColor("#646464"))
             binding.editProfile.text = "프로필 편집"
             binding.feedText.text = "내 피드"

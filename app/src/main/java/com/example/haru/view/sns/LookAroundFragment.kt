@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.widget.Toast
 import androidx.core.view.ViewCompat.animate
 import androidx.fragment.app.Fragment
@@ -52,6 +54,12 @@ class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
     val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
+            if(click){
+                fadeOutAndHideView(binding.lookAroundButtons)
+                binding.lookAroundButton.animate().rotation(-90f)
+                click = false
+            }
+
             if (!recyclerView.canScrollVertically(1)) {
                 if (isTagSelected) {
                     getHotPosts()
@@ -183,16 +191,6 @@ class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
             }
         }
 
-//        binding.lookAroundMyRecords.setOnClickListener {
-//            val newFrag = MyPageFragment(User.id)
-//            val transaction = parentFragmentManager.beginTransaction()
-//            transaction.replace(R.id.fragments_frame, newFrag)
-//            val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "lookaround")
-//            if(!isSnsMainInBackStack)
-//                transaction.addToBackStack("lookaround")
-//            transaction.commit()
-//        }
-
         binding.ivSnsSearch.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragments_frame, SearchFragment(profileViewModel))
@@ -201,6 +199,24 @@ class LookAroundFragment : Fragment(), OnMediaTagClicked, LookAroundClick {
         }
 
         return binding.root
+    }
+
+    //점점 사라지는 애니메이션
+    fun fadeOutAndHideView(view: View) {
+        val fadeOutAnimation = AlphaAnimation(1.0f, 0.0f)
+        fadeOutAnimation.duration = 400 // 1 second
+
+        fadeOutAnimation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+
+            override fun onAnimationEnd(animation: Animation?) {
+                view.visibility = View.GONE
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+
+        view.startAnimation(fadeOutAnimation)
     }
 
     fun getLastDate(items: ArrayList<Post>) {
