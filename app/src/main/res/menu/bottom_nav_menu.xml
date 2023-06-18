@@ -2,27 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_sns"
-        android:title="@string/SNS"
         android:icon="@drawable/bottom_nav_sns_icon"
-        />
+        android:title="@string/SNS" />
     <item
         android:id="@+id/menu_checklist"
-        android:title="@string/TODO"
         android:icon="@drawable/bottom_nav_checklist_icon"
-        />
+        android:title="@string/TODO" />
     <item
         android:id="@+id/menu_calendar"
-        android:title="@string/CAL"
         android:icon="@drawable/bottom_nav_calendar_icon"
-        />
+        android:title="@string/CAL" />
     <item
         android:id="@+id/menu_timetable"
-        android:title="@string/T.T"
         android:icon="@drawable/bottom_nav_timetable_icon"
-        />
+        android:title="@string/T.T" />
     <item
         android:id="@+id/menu_etc"
-        android:title="@string/MY"
         android:icon="@drawable/bottom_nav_etc_icon"
-        />
+        android:title="@string/MY" />
 </menu>

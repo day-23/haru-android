@@ -121,6 +121,8 @@ class MainActivity : BaseActivity() {
 
         binding.bottomNav.itemIconTintList = null
 
+        binding.bottomNav.itemRippleColor = null
+
         binding.bottomNav.setOnItemSelectedListener { menuItem ->
             handleNavigation(menuItem.itemId)
         }
