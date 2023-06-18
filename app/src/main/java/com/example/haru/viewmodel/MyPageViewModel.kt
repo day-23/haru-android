@@ -405,26 +405,26 @@ class MyPageViewModel() : ViewModel() {
         image: MultipartBody.Part,
         name: String,
         introduction: String,
-        callback: () -> Unit
+        callback: (code : Int) -> Unit
     ) {
         var user = User("", "", "", "", 0, 0, 0, false)
         viewModelScope.launch {
-            ProfileRepository.editProfile(image, name, introduction) {
+            ProfileRepository.editProfile(image, name, introduction) {it, code ->
                 if (it.id != "") {
                     user = it
                     Log.d("TAG", "Success to Edit!")
                 }
                 _UserInfo.postValue(user)
-                callback()
+                callback(code)
             }
 //            _UserInfo.value = user
         }
     }
 
-    fun editProfileName(name: String, introduction: String, callback: () -> Unit) {
+    fun editProfileName(name: String, introduction: String, callback: (code : Int) -> Unit) {
         var user = User("", "", "", "", 0, 0, 0, false)
         viewModelScope.launch {
-            ProfileRepository.editProfileName(name, introduction) {
+            ProfileRepository.editProfileName(name, introduction) {it, code ->
                 if (it.id != "") {
                     user = it
                     Log.d("TAG", "Success to EditName!")
@@ -432,7 +432,7 @@ class MyPageViewModel() : ViewModel() {
                     Log.d("TAG", "Fail to Edit name")
                 }
                 _UserInfo.postValue(user)
-                callback()
+                callback(code)
             }
         }
     }

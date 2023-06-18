@@ -29,6 +29,7 @@ import com.example.haru.databinding.FragmentEditProfileBinding
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.GalleryAdapter
+import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import okhttp3.internal.wait
 
@@ -101,18 +102,26 @@ class EditProfileFragment(userId: String) : Fragment() {
             val introduction = binding.editIntroduction.text.toString()
             if (multipart != null) {
                 profileViewModel.editProfile(multipart, name, introduction) {
-                    val fragmentManager = parentFragmentManager
-                    if (fragmentManager.backStackEntryCount > 0) {
-                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-                        fragmentManager.popBackStack()
+                    if (it == 403){
+                        Toast.makeText(requireContext(), "포함될 수 없는 단어가 들어갔습니다.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val fragmentManager = parentFragmentManager
+                        if (fragmentManager.backStackEntryCount > 0) {
+                            // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+                            fragmentManager.popBackStack()
+                        }
                     }
                 }
             } else {
                 profileViewModel.editProfileName(name, introduction) {
-                    val fragmentManager = requireActivity().supportFragmentManager
-                    if (fragmentManager.backStackEntryCount > 0) {
-                        // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
-                        fragmentManager.popBackStack()
+                    if (it == 403){
+                        Toast.makeText(requireContext(), "포함될 수 없는 단어가 들어갔습니다.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val fragmentManager = parentFragmentManager
+                        if (fragmentManager.backStackEntryCount > 0) {
+                            // 이전 프래그먼트를 제거하고 맨 위에 있는 프래그먼트로 전환
+                            fragmentManager.popBackStack()
+                        }
                     }
                 }
             }

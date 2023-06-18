@@ -856,6 +856,7 @@ class ChecklistItemFragment(
         binding.ivBackIcon.setOnClickListener(BtnClickListener())
         binding.btnInfoSave.setOnClickListener(BtnClickListener())
         binding.btnInfoDelete.setOnClickListener(BtnClickListener())
+        binding.deleteIcon.setOnClickListener(BtnClickListener())
     }
 
     fun View.animateViewHeight(duration: Long, startHeight: Int, endHeight: Int) {
@@ -986,7 +987,7 @@ class ChecklistItemFragment(
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
-                binding.btnInfoDelete.id -> {
+                binding.deleteIcon.id, binding.btnInfoDelete.id -> {
                     binding.btnInfoDelete.isClickable = false
                     Log.d("20191627", "삭제")
 

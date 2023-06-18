@@ -22,7 +22,7 @@ class ProfileRepository() {
         imageFile: MultipartBody.Part,
         name: String,
         introduction: String,
-        callback: (user: User) -> Unit
+        callback: (user: User, code : Int) -> Unit
     ) = withContext(
         Dispatchers.IO
     ) {
@@ -37,6 +37,7 @@ class ProfileRepository() {
             ).execute()
             val user: User
             val data: GetProfileResponse
+            Log.e("20191627", response.code().toString())
             if (response.isSuccessful) {
                 Log.d("EDITTAG", "Success to update profile")
                 data = response.body()!!
@@ -46,7 +47,7 @@ class ProfileRepository() {
                 Log.d("EDITTAG", "Fail to update Profile: $response")
                 user = User("", "", "", "", 0, 0, 0, false)
             }
-            callback(user)
+            callback(user, response.code())
         } catch (e: Exception) {
             Log.e("EDITTAG", "Error occurred while editing profile", e)
         }
@@ -55,7 +56,7 @@ class ProfileRepository() {
     suspend fun editProfileName(
         name: String,
         introduction: String,
-        callback: (user: User) -> Unit
+        callback: (user: User, code : Int) -> Unit
     ) = withContext(
         Dispatchers.IO
     ) {
@@ -74,7 +75,7 @@ class ProfileRepository() {
                 Log.d("EDITTAG", "Fail to update Profile: $response")
                 user = User("", "", "", "", 0, 0, 0, false)
             }
-            callback(user)
+            callback(user, response.code())
         } catch (e: Exception) {
             Log.e("EDITTAG", "Error occurred while editing profile", e)
         }

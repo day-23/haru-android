@@ -290,6 +290,10 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             }
         }
 
+        binding.snsHaruTitle.setOnClickListener {
+            binding.menuButton.performClick()
+        }
+
         //내 피드 보기 클릭
         binding.myRecords.setOnClickListener {
             onProfileClick(User.id)

@@ -21,6 +21,7 @@ import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
 import com.example.haru.view.checklist.ChecklistTodayFragment
 import com.example.haru.view.sns.EditProfileFragment
@@ -61,6 +62,8 @@ class EtcFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.etcHeader.id)
+
+        MainActivity.hideNavi(false)
 
         Log.e("20191627", User.toString())
         etcViewModel.getSnsInfo()
@@ -145,6 +148,7 @@ class EtcFragment : Fragment() {
             when (v?.id) {
                 binding.settingIcon.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out)
                         .replace(R.id.fragments_frame, SettingFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
