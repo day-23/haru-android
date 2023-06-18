@@ -17,8 +17,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="14dp"
-            android:paddingTop="2dp">
+            android:paddingTop="2dp"
+            android:paddingBottom="14dp">
 
             <ImageView
                 android:id="@+id/look_around_title"
@@ -39,25 +39,25 @@
                 app:layout_constraintLeft_toRightOf="@id/look_around_title"
                 app:layout_constraintTop_toTopOf="@id/look_around_title" />
 
-<!--            <ImageView-->
-<!--                android:layout_width="28dp"-->
-<!--                android:layout_height="28dp"-->
-<!--                android:layout_marginRight="10.71dp"-->
-<!--                android:background="@drawable/my_record_feather"-->
-<!--                android:backgroundTint="@color/black"-->
-<!--                app:layout_constraintRight_toLeftOf="@id/look_around_my_records" />-->
+            <!--            <ImageView-->
+            <!--                android:layout_width="28dp"-->
+            <!--                android:layout_height="28dp"-->
+            <!--                android:layout_marginRight="10.71dp"-->
+            <!--                android:background="@drawable/my_record_feather"-->
+            <!--                android:backgroundTint="@color/black"-->
+            <!--                app:layout_constraintRight_toLeftOf="@id/look_around_my_records" />-->
 
-<!--            <TextView-->
-<!--                android:id="@+id/look_around_my_records"-->
-<!--                android:layout_width="70dp"-->
-<!--                android:layout_height="32dp"-->
-<!--                android:gravity="center"-->
-<!--                android:text="내 기록"-->
-<!--                android:textColor="#191919"-->
-<!--                android:textSize="14sp"-->
-<!--                android:textStyle="bold"-->
-<!--                app:layout_constraintRight_toLeftOf="@id/iv_sns_search"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
+            <!--            <TextView-->
+            <!--                android:id="@+id/look_around_my_records"-->
+            <!--                android:layout_width="70dp"-->
+            <!--                android:layout_height="32dp"-->
+            <!--                android:gravity="center"-->
+            <!--                android:text="내 기록"-->
+            <!--                android:textColor="#191919"-->
+            <!--                android:textSize="14sp"-->
+            <!--                android:textStyle="bold"-->
+            <!--                app:layout_constraintRight_toLeftOf="@id/iv_sns_search"-->
+            <!--                app:layout_constraintTop_toTopOf="parent" />-->
 
             <ImageView
                 android:id="@+id/iv_sns_search"
@@ -71,11 +71,11 @@
 
     <LinearLayout
         android:id="@+id/look_around_buttons"
-        android:layout_width="94dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_width="88dp"
+        android:layout_height="67dp"
+        android:layout_marginStart="16dp"
         android:background="@drawable/sns_select_buttons"
-        android:elevation="10dp"
+        android:elevation="15dp"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -88,7 +88,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="8dp"
             android:text="친구피드"
             android:textColor="#191919"
             android:textSize="16sp" />
@@ -96,7 +95,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#707070" />
+            android:background="@color/divider" />
 
         <TextView
             android:id="@+id/look_around"
@@ -104,7 +103,6 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:padding="8dp"
             android:text="둘러보기"
             android:textColor="#1DAFFF"
             android:textSize="16sp" />
