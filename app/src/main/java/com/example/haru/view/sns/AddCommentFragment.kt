@@ -109,6 +109,9 @@ class AddCommentFragment(
             commentContainer.removeView(content)
             infoContainer.removeView(writer)
             postImages[imageIndex].comments.remove(comment)
+
+            isCommented = false
+            setUi()
         }
     }
 
@@ -168,7 +171,6 @@ class AddCommentFragment(
 //        AddY = 0
 //        AddX = 0
 
-        Log.d("20191668", "${com.example.haru.utils.User.id}  ${writerInfo.id}")
         if (com.example.haru.utils.User.id == writerInfo.id) {
             binding.addCommentInfo.visibility = View.VISIBLE
         }
@@ -215,7 +217,6 @@ class AddCommentFragment(
         savedInstanceState: Bundle?
     ): View? {
         Log.d("TAG", "SnsFragment - onCreateView() called")
-        Log.d("20191668", "작성자 이름 ${writerInfo.name}")
         profileViewModel.getUserInfo(com.example.haru.utils.User.id)
         profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
             isMyPost = com.example.haru.utils.User.id == user.id
@@ -295,7 +296,6 @@ class AddCommentFragment(
         }
 
         binding.writeCommentBack.setOnClickListener {
-            Log.e("20191627", "writeCommentBack")
             val backManager = parentFragmentManager
             MainActivity.hideNavi(false)
             backManager.popBackStack()
@@ -325,7 +325,6 @@ class AddCommentFragment(
                     showWriter = true
                 }
                 for (comment in postImages[position].comments) {
-                    Log.d("20191668", "내용:  ${comment}")
                     comment.user?.let {
                         if (it.id == com.example.haru.utils.User.id)
                             isCommented = true
@@ -834,10 +833,6 @@ class AddCommentFragment(
                             val deletexEnd = deletex + binding.writeCommentDelete.width
                             val deletey = binding.writeCommentDelete.y
                             val deleteyEnd = deletey + binding.writeCommentDelete.height
-                            Log.d(
-                                "20191668",
-                                "${parentView.x}, ${parentView.y} , ${binding.writeCommentDelete.x}, ${binding.writeCommentDelete.y}"
-                            )
                             //삭제 칸에 드래그 되었는지
                             if (x_start > deletexEnd || x_end < deletex) {
                                 binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_default)
@@ -859,7 +854,6 @@ class AddCommentFragment(
                             } else {
                                 AddX = (parentView.x / ImageWidth * 100).toInt()
                                 AddY = (parentView.y / ImageHeight * 100).toInt()
-                                Log.d("20191668", "Percentage: $AddX $AddY")
                             }
                             binding.writeCommentDelete.visibility = View.GONE
                             binding.writeCommentDelete.setImageResource(R.drawable.cancel_write_default)
