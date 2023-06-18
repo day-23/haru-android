@@ -124,7 +124,7 @@ class SnsPostAdapter(
                 .load(item.user.profileImage)
                 .into(holder.profileImg)
         } else {
-            holder.profileImg.setImageResource(R.drawable.default_profile)
+            holder.profileImg.setImageResource(R.drawable.profile_base_image)
         }
 
 

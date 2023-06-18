@@ -550,6 +550,7 @@ class MyPageViewModel() : ViewModel() {
             UserRepository.requestFirstFriendsList(targetId) {
                 if (it.success) {
                     Friends = it
+                    Log.e("20191627", it.toString())
                 }
             }
             _FirstFriends.value = Friends
