@@ -1,23 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/popup_total_comments_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#80191919"
-    android:orientation="horizontal"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp"
-    android:paddingBottom="30dp">
+    android:orientation="vertical"
+    android:background="@drawable/shape_rect_radius_top_40">
+
+    <View
+        android:layout_width="100dp"
+        android:layout_height="6dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/black_bar_radius" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="85dp"
+        android:orientation="horizontal">
+        
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_profile_image"
+            android:layout_width="62dp"
+            android:layout_height="62dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="유저4"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/todo_description"/>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5분전"
+                android:textSize="14sp"
+                android:textColor="@color/todo_description"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="으악 눈부셔"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/date_text"
+        android:textSize="20sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/divider"/>
+
 
     <LinearLayout
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="104dp"
         android:id="@+id/layout_parent_btn_update"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:background="#4CDFDFFD"
-        android:elevation="10dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
@@ -25,41 +80,36 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@drawable/text_radius"
             android:gravity="center"
             android:text="이 코멘트 삭제하기"
+            android:background="@color/white"
             android:textColor="@color/delete_red"
             android:textSize="20sp"/>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#DBDBDB"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/comments_report"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@drawable/text_radius_bottom"
             android:gravity="center"
+            android:background="@color/white"
             android:text="이 코멘트 신고하기"
-            android:textColor="@color/highlight"
+            android:textColor="@color/date_text"
             android:textSize="20sp"/>
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/comments_cancel"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="@drawable/cancel_button_bg"
-        android:gravity="center"
-        android:text="@string/cancel"
-        android:elevation="5dp"
-        android:shadowColor="#00000029"
-        android:textColor="@color/date_text"
-        android:textSize="20sp" />
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:layout_marginBottom="20dp"-->
+<!--        android:id="@+id/comments_cancel"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="64dp"-->
+<!--        android:background="@drawable/cancel_button_bg"-->
+<!--        android:gravity="center"-->
+<!--        android:text="@string/cancel"-->
+<!--        android:elevation="5dp"-->
+<!--        android:shadowColor="#00000029"-->
+<!--        android:textColor="@color/date_text"-->
+<!--        android:textSize="20sp" />-->
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

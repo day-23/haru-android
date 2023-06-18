@@ -13,8 +13,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.annotation.Dimension
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -152,7 +154,7 @@ class WriteHaruTagFragment(val content:String) : Fragment(), onTemplateListener{
                 val childCount = binding.postTagContainerLayout.childCount
                 for (i in childCount - 2 until it.size) {
                     val chip = layoutInflater.inflate(R.layout.custom_chip, null)
-                    chip.findViewById<AppCompatButton>(R.id.tag_chip).apply {
+                    chip.findViewById<Button>(R.id.tag_chip).apply {
                         text = it[i]
                         setOnClickListener {
                             templateViewModel.subTagList(this.text.toString())

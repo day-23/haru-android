@@ -2,11 +2,13 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -15,6 +17,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.ViewCompat.canScrollVertically
 import androidx.databinding.adapters.TextViewBindingAdapter.setText
@@ -34,20 +37,24 @@ import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.FriendsListAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kakao.sdk.talk.model.Friend
 
-interface OnFriendClicked{
+interface OnFriendClicked {
 
     fun onProfileClick(item: FriendInfo)
-    fun onDeleteClick(item : FriendInfo)
+    fun onDeleteClick(item: FriendInfo)
     fun onAcceptClick(item: FriendInfo)
     fun onRejectClick(item: FriendInfo)
     fun onCancelClick(item: FriendInfo)
     fun onRequestClick(item: FriendInfo)
     fun onPopupClick(position: Int)
 }
-class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
-    lateinit var binding : FragmentFriendsListBinding
+
+class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
+    lateinit var binding: FragmentFriendsListBinding
     private lateinit var mypageViewModel: MyPageViewModel
     private lateinit var friendAdapter: FriendsListAdapter
     var isFriendList = true // 친구목록 보기중인지 false == 친구신청 보여주기
@@ -79,7 +86,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
 
     override fun onRejectClick(item: FriendInfo) { //친구요청 거절
         mypageViewModel.requestUnFriend(item.id!!, UnFollowbody(User.id))
-        mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
+        mypageViewModel.FriendRequest.observe(viewLifecycleOwner) { result ->
             friendAdapter.deleteFriend(item)
             Toast.makeText(requireContext(), "거절 성공", Toast.LENGTH_SHORT).show()
         }
@@ -94,17 +101,17 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
     }
 
     override fun onPopupClick(position: Int) {
-        val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.friend_list_anchor)
-        if (fragment != null) {
-            MainActivity.hideNavi(false)
-            val transaction = fragmentManager.beginTransaction()
-            transaction.remove(fragment)
-            transaction.commit()
-        }
-        if(position == 0){
+//        val fragmentManager = childFragmentManager
+//        val fragment = fragmentManager.findFragmentById(R.id.friend_list_anchor)
+//        if (fragment != null) {
+//            MainActivity.hideNavi(false)
+//            val transaction = fragmentManager.beginTransaction()
+//            transaction.remove(fragment)
+//            transaction.commit()
+//        }
+        if (position == 0) {
             mypageViewModel.requestDelFriend(DelFriendBody(deleteTarget.id!!))
-            mypageViewModel.FriendRequest.observe(viewLifecycleOwner){result ->
+            mypageViewModel.FriendRequest.observe(viewLifecycleOwner) { result ->
                 friendAdapter.deleteFriend(deleteTarget)
                 Toast.makeText(requireContext(), "삭제 성공", Toast.LENGTH_SHORT).show()
             }
@@ -138,76 +145,74 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFriendsListBinding.inflate(inflater, container, false)
-        if(User.id != targetId){
+        if (User.id != targetId) {
             binding.requestListContainer.visibility = View.GONE
         }
         mypageViewModel.getFirstFriendsList(targetId)
-        friendAdapter = FriendsListAdapter(requireContext(), arrayListOf(),targetId,this)
+        friendAdapter = FriendsListAdapter(requireContext(), arrayListOf(), targetId, this)
         binding.friendsListRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.friendsListRecycler.adapter = friendAdapter
 
         mypageViewModel.getFirstFriendsList(targetId)
         mypageViewModel.getFirstFriendsRequestList(targetId)
 
-        mypageViewModel.FirstFriends.observe(viewLifecycleOwner){friends ->
+        mypageViewModel.FirstFriends.observe(viewLifecycleOwner) { friends ->
             Log.d("Friends", "${friends.pagination} :: ${friends.data}")
             val friendCount = friends.pagination.totalItems
             binding.friendslistFriendsCount.text = "친구 목록 $friendCount"
-            if(isFriendList){
-                if(friends.data.size > 0) {
+            if (isFriendList) {
+                if (friends.data.size > 0) {
                     lastCreatedAt = getLastCreated(friends.data)
                 }
                 friendAdapter.addFirstList(friends.data)
             }
         }
 
-        mypageViewModel.Friends.observe(viewLifecycleOwner){friends ->
-            if(friends.data.size > 0) {
+        mypageViewModel.Friends.observe(viewLifecycleOwner) { friends ->
+            if (friends.data.size > 0) {
                 friendAdapter.addList(friends.data)
                 lastCreatedAt = getLastCreated(friends.data)
             }
         }
 
-        mypageViewModel.SearchedFriends.observe(viewLifecycleOwner){friends ->
-            if(friends.data.size > 0) {
+        mypageViewModel.SearchedFriends.observe(viewLifecycleOwner) { friends ->
+            if (friends.data.size > 0) {
                 friendAdapter.addFirstList(friends.data)
-            }
-            else friendAdapter.addFirstList(arrayListOf())
+            } else friendAdapter.addFirstList(arrayListOf())
         }
 
-        mypageViewModel.SearchedRequests.observe(viewLifecycleOwner){friends ->
-            if(friends.data.size > 0) {
+        mypageViewModel.SearchedRequests.observe(viewLifecycleOwner) { friends ->
+            if (friends.data.size > 0) {
                 friendAdapter.addFirstList(friends.data)
-            }
-            else friendAdapter.addFirstList(arrayListOf())
+            } else friendAdapter.addFirstList(arrayListOf())
         }
 
-        mypageViewModel.FirstRequests.observe(viewLifecycleOwner){friends ->
+        mypageViewModel.FirstRequests.observe(viewLifecycleOwner) { friends ->
             binding.friendslistFriendsRequestCount.text = "친구 신청 ${friends.pagination.totalItems}"
             val list = friends.data
             val requests = arrayListOf<FriendInfo>()
-            for(request in list){
+            for (request in list) {
                 val temp = request
                 temp.friendStatus = 3
                 requests.add(temp)
             }
-            if(!isFriendList) {
-                if(friends.data.size > 0) {
+            if (!isFriendList) {
+                if (friends.data.size > 0) {
                     lastCreatedAt = getLastCreated(requests)
                 }
                 friendAdapter.addFirstList(requests)
             }
         }
 
-        mypageViewModel.Requests.observe(viewLifecycleOwner){friends ->
+        mypageViewModel.Requests.observe(viewLifecycleOwner) { friends ->
             val list = friends.data
             val requests = arrayListOf<FriendInfo>()
-            for(request in list){
+            for (request in list) {
                 val temp = request
                 temp.friendStatus = 3
                 requests.add(temp)
             }
-            if(friends.data.size > 0) {
+            if (friends.data.size > 0) {
                 friendAdapter.addList(requests)
                 lastCreatedAt = getLastCreated(requests)
             }
@@ -217,9 +222,9 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!binding.friendsListRecycler.canScrollVertically(1)) {
-                    if(isFriendList) {// 친구 목록 보기중인 상태라면
+                    if (isFriendList) {// 친구 목록 보기중인 상태라면
                         mypageViewModel.getFriendsList(targetId, lastCreatedAt)
-                    }else{//요청 목록 보기중인 상태라면
+                    } else {//요청 목록 보기중인 상태라면
                         mypageViewModel.getFriendsRequestList(targetId, lastCreatedAt)
                     }
                     Toast.makeText(context, "새 페이지 불러오는 중....", Toast.LENGTH_SHORT).show()
@@ -229,27 +234,27 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         binding.friendsListRecycler.addOnScrollListener(scrollListener)
 
         //친구요청 클릭
-        binding.friendslistFriendsRequestCount.setOnClickListener{
-            if(isFriendList){
+        binding.friendslistFriendsRequestCount.setOnClickListener {
+            if (isFriendList) {
                 isFriendList = false
                 mypageViewModel.getFirstFriendsRequestList(targetId)
                 //TODO:알맞게 뷰의 색등이 변하도록
-                binding.friendslistFriendsRequestCount.setTextColor(Color.parseColor( "#1DAFFF"))
+                binding.friendslistFriendsRequestCount.setTextColor(Color.parseColor("#1DAFFF"))
                 binding.requestListUnderline.setImageResource(R.drawable.todo_table_selected)
-                binding.friendslistFriendsCount.setTextColor(Color.parseColor( "#acacac"))
+                binding.friendslistFriendsCount.setTextColor(Color.parseColor("#acacac"))
                 binding.friendsCountUnderline.setImageResource(R.color.white)
             }
         }
 
         //친구목록 클릭
         binding.friendslistFriendsCount.setOnClickListener {
-            if(!isFriendList){
+            if (!isFriendList) {
                 isFriendList = true
                 mypageViewModel.getFirstFriendsList(targetId)
 
-                binding.friendslistFriendsRequestCount.setTextColor(Color.parseColor( "#acacac"))
+                binding.friendslistFriendsRequestCount.setTextColor(Color.parseColor("#acacac"))
                 binding.requestListUnderline.setImageResource(R.color.white)
-                binding.friendslistFriendsCount.setTextColor(Color.parseColor( "#1DAFFF"))
+                binding.friendslistFriendsCount.setTextColor(Color.parseColor("#1DAFFF"))
                 binding.friendsCountUnderline.setImageResource(R.drawable.todo_table_selected)
             }
         }
@@ -279,7 +284,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
                 if (str[str.length - 1] == '\n') {
                     val result = str.replace("\n", "")
                     binding.editTextSearch.setText(result)
-                    if(isFriendList)
+                    if (isFriendList)
                         mypageViewModel.searchOnFriends(targetId, result)
                     else
                         mypageViewModel.searchOnRequests(targetId, result)
@@ -291,39 +296,74 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked{
         return binding.root
     }
 
-    fun getLastCreated(items: ArrayList<FriendInfo>): String{
-        val lastIndex = items.size-1
+    fun getLastCreated(items: ArrayList<FriendInfo>): String {
+        val lastIndex = items.size - 1
         val lastCreated = items[lastIndex].createdAt
         return lastCreated ?: ""
     }
 }
 
-class PopupDeleteFriend(val targetItem : FriendInfo, val listener : OnFriendClicked) :
-    Fragment() {
-    lateinit var popupbinding: PopupFriendDeleteConfirmBinding
+class PopupDeleteFriend(val targetItem: FriendInfo, val listener: OnFriendClicked) :
+    BottomSheetDialogFragment() {
+    lateinit var binding: PopupFriendDeleteConfirmBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        popupbinding = PopupFriendDeleteConfirmBinding.inflate(inflater, container, false)
+        binding = PopupFriendDeleteConfirmBinding.inflate(inflater)
 
-        Glide
-            .with(requireContext())
-            .load(targetItem.profileImageUrl)
-            .into(popupbinding.popupProfileImg)
+        if (targetItem.profileImageUrl == null || targetItem.profileImageUrl == "")
+            binding.ivProfileImage.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
+        else
+            Glide
+                .with(requireContext())
+                .load(targetItem.profileImageUrl)
+                .into(binding.ivProfileImage)
 
-        popupbinding.popupDelTargetName.text = targetItem.name
+        binding.tvUserId.text = targetItem.name
 
-        popupbinding.deleteFriendConfirm.setOnClickListener {
+        binding.btnDeleteUser.setOnClickListener {
             listener.onPopupClick(0)
+            dismiss()
         }
 
-        popupbinding.cancelDeleteFriend.setOnClickListener {
-            listener.onPopupClick(1)
+        binding.btnDeleteCancel.setOnClickListener {
+//            listener.onPopupClick(1)
+            dismiss()
         }
 
-        return popupbinding.root
+        return binding.root
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 45 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 }

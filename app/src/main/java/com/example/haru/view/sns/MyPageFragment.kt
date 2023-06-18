@@ -1,9 +1,11 @@
 package com.example.haru.view.sns
 
 import BaseActivity
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,12 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
-import com.example.haru.databinding.FragmentSnsMypageBinding
-import com.example.haru.databinding.PopupBlockConfirmBinding
-import com.example.haru.databinding.PopupFriendDeleteConfirmBinding
-import com.example.haru.databinding.PopupSnsBlockUserBinding
-import com.example.haru.databinding.PopupSnsPostCancelBinding
-import com.example.haru.databinding.PopupSnsPostDeleteBinding
+import com.example.haru.databinding.*
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.MediaAdapter
@@ -34,6 +31,9 @@ import com.example.haru.view.adapter.MediaTagAdapter
 import com.example.haru.view.adapter.SnsPostAdapter
 import com.example.haru.viewmodel.MyPageViewModel
 import com.example.haru.viewmodel.SnsViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 interface MediaClick {
     fun onMediaClick(media: Media)
@@ -76,33 +76,21 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     override fun onBlockClick(position: Int) {
-        val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
-        if (fragment != null) {
-            MainActivity.hideNavi(false)
-            val transaction = fragmentManager.beginTransaction()
-            transaction.remove(fragment)
-            transaction.commit()
-        }
-
         if (position == 0) {
-            MainActivity.hideNavi(true)
             val confirmFragment = MypageDeleteFriend(userInfo, isDelete, this)
-            val transaction = fragmentManager.beginTransaction()
-            transaction.add(R.id.mypage_popup_anchor, confirmFragment)
-            transaction.commit()
+            confirmFragment.show(parentFragmentManager, confirmFragment.tag)
         }
     }
 
     override fun onDeleteClick(position: Int) {
-        val fragmentManager = childFragmentManager
-        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
-        if (fragment != null) {
-            MainActivity.hideNavi(false)
-            val transaction = fragmentManager.beginTransaction()
-            transaction.remove(fragment)
-            transaction.commit()
-        }
+//        val fragmentManager = childFragmentManager
+//        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
+//        if (fragment != null) {
+//            MainActivity.hideNavi(false)
+//            val transaction = fragmentManager.beginTransaction()
+//            transaction.remove(fragment)
+//            transaction.commit()
+//        }
         if (position == 0 && isDelete) {
             requestDelFriend() //친구끊기
         } else if (position == 0 && !isDelete) {
@@ -249,6 +237,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         super.onViewCreated(view, savedInstanceState)
         Log.d(SnsFragment.TAG, "sns onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
+
+        MainActivity.hideNavi(false)
     }
 
     override fun onResume() {
@@ -403,12 +393,8 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                 } else if (friendStatus == 2) { //친구 삭제
                     isDelete = true
                     binding.editProfile.isClickable = true
-                    MainActivity.hideNavi(true)
                     val fragment = MypageDeleteFriend(userInfo, isDelete, this)
-                    val fragmentManager = childFragmentManager
-                    val transaction = fragmentManager.beginTransaction()
-                    transaction.add(R.id.mypage_popup_anchor, fragment)
-                    transaction.commit()
+                    fragment.show(parentFragmentManager, fragment.tag)
                 } else if (friendStatus == 3) {
 
                 }
@@ -416,13 +402,13 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         }
 
         binding.mypageSetup.setOnClickListener {
-            MainActivity.hideNavi(true)
             isDelete = false
-            val fragment = PopupBlockUser(this)
-            val fragmentManager = childFragmentManager
-            val transaction = fragmentManager.beginTransaction()
-            transaction.add(R.id.mypage_popup_anchor, fragment)
-            transaction.commit()
+            val fragment = PopupBlockUser(
+                this,
+                mypageViewModel.UserInfo.value?.name,
+                mypageViewModel.UserInfo.value?.profileImage
+            )
+            fragment.show(parentFragmentManager, fragment.tag)
         }
 
         binding.mypageShowFeed.setOnClickListener {
@@ -609,9 +595,14 @@ class MypageDeleteFriend(
     val isDelete: Boolean,
     val listener: MediaClick
 ) :
-    Fragment() {
+    BottomSheetDialogFragment() {
     lateinit var popupbinding: PopupFriendDeleteConfirmBinding
     lateinit var blockbinding: PopupBlockConfirmBinding
+    private var ratio: Int = 30
+
+    init {
+        ratio = if (isDelete) 45 else 37
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -619,77 +610,134 @@ class MypageDeleteFriend(
         savedInstanceState: Bundle?
     ): View? {
         if (isDelete) { //삭제창
-            popupbinding = PopupFriendDeleteConfirmBinding.inflate(inflater, container, false)
+            popupbinding = PopupFriendDeleteConfirmBinding.inflate(inflater)
 
-            if (targetItem.profileImage != null) {
+            if (targetItem.profileImage == null || targetItem.profileImage == "") {
+                popupbinding.ivProfileImage.background =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
+            } else {
                 Glide
                     .with(requireContext())
                     .load(targetItem.profileImage)
-                    .into(popupbinding.popupProfileImg)
-            }
-            else{
-                popupbinding.popupProfileImg.setImageResource(R.drawable.default_profile)
+                    .into(popupbinding.ivProfileImage)
             }
 
 
-            popupbinding.popupDelTargetName.text = targetItem.name
-            popupbinding.deleteFriendConfirm.setOnClickListener {
+            popupbinding.tvUserId.text = targetItem.name
+            popupbinding.btnDeleteUser.setOnClickListener {
                 listener.onDeleteClick(0)
+                dismiss()
             }
 
-            popupbinding.cancelDeleteFriend.setOnClickListener {
-                listener.onDeleteClick(1)
+            popupbinding.btnDeleteCancel.setOnClickListener {
+//                listener.onDeleteClick(1)
+                dismiss()
             }
 
             return popupbinding.root
         } else { //차단창
-            blockbinding = PopupBlockConfirmBinding.inflate(inflater, container, false)
+            blockbinding = PopupBlockConfirmBinding.inflate(inflater)
 
-            if (targetItem.profileImage != null) {
-                Glide
-                    .with(requireContext())
-                    .load(targetItem.profileImage)
-                    .into(blockbinding.blockProfileImg)
-            }else{
-                blockbinding.blockProfileImg.setImageResource(R.drawable.default_profile)
-            }
-
-            blockbinding.popupBlockTargetName.text = targetItem.name
-            blockbinding.blockUserConfirm.setOnClickListener {
+            blockbinding.btnBlockUser.setOnClickListener {
                 listener.onDeleteClick(0)
+                dismiss()
             }
 
-            blockbinding.blockCancel.setOnClickListener {
-                listener.onDeleteClick(1)
+            blockbinding.btnBlockCancel.setOnClickListener {
+//                listener.onDeleteClick(1)
+                dismiss()
             }
             return blockbinding.root
         }
+    }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * ratio / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 }
 
-class PopupBlockUser(listener: MediaClick) :
-    Fragment() {
-    lateinit var popupbinding: PopupSnsBlockUserBinding
-    val listener = listener
+class PopupBlockUser(val listener: MediaClick, val name: String?, val profileImage: String?) :
+    BottomSheetDialogFragment() {
+    lateinit var binding: PopupSnsBlockUserBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        popupbinding = PopupSnsBlockUserBinding.inflate(inflater, container, false)
-        MainActivity.hideNavi(true)
+        binding = PopupSnsBlockUserBinding.inflate(inflater)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        popupbinding.blockUser.setOnClickListener {
+        if (profileImage == null || profileImage == "")
+            binding.ivProfileImage.background =
+                ContextCompat.getDrawable(requireContext(), R.drawable.profile_base_image)
+        else Glide.with(this)
+            .load(profileImage)
+            .into(binding.ivProfileImage)
+
+        binding.tvUserName.text = name
+
+        binding.btnBlockUser.setOnClickListener {
             listener.onBlockClick(0)
+            dismiss()
         }
+    }
 
-        popupbinding.popupBlockContainer.setOnClickListener {
-            listener.onBlockClick(1)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
         }
+        return dialog
+    }
 
-        return popupbinding.root
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 35 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 }
