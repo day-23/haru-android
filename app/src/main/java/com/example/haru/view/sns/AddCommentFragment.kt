@@ -43,6 +43,7 @@ import com.example.haru.viewmodel.SnsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kakao.sdk.talk.model.Friend
 
 class AddCommentFragment(
     var isTemplate: String? = "",
@@ -302,7 +303,8 @@ class AddCommentFragment(
         }
 
         binding.showTotalComment.setOnClickListener {
-            val post = Post(postId, writerInfo, content, isTemplate, postImages, arrayListOf(), false, false, likeCnt, commentCnt,"","")
+            val friend = FriendInfo(writerInfo.id,writerInfo.name,writerInfo.profileImage,writerInfo.profileImage,0,0,0,"")
+            val post = Post(postId, friend, content, isTemplate, postImages, arrayListOf(), false, false, likeCnt, commentCnt,"","")
             val newFrag = CommentsFragment(post, com.example.haru.utils.User.id)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
