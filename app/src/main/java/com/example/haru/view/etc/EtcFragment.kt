@@ -21,6 +21,7 @@ import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.SharedPrefsManager
 import com.example.haru.utils.User
+import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
 import com.example.haru.view.checklist.ChecklistTodayFragment
 import com.example.haru.view.sns.EditProfileFragment
@@ -53,7 +54,6 @@ class EtcFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentEtcBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -61,6 +61,8 @@ class EtcFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // status bar height 조정
         (activity as BaseActivity).adjustTopMargin(binding.etcHeader.id)
+
+        MainActivity.hideNavi(false)
 
         Log.e("20191627", User.toString())
         etcViewModel.getSnsInfo()
@@ -140,12 +142,28 @@ class EtcFragment : Fragment() {
         binding.layoutFriend.setOnClickListener(ClickListener())
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as BaseActivity).adjustTopMargin(binding.etcHeader.id)
+    }
+
     inner class ClickListener : View.OnClickListener {
         override fun onClick(v: View?) {
             when (v?.id) {
                 binding.settingIcon.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, SettingFragment(etcViewModel))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        )
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, SettingFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
@@ -156,14 +174,24 @@ class EtcFragment : Fragment() {
 
                 binding.btnProfileEdit.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, EditProfileFragment(User.id))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, EditProfileFragment(User.id))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.layoutFriend.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, FriendsListFragment(User.id))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, FriendsListFragment(User.id))
                         .addToBackStack(null)
                         .commit()
                 }

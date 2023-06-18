@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/header_title"
+        android:id="@+id/setting_header_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -193,7 +193,7 @@
         android:paddingStart="34dp"
         android:paddingTop="14dp"
         android:paddingBottom="14dp"
-        android:text="Version"
+        android:text="Version 1.00"
         android:textColor="@color/date_text"
         android:textSize="14sp" />
 

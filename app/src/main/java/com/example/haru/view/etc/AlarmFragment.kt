@@ -47,7 +47,7 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.alarmHeaderTitle.id)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,7 +58,7 @@ class AlarmFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
         val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
 
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.alarmHeaderTitle.id)
         binding.ivBackIconAlarm.setOnClickListener(ClickListener())
 
         binding.amAlarmSwitch.isChecked = User.amAlarmAprove

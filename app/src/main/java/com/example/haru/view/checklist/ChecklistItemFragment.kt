@@ -804,12 +804,12 @@ class ChecklistItemFragment(
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.todoEditHeaderTitle.id)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.todoEditHeaderTitle.id)
         // flag click event
         binding.cbInfoFlag.setOnClickListener(BtnClickListener())
 
@@ -856,6 +856,7 @@ class ChecklistItemFragment(
         binding.ivBackIcon.setOnClickListener(BtnClickListener())
         binding.btnInfoSave.setOnClickListener(BtnClickListener())
         binding.btnInfoDelete.setOnClickListener(BtnClickListener())
+        binding.deleteIcon.setOnClickListener(BtnClickListener())
     }
 
     fun View.animateViewHeight(duration: Long, startHeight: Int, endHeight: Int) {
@@ -986,7 +987,7 @@ class ChecklistItemFragment(
 
                 binding.infoRepeatEndDateSwitch.id -> todoAddViewModel.setRepeatEndSwitch()
 
-                binding.btnInfoDelete.id -> {
+                binding.deleteIcon.id, binding.btnInfoDelete.id -> {
                     binding.btnInfoDelete.isClickable = false
                     Log.d("20191627", "삭제")
 

@@ -278,9 +278,11 @@ class TodoAdapter(val context: Context) :
 
             if (item.endDate == null && item.tags.isEmpty() && !item.todayTodo && item.alarms.isEmpty() && item.memo == "" && item.repeatOption == null) {
                 binding.blankView.visibility = View.VISIBLE
+                binding.blankView2.visibility = View.VISIBLE
                 binding.iconLayout.visibility = View.GONE
             } else {
                 binding.blankView.visibility = View.GONE
+                binding.blankView2.visibility = View.GONE
                 binding.iconLayout.visibility = View.VISIBLE
                 var tag = ""
                 var totalLen = 8

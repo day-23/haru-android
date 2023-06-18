@@ -118,6 +118,8 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
         return binding.root
     }
 
+
+
     fun closeAddBtn(ev: MotionEvent?){
         if(ev != null && parentView != null) {
             val x = ev.x
@@ -162,6 +164,8 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        MainActivity.hideNavi(false)
 
         (activity as BaseActivity).adjustTopMargin(binding.calendarFragmentParentLayout.id)
 
