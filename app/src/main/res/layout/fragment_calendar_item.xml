@@ -583,11 +583,11 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/delete_schedule_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <Button
+                    android:id="@+id/delete_schedule_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
@@ -596,6 +596,7 @@
                     android:textSize="20sp" />
 
                 <ImageView
+                    android:id="@+id/delete_schedule_imv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

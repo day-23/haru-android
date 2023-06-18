@@ -368,8 +368,6 @@ class TimetableFragment : Fragment() {
         val frontPadding = View(requireContext())
         val backPadding = View(requireContext())
         view.setOnClickListener {
-            Toast.makeText(requireContext(), "${day.content}", Toast.LENGTH_SHORT)
-                .show()
         }
 
         val frontParams = LinearLayout.LayoutParams(
@@ -481,8 +479,6 @@ class TimetableFragment : Fragment() {
         scheduleView.setPadding(paddingValue, paddingValue, paddingValue, paddingValue)
 
         scheduleView.setOnClickListener {
-            Toast.makeText(requireContext(), "${schedule.content}", Toast.LENGTH_SHORT)
-                .show()
         }
 
         scheduleView.setOnLongClickListener { view ->
