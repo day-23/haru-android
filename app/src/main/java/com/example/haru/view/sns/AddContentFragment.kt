@@ -2,8 +2,10 @@ package com.example.haru.view.sns
 
 import BaseActivity
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,7 @@ import com.example.haru.databinding.FragmentAddContentBinding
 import com.example.haru.view.MainActivity
 import com.example.haru.viewmodel.MyPageViewModel
 import okhttp3.MultipartBody
+import java.lang.reflect.Type
 
 class AddContentFragment(
     val images: MutableList<MultipartBody.Part>,
@@ -83,7 +86,11 @@ class AddContentFragment(
                             R.color.date_text
                         )
                     )
+
+                    binding.addContentText.setTypeface(null, Typeface.NORMAL)
                     return
+                }else{
+                    binding.addContentText.setTypeface(null, Typeface.BOLD)
                 }
 
                 binding.addContentCancel.background =

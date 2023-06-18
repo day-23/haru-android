@@ -80,9 +80,8 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         if (position == 0) {
             val fragment = PopupDeleteCommentAgain(this)
             fragment.show(parentFragmentManager, fragment.tag)
-//            snsViewModel.deleteComment(writerId, commentId)
         } else if (position == 1) {
-            //TODO:신고창 만들기
+            snsViewModel.reportComment(writerId, commentId)
         }
     }
 

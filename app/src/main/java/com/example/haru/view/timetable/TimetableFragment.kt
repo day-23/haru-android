@@ -436,7 +436,7 @@ class TimetableFragment : Fragment() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
             unionLinearLayout.layoutParams = layoutParams
-//            unionLinearLayout.setBackgroundColor(Color.parseColor("#FF0000"))
+//            unionLinearLayout.setBackgroundColor(Color.parseColor("#000000"))
 
             for (schedule in union) {
                 val scheduleView = makeScheduleViewInDrawTimesSchedule(schedule, categories)
@@ -460,6 +460,8 @@ class TimetableFragment : Fragment() {
             1f
         ).apply {
             topMargin = Math.round(margin * displayMetrics.density)
+            //여러개 겹쳐있을 때 짤리는 문제 해결
+            bottomMargin = Math.round(margin * displayMetrics.density)
             gravity = (Gravity.TOP)
         }
         scheduleView.layoutParams = scheduleViewLayoutParams
