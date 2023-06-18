@@ -125,11 +125,16 @@ class EditProfileFragment(userId: String) : Fragment() {
                     requireContext(),
                     android.Manifest.permission.READ_MEDIA_IMAGES
                 ) != PackageManager.PERMISSION_GRANTED
+                &&
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
                 // 권한이 없는 경우 권한 요청
                 Log.d("Image", "denied")
 
-                if (Build.VERSION.SDK_INT >= 33) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     ActivityCompat.requestPermissions(
                         requireActivity(),
                         arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
@@ -144,6 +149,7 @@ class EditProfileFragment(userId: String) : Fragment() {
                 }
 
             } else {
+                Log.d("Image", "accepted")
                 val projection: Array<String>
                 // 권한이 있는 경우
                 if (Build.VERSION.SDK_INT >= 33) {
@@ -180,8 +186,8 @@ class EditProfileFragment(userId: String) : Fragment() {
                             cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
                         val name =
                             cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                        val path =
-                            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH))
+                        val path = ""
+//                            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH))
                         val absuri: Uri = ContentUris.withAppendedId(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             id

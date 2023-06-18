@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.FriendInfo
 import com.example.haru.utils.User
+import com.example.haru.utils.User.id
 import com.example.haru.view.sns.OnFriendClicked
 
 class FriendsListAdapter(val context: Context,
@@ -74,10 +75,19 @@ class FriendsListAdapter(val context: Context,
             showButtons(holder, 1)
         }
 
+        if(User.id == itemList[position].id)
+            deleteMine(itemList[position])
+
     }
 
     override fun getItemCount(): Int {
         return itemList.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun deleteMine(item: FriendInfo){
+        itemList.remove(item)
+        notifyDataSetChanged()
     }
 
     fun showButtons(holder: FriendsListViewHolder, status: Int){
