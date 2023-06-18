@@ -129,7 +129,7 @@ class EditProfileFragment(userId: String) : Fragment() {
                 // 권한이 없는 경우 권한 요청
                 Log.d("Image", "denied")
 
-                if (Build.VERSION.SDK_INT >= 33) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     ActivityCompat.requestPermissions(
                         requireActivity(),
                         arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
@@ -144,6 +144,7 @@ class EditProfileFragment(userId: String) : Fragment() {
                 }
 
             } else {
+                Log.d("Image", "accepted")
                 val projection: Array<String>
                 // 권한이 있는 경우
                 if (Build.VERSION.SDK_INT >= 33) {

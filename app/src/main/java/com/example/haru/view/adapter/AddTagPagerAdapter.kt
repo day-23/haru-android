@@ -24,11 +24,14 @@ class AddTagPagerAdapter(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(
-            imageList[position].absuri.toString(),
-            myPageViewModel.imageList[position],
-            position
-        )
+
+        if(myPageViewModel.imageList.size >= position) {
+            holder.bind(
+                imageList[position].absuri.toString(),
+                myPageViewModel.imageList[position],
+                position
+            )
+        }
     }
 
     override fun getItemCount(): Int {

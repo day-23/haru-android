@@ -265,13 +265,14 @@ class AddPostFragment : Fragment(), PostInterface {
     }
 
     fun getpermission() {
-        if (Build.VERSION.SDK_INT >= 33) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
                 101
             )
         } else {
+            Log.d("Image", "permission here")
             ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
@@ -283,7 +284,7 @@ class AddPostFragment : Fragment(), PostInterface {
     fun getimage() {
         val projection: Array<String>
         // 권한이 있는 경우
-        if (Build.VERSION.SDK_INT >= 33) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             projection = arrayOf(
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DISPLAY_NAME,
@@ -318,8 +319,8 @@ class AddPostFragment : Fragment(), PostInterface {
                     cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID))
                 val name =
                     cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME))
-                val path =
-                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH))
+                val path = ""
+//                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH))
                 val absuri: Uri = ContentUris.withAppendedId(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     id
