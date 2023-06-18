@@ -51,21 +51,21 @@ class AlarmWorker : BroadcastReceiver(){
         }
     }
 
-    fun month_comparison(first_date: Date, second_date: Date): Int{
-        return (second_date.year * 12 + second_date.month) - (first_date.year * 12 + first_date.month)
-    }
-
-    fun date_comparison(first_date: Date, second_date: Date): Int{
-        first_date.hours = 0
-        first_date.minutes = 0
-        first_date.seconds = 0
-
-        second_date.hours = 0
-        second_date.minutes = 0
-        second_date.seconds = 0
-
-        return first_date.compareTo(second_date)
-    }
+//    fun month_comparison(first_date: Date, second_date: Date): Int{
+//        return (second_date.year * 12 + second_date.month) - (first_date.year * 12 + first_date.month)
+//    }
+//
+//    fun date_comparison(first_date: Date, second_date: Date): Int{
+//        first_date.hours = 0
+//        first_date.minutes = 0
+//        first_date.seconds = 0
+//
+//        second_date.hours = 0
+//        second_date.minutes = 0
+//        second_date.seconds = 0
+//
+//        return first_date.compareTo(second_date)
+//    }
 
     fun createNotificationChannel(requestCode: String?){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
