@@ -139,11 +139,10 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
                     }
                 }else if(done == 429){
                     Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                }else{
-
-                    binding.writeHaruApply.isClickable = true
-                    Toast.makeText(requireContext(), "게시글 등록에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+                }else if(done == 403){
+                    Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
                 }
+                binding.writeHaruApply.isClickable = true
             }
         }
 
