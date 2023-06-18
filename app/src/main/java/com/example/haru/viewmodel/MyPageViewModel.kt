@@ -104,6 +104,9 @@ class MyPageViewModel() : ViewModel() {
     private val _FriendRequest = MutableLiveData<Boolean>()
     val FriendRequest: LiveData<Boolean> = _FriendRequest
 
+    private val _BlockRequest = MutableLiveData<Boolean>()
+    val BlockRequest: LiveData<Boolean> = _BlockRequest
+
     private val _PostRequest = MutableLiveData<Int>()
     val PostRequest: LiveData<Int> = _PostRequest
 
@@ -528,7 +531,7 @@ class MyPageViewModel() : ViewModel() {
                     Log.d("TAG", "Fail to block user")
                 }
             }
-            _FriendRequest.value = result
+            _BlockRequest.value = result
         }
     }
 
