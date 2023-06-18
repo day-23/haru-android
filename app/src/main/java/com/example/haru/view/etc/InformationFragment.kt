@@ -64,7 +64,12 @@ class InformationFragment(val etcViewModel: EtcViewModel) : Fragment() {
                 binding.termsOfService.id -> {
                     requireActivity().supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.fragments_frame, CustomPolicyDialog(true))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, CustomPolicyDialog(true))
                         .addToBackStack(null)
                         .commit()
                 }
@@ -72,7 +77,12 @@ class InformationFragment(val etcViewModel: EtcViewModel) : Fragment() {
                 binding.privacyPolicy.id -> {
                     requireActivity().supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.fragments_frame, CustomPolicyDialog(false))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, CustomPolicyDialog(false))
                         .addToBackStack(null)
                         .commit()
                 }

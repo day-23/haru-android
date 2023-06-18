@@ -661,7 +661,12 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
 
         binding.calendarSearchButton.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .setCustomAnimations(
+                    R.anim.fragment_in,
+                    R.anim.fragment_out,
+                    R.anim.popstack_in,
+                    R.anim.popstack_out
+                ).replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
                 .addToBackStack(null)
                 .commit()
         }

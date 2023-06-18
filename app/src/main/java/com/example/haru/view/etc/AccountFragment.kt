@@ -100,14 +100,24 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
                 binding.tvAccountDelete.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AccountDeleteFragment(etcViewModel))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, AccountDeleteFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.tvName.id, binding.ivProfileEdit.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, EditProfileFragment(User.id))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, EditProfileFragment(User.id))
                         .addToBackStack(null)
                         .commit()
                 }

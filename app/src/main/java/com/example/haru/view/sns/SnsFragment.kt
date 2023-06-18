@@ -68,7 +68,12 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     override fun onTotalCommentClick(post: Post) {
         val newFrag = CommentsFragment(post, User.id)
         val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragments_frame, newFrag)
+        transaction.setCustomAnimations(
+            R.anim.fragment_in,
+            R.anim.fragment_out,
+            R.anim.popstack_in,
+            R.anim.popstack_out
+        ).replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
         if (!isSnsMainInBackStack)
             transaction.addToBackStack("snsmain")
@@ -78,7 +83,12 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     override fun onProfileClick(userId: String) {
         val newFrag = MyPageFragment(userId)
         val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragments_frame, newFrag)
+        transaction.setCustomAnimations(
+            R.anim.fragment_in,
+            R.anim.fragment_out,
+            R.anim.popstack_in,
+            R.anim.popstack_out
+        ).replace(R.id.fragments_frame, newFrag)
         val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
         if (!isSnsMainInBackStack)
             transaction.addToBackStack("snsmain")
@@ -245,7 +255,12 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
                     user
                 )
                 val transaction = parentFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragments_frame, newFrag)
+                transaction.setCustomAnimations(
+                    R.anim.fragment_in,
+                    R.anim.fragment_out,
+                    R.anim.popstack_in,
+                    R.anim.popstack_out
+                ).replace(R.id.fragments_frame, newFrag)
                 val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
                 if (!isSnsMainInBackStack)
                     transaction.addToBackStack("snsmain")
@@ -266,7 +281,12 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         binding.drawHaru.setOnClickListener {
             val newFrag = AddPostFragment.newInstance()
             val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.setCustomAnimations(
+                R.anim.fragment_in,
+                R.anim.fragment_out,
+                R.anim.popstack_in,
+                R.anim.popstack_out
+            ).replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
             if (!isSnsMainInBackStack)
                 transaction.addToBackStack("snsmain")
@@ -303,7 +323,12 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             if (postClicked) {
                 val newFrag = WriteHaruFragment()
                 val transaction = parentFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragments_frame, newFrag)
+                transaction.setCustomAnimations(
+                    R.anim.fragment_in,
+                    R.anim.fragment_out,
+                    R.anim.popstack_in,
+                    R.anim.popstack_out
+                ).replace(R.id.fragments_frame, newFrag)
                 val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
                 if (!isSnsMainInBackStack)
                     transaction.addToBackStack("snsmain")
@@ -325,7 +350,12 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         binding.lookAround.setOnClickListener {
             val newFrag = LookAroundFragment()
             val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragments_frame, newFrag)
+            transaction.setCustomAnimations(
+                R.anim.fragment_in,
+                R.anim.fragment_out,
+                R.anim.popstack_in,
+                R.anim.popstack_out
+            ).replace(R.id.fragments_frame, newFrag)
             val isSnsMainInBackStack = isFragmentInBackStack(parentFragmentManager, "snsmain")
             if (!isSnsMainInBackStack)
                 transaction.addToBackStack("snsmain")

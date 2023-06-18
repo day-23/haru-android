@@ -133,7 +133,12 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
                     loading.dismiss {
                         val fragment = SnsFragment()
                         val transaction = parentFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragments_frame, fragment)
+                        transaction.setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, fragment)
                         transaction.commit()
                     }
                 } else {

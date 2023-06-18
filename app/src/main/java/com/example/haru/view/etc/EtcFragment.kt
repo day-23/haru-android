@@ -158,7 +158,12 @@ class EtcFragment : Fragment() {
                             R.anim.popstack_in,
                             R.anim.popstack_out
                         )
-                        .replace(R.id.fragments_frame, SettingFragment(etcViewModel))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, SettingFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
@@ -169,14 +174,24 @@ class EtcFragment : Fragment() {
 
                 binding.btnProfileEdit.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, EditProfileFragment(User.id))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, EditProfileFragment(User.id))
                         .addToBackStack(null)
                         .commit()
                 }
 
                 binding.layoutFriend.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, FriendsListFragment(User.id))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, FriendsListFragment(User.id))
                         .addToBackStack(null)
                         .commit()
                 }

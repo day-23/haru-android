@@ -92,7 +92,12 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
                             R.anim.popstack_in,
                             R.anim.popstack_out
                         )
-                        .replace(R.id.fragments_frame, AccountFragment(etcViewModel))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, AccountFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
@@ -105,7 +110,12 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
                             R.anim.popstack_in,
                             R.anim.popstack_out
                         )
-                        .replace(R.id.fragments_frame, ProtectFragment(etcViewModel))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, ProtectFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
@@ -118,7 +128,12 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
                             R.anim.popstack_in,
                             R.anim.popstack_out
                         )
-                        .replace(R.id.fragments_frame, AlarmFragment(etcViewModel))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, AlarmFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }
@@ -131,7 +146,12 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
                             R.anim.popstack_in,
                             R.anim.popstack_out
                         )
-                        .replace(R.id.fragments_frame, InformationFragment(etcViewModel))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, InformationFragment(etcViewModel))
                         .addToBackStack(null)
                         .commit()
                 }

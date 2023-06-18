@@ -48,7 +48,7 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreference: SharedPreferences
     private lateinit var editor: Editor
-    private lateinit var cropViewModel : MyPageViewModel
+    private lateinit var cropViewModel: MyPageViewModel
 
     companion object {
         private var binding: ActivityMainBinding? = null
@@ -102,10 +102,10 @@ class MainActivity : BaseActivity() {
         val calendarViewModel = CalendarViewModel()
 
         calendarViewModel.getCategories()
-        calendarViewModel.liveCategoryList.observe(this){
-            User.categories = arrayListOf(null,null)
+        calendarViewModel.liveCategoryList.observe(this) {
+            User.categories = arrayListOf(null, null)
 
-            for (category in it){
+            for (category in it) {
                 User.categories.add(category)
             }
         }
@@ -125,7 +125,7 @@ class MainActivity : BaseActivity() {
             handleNavigation(menuItem.itemId)
         }
 
-        if(VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val permissionlistener: PermissionListener = object : PermissionListener {
                 override fun onPermissionGranted() {
                 }
@@ -143,15 +143,17 @@ class MainActivity : BaseActivity() {
         }
 
         when {
-            ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED -> {
-                    Log.d("권한설정", "적용")
+            ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                Log.d("권한설정", "적용")
             }
             shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE) -> {
                 Log.d("권한설정", "거부됨")
             }
             else -> {
-                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),1000)
+                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000)
                 Log.d("권한설정", "else")
             }
         }
@@ -236,7 +238,7 @@ class MainActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         val result = CropImage.getActivityResult(data)
 
-        if(result != null) {
+        if (result != null) {
             if (resultCode == RESULT_OK) {
                 Log.d("CropImages", "abs uri : ${result.uri}")
                 Log.d("CropImages", "path : ${result.originalUri}")

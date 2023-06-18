@@ -64,7 +64,12 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
     override fun onProfileClick(item: FriendInfo) {
         val newFrag = MyPageFragment(item.id!!)
         val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragments_frame, newFrag)
+        transaction.setCustomAnimations(
+            R.anim.fragment_in,
+            R.anim.fragment_out,
+            R.anim.popstack_in,
+            R.anim.popstack_out
+        ).replace(R.id.fragments_frame, newFrag)
         transaction.addToBackStack("friendlist")
         transaction.commit()
     }
