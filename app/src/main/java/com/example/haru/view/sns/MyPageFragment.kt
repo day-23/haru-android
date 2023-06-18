@@ -374,6 +374,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
                     binding.editProfile.setBackgroundResource(R.drawable.gradation_btn_custom)
                     binding.editProfile.setTextColor(Color.parseColor("#FDFDFD"))
                     binding.editProfile.text = "친구 신청"
+                    showFeeds(0, userInfo.isPublicAccount)
                 } else if (friendStatus == 3) {
                     friendStatus = 2
                     binding.editProfile.setBackgroundResource(R.drawable.custom_btn_date)
