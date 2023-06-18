@@ -44,7 +44,6 @@ class TodotableAdapter(val context: Context,
 
             holder.todotable_item_content.setOnClickListener {
                 //TODO:수정창이 뜨도록
-                Toast.makeText(context, "${itemList[position].content}", Toast.LENGTH_SHORT).show()
             }
             holder.todotable_item_content.setOnDragListener(dragListener)
         }
