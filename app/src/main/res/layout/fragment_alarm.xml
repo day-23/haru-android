@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/header_title"
+        android:id="@+id/alarm_header_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -141,68 +141,5 @@
         android:layout_marginBottom="12dp"
         android:background="@color/divider" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:text="SNS"
-        android:textColor="@color/todo_description"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="좋아요 알림"
-            android:textColor="@color/todo_description"
-            android:textSize="16sp" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/like_alarm_switch"
-            style="@style/minSize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:thumb="@drawable/custom_switch_thumb"
-            app:track="@drawable/custom_switch" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="20dp"
-        android:orientation="horizontal">
-
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="코멘트 알림"
-            android:textColor="@color/todo_description"
-            android:textSize="16sp" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/comment_alarm_switch"
-            style="@style/minSize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:thumb="@drawable/custom_switch_thumb"
-            app:track="@drawable/custom_switch" />
-
-    </LinearLayout>
 
 </LinearLayout>

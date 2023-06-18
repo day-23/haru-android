@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountBinding
+import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
+import com.example.haru.view.sns.EditProfileFragment
 import com.example.haru.viewmodel.EtcViewModel
 
 class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
@@ -20,7 +22,7 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(etcViewModel: EtcViewModel) : AccountFragment {
+        fun newInstance(etcViewModel: EtcViewModel): AccountFragment {
             return AccountFragment(etcViewModel)
         }
     }
@@ -43,12 +45,15 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.accountHeaderTitle.id)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.accountHeaderTitle.id)
+
+        etcViewModel.getSnsInfo()
 
         etcViewModel.email.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.tvEmail.text = it
@@ -79,8 +84,11 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
             binding.tvAccountName.text = it
         })
 
+
         binding.ivBackIconAccount.setOnClickListener(ClickListener())
         binding.tvAccountDelete.setOnClickListener(ClickListener())
+        binding.ivProfileEdit.setOnClickListener(ClickListener())
+        binding.tvName.setOnClickListener(ClickListener())
     }
 
     inner class ClickListener : View.OnClickListener {
@@ -92,7 +100,24 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
                 binding.tvAccountDelete.id -> {
                     requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragments_frame, AccountDeleteFragment(etcViewModel))
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, AccountDeleteFragment(etcViewModel))
+                        .addToBackStack(null)
+                        .commit()
+                }
+
+                binding.tvName.id, binding.ivProfileEdit.id -> {
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            R.anim.fragment_in,
+                            R.anim.fragment_out,
+                            R.anim.popstack_in,
+                            R.anim.popstack_out
+                        ).replace(R.id.fragments_frame, EditProfileFragment(User.id))
                         .addToBackStack(null)
                         .commit()
                 }

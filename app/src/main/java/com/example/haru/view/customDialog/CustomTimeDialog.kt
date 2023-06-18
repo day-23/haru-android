@@ -122,8 +122,6 @@ class CustomTimeDialog(date: Date? = null) : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Toast.makeText(requireContext(), "Custom Time Picker", Toast.LENGTH_SHORT).show()
-
         binding.timeDivision.apply {
             descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
             minValue = 0

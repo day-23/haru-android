@@ -7,7 +7,7 @@
     android:background="#fdfdfd">
 
     <LinearLayout
-        android:id="@+id/sns_menu"
+        android:id="@+id/my_page_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FDFDFD"
@@ -74,7 +74,7 @@
         android:elevation="10dp"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/sns_menu"
+        app:layout_constraintTop_toBottomOf="@id/my_page_header"
         tools:ignore="MissingConstraints">
 
         <TextView
@@ -110,7 +110,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sns_menu">
+        app:layout_constraintTop_toBottomOf="@id/my_page_header">
 
         <!--스크롤뷰 싸매기 위한 부모 레이아웃-->
         <androidx.constraintlayout.widget.ConstraintLayout

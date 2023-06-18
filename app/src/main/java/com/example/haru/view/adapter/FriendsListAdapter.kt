@@ -16,13 +16,17 @@ import com.example.haru.utils.User
 import com.example.haru.utils.User.id
 import com.example.haru.view.sns.OnFriendClicked
 
-class FriendsListAdapter(val context: Context,
-                         private var itemList: ArrayList<FriendInfo> = arrayListOf(),
-                         val listOwner : String,
-                         val onFriendClicked: OnFriendClicked
-                        ) : RecyclerView.Adapter<FriendsListAdapter.FriendsListViewHolder>(){
+class FriendsListAdapter(
+    val context: Context,
+    private var itemList: ArrayList<FriendInfo> = arrayListOf(),
+    val listOwner: String,
+    val onFriendClicked: OnFriendClicked
+) : RecyclerView.Adapter<FriendsListAdapter.FriendsListViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendsListAdapter.FriendsListViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): FriendsListAdapter.FriendsListViewHolder {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.item_searched_user, parent, false)
         return FriendsListViewHolder(view)
@@ -30,14 +34,14 @@ class FriendsListAdapter(val context: Context,
 
     override fun onBindViewHolder(holder: FriendsListViewHolder, position: Int) {
         hideButtons(holder)
-        if(User.id != itemList[position].id)
+        if (User.id != itemList[position].id)
             showButtons(holder, itemList[position].friendStatus!!)
 
-        if(itemList[position].profileImageUrl != null) {
+        if (itemList[position].profileImageUrl != null) {
             Glide.with(holder.itemView.context)
                 .load(itemList[position].profileImageUrl)
                 .into(holder.profile)
-        }else{
+        } else {
             holder.profile.setImageResource(R.drawable.default_profile)
         }
 
@@ -61,6 +65,10 @@ class FriendsListAdapter(val context: Context,
 
         holder.profile.setOnClickListener {
             onFriendClicked.onProfileClick(itemList[position])
+        }
+
+        holder.name.setOnClickListener {
+            holder.profile.performClick()
         }
 
         holder.cancelReq.setOnClickListener {
@@ -87,7 +95,7 @@ class FriendsListAdapter(val context: Context,
     override fun getItemCount(): Int {
         return itemList.size
     }
-
+    
     fun showButtons(holder: FriendsListViewHolder, status: Int){
         when(status){
             0 ->{ //아무사이 아님
@@ -95,12 +103,12 @@ class FriendsListAdapter(val context: Context,
             }
             1 -> { // 내가 친구 신청중
                 holder.cancelReq.visibility = View.VISIBLE
-                }
+            }
             2 -> { //친구
-                if(User.id == listOwner) {
+                if (User.id == listOwner) {
                     holder.delete.visibility = View.VISIBLE
                     holder.setup.visibility = View.VISIBLE
-                }else{
+                } else {
                     holder.myFriend.visibility = View.VISIBLE
                 }
             }
@@ -111,7 +119,7 @@ class FriendsListAdapter(val context: Context,
         }
     }
 
-    fun hideButtons(holder: FriendsListViewHolder){
+    fun hideButtons(holder: FriendsListViewHolder) {
         holder.delete.visibility = View.GONE
         holder.accept.visibility = View.GONE
         holder.reject.visibility = View.GONE
@@ -122,29 +130,29 @@ class FriendsListAdapter(val context: Context,
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addList(items : ArrayList<FriendInfo>){
+    fun addList(items: ArrayList<FriendInfo>) {
         itemList.addAll(items)
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addFirstList(items: ArrayList<FriendInfo>){
-        if(items.size > 0)
+    fun addFirstList(items: ArrayList<FriendInfo>) {
+        if (items.size > 0)
             itemList = items
-        else{
+        else {
             itemList.clear()
         }
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun deleteFriend(targetUser : FriendInfo){
+    fun deleteFriend(targetUser: FriendInfo) {
         itemList.remove(targetUser)
         notifyDataSetChanged()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun patchInfo(item: FriendInfo){
+    fun patchInfo(item: FriendInfo) {
         val index = itemList.indexOf(item)
         itemList[index] = item
         notifyDataSetChanged()

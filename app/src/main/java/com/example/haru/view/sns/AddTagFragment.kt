@@ -51,12 +51,12 @@ class AddTagFragment(
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.addTagHeaderTitle.id)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.addTagHeaderTitle.id)
 
         MainActivity.hideNavi(true)
     }

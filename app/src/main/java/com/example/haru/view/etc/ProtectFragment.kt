@@ -46,13 +46,13 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.protectHeaderTitle.id)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.protectHeaderTitle.id)
 
         etcViewModel.isPublicAccount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.switchAccountPublic.isChecked = !it
@@ -148,11 +148,6 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     ) { _, popupValue, position ->
                         etcViewModel.submitIsAllowFeedComment(popupValue) {
                         }
-                        Toast.makeText(
-                            context,
-                            "Clicked $position ${popupValue}",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }.apply {
                         isOutsideTouchable = true
                         isTouchable = true
@@ -180,11 +175,6 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                     ) { _, popupValue, position ->
                         etcViewModel.submitIsAllowFeedLike(popupValue) {
                         }
-                        Toast.makeText(
-                            context,
-                            "Clicked $position ${popupValue}",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }.apply {
                         isOutsideTouchable = true
                         isTouchable = true

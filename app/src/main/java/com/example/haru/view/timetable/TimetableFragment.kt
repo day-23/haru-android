@@ -24,6 +24,7 @@ import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.view.customDialog.CustomCalendarDialog
@@ -79,6 +80,7 @@ class TimetableFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         displayMetrics = resources.displayMetrics
+        MainActivity.hideNavi(false)
         (activity as BaseActivity).adjustTopMargin(binding.timetableHeader.id)
     }
 
@@ -366,8 +368,6 @@ class TimetableFragment : Fragment() {
         val frontPadding = View(requireContext())
         val backPadding = View(requireContext())
         view.setOnClickListener {
-            Toast.makeText(requireContext(), "${day.content}", Toast.LENGTH_SHORT)
-                .show()
         }
 
         val frontParams = LinearLayout.LayoutParams(
@@ -479,8 +479,6 @@ class TimetableFragment : Fragment() {
         scheduleView.setPadding(paddingValue, paddingValue, paddingValue, paddingValue)
 
         scheduleView.setOnClickListener {
-            Toast.makeText(requireContext(), "${schedule.content}", Toast.LENGTH_SHORT)
-                .show()
         }
 
         scheduleView.setOnLongClickListener { view ->

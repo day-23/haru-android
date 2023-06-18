@@ -36,7 +36,7 @@ class CustomPolicyDialog(val type: Boolean) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.policyHeaderTitle.id)
         //type가 true면 이용약관, false면 개인정보 정책
         val text =
             if (type) requireContext().getText(R.string.termsOfService) else requireContext().getText(
@@ -75,7 +75,7 @@ class CustomPolicyDialog(val type: Boolean) : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+        (activity as BaseActivity).adjustTopMargin(binding.policyHeaderTitle.id)
     }
 
 }
