@@ -507,7 +507,7 @@ class AdapterMonth(
 //
 //        layoutParams.verticalBias = vertical
 
-        testView.y = layoutList[line].y + layoutList[line].height + (count*(layoutList[line].height/2+1))
+        testView.y = layoutList[line].y + layoutList[line].height + (count*(layoutList[line].height/2+2))
 
         testView.setBackgroundResource(R.drawable.calendar_textview_border)
         val drawable = testView.background as GradientDrawable
@@ -517,6 +517,7 @@ class AdapterMonth(
         testView.gravity = Gravity.CENTER
         testView.setText(textViewText)
         testView.setTextSize(Dimension.SP, 12.0f)
+
 
         val calendar = Calendar.getInstance()
         val thisMonth = Calendar.getInstance()
