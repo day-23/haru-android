@@ -444,7 +444,7 @@ class AdapterSimpleTodo(
             if(todo.repeatEnd != null) {
                 todo.repeatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
             }
-
+            
             activity.supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragments_frame,
