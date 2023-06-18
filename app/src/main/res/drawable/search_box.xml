@@ -4,4 +4,10 @@
     android:shape="rectangle">
     <solid android:color="#F1F1F5" />
     <corners android:radius="8dp" />
+
+    <padding
+        android:left="12dp"
+        android:right="12dp"
+        android:top="6dp"
+        android:bottom="6dp"/>
 </shape>

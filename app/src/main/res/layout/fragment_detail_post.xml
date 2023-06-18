@@ -156,7 +156,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginStart="20dp"
-            android:src="@drawable/uncheck_like"
+            android:background="@drawable/uncheck_like"
             app:layout_constraintLeft_toLeftOf="parent"
             tools:ignore="MissingConstraints" />
 

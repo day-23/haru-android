@@ -414,14 +414,14 @@ class MyPageViewModel() : ViewModel() {
         introduction: String,
         callback: (code : Int) -> Unit
     ) {
-        var user = User("", "", "", "", 0, 0, 0, false)
+//        var user = User("", "", "", "", 0, 0, 0, false)
         viewModelScope.launch {
             ProfileRepository.editProfile(image, name, introduction) {it, code ->
                 if (it.id != "") {
-                    user = it
+//                    user = it
                     Log.d("TAG", "Success to Edit!")
+                    _UserInfo.postValue(it)
                 }
-                _UserInfo.postValue(user)
                 callback(code)
             }
 //            _UserInfo.value = user
@@ -429,16 +429,16 @@ class MyPageViewModel() : ViewModel() {
     }
 
     fun editProfileName(name: String, introduction: String, callback: (code : Int) -> Unit) {
-        var user = User("", "", "", "", 0, 0, 0, false)
+//        var user = User("", "", "", "", 0, 0, 0, false)
         viewModelScope.launch {
             ProfileRepository.editProfileName(name, introduction) {it, code ->
                 if (it.id != "") {
-                    user = it
+//                    user = it
                     Log.d("TAG", "Success to EditName!")
+                    _UserInfo.postValue(it)
                 } else {
                     Log.d("TAG", "Fail to Edit name")
                 }
-                _UserInfo.postValue(user)
                 callback(code)
             }
         }
@@ -553,6 +553,7 @@ class MyPageViewModel() : ViewModel() {
             UserRepository.requestFirstFriendsList(targetId) {
                 if (it.success) {
                     Friends = it
+                    Log.e("20191627", it.toString())
                 }
             }
             _FirstFriends.value = Friends
@@ -660,6 +661,7 @@ class MyPageViewModel() : ViewModel() {
     }
 
     fun setImage(image: ExternalImages) {
+        Log.d("CropImages", "$image")
         _Images.value = arrayListOf(image.copy())
     }
 
@@ -684,6 +686,19 @@ class MyPageViewModel() : ViewModel() {
         _Images.value = temp!!
     }
 
+    fun addImage(image: ExternalImages){
+        var temp = _Images.value
+
+        if (!temp.isNullOrEmpty()) {
+            Log.d("CropImages", "add : ${image}")
+            temp!!.add(image.copy())
+//            temp.add(image.copy())
+        } else {
+            temp = arrayListOf(image.copy())
+        }
+        _Images.value = temp!!
+    }
+
     fun deleteImage(image: ExternalImages) {
         var temp = _Images.value
         if (!temp.isNullOrEmpty()) {
@@ -700,6 +715,13 @@ class MyPageViewModel() : ViewModel() {
         } else {
             Log.d("ImageCrop", "null")
         }
+    }
+
+    fun getCropResultCamera(image: Uri){
+        val temp = ExternalImages(0,"","", image)
+        _AfterCrop.value = temp.copy()
+        imageList.add(temp.copy())
+        selectedPostionList.add(-1)
     }
 
     fun getCrop(image: ExternalImages) {

@@ -3,11 +3,13 @@ package com.example.haru.view.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.media.Image
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
@@ -15,6 +17,7 @@ import com.example.haru.data.model.FriendInfo
 import com.example.haru.utils.User
 import com.example.haru.utils.User.id
 import com.example.haru.view.sns.OnFriendClicked
+import de.hdodenhof.circleimageview.CircleImageView
 
 class FriendsListAdapter(
     val context: Context,
@@ -37,13 +40,18 @@ class FriendsListAdapter(
         if (User.id != itemList[position].id)
             showButtons(holder, itemList[position].friendStatus!!)
 
-        if (itemList[position].profileImageUrl != null) {
-            Glide.with(holder.itemView.context)
-                .load(itemList[position].profileImageUrl)
-                .into(holder.profile)
-        } else {
-            holder.profile.setImageResource(R.drawable.default_profile)
-        }
+        Log.e("20191627", "${itemList[position].profileImageUrl}")
+
+        if (itemList[position].profileImageUrl == null
+            || itemList[position].profileImageUrl == ""
+            || itemList[position].profileImageUrl == "null"
+        )
+            holder.profile.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.profile_base_image)
+        else Glide.with(holder.itemView.context)
+            .load(itemList[position].profileImageUrl)
+            .into(holder.profile)
+
+
 
         holder.name.text = itemList[position].name
 
@@ -159,7 +167,7 @@ class FriendsListAdapter(
     }
 
     inner class FriendsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var profile = itemView.findViewById<ImageView>(R.id.search_profile)
+        var profile = itemView.findViewById<CircleImageView>(R.id.search_profile)
         var name = itemView.findViewById<TextView>(R.id.search_id)
 
         var delete = itemView.findViewById<TextView>(R.id.friend_delete)
