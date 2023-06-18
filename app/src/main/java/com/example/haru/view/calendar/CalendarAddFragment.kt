@@ -595,7 +595,7 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
                 binding.btnRepeatEndDateSchedule.visibility = View.VISIBLE
                 binding.btnRepeatEndDateSchedule.text = dateParser.format(repeatEndCalendar.time)
             } else {
-                binding.btnRepeatEndDateSchedule.visibility = View.GONE
+                binding.btnRepeatEndDateSchedule.visibility = View.INVISIBLE
             }
         }
 
