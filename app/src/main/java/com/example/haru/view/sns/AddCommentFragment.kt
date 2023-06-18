@@ -117,14 +117,6 @@ class AddCommentFragment(
     }
 
     override fun OnPopupClick(position: Int) {
-//        val fragmentManager = childFragmentManager
-//        val fragment = fragmentManager.findFragmentById(R.id.anchor_popup_comment)
-
-//        if (fragment != null) {
-//            val transaction = fragmentManager.beginTransaction()
-//            transaction.remove(fragment)
-//            transaction.commit()
-//        }
 
         if (position == 0) {//저장안함
             if (onWrite) {
@@ -168,9 +160,6 @@ class AddCommentFragment(
         binding.addCommentButtonsLayout.visibility = View.VISIBLE
         binding.writeCommentTitle.setTextColor(Color.parseColor("#191919"))
         binding.writeCommentTitle.text = "코멘트"
-//        AddContent = ""
-//        AddY = 0
-//        AddX = 0
 
         if (com.example.haru.utils.User.id == writerInfo.id) {
             binding.addCommentInfo.visibility = View.VISIBLE
@@ -376,10 +365,8 @@ class AddCommentFragment(
                         postId,
                         postImages[imageIndex].id)
                 }
-
-                addedComment = Comments("", User(), "", 0, 0, false, "", "")
             } else {
-                Toast.makeText(requireContext(), "댓글 내용을 입력해주세오", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "댓글 내용을 입력해주세요", Toast.LENGTH_SHORT).show()
             }
         }
 
