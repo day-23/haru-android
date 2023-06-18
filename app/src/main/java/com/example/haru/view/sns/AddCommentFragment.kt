@@ -242,10 +242,7 @@ class AddCommentFragment(
             override fun handleOnBackPressed() {
                 if (onEdit || onWrite) {
                     val fragment = PopupComment(this@AddCommentFragment)
-                    val fragmentManager = childFragmentManager
-                    val transaction = fragmentManager.beginTransaction()
-                    transaction.add(R.id.anchor_popup_comment, fragment)
-                    transaction.commit()
+                    fragment.show(parentFragmentManager, fragment.tag)
                 } else {
                     val backManager = parentFragmentManager
                     MainActivity.hideNavi(false)
@@ -760,12 +757,9 @@ class AddCommentFragment(
                     .into(writerProfile)
             }
 
-            writerView.setOnClickListener {// 유저페이지 이동
+            writerView.setOnClickListener {// 댓글 숨기기 팝업
                 val fragment = PopupHide(comment, view, writerView, this)
-                val fragmentManager = childFragmentManager
-                val transaction = fragmentManager.beginTransaction()
-                transaction.add(R.id.anchor_popup_comment, fragment)
-                transaction.commit()
+                fragment.show(parentFragmentManager, fragment.tag)
             }
 
         }
@@ -1016,12 +1010,12 @@ class PopupComment(val listener: ImageClickListener) : BottomSheetDialogFragment
     }
 }
 
-class PopupHide(
+class PopupHide (
     val comment: Comments,
     val content: View,
     val writer: View,
     listener: ImageClickListener
-) : Fragment() {
+) : BottomSheetDialogFragment() {
 
     lateinit var popupbinding: PopupAddCommentHideBinding
     val listener = listener
@@ -1047,13 +1041,44 @@ class PopupHide(
 
         popupbinding.hideComment.setOnClickListener {
             listener.OnHideClick(comment, content, writer, 0)
+            dismiss()
         }
 
         popupbinding.popupHideContainer.setOnClickListener {
             listener.OnHideClick(comment, content, writer, 1)
+            dismiss()
         }
 
         return popupbinding.root
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog: Dialog = super.onCreateDialog(savedInstanceState)
+
+        dialog.setOnShowListener {
+            val bottomSheetDialog = it as BottomSheetDialog
+            setupRatio(bottomSheetDialog)
+        }
+        return dialog
+    }
+
+    private fun setupRatio(bottomSheetDialog: BottomSheetDialog) {
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as View
+        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
+        val layoutParams = bottomSheet!!.layoutParams
+        layoutParams.height = getBottomSheetDialogDefaultHeight()
+        bottomSheet.layoutParams = layoutParams
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun getBottomSheetDialogDefaultHeight(): Int {
+        return getWindowHeight() * 35 / 100
+    }
+
+    private fun getWindowHeight(): Int {
+        val displayMetrics: DisplayMetrics = this.resources.displayMetrics
+        return displayMetrics.heightPixels
     }
 
 }

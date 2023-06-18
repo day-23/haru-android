@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:hint="댓글을 입력해주세요"
         android:textColorHint="#ACACAC"
-        android:textColor="#191919"
+        android:textColor="#1DAFFF"
         android:textSize="14sp"
         android:background="#00000000"
         android:textStyle="bold"

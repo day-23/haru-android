@@ -83,14 +83,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     override fun onDeleteClick(position: Int) {
-//        val fragmentManager = childFragmentManager
-//        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
-//        if (fragment != null) {
-//            MainActivity.hideNavi(false)
-//            val transaction = fragmentManager.beginTransaction()
-//            transaction.remove(fragment)
-//            transaction.commit()
-//        }
         if (position == 0 && isDelete) {
             requestDelFriend() //친구끊기
         } else if (position == 0 && !isDelete) {
@@ -142,49 +134,18 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         deletedItem = item
         val fragment = PopupDeletePost(userId, postId, this)
         fragment.show(parentFragmentManager, fragment.tag)
-//        val fragment = PopupDeletePost(userId, postId, this)
-//        val fragmentManager = childFragmentManager
-//        val transaction = fragmentManager.beginTransaction()
-//        transaction.add(R.id.mypage_popup_anchor, fragment)
-//        transaction.commit()
     }
 
     override fun postPopupClicked(userId: String, postId: String, position: Int) {
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         if (position == 0) {
-//            if (User.id == userId) {//수정하기
-//
-//            } else {//이 게시글 숨기기
-//                snsViewModel.hidePost(postId)
-//            }
         } else if (position == 1) {
             if (User.id == userId) {//삭제확인창
                 val fragment = PopupDeleteConfirm(userId, postId, this)
                 fragment.show(parentFragmentManager, fragment.tag)
-//                transaction.add(R.id.mypage_popup_anchor, fragment)
-//                transaction.addToBackStack(null)
-//                transaction.commit()
             }
-//            else { //신고하기
-//                snsViewModel.reportPost(postId)
-//            }
+
         }
-//        val fragmentManager = childFragmentManager
-//        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
-//        if (fragment != null) {
-//            MainActivity.hideNavi(false)
-//            val transaction = fragmentManager.beginTransaction()
-//            transaction.remove(fragment)
-//            transaction.commit()
-//            if (position == 0) {
-//                //TODO:숨기기 혹은 수정하기
-//            } else if (position == 1) {
-//                if (User.id == userId) {
-//                    val fragment = PopupDeleteConfirm(userId, postId, this)
-//                    transaction.add(R.id.mypage_popup_anchor, fragment)
-//                }
-//            }
-//        }
     }
 
     override fun PopupConfirm(userId: String, postId: String, position: Int) {
@@ -192,19 +153,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
             snsViewModel.deletePost(postId)
         }
-//        requireActivity().supportFragmentManager.popBackStack()
-//        val fragmentManager = childFragmentManager
-//        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
-//        if (fragment != null) {
-//            MainActivity.hideNavi(false)
-//            val transaction = fragmentManager.beginTransaction()
-//            transaction.remove(fragment)
-//            transaction.commit()
-//            if (position == 0) {
-//                Toast.makeText(requireContext(), "삭제 요청중...", Toast.LENGTH_SHORT).show()
-//                snsViewModel.deletePost(postId)
-//            }
-//        }
     }
 
     override fun onTagClicked(tag: Tag, holder: MediaTagAdapter.MediaTagViewHolder) {
@@ -554,6 +502,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             binding.editProfile.setBackgroundResource(R.drawable.total_comment_index)
             binding.editProfile.setTextColor(Color.parseColor("#646464"))
             binding.editProfile.text = "프로필 편집"
+            binding.feedText.text = "내 피드"
             mypageViewModel.getUserInfo(com.example.haru.utils.User.id)
         } else {
             showFriendTitle()
@@ -561,6 +510,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
             binding.editProfile.setBackgroundResource(R.drawable.gradation_btn_custom)
             binding.editProfile.setTextColor(Color.parseColor("#FDFDFD"))
             binding.editProfile.text = "친구 신청"
+            binding.feedText.text = "피드"
             mypageViewModel.getUserInfo(userId)
         }
     }

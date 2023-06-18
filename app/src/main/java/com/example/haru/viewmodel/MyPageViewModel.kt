@@ -204,7 +204,7 @@ class MyPageViewModel() : ViewModel() {
                 }
             }
             if (newMedia.success) {
-                _FirstMedia.value = newMedia
+                _Media.value = newMedia
             }
         }
     }

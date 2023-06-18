@@ -151,9 +151,13 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
     }
 
     fun bindMedia(media: com.example.haru.data.model.Media){
-        Glide.with(requireContext())
-            .load(media.user.profileImage)
-            .into(binding.detailPostProfile)
+        if(media.user.profileImage != null) {
+            Glide.with(requireContext())
+                .load(media.user.profileImage)
+                .into(binding.detailPostProfile)
+        }else{
+            binding.detailPostProfile.setImageResource(R.drawable.default_profile)
+        }
         binding.detailUserId.text = media.user.name
         binding.detailPostContents.text = media.content
         binding.detailLikedCount.text = media.likedCount.toString()
@@ -167,9 +171,13 @@ class DetailFragment(media : com.example.haru.data.model.Media, post : Post) : F
     }
 
     fun bindPost(post: Post){
-        Glide.with(requireContext())
-             .load(post.user.profileImage)
-             .into(binding.detailPostProfile)
+        if(post.user.profileImage != null) {
+            Glide.with(requireContext())
+                .load(post.user.profileImage)
+                .into(binding.detailPostProfile)
+        }else{
+            binding.detailPostProfile.setImageResource(R.drawable.default_profile)
+        }
         binding.detailUserId.text = post.user.name
         binding.detailPostContents.text = post.content
         binding.detailLikedCount.text = post.likedCount.toString()
