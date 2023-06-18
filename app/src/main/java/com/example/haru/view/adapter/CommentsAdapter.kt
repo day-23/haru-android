@@ -36,10 +36,12 @@ class CommentsAdapter(val context: Context,
         var disclosure = item.isPublic!!
 
         Log.d("20191668", "${item.content} : ${item.isPublic}")
-        if(itemList[position].user!!.profileImage != "https://harus3.s3.ap-northeast-2.amazonaws.com/null") {
+        if(itemList[position].user!!.profileImage != "https://harus3.s3.ap-northeast-2.amazonaws.com/null" && itemList[position].user!!.profileImage != null) {
             Glide.with(holder.itemView.context)
                 .load(itemList[position].user!!.profileImage)
                 .into(holder.profile)
+        }else{
+            holder.profile.setImageResource(R.drawable.default_profile)
         }
         holder.userid.text = itemList[position].user!!.name
         holder.content.text = itemList[position].content
