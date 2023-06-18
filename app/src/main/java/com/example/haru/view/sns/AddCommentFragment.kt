@@ -254,8 +254,11 @@ class AddCommentFragment(
         filterFrame = binding.filterFrame
 
         binding.commentImage.post {
-            ImageWidth = binding.commentImage.width
-            ImageHeight = binding.commentImage.height
+            val displayMetrics = resources.displayMetrics
+            val screenWidth = displayMetrics.widthPixels //기기의 width값
+            binding.commentImage.layoutParams.height = screenWidth
+            ImageWidth = screenWidth
+            ImageHeight = screenWidth
         }
 
         writeContainer = binding.moveFrame
