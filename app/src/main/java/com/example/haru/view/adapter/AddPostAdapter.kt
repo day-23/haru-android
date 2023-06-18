@@ -120,6 +120,5 @@ class AddPostAdapter (val context: Context,
         var selected = itemView.findViewById<ImageView>(R.id.selected_circle)
         var index = itemView.findViewById<TextView>(R.id.select_index)
         var selectcircle = itemView.findViewById<ImageView>(R.id.image_select)
-        var cropButton = itemView.findViewById<ImageView>(R.id.crop_button)
     }
 }

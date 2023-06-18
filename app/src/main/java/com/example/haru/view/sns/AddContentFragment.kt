@@ -14,11 +14,13 @@ import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddContentBinding
 import com.example.haru.databinding.FragmentAddpostAddtagBinding
+import com.example.haru.viewmodel.MyPageViewModel
 import okhttp3.MultipartBody
 
 class AddContentFragment(
     val images: MutableList<MultipartBody.Part>,
-    val select: ArrayList<ExternalImages>
+    val select: ArrayList<ExternalImages>,
+    val myPageViewModel: MyPageViewModel
 ) : Fragment() {
     lateinit var binding: FragmentAddContentBinding
 
@@ -45,7 +47,7 @@ class AddContentFragment(
 
         binding.addContentApply.setOnClickListener {
             val content = binding.addContentText.text.toString()
-            val newFrag = AddTagFragment(images, content, select)
+            val newFrag = AddTagFragment(images, content, select, myPageViewModel)
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragments_frame, newFrag)
             transaction.addToBackStack(null)

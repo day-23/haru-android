@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import android.view.accessibility.AccessibilityNodeInfo.ExtraRenderingInfo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,12 +13,15 @@ import com.example.haru.data.model.*
 import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.UserRepository
+import com.example.haru.utils.FileUtils
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.nio.file.FileSystem
+import java.nio.file.FileSystems
 import java.security.AccessController.getContext
 
 class MyPageViewModel() : ViewModel() {
@@ -29,6 +33,7 @@ class MyPageViewModel() : ViewModel() {
 
     var imageList: ArrayList<ExternalImages> = arrayListOf()
     var selectedPostionList: ArrayList<Int> = arrayListOf()
+    var lastTouchPosition: Int = -1
 
     private val _Profile = MutableLiveData<com.example.haru.data.model.Profile>()
     val Profile: LiveData<com.example.haru.data.model.Profile>
@@ -274,6 +279,7 @@ class MyPageViewModel() : ViewModel() {
 
         imageList = arrayListOf()
         selectedPostionList = arrayListOf()
+        lastTouchPosition = -1
     }
 
     //커스텀 갤러리 단일 사진 선택을 위한 함수
@@ -325,11 +331,11 @@ class MyPageViewModel() : ViewModel() {
                     val imagePath = data.absuri.toString()
 
                     // Create a File object from the image path
-                    val imageFile = File(imagePath)
+                    val imageFile = FileUtils.getFile(context, data.absuri)
 
                     Log.d("CropImages", "image file $imageFile")
 
-                    if (imageFile.exists()) {
+                    if (imageFile != null && imageFile.exists()) {
                         // Create a RequestBody from the image file
                         val imageRequestBody =
                             RequestBody.create("image/*".toMediaTypeOrNull(), imageFile)
@@ -340,6 +346,10 @@ class MyPageViewModel() : ViewModel() {
                             imageFile.name,
                             imageRequestBody
                         )
+
+                        Log.d("CropImages", "imageFile: $imageFile")
+                        Log.d("CropImages", "imagePart: $imagePart")
+
                         convertedImages.add(imagePart)
                     }
                 }
@@ -349,6 +359,7 @@ class MyPageViewModel() : ViewModel() {
         }
         Log.d("CropImages", "$convertedImages")
         _SelectedUri.value = images ?: arrayListOf()
+
         return convertedImages
     }
 
@@ -648,7 +659,18 @@ class MyPageViewModel() : ViewModel() {
     fun setImages(image: ExternalImages) {
         var temp = _Images.value
         if (!temp.isNullOrEmpty())
-            temp?.add(image.copy())
+            temp.add(image.copy())
+        else {
+            temp = arrayListOf(image.copy())
+        }
+        _Images.value = temp!!
+    }
+
+    fun changeImage(image: ExternalImages){
+        var temp = _Images.value
+        if (!temp.isNullOrEmpty())
+            temp[lastTouchPosition] = image.copy()
+//            temp.add(image.copy())
         else {
             temp = arrayListOf(image.copy())
         }

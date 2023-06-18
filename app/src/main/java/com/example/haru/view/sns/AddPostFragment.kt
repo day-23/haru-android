@@ -19,33 +19,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import androidx.core.view.contains
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutParams
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
 import com.example.haru.R
-import com.example.haru.data.model.CommentBody
-import com.example.haru.data.model.Comments
 import com.example.haru.data.model.ExternalImages
-import com.example.haru.data.model.User
 import com.example.haru.databinding.FragmentAddPostBinding
-import com.example.haru.databinding.FragmentSnsMypageBinding
-import com.example.haru.databinding.PopupSnsCommentCancelBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
-import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.*
 import com.example.haru.viewmodel.MyPageViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -203,7 +188,7 @@ class AddPostFragment : Fragment(), PostInterface {
             Log.d("CropImages", "after image $image")
             if (image != null) {
                 if (isMultiSelect)
-                    galleryViewmodel.setImages(image)
+                    galleryViewmodel.changeImage(image)
                 else
                     galleryViewmodel.setImage(image)
             }
@@ -231,8 +216,7 @@ class AddPostFragment : Fragment(), PostInterface {
             if (galleryViewmodel.SelectedImage.value != -1 || galleryViewmodel.SelectedPosition.value!!.size > 0) {
                 val converedImage = galleryViewmodel.convertMultiPart(requireContext())
                 val selecteduri = galleryViewmodel.getSelectImages()
-                val newFrag = AddContentFragment(converedImage, ArrayList(selecteduri))
-                galleryViewmodel.resetValue()
+                val newFrag = AddContentFragment(converedImage, ArrayList(selecteduri), galleryViewmodel)
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.replace(R.id.fragments_frame, newFrag)
                 transaction.addToBackStack(null)

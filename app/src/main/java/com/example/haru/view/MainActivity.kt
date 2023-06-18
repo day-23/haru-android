@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.haru.R
@@ -101,7 +103,7 @@ class MainActivity : BaseActivity() {
 
         calendarViewModel.getCategories()
         calendarViewModel.liveCategoryList.observe(this){
-            User.categories = arrayListOf()
+            User.categories = arrayListOf(null,null)
 
             for (category in it){
                 User.categories.add(category)
@@ -138,6 +140,20 @@ class MainActivity : BaseActivity() {
                     Manifest.permission.POST_NOTIFICATIONS
                 )
                 .check()
+        }
+
+        when {
+            ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED -> {
+                    Log.d("권한설정", "적용")
+            }
+            shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                Log.d("권한설정", "거부됨")
+            }
+            else -> {
+                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),1000)
+                Log.d("권한설정", "else")
+            }
         }
     }
 
