@@ -249,7 +249,7 @@ class AddCommentFragment(
                 } else {
                     val backManager = parentFragmentManager
                     MainActivity.hideNavi(false)
-                    backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    backManager.popBackStack()
                 }
             }
         }
@@ -307,7 +307,7 @@ class AddCommentFragment(
             Log.e("20191627", "writeCommentBack")
             val backManager = parentFragmentManager
             MainActivity.hideNavi(false)
-            backManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            backManager.popBackStack()
         }
 
         viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -349,10 +349,6 @@ class AddCommentFragment(
             if (onWrite || onEdit) {
                 val fragment = PopupComment(this)
                 fragment.show(parentFragmentManager, fragment.tag)
-//                val fragmentManager = childFragmentManager
-//                val transaction = fragmentManager.beginTransaction()
-//                transaction.add(R.id.anchor_popup_comment, fragment)
-//                transaction.commit()
             } else {
                 this.OnPopupClick(0)
             }
