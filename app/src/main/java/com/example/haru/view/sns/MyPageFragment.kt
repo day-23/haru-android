@@ -83,14 +83,6 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
     }
 
     override fun onDeleteClick(position: Int) {
-//        val fragmentManager = childFragmentManager
-//        val fragment = fragmentManager.findFragmentById(R.id.mypage_popup_anchor)
-//        if (fragment != null) {
-//            MainActivity.hideNavi(false)
-//            val transaction = fragmentManager.beginTransaction()
-//            transaction.remove(fragment)
-//            transaction.commit()
-//        }
         if (position == 0 && isDelete) {
             requestDelFriend() //친구끊기
         } else if (position == 0 && !isDelete) {

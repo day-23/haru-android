@@ -90,11 +90,12 @@ class LoadingAnimation : Fragment() {
     }
 
 
-    fun dismiss() {
+    fun dismiss(callback: () -> Unit) {
         Log.e("20191627", "dismiss")
         loop.removeCallbacksAndMessages(null)
         Handler(Looper.getMainLooper()).postDelayed({
             requireActivity().supportFragmentManager.popBackStack()
+            callback()
         }, 500)
     }
 

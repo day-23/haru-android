@@ -23,7 +23,6 @@ import com.example.haru.viewmodel.EtcViewModel
 
 class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
     private lateinit var binding: FragmentSettingBinding
-    private val loading = LoadingAnimation()
 
     companion object {
         const val TAG: String = "로그"
@@ -82,15 +81,10 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
         override fun onClick(v: View?) {
             when (v?.id) {
                 binding.ivBackIconSetting.id -> {
-//                    loading.dismiss()
                     requireActivity().supportFragmentManager.popBackStack()
                 }
 
                 binding.layoutAccount.id -> {
-//                    requireActivity().supportFragmentManager.beginTransaction()
-//                        .add(R.id.fragments_frame, loading)
-//                        .addToBackStack(null)
-//                        .commit()
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.fragments_frame, AccountFragment(etcViewModel))
                         .addToBackStack(null)

@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddContentBinding
-import com.example.haru.databinding.FragmentAddpostAddtagBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.viewmodel.MyPageViewModel
 import okhttp3.MultipartBody
 
@@ -32,6 +32,7 @@ class AddContentFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.addContentHeader.id)
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(
@@ -73,7 +74,7 @@ class AddContentFragment(
                 }
 
                 val str = s.toString()
-                if (str == ""){
+                if (str == "") {
                     binding.addContentCancel.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.cancel_icon)
                     binding.addContentCancel.backgroundTintList = ColorStateList.valueOf(

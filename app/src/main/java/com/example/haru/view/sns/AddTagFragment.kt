@@ -23,6 +23,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddpostAddtagBinding
+import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AddTagPagerAdapter
 import com.example.haru.view.adapter.TodoAdapter
 import com.example.haru.viewmodel.MyPageViewModel
@@ -56,6 +57,8 @@ class AddTagFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.headerTitle.id)
+
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(
@@ -79,17 +82,23 @@ class AddTagFragment(
         binding.addpostApply.setOnClickListener {
             binding.addpostApply.isClickable = false
             Toast.makeText(requireContext(), "게시글 작성중...", Toast.LENGTH_SHORT).show()
+            val loading = LoadingAnimation()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.fragments_frame, loading)
+                .addToBackStack(null)
+                .commit()
             hashtag = galleryViewmodel.getTagList()
             galleryViewmodel.postRequest(images, content, hashtag)
             galleryViewmodel.resetValue()
 
             galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
                 if(done) {
-                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    val fragment = SnsFragment()
-                    val transaction = parentFragmentManager.beginTransaction()
-                    transaction.replace(R.id.fragments_frame, fragment)
-                    transaction.commit()
+                    loading.dismiss{
+                        val fragment = SnsFragment()
+                        val transaction = parentFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragments_frame, fragment)
+                        transaction.commit()
+                    }
                 }else{
                     Toast.makeText(requireContext(),"게시글 업로드 실패", Toast.LENGTH_SHORT).show()
                 }

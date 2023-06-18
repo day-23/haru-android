@@ -16,10 +16,10 @@ import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.databinding.FragmentWriteHaruBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.view.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import retrofit2.converter.gson.GsonConverterFactory
 
 class WriteHaruFragment : Fragment(), PostInterface {
     lateinit var binding: FragmentWriteHaruBinding
@@ -62,6 +62,8 @@ class WriteHaruFragment : Fragment(), PostInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.writeHaruTitle.id)
+
+        MainActivity.hideNavi(true)
     }
 
     override fun onCreateView(
@@ -113,7 +115,7 @@ class WriteHaruFragment : Fragment(), PostInterface {
                 }
 
                 val str = s.toString()
-                if (str == ""){
+                if (str == "") {
                     binding.addpostCancel.background =
                         ContextCompat.getDrawable(requireContext(), R.drawable.cancel_icon)
                     binding.addpostCancel.backgroundTintList = ColorStateList.valueOf(
