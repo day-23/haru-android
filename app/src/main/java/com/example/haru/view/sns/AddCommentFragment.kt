@@ -325,6 +325,9 @@ class AddCommentFragment(
                 binding.addcommentIndex.text = "${position + 1} / ${postImages.size}"
                 if (commentContainer.childCount != 0) {
                     commentContainer.removeAllViews()
+                    infoContainer.removeAllViews()
+                    infoContainer.visibility = View.GONE
+                    showWriter = true
                 }
                 for (comment in postImages[position].comments) {
                     Log.d("20191668", "내용:  ${comment}")
