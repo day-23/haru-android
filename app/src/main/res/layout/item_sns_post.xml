@@ -88,7 +88,7 @@
         android:layout_height="390dp"
         android:paddingHorizontal="20dp"
         android:textColor="#191919"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:textSize="26sp"
         android:textStyle="bold"
         android:maxLines="12"

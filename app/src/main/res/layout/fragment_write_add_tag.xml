@@ -91,13 +91,16 @@
 
     <TextView
         android:id="@+id/write_tag_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="390dp"
+        android:paddingHorizontal="20dp"
         app:layout_constraintTop_toTopOf="@id/write_haru_images"
         app:layout_constraintBottom_toBottomOf="@id/write_haru_images"
         app:layout_constraintLeft_toLeftOf="@id/write_haru_images"
-        android:layout_marginStart="34dp"
-        android:textSize="24sp"
+        android:gravity="center"
+        android:maxLines="12"
+        android:ellipsize="end"
+        android:textSize="26sp"
         android:textColor="#191919"
         android:textStyle="bold"/>
 
