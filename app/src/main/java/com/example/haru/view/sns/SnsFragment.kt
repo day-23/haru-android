@@ -207,6 +207,14 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
             }
         }
 
+        snsViewModel.FeedIsEmpty.observe(viewLifecycleOwner){result ->
+            if (result){
+                binding.snsNoPosts.visibility = View.VISIBLE
+            }else{
+                binding.snsNoPosts.visibility = View.GONE
+            }
+        }
+
         snsViewModel.DeleteResult.observe(viewLifecycleOwner) { result ->
             if (result && deletedItem.id != "") {
                 snsPostAdapter.deletePost(deletedItem)

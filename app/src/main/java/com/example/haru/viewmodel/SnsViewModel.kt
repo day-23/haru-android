@@ -21,6 +21,10 @@ class SnsViewModel: ViewModel() {
     val Posts : LiveData<ArrayList<Post>>
         get() = _Posts
 
+    private val _FeedIsEmpty = MutableLiveData<Boolean>()//요청한 게시글 첫번째 페이지
+    val FeedIsEmpty : LiveData<Boolean>
+        get() = _FeedIsEmpty
+
     private val _newPost = MutableLiveData<ArrayList<Post>>()//이후 페이지
     val newPost : LiveData<ArrayList<Post>>
         get() = _newPost
@@ -119,13 +123,16 @@ class SnsViewModel: ViewModel() {
     //친구피드
     fun getFirstFeeds(){
         var newPost: ArrayList<Post> = arrayListOf()
+        var feedIsEmpty = true
         viewModelScope.launch{
             PostRepository.getFirstFeeds() {
                 if(it.size > 0){ //get success
                     newPost = it
+                    feedIsEmpty = false
                 }
             }
             _Posts.value = newPost // 첫번째 페이지일 경우
+            _FeedIsEmpty.value = feedIsEmpty
         }
     }
 
