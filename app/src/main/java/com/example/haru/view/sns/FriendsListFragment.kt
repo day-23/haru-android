@@ -176,7 +176,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
             binding.friendslistFriendsCount.text = "친구 목록 $friendCount"
             if (isFriendList) {
                 for(friend in friends.data){
-                    if(friend.id != com.example.haru.utils.User.id && friend.friendStatus!! <= 3){
+                    if(friend.friendStatus!! <= 3){
                         array.add(friend)
                         Log.d("SNS", "${friend.name} , ${friend.friendStatus}")
                     }
@@ -198,7 +198,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
             if (friends.data.size > 0) {
                 val array = arrayListOf<FriendInfo>()
                 for(friend in friends.data){
-                    if(friend.id != com.example.haru.utils.User.id && friend.friendStatus!! <= 3) {
+                    if(friend.friendStatus!! <= 3) {
                         array.add(friend)
                     }
                 }
@@ -213,7 +213,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
             if (friends.data.size > 0) {
                 val array = arrayListOf<FriendInfo>()
                 for(friend in friends.data){
-                    if(friend.id != com.example.haru.utils.User.id && friend.friendStatus!! <= 3) {
+                    if(friend.friendStatus!! <= 3) {
                         array.add(friend)
                     }
                 }
@@ -227,7 +227,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
             if (friends.data.size > 0) {
                 val array = arrayListOf<FriendInfo>()
                 for(friend in friends.data){
-                    if(friend.id != com.example.haru.utils.User.id && friend.friendStatus!! <= 3) {
+                    if(friend.friendStatus!! <= 3) {
                         array.add(friend)
                     }
                 }

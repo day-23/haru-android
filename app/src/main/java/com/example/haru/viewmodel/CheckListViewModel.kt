@@ -118,7 +118,7 @@ class CheckListViewModel() :
         }
     }
 
-    fun updateSearchData(){
+    fun updateSearchData() {
         if (searchContent == null)
             return
 
