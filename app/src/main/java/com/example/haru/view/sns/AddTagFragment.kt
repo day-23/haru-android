@@ -40,12 +40,10 @@ class AddTagFragment(
     val images = images
     val content = content
     val Uris = select
-//    lateinit var galleryViewmodel: MyPageViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        galleryViewmodel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
 
 
@@ -68,8 +66,6 @@ class AddTagFragment(
     ): View? {
         val fragmentManager = parentFragmentManager
         binding = FragmentAddpostAddtagBinding.inflate(inflater, container, false)
-        Log.d("CropImages", "recieved images $Uris")
-        Log.d("CropImages", "recieved parts $images")
         val adapter = AddTagPagerAdapter(requireContext(), Uris, galleryViewmodel)
         binding.addtagImages.adapter = adapter
         binding.addTagContent.text = content
@@ -91,13 +87,17 @@ class AddTagFragment(
             galleryViewmodel.resetValue()
 
             galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
-                binding.addpostApply.isClickable = true
+                Log.d("SNS", "response code $done")
                 if(done == 201) {
                     loading.dismiss{
-                        val fragment = SnsFragment()
-                        val transaction = parentFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragments_frame, fragment)
-                        transaction.commit()
+                        val fragmentManager = parentFragmentManager
+                        if (fragmentManager.backStackEntryCount > 0) {
+                            fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        }
+//                        val fragment = SnsFragment()
+//                        val transaction = parentFragmentManager.beginTransaction()
+//                        transaction.replace(R.id.fragments_frame, fragment)
+//                        transaction.commit()
                     }
                 }else if(done == 429){
                     loading.dismiss {
@@ -108,7 +108,7 @@ class AddTagFragment(
                         Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
-
+                binding.addpostApply.isClickable = true
             }
         }
         binding.addTagPictureIndex.text = "1/${Uris.size}"
