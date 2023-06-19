@@ -274,9 +274,12 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
 
         mypageViewModel.InitFeed.observe(viewLifecycleOwner) { feeds ->
             if (feeds.size > 0) {
+                binding.mypageNoPosts.visibility = View.GONE
                 index = feeds.size - 1
                 lastDate = feeds[index].createdAt
                 feedAdapter.initList(feeds)
+            }else{
+                binding.mypageNoPosts.visibility = View.VISIBLE
             }
         }
 

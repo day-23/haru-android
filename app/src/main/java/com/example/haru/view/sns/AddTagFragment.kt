@@ -99,17 +99,20 @@ class AddTagFragment(
                 }
             }else if(done == 429){
                 Log.d("SNS", "$done, 글 도배")
+                galleryViewmodel.resetCode()
                 loading.dismiss {
                     Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
                     binding.addpostApply.visibility = View.GONE
                 }
             }else if(done == 403){
+                galleryViewmodel.resetCode()
                 Log.d("SNS", "$done, 욕설")
                 loading.dismiss {
                     Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
                     binding.addpostApply.visibility = View.GONE
                 }
             }else if (done != 0){
+                galleryViewmodel.resetCode()
                 Log.d("SNS", "Error Here?")
                 loading.dismiss {
                     Toast.makeText(requireContext(), "전송에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()

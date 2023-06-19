@@ -209,8 +209,10 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
 
         snsViewModel.FeedIsEmpty.observe(viewLifecycleOwner){result ->
             if (result){
+                binding.postOfAll.visibility = View.GONE
                 binding.snsNoPosts.visibility = View.VISIBLE
             }else{
+                binding.postOfAll.visibility = View.VISIBLE
                 binding.snsNoPosts.visibility = View.GONE
             }
         }

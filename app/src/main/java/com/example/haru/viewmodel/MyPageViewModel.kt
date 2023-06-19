@@ -460,6 +460,11 @@ class MyPageViewModel() : ViewModel() {
         _SelectedImage.value = -1
         _PostTagLiveData.value = arrayListOf()
         _PostDone.value = 0
+        selectedPostionList = arrayListOf()
+    }
+
+    fun resetCode() {
+        _PostDone.value = 0
     }
 
     fun requestFriend(body: Followbody) {

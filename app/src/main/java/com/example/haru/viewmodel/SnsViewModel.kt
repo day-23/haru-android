@@ -130,6 +130,9 @@ class SnsViewModel: ViewModel() {
                     newPost = it
                     feedIsEmpty = false
                 }
+                else{
+                    newPost = arrayListOf()
+                }
             }
             _Posts.value = newPost // 첫번째 페이지일 경우
             _FeedIsEmpty.value = feedIsEmpty
