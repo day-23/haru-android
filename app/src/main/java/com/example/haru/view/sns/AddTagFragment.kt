@@ -74,10 +74,10 @@ class AddTagFragment(
         binding.addtagCancel.setOnClickListener {
             fragmentManager.popBackStack()
         }
+        val loading = LoadingAnimation()
 
         binding.addpostApply.setOnClickListener {
             binding.addpostApply.isClickable = false
-            val loading = LoadingAnimation()
             requireActivity().supportFragmentManager.beginTransaction()
                 .add(R.id.fragments_frame, loading)
                 .addToBackStack(null)
@@ -86,29 +86,33 @@ class AddTagFragment(
             galleryViewmodel.postRequest(images, content, hashtag)
             galleryViewmodel.resetValue()
 
-            galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
-                Log.d("SNS", "response code $done")
-                if(done == 201) {
-                    loading.dismiss{
-                        val fragmentManager = parentFragmentManager
-                        if (fragmentManager.backStackEntryCount > 0) {
-                            fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                        }
-                    }
-                }else if(done == 429){
-                    loading.dismiss {
-                        Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                        binding.addpostApply.visibility = View.GONE
-                    }
-                }else if(done == 403){
-                    loading.dismiss {
-                        Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                        binding.addpostApply.visibility = View.GONE
+        }
+
+        galleryViewmodel.PostDone.observe(viewLifecycleOwner) { done ->
+            Log.d("SNS", "response code $done")
+            if(done == 201) {
+                loading.dismiss{
+                    galleryViewmodel.resetValue()
+                    val fragmentManager = requireActivity().supportFragmentManager
+                    if (fragmentManager.backStackEntryCount > 0) {
+                        fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
                 }
-
+            }else if(done == 429){
+                Log.d("SNS", "$done, 글 도배")
+                loading.dismiss {
+                    Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    binding.addpostApply.visibility = View.GONE
+                }
+            }else if(done == 403){
+                Log.d("SNS", "$done, 욕설")
+                loading.dismiss {
+                    Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    binding.addpostApply.visibility = View.GONE
+                }
             }
         }
+
         binding.addTagPictureIndex.text = "1/${Uris.size}"
         binding.addtagImages.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
