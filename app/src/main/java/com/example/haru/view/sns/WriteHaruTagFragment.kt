@@ -114,10 +114,10 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
             color = "#191919"
         }
 
+        val loading = LoadingAnimation()
         binding.writeHaruApply.setOnClickListener {
             binding.writeHaruApply.isClickable = false
             val hashtag = templateViewModel.getTagList()
-            val loading = LoadingAnimation()
             if (id != "") {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.fragments_frame, loading)
@@ -128,29 +128,28 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
                 Toast.makeText(requireContext(), "템플릿을 선택해 주세요", Toast.LENGTH_SHORT).show()
                 binding.writeHaruApply.isClickable = true
             }
-
-            templateViewModel.PostRequest.observe(viewLifecycleOwner) { done ->
-                Log.d("SNS", "Code Recieve $done")
-                if(done == 201) {
-                    loading.dismiss {
-                        val fragmentManager = parentFragmentManager
-                        if (fragmentManager.backStackEntryCount > 0) {
-                            fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                        }
-                    }
-                }else if(done == 429){
-                    loading.dismiss {
-                        Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                        binding.writeHaruApply.visibility = View.GONE
-                    }
-                }else if(done == 403){
-                    loading.dismiss {
-                        Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
-                        binding.writeHaruApply.visibility = View.GONE
+        }
+        templateViewModel.PostRequest.observe(viewLifecycleOwner) { done ->
+            Log.d("SNS", "Code Recieve $done")
+            if(done == 201) {
+                loading.dismiss {
+                    val fragmentManager = parentFragmentManager
+                    if (fragmentManager.backStackEntryCount > 0) {
+                        fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     }
                 }
-
+            }else if(done == 429){
+                loading.dismiss {
+                    Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    binding.writeHaruApply.visibility = View.GONE
+                }
+            }else if(done == 403){
+                loading.dismiss {
+                    Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    binding.writeHaruApply.visibility = View.GONE
+                }
             }
+
         }
 
         templateViewModel.PostTagLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
