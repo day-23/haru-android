@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
@@ -25,6 +26,7 @@ import com.example.haru.data.repository.TodoRepository
 import com.example.haru.databinding.ActivitySignUpBinding
 import com.example.haru.view.MainActivity
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 
 class SignUpActivity : BaseActivity() {
     private lateinit var binding: ActivitySignUpBinding
@@ -55,6 +57,15 @@ class SignUpActivity : BaseActivity() {
 
                 binding.etSignupId.setTypeface(null, typeFace)
             }
+        })
+
+        binding.etSignupId.filters = arrayOf(InputFilter { src, _, _, _, _, _ ->
+            val regex = """^[a-z0-9]*$"""
+            val pattern = Pattern.compile(regex)
+            if (src.isNullOrBlank() || pattern.matcher(src).matches())
+                return@InputFilter src
+            Toast.makeText(this, "대문자는 입력할 수 없습니다.", Toast.LENGTH_SHORT).show()
+            src.dropLast(1)
         })
 
         binding.etSignupId.setOnKeyListener { view, keyCode, keyEvent ->

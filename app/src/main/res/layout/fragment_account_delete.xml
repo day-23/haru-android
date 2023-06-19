@@ -74,6 +74,7 @@
                 android:id="@+id/tv_account_introduction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:maxLength="12"
                 android:text="안녕하세요"
                 android:textColor="@color/todo_description"

@@ -37,8 +37,9 @@ class FriendsListAdapter(
 
     override fun onBindViewHolder(holder: FriendsListViewHolder, position: Int) {
         hideButtons(holder)
-        if (User.id != itemList[position].id)
-            showButtons(holder, itemList[position].friendStatus!!)
+        if (User.id == itemList[position].id)
+            showButtons(holder, 4)
+        else showButtons(holder, itemList[position].friendStatus!!)
 
         Log.e("20191627", "${itemList[position].profileImageUrl}")
 
@@ -46,7 +47,8 @@ class FriendsListAdapter(
             || itemList[position].profileImageUrl == ""
             || itemList[position].profileImageUrl == "null"
         )
-            holder.profile.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.profile_base_image)
+            holder.profile.background =
+                ContextCompat.getDrawable(holder.itemView.context, R.drawable.profile_base_image)
         else Glide.with(holder.itemView.context)
             .load(itemList[position].profileImageUrl)
             .into(holder.profile)
@@ -98,9 +100,9 @@ class FriendsListAdapter(
         return itemList.size
     }
 
-    fun showButtons(holder: FriendsListViewHolder, status: Int){
-        when(status){
-            0 ->{ //아무사이 아님
+    fun showButtons(holder: FriendsListViewHolder, status: Int) {
+        when (status) {
+            0 -> { //아무사이 아님
                 holder.request.visibility = View.VISIBLE
             }
             1 -> { // 내가 친구 신청중
@@ -118,6 +120,10 @@ class FriendsListAdapter(
                 holder.accept.visibility = View.VISIBLE
                 holder.reject.visibility = View.VISIBLE
             }
+
+            4 -> {
+                holder.myProfile.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -129,6 +135,7 @@ class FriendsListAdapter(
         holder.request.visibility = View.GONE
         holder.myFriend.visibility = View.GONE
         holder.cancelReq.visibility = View.GONE
+        holder.myProfile.visibility = View.GONE
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -163,6 +170,8 @@ class FriendsListAdapter(
     inner class FriendsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var profile = itemView.findViewById<CircleImageView>(R.id.search_profile)
         var name = itemView.findViewById<TextView>(R.id.search_id)
+
+        var myProfile = itemView.findViewById<TextView>(R.id.my_profile)
 
         var delete = itemView.findViewById<TextView>(R.id.friend_delete)
         var setup = itemView.findViewById<ImageView>(R.id.search_setup)
