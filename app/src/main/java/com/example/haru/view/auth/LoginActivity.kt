@@ -48,20 +48,20 @@ class LoginActivity : BaseActivity() {
         }
 
         /* 기존 로그인 버튼 */
-        binding.loginBtn.setOnClickListener {
-            /* 로그인 성공 */
-            //하드코딩된 값 쓰고 싶으면 여기 넣으면됨
-//            User.id = "005224c0-eec1-4638-9143-58cbfc9688c5"
-            User.id = "ysr"
-            User.createdAt = "2023-05-28T00:00:00.000Z"
-            User.name = "hahaha"
-            User.email = "lkl4502@naver.com"
-            User.haruId = "lkl4502"
-
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+//        binding.loginBtn.setOnClickListener {
+//            /* 로그인 성공 */
+//            //하드코딩된 값 쓰고 싶으면 여기 넣으면됨
+////            User.id = "005224c0-eec1-4638-9143-58cbfc9688c5"
+//            User.id = "ysr"
+//            User.createdAt = "2023-05-28T00:00:00.000Z"
+//            User.name = "hahaha"
+//            User.email = "lkl4502@naver.com"
+//            User.haruId = "lkl4502"
+//
+//            val intent = Intent(this, MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }
     }
 
     //카카오 로그인 과정
@@ -112,7 +112,7 @@ class LoginActivity : BaseActivity() {
     private fun validateUserWithServer(token: OAuthToken) {
         // Call your API
         val call =
-            RetrofitClient.apiService.validateKakaoUser(mapOf("authorization" to "Bearer ${token.accessToken}"))
+            RetrofitClient.apiServiceKakao.validateKakaoUser(mapOf("authorization" to "Bearer ${token.accessToken}"))
 
         // Enqueue the call
         call.enqueue(object : Callback<UserKakaoAuthResponse> {
