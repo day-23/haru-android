@@ -634,7 +634,7 @@ class AlarmWorker : BroadcastReceiver(){
 
                         if (alarmBoolean && sharedPreference.getBoolean("amAlarmAprove", true)) {
                             val builder = NotificationCompat.Builder(context, requestCode)
-                                .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
+                                .setSmallIcon(R.drawable.ic_stat_name) // 아이콘
                                 .setContentTitle("오늘의 하루") // 제목
                                 .setContentText(resultStr) // 내용
                                 .setContentIntent(contentPendingIntent)
@@ -645,7 +645,7 @@ class AlarmWorker : BroadcastReceiver(){
                             notificationManager.notify(requestCode.toInt(), builder.build())
                         } else if(!alarmBoolean && sharedPreference.getBoolean("pmAlarmAprove", true)){
                             val builder = NotificationCompat.Builder(context, requestCode)
-                                .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
+                                .setSmallIcon(R.drawable.ic_stat_name) // 아이콘
                                 .setContentTitle("오늘의 하루") // 제목
                                 .setContentText(resultStr) // 내용
                                 .setContentIntent(contentPendingIntent)
@@ -670,7 +670,7 @@ class AlarmWorker : BroadcastReceiver(){
             )
 
             val builder = NotificationCompat.Builder(context, requestCode)
-                .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
+                .setSmallIcon(R.mipmap.ic_launcher) // 아이콘
                 .setContentTitle("하루 알람") // 제목
                 .setContentText(body!!) // 내용
                 .setContentIntent(contentPendingIntent)
