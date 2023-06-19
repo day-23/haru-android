@@ -111,56 +111,70 @@ class AlarmWorker : BroadcastReceiver(){
             var alarmBoolean = false
 
             if (userId != "") {
-                intent2.putExtra("userId", userId)
-                intent2.putExtra("requestCode", "0")
+                try {
+                    intent2.putExtra("userId", userId)
+                    intent2.putExtra("requestCode", "0")
 
-                val pendingIntent = PendingIntent.getBroadcast(
-                    context, 0, intent2,
-                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                )
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        context, 0, intent2,
+                        PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
 
-                val calendar = Calendar.getInstance()
-                val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
+                    val calendar = Calendar.getInstance()
+                    val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
 
-                amTime = timeformatter.parse(sharedPreference.getString("amAlarmDate", "오전 9:00")!!)!!
+                    var amDate = sharedPreference.getString("amAlarmDate", "오전 9:00")!!
+                    var pmDate = sharedPreference.getString("pmAlarmDate", "오후 9:00")!!
 
-                amTime.year = calendar.time.year
-                amTime.month = calendar.time.month
-                amTime.date = calendar.time.date
-
-                pmTime = timeformatter.parse(sharedPreference.getString("pmAlarmDate", "오후 9:00")!!)!!
-
-                pmTime.year = calendar.time.year
-                pmTime.month = calendar.time.month
-                pmTime.date = calendar.time.date
-
-                if(calendar.time >= pmTime){
-                    calendar.apply {
-                        time = amTime
-                        add(Calendar.DATE, 1)
+                    if (amDate == "") {
+                        amDate = "오전 9:00"
                     }
 
-                    alarmBoolean = false
+                    if (pmDate == "") {
+                        pmDate = "오후 9:00"
+                    }
+
+                    amTime = timeformatter.parse(amDate)!!
+
+                    amTime.year = calendar.time.year
+                    amTime.month = calendar.time.month
+                    amTime.date = calendar.time.date
+
+                    pmTime = timeformatter.parse(pmDate)!!
+
+                    pmTime.year = calendar.time.year
+                    pmTime.month = calendar.time.month
+                    pmTime.date = calendar.time.date
+
+                    if (calendar.time >= pmTime) {
+                        calendar.apply {
+                            time = amTime
+                            add(Calendar.DATE, 1)
+                        }
+
+                        alarmBoolean = false
+                    } else if (calendar.time >= amTime) {
+                        calendar.apply {
+                            time = pmTime
+                        }
+
+                        alarmBoolean = true
+                    } else {
+                        calendar.apply {
+                            time = amTime
+                        }
+
+                        alarmBoolean = false
+                    }
+
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendar.timeInMillis,
+                        pendingIntent
+                    )
+                } catch (ex: java.lang.Exception){
+                    ex.printStackTrace()
                 }
-                else if (calendar.time >= amTime){
-                    calendar.apply {
-                        time = pmTime
-                    }
-
-                    alarmBoolean = true
-                } else {
-                    calendar.apply {
-                        time = amTime
-                    }
-
-                    alarmBoolean = false
-                }
-
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
             }
 
             Thread(Runnable {
@@ -634,7 +648,7 @@ class AlarmWorker : BroadcastReceiver(){
 
                         if (alarmBoolean && sharedPreference.getBoolean("amAlarmAprove", true)) {
                             val builder = NotificationCompat.Builder(context, requestCode)
-                                .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
+                                .setSmallIcon(R.drawable.ic_stat_name) // 아이콘
                                 .setContentTitle("오늘의 하루") // 제목
                                 .setContentText(resultStr) // 내용
                                 .setContentIntent(contentPendingIntent)
@@ -645,7 +659,7 @@ class AlarmWorker : BroadcastReceiver(){
                             notificationManager.notify(requestCode.toInt(), builder.build())
                         } else if(!alarmBoolean && sharedPreference.getBoolean("pmAlarmAprove", true)){
                             val builder = NotificationCompat.Builder(context, requestCode)
-                                .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
+                                .setSmallIcon(R.drawable.ic_stat_name) // 아이콘
                                 .setContentTitle("오늘의 하루") // 제목
                                 .setContentText(resultStr) // 내용
                                 .setContentIntent(contentPendingIntent)
@@ -670,7 +684,7 @@ class AlarmWorker : BroadcastReceiver(){
             )
 
             val builder = NotificationCompat.Builder(context, requestCode)
-                .setSmallIcon(R.drawable.app_icon_foreground) // 아이콘
+                .setSmallIcon(R.mipmap.ic_launcher) // 아이콘
                 .setContentTitle("하루 알람") // 제목
                 .setContentText(body!!) // 내용
                 .setContentIntent(contentPendingIntent)
