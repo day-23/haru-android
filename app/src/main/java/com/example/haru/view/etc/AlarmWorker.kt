@@ -112,6 +112,8 @@ class AlarmWorker : BroadcastReceiver(){
 
             if (userId != "") {
                 intent2.putExtra("userId", userId)
+                intent2.putExtra("requestCode", "0")
+
                 val pendingIntent = PendingIntent.getBroadcast(
                     context, 0, intent2,
                     PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT

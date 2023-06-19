@@ -27,6 +27,7 @@ import com.example.haru.view.checklist.ChecklistFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.CheckListViewModel
+import java.text.Format
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -278,6 +279,9 @@ class AdapterSimpleTodo(
                 if (end.year == today.year && end.month == today.month && end.date == today.date) {
                     todo.location = 0 // front
                     todo.endDate = todoendDate
+                    if(todo.repeatEnd != null) {
+                        todo.repeatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
+                    }
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
@@ -331,6 +335,10 @@ class AdapterSimpleTodo(
                 }
 
                 if(preData == null && nextData == null){
+                    if(todo.repeatEnd != null) {
+                        todo.repeatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
+                    }
+
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
@@ -396,6 +404,10 @@ class AdapterSimpleTodo(
                     todo.location = 2
                     todo.endDate = todoendDate
 
+                    if(todo.repeatEnd != null) {
+                        todo.repeatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
+                    }
+
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
@@ -413,6 +425,10 @@ class AdapterSimpleTodo(
                 todo.location = 1 // middle
                 todo.endDate = todoendDate
 
+                if(todo.repeatEnd != null) {
+                    todo.repeatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
+                }
+
                 activity.supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragments_frame,
@@ -423,6 +439,10 @@ class AdapterSimpleTodo(
 
                 dialog.dismiss()
                 return@setOnClickListener
+            }
+
+            if(todo.repeatEnd != null) {
+                todo.repeatEnd = FormatDate.calendarBackFormat(todo.repeatEnd!!)
             }
 
             activity.supportFragmentManager.beginTransaction()

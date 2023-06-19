@@ -124,7 +124,15 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         adapter = CommentsAdapter(requireContext(), arrayListOf(), this)
         commentsRecyclerView.adapter = adapter
         commentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        snsViewModel.getFirstComments(post.id, post.images[0].id)
+
+        if (post.isTemplatePost == null){
+            snsViewModel.getFirstComments(post.id, post.images[0].id)
+        }else{
+            snsViewModel.getFirstTemplateComments(post.id)
+        }
+
+
+
         var index = 0
         binding.commentCommentsIndex.text = "1/${post.images.size}"
         binding.commentsLastPicture.visibility = View.GONE
@@ -139,7 +147,11 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
                 super.onScrolled(recyclerView, dx, dy)
                 if (!commentsRecyclerView.canScrollVertically(1) && newComment) {
                     val lastday = adapter.getLastComment()
-                    snsViewModel.getComments(post.id, post.images[index].id, lastday)
+                    if (!post.isTemplatePost.isNullOrEmpty()){
+                        snsViewModel.getComments(post.id, post.images[index].id, lastday)
+                    }else{
+                        snsViewModel.getTemplateComments(post.id, lastday)
+                    }
                 }
             }
         }
@@ -147,13 +159,21 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
         val refresher = binding.refreshComment
         refresher.setOnRefreshListener {
             refresher.isRefreshing = true
-            snsViewModel.getFirstComments(post.id, post.images[index].id)
+            if (post.isTemplatePost.isNullOrEmpty()){
+                snsViewModel.getFirstComments(post.id, post.images[0].id)
+            }else{
+                snsViewModel.getFirstTemplateComments(post.id)
+            }
             refresher.isRefreshing = false
         }
 
         binding.commentsLastPicture.setOnClickListener {
             index -= 1
-            snsViewModel.getFirstComments(post.id, post.images[index].id)
+            if (post.isTemplatePost.isNullOrEmpty()){
+                snsViewModel.getFirstComments(post.id, post.images[0].id)
+            }else{
+                snsViewModel.getFirstTemplateComments(post.id)
+            }
             binding.commentCommentsIndex.text = "${index + 1}/${post.images.size}"
 
             if (index == 0) {
@@ -169,7 +189,11 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
 
         binding.commentsNextPicture.setOnClickListener {
             index += 1
-            snsViewModel.getFirstComments(post.id, post.images[index].id)
+            if (post.isTemplatePost.isNullOrEmpty()){
+                snsViewModel.getFirstComments(post.id, post.images[0].id)
+            }else{
+                snsViewModel.getFirstTemplateComments(post.id)
+            }
             binding.commentCommentsIndex.text = "${index + 1}/${post.images.size}"
 
             if (index == post.images.size - 1) {

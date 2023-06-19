@@ -170,14 +170,21 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
         mypageViewModel.getFirstFriendsRequestList(targetId)
 
         mypageViewModel.FirstFriends.observe(viewLifecycleOwner) { friends ->
-            Log.d("Friends", "${friends.pagination} :: ${friends.data}")
+            val array = arrayListOf<FriendInfo>()
+
             friendCount = friends.pagination.totalItems ?: 0
             binding.friendslistFriendsCount.text = "친구 목록 $friendCount"
             if (isFriendList) {
-                if (friends.data.size > 0) {
-                    lastCreatedAt = getLastCreated(friends.data)
+                for(friend in friends.data){
+                    if(friend.id != com.example.haru.utils.User.id && friend.friendStatus!! <= 3){
+                        array.add(friend)
+                        Log.d("SNS", "${friend.name} , ${friend.friendStatus}")
+                    }
                 }
-                friendAdapter.addFirstList(friends.data)
+                if(array.size > 0) {
+                    friendAdapter.addFirstList(array)
+                    lastCreatedAt = getLastCreated(array)
+                }
             }
         }
 
@@ -189,20 +196,42 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
 
         mypageViewModel.Friends.observe(viewLifecycleOwner) { friends ->
             if (friends.data.size > 0) {
-                friendAdapter.addList(friends.data)
-                lastCreatedAt = getLastCreated(friends.data)
+                val array = arrayListOf<FriendInfo>()
+                for(friend in friends.data){
+                    if(friend.id != com.example.haru.utils.User.id && friend.friendStatus!! <= 3) {
+                        array.add(friend)
+                    }
+                }
+                if(array.size > 0) {
+                    friendAdapter.addList(array)
+                    lastCreatedAt = getLastCreated(array)
+                }
             }
         }
 
         mypageViewModel.SearchedFriends.observe(viewLifecycleOwner) { friends ->
             if (friends.data.size > 0) {
-                friendAdapter.addFirstList(friends.data)
+                val array = arrayListOf<FriendInfo>()
+                for(friend in friends.data){
+                    if(friend.id != com.example.haru.utils.User.id && friend.friendStatus!! <= 3) {
+                        array.add(friend)
+                    }
+                }
+                friendAdapter.addFirstList(array)
+                for(friend in friends.data)
+                    Log.d("SNS", "${friend.name} , ${friend.friendStatus}")
             } else friendAdapter.addFirstList(arrayListOf())
         }
 
         mypageViewModel.SearchedRequests.observe(viewLifecycleOwner) { friends ->
             if (friends.data.size > 0) {
-                friendAdapter.addFirstList(friends.data)
+                val array = arrayListOf<FriendInfo>()
+                for(friend in friends.data){
+                    if(friend.id != com.example.haru.utils.User.id && friend.friendStatus!! <= 3) {
+                        array.add(friend)
+                    }
+                }
+                friendAdapter.addFirstList(array)
             } else friendAdapter.addFirstList(arrayListOf())
         }
 

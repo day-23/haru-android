@@ -328,8 +328,18 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                         .into(binding.ivSearchUserProfile)
                     binding.tvSearchUserId.text = it.name
                     setButtons(friendStatus)
+
+                    binding.ivSearchUserProfile.setOnClickListener{
+                        val newFrag = MyPageFragment(targetInfo.id)
+                        val transaction = parentFragmentManager.beginTransaction()
+                        transaction.replace(R.id.fragments_frame, newFrag)
+                        transaction.addToBackStack(null)
+                        transaction.commit()
+                    }
+
                 }
             }
+
 
             binding.btnSearchUser.setOnClickListener {
                 when (friendStatus) {

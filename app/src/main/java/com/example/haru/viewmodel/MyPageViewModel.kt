@@ -404,6 +404,7 @@ class MyPageViewModel() : ViewModel() {
                 }
                 postResult = it
             }
+            Log.d("SNS", "$postResult")
             _PostRequest.value = postResult
         }
     }

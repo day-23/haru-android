@@ -153,7 +153,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_btn_date"
-                                android:textColor="#646464"
+                                android:textColor="#1DAFFF"
                                 android:textSize="14sp"
                                 app:backgroundTint="@null" />
 
@@ -165,7 +165,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_btn_date"
-                                android:textColor="#646464"
+                                android:textColor="#1DAFFF"
                                 android:textSize="14sp"
                                 app:backgroundTint="@null" />
                         </LinearLayout>
@@ -184,7 +184,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_btn_date"
-                                android:textColor="#646464"
+                                android:textColor="#1DAFFF"
                                 android:textSize="14sp"
                                 app:backgroundTint="@null" />
 
@@ -196,7 +196,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/custom_btn_date"
-                                android:textColor="#646464"
+                                android:textColor="#1DAFFF"
                                 android:textSize="14sp"
                                 app:backgroundTint="@null" />
                         </LinearLayout>

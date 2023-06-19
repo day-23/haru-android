@@ -47,12 +47,11 @@ class FriendsListAdapter(
             || itemList[position].profileImageUrl == ""
             || itemList[position].profileImageUrl == "null"
         )
-            holder.profile.background = ContextCompat.getDrawable(holder.itemView.context, R.drawable.profile_base_image)
+            holder.profile.background =
+                ContextCompat.getDrawable(holder.itemView.context, R.drawable.profile_base_image)
         else Glide.with(holder.itemView.context)
             .load(itemList[position].profileImageUrl)
             .into(holder.profile)
-
-
 
         holder.name.text = itemList[position].name
 
@@ -95,17 +94,15 @@ class FriendsListAdapter(
         holder.setup.setOnClickListener {
             onFriendClicked.onSetupClick(itemList[position])
         }
-
-
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
 
-    fun showButtons(holder: FriendsListViewHolder, status: Int){
-        when(status){
-            0 ->{ //아무사이 아님
+    fun showButtons(holder: FriendsListViewHolder, status: Int) {
+        when (status) {
+            0 -> { //아무사이 아님
                 holder.request.visibility = View.VISIBLE
             }
             1 -> { // 내가 친구 신청중
