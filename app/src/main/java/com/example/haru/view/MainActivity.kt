@@ -72,9 +72,7 @@ class MainActivity : BaseActivity() {
         editor.putInt("alarmCnt", calendarMainData.alarmCnt)
         editor.putString("userId", User.id)
         editor.putBoolean("amAlarmAprove", User.amAlarmAprove)
-        editor.putString("amAlarmDate", User.amAlarmDate)
         editor.putBoolean("pmAlarmAprove", User.pmAlarmAprove)
-        editor.putString("pmAlarmDate", User.pmAlarmDate)
         editor.apply()
 
         super.onPause()
