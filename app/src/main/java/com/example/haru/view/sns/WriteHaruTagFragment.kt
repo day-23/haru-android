@@ -21,6 +21,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentManager.BackStackEntry
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -89,6 +90,7 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         templateViewModel.getTemplates()
         binding.writeTagContent.text = content
+
         templateViewModel.Templates.observe(viewLifecycleOwner) { templates ->
             templateAdapter.addTemplate(templates)
         }
@@ -128,23 +130,26 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
             }
 
             templateViewModel.PostRequest.observe(viewLifecycleOwner) { done ->
+                Log.d("SNS", "Code Recieve $done")
                 if(done == 201) {
                     loading.dismiss {
-                        val fragment = SnsFragment()
-                        val transaction = parentFragmentManager.beginTransaction()
-                        transaction.replace(R.id.fragments_frame, fragment)
-                        transaction.commit()
+                        val fragmentManager = parentFragmentManager
+                        if (fragmentManager.backStackEntryCount > 0) {
+                            fragmentManager.popBackStack("snsmain", FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        }
                     }
                 }else if(done == 429){
                     loading.dismiss {
                         Toast.makeText(requireContext(),"글을 너무 자주 작성할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        binding.writeHaruApply.visibility = View.GONE
                     }
                 }else if(done == 403){
                     loading.dismiss {
                         Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        binding.writeHaruApply.visibility = View.GONE
                     }
                 }
-                binding.writeHaruApply.isClickable = true
+
             }
         }
 
