@@ -20,15 +20,15 @@ object RetrofitClient {
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
-//        .addInterceptor { chain ->
-//            val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
-//            val accessToken = sharedPreferences.getString("accessToken", null)
-//
-//            val newRequest = chain.request().newBuilder()
-//                .addHeader("Authorization", "Bearer $accessToken")
-//                .build()
-//            chain.proceed(newRequest)
-//        }
+        .addInterceptor { chain ->
+            val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
+            val accessToken = sharedPreferences.getString("accessToken", null)
+
+            val newRequest = chain.request().newBuilder()
+                .addHeader("Authorization", "Bearer $accessToken")
+                .build()
+            chain.proceed(newRequest)
+        }
         .addInterceptor(NetworkErrorInterceptor(App.instance))
         .connectTimeout(100, TimeUnit.SECONDS)
         .followRedirects(true)
@@ -41,15 +41,6 @@ object RetrofitClient {
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
-//        .addInterceptor { chain ->
-//            val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
-//            val accessToken = sharedPreferences.getString("accessToken", null)
-//
-//            val newRequest = chain.request().newBuilder()
-//                .addHeader("Authorization", "Bearer $accessToken")
-//                .build()
-//            chain.proceed(newRequest)
-//        }
         .connectTimeout(100, TimeUnit.SECONDS)
         .followRedirects(true)
         .followSslRedirects(true)
@@ -61,6 +52,12 @@ object RetrofitClient {
         .baseUrl(BASE_URL)   // retrofit encoding 될 때 null값이 들어가지 않는 현상 때문에 아래 코드 필요
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
         .client(okHttpClient)
+        .build()
+
+    private val retrofitKakao = Retrofit.Builder()
+        .baseUrl(BASE_URL)   // retrofit encoding 될 때 null값이 들어가지 않는 현상 때문에 아래 코드 필요
+        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create()))
+        .client(okHttpClientNotIncludeAccessToken)
         .build()
 
     val alldoService: AllDoService by lazy {
@@ -101,5 +98,9 @@ object RetrofitClient {
 
     val apiService: ApiService by lazy {
         retrofit.create(ApiService::class.java)
+    }
+
+    val apiServiceKakao : ApiService by lazy {
+        retrofitKakao.create(ApiService::class.java)
     }
 }
