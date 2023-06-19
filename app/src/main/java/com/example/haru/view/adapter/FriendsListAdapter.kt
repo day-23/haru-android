@@ -51,8 +51,6 @@ class FriendsListAdapter(
             .load(itemList[position].profileImageUrl)
             .into(holder.profile)
 
-
-
         holder.name.text = itemList[position].name
 
         holder.delete.setOnClickListener {
