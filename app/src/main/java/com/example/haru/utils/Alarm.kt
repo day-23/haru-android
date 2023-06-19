@@ -98,6 +98,14 @@ object Alarm {
             val calendar = Calendar.getInstance()
             calendar.time = Date()
 
+            if(User.amAlarmDate == ""){
+                User.amAlarmDate = "오전 9:00"
+            }
+
+            if(User.pmAlarmDate == ""){
+                User.pmAlarmDate = "오후 9:00"
+            }
+
             val amTime = timeformatter.parse(User.amAlarmDate)
 
             amTime.year = calendar.time.year
@@ -143,152 +151,180 @@ object Alarm {
         val intent = Intent(context, AlarmWorker::class.java)
 
         if (User.id != "") {
+            try {
+                intent.putExtra("userId", User.id)
+                intent.putExtra("requestCode", "0")
+
+                calendarMainData.alarmCnt++
+
+                val pendingIntent = PendingIntent.getBroadcast(
+                    context, 0, intent,
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+                val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
+
+                val calendar = Calendar.getInstance()
+                calendar.time = Date()
+
+                if (User.amAlarmDate == "") {
+                    User.amAlarmDate = "오전 9:00"
+                }
+
+                if (User.pmAlarmDate == "") {
+                    User.pmAlarmDate = "오후 9:00"
+                }
+
+                val amTime = timeformatter.parse(User.amAlarmDate)
+
+                amTime.year = calendar.time.year
+                amTime.month = calendar.time.month
+                amTime.date = calendar.time.date
+
+                val pmTime = timeformatter.parse(User.pmAlarmDate)
+
+                pmTime.year = calendar.time.year
+                pmTime.month = calendar.time.month
+                pmTime.date = calendar.time.date
+
+                if (calendar.time.after(pmTime)) {
+                    calendar.apply {
+                        time = amTime
+                        add(Calendar.DATE, 1)
+                    }
+                } else if (calendar.time.after(amTime)) {
+                    calendar.apply {
+                        time = pmTime
+                    }
+                } else {
+                    calendar.apply {
+                        time = amTime
+                    }
+                }
+
+                Log.d("알람추가", "아침저녁 알림")
+                Log.d("알람추가", calendar.time.toString())
+
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent
+                )
+            } catch (ex: java.lang.Exception){
+                ex.printStackTrace()
+            }
+        }
+    }
+
+    private fun addAlarm(todo: Todo, context: Context){
+        try {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, AlarmWorker::class.java)
+
             intent.putExtra("userId", User.id)
-            intent.putExtra("requestCode", "0")
+            intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
+
+            intent.putExtra("body", todo.content)
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, calendarMainData.alarmCnt, intent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
 
             calendarMainData.alarmCnt++
+
+            val calendar = Calendar.getInstance()
+            calendar.time = FormatDate.strToDate(todo.alarms[0].time)
+
+            if (calendar.time.after(Date())) {
+                Log.d("알람추가", "투두 알림: ${todo.content}")
+                Log.d("알람추가", calendar.time.toString())
+
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent
+                )
+            }
+        } catch (ex: java.lang.Exception){
+            ex.printStackTrace()
+        }
+    }
+
+    private fun addAlarm(schedule: Schedule, date: Date, context: Context){
+        try {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, AlarmWorker::class.java)
+
+            intent.putExtra("userId", User.id)
+            intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
+
+            intent.putExtra("body", schedule.content)
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context, calendarMainData.alarmCnt, intent,
+                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            calendarMainData.alarmCnt++
+
+            val calendar = Calendar.getInstance()
+            calendar.time = date
+
+            if (calendar.time.after(Date())) {
+                Log.d("알람추가", "일정 알림: ${schedule.content}")
+                Log.d("알람추가", calendar.time.toString())
+
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent
+                )
+            }
+        } catch (ex: Exception){
+            ex.printStackTrace()
+        }
+    }
+
+    private fun deleteAlarm(context: Context){
+        try {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, AlarmWorker::class.java)
+
+            for (i in 0 until calendarMainData.alarmCnt - 1) {
+                val pendingIntent = PendingIntent.getBroadcast(
+                    context, i, intent,
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+                if (pendingIntent != null) {
+                    alarmManager.cancel(pendingIntent)
+                }
+            }
+
+            calendarMainData.alarmCnt = 0
+        } catch (ex: java.lang.Exception){
+            ex.printStackTrace()
+        }
+    }
+
+    private fun deleteAmPmAlarm(context: Context){
+        try {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, AlarmWorker::class.java)
 
             val pendingIntent = PendingIntent.getBroadcast(
                 context, 0, intent,
                 PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            val timeformatter = SimpleDateFormat("a h:mm", Locale.KOREA)
-
-            val calendar = Calendar.getInstance()
-            calendar.time = Date()
-
-            val amTime = timeformatter.parse(User.amAlarmDate)
-
-            amTime.year = calendar.time.year
-            amTime.month = calendar.time.month
-            amTime.date = calendar.time.date
-
-            val pmTime = timeformatter.parse(User.pmAlarmDate)
-
-            pmTime.year = calendar.time.year
-            pmTime.month = calendar.time.month
-            pmTime.date = calendar.time.date
-
-            if (calendar.time.after(pmTime)) {
-                calendar.apply {
-                    time = amTime
-                    add(Calendar.DATE, 1)
-                }
-            } else if (calendar.time.after(amTime)) {
-                calendar.apply {
-                    time = pmTime
-                }
-            } else {
-                calendar.apply {
-                    time = amTime
-                }
-            }
-
-            Log.d("알람추가", "아침저녁 알림")
-            Log.d("알람추가", calendar.time.toString())
-
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        }
-    }
-
-    private fun addAlarm(todo: Todo, context: Context){
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmWorker::class.java)
-
-        intent.putExtra("userId", User.id)
-        intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
-
-        intent.putExtra("body", todo.content)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        calendarMainData.alarmCnt++
-
-        val calendar = Calendar.getInstance()
-        calendar.time = FormatDate.strToDate(todo.alarms[0].time)
-
-        if(calendar.time.after(Date())) {
-            Log.d("알람추가", "투두 알림: ${todo.content}")
-            Log.d("알람추가", calendar.time.toString())
-
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        }
-    }
-
-    private fun addAlarm(schedule: Schedule, date: Date, context: Context){
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmWorker::class.java)
-
-        intent.putExtra("userId", User.id)
-        intent.putExtra("requestCode", calendarMainData.alarmCnt.toString())
-
-        intent.putExtra("body", schedule.content)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, calendarMainData.alarmCnt, intent,
-            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        calendarMainData.alarmCnt++
-
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-
-        if(calendar.time.after(Date())) {
-            Log.d("알람추가", "일정 알림: ${schedule.content}")
-            Log.d("알람추가", calendar.time.toString())
-
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        }
-    }
-
-    private fun deleteAlarm(context: Context){
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmWorker::class.java)
-
-        for (i in 0 until  calendarMainData.alarmCnt-1) {
-            val pendingIntent = PendingIntent.getBroadcast(
-                context, i, intent,
-                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-
-            if(pendingIntent != null){
+            if (pendingIntent != null) {
                 alarmManager.cancel(pendingIntent)
             }
+
+            calendarMainData.alarmCnt = 0
+        } catch (ex: Exception){
+            ex.printStackTrace()
         }
-
-        calendarMainData.alarmCnt = 0
-    }
-
-    private fun deleteAmPmAlarm(context: Context){
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmWorker::class.java)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context, 0, intent,
-            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        if(pendingIntent != null){
-            alarmManager.cancel(pendingIntent)
-        }
-
-        calendarMainData.alarmCnt = 0
     }
 }
