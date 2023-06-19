@@ -110,6 +110,10 @@ class AddTagFragment(
                     Toast.makeText(requireContext(), "부적절한 단어는 사용할 수 없습니다.", Toast.LENGTH_SHORT).show()
                     binding.addpostApply.visibility = View.GONE
                 }
+            }else{
+                loading.dismiss {
+                    Toast.makeText(requireContext(), "전송에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
