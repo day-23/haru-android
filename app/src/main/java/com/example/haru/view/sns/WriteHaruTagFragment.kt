@@ -129,6 +129,7 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
                 binding.writeHaruApply.isClickable = true
             }
         }
+
         templateViewModel.PostRequest.observe(viewLifecycleOwner) { done ->
             Log.d("SNS", "Code Recieve $done")
             if(done == 201) {
@@ -150,8 +151,12 @@ class WriteHaruTagFragment(val content: String) : Fragment(), onTemplateListener
                     binding.writeHaruApply.visibility = View.GONE
                 }
             }else{
-                loading.dismiss {
-                    Toast.makeText(requireContext(), "전송에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                try {
+                    loading.dismiss {
+                        Toast.makeText(requireContext(), "전송에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                    }
+                }catch (e :java.lang.IllegalStateException){
+
                 }
             }
 
