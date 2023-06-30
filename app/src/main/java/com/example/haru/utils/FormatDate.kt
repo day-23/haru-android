@@ -121,7 +121,7 @@ object FormatDate {
 
     // String으로 된 날짜 정보에 local Date와 그리니치 시간대의 차이를 더해서 Date 타입으로 반환
     fun strToDate(str: String?): Date? {
-        if (str == null)
+        if (str == null || str == "")
             return null
         val date = LocalDateTime.parse(str, DateTimeFormatter.ISO_DATE_TIME).plusHours(diff)
         val instant = date.atZone(ZoneId.systemDefault()).toInstant()

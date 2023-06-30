@@ -32,19 +32,19 @@ class EtcViewModel : ViewModel() {
 
     // 기본 프사 지정이 되어야함.
     private val _profileImage = MutableLiveData<String>()
-    val profileImage : LiveData<String> = _profileImage
+    val profileImage: LiveData<String> = _profileImage
 
     private val _name = MutableLiveData<String>()
     val name: LiveData<String> = _name
 
     private val _introduction = MutableLiveData<String>()
-    val introduction : LiveData<String> = _introduction
+    val introduction: LiveData<String> = _introduction
 
     private val _postCount = MutableLiveData<Int>()
-    val postCount : LiveData<Int> = _postCount
+    val postCount: LiveData<Int> = _postCount
 
     private val _friendCount = MutableLiveData<Int>()
-    val friendCount : LiveData<Int> = _friendCount
+    val friendCount: LiveData<Int> = _friendCount
 
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
@@ -100,9 +100,9 @@ class EtcViewModel : ViewModel() {
     // MypageViewModel -> getUserInfo
     fun getSnsInfo() {
         viewModelScope.launch {
-            profileRepository.getUserInfo(User.id){
+            profileRepository.getUserInfo(User.id) {
                 Log.e("20191627", it.toString())
-                if (it.id != ""){
+                if (it.id != "") {
                     _name.postValue(it.name)
                     _introduction.postValue(it.introduction)
                     _profileImage.postValue(it.profileImage)
@@ -180,9 +180,9 @@ class EtcViewModel : ViewModel() {
 
     // 하루와 함께한 날짜 계산
     fun calculateWithHaru() {
-
         val startDate = FormatDate.cal.apply {
-            time = FormatDate.strToDate(User.createdAt)!!
+            time = if (User.createdAt == "") Date()
+            else FormatDate.strToDate(User.createdAt)!!
             Log.e("20191627", time.toString())
         }.time.time
 
@@ -201,7 +201,7 @@ class EtcViewModel : ViewModel() {
         }
     }
 
-    fun updateUserInfo(body: Any, callback: (it : SuccessFail?) -> Unit) {
+    fun updateUserInfo(body: Any, callback: (it: SuccessFail?) -> Unit) {
         viewModelScope.launch {
             userRepository.updateUserInfo(body) {
                 if (it?.success == true) {
@@ -243,12 +243,12 @@ class EtcViewModel : ViewModel() {
         }
     }
 
-    fun submitIsPublicAccount(callback: (it : SuccessFail?) -> Unit) {
+    fun submitIsPublicAccount(callback: (it: SuccessFail?) -> Unit) {
         if (isPublicAccount.value == null)
             return
         val flag = !isPublicAccount.value!!
 
-        updateUserInfo(UpdateIsPublicAccount(flag)){
+        updateUserInfo(UpdateIsPublicAccount(flag)) {
             callback(it)
         }
     }
@@ -258,7 +258,7 @@ class EtcViewModel : ViewModel() {
             return
         val flag = !isPostBrowsingEnabled.value!!
 
-        updateUserInfo(UpdateIsPostBrowsingEnabled(flag)){
+        updateUserInfo(UpdateIsPostBrowsingEnabled(flag)) {
             callback(it)
         }
     }
@@ -268,36 +268,36 @@ class EtcViewModel : ViewModel() {
             return
         val flag = !isAllowSearch.value!!
 
-        updateUserInfo(UpdateIsAllowSearch(flag)){
+        updateUserInfo(UpdateIsAllowSearch(flag)) {
             callback(it)
         }
     }
 
-    fun submitIsAllowFeedLike(str : String, callback: (it: SuccessFail?) -> Unit) {
+    fun submitIsAllowFeedLike(str: String, callback: (it: SuccessFail?) -> Unit) {
         if (isAllowFeedLike.value == null)
             return
 
-        val type = when (str){
+        val type = when (str) {
             "허용 안 함" -> 0
             "친구만" -> 1
             "모두 허용" -> 2
             else -> 0
         }
-        updateUserInfo(UpdateIsAllowFeedLike(type)){
+        updateUserInfo(UpdateIsAllowFeedLike(type)) {
             callback(it)
         }
     }
 
-    fun submitIsAllowFeedComment(str : String, callback: (it: SuccessFail?) -> Unit) {
+    fun submitIsAllowFeedComment(str: String, callback: (it: SuccessFail?) -> Unit) {
         if (isAllowFeedComment.value == null)
             return
-        val type = when (str){
+        val type = when (str) {
             "허용 안 함" -> 0
             "친구만" -> 1
             "모두 허용" -> 2
             else -> 0
         }
-        updateUserInfo(UpdateIsAllowFeedComment(type)){
+        updateUserInfo(UpdateIsAllowFeedComment(type)) {
             callback(it)
         }
     }
