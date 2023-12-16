@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.*
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.MediaAdapter
@@ -166,7 +167,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "MypageFragment - onCreate() called")
+        Log.d(Tags.log, "MypageFragment - onCreate() called")
         mypageViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
     }
@@ -192,7 +193,7 @@ class MyPageFragment(userId: String) : Fragment(), OnPostClickListener, OnMediaT
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("TAG", "MyPageFragment - onCreateView() called")
+        Log.d(Tags.log, "MyPageFragment - onCreateView() called")
         binding = FragmentSnsMypageBinding.inflate(inflater, container, false)
         initProfile()
 

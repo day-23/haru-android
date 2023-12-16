@@ -2,8 +2,6 @@ package com.example.haru.view.checklist
 
 import BaseActivity
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
@@ -12,12 +10,10 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -30,17 +26,16 @@ import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentChecklistBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.HeightProvider
+import com.example.haru.utils.Tags
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.TagAdapter
 import com.example.haru.view.adapter.TodoAdapter
-import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.sns.SearchFragment
 import com.example.haru.viewmodel.CheckListViewModel
 import java.util.*
 
 class ChecklistFragment : Fragment(), LifecycleObserver {
     private lateinit var binding: FragmentChecklistBinding
-    private lateinit var checkListViewModel: CheckListViewModel
     private lateinit var imm: InputMethodManager
 
     companion object {
@@ -53,10 +48,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "ChecklistFragment - onCreate() called")
+        Log.d(Tags.log, "ChecklistFragment - onCreate() called")
         imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        checkListViewModel = CheckListViewModel()
-        checkListViewModel.dataInit()
+        CheckListViewModel.dataInit()
     }
 
 
@@ -65,7 +59,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "ChecklistFragment - onCreateView() called")
+        Log.d(Tags.log, "ChecklistFragment - onCreateView() called")
 
         binding = FragmentChecklistBinding.inflate(inflater)
         return binding.root
@@ -79,7 +73,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         (activity as BaseActivity).adjustTopMargin(binding.checklistHeader.id)
         (activity as BaseActivity).adjustTopMargin(binding.tagEtcLayout.drawerHeaderId.id)
 
-        checkListViewModel.dataInit()
+        CheckListViewModel.dataInit()
         initTagList()
         initTodoList()
 
@@ -95,7 +89,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         binding.ivChecklistSearch.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .replace(R.id.fragments_frame, SearchFragment(CheckListViewModel))
                 .addToBackStack(null)
                 .commit()
         }
@@ -117,13 +111,13 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         binding.tagEtcLayout.ivTagAdd.setOnClickListener {
             val inputTag =
-                checkListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
+                CheckListViewModel.readyCreateTag(binding.tagEtcLayout.etTagInput.text.toString())
             when (inputTag) {
                 null -> Toast.makeText(requireContext(), "태그에 공백이 포함될 수 없습니다..", Toast.LENGTH_SHORT)
                     .show()
                 "" -> Toast.makeText(requireContext(), "추가 할 태그가 없습니다.", Toast.LENGTH_SHORT).show()
                 else -> {
-                    checkListViewModel.createTag(Content(inputTag))
+                    CheckListViewModel.createTag(Content(inputTag))
                     binding.tagEtcLayout.etTagInput.setText("")
                     binding.tagEtcLayout.etTagInput.clearFocus()
 //                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
@@ -163,7 +157,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         binding.btnAddTodo.setOnClickListener {
             val text = binding.etSimpleAddTodo.text.toString().trim()
             if (text.replace(" ", "") == "") {
-                val todoInput = ChecklistInputFragment(checkListViewModel, viewLifecycleOwner)
+                val todoInput = ChecklistInputFragment(viewLifecycleOwner)
                 todoInput.show(parentFragmentManager, todoInput.tag)
                 binding.etSimpleAddTodo.setText("")
                 binding.etSimpleAddTodo.clearFocus()
@@ -178,7 +172,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     subTodos = emptyList(),
                     alarms = emptyList()
                 )
-                checkListViewModel.addTodo(todo) {
+                CheckListViewModel.addTodo(todo) {
                     binding.etSimpleAddTodo.setText("")
                     binding.etSimpleAddTodo.clearFocus()
 //                    val imm: InputMethodManager =   // 자동으로 키보드 내리기
@@ -204,9 +198,9 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 set(Calendar.SECOND, 59) // 초를 59초로 설정
             }
             val todayFrontEndDate = FrontEndDate(FormatDate.dateToStr(calendar.time)!!)
-            checkListViewModel.getTodayTodo(todayFrontEndDate) {
+            CheckListViewModel.getTodayTodo(todayFrontEndDate) {
                 requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragments_frame, ChecklistTodayFragment(checkListViewModel))
+                    .replace(R.id.fragments_frame, ChecklistTodayFragment())
                     .addToBackStack(null)
                     .commit()
             }
@@ -222,18 +216,18 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
     private fun initTagList() {
         val tagRecyclerView: RecyclerView = binding.recyclerTags
         val tagAdapter = TagAdapter(requireContext())
-        tagAdapter.setTagPosition(checkListViewModel.clickedTag) // 이전 Tag 클릭 값 있으면 해당 값으로
+        tagAdapter.setTagPosition(CheckListViewModel.clickedTag) // 이전 Tag 클릭 값 있으면 해당 값으로
         tagAdapter.tagClick = object : TagAdapter.TagClick {
             override fun onClick(view: View, position: Int) {
                 if (position == 0)
-                    checkListViewModel.getTodoByFlag()
+                    CheckListViewModel.getTodoByFlag()
                 else if (position > 0) {
-                    if (checkListViewModel.clickedTag == position) {
-                        checkListViewModel.tagDataClear()
-                        checkListViewModel.withTagUpdate()
+                    if (CheckListViewModel.clickedTag == position) {
+                        CheckListViewModel.tagDataClear()
+                        CheckListViewModel.withTagUpdate()
                     } else {
-                        checkListViewModel.getTodoByTag(position)
-                        checkListViewModel.clickedTag = position  // 이전 Tag 클릭 값 기억
+                        CheckListViewModel.getTodoByTag(position)
+                        CheckListViewModel.clickedTag = position  // 이전 Tag 클릭 값 기억
                     }
                 }
             }
@@ -249,20 +243,20 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 false  //애니메이션 값 false (리사이클러뷰가 화면을 다시 갱신 했을때 뷰들의 깜빡임 방지)
         }
 
-        checkListViewModel.tagDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.d("20191627", "tagList : $it")
+        CheckListViewModel.tagDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.d(Tags.log, "tagList : $it")
             val dataList = it.filterIsInstance<Tag>()
             tagAdapter.setDataList(dataList)
 
             for (i in binding.tagEtcLayout.tagLayout.childCount - 1 downTo 1)
                 binding.tagEtcLayout.tagLayout.removeViewAt(i)
 
-            for (i in 1 until checkListViewModel.tagDataList.value!!.size) {
+            for (i in 1 until CheckListViewModel.tagDataList.value!!.size) {
                 val layoutInflater =
                     requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val addView = layoutInflater.inflate(R.layout.tag_example_layout, null)
 
-                val tag = checkListViewModel.tagDataList.value!![i]
+                val tag = CheckListViewModel.tagDataList.value!![i]
 
                 addView.findViewById<AppCompatButton>(R.id.btn_tag_etc).apply {
                     text = tag.content
@@ -282,7 +276,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     this.setTextColor(textColor)
 
                     setOnClickListener {
-                        checkListViewModel.updateTag(
+                        CheckListViewModel.updateTag(
                             tag.id,
                             TagUpdate(this.text.toString(), !tag.isSelected)
                         ) {}
@@ -307,11 +301,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     )
                     this.background = drawable
                     setOnClickListener {
-                        checkListViewModel.getRelatedTodoCount(tag.id) { cnt ->
+                        CheckListViewModel.getRelatedTodoCount(tag.id) { cnt ->
                             requireActivity().supportFragmentManager.beginTransaction()
                                 .replace(
                                     R.id.fragments_frame,
-                                    TagManagementFragment(checkListViewModel, tag, cnt)
+                                    TagManagementFragment(tag, cnt)
                                 )
                                 .addToBackStack(null)
                                 .commit()
@@ -330,26 +324,26 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
 
         todoAdapter.sectionToggleClick = object : TodoAdapter.SectionToggleClick {
             override fun onClick(view: View, str: String) {
-                Log.d("20191627", "section Click")
-                checkListViewModel.setVisibility(str, 0)
+                Log.d(Tags.log, "section Click")
+                CheckListViewModel.setVisibility(str, 0)
             }
         }
 
         todoAdapter.dropListener = object : TodoAdapter.DropListener {
             override fun onDropFragment(list: List<String>) {
-                checkListViewModel.updateOrderMainTodo(changeOrderTodo = ChangeOrderTodo(list))
+                CheckListViewModel.updateOrderMainTodo(changeOrderTodo = ChangeOrderTodo(list))
             }
         }
 
         todoAdapter.todoClick = object : TodoAdapter.TodoClick {
             override fun onClick(view: View, id: String) {
-                if (checkListViewModel.todoDataList.value!!.find {
+                if (CheckListViewModel.todoDataList.value!!.find {
                         it.id == id
                     }!!.type == 2) {
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
-                            ChecklistItemFragment(checkListViewModel, id)
+                            ChecklistItemFragment(id)
                         )
                         .addToBackStack(null)
                         .commit()
@@ -364,11 +358,11 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 callback: (flag: Flag, successData: SuccessFail?) -> Unit
             ) {
                 val flag =
-                    if (checkListViewModel.todoDataList.value!!.find { it.id == id }!!.flag) Flag(
+                    if (CheckListViewModel.todoDataList.value!!.find { it.id == id }!!.flag) Flag(
                         false
                     )
                     else Flag(true)
-                checkListViewModel.updateFlag(
+                CheckListViewModel.updateFlag(
                     flag,
                     id
                 ) { flag, successData ->
@@ -383,7 +377,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                 id: String,
                 callback: (completed: Completed, successData: SuccessFail?) -> Unit
             ) {
-                val todo = checkListViewModel.todoDataList.value!!.find { it.id == id }!!
+                val todo = CheckListViewModel.todoDataList.value!!.find { it.id == id }!!
                 val completed =
                     if (todo.completed) Completed(
                         false
@@ -391,7 +385,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                     else Completed(true)
 
                 if (todo.completed || todo.repeatOption == null) // 완료된 Todo이거나 repeatOption이 null
-                    checkListViewModel.completeNotRepeatTodo(
+                    CheckListViewModel.completeNotRepeatTodo(
                         completed,
                         id
                     ) { completed, successData ->
@@ -428,17 +422,17 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
                         }
                         else -> null
                     }
-                    Log.d("20191627", nextEndDate.toString())
+                    Log.d(Tags.log, nextEndDate.toString())
                     if (nextEndDate != null) {
                         val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
-                        checkListViewModel.completeRepeatFrontTodo(
+                        CheckListViewModel.completeRepeatFrontTodo(
                             id,
                             FrontEndDate(nextEndDateStr!!)
                         ) {
                             callback(Completed(true), it)
                         }
                     } else
-                        checkListViewModel.completeNotRepeatTodo(
+                        CheckListViewModel.completeNotRepeatTodo(
                             completed,
                             id
                         ) { completed, successData ->
@@ -452,14 +446,14 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
         todoAdapter.subTodoCompleteClick = object : TodoAdapter.SubTodoCompleteClick {
             override fun onClick(view: View, subTodoPosition: Int) {
                 val subTodo =
-                    checkListViewModel.todoDataList.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
+                    CheckListViewModel.todoDataList.value!!.find { it.id == todoAdapter.subTodoClickId }!!.subTodos[subTodoPosition]
                 val completed =
                     if (subTodo.completed) Completed(
                         false
                     )
                     else Completed(true)
 
-                checkListViewModel.completeSubTodo(
+                CheckListViewModel.completeSubTodo(
                     completed,
                     todoAdapter.subTodoClickId!!,
                     subTodo.id,
@@ -472,7 +466,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             override fun onClick(view: View, id: String) {
                 val folded = if (view.isSelected) Folded(true) else Folded(false)
 
-                checkListViewModel.updateFolded(folded, id)
+                CheckListViewModel.updateFolded(folded, id)
             }
         }
 
@@ -497,24 +491,24 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             todoListView
         )
 
-        checkListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        CheckListViewModel.todoDataList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
 
-            Log.d("20191627", "todoDataList Update")
+            Log.d(Tags.log, "todoDataList Update")
             val dataList = it.filterIsInstance<Todo>()
             todoAdapter.setDataList(dataList)
         })
 
-        checkListViewModel.addTodoId.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        CheckListViewModel.addTodoId.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             val layoutManager = todoListView.layoutManager as LinearLayoutManager
-            val todo = checkListViewModel.getTodoList().find { todo -> todo.id == it }
-            val position = checkListViewModel.getTodoList().indexOf(todo)
+            val todo = CheckListViewModel.getTodoList().find { todo -> todo.id == it }
+            val position = CheckListViewModel.getTodoList().indexOf(todo)
             val height = todoListView.height
 
             layoutManager.scrollToPositionWithOffset(position, height)
         })
 
-        checkListViewModel.todoByTag.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            todoAdapter.setTodoByTag(checkListViewModel.todoByTagItem)
+        CheckListViewModel.todoByTag.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            todoAdapter.setTodoByTag(CheckListViewModel.todoByTagItem)
         })
 
     }
@@ -529,7 +523,7 @@ class ChecklistFragment : Fragment(), LifecycleObserver {
             try {
                 super.onLayoutChildren(recycler, state)
             } catch (e: IndexOutOfBoundsException) {
-                Log.e("TAG", "meet a IOOBE in RecyclerView")
+                Log.e(Tags.log, "meet a IOOBE in RecyclerView")
             }
         }
     }

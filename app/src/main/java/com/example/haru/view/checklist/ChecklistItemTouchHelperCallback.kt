@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.haru.data.model.Todo
+import com.example.haru.utils.Tags
 import com.example.haru.view.adapter.TodoAdapter
 
 class ChecklistItemTouchHelperCallback(val listener: ItemTouchHelperListener) :
@@ -33,9 +34,9 @@ class ChecklistItemTouchHelperCallback(val listener: ItemTouchHelperListener) :
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
-        Log.e("20191627", "Changed")
-        Log.e("20191627", viewHolder.toString())
-        Log.e("20191627", viewHolder?.adapterPosition.toString())
+        Log.e(Tags.log, "Changed")
+        Log.e(Tags.log, viewHolder.toString())
+        Log.e(Tags.log, viewHolder?.adapterPosition.toString())
 
         when(actionState){
             ItemTouchHelper.ACTION_STATE_DRAG -> itemTouchHelperListener.onLiftItem(viewHolder?.adapterPosition)

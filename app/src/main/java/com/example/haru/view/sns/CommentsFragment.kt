@@ -31,6 +31,7 @@ import com.example.haru.databinding.PopupSnsCommentCancelBinding
 import com.example.haru.databinding.PopupSnsCommentDeleteAgainBinding
 import com.example.haru.databinding.PopupSnsCommentDeleteBinding
 import com.example.haru.utils.GetPastDate
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.CommentsAdapter
@@ -93,7 +94,7 @@ class CommentsFragment(postitem: Post, val userId: String) : Fragment(), onComme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "CommentsFragment - onCreate() called")
+        Log.d(Tags.log, "CommentsFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
         MainActivity.hideNavi(true)
 

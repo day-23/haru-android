@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.databinding.LoadingLayoutBinding
+import com.example.haru.utils.Tags
 
 
 class LoadingAnimation : Fragment() {
@@ -26,7 +27,7 @@ class LoadingAnimation : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "LoadingAnimation - onCreate() called")
+        Log.d(Tags.log, "LoadingAnimation - onCreate() called")
     }
 
     override fun onCreateView(
@@ -34,7 +35,7 @@ class LoadingAnimation : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("TAG", "LoadingAnimation - onCreateView() called")
+        Log.d(Tags.log, "LoadingAnimation - onCreateView() called")
 
         binding = LoadingLayoutBinding.inflate(inflater)
 
@@ -61,7 +62,7 @@ class LoadingAnimation : Fragment() {
     }
 
     private fun startAnimation() {
-        Log.e("20191627", "$step")
+        Log.e(Tags.log, "$step")
 
         val drawable = when (step) {
             1 -> R.drawable.loading_animation_step1
@@ -91,7 +92,7 @@ class LoadingAnimation : Fragment() {
 
 
     fun dismiss(callback: () -> Unit) {
-        Log.e("20191627", "dismiss")
+        Log.e(Tags.log, "dismiss")
         loop.removeCallbacksAndMessages(null)
         Handler(Looper.getMainLooper()).postDelayed({
             requireActivity().supportFragmentManager.popBackStack()

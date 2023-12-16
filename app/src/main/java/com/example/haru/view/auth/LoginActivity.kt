@@ -18,6 +18,7 @@ import com.example.haru.data.model.UserVerifyResponse
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.databinding.ActivityLoginBinding
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.calendar.CalendarFragment.Companion.TAG
@@ -135,7 +136,7 @@ class LoginActivity : BaseActivity() {
                             User.id = response.body()?.data?.id.toString()
                             User.name = response.body()?.data?.name.toString()
 
-                            Log.d(TAG, "onResponse: UserApiClient ${User.id}")
+                            Log.d(Tags.log, "onResponse: UserApiClient ${User.id}")
 
                             // Save JWT and user's email
                             val sharedPreferences = SharedPrefsManager.getSharedPrefs(App.instance)
@@ -149,7 +150,7 @@ class LoginActivity : BaseActivity() {
                                 commit()
                             }
 
-                            Log.d(TAG, "onResponse username: ${User.name}")
+                            Log.d(Tags.log, "onResponse username: ${User.name}")
 
                             val _call = RetrofitClient.apiService.validateUser(
                                 mapOf(
@@ -221,14 +222,14 @@ class LoginActivity : BaseActivity() {
                                     call: Call<UserVerifyResponse>,
                                     t: Throwable
                                 ) {
-                                    Log.d(TAG, "onFailure: ${t.message}")
+                                    Log.d(Tags.log, "onFailure: ${t.message}")
                                 }
                             })
 
                             Log.d("debug", "onResponse: ${User.isSignUp}")
 
                             // If user is not registered, go to sign up page
-//                            Log.d(TAG, "자동로그인 onResponse: ${User.name} ${User.email} ${User.id}")
+//                            Log.d(Tags.log, "자동로그인 onResponse: ${User.name} ${User.email} ${User.id}")
 
                         }
                     }

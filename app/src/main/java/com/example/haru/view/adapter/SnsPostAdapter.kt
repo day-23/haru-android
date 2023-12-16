@@ -26,6 +26,7 @@ import com.example.haru.data.model.Post
 import com.example.haru.data.model.SnsPost
 import com.example.haru.data.model.timetable_data
 import com.example.haru.utils.GetPastDate
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.sns.CommentsFragment
 import com.example.haru.view.sns.MyPageFragment
@@ -111,7 +112,7 @@ class SnsPostAdapter(
         }
 
         holder.totalcomment.setOnClickListener {
-            Log.d("TAG", "post id sended -------------${item.id}")
+            Log.d(Tags.log, "post id sended -------------${item.id}")
             listener.onTotalCommentClick(item)
         }
 

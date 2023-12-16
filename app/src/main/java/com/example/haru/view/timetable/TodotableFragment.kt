@@ -29,7 +29,6 @@ class TodotableFragment : Fragment() {
     private lateinit var binding : FragmentTodotableBinding
     private lateinit var timetableviewModel: TimetableViewModel
     private lateinit var todoreviewModel: TodoTableRecyclerViewmodel
-    private lateinit var checkListViewModel: CheckListViewModel
 
     //투두 리사이클러 뷰
     private lateinit var sun_todotableAdapter: TodotableAdapter
@@ -59,7 +58,6 @@ class TodotableFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         todoreviewModel = TodoTableRecyclerViewmodel()
-        checkListViewModel = CheckListViewModel()
         Log.d(TodotableFragment.TAG, "TodotableFragment - onCreate() called")
     }
 
@@ -85,7 +83,7 @@ class TodotableFragment : Fragment() {
         val rootView = binding.root
 
         binding.btnAddTodo.setOnClickListener {
-            val todoInput = ChecklistInputFragment(checkListViewModel,viewLifecycleOwner, null, false, true)
+            val todoInput = ChecklistInputFragment(viewLifecycleOwner, null, false, true)
             todoInput.onDismissListener = object : ChecklistInputFragment.OnDismissListener {
                 override fun onDismiss() {
                     todoreviewModel.getTodo(timetableviewModel.Dates.value!!)
@@ -96,7 +94,7 @@ class TodotableFragment : Fragment() {
 
         binding.timetableSearchButton.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .replace(R.id.fragments_frame, SearchFragment(CheckListViewModel))
                 .addToBackStack(null)
                 .commit()
         }

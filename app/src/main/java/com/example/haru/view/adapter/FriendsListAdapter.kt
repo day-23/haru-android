@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.data.model.FriendInfo
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.utils.User.id
 import com.example.haru.view.sns.OnFriendClicked
@@ -41,7 +42,7 @@ class FriendsListAdapter(
             showButtons(holder, 4)
         else showButtons(holder, itemList[position].friendStatus!!)
 
-        Log.e("20191627", "${itemList[position].profileImageUrl}")
+        Log.e(Tags.log, "${itemList[position].profileImageUrl}")
 
         if (itemList[position].profileImageUrl == null
             || itemList[position].profileImageUrl == ""

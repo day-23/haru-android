@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import com.example.haru.R
 import com.example.haru.databinding.FragmentProtectBinding
 import com.example.haru.utils.CustomPopUp
+import com.example.haru.utils.Tags
 import com.example.haru.view.MainActivity
 import com.example.haru.view.sns.SnsFragment
 import com.example.haru.viewmodel.EtcViewModel
@@ -106,7 +107,7 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                         if (it?.success != true)
                             binding.switchAccountPublic.isChecked =
                                 !binding.switchAccountPublic.isChecked
-                        Log.e("20191627", binding.switchAccountPublic.isChecked.toString())
+                        Log.e(Tags.log, binding.switchAccountPublic.isChecked.toString())
                     }
                 }
 
@@ -115,7 +116,7 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                         if (it?.success != true)
                             binding.switchBrowsingEnabled.isChecked =
                                 !binding.switchBrowsingEnabled.isChecked
-                        Log.e("20191627", binding.switchBrowsingEnabled.isChecked.toString())
+                        Log.e(Tags.log, binding.switchBrowsingEnabled.isChecked.toString())
                     }
                 }
 
@@ -124,7 +125,7 @@ class ProtectFragment(val etcViewModel: EtcViewModel) : Fragment() {
                         if (it?.success != true)
                             binding.switchAllowSearch.isChecked =
                                 !binding.switchAllowSearch.isChecked
-                        Log.e("20191627", binding.switchAllowSearch.isChecked.toString())
+                        Log.e(Tags.log, binding.switchAllowSearch.isChecked.toString())
                     }
                 }
 

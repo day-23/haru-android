@@ -35,6 +35,7 @@ import com.example.haru.databinding.PopupBlockConfirmBinding
 import com.example.haru.databinding.PopupBlockFriendBinding
 import com.example.haru.databinding.PopupFriendDeleteConfirmBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.FriendsListAdapter
@@ -133,7 +134,7 @@ class FriendsListFragment(val targetId: String) : Fragment(), OnFriendClicked {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "FriendsListFragment - onCreate() called")
+        Log.d(Tags.log, "FriendsListFragment - onCreate() called")
         mypageViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
 

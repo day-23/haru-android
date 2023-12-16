@@ -220,8 +220,7 @@ class AdapterSimpleTodo(
         }
 
         detailTodoFlagImv.setOnClickListener {
-            val checkListViewModel = CheckListViewModel()
-            checkListViewModel.updateFlag(Flag(!todo.flag), todo.id) { flag, successData ->}
+            CheckListViewModel.updateFlag(Flag(!todo.flag), todo.id) { flag, successData ->}
 
             todos[position].flag = !todos[position].flag
 
@@ -229,7 +228,6 @@ class AdapterSimpleTodo(
         }
 
         todoCorrectionBtn.setOnClickListener {
-            val checklistviewmodel = CheckListViewModel()
 
             var todoendDate = ""
 
@@ -285,7 +283,7 @@ class AdapterSimpleTodo(
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
-                            ChecklistItemFragment(checklistviewmodel, todo.id, todo)
+                            ChecklistItemFragment(todo.id, todo)
                         )
                         .addToBackStack(null)
                         .commit()
@@ -342,7 +340,7 @@ class AdapterSimpleTodo(
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
-                            ChecklistItemFragment(checklistviewmodel, todo.id, todo)
+                            ChecklistItemFragment(todo.id, todo)
                         )
                         .addToBackStack(null)
                         .commit()
@@ -411,7 +409,7 @@ class AdapterSimpleTodo(
                     activity.supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragments_frame,
-                            ChecklistItemFragment(checklistviewmodel, todo.id, todo)
+                            ChecklistItemFragment(todo.id, todo)
                         )
                         .addToBackStack(null)
                         .commit()
@@ -432,7 +430,7 @@ class AdapterSimpleTodo(
                 activity.supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.fragments_frame,
-                        ChecklistItemFragment(checklistviewmodel, todo.id, todo)
+                        ChecklistItemFragment(todo.id, todo)
                     )
                     .addToBackStack(null)
                     .commit()
@@ -448,7 +446,7 @@ class AdapterSimpleTodo(
             activity.supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragments_frame,
-                    ChecklistItemFragment(checklistviewmodel, todo.id, todo)
+                    ChecklistItemFragment(todo.id, todo)
                 )
                 .addToBackStack(null)
                 .commit()

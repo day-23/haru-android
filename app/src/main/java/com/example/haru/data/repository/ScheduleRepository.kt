@@ -3,6 +3,7 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -19,10 +20,10 @@ class ScheduleRepository() {
         var data = response.body()
 
         val searchData: GetSearchResponse? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to get SearchData")
+            Log.d(Tags.log, "Success to get SearchData")
             data
         } else {
-            Log.d("TAG", "Fail to get SearchData")
+            Log.d(Tags.log, "Fail to get SearchData")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, GetSearchResponse::class.java)
@@ -43,11 +44,11 @@ class ScheduleRepository() {
         val scheduleData: ScheduleByDateResponse
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get todos")
+            Log.d(Tags.log, "Success to get todos")
             data = response.body()!!
             scheduleData = data.data
         } else {
-            Log.d("TAG", "Fail to get todos")
+            Log.d(Tags.log, "Fail to get todos")
             scheduleData = ScheduleByDateResponse(emptyList(), emptyList())
         }
         callback(scheduleData)
@@ -61,11 +62,11 @@ class ScheduleRepository() {
             ).execute()
 
             if (response.isSuccessful) {
-                Log.d("TAG", "Success to post schedule")
+                Log.d(Tags.log, "Success to post schedule")
 //                data = response.body()!!
 //                schedule = data.data
             } else {
-                Log.d("TAG", "Fail to post schedule")
+                Log.d(Tags.log, "Fail to post schedule")
 //                schedule = null
             }
 
@@ -85,9 +86,9 @@ class ScheduleRepository() {
             ).execute()
 
             if (response.isSuccessful) {
-                Log.d("TAG", "Success to delete schedule")
+                Log.d(Tags.log, "Success to delete schedule")
             } else {
-                Log.d("TAG", "Fail to delete schedule")
+                Log.d(Tags.log, "Fail to delete schedule")
             }
 
             withContext(Dispatchers.Main) {
@@ -109,9 +110,9 @@ class ScheduleRepository() {
             ).execute()
 
             if (response.isSuccessful) {
-                Log.d("TAG", "Success to delete schedule")
+                Log.d(Tags.log, "Success to delete schedule")
             } else {
-                Log.d("TAG", "Fail to delete schedule")
+                Log.d(Tags.log, "Fail to delete schedule")
             }
 
             withContext(Dispatchers.Main) {
@@ -133,9 +134,9 @@ class ScheduleRepository() {
             ).execute()
 
             if (response.isSuccessful) {
-                Log.d("TAG", "Success to delete schedule")
+                Log.d(Tags.log, "Success to delete schedule")
             } else {
-                Log.d("TAG", "Fail to delete schedule")
+                Log.d(Tags.log, "Fail to delete schedule")
             }
 
             withContext(Dispatchers.Main) {
@@ -157,9 +158,9 @@ class ScheduleRepository() {
             ).execute()
 
             if (response.isSuccessful) {
-                Log.d("TAG", "Success to delete schedule")
+                Log.d(Tags.log, "Success to delete schedule")
             } else {
-                Log.d("TAG", "Fail to delete schedule")
+                Log.d(Tags.log, "Fail to delete schedule")
             }
 
             withContext(Dispatchers.Main) {
@@ -177,18 +178,18 @@ class ScheduleRepository() {
             ).execute()
 
             if (response.isSuccessful) {
-                Log.d("TAG", "Success to submit schedule")
+                Log.d(Tags.log, "Success to submit schedule")
 
 
             } else {
-                Log.d("TAG", "Fail to submit schedule")
+                Log.d(Tags.log, "Fail to submit schedule")
             }
 
             withContext(Dispatchers.Main) {
                 callback()
             }
 //            }catch (e: Exception){
-//                Log.d("TAG", "Fail to submit schedule")
+//                Log.d(Tags.log, "Fail to submit schedule")
 //            }
         }
     }
@@ -206,9 +207,9 @@ class ScheduleRepository() {
             ).execute()
 
             if (response.isSuccessful) {
-                Log.d("TAG", "Success to submit schedule")
+                Log.d(Tags.log, "Success to submit schedule")
             } else {
-                Log.d("TAG", "Fail to submit schedule")
+                Log.d(Tags.log, "Fail to submit schedule")
             }
 
             withContext(Dispatchers.Main) {
@@ -230,9 +231,9 @@ class ScheduleRepository() {
             ).execute()
 
             if (response.isSuccessful) {
-                Log.d("TAG", "Success to submit schedule")
+                Log.d(Tags.log, "Success to submit schedule")
             } else {
-                Log.d("TAG", "Fail to submit schedule")
+                Log.d(Tags.log, "Fail to submit schedule")
             }
 
             withContext(Dispatchers.Main) {
@@ -254,9 +255,9 @@ class ScheduleRepository() {
             ).execute()
 
             if (response.isSuccessful) {
-                Log.d("TAG", "Success to submit schedule")
+                Log.d(Tags.log, "Success to submit schedule")
             } else {
-                Log.d("TAG", "Fail to submit schedule")
+                Log.d(Tags.log, "Fail to submit schedule")
             }
 
             withContext(Dispatchers.Main) {

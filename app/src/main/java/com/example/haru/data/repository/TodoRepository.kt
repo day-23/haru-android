@@ -3,6 +3,7 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +31,7 @@ class TodoRepository() {
             data = response.body()!!
             todoData = data.data
         } else {
-            Log.d("TAG", "Fail to get todos")
+            Log.d(Tags.log, "Fail to get todos")
             todoData = emptyList()
         }
         callback(todoData)
@@ -42,10 +43,10 @@ class TodoRepository() {
             var data = response.body()
 
             val getMainTodoResponse = if (response.isSuccessful) {
-                Log.d("TAG", "Success to get todos")
+                Log.d(Tags.log, "Success to get todos")
                 data
             } else {
-                Log.d("TAG", "Fail to get todos")
+                Log.d(Tags.log, "Fail to get todos")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, GetMainTodoResponse::class.java)
@@ -67,10 +68,10 @@ class TodoRepository() {
             var data = response.body()
 
             val postTodoResponse = if (response.isSuccessful) {
-                Log.d("TAG", "Success to create todo")
+                Log.d(Tags.log, "Success to create todo")
                 data
             } else {
-                Log.d("TAG", "Fail to create todo")
+                Log.d(Tags.log, "Fail to create todo")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, PostTodoResponse::class.java)
@@ -94,10 +95,10 @@ class TodoRepository() {
             var data = response.body()
 
             val getTodoByTag = if (response.isSuccessful) {
-                Log.d("TAG", "Success to get Todo By Tag")
+                Log.d(Tags.log, "Success to get Todo By Tag")
                 data
             } else {
-                Log.d("TAG", "Fail to get Todo By Tag")
+                Log.d(Tags.log, "Fail to get Todo By Tag")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, GetTodoByTag::class.java)
@@ -112,10 +113,10 @@ class TodoRepository() {
             var data = response.body()
 
             val getTodoBy = if (response.isSuccessful) {
-                Log.d("TAG", "Success to get Todo By Flag")
+                Log.d(Tags.log, "Success to get Todo By Flag")
                 data
             } else {
-                Log.d("TAG", "Fail to get Todo By Flag")
+                Log.d(Tags.log, "Fail to get Todo By Flag")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, GetTodoBy::class.java)
@@ -131,10 +132,10 @@ class TodoRepository() {
             var data = response.body()
 
             val getTodoBy = if (response.isSuccessful) {
-                Log.d("TAG", "Success to get Todo By Completed")
+                Log.d(Tags.log, "Success to get Todo By Completed")
                 data
             } else {
-                Log.d("TAG", "Fail to get Todo By Completed")
+                Log.d(Tags.log, "Fail to get Todo By Completed")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, GetTodoBy::class.java)
@@ -149,10 +150,10 @@ class TodoRepository() {
             var data = response.body()
 
             val getTodoBy = if (response.isSuccessful) {
-                Log.d("TAG", "Success to get Todo By Untag")
+                Log.d(Tags.log, "Success to get Todo By Untag")
                 data
             } else {
-                Log.d("TAG", "Fail to get Todo By Untag")
+                Log.d(Tags.log, "Fail to get Todo By Untag")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, GetTodoBy::class.java)
@@ -172,10 +173,10 @@ class TodoRepository() {
         // null 값이 json으로 parsing 할때 null 값으로 안들어감
 
         val updateTodoResponse = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update Todo")
+            Log.d(Tags.log, "Success to Update Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Update Todo")
+            Log.d(Tags.log, "Fail to Update Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, UpdateTodoResponse::class.java)
@@ -195,10 +196,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Delete Todo")
+            Log.d(Tags.log, "Success to Delete Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Delete Todo")
+            Log.d(Tags.log, "Fail to Delete Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -218,10 +219,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update Flag")
+            Log.d(Tags.log, "Success to Update Flag")
             data
         } else {
-            Log.d("TAG", "Fail to Update Flag")
+            Log.d(Tags.log, "Fail to Update Flag")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -239,10 +240,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Complete NotRepeatTodo Complete")
+            Log.d(Tags.log, "Success to Complete NotRepeatTodo Complete")
             data
         } else {
-            Log.d("TAG", "Fail to Complete NotRepeatTodo Complete")
+            Log.d(Tags.log, "Fail to Complete NotRepeatTodo Complete")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -262,10 +263,10 @@ class TodoRepository() {
         var data = response.body()
 
         val getTodayTodo = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Get Today Todo")
+            Log.d(Tags.log, "Success to Get Today Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Get Today Todo")
+            Log.d(Tags.log, "Fail to Get Today Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, GetTodayTodo::class.java)
@@ -283,10 +284,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Complete SubTodo Complete")
+            Log.d(Tags.log, "Success to Complete SubTodo Complete")
             data
         } else {
-            Log.d("TAG", "Fail to Complete SubTodo Complete")
+            Log.d(Tags.log, "Fail to Complete SubTodo Complete")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -304,10 +305,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update Folded")
+            Log.d(Tags.log, "Success to Update Folded")
             data
         } else {
-            Log.d("TAG", "Fail to Update Folded")
+            Log.d(Tags.log, "Fail to Update Folded")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -325,10 +326,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Complete Repeat Todo")
+            Log.d(Tags.log, "Success to Complete Repeat Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Complete Repeat Todo")
+            Log.d(Tags.log, "Fail to Complete Repeat Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -349,10 +350,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Complete Repeat Todo")
+            Log.d(Tags.log, "Success to Complete Repeat Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Complete Repeat Todo")
+            Log.d(Tags.log, "Fail to Complete Repeat Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -373,10 +374,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Complete Repeat Todo")
+            Log.d(Tags.log, "Success to Complete Repeat Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Complete Repeat Todo")
+            Log.d(Tags.log, "Fail to Complete Repeat Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -398,10 +399,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update Repeat Front Todo")
+            Log.d(Tags.log, "Success to Update Repeat Front Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Update Repeat Front Todo")
+            Log.d(Tags.log, "Fail to Update Repeat Front Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -423,10 +424,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update Repeat Middle Todo")
+            Log.d(Tags.log, "Success to Update Repeat Middle Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Update Repeat Middle Todo")
+            Log.d(Tags.log, "Fail to Update Repeat Middle Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -448,10 +449,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update Repeat Back Todo")
+            Log.d(Tags.log, "Success to Update Repeat Back Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Update Repeat Back Todo")
+            Log.d(Tags.log, "Fail to Update Repeat Back Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -472,10 +473,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Delete Repeat Front Todo")
+            Log.d(Tags.log, "Success to Delete Repeat Front Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Delete Repeat Front Todo")
+            Log.d(Tags.log, "Fail to Delete Repeat Front Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -496,10 +497,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Delete Repeat Middle Todo")
+            Log.d(Tags.log, "Success to Delete Repeat Middle Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Delete Repeat Middle Todo")
+            Log.d(Tags.log, "Fail to Delete Repeat Middle Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -520,10 +521,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Delete Repeat Back Todo")
+            Log.d(Tags.log, "Success to Delete Repeat Back Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Delete Repeat Back Todo")
+            Log.d(Tags.log, "Fail to Delete Repeat Back Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -542,10 +543,10 @@ class TodoRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update Order Main Todo")
+            Log.d(Tags.log, "Success to Update Order Main Todo")
             data
         } else {
-            Log.d("TAG", "Fail to Update Order Main Todo")
+            Log.d(Tags.log, "Fail to Update Order Main Todo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)

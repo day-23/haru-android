@@ -41,6 +41,7 @@ import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.FragmentAddPostBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.*
@@ -101,7 +102,7 @@ class AddPostFragment : Fragment(), PostInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "SnsMypageFragment - onCreate() called")
+        Log.d(Tags.log, "SnsMypageFragment - onCreate() called")
         galleryViewmodel = ViewModelProvider(requireActivity()).get(MyPageViewModel::class.java)
         galleryViewmodel.resetValue()
     }
@@ -112,7 +113,7 @@ class AddPostFragment : Fragment(), PostInterface {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "SnsFragment - onCreateView() called")
+        Log.d(Tags.log, "SnsFragment - onCreateView() called")
 
         binding = FragmentAddPostBinding.inflate(inflater, container, false)
         galleryRecyclerView = binding.addpostGalleryImage

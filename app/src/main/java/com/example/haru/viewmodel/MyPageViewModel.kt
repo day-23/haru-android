@@ -14,6 +14,7 @@ import com.example.haru.data.repository.PostRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.utils.FileUtils
+import com.example.haru.utils.Tags.log
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -195,12 +196,12 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             PostRepository.getFirstMedia(targetId) {
                 if (it.data.size > 0) { //get success
-                    Log.e("20191627", it.data.toString())
+                    Log.e(log, it.data.toString())
                     newMedia = it
                 }
             }
             if (newMedia.success) {
-                Log.e("20191627", "newmedia.su")
+                Log.e(log, "newmedia.su")
                 _FirstMedia.value = newMedia
             }
         }
@@ -382,9 +383,9 @@ class MyPageViewModel() : ViewModel() {
             var status = 0
             PostRepository.addPost(post) {
                 if (it == 201) { //get success
-                    Log.d("TAG", "Success to Post")
+                    Log.d(log, "Success to Post")
                 }else{
-                    Log.d("TAG", "Fail to Post")
+                    Log.d(log, "Fail to Post")
                 }
                 status = it
             }
@@ -398,9 +399,9 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             PostRepository.addTemplate(templateBody) {
                 if (it == 201) {
-                    Log.d("TAG", "Success to post Template")
+                    Log.d(log, "Success to post Template")
                 } else {
-                    Log.d("TAG", "Fail to post Template")
+                    Log.d(log, "Fail to post Template")
                 }
                 postResult = it
             }
@@ -420,7 +421,7 @@ class MyPageViewModel() : ViewModel() {
             ProfileRepository.editProfile(image, name, introduction) {it, code ->
                 if (it.id != "") {
 //                    user = it
-                    Log.d("TAG", "Success to Edit!")
+                    Log.d(log, "Success to Edit!")
                     _UserInfo.postValue(it)
                 }
                 callback(code)
@@ -435,10 +436,10 @@ class MyPageViewModel() : ViewModel() {
             ProfileRepository.editProfileName(name, introduction) {it, code ->
                 if (it.id != "") {
 //                    user = it
-                    Log.d("TAG", "Success to EditName!")
+                    Log.d(log, "Success to EditName!")
                     _UserInfo.postValue(it)
                 } else {
-                    Log.d("TAG", "Fail to Edit name")
+                    Log.d(log, "Fail to Edit name")
                 }
                 callback(code)
             }
@@ -472,10 +473,10 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             UserRepository.requestFriend(body) {
                 if (it) {
-                    Log.d("TAG", "Success to request Friend")
+                    Log.d(log, "Success to request Friend")
                     result = it
                 } else {
-                    Log.d("TAG", "Fail to request Friend")
+                    Log.d(log, "Fail to request Friend")
                 }
             }
             _FriendRequest.value = result
@@ -487,10 +488,10 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             UserRepository.requestunFriend(targetId, body) {
                 if (it) {
-                    Log.d("TAG", "Success to request UnFriend")
+                    Log.d(log, "Success to request UnFriend")
                     result = it
                 } else {
-                    Log.d("TAG", "Fail to request UnFriend")
+                    Log.d(log, "Fail to request UnFriend")
                 }
             }
             _FriendRequest.value = result
@@ -502,10 +503,10 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             UserRepository.requestDelFriend(body) {
                 if (it) {
-                    Log.d("TAG", "Success to request Delete Friend")
+                    Log.d(log, "Success to request Delete Friend")
                     result = it
                 } else {
-                    Log.d("TAG", "Fail to request Delete Friend")
+                    Log.d(log, "Fail to request Delete Friend")
                 }
             }
             _FriendRequest.value = result
@@ -517,10 +518,10 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             UserRepository.acceptFriend(body) {
                 if (it) {
-                    Log.d("TAG", "Success to accept Friend")
+                    Log.d(log, "Success to accept Friend")
                     result = it
                 } else {
-                    Log.d("TAG", "Fail to accept Friend")
+                    Log.d(log, "Fail to accept Friend")
                 }
             }
             _FriendRequest.value = result
@@ -532,10 +533,10 @@ class MyPageViewModel() : ViewModel() {
         viewModelScope.launch {
             UserRepository.blockUser(body) {
                 if (it) {
-                    Log.d("TAG", "Success to block user")
+                    Log.d(log, "Success to block user")
                     result = it
                 } else {
-                    Log.d("TAG", "Fail to block user")
+                    Log.d(log, "Fail to block user")
                 }
             }
             _BlockRequest.value = result
@@ -560,7 +561,7 @@ class MyPageViewModel() : ViewModel() {
             UserRepository.requestFirstFriendsList(targetId) {
                 if (it.success) {
                     Friends = it
-                    Log.e("20191627", it.toString())
+                    Log.e(log, it.toString())
                 }
             }
             _FirstFriends.value = Friends

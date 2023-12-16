@@ -29,6 +29,7 @@ import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentSearchBinding
 import com.example.haru.databinding.PopupFriendDeleteConfirmBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.FriendsListAdapter
@@ -50,7 +51,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
     private lateinit var imm: InputMethodManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "SearchFragment - onCreate() called")
+        Log.d(Tags.log, "SearchFragment - onCreate() called")
     }
 
     override fun onCreateView(
@@ -58,7 +59,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("TAG", "SearchFragment - onCreateView() called")
+        Log.d(Tags.log, "SearchFragment - onCreateView() called")
 
         binding = FragmentSearchBinding.inflate(inflater)
         imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -118,7 +119,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                         requireActivity().supportFragmentManager.beginTransaction()
                             .add(
                                 R.id.fragments_frame,
-                                ChecklistItemFragment(viewModel, id)
+                                ChecklistItemFragment(id)
                             )
                             .addToBackStack(null)
                             .commit()
@@ -197,7 +198,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                             }
                             else -> null
                         }
-                        Log.d("20191627", nextEndDate.toString())
+                        Log.d(Tags.log, nextEndDate.toString())
                         if (nextEndDate != null) {
                             val nextEndDateStr = FormatDate.dateToStr(nextEndDate)
                             viewModel.completeRepeatFrontTodo(
@@ -295,7 +296,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
             var friendStatus = -1
             var targetInfo = User()
             viewModel.searchUser.observe(viewLifecycleOwner) {
-                Log.e("20191627", it.toString())
+                Log.e(Tags.log, it.toString())
                 if (it == null) {
                     targetInfo = User()
                     friendStatus = -1
@@ -387,7 +388,7 @@ class SearchFragment(val viewModel: Any) : Fragment() {
                     val content = binding.etSearchContent.text.toString().trim()
                     if (content != "") {
                         viewModel.getSearchUserInfo(content) {
-                            Log.d("20191627", "정보 가져오기 완료")
+                            Log.d(Tags.log, "정보 가져오기 완료")
                         }
                     }
                     binding.etSearchContent.setText("")

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User.name
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -200,10 +201,10 @@ class UserRepository() {
             var data = response.body()
 
             val successFail: SuccessFail? = if (response.isSuccessful) {
-                Log.d("TAG", "Success to UpdateUserInfo")
+                Log.d(Tags.log, "Success to UpdateUserInfo")
                 data
             } else {
-                Log.d("TAG", "Fail to UpdateUserInfo")
+                Log.d(Tags.log, "Fail to UpdateUserInfo")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, SuccessFail::class.java)
@@ -218,10 +219,10 @@ class UserRepository() {
             var data = response.body()
 
             val successFail: SuccessFail? = if (response.isSuccessful) {
-                Log.d("20191627", "Success to DeleteAccount")
+                Log.d(Tags.log, "Success to DeleteAccount")
                 data
             } else {
-                Log.d("20191627", "Fail to DeleteAccount")
+                Log.d(Tags.log, "Fail to DeleteAccount")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, SuccessFail::class.java)
@@ -235,10 +236,10 @@ class UserRepository() {
         var data = response.body()
 
         val it = if (response.isSuccessful){
-            Log.d("20191627", "Success to getSearch UserInfo")
+            Log.d(Tags.log, "Success to getSearch UserInfo")
             data
         } else {
-            Log.d("20191627", "Fail to getSearch UserInfo")
+            Log.d(Tags.log, "Fail to getSearch UserInfo")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, UserResponse::class.java)

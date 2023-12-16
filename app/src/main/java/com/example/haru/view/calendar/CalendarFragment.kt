@@ -29,24 +29,19 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.haru.R
 import com.example.haru.data.model.Category
-import com.example.haru.data.model.Schedule
-import com.example.haru.data.model.Todo
 import com.example.haru.databinding.FragmentCalendarBinding
 import com.example.haru.utils.Alarm
-import com.example.haru.utils.FormatDate
-import com.example.haru.utils.User
+import com.example.haru.utils.Tags
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.view.adapter.CategoryAdapter
 import com.example.haru.view.checklist.CalendarAddFragment
 import com.example.haru.view.checklist.ChecklistInputFragment
 import com.example.haru.view.customDialog.CustomMonthDialog
-import com.example.haru.view.etc.AlarmWorker
 import com.example.haru.view.sns.SearchFragment
 import com.example.haru.viewmodel.CalendarViewModel
 import com.example.haru.viewmodel.CheckListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -57,8 +52,6 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
     private lateinit var categoryAdapter: CategoryAdapter
 
     private lateinit var categoryDrawerLayout: DrawerLayout
-
-    private lateinit var checkListViewModel: CheckListViewModel
 
     private var parentView: RelativeLayout? = null
 
@@ -82,9 +75,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "CalendarFragment - onCreate() called")
-
-        checkListViewModel = CheckListViewModel()
+        Log.d(Tags.log, "CalendarFragment - onCreate() called")
 
         resultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -113,7 +104,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "CalendarFragment - onCreateView() called")
+        Log.d(Tags.log, "CalendarFragment - onCreateView() called")
 
         binding = FragmentCalendarBinding.inflate(inflater)
         return binding.root
@@ -609,7 +600,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
 
         btnAddTodoInCalendar.setOnClickListener {
             val todoInput =
-                ChecklistInputFragment(checkListViewModel, viewLifecycleOwner, adapterMonth)
+                ChecklistInputFragment(viewLifecycleOwner, adapterMonth)
 
             todoInput.onSubmitListener = object : ChecklistInputFragment.OnSubmitListener {
                 override fun onSubmit() {
@@ -676,7 +667,7 @@ class CalendarFragment() : Fragment(), DrawerLayout.DrawerListener {
 
         binding.calendarSearchButton.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .replace(R.id.fragments_frame, SearchFragment(CheckListViewModel))
                 .addToBackStack(null)
                 .commit()
         }

@@ -12,12 +12,13 @@ import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.data.repository.TagRepository
 import com.example.haru.data.repository.TodoRepository
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.Tags
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class CheckListViewModel() :
+object CheckListViewModel :
     ViewModel() {
     private val todoRepository = TodoRepository()
     private val tagRepository = TagRepository()
@@ -113,7 +114,7 @@ class CheckListViewModel() :
                         else listOf(Todo(type = 1)) + it.data.todos
                     } else null
                     _searchList.postValue(Pair(schedule, todo))
-                } else Log.e("20191627", it.toString())
+                } else Log.e(Tags.log, it.toString())
             }
         }
     }
@@ -134,7 +135,7 @@ class CheckListViewModel() :
             tagRepository.getTag {
                 if (it?.success == true)
                     _tagDataList.postValue(basicTag + it.data)
-                else Log.e("20191627", it.toString())
+                else Log.e(Tags.log, it.toString())
             }
         }
     }
@@ -155,7 +156,7 @@ class CheckListViewModel() :
                     getTag()
                     withTagUpdate()
                 } else {
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, it.toString())
                 }
             }
         }
@@ -167,7 +168,7 @@ class CheckListViewModel() :
                 if (it?.success == true) {
                     getTag()
                     withTagUpdate()
-                } else Log.e("20191627", it.toString())
+                } else Log.e(Tags.log, it.toString())
                 callback()
             }
         }
@@ -179,7 +180,7 @@ class CheckListViewModel() :
                 if (it?.success == true) {
                     getTag()
                     withTagUpdate()
-                } else Log.e("20191627", it.toString())
+                } else Log.e(Tags.log, it.toString())
                 callback()
             }
         }
@@ -190,8 +191,8 @@ class CheckListViewModel() :
             tagRepository.getRelatedTodoCount(tagId) {
                 val data = it?.data
                 if (it?.success == true) {
-                    Log.d("20191627", "$data")
-                } else Log.e("20191627", it.toString())
+                    Log.d(Tags.log, "$data")
+                } else Log.e(Tags.log, it.toString())
                 callback(data)
             }
         }
@@ -307,8 +308,8 @@ class CheckListViewModel() :
 //                    _todoByTag.postValue(false)
 //                    todoByTagItem = null
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> GetTodoMain Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> GetTodoMain Fail")
+                    Log.e(Tags.log, it.toString())
                 }
             }
             callback()
@@ -357,8 +358,8 @@ class CheckListViewModel() :
                     }
                     _todayTodo.postValue(todayList)
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> GetTodayTdo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> GetTodayTdo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
                 callback()
             }
@@ -377,8 +378,8 @@ class CheckListViewModel() :
                     checkTodayMode()
                     withTagUpdate()
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> AddTodo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> AddTodo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
 
                 callback(it?.success)
@@ -462,7 +463,7 @@ class CheckListViewModel() :
                         addAll(listOf(Todo(type = 4, content = "중요")) + it.data!!)
                         if (it.data.isEmpty())
                             add(Todo(type = 5, content = "중요한 할 일이 있나요?"))
-                    } else Log.e("20191627", it.toString())
+                    } else Log.e(Tags.log, it.toString())
                 }
             }
             _todoDataList.value = todoList
@@ -489,8 +490,8 @@ class CheckListViewModel() :
                         withTagUpdate()
                     }
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> UpdateTodo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> UpdateTodo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
                 callback()
             }
@@ -518,8 +519,8 @@ class CheckListViewModel() :
                         withTagUpdate()
                     }
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> UpdateRepeatFrontTodo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> UpdateRepeatFrontTodo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
                 callback()
             }
@@ -542,8 +543,8 @@ class CheckListViewModel() :
                     checkTodayMode()
                     withTagUpdate()
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> UpdateRepeatMiddleTodo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> UpdateRepeatMiddleTodo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
                 callback()
             }
@@ -567,8 +568,8 @@ class CheckListViewModel() :
                     checkTodayMode()
                     withTagUpdate()
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> UpdateRepeatBackTodo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> UpdateRepeatBackTodo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
                 callback()
             }
@@ -613,8 +614,8 @@ class CheckListViewModel() :
                         withTagUpdate()
                     }
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> DeleteRepeatFrontTodo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> DeleteRepeatFrontTodo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
                 callback()
             }
@@ -632,8 +633,8 @@ class CheckListViewModel() :
                     checkTodayMode()
                     withTagUpdate()
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> DeleteRepeatMiddleTodo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> DeleteRepeatMiddleTodo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
                 callback()
             }
@@ -651,8 +652,8 @@ class CheckListViewModel() :
                     checkTodayMode()
                     withTagUpdate()
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> DeleteRepeatBackTodo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> DeleteRepeatBackTodo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
                 callback()
             }
@@ -679,8 +680,8 @@ class CheckListViewModel() :
                         withTagUpdate()
                     }
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> CompleteSubTodo Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> CompleteSubTodo Fail")
+                    Log.e(Tags.log, it.toString())
                 }
             }
         }
@@ -697,7 +698,7 @@ class CheckListViewModel() :
                 todoId = id,
                 completed = completed
             ) {
-                Log.e("20191627", it.toString())
+                Log.e(Tags.log, it.toString())
                 if (it?.success == true) {
                     if (searchContent != null)
                         getScheduleTodoSearch(searchContent!!)
@@ -728,8 +729,8 @@ class CheckListViewModel() :
                             withTagUpdate()
                         }
                     } else {
-                        Log.e("20191627", "CheckListViewModel -> CompleteRepeatFrontTodo Fail")
-                        Log.e("20191627", it.toString())
+                        Log.e(Tags.log, "CheckListViewModel -> CompleteRepeatFrontTodo Fail")
+                        Log.e(Tags.log, it.toString())
                     }
                     callback(it)
                 }
@@ -754,8 +755,8 @@ class CheckListViewModel() :
                         withTagUpdate()
                     }
                 } else {
-                    Log.e("20191627", "CheckListViewModel -> UpdateFolded Fail")
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, "CheckListViewModel -> UpdateFolded Fail")
+                    Log.e(Tags.log, it.toString())
                 }
             }
         }
@@ -790,8 +791,8 @@ class CheckListViewModel() :
             val successData = todoRepository.updateOrderMainTodo(changeOrderTodo)
             // successData가 null이면 실패임
             if (successData?.success != true) {
-                Log.e("20191627", "CheckListViewModel -> UpdateOrderMainTodo Fail")
-                Log.e("20191627", successData.toString())
+                Log.e(Tags.log, "CheckListViewModel -> UpdateOrderMainTodo Fail")
+                Log.e(Tags.log, successData.toString())
             }
         }
     }

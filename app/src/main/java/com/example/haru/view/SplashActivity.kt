@@ -15,6 +15,7 @@ import com.example.haru.R
 import com.example.haru.data.model.UserVerifyResponse
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.auth.LoginActivity
 import com.example.haru.view.auth.SignUpActivity
@@ -37,7 +38,7 @@ class SplashActivity : BaseActivity() {
         val refreshToken = sharedPreferences.getString("refreshToken", null)
 
 
-//        Log.d(TAG, "splasy onCreate: accessToken: $accessToken")
+//        Log.d(Tags.log, "splasy onCreate: accessToken: $accessToken")
 
         // If JWT and email exist, validate with server
         if (accessToken != null && refreshToken != null) {
@@ -55,7 +56,7 @@ class SplashActivity : BaseActivity() {
                     response: Response<UserVerifyResponse>
                 ) {
                     if (response.isSuccessful) {
-                        Log.d(TAG, "splash onResponse: ${response.body()}")
+                        Log.d(Tags.log, "splash onResponse: ${response.body()}")
 
                         //user 정보 저장
 
@@ -96,7 +97,7 @@ class SplashActivity : BaseActivity() {
                             finish()
                         }
                     } else {
-                        Log.d(TAG, "onResponse Fail: ${response.errorBody()}")
+                        Log.d(Tags.log, "onResponse Fail: ${response.errorBody()}")
 
                         Handler(Looper.getMainLooper()).postDelayed({
                             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
@@ -106,7 +107,7 @@ class SplashActivity : BaseActivity() {
                 }
 
                 override fun onFailure(call: Call<UserVerifyResponse>, t: Throwable) {
-                    Log.d(TAG, "onFailure: ${t.message}")
+                    Log.d(Tags.log, "onFailure: ${t.message}")
                 }
             })
         } else{

@@ -15,6 +15,7 @@ import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.databinding.FragmentSettingBinding
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
@@ -62,7 +63,7 @@ class SettingFragment(val etcViewModel: EtcViewModel) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as BaseActivity).adjustTopMargin(binding.settingHeaderTitle.id)
 
-        Log.e("20191627", User.toString())
+        Log.e(Tags.log, User.toString())
 
         binding.ivBackIconSetting.setOnClickListener(ClickListener())
 

@@ -35,6 +35,7 @@ import com.example.haru.databinding.PopupAddCommentHideBinding
 import com.example.haru.databinding.PopupSnsCommentCancelBinding
 import com.example.haru.databinding.PopupSnsCommentDeleteAgainBinding
 import com.example.haru.utils.GetPastDate
+import com.example.haru.utils.Tags
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AddCommentPagerAdapter
 import com.example.haru.view.adapter.ImageClickListener
@@ -182,7 +183,7 @@ class AddCommentFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "SnsMypageFragment - onCreate() called")
+        Log.d(Tags.log, "SnsMypageFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
         profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
 
@@ -206,7 +207,7 @@ class AddCommentFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("TAG", "SnsFragment - onCreateView() called")
+        Log.d(Tags.log, "SnsFragment - onCreateView() called")
         profileViewModel.getUserInfo(com.example.haru.utils.User.id)
         profileViewModel.UserInfo.observe(viewLifecycleOwner) { user ->
             if(com.example.haru.utils.User.id == user.id) {
@@ -338,7 +339,7 @@ class AddCommentFragment(
         })
 
         binding.writeCommentCancel.setOnClickListener {
-            Log.e("20191627", "writeCommentCancel")
+            Log.e(Tags.log, "writeCommentCancel")
             if (onWrite || onEdit) {
                 val fragment = PopupComment(this)
                 fragment.show(parentFragmentManager, fragment.tag)

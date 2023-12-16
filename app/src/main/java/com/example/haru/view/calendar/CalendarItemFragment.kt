@@ -22,6 +22,7 @@ import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentCalendarItemBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.Tags
 import com.example.haru.view.MainActivity
 import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.view.customDialog.CustomTimeDialog
@@ -36,7 +37,7 @@ class CalendarItemFragment(
     private lateinit var binding: FragmentCalendarItemBinding
 
     init {
-        Log.e("20191627", schedule.toString())
+        Log.e(Tags.log, schedule.toString())
     }
 
     interface SearchCallback {

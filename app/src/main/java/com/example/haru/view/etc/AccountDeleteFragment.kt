@@ -15,6 +15,7 @@ import com.example.haru.App
 import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountDeleteBinding
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
@@ -33,7 +34,7 @@ class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "AccountDeleteFragment - onCreate() called")
+        Log.d(Tags.log, "AccountDeleteFragment - onCreate() called")
         MainActivity.hideNavi(true)
     }
 
@@ -102,7 +103,7 @@ class AccountDeleteFragment(val etcViewModel: EtcViewModel) : Fragment() {
                                 "계정을 삭제하는데 실패하였습니다..",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            Log.e("20191627", "계정 삭제 실패")
+                            Log.e(Tags.log, "계정 삭제 실패")
                         }
                     }
                 }

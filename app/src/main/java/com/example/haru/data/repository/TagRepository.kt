@@ -3,6 +3,7 @@ package com.example.haru.data.repository
 import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -18,10 +19,10 @@ class TagRepository() {
             var data = response.body()
 
             val tagResponse: TagResponse? = if (response.isSuccessful) {
-                Log.d("TAG", "Success to get tags")
+                Log.d(Tags.log, "Success to get tags")
                 data
             } else {
-                Log.d("TAG", "Fail to get tags")
+                Log.d(Tags.log, "Fail to get tags")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, TagResponse::class.java)
@@ -38,10 +39,10 @@ class TagRepository() {
         var data = response.body()
 
         val successData: SuccessFailTag? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Create Tag")
+            Log.d(Tags.log, "Success to Create Tag")
             data
         } else {
-            Log.d("TAG", "Fail to Create Tag")
+            Log.d(Tags.log, "Fail to Create Tag")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFailTag::class.java)
@@ -58,10 +59,10 @@ class TagRepository() {
         var data = response.body()
 
         val successData: SuccessFail? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Delete TagList")
+            Log.d(Tags.log, "Success to Delete TagList")
             data
         } else {
-            Log.d("TAG", "Fail to Delete TagList")
+            Log.d(Tags.log, "Fail to Delete TagList")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFail::class.java)
@@ -79,10 +80,10 @@ class TagRepository() {
         var data = response.body()
 
         val successData: SuccessFailTag? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Update Tag")
+            Log.d(Tags.log, "Success to Update Tag")
             data
         } else {
-            Log.d("TAG", "Fail to Update Tag")
+            Log.d(Tags.log, "Fail to Update Tag")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFailTag::class.java)
@@ -99,10 +100,10 @@ class TagRepository() {
         var data = response.body()
 
         val successData : SuccessFailCount? = if (response.isSuccessful){
-            Log.d("TAG", "Success to Get RelatedTodo Count")
+            Log.d(Tags.log, "Success to Get RelatedTodo Count")
             data
         } else {
-            Log.d("TAG", "Fail to Get RelatedTodo Count")
+            Log.d(Tags.log, "Fail to Get RelatedTodo Count")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, SuccessFailCount::class.java)

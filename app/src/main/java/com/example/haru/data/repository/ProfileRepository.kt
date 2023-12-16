@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.data.retrofit.RetrofitClient.postService
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User.id
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +38,7 @@ class ProfileRepository() {
             ).execute()
             val user: User
             val data: GetProfileResponse
-            Log.e("20191627", response.code().toString())
+            Log.e(Tags.log, response.code().toString())
             if (response.isSuccessful) {
                 Log.d("EDITTAG", "Success to update profile")
                 data = response.body()!!
@@ -123,7 +124,7 @@ class ProfileRepository() {
     suspend fun getUserInfo(targetId: String, callback: (user: User) -> Unit) = withContext(
         Dispatchers.IO
     ) {
-        Log.d("TAG", "-----------------$targetId")
+        Log.d(Tags.log, "-----------------$targetId")
         val response = profileService.getUserInfo(
             userId,
             targetId
@@ -131,11 +132,11 @@ class ProfileRepository() {
         val user: User
         val data: UserResponse
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get User")
+            Log.d(Tags.log, "Success to get User")
             data = response.body()!!
             user = data.data!!
         } else {
-            Log.d("TAG", "Fail to get User")
+            Log.d(Tags.log, "Fail to get User")
             user = User("", "", "", "", 0, 0, 0, false)
         }
         callback(user)
@@ -147,10 +148,10 @@ class ProfileRepository() {
             var data = response.body()
 
             val successData = if (response.isSuccessful) {
-                Log.d("TAG", "Success to Check Name")
+                Log.d(Tags.log, "Success to Check Name")
                 data
             } else {
-                Log.d("TAG", "Fail to Check Name")
+                Log.d(Tags.log, "Fail to Check Name")
                 val error = response.errorBody()?.string()
                 val gson = Gson()
                 data = gson.fromJson(error, TestInitResponse::class.java)
@@ -167,10 +168,10 @@ class ProfileRepository() {
         var data = response.body()
 
         val successData = if (response.isSuccessful) {
-            Log.d("TAG", "Success to Check haruId")
+            Log.d(Tags.log, "Success to Check haruId")
             data
         } else {
-            Log.d("TAG", "Fail to Check haruId")
+            Log.d(Tags.log, "Fail to Check haruId")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, TestInitResponse::class.java)

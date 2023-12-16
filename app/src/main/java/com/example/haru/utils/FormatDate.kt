@@ -537,7 +537,7 @@ object FormatDate {
             cal.set(Calendar.DAY_OF_MONTH, days)
         }
         val nextEndDate = cal.time
-        Log.d("20191627", "nextEndDate : ${nextEndDate}")
+        Log.d(Tags.log, "nextEndDate : ${nextEndDate}")
 
         if (repeatEndDateStr != null) {
             cal.apply {
@@ -564,7 +564,7 @@ object FormatDate {
             cal.time = Date()
         else cal.time = strToDate(endDateStr)
 
-        Log.d("20191627", "day : $day")
+        Log.d(Tags.log, "day : $day")
         val idx = cal.get(Calendar.MONTH)
         val idxPlus = if (endDateStr == null) 0 else 1
         val days = day ?: cal.get(Calendar.DAY_OF_MONTH)
@@ -915,7 +915,7 @@ object FormatDate {
         if (today < cal.time) {
             val startDate = cal.time
             cal.add(Calendar.SECOND, interval)
-            Log.e("20191627", "1startDate : $startDate, endDAte : ${cal.time}")
+            Log.e(Tags.log, "1startDate : $startDate, endDAte : ${cal.time}")
             return Pair(startDate, cal.time)
         }
 
@@ -941,7 +941,7 @@ object FormatDate {
         if (cal.time < repeatEnd) {
             val startDate = cal.time
             cal.add(Calendar.SECOND, interval)
-            Log.e("20191627", "2startDate : $startDate, endDAte : ${cal.time}")
+            Log.e(Tags.log, "2startDate : $startDate, endDAte : ${cal.time}")
             return Pair(startDate, cal.time)
         }
 
@@ -964,7 +964,7 @@ object FormatDate {
 
         val startDate = cal.time
         cal.add(Calendar.SECOND, interval)
-        Log.e("20191627", "3startDate : $startDate, endDAte : ${cal.time}")
+        Log.e(Tags.log, "3startDate : $startDate, endDAte : ${cal.time}")
         return Pair(startDate, cal.time)
     }
 

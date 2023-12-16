@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.haru.data.model.ScheduleRequest
 import com.example.haru.data.model.StatisticsResponse
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +21,10 @@ class EtcRepository {
         var data = response.body()
 
         val statisticsResponse: StatisticsResponse? = if (response.isSuccessful) {
-            Log.d("TAG", "Success to get Statistic")
+            Log.d(Tags.log, "Success to get Statistic")
             data
         } else {
-            Log.d("TAG", "Fail to get Statistic")
+            Log.d(Tags.log, "Fail to get Statistic")
             val error = response.errorBody()?.string()
             val gson = Gson()
             data = gson.fromJson(error, StatisticsResponse::class.java)

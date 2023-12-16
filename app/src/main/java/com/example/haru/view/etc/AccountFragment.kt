@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.haru.R
 import com.example.haru.databinding.FragmentAccountBinding
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.sns.EditProfileFragment
@@ -29,7 +30,7 @@ class AccountFragment(val etcViewModel: EtcViewModel) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "AccountFragment - onCreate() called")
+        Log.d(Tags.log, "AccountFragment - onCreate() called")
         MainActivity.hideNavi(true)
     }
 

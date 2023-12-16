@@ -10,6 +10,7 @@ import com.example.haru.data.repository.EtcRepository
 import com.example.haru.data.repository.ProfileRepository
 import com.example.haru.data.repository.UserRepository
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -89,7 +90,7 @@ class EtcViewModel : ViewModel() {
                 if (it?.success == true) {
                     _itemCount.postValue(Pair(it.data?.completed, it.data?.totalItems))
                 } else {
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, it.toString())
                 }
                 callback()
             }
@@ -101,7 +102,7 @@ class EtcViewModel : ViewModel() {
     fun getSnsInfo() {
         viewModelScope.launch {
             profileRepository.getUserInfo(User.id){
-                Log.e("20191627", it.toString())
+                Log.e(Tags.log, it.toString())
                 if (it.id != ""){
                     _name.postValue(it.name)
                     _introduction.postValue(it.introduction)
@@ -109,7 +110,7 @@ class EtcViewModel : ViewModel() {
                     _postCount.postValue(it.postCount)
                     _friendCount.postValue(it.friendCount)
                 } else {
-                    Log.e("20191627", "Fail to getSnsInfo")
+                    Log.e(Tags.log, "Fail to getSnsInfo")
                     _introduction.postValue("소개를 작성해주세요")
                     _postCount.postValue(0)
                     _friendCount.postValue(0)
@@ -183,12 +184,12 @@ class EtcViewModel : ViewModel() {
 
         val startDate = FormatDate.cal.apply {
             time = FormatDate.strToDate(User.createdAt)!!
-            Log.e("20191627", time.toString())
+            Log.e(Tags.log, time.toString())
         }.time.time
 
         val today = FormatDate.cal.apply {
             time = Date()
-            Log.e("20191627", time.toString())
+            Log.e(Tags.log, time.toString())
         }.time.time
         _withHaru.value = (today - startDate) / (24 * 60 * 60 * 1000) + 1
     }
@@ -236,7 +237,7 @@ class EtcViewModel : ViewModel() {
                         }
                     }
                 } else {
-                    Log.e("20191627", it.toString())
+                    Log.e(Tags.log, it.toString())
                 }
                 callback(it)
             }

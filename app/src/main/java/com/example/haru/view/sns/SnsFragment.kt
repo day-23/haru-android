@@ -26,6 +26,7 @@ import com.example.haru.data.repository.UserRepository
 import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.databinding.PopupSnsPostCancelBinding
 import com.example.haru.databinding.PopupSnsPostDeleteBinding
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.SnsPostAdapter
@@ -125,7 +126,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "SnsFragment - onCreate() called")
+        Log.d(Tags.log, "SnsFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
         profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
 
@@ -134,7 +135,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
     // status bar height 조정
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "sns onViewCreated: ")
+        Log.d(Tags.log, "sns onViewCreated: ")
         (activity as BaseActivity).adjustTopMargin(binding.snsMenu.id)
         startBoolean = true
         MainActivity.hideNavi(false)
@@ -151,7 +152,7 @@ class SnsFragment : Fragment(), OnPostClickListener, OnPostPopupClick {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "SnsFragment - onCreateView() called")
+        Log.d(Tags.log, "SnsFragment - onCreateView() called")
         val manager = parentFragmentManager
         manager.clearBackStack("snsmain")
         binding = FragmentSnsBinding.inflate(inflater, container, false)
@@ -441,19 +442,19 @@ class PopupDeletePost(val userId: String, val postId: String, val listener: OnPo
 
 
         binding.editOrHide.setOnClickListener {
-            Log.e("20191627", "click0")
+            Log.e(Tags.log, "click0")
             listener.postPopupClicked(userId, postId, 0)
             dismiss()
         }
 
         binding.deleteOrReport.setOnClickListener {
-            Log.e("20191627", "click1")
+            Log.e(Tags.log, "click1")
             listener.postPopupClicked(userId, postId, 1)
             dismiss()
         }
 
         binding.popupPostContainer.setOnClickListener {
-            Log.e("20191627", "click2")
+            Log.e(Tags.log, "click2")
             listener.postPopupClicked(userId, postId, 2)
             dismiss()
         }
@@ -507,13 +508,13 @@ class PopupDeleteConfirm(val userId: String, val postId: String, val listener: O
         super.onViewCreated(view, savedInstanceState)
 
         popupbinding.snsAddPostUnsave.setOnClickListener {
-            Log.e("20191627", "click0")
+            Log.e(Tags.log, "click0")
             listener.PopupConfirm(userId, postId, 0)
             dismiss()
         }
 
         popupbinding.snsAddPostCancel.setOnClickListener {
-            Log.e("20191627", "click1")
+            Log.e(Tags.log, "click1")
             listener.PopupConfirm(userId, postId, 1)
             dismiss()
         }

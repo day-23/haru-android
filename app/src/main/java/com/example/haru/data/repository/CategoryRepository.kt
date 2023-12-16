@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.haru.data.api.CategoryService
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
+import com.example.haru.utils.Tags
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -21,11 +22,11 @@ class CategoryRepository {
         val categoryData: List<Category>
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get categories")
+            Log.d(Tags.log, "Success to get categories")
             data = response.body()!!
             categoryData = data.data
         } else {
-            Log.d("TAG", "Fail to get categories")
+            Log.d(Tags.log, "Fail to get categories")
             categoryData = emptyList()
         }
         callback(categoryData)
@@ -43,12 +44,12 @@ class CategoryRepository {
         val categoryData: Category
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get categories")
+            Log.d(Tags.log, "Success to get categories")
             data = response.body()!!
             categoryData = data.data!!
             callback(categoryData)
         } else {
-            Log.d("TAG", "Fail to get categories")
+            Log.d(Tags.log, "Fail to get categories")
             callback(null)
         }
     }
@@ -62,10 +63,10 @@ class CategoryRepository {
         ).execute()
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to delete category")
+            Log.d(Tags.log, "Success to delete category")
             callback(true)
         } else {
-            Log.d("TAG", "Fail to delete category")
+            Log.d(Tags.log, "Fail to delete category")
             callback(false)
         }
     }
@@ -84,10 +85,10 @@ class CategoryRepository {
         ).execute()
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to update category")
+            Log.d(Tags.log, "Success to update category")
             callback(true)
         } else {
-            Log.d("TAG", "Fail to update category")
+            Log.d(Tags.log, "Fail to update category")
             callback(false)
         }
     }
@@ -101,10 +102,10 @@ class CategoryRepository {
         ).execute()
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to update category")
+            Log.d(Tags.log, "Success to update category")
             callback(true)
         } else {
-            Log.d("TAG", "Fail to update category")
+            Log.d(Tags.log, "Fail to update category")
             callback(false)
         }
     }

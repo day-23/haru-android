@@ -31,6 +31,7 @@ import com.example.haru.data.model.User
 import com.example.haru.databinding.FragmentCalendarInputBinding
 import com.example.haru.utils.Alarm
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.Tags
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.AdapterMonth
 import com.example.haru.view.calendar.CalendarFragment
@@ -91,7 +92,7 @@ class CalendarAddFragment(private val initStartDate: Date?=null,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "CalendarAddFragment - onCreate() called")
+        Log.d(Tags.log, "CalendarAddFragment - onCreate() called")
     }
 
     override fun onCreateView(

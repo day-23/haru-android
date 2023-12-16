@@ -7,6 +7,7 @@ import com.example.haru.data.api.PostService
 import com.example.haru.data.model.*
 import com.example.haru.data.retrofit.RetrofitClient
 import com.example.haru.data.retrofit.RetrofitClient.postService
+import com.example.haru.utils.Tags
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,11 +42,11 @@ class PostRepository() {
         val response = call.execute()
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to post")
+            Log.d(Tags.log, "Success to post")
             // Deserialize the response body here to get the result (AddPostResponse)
             // and then update postInfo
         } else {
-            Log.d("TAG", "Fail to post")
+            Log.d(Tags.log, "Fail to post")
         }
         callback(response.code())
     }
@@ -55,9 +56,9 @@ class PostRepository() {
         val response = call.execute()
 
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to post")
+            Log.d(Tags.log, "Success to post")
         } else {
-            Log.d("TAG", "Fail to post")
+            Log.d(Tags.log, "Fail to post")
         }
         callback(response.code())
     }
@@ -69,10 +70,10 @@ class PostRepository() {
         var delete = false
         val data = response.body()
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to delete post")
+            Log.d(Tags.log, "Success to delete post")
             delete = true
         } else {
-            Log.d("TAG", "Fail to delete post")
+            Log.d(Tags.log, "Fail to delete post")
         }
         callback(delete)
     }
@@ -84,10 +85,10 @@ class PostRepository() {
         var hide = false
         val data = response.body()
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to hide post")
+            Log.d(Tags.log, "Success to hide post")
             hide = true
         } else {
-            Log.d("TAG", "Fail to hide post")
+            Log.d(Tags.log, "Fail to hide post")
         }
         callback(hide)
     }
@@ -99,10 +100,10 @@ class PostRepository() {
         var report = false
         val data = response.body()
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to report post")
+            Log.d(Tags.log, "Success to report post")
             report = true
         } else {
-            Log.d("TAG", "Fail to report post")
+            Log.d(Tags.log, "Fail to report post")
         }
         callback(report)
     }
@@ -116,11 +117,11 @@ class PostRepository() {
         val posts: ArrayList<Post>
         val data: PostResponse
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get feeds")
+            Log.d(Tags.log, "Success to get feeds")
             data = response.body()!!
             posts = data.data!!
         } else{
-            Log.d("TAG", "Fail to get feeds")
+            Log.d(Tags.log, "Fail to get feeds")
             posts = arrayListOf()
         }
         callback(posts)
@@ -136,11 +137,11 @@ class PostRepository() {
         val posts: ArrayList<Post>
         val data: PostResponse
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get Feeds")
+            Log.d(Tags.log, "Success to get Feeds")
             data = response.body()!!
             posts = data.data!!
         } else{
-            Log.d("TAG", "Fail to get Feeds")
+            Log.d(Tags.log, "Fail to get Feeds")
             posts = arrayListOf()
         }
         callback(posts)
@@ -157,11 +158,11 @@ class PostRepository() {
         val posts: ArrayList<Post>
         val data: PostResponse
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get posts")
+            Log.d(Tags.log, "Success to get posts")
             data = response.body()!!
             posts = data.data!!
         } else{
-            Log.d("TAG", "Fail to get posts")
+            Log.d(Tags.log, "Fail to get posts")
             posts = arrayListOf()
         }
         callback(posts)
@@ -176,11 +177,11 @@ class PostRepository() {
         val posts: ArrayList<Post>
         val data: PostResponse
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get posts")
+            Log.d(Tags.log, "Success to get posts")
             data = response.body()!!
             posts = data.data!!
         } else{
-            Log.d("TAG", "Fail to get posts")
+            Log.d(Tags.log, "Fail to get posts")
             posts = arrayListOf()
         }
         callback(posts)
@@ -197,12 +198,12 @@ class PostRepository() {
         var posts: ArrayList<Post> = arrayListOf()
         val data: PostResponse
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get posts")
+            Log.d(Tags.log, "Success to get posts")
             data = response.body()!!
             if(!(data.data).isNullOrEmpty())
                 posts = data.data
         } else{
-            Log.d("TAG", "Fail to get posts")
+            Log.d(Tags.log, "Fail to get posts")
         }
         callback(posts)
     }
@@ -218,12 +219,12 @@ class PostRepository() {
         var posts: ArrayList<Post> = arrayListOf()
         val data: PostResponse
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get posts")
+            Log.d(Tags.log, "Success to get posts")
             data = response.body()!!
             if(!(data.data).isNullOrEmpty())
                 posts = data.data
         } else{
-            Log.d("TAG", "Fail to get posts")
+            Log.d(Tags.log, "Fail to get posts")
             posts = arrayListOf()
         }
         callback(posts)
@@ -260,11 +261,11 @@ class PostRepository() {
         val posts: ArrayList<Post>
         val data: PostResponse
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get posts")
+            Log.d(Tags.log, "Success to get posts")
             data = response.body()!!
             posts = data.data!!
         } else{
-            Log.d("TAG", "Fail to get posts")
+            Log.d(Tags.log, "Fail to get posts")
             posts = arrayListOf()
         }
         callback(posts)
@@ -279,11 +280,11 @@ class PostRepository() {
         val posts: ArrayList<Post>
         val data: PostResponse
         if (response.isSuccessful) {
-            Log.d("TAG", "Success to get posts")
+            Log.d(Tags.log, "Success to get posts")
             data = response.body()!!
             posts = data.data!!
         } else{
-            Log.d("TAG", "Fail to get posts")
+            Log.d(Tags.log, "Fail to get posts")
             posts = arrayListOf()
         }
         callback(posts)
@@ -302,10 +303,10 @@ class PostRepository() {
         val medias: MediaResponse
 
         if(response.isSuccessful){
-            Log.d("TAG", "Success to get Medias")
+            Log.d(Tags.log, "Success to get Medias")
             medias = response.body()!!
         }else{
-            Log.d("TAG", "Fail to get Medias")
+            Log.d(Tags.log, "Fail to get Medias")
             medias = MediaResponse(false, arrayListOf(), pagination())
         }
         callback(medias)
@@ -322,10 +323,10 @@ class PostRepository() {
         val medias: MediaResponse
 
         if(response.isSuccessful){
-            Log.d("TAG", "Success to get Medias")
+            Log.d(Tags.log, "Success to get Medias")
             medias = response.body()!!
         }else{
-            Log.d("TAG", "Fail to get Medias")
+            Log.d(Tags.log, "Fail to get Medias")
             medias = MediaResponse(false, arrayListOf(), pagination())
         }
         callback(medias)
@@ -342,10 +343,10 @@ class PostRepository() {
         val medias: MediaResponse
 
         if(response.isSuccessful){
-            Log.d("TAG", "Success to get Medias")
+            Log.d(Tags.log, "Success to get Medias")
             medias = response.body()!!
         }else{
-            Log.d("TAG", "Fail to get Medias")
+            Log.d(Tags.log, "Fail to get Medias")
             medias = MediaResponse(false, arrayListOf(), pagination())
         }
         callback(medias)
@@ -360,10 +361,10 @@ class PostRepository() {
         val templates: ArrayList<Profile>
 
         if(response.isSuccessful){
-            Log.d("TAG", "Success to get templates")
+            Log.d(Tags.log, "Success to get templates")
             templates = response.body()!!.data
         }else{
-            Log.d("TAG", "Fail to get templates")
+            Log.d(Tags.log, "Fail to get templates")
             templates = arrayListOf()
         }
         callback(templates)
@@ -379,10 +380,10 @@ class PostRepository() {
         val tags: List<Tag>
 
         if(response.isSuccessful){
-            Log.d("TAG", "Success to get Medias")
+            Log.d(Tags.log, "Success to get Medias")
             tags = response.body()!!.data
         }else{
-            Log.d("TAG", "Fail to get Medias")
+            Log.d(Tags.log, "Fail to get Medias")
             tags = listOf()
         }
         callback(tags)
@@ -397,10 +398,10 @@ class PostRepository() {
         val tags: ArrayList<Tag>
 
         if(response.isSuccessful){
-            Log.d("TAG", "Success to get HotTags")
+            Log.d(Tags.log, "Success to get HotTags")
             tags = ArrayList(response.body()!!.data)
         }else{
-            Log.d("TAG", "Fail to get HotTags")
+            Log.d(Tags.log, "Fail to get HotTags")
             tags = arrayListOf()
         }
         callback(tags)
@@ -409,7 +410,7 @@ class PostRepository() {
     //전체 댓글
     suspend fun getComment(postId: String, imageId: String, lastCreatedAt: String, callback: (comments: ArrayList<Comments>) -> Unit) = withContext(
         Dispatchers.IO){
-            Log.d("TAG", "post id recieve-------------- $postId")
+            Log.d(Tags.log, "post id recieve-------------- $postId")
             val response = postService.getComments(
                 userId,
                 postId,
@@ -421,11 +422,11 @@ class PostRepository() {
             val data: CommentsResponse
 
             if(response.isSuccessful) {
-                Log.d("TAG","Success to get comments")
+                Log.d(Tags.log,"Success to get comments")
                 data = response.body()!!
                 comments = data.data
             }else{
-                Log.d("TAG", "Fail to get comments")
+                Log.d(Tags.log, "Fail to get comments")
                 comments = arrayListOf()
             }
             callback(comments)
@@ -433,7 +434,7 @@ class PostRepository() {
 
     suspend fun getFirstComment(postId: String, imageId: String, callback: (comments: CommentsResponse) -> Unit) = withContext(
         Dispatchers.IO){
-        Log.d("TAG", "post id recieve-------------- $postId")
+        Log.d(Tags.log, "post id recieve-------------- $postId")
         val response = postService.getFirstComments(
             userId,
             postId,
@@ -443,10 +444,10 @@ class PostRepository() {
         val comments: CommentsResponse
 
         if(response.isSuccessful) {
-            Log.d("TAG","Success to get comments")
+            Log.d(Tags.log,"Success to get comments")
             comments = response.body()!!
         }else{
-            Log.d("TAG", "Fail to get comments")
+            Log.d(Tags.log, "Fail to get comments")
             comments = CommentsResponse(false, arrayListOf(), pagination(0,0,0,0))
         }
         callback(comments)
@@ -454,7 +455,7 @@ class PostRepository() {
 
     suspend fun getFirstTemplateComment(postId: String, callback: (comments: CommentsResponse) -> Unit) = withContext(
         Dispatchers.IO){
-        Log.d("TAG", "post id recieve-------------- $postId")
+        Log.d(Tags.log, "post id recieve-------------- $postId")
         val response = postService.getFirstTemplateComments(
             userId,
             postId,
@@ -463,10 +464,10 @@ class PostRepository() {
         val comments: CommentsResponse
 
         if(response.isSuccessful) {
-            Log.d("TAG","Success to get comments")
+            Log.d(Tags.log,"Success to get comments")
             comments = response.body()!!
         }else{
-            Log.d("TAG", "Fail to get comments")
+            Log.d(Tags.log, "Fail to get comments")
             comments = CommentsResponse(false, arrayListOf(), pagination(0,0,0,0))
         }
         callback(comments)
@@ -474,7 +475,7 @@ class PostRepository() {
 
     suspend fun getTemplateComment(postId: String, lastCreatedAt: String, callback: (comments: CommentsResponse) -> Unit) = withContext(
         Dispatchers.IO){
-        Log.d("TAG", "post id recieve-------------- $postId")
+        Log.d(Tags.log, "post id recieve-------------- $postId")
         val response = postService.getTemplateComments(
             userId,
             postId,
@@ -484,10 +485,10 @@ class PostRepository() {
         val comments: CommentsResponse
 
         if(response.isSuccessful) {
-            Log.d("TAG","Success to get comments")
+            Log.d(Tags.log,"Success to get comments")
             comments = response.body()!!
         }else{
-            Log.d("TAG", "Fail to get comments")
+            Log.d(Tags.log, "Fail to get comments")
             comments = CommentsResponse(false, arrayListOf(), pagination(0,0,0,0))
         }
         callback(comments)
@@ -495,7 +496,7 @@ class PostRepository() {
 
     suspend fun writeComment(comment: CommentBody, postId: String, imageId:String, callback: (comments: Comments) -> Unit) = withContext(
         Dispatchers.IO){
-        Log.d("TAG", "post id recieve-------------- $postId")
+        Log.d(Tags.log, "post id recieve-------------- $postId")
         val response = postService.writeComments(
             userId,
             postId,
@@ -507,11 +508,11 @@ class PostRepository() {
         val data: WriteCommentResponse
         Log.d("Comment", "${response.code()}")
         if(response.isSuccessful) {
-            Log.d("TAG","Success to write comments")
+            Log.d(Tags.log,"Success to write comments")
             data = response.body()!!
             comments = data.data
         }else{
-            Log.d("TAG", "Fail to write comments")
+            Log.d(Tags.log, "Fail to write comments")
             comments = Comments("",User("","","","",0,0,0,false),"",-1,-1,true,"","")
         }
         callback(comments)
@@ -530,11 +531,11 @@ class PostRepository() {
         val data: WriteCommentResponse
 
         if(response.isSuccessful) {
-            Log.d("TAG","Success to write comments")
+            Log.d(Tags.log,"Success to write comments")
             data = response.body()!!
             comments = data.data
         }else{
-            Log.d("TAG", "Fail to write comments")
+            Log.d(Tags.log, "Fail to write comments")
             comments = Comments("",User("","","","",0,0,0,false),"",-1,-1,true,"","")
         }
         callback(comments)

@@ -18,6 +18,7 @@ import com.example.haru.R
 import com.example.haru.data.model.Post
 import com.example.haru.databinding.FragmentDetailPostBinding
 import com.example.haru.databinding.FragmentSnsMypageBinding
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.PicturesPagerAdapter
@@ -65,7 +66,7 @@ class DetailFragment(media: com.example.haru.data.model.Media, post: Post) : Fra
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "MypageFragment - onCreate() called")
+        Log.d(Tags.log, "MypageFragment - onCreate() called")
         snsViewModel = ViewModelProvider(this).get(SnsViewModel::class.java)
         myPageViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
@@ -87,7 +88,7 @@ class DetailFragment(media: com.example.haru.data.model.Media, post: Post) : Fra
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("TAG", "MyPageFragment - onCreateView() called")
+        Log.d(Tags.log, "MyPageFragment - onCreateView() called")
         binding = FragmentDetailPostBinding.inflate(inflater, container, false)
         pager = binding.detailPostPicture
 

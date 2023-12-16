@@ -24,6 +24,7 @@ import com.example.haru.R
 import com.example.haru.data.model.*
 import com.example.haru.databinding.FragmentTimetableBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.Tags
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.TimetableAdapter
 import com.example.haru.view.checklist.CalendarAddFragment
@@ -47,7 +48,6 @@ class TimetableFragment : Fragment() {
     private lateinit var binding: FragmentTimetableBinding
     private lateinit var timetableviewModel: TimetableViewModel
     private lateinit var reviewModel: TimeTableRecyclerViewModel
-    private lateinit var checkListViewModel: CheckListViewModel
     private lateinit var timetableAdapter: TimetableAdapter
     var timeList: ArrayList<timetable_data> = ArrayList()
     lateinit var timeTableRecyclerView: RecyclerView
@@ -68,8 +68,7 @@ class TimetableFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         reviewModel = TimeTableRecyclerViewModel()
-        checkListViewModel = CheckListViewModel()
-        Log.d(TAG, "TimetableFragment - onCreate() called")
+        Log.d(Tags.log, "TimetableFragment - onCreate() called")
     }
 
     override fun onResume() {
@@ -89,7 +88,7 @@ class TimetableFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "TimetableFragment - onCreateView() called")
+        Log.d(Tags.log, "TimetableFragment - onCreateView() called")
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_timetable, container, false)
         val rootView = binding.root
         timetableviewModel = TimetableViewModel(requireContext())
@@ -164,7 +163,7 @@ class TimetableFragment : Fragment() {
         }
 
         timetableviewModel.liveCategoryList.observe(viewLifecycleOwner){
-            Log.d(TAG, "onCreateView: ${it}")
+            Log.d(Tags.log, "onCreateView: ${it}")
         }
 
         //그리드에 그려지는 스케줄을 타임테이블에 바인딩
@@ -224,7 +223,7 @@ class TimetableFragment : Fragment() {
             calendarViewModel.getCategories()
 
             calendarViewModel.liveCategoryList.observe(viewLifecycleOwner){
-                Log.d(TAG, "onCreateView: ${it}")
+                Log.d(Tags.log, "onCreateView: ${it}")
 
                 val scheduleInput = CalendarAddFragment(
                     null,
@@ -264,7 +263,7 @@ class TimetableFragment : Fragment() {
 
         binding.timetableSearchButton.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragments_frame, SearchFragment(checkListViewModel))
+                .replace(R.id.fragments_frame, SearchFragment(CheckListViewModel))
                 .addToBackStack(null)
                 .commit()
         }
@@ -340,7 +339,7 @@ class TimetableFragment : Fragment() {
             }
 
             for (item in deleteSchedule) {
-//                Log.d(TAG, "DrawDays: ${item.repeatStart}")
+//                Log.d(Tags.log, "DrawDays: ${item.repeatStart}")
                 scheduleCalendarDataList.remove(item)
             }
             table.addView(layout1)

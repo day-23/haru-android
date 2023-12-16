@@ -22,6 +22,7 @@ import com.example.haru.R
 import com.example.haru.data.model.Category
 import com.example.haru.data.model.Schedule
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.Tags
 import com.example.haru.view.calendar.CalendarItemFragment
 import com.example.haru.view.checklist.ChecklistItemFragment
 import com.example.haru.viewmodel.CalendarViewModel
@@ -116,7 +117,7 @@ class AdapterSimpleSchedule(val schedules: List<Schedule>,
         }
 
         holder.itemView.setOnClickListener {
-            Log.e("20191627", todayTodo)
+            Log.e(Tags.log, todayTodo)
 
             if (schedule.repeatOption == null) {
                 activity.supportFragmentManager.beginTransaction()

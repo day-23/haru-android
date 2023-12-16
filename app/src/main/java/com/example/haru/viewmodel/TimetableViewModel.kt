@@ -10,6 +10,7 @@ import com.example.haru.data.model.*
 import com.example.haru.data.repository.CategoryRepository
 import com.example.haru.data.repository.ScheduleRepository
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.Tags
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.*
@@ -201,7 +202,7 @@ class TimetableViewModel(val context: Context) : ViewModel() {
         val dayOfWeek = SimpleDateFormat("E").format(Date(year - 1900, month, day))
         var QueryDate = SimpleDateFormat("yyyyMMdd").format(Date(year - 1900, month, day - 1))
 
-        Log.d("20191627", dayOfWeek)
+        Log.d(Tags.log, dayOfWeek)
 
         when (dayOfWeek) {
             "일", "Sun" -> d

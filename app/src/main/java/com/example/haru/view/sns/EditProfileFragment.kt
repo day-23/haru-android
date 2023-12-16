@@ -26,6 +26,7 @@ import com.example.haru.R
 import com.example.haru.data.model.ExternalImages
 import com.example.haru.databinding.CustomGalleryBinding
 import com.example.haru.databinding.FragmentEditProfileBinding
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.adapter.GalleryAdapter
@@ -40,7 +41,7 @@ class EditProfileFragment(userId: String) : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "SnsMypageFragment - onCreate() called")
+        Log.d(Tags.log, "SnsMypageFragment - onCreate() called")
         profileViewModel = ViewModelProvider(this).get(MyPageViewModel::class.java)
     }
 
@@ -49,7 +50,7 @@ class EditProfileFragment(userId: String) : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("TAG", "SnsFragment - onCreateView() called")
+        Log.d(Tags.log, "SnsFragment - onCreateView() called")
 
         binding = FragmentEditProfileBinding.inflate(inflater)
 
@@ -88,7 +89,7 @@ class EditProfileFragment(userId: String) : Fragment() {
         }
 
         profileViewModel.EditUri.observe(viewLifecycleOwner) {
-            Log.e("20191627", it.toString())
+            Log.e(Tags.log, it.toString())
 
             Glide.with(requireContext())
                 .load(it)

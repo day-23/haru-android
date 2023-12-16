@@ -20,6 +20,7 @@ import com.example.haru.databinding.FragmentEtcBinding
 import com.example.haru.databinding.FragmentSnsBinding
 import com.example.haru.utils.FormatDate
 import com.example.haru.utils.SharedPrefsManager
+import com.example.haru.utils.Tags
 import com.example.haru.utils.User
 import com.example.haru.view.MainActivity
 import com.example.haru.view.auth.LoginActivity
@@ -45,7 +46,7 @@ class EtcFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "EtcFragment - onCreate() called")
+        Log.d(Tags.log, "EtcFragment - onCreate() called")
     }
 
     override fun onCreateView(
@@ -64,7 +65,7 @@ class EtcFragment : Fragment() {
 
         MainActivity.hideNavi(false)
 
-        Log.e("20191627", User.toString())
+        Log.e(Tags.log, User.toString())
         etcViewModel.getSnsInfo()
         etcViewModel.setTodayYearMonth()
         etcViewModel.calculateWithHaru()
@@ -113,7 +114,7 @@ class EtcFragment : Fragment() {
             binding.tvCompletedTodoCount.text = if (it.first == null) "0" else it.first.toString()
             binding.tvTotalTodoCount.text = if (it.second == null) "0" else it.second.toString()
 
-            Log.e("20191627", "pair $it")
+            Log.e(Tags.log, "pair $it")
             val percent = if (it.first != null && it.second != null) {
                 if (it.second == 0) 0
                 else (it.first!!.toFloat() / it.second!!.toFloat() * 100).roundToInt()

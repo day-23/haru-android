@@ -29,10 +29,9 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                                      timetableviewModel:TimetableViewModel,
                                      val lifecycle: LifecycleOwner,
                                      val context: Context) : View.OnDragListener {
-    val checkListViewModel = CheckListViewModel()
     val todoRecyclerViewModel = todoreviewModel
     val timeTableViewModel = timetableviewModel
-    val todoAddViewmodel = TodoAddViewModel(checkListViewModel)
+    val todoAddViewmodel = TodoAddViewModel()
 
     override fun onDrag(view: View, event: DragEvent): Boolean {
         val matrix = ColorMatrix()
@@ -98,7 +97,7 @@ class TodoTimeTableTodoDragListener (todoreviewModel: TodoTableRecyclerViewmodel
                         todo.repeatValue,
                         todo.tags.map{it.content}
                     )
-                    checkListViewModel.updateTodo(
+                    CheckListViewModel.updateTodo(
                         todo.id,
                         updateTodo
                     ){

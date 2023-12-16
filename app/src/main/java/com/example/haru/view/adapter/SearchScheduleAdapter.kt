@@ -22,6 +22,7 @@ import com.example.haru.databinding.FragmentSearchScheduleBinding
 import com.example.haru.databinding.FragmentSearchScheduleHeaderBinding
 import com.example.haru.databinding.ListItemSimpleScheduleBinding
 import com.example.haru.utils.FormatDate
+import com.example.haru.utils.Tags
 import java.util.*
 
 class SearchScheduleAdapter(val context: Context) :
@@ -88,7 +89,7 @@ class SearchScheduleAdapter(val context: Context) :
     inner class ScheduleViewHolder(val binding: FragmentSearchScheduleBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Schedule) {
-            Log.e("20191627", "$item")
+            Log.e(Tags.log, "$item")
 
             val startDate: Date
             val endDate: Date
@@ -159,13 +160,13 @@ class SearchScheduleAdapter(val context: Context) :
                 set(Calendar.MILLISECOND, 0)
             }
 
-            Log.e("20191627", startDate.toString())
-            Log.e("20191627", endDate.toString())
+            Log.e(Tags.log, startDate.toString())
+            Log.e(Tags.log, endDate.toString())
 
             item.startTime = startDate
             item.endTime = endDate
 
-            Log.e("20191627", item.toString())
+            Log.e(Tags.log, item.toString())
 
             val repeatStartStr = FormatDate.calendarFormat(item.repeatStart!!)
             val repeatEndStr = FormatDate.calendarFormat(item.repeatEnd!!)
@@ -195,7 +196,7 @@ class SearchScheduleAdapter(val context: Context) :
     fun setDataList(dataList: List<Schedule>?) {
         if (dataList == null)
             return
-        Log.e("20191627", dataList.toString())
+        Log.e(Tags.log, dataList.toString())
         diffUtil.submitList(dataList as MutableList<Schedule>)
     }
 }

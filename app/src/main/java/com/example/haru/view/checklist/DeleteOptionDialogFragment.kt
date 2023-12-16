@@ -15,6 +15,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.haru.R
 import com.example.haru.databinding.FragmentOptionDeleteBinding
 import com.example.haru.utils.Alarm
+import com.example.haru.utils.Tags
 import com.example.haru.view.checklist.ChecklistItemFragment.*
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -170,7 +171,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
                         }
                         else -> {
                             binding.btnOptionOneDelete.isClickable = true
-                            Log.e("20191627", "DeleteOption -> OneDelete 잘못된 Type")
+                            Log.e(Tags.log, "DeleteOption -> OneDelete 잘못된 Type")
                         }
                     }
                 }
@@ -189,14 +190,9 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
                         }
                         else -> {
                             binding.btnOptionAllDelete.isClickable = true
-                            Log.e("20191627", "DeleteOption -> AllDelete 잘못된 Type")
+                            Log.e(Tags.log, "DeleteOption -> AllDelete 잘못된 Type")
                         }
                     }
-//                    todoAddViewModel.deleteTodo {
-//                        binding.btnOptionAllDelete.isClickable = true
-//                        dismiss()
-//                        requireActivity().supportFragmentManager.popBackStack()
-//                    }
                 }
 
                 binding.btnOptionAfterDelete.id -> {
@@ -212,7 +208,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
                         }
                         else -> {
                             binding.btnOptionAfterDelete.isClickable = true
-                            Log.e("20191627", "DeleteOption -> AfterDelete 잘못된 Type")
+                            Log.e(Tags.log, "DeleteOption -> AfterDelete 잘못된 Type")
                         }
                     }
                 }
@@ -230,7 +226,7 @@ class DeleteOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
                         }
                         else -> {
                             binding.btnOptionDelete.isClickable = true
-                            Log.e("20191627", "DeleteOption -> Delete 잘못된 Type")
+                            Log.e(Tags.log, "DeleteOption -> Delete 잘못된 Type")
                         }
                     }
                 }

@@ -28,13 +28,12 @@ object Alarm {
         val endDate = dateFormat.format(endcalendar.time)
 
         val calendarViewModel = CalendarViewModel()
-        val checkListViewModel = CheckListViewModel()
 
         calendarViewModel.getAlldo(startDate, endDate, 4)
-        checkListViewModel.dataInit()
+        CheckListViewModel.dataInit()
 
         calendarViewModel.liveScheduleCalendarList.observe(lifecycle){liveschedule->
-            checkListViewModel.todoDataList.observe(lifecycle) {livetodo->
+            CheckListViewModel.todoDataList.observe(lifecycle) {livetodo->
 //                var todoIds = ArrayList<String>()
                 addAlarm(context)
 

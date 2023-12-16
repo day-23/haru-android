@@ -24,12 +24,10 @@ import com.example.haru.R
 import com.example.haru.databinding.FragmentChecklistInputBinding
 import com.example.haru.utils.Alarm
 import com.example.haru.utils.FormatDate
-import com.example.haru.view.MainActivity
+import com.example.haru.utils.Tags
 import com.example.haru.view.customDialog.CustomCalendarDialog
 import com.example.haru.view.adapter.AdapterMonth
-import com.example.haru.view.calendar.CalendarFragment
 import com.example.haru.view.customDialog.CustomTimeDialog
-import com.example.haru.viewmodel.CheckListViewModel
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -37,7 +35,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
 class ChecklistInputFragment(
-    checkListViewModel: CheckListViewModel,
     val lifecycle: LifecycleOwner,
     val adapter: AdapterMonth? = null,
     val today: Boolean? = null,
@@ -61,20 +58,20 @@ class ChecklistInputFragment(
     var onSubmitListener: OnSubmitListener? = null
 
     init {
-        todoAddViewModel = TodoAddViewModel(checkListViewModel)
+        todoAddViewModel = TodoAddViewModel()
     }
 
     companion object {
         const val TAG: String = "로그"
 
-        fun newInstance(checkListViewModel: CheckListViewModel, lifecycle: LifecycleOwner): ChecklistInputFragment {
-            return ChecklistInputFragment(checkListViewModel, lifecycle)
+        fun newInstance(lifecycle: LifecycleOwner): ChecklistInputFragment {
+            return ChecklistInputFragment(lifecycle)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "ChecklistInputFragment - onCreate() called")
+        Log.d(Tags.log, "ChecklistInputFragment - onCreate() called")
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -86,7 +83,7 @@ class ChecklistInputFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.e("20191627", "onCreateView")
+        Log.e(Tags.log, "onCreateView")
         binding = FragmentChecklistInputBinding.inflate(inflater)
         binding.viewModel = todoAddViewModel
 
@@ -151,7 +148,7 @@ class ChecklistInputFragment(
             override fun onGlobalLayout() {
                 todoAddViewModel.setEndTimeHeight(binding.endDateTimeLayout.height)
                 binding.endDateTimeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                Log.d("20191627", todoAddViewModel.endTimeLayoutHeight.toString())
+                Log.d(Tags.log, todoAddViewModel.endTimeLayoutHeight.toString())
                 binding.endDateTimeLayout.visibility = View.GONE
             }
         })
@@ -163,7 +160,7 @@ class ChecklistInputFragment(
                 todoAddViewModel.setRepeatOptionH(binding.repeatOptionLayout.height)
                 binding.repeatOptionLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 Log.d(
-                    "20191627",
+                    TAG,
                     "repeatOptionLayout : " + todoAddViewModel.repeatOptionHeight.toString()
                 )
                 binding.repeatOptionLayout.visibility = View.GONE
@@ -175,7 +172,7 @@ class ChecklistInputFragment(
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 todoAddViewModel.setWeekHeight(binding.everyWeekSelectLayout.height)
-                Log.d("20191627", "WeekSelect Height : ${todoAddViewModel.repeatWeekHeight}")
+                Log.d(Tags.log, "WeekSelect Height : ${todoAddViewModel.repeatWeekHeight}")
                 binding.everyWeekSelectLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 binding.everyWeekSelectLayout.visibility = View.GONE
             }
@@ -207,7 +204,7 @@ class ChecklistInputFragment(
                 todoAddViewModel.setRepeatEndDateH(binding.repeatEndDateLayout.height)
                 binding.repeatEndDateLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 Log.d(
-                    "20191627",
+                    TAG,
                     "repeatEndDateLayout : " + todoAddViewModel.repeatEndDateHeight.toString()
                 )
                 binding.repeatEndDateLayout.visibility = View.GONE
@@ -268,7 +265,7 @@ class ChecklistInputFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e("20191627", "onViewCreated")
+        Log.e(Tags.log, "onViewCreated")
 
         if (today == true)
             todoAddViewModel.setTodayTodo()
@@ -297,7 +294,7 @@ class ChecklistInputFragment(
                 binding.endDateTimeLayout.visibility = if (it) View.VISIBLE else View.INVISIBLE
                 binding.btnEndDatePick.visibility = if (it) View.VISIBLE else View.INVISIBLE
 
-                Log.e("20191627", "endDateSetLayout : ${binding.endDateSetLayout.height}")
+                Log.e(Tags.log, "endDateSetLayout : ${binding.endDateSetLayout.height}")
                 when (it) {
                     true -> {
                         binding.endDateSetLayout.animateViewHeight(
@@ -352,7 +349,7 @@ class ChecklistInputFragment(
             when (it) {
                 true -> {
                     todoAddViewModel.setRepeatSetLayoutH(binding.repeatSetLayout.height)
-                    Log.e("20191627", "repeatSetLayout : ${todoAddViewModel.repeatSetLayoutHeight}")
+                    Log.e(Tags.log, "repeatSetLayout : ${todoAddViewModel.repeatSetLayoutHeight}")
 
                     binding.repeatSetLayout.animateViewHeight(
                         400, binding.repeatSetLayout.height,
@@ -435,13 +432,13 @@ class ChecklistInputFragment(
 
         todoAddViewModel.endDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             binding.btnEndDatePick.text = FormatDate.simpleDateToStr(it)
-            Log.d("20191627", it.toString())
+            Log.d(Tags.log, it.toString())
 
             if (todoAddViewModel.repeatOption.value == 4) {  // 매년
                 FormatDate.cal.time = it
                 val days = FormatDate.cal.get(Calendar.DAY_OF_MONTH)
                 todoAddViewModel.day = days
-                Log.d("20191627", days.toString())
+                Log.d(Tags.log, days.toString())
 
                 when (days) {
                     31  // 2,4,6,9,11 달들 선택 불가
@@ -532,7 +529,7 @@ class ChecklistInputFragment(
                     todoAddViewModel.setDate(0, FormatDate.cal.time)
                     return@Observer
                 } else {
-                    Log.d("20191627", "최적 날짜 찾기")
+                    Log.d(Tags.log, "최적 날짜 찾기")
                     val date = when (todoAddViewModel.repeatValue.value?.length) {
                         7 -> FormatDate.nextEndDateEveryWeek(
                             todoAddViewModel.repeatValue.value,
@@ -753,7 +750,7 @@ class ChecklistInputFragment(
 
     override fun onStart() {
         super.onStart()
-        Log.e("20191627", "onStart")
+        Log.e(Tags.log, "onStart")
     }
 
     fun View.animateViewHeight(duration: Long, startHeight: Int, endHeight: Int) {
@@ -872,7 +869,7 @@ class ChecklistInputFragment(
 
                 R.id.btn_submit_todo -> {
                     if (SystemClock.elapsedRealtime() - lastClickTime < 500) {
-                        Log.d("20191627", "새로운 투두 추가 1초간 터치 금지")
+                        Log.d(Tags.log, "새로운 투두 추가 1초간 터치 금지")
                         return
                     }
                     lastClickTime = SystemClock.elapsedRealtime()
@@ -887,7 +884,7 @@ class ChecklistInputFragment(
                         if (adapter == null) {
                             todoAddViewModel.addTodo {
                                 onSubmitListener?.onSubmit()
-                                Log.d("20191627", "dismiss")
+                                Log.d(Tags.log, "dismiss")
 
                                 if(it != null && it) {
                                     Alarm.initAlarm(lifecycle, requireContext())
@@ -898,7 +895,7 @@ class ChecklistInputFragment(
                         } else if (isTimeTable == true) {
                             todoAddViewModel.addTodo(true) {
                                 onSubmitListener?.onSubmit()
-                                Log.d("20191627", "dismiss")
+                                Log.d(Tags.log, "dismiss")
 
                                 if(it != null && it) {
                                     Alarm.initAlarm(lifecycle, requireContext())
@@ -909,7 +906,7 @@ class ChecklistInputFragment(
                         } else {
                             todoAddViewModel.addTodo(true) {
                                 onSubmitListener?.onSubmit()
-                                Log.d("20191627", "dismiss")
+                                Log.d(Tags.log, "dismiss")
 
                                 if(it != null && it) {
                                     Alarm.initAlarm(lifecycle, requireContext())

@@ -1,7 +1,6 @@
 package com.example.haru.view.checklist
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -15,6 +14,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.haru.R
 import com.example.haru.databinding.FragmentOptionUpdateBinding
 import com.example.haru.utils.Alarm
+import com.example.haru.utils.Tags
 import com.example.haru.view.checklist.ChecklistItemFragment.UpdateType
 import com.example.haru.viewmodel.TodoAddViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -43,22 +43,9 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
             UpdateType.FRONT_UPDATE_REPEAT, UpdateType.MIDDLE_UPDATE_REPEAT,
             UpdateType.BACK, UpdateType.NOT_REPEAT ->
                 27
-//            UpdateType.FRONT_ONE, UpdateType.FRONT_TWO,
-//            UpdateType.BACK_TWO, UpdateType.NOT_REPEAT, UpdateType.MIDDLE_TWO -> {
-//                27
-//            }
-
             // 취소 버튼 제외하고 선택지가 2개인 경우
             UpdateType.FRONT_NOT_UPDATE_REPEAT, UpdateType.MIDDLE_NOT_UPDATE_REPEAT ->
                 35
-//            UpdateType.FRONT_THREE, UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> {
-//                35
-//            }
-
-            // 취소 버튼 제외하고 선택지가 3개인 경우
-//            UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> {
-//                43
-//            }
         }
 
         this.todoAddViewModel = todoAddViewModel
@@ -160,48 +147,6 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
                 }
                 2f
             }
-//            UpdateType.FRONT_ONE -> { // 전체 할일 수정 (마감일, 반복 옵션 둘다 수정)
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionOneUpdate)
-//                    removeView(binding.btnOptionAfterUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                2f
-//            }
-//            UpdateType.FRONT_TWO -> { // 이 할일만 수정 (마감일 수정, 반복 옵션 수정X)
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionAllUpdate)
-//                    removeView(binding.btnOptionAfterUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                2f
-//            }
-//            UpdateType.FRONT_THREE -> { // 전체 할일 수정, 이 할일만 수정
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionAfterUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                3f
-//            }
-//            UpdateType.MIDDLE_ONE, UpdateType.BACK_ONE -> { // 전체 할일 수정, 이 할일부터 수정
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionOneUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                3f
-//            }
-//            UpdateType.MIDDLE_TWO, UpdateType.BACK_TWO -> { // 이 할일만 수정
-//                binding.layoutParentBtnUpdate.apply {
-//                    removeView(binding.btnOptionAllUpdate)
-//                    removeView(binding.btnOptionAfterUpdate)
-//                    removeView(binding.btnOptionSave)
-//                }
-//                2f
-//            }
-//            UpdateType.MIDDLE_THREE, UpdateType.BACK_THREE -> { // 모든 옵션을 보여주는 상황
-//                binding.layoutParentBtnUpdate.removeView(binding.btnOptionSave)
-//                4f
-//            }
         }
         binding.layoutParentBtnUpdate.apply {
             layoutParams = params
@@ -249,30 +194,9 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
                                 requireActivity().supportFragmentManager.popBackStack()
                             }
                         }
-//                        UpdateType.FRONT_TWO, UpdateType.FRONT_THREE -> { // front
-//                            todoAddViewModel.updateRepeatFrontTodo {
-//                                binding.btnOptionOneUpdate.isClickable = true
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//                        }
-//                        UpdateType.MIDDLE_TWO, UpdateType.MIDDLE_THREE -> { // middle
-//                            todoAddViewModel.updateRepeatMiddleTodo {
-//                                binding.btnOptionOneUpdate.isClickable = true
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//                        }
-//                        UpdateType.BACK_TWO, UpdateType.BACK_THREE -> { // back
-//                            todoAddViewModel.updateRepeatBackTodo {
-//                                binding.btnOptionOneUpdate.isClickable = true
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//                        }
                         else -> {
                             binding.btnOptionOneUpdate.isClickable = true
-                            Log.d("20191627", "UpdateOptionDialog -> OneUpdate 잘못된 Type")
+                            Log.d(Tags.log, "UpdateOptionDialog -> OneUpdate 잘못된 Type")
                         }
                     }
                 }
@@ -289,7 +213,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
                         }
                         else -> {
                             binding.btnOptionAllUpdate.isClickable = true
-                            Log.d("20191627", "UpdateOptionDialog -> AllUpdate 잘못된 Type")
+                            Log.d(Tags.log, "UpdateOptionDialog -> AllUpdate 잘못된 Type")
                         }
                     }
                 }
@@ -308,22 +232,9 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
                         }
                         else -> {
                             binding.btnOptionAfterUpdate.isClickable = true
-                            Log.d("20191627", "UpdateOptionDialog -> AfterUpdate 잘못된 Type")
+                            Log.d(Tags.log, "UpdateOptionDialog -> AfterUpdate 잘못된 Type")
                         }
                     }
-
-                    // middle, back의 이후부터 수정
-//                    when (type) {
-//                        UpdateType.MIDDLE_ONE, UpdateType.MIDDLE_THREE,
-//                        UpdateType.BACK_ONE, UpdateType.BACK_THREE -> {
-//                            todoAddViewModel.updateRepeatBackTodo {
-//                                binding.btnOptionAfterUpdate.isClickable = true
-//                                dismiss()
-//                                requireActivity().supportFragmentManager.popBackStack()
-//                            }
-//                        }
-//                        else -> {}
-//                    }
                 }
 
                 binding.btnOptionSave.id -> {
@@ -339,7 +250,7 @@ class UpdateOptionDialogFragment(todoAddViewModel: TodoAddViewModel,
                         }
                         else -> {
                             binding.btnOptionSave.isClickable = true
-                            Log.d("20191627", "UpdateOptionDialog -> Save 잘못된 Type")
+                            Log.d(Tags.log, "UpdateOptionDialog -> Save 잘못된 Type")
                         }
                     }
                 }
